@@ -16,7 +16,7 @@
  */
 
 import React, {useCallback} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import Mapbox from '@rnmapbox/maps';
@@ -61,7 +61,7 @@ export const SiteMapCallout = ({sites, state, setState}: Props) => {
       coordinate={coordsToPosition(coords)}
       anchor={{x: 0.5, y: 0}}
       allowOverlap>
-      {child}
+      <View pointerEvents="box-none">{child}</View>
     </Mapbox.MarkerView>
   );
 };
