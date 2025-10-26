@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {ReactNode, useContext, useEffect, useRef} from 'react';
+import {ReactNode, useContext, useEffect, useRef} from 'react';
 import {AppState, Platform} from 'react-native';
 
 import Constants from 'expo-constants';
@@ -105,13 +105,22 @@ function PostHogInstanceSetter() {
   return null;
 }
 
-// ---- Background flush on app losing focus ----
+// ---- Background flush on app losing focus, reload flags on foreground ----
 function PosthogLifecycle() {
   const posthog = usePostHog();
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', state => {
-      if (state !== 'active') posthog?.flush();
+      if (state === 'active') {
+        // App came to foreground - reload feature flags
+        console.log(
+          '[PostHog] App came to foreground, reloading feature flags',
+        );
+        posthog?.reloadFeatureFlags();
+      } else {
+        // App going to background - flush pending events
+        posthog?.flush();
+      }
     });
     return () => sub.remove();
   }, [posthog]);
