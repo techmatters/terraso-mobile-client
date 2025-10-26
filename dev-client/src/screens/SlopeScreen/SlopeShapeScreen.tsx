@@ -26,6 +26,7 @@ import {
   SoilIdSoilDataDownSlopeChoices,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import ConcaveConcave from 'terraso-mobile-client/assets/slope/shape/concave-concave.svg';
 import ConcaveConvex from 'terraso-mobile-client/assets/slope/shape/concave-convex.svg';
 import ConcaveLinear from 'terraso-mobile-client/assets/slope/shape/concave-linear.svg';
@@ -145,6 +146,13 @@ export const SlopeShapeScreen = ({siteId}: Props) => {
           crossSlope: newCrossSlope,
         }),
       );
+      if (newDownSlope !== null && newCrossSlope !== null) {
+        trackSoilObservation({
+          input_type: 'slope_shape',
+          input_method: 'select',
+          site_id: siteId,
+        });
+      }
     },
     [dispatch, siteId],
   );

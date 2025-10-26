@@ -88,3 +88,4 @@ cd dev-client
 - The app uses a shared library: `terraso-client-shared`
 - Git hooks enforce code style and commit message structure
 - Supports offline functionality with custom persistence layer
+- always run "npm run format" before committing.

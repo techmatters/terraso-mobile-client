@@ -22,6 +22,7 @@ import {CameraView, useCameraPermissions} from 'expo-camera';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {DeviceMotion} from 'expo-sensors';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/common/BigCloseButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
@@ -89,6 +90,11 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
         slopeSteepnessDegree: deviceTiltDeg,
       }),
     );
+    trackSoilObservation({
+      input_type: 'slope_steepness',
+      input_method: 'clinometer',
+      site_id: siteId,
+    });
     navigation.pop();
   }, [dispatch, siteId, deviceTiltDeg, navigation]);
 

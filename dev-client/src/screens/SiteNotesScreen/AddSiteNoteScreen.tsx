@@ -21,6 +21,7 @@ import {Keyboard} from 'react-native';
 
 import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {
   useNavToBottomTabsAndShowSyncError,
   usePopNavigationAndShowSyncError,
@@ -65,6 +66,11 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
         content: content,
       };
       await dispatch(addSiteNote(siteNoteInput));
+      trackSoilObservation({
+        input_type: 'notes',
+        input_method: 'manual',
+        site_id: siteId,
+      });
     } catch (error) {
       console.error('Failed to add note:', error);
     } finally {

@@ -33,7 +33,8 @@
       "Bash(npm run test:unit:*)",
       "Bash(npm run test:integration:*)",
       "Bash(npm run test:*)",
-      "Bash(npm audit:*)"
+      "Bash(npm audit:*)",
+      "Bash(npm run format:*)"
     ],
     "deny": [],
     "ask": []

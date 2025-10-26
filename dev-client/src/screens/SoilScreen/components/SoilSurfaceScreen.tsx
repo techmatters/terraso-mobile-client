@@ -23,6 +23,7 @@ import {
   surfaceCracks,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
 import {
@@ -61,8 +62,16 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
   const {surfaceCracksSelect: cracking} = useSelector(selectSoilData(siteId));
   const dispatch = useDispatch();
   const onUpdate = useCallback(
-    (surfaceCracksSelect: SurfaceCracks | null) =>
-      dispatch(updateSoilData({siteId, surfaceCracksSelect})),
+    (surfaceCracksSelect: SurfaceCracks | null) => {
+      dispatch(updateSoilData({siteId, surfaceCracksSelect}));
+      if (surfaceCracksSelect !== null) {
+        trackSoilObservation({
+          input_type: 'soil_cracks',
+          input_method: 'select',
+          site_id: siteId,
+        });
+      }
+    },
     [dispatch, siteId],
   );
 
