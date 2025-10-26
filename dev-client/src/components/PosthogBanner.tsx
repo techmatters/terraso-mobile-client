@@ -20,13 +20,26 @@ import {useCallback, useEffect, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {useFeatureFlag, usePostHog} from 'posthog-react-native';
 
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
+import {
+  Box,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
+
+const DISMISSED_BANNER_KEY = 'posthog.banner.dismissed';
 
 export const PosthogBanner = () => {
   const showBanner = useFeatureFlag('banner_message');
   const [message, setMessage] = useState<string | null>(null);
+  const [currentPayload, setCurrentPayload] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const posthog = usePostHog();
+  const [dismissedPayload, setDismissedPayload] = kvStorage.useString(
+    DISMISSED_BANNER_KEY,
+    '',
+  );
 
   // Reload feature flags when screen comes into focus
   useFocusEffect(
@@ -53,6 +66,7 @@ export const PosthogBanner = () => {
 
       if (!payload) {
         setMessage(null);
+        setCurrentPayload(null);
         return;
       }
 
@@ -60,10 +74,14 @@ export const PosthogBanner = () => {
         const parsed =
           typeof payload === 'string' ? JSON.parse(payload) : payload;
         const newMessage = parsed?.message || null;
+        const payloadString = JSON.stringify(parsed);
+
         setMessage(newMessage);
+        setCurrentPayload(payloadString);
       } catch (error) {
         console.error('[PosthogBanner] Failed to parse payload:', error);
         setMessage(null);
+        setCurrentPayload(null);
       }
     };
 
@@ -84,7 +102,14 @@ export const PosthogBanner = () => {
     };
   }, [showBanner, refreshKey, posthog]);
 
-  if (!message) {
+  const handleDismiss = useCallback(() => {
+    if (currentPayload) {
+      setDismissedPayload(currentPayload);
+    }
+  }, [currentPayload, setDismissedPayload]);
+
+  // Don't show if no message or if current payload matches dismissed payload
+  if (!message || !currentPayload || currentPayload === dismissedPayload) {
     return null;
   }
 
@@ -94,7 +119,12 @@ export const PosthogBanner = () => {
       padding="md"
       borderTopWidth="2px"
       borderColor="gray.300">
-      <Text color="text.primary">{parseFormattedText(message)}</Text>
+      <Row justifyContent="space-between" alignItems="center">
+        <Box flex={1} pr="sm">
+          <Text color="text.primary">{parseFormattedText(message)}</Text>
+        </Box>
+        <CloseButton onPress={handleDismiss} />
+      </Row>
     </Box>
   );
 };
