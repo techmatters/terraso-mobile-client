@@ -52,7 +52,8 @@ type SoilObservationProps = {
  * @param input_type - Type of observation (slope_steepness, soil_color, etc.)
  * @param input_method - How the data was entered (manual, pictogram, clinometer, etc.)
  * @param site_id - The site ID where the observation was made
- * @param depthInterval - Optional depth interval (for depth-dependent observations)
+ * @param depthInterval - Optional depth interval (for depth-dependent observations).
+ *                        Records input_depth_top (start) and input_depth_bottom (end) in cm.
  */
 export function trackSoilObservation({
   input_type,
@@ -71,12 +72,10 @@ export function trackSoilObservation({
     site_id,
   };
 
-  // Add depth for depth-dependent observations
+  // Add depth range for depth-dependent observations
   if (depthInterval) {
-    const depthMidpoint = Math.round(
-      (depthInterval.start + depthInterval.end) / 2,
-    );
-    event.input_depth = depthMidpoint;
+    event.input_depth_top = depthInterval.start;
+    event.input_depth_bottom = depthInterval.end;
   }
 
   posthog.capture('soil_observation', event);
