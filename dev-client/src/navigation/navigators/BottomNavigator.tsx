@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {memo, useCallback, useEffect} from 'react';
+import {memo, useCallback, useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationHelpers} from '@react-navigation/native';
@@ -35,6 +37,7 @@ export const BottomNavigator = memo(
     const loggedIn = useSelector(
       state => state.account.currentUser.data !== null,
     );
+    const {bottom} = useSafeAreaInsets();
 
     const onSites = useCallback(
       () => navigation.navigate('SITES'),
@@ -57,24 +60,37 @@ export const BottomNavigator = memo(
       }
     }, [loggedIn, stackNavigation]);
 
+    // Only apply external padding for Android soft buttons (typically >40px)
+    // iOS home indicator (34px) should use internal padding instead
+    const hasAndroidSoftButtons = bottom > 40;
+
+    const containerStyle = useMemo(
+      () => ({
+        paddingBottom: hasAndroidSoftButtons ? bottom : 0,
+      }),
+      [hasAndroidSoftButtons, bottom],
+    );
+
     return (
-      <Row bg="primary.main" justifyContent="space-around" pb={2}>
-        <BottomNavButton
-          name="location-pin"
-          label={t('bottom_navigation.sites')}
-          onPress={onSites}
-        />
-        <BottomNavButton
-          name="work"
-          label={t('bottom_navigation.projects')}
-          onPress={onProject}
-        />
-        <BottomNavButton
-          name="settings"
-          label={t('bottom_navigation.settings')}
-          onPress={onSettings}
-        />
-      </Row>
+      <View style={containerStyle}>
+        <Row bg="primary.main" justifyContent="space-around" pb={2}>
+          <BottomNavButton
+            name="location-pin"
+            label={t('bottom_navigation.sites')}
+            onPress={onSites}
+          />
+          <BottomNavButton
+            name="work"
+            label={t('bottom_navigation.projects')}
+            onPress={onProject}
+          />
+          <BottomNavButton
+            name="settings"
+            label={t('bottom_navigation.settings')}
+            onPress={onSettings}
+          />
+        </Row>
+      </View>
     );
   },
 );
