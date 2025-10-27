@@ -44,13 +44,13 @@ type Props = {
 
 type InputCounts = {
   numberOfInputs: number;
-  uniqueInputTypesCount: number;
+  uniqueInputTypes: string[];
 };
 
 // Helper function to count soil data inputs
 function countSoilDataInputs(soilData: SoilData | undefined): InputCounts {
   if (!soilData) {
-    return {numberOfInputs: 0, uniqueInputTypesCount: 0};
+    return {numberOfInputs: 0, uniqueInputTypes: []};
   }
 
   let count = 0;
@@ -108,7 +108,7 @@ function countSoilDataInputs(soilData: SoilData | undefined): InputCounts {
 
   return {
     numberOfInputs: count,
-    uniqueInputTypesCount: inputTypes.size,
+    uniqueInputTypes: Array.from(inputTypes).sort(),
   };
 }
 
@@ -135,8 +135,7 @@ export const RateSoilMatchFabWithSheet = ({
       setIsClosing(true);
 
       // Count inputs from soil data
-      const {numberOfInputs, uniqueInputTypesCount} =
-        countSoilDataInputs(soilData);
+      const {numberOfInputs, uniqueInputTypes} = countSoilDataInputs(soilData);
 
       // Get all three scores separately
       const locationScore = soilMatch?.locationMatch?.score ?? 0;
@@ -156,7 +155,7 @@ export const RateSoilMatchFabWithSheet = ({
         soil_combined_score: combinedScore,
         soil_rank: soil_rank,
         number_of_inputs: numberOfInputs,
-        unique_input_types_count: uniqueInputTypesCount,
+        unique_input_types: uniqueInputTypes,
         rank_of_rated_soil: soil_rank,
       });
     }
