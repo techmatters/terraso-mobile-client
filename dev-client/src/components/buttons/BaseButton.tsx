@@ -25,7 +25,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {Pressable} from 'react-native-gesture-handler';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {IconSize} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -81,7 +81,7 @@ export const BaseButton = ({
   const stateContentStyle = styleForState(content, {disabled, pressed});
 
   return (
-    <TouchableWithoutFeedback
+    <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{disabled}}
@@ -110,7 +110,7 @@ export const BaseButton = ({
           <></>
         )}
       </View>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 };
 

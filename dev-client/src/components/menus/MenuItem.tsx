@@ -17,7 +17,7 @@
 
 import {useMemo} from 'react';
 import {PressableProps, StyleSheet, View} from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {Pressable} from 'react-native-gesture-handler';
 import {Divider, Text} from 'react-native-paper';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
@@ -61,7 +61,7 @@ export const MenuItem = ({
 
   return (
     <>
-      <TouchableWithoutFeedback
+      <Pressable
         /* The Ripple component doesn't allow null for onPress, so reduce it to either present or undefined */
         onPress={onPress ? () => onPress(undefined as any) : undefined}
         disabled={disabled}
@@ -106,7 +106,7 @@ export const MenuItem = ({
             <View style={[styles.section, styles.chipSection]}>{chip}</View>
           )}
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
       <Divider />
     </>
   );
