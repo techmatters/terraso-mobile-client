@@ -16,7 +16,8 @@
  */
 
 import React, {forwardRef} from 'react';
-import {Pressable, PressableProps, StyleSheet, View} from 'react-native';
+import {PressableProps, StyleSheet, View} from 'react-native';
+import {Pressable} from 'react-native-gesture-handler';
 
 import MaterialIcon from '@expo/vector-icons/MaterialIcons';
 
@@ -71,7 +72,7 @@ export const IconButton = forwardRef<View, IconButtonProps>(
             containerStyleForType(type),
             containerStyleForVariant(variant, disabled),
           ]}
-          onPress={onPress}>
+          onPress={onPress ? event => onPress(event as any) : undefined}>
           <MaterialIcon
             name={name}
             disabled={disabled}

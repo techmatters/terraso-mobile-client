@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Pressable, ViewStyle} from 'react-native';
+import {ViewStyle} from 'react-native';
+import {Pressable} from 'react-native-gesture-handler';
 
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
