@@ -28,8 +28,9 @@ module.exports = api => {
           rootPathSuffix: './src',
         },
       ],
-      'react-native-reanimated/plugin',
       'react-native-paper/babel',
+      // Reanimated plugin must be listed last
+      'react-native-reanimated/plugin',
     ],
   };
 };
