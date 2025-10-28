@@ -30,7 +30,7 @@ import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 const DISMISSED_BANNER_KEY = 'posthog.banner.dismissed';
 
-export const PosthogBanner = () => {
+const PosthogBannerContent = () => {
   const showBanner = useFeatureFlag('banner_message');
   const [message, setMessage] = useState<string | null>(null);
   const [currentPayload, setCurrentPayload] = useState<string | null>(null);
@@ -217,3 +217,14 @@ function parseFormattedText(message: string): React.ReactNode {
     });
   });
 }
+
+export const PosthogBanner = () => {
+  const posthog = usePostHog();
+
+  // Return null if PostHog is not available (e.g., in tests or when disabled)
+  if (!posthog) {
+    return null;
+  }
+
+  return <PosthogBannerContent />;
+};
