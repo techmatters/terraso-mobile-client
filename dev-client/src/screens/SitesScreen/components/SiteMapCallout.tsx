@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {FlatList, View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -51,24 +51,37 @@ export const SiteMapCallout = ({sites, state, setState}: Props) => {
     return null;
   }
 
-  let child = CalloutChild(coords, {sites, state, setState});
-  if (!child) {
-    return null;
-  }
-
   return (
     <Mapbox.MarkerView
       coordinate={coordsToPosition(coords)}
       anchor={{x: 0.5, y: 0}}
       allowOverlap>
-      <View pointerEvents="box-none">{child}</View>
+      <View pointerEvents="box-none">
+        <CalloutChild
+          coords={coords}
+          sites={sites}
+          state={state}
+          setState={setState}
+        />
+      </View>
     </Mapbox.MarkerView>
   );
 };
 
-const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
+type CalloutChildProps = Props & {
+  coords: Coords;
+};
+
+const CalloutChild = ({coords, sites, state, setState}: CalloutChildProps) => {
   const closeCallout = useCallback(() => setState(noneCallout()), [setState]);
   const sitesScreen = useSitesScreenContext();
+
+  // Collapse bottom sheet when showing location callout - use effect to avoid side effects during render
+  useEffect(() => {
+    if (state.kind === 'location') {
+      sitesScreen?.collapseBottomSheet();
+    }
+  }, [state.kind, sitesScreen]);
 
   switch (state.kind) {
     case 'site':
@@ -113,7 +126,6 @@ const CalloutChild = (coords: Coords, {sites, state, setState}: Props) => {
         state.kind === 'location' ? state.isCurrentLocation : false;
       const creationMethod =
         state.kind === 'location' ? state.creationMethod : 'map';
-      sitesScreen?.collapseBottomSheet();
       return (
         <TemporaryLocationCallout
           coords={coords}

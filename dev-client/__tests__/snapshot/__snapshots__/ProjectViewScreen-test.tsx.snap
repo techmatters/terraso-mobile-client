@@ -2574,7 +2574,7 @@ exports[`renders correctly 1`] = `
                                                       {
                                                         "busy": undefined,
                                                         "checked": undefined,
-                                                        "disabled": false,
+                                                        "disabled": undefined,
                                                         "expanded": undefined,
                                                         "selected": true,
                                                       }
@@ -2599,21 +2599,18 @@ exports[`renders correctly 1`] = `
                                                     onResponderTerminate={[Function]}
                                                     onResponderTerminationRequest={[Function]}
                                                     onStartShouldSetResponder={[Function]}
-                                                    style={
-                                                      [
-                                                        false,
-                                                        {
-                                                          "backgroundColor": "#efefef",
-                                                        },
-                                                      ]
-                                                    }
                                                   >
                                                     <View
                                                       style={
-                                                        {
-                                                          "flexDirection": "row",
-                                                          "margin": 16,
-                                                        }
+                                                        [
+                                                          {
+                                                            "flexDirection": "row",
+                                                            "margin": 16,
+                                                          },
+                                                          {
+                                                            "backgroundColor": "#efefef",
+                                                          },
+                                                        ]
                                                       }
                                                     >
                                                       <View
@@ -2712,7 +2709,7 @@ exports[`renders correctly 1`] = `
                                                       {
                                                         "busy": undefined,
                                                         "checked": undefined,
-                                                        "disabled": false,
+                                                        "disabled": undefined,
                                                         "expanded": undefined,
                                                         "selected": false,
                                                       }
@@ -2737,21 +2734,18 @@ exports[`renders correctly 1`] = `
                                                     onResponderTerminate={[Function]}
                                                     onResponderTerminationRequest={[Function]}
                                                     onStartShouldSetResponder={[Function]}
-                                                    style={
-                                                      [
-                                                        false,
-                                                        {
-                                                          "backgroundColor": "#FFFFFF",
-                                                        },
-                                                      ]
-                                                    }
                                                   >
                                                     <View
                                                       style={
-                                                        {
-                                                          "flexDirection": "row",
-                                                          "margin": 16,
-                                                        }
+                                                        [
+                                                          {
+                                                            "flexDirection": "row",
+                                                            "margin": 16,
+                                                          },
+                                                          {
+                                                            "backgroundColor": "#FFFFFF",
+                                                          },
+                                                        ]
                                                       }
                                                     >
                                                       <View
@@ -2851,7 +2845,7 @@ exports[`renders correctly 1`] = `
                                                       {
                                                         "busy": undefined,
                                                         "checked": undefined,
-                                                        "disabled": false,
+                                                        "disabled": undefined,
                                                         "expanded": undefined,
                                                         "selected": false,
                                                       }
@@ -2876,21 +2870,18 @@ exports[`renders correctly 1`] = `
                                                     onResponderTerminate={[Function]}
                                                     onResponderTerminationRequest={[Function]}
                                                     onStartShouldSetResponder={[Function]}
-                                                    style={
-                                                      [
-                                                        false,
-                                                        {
-                                                          "backgroundColor": "#FFFFFF",
-                                                        },
-                                                      ]
-                                                    }
                                                   >
                                                     <View
                                                       style={
-                                                        {
-                                                          "flexDirection": "row",
-                                                          "margin": 16,
-                                                        }
+                                                        [
+                                                          {
+                                                            "flexDirection": "row",
+                                                            "margin": 16,
+                                                          },
+                                                          {
+                                                            "backgroundColor": "#FFFFFF",
+                                                          },
+                                                        ]
                                                       }
                                                     >
                                                       <View
@@ -2990,7 +2981,7 @@ exports[`renders correctly 1`] = `
                                                       {
                                                         "busy": undefined,
                                                         "checked": undefined,
-                                                        "disabled": false,
+                                                        "disabled": undefined,
                                                         "expanded": undefined,
                                                         "selected": false,
                                                       }
@@ -3015,21 +3006,18 @@ exports[`renders correctly 1`] = `
                                                     onResponderTerminate={[Function]}
                                                     onResponderTerminationRequest={[Function]}
                                                     onStartShouldSetResponder={[Function]}
-                                                    style={
-                                                      [
-                                                        false,
-                                                        {
-                                                          "backgroundColor": "#FFFFFF",
-                                                        },
-                                                      ]
-                                                    }
                                                   >
                                                     <View
                                                       style={
-                                                        {
-                                                          "flexDirection": "row",
-                                                          "margin": 16,
-                                                        }
+                                                        [
+                                                          {
+                                                            "flexDirection": "row",
+                                                            "margin": 16,
+                                                          },
+                                                          {
+                                                            "backgroundColor": "#FFFFFF",
+                                                          },
+                                                        ]
                                                       }
                                                     >
                                                       <View
