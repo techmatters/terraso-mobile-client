@@ -52,24 +52,28 @@ export const MapHeader = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
       <Row space={3} pointerEvents="box-none">
         <MapSearch zoomTo={zoomTo} />
         <Column space={3}>
-          <IconButton
-            name="layers"
-            variant="light-filled"
-            type="md"
-            onPress={toggleMapLayer}
-          />
+          <Box onStartShouldSetResponder={() => true}>
+            <IconButton
+              name="layers"
+              variant="light-filled"
+              type="md"
+              onPress={toggleMapLayer}
+            />
+          </Box>
           <UpdatedPermissionsRequestWrapper
             requestModalTitle={t('permissions.location_title')}
             requestModalBody={t('permissions.location_body')}
             permissionHook={useUpdatedForegroundPermissions}
             permissionedAction={zoomToUser}>
             {onRequest => (
-              <IconButton
-                name="my-location"
-                variant="light-filled"
-                type="md"
-                onPress={onRequest}
-              />
+              <Box onStartShouldSetResponder={() => true}>
+                <IconButton
+                  name="my-location"
+                  variant="light-filled"
+                  type="md"
+                  onPress={onRequest}
+                />
+              </Box>
             )}
           </UpdatedPermissionsRequestWrapper>
         </Column>
