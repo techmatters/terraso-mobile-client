@@ -24,7 +24,17 @@
       "Bash(ffprobe:*)",
       "Bash(done)",
       "Bash(git log:*)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(npx patch-package:*)",
+      "Read(//Users/johannes_schmidt/techmatters/**)",
+      "Bash(npx react-native-bundle-visualizer:*)",
+      "Bash(npm dedupe:*)",
+      "Bash(./gradlew app:dependencies:*)",
+      "Bash(npm run test:unit:*)",
+      "Bash(npm run test:integration:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm run format:*)"
     ],
     "deny": [],
     "ask": []

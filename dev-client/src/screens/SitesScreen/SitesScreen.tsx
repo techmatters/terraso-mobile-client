@@ -35,6 +35,7 @@ import {Coords} from 'terraso-client-shared/types';
 import {LandPKSInfoButton} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoButton';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {PosthogBanner} from 'terraso-mobile-client/components/PosthogBanner';
 import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
@@ -114,7 +115,7 @@ export const SitesScreen = memo(() => {
 
   const searchFunction = useCallback(
     (coords: Coords) => {
-      setCalloutState(locationCallout(coords));
+      setCalloutState(locationCallout(coords, false, 'address'));
       mapRef.current?.moveToPoint(coords);
     },
     [setCalloutState, mapRef],
@@ -157,6 +158,7 @@ export const SitesScreen = memo(() => {
       AppBar={<AppBar LeftButton={null} RightButton={<LandPKSInfoButton />} />}>
       <ListFilterProvider items={siteList} filters={filters}>
         <Box testID="sites-screen" flex={1}>
+          <PosthogBanner />
           <Box flex={1}>
             <MapHeader
               zoomTo={searchFunction}

@@ -19,6 +19,7 @@ import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
@@ -71,6 +72,12 @@ export const ColorAnalysisHomeScreen = () => {
           colorPhotoUsed: true,
         }),
       );
+      trackSoilObservation({
+        input_type: 'soil_color',
+        input_method: 'photo',
+        site_id: pitProps.siteId,
+        depthInterval: pitProps.depthInterval.depthInterval,
+      });
       navigation.pop();
     },
     [dispatch, pitProps, navigation],

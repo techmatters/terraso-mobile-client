@@ -21,6 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
@@ -88,6 +89,7 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
     slopeSteepnessPercent,
     slopeSteepnessDegree,
   }: FormInput) => {
+    let didUpdate = false;
     if (
       slopeSteepnessPercent &&
       (lastTouched === 'slopeSteepnessPercent' || !slopeSteepnessDegree)
@@ -100,6 +102,7 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
           slopeSteepnessDegree: null,
         }),
       );
+      didUpdate = true;
     } else if (
       slopeSteepnessDegree &&
       (lastTouched === 'slopeSteepnessDegree' || !slopeSteepnessPercent)
@@ -112,6 +115,7 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
           slopeSteepnessDegree: parseInt(slopeSteepnessDegree, 10),
         }),
       );
+      didUpdate = true;
     } else {
       await dispatch(
         updateSoilData({
@@ -120,6 +124,13 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
           slopeSteepnessDegree: null,
         }),
       );
+    }
+    if (didUpdate) {
+      trackSoilObservation({
+        input_type: 'slope_steepness',
+        input_method: 'manual',
+        site_id: siteId,
+      });
     }
     onClose();
   };

@@ -23,6 +23,7 @@ import {useVideoPlayer, VideoView} from 'expo-video';
 
 import {ScrollView} from 'native-base';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -133,6 +134,14 @@ export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
           texture: result,
         }),
       );
+      if (result !== undefined) {
+        trackSoilObservation({
+          input_type: 'soil_texture',
+          input_method: 'guided',
+          site_id: props.siteId,
+          depthInterval: props.depthInterval.depthInterval,
+        });
+      }
       navigation.pop();
     };
   }, [props, dispatch, result, navigation]);

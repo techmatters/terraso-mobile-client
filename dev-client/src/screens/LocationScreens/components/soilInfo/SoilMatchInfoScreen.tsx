@@ -108,6 +108,7 @@ export const SiteSoilMatchInfoScreen = ({
           </ScrollView>
           <RestrictByFlag flag="FF_select_soil">
             <RateSoilMatchFabWithSheet
+              siteId={siteId}
               siteName={site.name}
               soilMatch={soilMatch}
             />
