@@ -16,7 +16,7 @@
  */
 import {memo, useCallback, useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -60,15 +60,12 @@ export const BottomNavigator = memo(
       }
     }, [loggedIn, stackNavigation]);
 
-    // Only apply external padding for Android soft buttons (typically >40px)
-    // iOS home indicator (34px) should use internal padding instead
-    const hasAndroidSoftButtons = bottom > 40;
-
     const containerStyle = useMemo(
       () => ({
-        paddingBottom: hasAndroidSoftButtons ? bottom : 0,
+        backgroundColor: '#006938',
+        paddingBottom: Platform.OS === 'android' ? bottom : 0,
       }),
-      [hasAndroidSoftButtons, bottom],
+      [bottom],
     );
 
     return (

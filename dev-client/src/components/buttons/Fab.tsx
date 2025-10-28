@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {PressableProps, StyleSheet} from 'react-native';
+import {Platform, PressableProps, StyleSheet} from 'react-native';
 import {Surface} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -45,9 +45,9 @@ export const Fab = ({
       ? styles.surfaceBottomCenter
       : styles.surfaceBottomRight;
 
-  // Only apply extra spacing for Android soft buttons (typically >40px)
-  // iOS home indicator (34px) should keep default 16px margin
-  const bottomPosition = bottom > 40 ? bottom : 16;
+  // On Android, add safe area inset to position above soft navigation buttons
+  // On iOS, use 0 to preserve current behavior (16px margin already provides spacing)
+  const bottomPosition = Platform.OS === 'android' ? bottom : 0;
 
   return (
     <Surface
