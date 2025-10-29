@@ -33,10 +33,20 @@ type Props = {
   zoomTo?: (coords: Coords) => void;
   zoomToUser?: () => void;
   toggleMapLayer?: () => void;
+  isCalloutOpen?: boolean;
 };
 
-export const MapHeader = ({zoomTo, zoomToUser, toggleMapLayer}: Props) => {
+export const MapHeader = ({
+  zoomTo,
+  zoomToUser,
+  toggleMapLayer,
+  isCalloutOpen,
+}: Props) => {
   const {t} = useTranslation();
+
+  if (isCalloutOpen) {
+    return null;
+  }
 
   return (
     <Box
