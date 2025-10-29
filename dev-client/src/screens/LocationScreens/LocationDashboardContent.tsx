@@ -15,9 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ReactNode, useCallback} from 'react';
+import {ReactNode, useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ScrollView} from 'native-base';
 
@@ -72,6 +73,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const project = useSelector(state =>
     site?.projectId === undefined
@@ -94,8 +96,17 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
 
   const isOffline = useIsOffline();
 
+  const scrollContentStyle = useMemo(
+    () => ({
+      paddingBottom: Math.max(insets.bottom, 16),
+    }),
+    [insets.bottom],
+  );
+
   return (
-    <ScrollView backgroundColor="background.default">
+    <ScrollView
+      backgroundColor="background.default"
+      contentContainerStyle={scrollContentStyle}>
       <SiteTabJump />
       <StaticMapView
         coords={coords}
