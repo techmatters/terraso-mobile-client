@@ -29,6 +29,7 @@ import {createAssetAsync} from 'expo-media-library';
 
 import {Buffer} from '@craftzdog/react-native-buffer';
 import {decode} from 'jpeg-js';
+import {usePostHog} from 'posthog-react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
@@ -64,29 +65,88 @@ type Props = {
 export const ImagePicker = ({onPick, children, featureName}: Props) => {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
+  const posthog = usePostHog();
 
   const onUseCamera = useCallback(async () => {
-    const response = await launchCameraAsync({
-      mediaTypes: 'images',
-      cameraType: CameraType.back,
+    console.log('[ImagePicker] onUseCamera called');
+    posthog?.capture('image_picker_camera_button_pressed', {
+      feature: featureName,
+      timestamp: new Date().toISOString(),
     });
-    if (!response.canceled) {
-      const asset = response.assets[0];
-      createAssetAsync(asset.uri);
-      onPick(response.assets[0]);
+
+    try {
+      console.log('[ImagePicker] Calling launchCameraAsync...');
+      const response = await launchCameraAsync({
+        mediaTypes: 'images',
+        cameraType: CameraType.back,
+      });
+
+      console.log('[ImagePicker] Camera response:', {
+        canceled: response.canceled,
+        hasAssets: (response.assets?.length ?? 0) > 0,
+      });
+
+      posthog?.capture('image_picker_camera_response', {
+        feature: featureName,
+        canceled: response.canceled,
+        timestamp: new Date().toISOString(),
+      });
+
+      if (!response.canceled) {
+        const asset = response.assets[0];
+        createAssetAsync(asset.uri);
+        onPick(response.assets[0]);
+      }
+    } catch (error) {
+      console.error('[ImagePicker] Camera error:', error);
+      posthog?.capture('image_picker_camera_error', {
+        feature: featureName,
+        error: String(error),
+        timestamp: new Date().toISOString(),
+      });
+    } finally {
+      ref.current?.onClose();
     }
-    ref.current?.onClose();
-  }, [onPick]);
+  }, [onPick, featureName, posthog]);
 
   const onUseMediaLibrary = useCallback(async () => {
-    const response = await launchImageLibraryAsync({
-      mediaTypes: 'images',
+    console.log('[ImagePicker] onUseMediaLibrary called');
+    posthog?.capture('image_picker_gallery_button_pressed', {
+      feature: featureName,
+      timestamp: new Date().toISOString(),
     });
-    if (!response.canceled) {
-      onPick(response.assets[0]);
+
+    try {
+      console.log('[ImagePicker] Calling launchImageLibraryAsync...');
+      const response = await launchImageLibraryAsync({
+        mediaTypes: 'images',
+      });
+
+      console.log('[ImagePicker] Gallery response:', {
+        canceled: response.canceled,
+        hasAssets: (response.assets?.length ?? 0) > 0,
+      });
+
+      posthog?.capture('image_picker_gallery_response', {
+        feature: featureName,
+        canceled: response.canceled,
+        timestamp: new Date().toISOString(),
+      });
+
+      if (!response.canceled) {
+        onPick(response.assets[0]);
+      }
+    } catch (error) {
+      console.error('[ImagePicker] Gallery error:', error);
+      posthog?.capture('image_picker_gallery_error', {
+        feature: featureName,
+        error: String(error),
+        timestamp: new Date().toISOString(),
+      });
+    } finally {
+      ref.current?.onClose();
     }
-    ref.current?.onClose();
-  }, [onPick]);
+  }, [onPick, featureName, posthog]);
 
   return (
     <StandaloneOverlaySheet trigger={children} ref={ref}>

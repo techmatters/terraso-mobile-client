@@ -15,11 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Linking} from 'react-native';
 
 import {createPermissionHook} from 'expo-modules-core';
+
+import {usePostHog} from 'posthog-react-native';
 
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
@@ -100,30 +102,123 @@ const PermissionsRequestWrapperImpl = ({
 }: ImplProps) => {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
+  const [isRequesting, setIsRequesting] = useState(false);
+  const posthog = usePostHog();
 
   const onRequestAction = useCallback(async () => {
+    console.log('[PermissionsRequestWrapper] onRequestAction called', {
+      permissions,
+      isRequesting,
+    });
+
+    posthog?.capture('permission_wrapper_action_requested', {
+      permission_type: requestModalTitle,
+      permissions_state:
+        permissions === null
+          ? 'null'
+          : permissions.granted
+            ? 'granted'
+            : 'not_granted',
+      can_ask_again: permissions?.canAskAgain ?? false,
+      is_requesting: isRequesting,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Prevent multiple simultaneous permission requests
+    if (isRequesting) {
+      console.log(
+        '[PermissionsRequestWrapper] Already requesting permission, ignoring tap',
+      );
+      posthog?.capture('permission_wrapper_duplicate_request_blocked', {
+        permission_type: requestModalTitle,
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
     // If permissions haven't loaded yet, request them
     if (permissions === null) {
-      const result = await requestPermissions();
-      if (result.granted && permissionedAction !== undefined) {
-        permissionedAction();
+      console.log(
+        '[PermissionsRequestWrapper] Permissions null, requesting...',
+      );
+      setIsRequesting(true);
+      posthog?.capture('permission_wrapper_requesting_null_permissions', {
+        permission_type: requestModalTitle,
+        timestamp: new Date().toISOString(),
+      });
+      try {
+        const result = await requestPermissions();
+        console.log(
+          '[PermissionsRequestWrapper] Permission result:',
+          result.granted,
+        );
+        posthog?.capture('permission_wrapper_request_result', {
+          permission_type: requestModalTitle,
+          granted: result.granted,
+          timestamp: new Date().toISOString(),
+        });
+        if (result.granted && permissionedAction !== undefined) {
+          permissionedAction();
+        }
+      } finally {
+        setIsRequesting(false);
       }
       return;
     }
 
     if (permissions.granted) {
+      console.log(
+        '[PermissionsRequestWrapper] Permissions already granted, executing action',
+      );
+      posthog?.capture('permission_wrapper_already_granted', {
+        permission_type: requestModalTitle,
+        timestamp: new Date().toISOString(),
+      });
       if (permissionedAction !== undefined) {
         permissionedAction();
       }
     } else if (permissions.canAskAgain && requestPermissions) {
-      const result = await requestPermissions();
-      if (result.granted && permissionedAction !== undefined) {
-        permissionedAction();
+      console.log('[PermissionsRequestWrapper] Can ask again, requesting...');
+      setIsRequesting(true);
+      posthog?.capture('permission_wrapper_can_ask_again', {
+        permission_type: requestModalTitle,
+        timestamp: new Date().toISOString(),
+      });
+      try {
+        const result = await requestPermissions();
+        console.log(
+          '[PermissionsRequestWrapper] Permission result:',
+          result.granted,
+        );
+        posthog?.capture('permission_wrapper_request_result', {
+          permission_type: requestModalTitle,
+          granted: result.granted,
+          timestamp: new Date().toISOString(),
+        });
+        if (result.granted && permissionedAction !== undefined) {
+          permissionedAction();
+        }
+      } finally {
+        setIsRequesting(false);
       }
     } else {
+      console.log(
+        '[PermissionsRequestWrapper] Cannot ask again, opening settings modal',
+      );
+      posthog?.capture('permission_wrapper_opening_settings', {
+        permission_type: requestModalTitle,
+        timestamp: new Date().toISOString(),
+      });
       ref.current?.onOpen();
     }
-  }, [permissionedAction, permissions, requestPermissions]);
+  }, [
+    permissionedAction,
+    permissions,
+    requestPermissions,
+    isRequesting,
+    requestModalTitle,
+    posthog,
+  ]);
 
   return (
     <>
