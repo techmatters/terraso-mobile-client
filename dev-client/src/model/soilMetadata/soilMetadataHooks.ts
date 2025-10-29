@@ -18,9 +18,31 @@
 import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 
-import {selectSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
+import {UserMatchRating} from 'terraso-client-shared/graphqlSchema/graphql';
+
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {
+  selectSoilMetadata,
+  selectUserRatingsMetadata,
+} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 import {updateSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
+
+// TODO-cknipe: Maybe make this return just a regular value, not an obj
+export const useSelectedSoil = (
+  siteId: string,
+): {selectedSoilId: string | undefined} => {
+  const {selectedSoilId: oldSelectedSoil} = useSoilIdSelection(siteId);
+  const userRatings = useSelector(selectUserRatingsMetadata(siteId));
+  if (isFlagEnabled('FF_select_soil')) {
+    const selectedEntry = userRatings?.find(
+      entry => entry?.rating === 'SELECTED',
+    );
+    return {selectedSoilId: selectedEntry?.soilMatchId};
+  } else {
+    return {selectedSoilId: oldSelectedSoil};
+  }
+};
 
 export const useSoilIdSelection = (
   siteId: string,
@@ -29,8 +51,15 @@ export const useSoilIdSelection = (
   selectSoilId: (selectedSoilId: string | null) => Promise<void>;
 } => {
   const dispatch = useDispatch();
-
   const soilMetadata = useSelector(selectSoilMetadata(siteId));
+
+  // TODO-cknipe
+  if (isFlagEnabled('FF_select_soil')) {
+    console.log(
+      "Avoid using the 'useSoilIdSelection' hook with the FF_select_soil flag on",
+    );
+  }
+
   const selectedSoilId =
     soilMetadata.selectedSoilId === null ||
     soilMetadata.selectedSoilId === undefined
@@ -46,6 +75,16 @@ export const useSoilIdSelection = (
       ),
     [dispatch, siteId],
   );
-
   return {selectedSoilId, selectSoilId};
+};
+
+export const useUserRating = (
+  siteId: string,
+  soilMatchId?: string,
+): UserMatchRating => {
+  const userRatings = useSelector(selectUserRatingsMetadata(siteId));
+  const thisSoilRating = userRatings?.find(
+    soilRatingEntry => soilRatingEntry?.soilMatchId === soilMatchId,
+  );
+  return thisSoilRating ? thisSoilRating.rating : 'UNSURE';
 };
