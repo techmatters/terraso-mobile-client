@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Pressable, ViewStyle} from 'react-native';
+import {ViewStyle} from 'react-native';
+import {Pressable} from 'react-native-gesture-handler';
 
 import {Box, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -56,8 +57,8 @@ export const Card = ({
   isPopover = false,
   pressableStyle,
   ...boxProps
-}: Props) => (
-  <Pressable onPress={onPress} style={pressableStyle}>
+}: Props) => {
+  const content = (
     <Box
       padding="md"
       margin="0"
@@ -77,5 +78,14 @@ export const Card = ({
       )}
       {children}
     </Box>
-  </Pressable>
-);
+  );
+
+  // Only wrap in Pressable when actually needed
+  return onPress ? (
+    <Pressable onPress={onPress} style={pressableStyle}>
+      {content}
+    </Pressable>
+  ) : (
+    content
+  );
+};

@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+// Babel configuration for React Native with Expo
 module.exports = api => {
   api.cache(true);
 
@@ -28,8 +29,9 @@ module.exports = api => {
           rootPathSuffix: './src',
         },
       ],
-      'react-native-worklets/plugin',
       'react-native-paper/babel',
+      // Reanimated plugin must be listed last
+      'react-native-reanimated/plugin',
     ],
   };
 };

@@ -44,7 +44,7 @@ if (APP_CONFIG.sentryEnabled) {
     ],
     enableCaptureFailedRequests: true,
     tracePropagationTargets: [APP_CONFIG.terrasoApiHostname],
-    enableUserInteractionTracing: true,
+    enableUserInteractionTracing: false, // Disabled: requires testIDs on all interactive elements
     tracesSampleRate: isProduction ? 0.1 : 1.0,
     _experiments: {
       replaysSessionSampleRate: 0.1,

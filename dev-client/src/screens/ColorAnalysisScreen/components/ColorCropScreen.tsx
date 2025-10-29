@@ -86,10 +86,13 @@ export const ColorCropScreen = ({
   const {t} = useTranslation();
 
   const frameDimension = useSharedValue<number>(minDim(photo));
-  const crop = useSharedValue<Crop>(
-    initialCrop ?? {top: 0, left: 0, size: minDim(photo)},
-  );
-  const start = useSharedValue<Crop>({...crop.value});
+  const initialCropValue = initialCrop ?? {
+    top: 0,
+    left: 0,
+    size: minDim(photo),
+  };
+  const crop = useSharedValue<Crop>(initialCropValue);
+  const start = useSharedValue<Crop>(initialCropValue);
 
   const pan = Gesture.Pan()
     .maxPointers(1)
@@ -137,8 +140,10 @@ export const ColorCropScreen = ({
   }));
 
   const onLayout = useCallback(
-    (e: LayoutChangeEvent) =>
-      (frameDimension.value = e.nativeEvent.layout.width),
+    (e: LayoutChangeEvent) => {
+      'worklet';
+      frameDimension.value = e.nativeEvent.layout.width;
+    },
     [frameDimension],
   );
 

@@ -25,7 +25,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {TouchableRipple} from 'react-native-paper';
+import {Pressable} from 'react-native-gesture-handler';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {IconSize} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -81,40 +81,36 @@ export const BaseButton = ({
   const stateContentStyle = styleForState(content, {disabled, pressed});
 
   return (
-    <View>
-      <TouchableRipple
-        style={[...containerStyles, stretchStyle, stateContainerStyle]}
-        borderless={true} /* Fixes iOS ripple effect border radius issue */
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        accessibilityState={{disabled}}
-        disabled={disabled}
-        onPress={onPress ?? undefined}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}>
-        <>
-          {leftIcon ? (
-            <Icon
-              name={leftIcon}
-              size={iconSize}
-              style={[leftIconStyles, stateContentStyle]}
-            />
-          ) : (
-            <></>
-          )}
-          <Text style={[labelStyles, stateContentStyle]}>{label}</Text>
-          {rightIcon ? (
-            <Icon
-              name={rightIcon}
-              size={iconSize}
-              style={[rightIconStyles, stateContentStyle]}
-            />
-          ) : (
-            <></>
-          )}
-        </>
-      </TouchableRipple>
-    </View>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{disabled}}
+      disabled={disabled}
+      onPress={onPress ? () => onPress(undefined as any) : undefined}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}>
+      <View style={[...containerStyles, stretchStyle, stateContainerStyle]}>
+        {leftIcon ? (
+          <Icon
+            name={leftIcon}
+            size={iconSize}
+            style={[leftIconStyles, stateContentStyle]}
+          />
+        ) : (
+          <></>
+        )}
+        <Text style={[labelStyles, stateContentStyle]}>{label}</Text>
+        {rightIcon ? (
+          <Icon
+            name={rightIcon}
+            size={iconSize}
+            style={[rightIconStyles, stateContentStyle]}
+          />
+        ) : (
+          <></>
+        )}
+      </View>
+    </Pressable>
   );
 };
 

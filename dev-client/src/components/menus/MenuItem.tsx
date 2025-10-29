@@ -17,7 +17,8 @@
 
 import {useMemo} from 'react';
 import {PressableProps, StyleSheet, View} from 'react-native';
-import {Divider, Text, TouchableRipple} from 'react-native-paper';
+import {Pressable} from 'react-native-gesture-handler';
+import {Divider, Text} from 'react-native-paper';
 
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -60,15 +61,15 @@ export const MenuItem = ({
 
   return (
     <>
-      <TouchableRipple
+      <Pressable
         /* The Ripple component doesn't allow null for onPress, so reduce it to either present or undefined */
-        onPress={onPress ? onPress : undefined}
+        onPress={onPress ? () => onPress(undefined as any) : undefined}
         disabled={disabled}
-        style={selected ? styles.selected : styles.base}
         accessibilityRole="menuitem"
         accessibilityState={{selected: selected, disabled: disabled}}
         accessibilityLabel={`${label} ${subLabel}`}>
-        <View style={styles.container}>
+        <View
+          style={[styles.container, selected ? styles.selected : styles.base]}>
           <View style={[styles.section, styles.iconSection]}>
             {typeof icon === 'string' ? (
               <Icon
@@ -105,7 +106,7 @@ export const MenuItem = ({
             <View style={[styles.section, styles.chipSection]}>{chip}</View>
           )}
         </View>
-      </TouchableRipple>
+      </Pressable>
       <Divider />
     </>
   );
