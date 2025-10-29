@@ -17,7 +17,7 @@
 
 // Babel configuration for React Native with Expo
 module.exports = api => {
-  api.cache(true);
+  api.cache(false);
 
   return {
     presets: ['babel-preset-expo', '@babel/preset-typescript'],
