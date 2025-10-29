@@ -222,4 +222,43 @@ describe('patchPersistedReduxState', () => {
       'selectedSoilId',
     );
   });
+
+  // This will anger Typescript because the properties don't currently exist, but we want to test that any future properties will be maintained
+  test('preserves other metadata properties when migrating', () => {
+    const state: any = {
+      soilMetadata: {
+        soilMetadata: {
+          'site-1': {
+            selectedSoilId: 'soil-match-123',
+            someCustomProperty: 'important-data',
+            anotherProperty: {nested: 'value'},
+            numericProperty: 42,
+          },
+        },
+      },
+    };
+
+    const result = patchPersistedReduxState(state);
+
+    // @ts-expect-error - Testing that additional properties are preserved
+    expect(result.soilMetadata!.soilMetadata['site-1'].someCustomProperty).toBe(
+      'important-data',
+    );
+    // @ts-expect-error - Testing that additional properties are preserved
+    expect(result.soilMetadata!.soilMetadata['site-1'].anotherProperty).toEqual(
+      {nested: 'value'},
+    );
+    // @ts-expect-error - Testing that additional properties are preserved
+    expect(result.soilMetadata!.soilMetadata['site-1'].numericProperty).toBe(
+      42,
+    );
+
+    // Should still migrate selectedSoilId
+    expect(result.soilMetadata!.soilMetadata['site-1'].userRatings).toEqual([
+      {soilMatchId: 'soil-match-123', rating: 'SELECTED'},
+    ]);
+    expect(result.soilMetadata!.soilMetadata['site-1']).not.toHaveProperty(
+      'selectedSoilId',
+    );
+  });
 });
