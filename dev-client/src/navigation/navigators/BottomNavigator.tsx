@@ -14,13 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {memo, useCallback, useEffect} from 'react';
+import {memo, useCallback, useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Platform, View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationHelpers} from '@react-navigation/native';
 
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {BottomNavButton} from 'terraso-mobile-client/navigation/components/BottomNavButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
@@ -35,6 +38,7 @@ export const BottomNavigator = memo(
     const loggedIn = useSelector(
       state => state.account.currentUser.data !== null,
     );
+    const {bottom} = useSafeAreaInsets();
 
     const onSites = useCallback(
       () => navigation.navigate('SITES'),
@@ -57,24 +61,34 @@ export const BottomNavigator = memo(
       }
     }, [loggedIn, stackNavigation]);
 
+    const containerStyle = useMemo(
+      () => ({
+        backgroundColor: convertColorProp('primary.dark'),
+        paddingBottom: Platform.OS === 'android' ? bottom : 0,
+      }),
+      [bottom],
+    );
+
     return (
-      <Row bg="primary.main" justifyContent="space-around" pb={2}>
-        <BottomNavButton
-          name="location-pin"
-          label={t('bottom_navigation.sites')}
-          onPress={onSites}
-        />
-        <BottomNavButton
-          name="work"
-          label={t('bottom_navigation.projects')}
-          onPress={onProject}
-        />
-        <BottomNavButton
-          name="settings"
-          label={t('bottom_navigation.settings')}
-          onPress={onSettings}
-        />
-      </Row>
+      <View style={containerStyle}>
+        <Row bg="primary.main" justifyContent="space-around" pb={2}>
+          <BottomNavButton
+            name="location-pin"
+            label={t('bottom_navigation.sites')}
+            onPress={onSites}
+          />
+          <BottomNavButton
+            name="work"
+            label={t('bottom_navigation.projects')}
+            onPress={onProject}
+          />
+          <BottomNavButton
+            name="settings"
+            label={t('bottom_navigation.settings')}
+            onPress={onSettings}
+          />
+        </Row>
+      </View>
     );
   },
 );

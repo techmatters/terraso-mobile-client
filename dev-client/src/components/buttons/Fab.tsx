@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {PressableProps, StyleSheet} from 'react-native';
+import {Platform, PressableProps, StyleSheet} from 'react-native';
 import {Surface} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
@@ -38,13 +39,20 @@ export const Fab = ({
   onPress,
   positioning = 'BottomRight',
 }: FabProps) => {
+  const {bottom} = useSafeAreaInsets();
   const surfacePositionStyle =
     positioning === 'BottomCenter'
       ? styles.surfaceBottomCenter
       : styles.surfaceBottomRight;
 
+  // On Android, add safe area inset to position above soft navigation buttons
+  // On iOS, use 0 to preserve current behavior (16px margin already provides spacing)
+  const bottomPosition = Platform.OS === 'android' ? bottom : 0;
+
   return (
-    <Surface style={[styles.surface, surfacePositionStyle]} elevation={2}>
+    <Surface
+      style={[styles.surface, surfacePositionStyle, {bottom: bottomPosition}]}
+      elevation={2}>
       <ContainedButton
         label={label}
         leftIcon={leftIcon}
@@ -64,11 +72,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   surfaceBottomRight: {
-    bottom: 0,
     right: 0,
   },
   surfaceBottomCenter: {
-    bottom: 0,
     alignSelf: 'center',
   },
 });
