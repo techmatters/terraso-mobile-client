@@ -23,6 +23,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationHelpers} from '@react-navigation/native';
 
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {BottomNavButton} from 'terraso-mobile-client/navigation/components/BottomNavButton';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
@@ -62,7 +63,7 @@ export const BottomNavigator = memo(
 
     const containerStyle = useMemo(
       () => ({
-        backgroundColor: '#006938',
+        backgroundColor: convertColorProp('primary.dark'),
         paddingBottom: Platform.OS === 'android' ? bottom : 0,
       }),
       [bottom],
