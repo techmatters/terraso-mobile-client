@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {LayoutChangeEvent} from 'react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
@@ -24,6 +24,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {
   ActionCrop,
@@ -84,6 +85,7 @@ export const ColorCropScreen = ({
   description,
 }: Props) => {
   const {t} = useTranslation();
+  const insets = useSafeAreaInsets();
 
   const frameDimension = useSharedValue<number>(minDim(photo));
   const initialCropValue = initialCrop ?? {
@@ -184,9 +186,16 @@ export const ColorCropScreen = ({
     });
   }, [photo.uri, onCrop, crop]);
 
+  const columnStyle = useMemo(
+    () => ({
+      paddingBottom: Math.max(insets.bottom, 16),
+    }),
+    [insets.bottom],
+  );
+
   return (
     <ScreenScaffold AppBar={<AppBar title={title} />}>
-      <Column padding="md">
+      <Column padding="md" style={columnStyle}>
         <GestureDetector gesture={Gesture.Simultaneous(pan, pinch)}>
           <Box
             width="100%"
