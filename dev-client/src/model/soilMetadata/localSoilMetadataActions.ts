@@ -44,18 +44,12 @@ export const updateUserRatingsThunk = async (
   }
 };
 
-// TODO-cknipe: Gonna have to migrate the redux too
-// If there was a selected soil
 export const updateUserRatings = async (
   input: SoilMetadataUpdateMutationInput,
   state: AppState,
 ): Promise<SoilMetadata> => {
-  const data = state.soilMetadata.soilMetadata[input.siteId];
-  if (!data) {
-    console.warn(
-      '//TODO-cknipe: Uhh is this fine? When does SoilMetadata get created?',
-    );
-  }
+  const data: SoilMetadata | undefined =
+    state.soilMetadata.soilMetadata[input.siteId];
 
   const result = initializeResult(data);
   console.log('\n-------------');
@@ -73,7 +67,6 @@ export const updateUserRatings = async (
   return result;
 };
 
-// TODO-cknipe: If you do this, try to generalize the SoilData logic to not duplicate
 export const initializeResult = (
   data: SoilMetadata | undefined,
 ): SoilMetadata => {
@@ -88,30 +81,27 @@ export const initializeResult = (
 };
 
 // TOOD-cknipe: Unit test this
-// TODO-cknipe: Make a new type that DOESN'T have selectedSoilId and use it when FF is off
 export const updateUserRatingsObject = (
   inputRatings: Array<Maybe<UserRatingInput>>,
   existingRatings: Array<Maybe<UserRatingEntry>>,
 ) => {
   // Note: the Input type and the Entry type should have the same properties
-
   const selectedInputSoils = inputRatings.filter(
     entry => entry?.rating === 'SELECTED',
   );
-
-  console.log('SELECTED INPUT SOILS: ', selectedInputSoils);
   if (selectedInputSoils.length > 1) {
     throw Error(
       `There should only be one selected soil, but found ${selectedInputSoils.length}: ${selectedInputSoils.join(',')}`,
     );
   }
 
-  const hasSelectedInputSoil = selectedInputSoils.length === 1;
   let updatedRatings: typeof existingRatings;
+
   // Remove any existing SELECTED rating if new soil got selected
+  const hasSelectedInputSoil = selectedInputSoils.length === 1;
   updatedRatings = hasSelectedInputSoil
     ? existingRatings.filter(entry => entry?.rating !== 'SELECTED')
-    : existingRatings;
+    : [...existingRatings];
   console.log('UPDATEDRATINGS (after removing selected): ', updatedRatings);
 
   // TODO-cknipe: Wait I don't want this to be an array, I want it to be a set. Can we edit the graphql for that?

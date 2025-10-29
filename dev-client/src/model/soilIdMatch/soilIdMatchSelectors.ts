@@ -63,8 +63,7 @@ export const selectSiteInputs = createSelector(
  * NOTE: these are the _next_ inputs for the soil ID algorithm, but the _current_ inputs for the site
  */
 
-// TODO-cknipe: We'd prefer not to recalculate when sites or projectSettings change
-// Is there a better way to access those?
+// Optimization opportunity: We'd prefer not to recalculate when sites or projectSettings change. Is there a better way to access those?
 export const selectNextDataBasedInputs = createSelector(
   createSelector(
     [

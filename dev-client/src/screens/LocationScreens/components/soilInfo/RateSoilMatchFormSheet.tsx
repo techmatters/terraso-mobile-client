@@ -47,7 +47,6 @@ import {theme} from 'terraso-mobile-client/theme';
 
 type Props = {
   siteId: string;
-  siteName: string;
   soilMatch: SoilMatch;
 };
 
@@ -121,11 +120,7 @@ function countSoilDataInputs(soilData: SoilData | undefined): InputCounts {
   };
 }
 
-export const RateSoilMatchFabWithSheet = ({
-  siteId,
-  siteName,
-  soilMatch,
-}: Props) => {
+export const RateSoilMatchFabWithSheet = ({siteId, soilMatch}: Props) => {
   const {t} = useTranslation();
   const posthog = usePostHog();
   const dispatch = useDispatch();
