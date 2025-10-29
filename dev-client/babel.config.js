@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+// Babel configuration for React Native with Expo
 module.exports = api => {
   api.cache(true);
 
