@@ -22,6 +22,7 @@ import {Keyboard} from 'react-native';
 import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {
   Box,
   Column,
@@ -65,6 +66,11 @@ export const EditSiteNoteContent = ({note}: Props) => {
         content: content,
       };
       await dispatch(updateSiteNote(siteNoteInput));
+      trackSoilObservation({
+        input_type: 'notes',
+        input_method: 'manual',
+        site_id: note.siteId,
+      });
     } catch (error) {
       console.error('Failed to update note:', error);
     } finally {

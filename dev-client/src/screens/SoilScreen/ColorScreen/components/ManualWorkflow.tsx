@@ -20,6 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 import Animated, {LinearTransition} from 'react-native-reanimated';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
@@ -86,16 +87,33 @@ export const ManualWorkflow = (props: SoilPitInputScreenProps) => {
     (update: ColorPropertyUpdate) => {
       const newColor = updateColorSelections(color, update);
       setColor(newColor);
+      const hue = parseMunsellHue(newColor);
       dispatch(
         updateDepthDependentSoilData({
           siteId: props.siteId,
           depthInterval: props.depthInterval.depthInterval,
-          colorHue: parseMunsellHue(newColor),
+          colorHue: hue,
           colorValue: newColor.value,
           colorChroma: newColor.chroma,
           colorPhotoUsed: false,
         }),
       );
+      // Track if color is complete (all components present)
+      if (
+        hue !== null &&
+        hue !== undefined &&
+        newColor.value !== null &&
+        newColor.value !== undefined &&
+        newColor.chroma !== null &&
+        newColor.chroma !== undefined
+      ) {
+        trackSoilObservation({
+          input_type: 'soil_color',
+          input_method: 'manual',
+          site_id: props.siteId,
+          depthInterval: props.depthInterval.depthInterval,
+        });
+      }
     },
     [
       color,

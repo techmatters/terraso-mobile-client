@@ -23,6 +23,7 @@ import {ScrollView} from 'native-base';
 
 import {SoilIdSoilDataSlopeSteepnessSelectChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {useNavToBottomTabsAndShowSyncError} from 'terraso-mobile-client/components/dataRequirements/handleMissingData';
@@ -107,6 +108,13 @@ export const SlopeSteepnessScreen = ({siteId}: Props) => {
           slopeSteepnessPercent: null,
         }),
       );
+      if (value !== null) {
+        trackSoilObservation({
+          input_type: 'slope_steepness',
+          input_method: 'pictogram',
+          site_id: siteId,
+        });
+      }
     },
     [dispatch, siteId],
   );

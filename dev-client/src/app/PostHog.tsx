@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ReactNode, useEffect, useRef} from 'react';
+import {ReactNode, useContext, useEffect, useRef} from 'react';
 import {AppState, Platform} from 'react-native';
 
 import Constants from 'expo-constants';
@@ -25,6 +25,7 @@ import {PostHogProvider, usePostHog} from 'posthog-react-native';
 
 import {setPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
+import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
@@ -104,26 +105,60 @@ function PostHogInstanceSetter() {
   return null;
 }
 
-// ---- Background flush on app losing focus ----
+// ---- Background flush on app losing focus, reload flags on foreground ----
 function PosthogLifecycle() {
   const posthog = usePostHog();
 
-  // Optional: remove this initial test event if you don't want it
-  useEffect(() => {
-    if (posthog) {
-      console.log('[PostHog] Sending test event');
-      posthog.capture('PostHog Test Event', {
-        timestamp: new Date().toISOString(),
-      });
-    }
-  }, [posthog]);
-
   useEffect(() => {
     const sub = AppState.addEventListener('change', state => {
-      if (state !== 'active') posthog?.flush();
+      if (state === 'active') {
+        // App came to foreground - reload feature flags
+        console.log(
+          '[PostHog] App came to foreground, reloading feature flags',
+        );
+        posthog?.reloadFeatureFlags();
+      } else {
+        // App going to background - flush pending events
+        posthog?.flush();
+      }
     });
     return () => sub.remove();
   }, [posthog]);
+
+  return null;
+}
+
+// ---- Track connectivity status as super property ----
+function ConnectivityTracker() {
+  const posthog = usePostHog();
+  const {isOffline} = useContext(ConnectivityContext);
+
+  // Clean up old is_offline property on mount
+  useEffect(() => {
+    if (!posthog) return;
+
+    // Remove old is_offline property that was previously registered
+    posthog.unregister('is_offline');
+  }, [posthog]);
+
+  useEffect(() => {
+    if (!posthog) return;
+
+    // Map connectivity state to string value
+    // null = unknown, true = offline, false = online
+    const connectivityStatus =
+      isOffline === null ? 'unknown' : isOffline ? 'offline' : 'online';
+
+    console.log('[PostHog] Connectivity status changed:', {
+      isOffline,
+      connectivityStatus,
+    });
+
+    // Register connectivity status as a super property (applies to all events)
+    posthog.register({
+      connectivity_status: connectivityStatus,
+    });
+  }, [posthog, isOffline]);
 
   return null;
 }
@@ -202,10 +237,13 @@ export function PostHog({children, navRef}: Props) {
       }}
       // IMPORTANT: turn off SDK's nav autocapture to avoid nav hook errors
       autocapture={{captureScreens: false}}
-      debug={true}>
+      // Enable debug logging in development via POSTHOG_DEBUG env var
+      // Set POSTHOG_DEBUG=true in .env to see detailed PostHog capture logs
+      debug={APP_CONFIG.posthogDebug === 'true'}>
       <PostHogInstanceSetter />
       <PosthogLifecycle />
       <UserIdentification />
+      <ConnectivityTracker />
       <ScreenTracker navRef={navRef} />
       {children}
     </PostHogProvider>

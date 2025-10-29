@@ -23,6 +23,7 @@ import {ScrollView} from 'native-base';
 
 import {entries, fromEntries} from 'terraso-client-shared/utils';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
@@ -99,6 +100,14 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
           texture,
         }),
       );
+      if (texture !== null) {
+        trackSoilObservation({
+          input_type: 'soil_texture',
+          input_method: 'manual',
+          site_id: siteId,
+          depthInterval: depthInterval.depthInterval,
+        });
+      }
     },
     [dispatch, siteId, depthInterval],
   );
@@ -152,6 +161,14 @@ export const TextureScreen = (props: SoilPitInputScreenProps) => {
           rockFragmentVolume,
         }),
       );
+      if (rockFragmentVolume !== null) {
+        trackSoilObservation({
+          input_type: 'rock_fragment_volume',
+          input_method: 'pictogram',
+          site_id: siteId,
+          depthInterval: depthInterval.depthInterval,
+        });
+      }
     },
     [dispatch, siteId, depthInterval],
   );

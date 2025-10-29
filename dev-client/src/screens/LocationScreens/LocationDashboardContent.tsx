@@ -118,7 +118,11 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
         {!site && (
           <Box>
             <Box paddingVertical="20px" alignItems="center">
-              <CreateSiteHereButton coords={coords} elevation={elevation} />
+              <CreateSiteHereButton
+                coords={coords}
+                elevation={elevation}
+                creationMethod="map"
+              />
             </Box>
             <Text variant="body1">{t('site.create.description')}</Text>
           </Box>

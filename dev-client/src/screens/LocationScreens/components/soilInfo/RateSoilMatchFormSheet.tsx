@@ -22,6 +22,7 @@ import {StyleSheet, View} from 'react-native';
 import {usePostHog} from 'posthog-react-native';
 
 import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -29,20 +30,100 @@ import {TranslatedSubHeading} from 'terraso-mobile-client/components/content/typ
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
+import {useSelector} from 'terraso-mobile-client/store';
+import {selectSoilData} from 'terraso-mobile-client/store/selectors';
 import {theme} from 'terraso-mobile-client/theme';
 
 type MatchRating = 'YES' | 'NO' | 'UNSURE';
 
 type Props = {
+  siteId?: string;
   siteName?: string;
   soilMatch?: SoilMatch;
 };
 
-export const RateSoilMatchFabWithSheet = ({siteName, soilMatch}: Props) => {
+type InputCounts = {
+  numberOfInputs: number;
+  uniqueInputTypes: string[];
+};
+
+// Helper function to count soil data inputs
+function countSoilDataInputs(soilData: SoilData | undefined): InputCounts {
+  if (!soilData) {
+    return {numberOfInputs: 0, uniqueInputTypes: []};
+  }
+
+  let count = 0;
+  const inputTypes = new Set<string>();
+
+  // Check soil cracks
+  if (soilData.surfaceCracksSelect) {
+    count++;
+    inputTypes.add('soil_cracks');
+  }
+
+  // Check slope steepness
+  if (
+    soilData.slopeSteepnessSelect ||
+    soilData.slopeSteepnessPercent ||
+    soilData.slopeSteepnessDegree
+  ) {
+    count++;
+    inputTypes.add('slope');
+  }
+
+  // Check slope shape (both cross and down slope needed)
+  if (soilData.crossSlope && soilData.downSlope) {
+    count++;
+    inputTypes.add('shape');
+  }
+
+  // Check depth-dependent data
+  for (const depthData of soilData.depthDependentData) {
+    // Soil texture
+    if (depthData.texture) {
+      count++;
+      inputTypes.add('soil_texture');
+    }
+
+    // Rock fragment volume
+    if (depthData.rockFragmentVolume) {
+      count++;
+      inputTypes.add('rock_fragment_volume');
+    }
+
+    // Soil color (all three components must be present)
+    if (
+      depthData.colorHue !== null &&
+      depthData.colorHue !== undefined &&
+      depthData.colorValue !== null &&
+      depthData.colorValue !== undefined &&
+      depthData.colorChroma !== null &&
+      depthData.colorChroma !== undefined
+    ) {
+      count++;
+      inputTypes.add('soil_color');
+    }
+  }
+
+  return {
+    numberOfInputs: count,
+    uniqueInputTypes: Array.from(inputTypes).sort(),
+  };
+}
+
+export const RateSoilMatchFabWithSheet = ({
+  siteId,
+  siteName,
+  soilMatch,
+}: Props) => {
   const {t} = useTranslation();
   const posthog = usePostHog();
   const [matchRating, setMatchRating] = useState<MatchRating>('UNSURE');
   const [isClosing, setIsClosing] = useState(false);
+  const soilData = useSelector(
+    siteId ? selectSoilData(siteId) : () => undefined,
+  );
 
   const onMatchRatingChanged = (value: MatchRating) => {
     setMatchRating(value);
@@ -53,13 +134,17 @@ export const RateSoilMatchFabWithSheet = ({siteName, soilMatch}: Props) => {
     if (!isClosing) {
       setIsClosing(true);
 
+      // Count inputs from soil data
+      const {numberOfInputs, uniqueInputTypes} = countSoilDataInputs(soilData);
+
       // Get all three scores separately
       const locationScore = soilMatch?.locationMatch?.score ?? 0;
       const propertiesScore = soilMatch?.dataMatch?.score ?? 0;
       const combinedScore = soilMatch?.combinedMatch?.score ?? 0;
 
+      // Get rank (0-based: 0 = top match, 1 = second, etc.)
       const soil_rank =
-        soilMatch?.combinedMatch?.rank ?? soilMatch?.locationMatch?.rank ?? 0;
+        soilMatch?.combinedMatch?.rank ?? soilMatch?.locationMatch?.rank ?? -1;
 
       posthog?.capture('soil_match_rating', {
         rating: matchRating.toLowerCase(),
@@ -69,6 +154,9 @@ export const RateSoilMatchFabWithSheet = ({siteName, soilMatch}: Props) => {
         soil_properties_score: propertiesScore,
         soil_combined_score: combinedScore,
         soil_rank: soil_rank,
+        number_of_inputs: numberOfInputs,
+        unique_input_types: uniqueInputTypes,
+        rank_of_rated_soil: soil_rank,
       });
     }
   };
