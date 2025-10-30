@@ -13,8 +13,10 @@ This document tracks screens that need to be updated to use SafeScrollView or Sa
 ## Already Fixed ✅
 
 1. **LocationDashboardContent.tsx** - Uses SafeScrollView
-2. **ColorCropScreen.tsx** - Uses SafeBottomPaddingView
-3. **StandaloneOverlaySheet.tsx** - Uses bottomInset prop
+2. **ColorCropScreen.tsx** - Uses SafeScrollView with 100px minimum padding
+3. **ColorAnalysisHomeScreen.tsx** - Uses SafeScrollView with 100px minimum padding
+4. **StandaloneOverlaySheet.tsx** - Uses bottomInset prop
+5. **SoilScreen.tsx** - Uses SafeScrollView
 
 ---
 
@@ -172,13 +174,7 @@ These have interactive elements at the bottom that are likely cut off:
 
 ## LOW PRIORITY ⚪ - Informational/List Screens
 
-### 22. SoilScreen.tsx
-- **Path:** `src/screens/SoilScreen/SoilScreen.tsx`
-- **Issue:** ScrollView with sections, mostly informational
-- **Structure:** ScreenDataRequirements > ScrollView
-- **Fix:** Replace ScrollView with SafeScrollView (lower priority)
-
-### 23. ProjectListScreen.tsx
+### 22. ProjectListScreen.tsx
 - **Path:** `src/screens/ProjectListScreen/ProjectListScreen.tsx`
 - **Issue:** Column with AddButton
 - **Structure:** ScreenScaffold > Column > AddButton
@@ -201,7 +197,7 @@ These have interactive elements at the bottom that are likely cut off:
 2. **Second:** Guide screens with navigation buttons (items 6-8)
 3. **Third:** Selection screens (items 9-10)
 4. **Fourth:** Note/team management screens (items 11-19)
-5. **Fifth:** Informational screens (items 22-23)
+5. **Fifth:** Informational screens (item 22)
 
 ---
 

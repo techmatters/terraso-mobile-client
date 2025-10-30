@@ -19,11 +19,12 @@ import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {Formik, FormikProps} from 'formik';
-import {KeyboardAvoidingView, ScrollView} from 'native-base';
+import {KeyboardAvoidingView} from 'native-base';
 import {usePostHog} from 'posthog-react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Box, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
 import {addProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import ProjectForm, {
@@ -104,7 +105,7 @@ const FormContainer = React.memo(
 
     return (
       <KeyboardAvoidingView flex={1}>
-        <ScrollView bg="background.default">
+        <SafeScrollView bg="background.default">
           <Box pt="16px" mx="20px">
             <ProjectForm
               handleChange={handleChange}
@@ -120,7 +121,7 @@ const FormContainer = React.memo(
               label={t('general.create')}
             />
           </View>
-        </ScrollView>
+        </SafeScrollView>
       </KeyboardAvoidingView>
     );
   },

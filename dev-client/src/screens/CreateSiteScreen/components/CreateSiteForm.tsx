@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 import {Platform} from 'react-native';
 
 import {FormikProps} from 'formik';
-import {KeyboardAvoidingView, ScrollView, Spacer} from 'native-base';
+import {KeyboardAvoidingView, Spacer} from 'native-base';
 import {InferType} from 'yup';
 
 import {Coords} from 'terraso-client-shared/types';
@@ -39,6 +39,7 @@ import {
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
+import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -73,7 +74,7 @@ export const CreateSiteForm = ({
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       keyboardVerticalOffset={40}>
-      <ScrollView>
+      <SafeScrollView>
         <Column p="16px" pt="30px" space="18px">
           <FormField name="name">
             <FormInput
@@ -154,7 +155,7 @@ export const CreateSiteForm = ({
             label={t('general.create')}
           />
         </View>
-      </ScrollView>
+      </SafeScrollView>
     </KeyboardAvoidingView>
   );
 };
