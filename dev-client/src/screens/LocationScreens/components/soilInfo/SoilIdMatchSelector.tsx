@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
@@ -26,7 +27,9 @@ import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
-import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
+import {useSelectedSoil} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
+import {updateSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 type SoilIdMatchSelectorProps = {
   match: SoilMatch;
@@ -37,9 +40,20 @@ export const SoilIdMatchSelector = ({
   siteId,
   match,
 }: SoilIdMatchSelectorProps) => {
+  const dispatch = useDispatch();
   const isOffline = useIsOffline();
-  const {selectedSoilId, selectSoilId} = useSoilIdSelection(siteId);
+  const selectedSoilId = useSelectedSoil(siteId);
   const matchId = getMatchSelectionId(match);
+
+  const onCheckboxPress = useCallback(
+    (value: boolean) => {
+      const newSelection = value ? matchId : null;
+      dispatch(
+        updateSoilMetadata({siteId: siteId, selectedSoilId: newSelection}),
+      );
+    },
+    [matchId, siteId, dispatch],
+  );
 
   return (
     <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
@@ -47,9 +61,7 @@ export const SoilIdMatchSelector = ({
         <StandardCheckbox
           value={selectedSoilId === matchId}
           disabled={isOffline}
-          onValueChange={value => {
-            selectSoilId(value ? matchId : null);
-          }}
+          onValueChange={onCheckboxPress}
         />
         <DisableableText disabled={isOffline}>
           <TranslatedParagraph i18nKey="site.soil_id.matches.selector" />

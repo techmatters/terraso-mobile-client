@@ -111,7 +111,7 @@ const SiteMatchContent = ({siteId}: SiteMatchDisplayProps) => {
     () => getTopMatch(soilIdOutput.matches),
     [soilIdOutput],
   );
-  const {selectedSoilId} = useSelectedSoil(siteId);
+  const selectedSoilId = useSelectedSoil(siteId);
   const selectedSoilMatch = findSelectedMatch(
     soilIdOutput.matches,
     selectedSoilId,

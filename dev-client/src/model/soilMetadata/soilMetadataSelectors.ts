@@ -22,6 +22,5 @@ export const selectSoilMetadata = (siteId: string) => (state: AppState) =>
 
 export const selectUserRatingsMetadata = (siteId?: string) => {
   return (state: AppState) =>
-    // TODO-cknipe: When do new sites get a soilMetadata entry? If immediately, remove the ?
     siteId ? state.soilMetadata.soilMetadata[siteId]?.userRatings : undefined;
 };

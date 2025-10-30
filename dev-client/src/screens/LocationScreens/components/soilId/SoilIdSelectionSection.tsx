@@ -35,7 +35,7 @@ export const SoilIdSelectionSection = ({
 }: SoilIdSelectionSectionProps) => {
   const navigation = useNavigation();
   const soilIdOutput = useSoilIdOutput({siteId});
-  const {selectedSoilId} = useSelectedSoil(siteId);
+  const selectedSoilId = useSelectedSoil(siteId);
   const selectedSoilMatch = findSelectedMatch(
     soilIdOutput.matches,
     selectedSoilId,

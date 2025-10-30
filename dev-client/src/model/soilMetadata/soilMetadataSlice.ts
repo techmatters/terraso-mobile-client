@@ -66,6 +66,7 @@ const soilMetadataSlice = createSlice({
   },
 });
 
+/** @deprecated with FF_select_soil on, use local update followed by global push instead to support offline **/
 export const updateSoilMetadata = createAsyncThunk(
   'soilId/updateSoilMetadata',
   soilMetadataService.updateSoilMetadata,

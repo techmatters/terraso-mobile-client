@@ -15,67 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 
 import {UserMatchRating} from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
-import {
-  selectSoilMetadata,
-  selectUserRatingsMetadata,
-} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
-import {updateSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {selectUserRatingsMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 
-// TODO-cknipe: Maybe make this return just a regular value, not an obj
-export const useSelectedSoil = (
-  siteId: string,
-): {selectedSoilId: string | undefined} => {
-  const {selectedSoilId: oldSelectedSoil} = useSoilIdSelection(siteId);
+export const useSelectedSoil = (siteId: string): string | undefined => {
+  // Any old selectedSoilId's should have been converted to userRatings in persistence.ts or by backend migration
   const userRatings = useSelector(selectUserRatingsMetadata(siteId));
-  if (isFlagEnabled('FF_select_soil')) {
-    const selectedEntry = userRatings?.find(
-      entry => entry?.rating === 'SELECTED',
-    );
-    return {selectedSoilId: selectedEntry?.soilMatchId};
-  } else {
-    return {selectedSoilId: oldSelectedSoil};
-  }
-};
-
-export const useSoilIdSelection = (
-  siteId: string,
-): {
-  selectedSoilId?: string;
-  selectSoilId: (selectedSoilId: string | null) => Promise<void>;
-} => {
-  const dispatch = useDispatch();
-  const soilMetadata = useSelector(selectSoilMetadata(siteId));
-
-  // TODO-cknipe
-  if (isFlagEnabled('FF_select_soil')) {
-    console.log(
-      "Avoid using the 'useSoilIdSelection' hook with the FF_select_soil flag on",
-    );
-  }
-
-  const selectedSoilId =
-    soilMetadata.selectedSoilId === null ||
-    soilMetadata.selectedSoilId === undefined
-      ? undefined
-      : soilMetadata.selectedSoilId;
-
-  const selectSoilId = useCallback(
-    (newSelection: string | null) =>
-      dispatch(
-        updateSoilMetadata({siteId: siteId, selectedSoilId: newSelection}),
-      ).then(
-        () => {} /* Empty then() to simplify promise return type to void */,
-      ),
-    [dispatch, siteId],
+  const selectedEntry = userRatings?.find(
+    entry => entry?.rating === 'SELECTED',
   );
-  return {selectedSoilId, selectSoilId};
+  return selectedEntry?.soilMatchId;
 };
 
 export const useUserRating = (

@@ -104,8 +104,6 @@ export const updateUserRatingsObject = (
     : [...existingRatings];
   console.log('UPDATEDRATINGS (after removing selected): ', updatedRatings);
 
-  // TODO-cknipe: Wait I don't want this to be an array, I want it to be a set. Can we edit the graphql for that?
-  // TODO-cknipe: There's probably a cleaner way to do this and the step above
   // Remove soils whose ratings are getting overwritten by the input
   updatedRatings = updatedRatings.filter(
     rating =>
