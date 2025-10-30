@@ -39,7 +39,7 @@ import {
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
-import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';

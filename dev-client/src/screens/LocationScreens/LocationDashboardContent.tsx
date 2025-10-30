@@ -33,7 +33,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
-import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';

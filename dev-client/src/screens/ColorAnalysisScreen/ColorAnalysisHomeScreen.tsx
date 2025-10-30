@@ -33,7 +33,7 @@ import {
   Text,
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/SafeScrollViewWithFab';
+import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/safeview/SafeScrollViewWithFab';
 import {getColorFromImages} from 'terraso-mobile-client/model/color/colorDetection';
 import {
   InvalidColorResult,

@@ -33,7 +33,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
-import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {

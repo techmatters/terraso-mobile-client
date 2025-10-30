@@ -17,7 +17,7 @@
 
 import {IScrollViewProps} from 'native-base';
 
-import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {SAFE_AREA_BOTTOM_PADDING_WITH_FAB} from 'terraso-mobile-client/constants/safeArea';
 
 /**

@@ -26,7 +26,7 @@ import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/Dele
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SafeScrollViewWithButtons} from 'terraso-mobile-client/components/SafeScrollViewWithButtons';
+import {SafeScrollViewWithButtons} from 'terraso-mobile-client/components/safeview/SafeScrollViewWithButtons';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';

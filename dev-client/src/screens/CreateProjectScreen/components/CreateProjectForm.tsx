@@ -24,7 +24,7 @@ import {usePostHog} from 'posthog-react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Box, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {addProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import ProjectForm, {

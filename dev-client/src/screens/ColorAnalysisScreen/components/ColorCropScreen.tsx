@@ -42,7 +42,7 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/SafeScrollViewWithFab';
+import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/safeview/SafeScrollViewWithFab';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
