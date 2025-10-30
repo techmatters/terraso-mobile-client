@@ -164,6 +164,7 @@ export const SitesScreen = memo(() => {
               zoomTo={searchFunction}
               zoomToUser={moveToUserAndShowCallout}
               toggleMapLayer={toggleMapLayer}
+              isCalloutOpen={calloutState.kind !== 'none'}
             />
             <SiteMap
               ref={mapRef}
