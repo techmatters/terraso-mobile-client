@@ -23,9 +23,7 @@ import {usePostHog} from 'posthog-react-native';
 
 import {
   SoilMatch,
-  SoilMetadataUpdateMutationInput,
   UserMatchRating,
-  UserRatingInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
@@ -36,6 +34,7 @@ import {TranslatedSubHeading} from 'terraso-mobile-client/components/content/typ
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
+import {UpdateUserRatingsInput} from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
 import {useUserRating} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {localUpdateUserRatings} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -142,15 +141,9 @@ export const RateSoilMatchFabWithSheet = ({siteId, soilMatch}: Props) => {
     (value: UserMatchRating) => {
       setMatchRating(value);
 
-      const newRatings: Array<UserRatingInput> = [
-        {
-          soilMatchId,
-          rating: value,
-        },
-      ];
-      const input: SoilMetadataUpdateMutationInput = {
+      const input: UpdateUserRatingsInput = {
         siteId,
-        userRatings: newRatings,
+        userRating: {soilMatchId, rating: value},
       };
       dispatch(localUpdateUserRatings(input));
       // TODO-cknipe: Add to the offline transactions

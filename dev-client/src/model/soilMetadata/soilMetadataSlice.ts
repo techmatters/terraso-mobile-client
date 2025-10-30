@@ -72,7 +72,6 @@ export const updateSoilMetadata = createAsyncThunk(
   soilMetadataService.updateSoilMetadata,
 );
 
-// TODO-cknipe: One at a time only ok? Or do we need to support multiple?
 export const localUpdateUserRatings = createAsyncThunk(
   'soilId/localUpdateUserRatings',
   localSoilMetadata.updateUserRatingsThunk,

@@ -20,7 +20,6 @@ import {cloneDeep} from 'lodash';
 import {User} from 'terraso-client-shared/account/accountSlice';
 import type {
   Maybe,
-  SoilMetadataUpdateMutationInput,
   UserRatingEntry,
   UserRatingInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
@@ -30,46 +29,44 @@ import {ThunkAPI} from 'terraso-client-shared/store/utils';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {AppState} from 'terraso-mobile-client/store';
 
+// Expects that only one userRating will be updated at a time
+export type UpdateUserRatingsInput = {
+  siteId: string;
+  userRating: UserRatingInput;
+};
+
 export const updateUserRatingsThunk = async (
-  input: SoilMetadataUpdateMutationInput,
+  input: UpdateUserRatingsInput,
   _: User | null,
   thunkApi: ThunkAPI,
 ) => {
-  if (isFlagEnabled('FF_offline') && isFlagEnabled('FF_select_soil')) {
-    return updateUserRatings(input, thunkApi.getState() as AppState);
-  } else {
-    throw Error(
-      'This code path should only be available with select soil and offline flags on',
-    );
-  }
+  return updateUserRatings(input, thunkApi.getState() as AppState);
 };
 
+// TOOD-cknipe: Unit test this
 export const updateUserRatings = async (
-  input: SoilMetadataUpdateMutationInput,
+  input: UpdateUserRatingsInput,
   state: AppState,
 ): Promise<SoilMetadata> => {
+  if (!isFlagEnabled('FF_offline') || !isFlagEnabled('FF_select_soil')) {
+    throw Error(
+      'This code path should only be available with FF_select_soil and FF_offline flags on',
+    );
+  }
   const data: SoilMetadata | undefined =
     state.soilMetadata.soilMetadata[input.siteId];
-
   const result = initializeResult(data);
-  console.log('\n-------------');
-  console.log('INPUT: ', input);
-  console.log('INITIALIZED: ', result);
 
   const updatedRatings = updateUserRatingsObject(
-    input.userRatings ?? [],
+    input.userRating,
     result.userRatings,
   );
-  console.log('UPDATEDRATINGS: ', updatedRatings);
 
   result.userRatings = updatedRatings;
-  console.log('RESULT: ', result);
   return result;
 };
 
-export const initializeResult = (
-  data: SoilMetadata | undefined,
-): SoilMetadata => {
+const initializeResult = (data: SoilMetadata | undefined): SoilMetadata => {
   if (data) {
     return cloneDeep(data);
   } else {
@@ -80,42 +77,21 @@ export const initializeResult = (
   }
 };
 
-// TOOD-cknipe: Unit test this
-export const updateUserRatingsObject = (
-  inputRatings: Array<Maybe<UserRatingInput>>,
+const updateUserRatingsObject = (
+  inputRating: UserRatingEntry,
   existingRatings: Array<Maybe<UserRatingEntry>>,
 ) => {
-  // Note: the Input type and the Entry type should have the same properties
-  const selectedInputSoils = inputRatings.filter(
-    entry => entry?.rating === 'SELECTED',
-  );
-  if (selectedInputSoils.length > 1) {
-    throw Error(
-      `There should only be one selected soil, but found ${selectedInputSoils.length}: ${selectedInputSoils.join(',')}`,
-    );
-  }
+  // Remove prior SELECTED rating if new soil got selected
+  let updatedRatings =
+    inputRating.rating === 'SELECTED'
+      ? existingRatings.filter(entry => entry?.rating !== 'SELECTED')
+      : [...existingRatings];
 
-  let updatedRatings: typeof existingRatings;
-
-  // Remove any existing SELECTED rating if new soil got selected
-  const hasSelectedInputSoil = selectedInputSoils.length === 1;
-  updatedRatings = hasSelectedInputSoil
-    ? existingRatings.filter(entry => entry?.rating !== 'SELECTED')
-    : [...existingRatings];
-  console.log('UPDATEDRATINGS (after removing selected): ', updatedRatings);
-
-  // Remove soils whose ratings are getting overwritten by the input
+  // Remove this soil's old rating, add its new rating
   updatedRatings = updatedRatings.filter(
-    rating =>
-      !inputRatings.find(input => rating?.soilMatchId === input?.soilMatchId),
+    entry => entry?.soilMatchId !== inputRating.soilMatchId,
   );
-  console.log('UPDATEDRATINGS (after removing dupes): ', updatedRatings);
-  // inputRatings.forEach(inputRating => {
-  //   const existingRating = updatedRatings.find(rating => rating?.soilMatchId === inputRating?.soilMatchId)
-  // })
-
-  // Now add them
-  updatedRatings = updatedRatings.concat(inputRatings);
+  updatedRatings.push(inputRating);
 
   return updatedRatings;
 };
