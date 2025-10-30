@@ -16,6 +16,7 @@
  */
 
 import {forwardRef} from 'react';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {
   BottomSheetScrollView,
@@ -47,6 +48,7 @@ export const StandaloneOverlaySheet = forwardRef<
 >(({trigger, children}: StandaloneOverlaySheetProps, ref) => {
   const {headerHeight} = useHeaderHeight();
   const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
+  const insets = useSafeAreaInsets();
 
   return (
     <>
@@ -55,6 +57,7 @@ export const StandaloneOverlaySheet = forwardRef<
         ref={sheetRef}
         handleComponent={null}
         topInset={headerHeight}
+        bottomInset={insets.bottom}
         enableDynamicSizing={true}
         backdropComponent={BackdropComponent}>
         <ModalContext.Provider value={handle}>
