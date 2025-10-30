@@ -42,7 +42,7 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SafeBottomPaddingView} from 'terraso-mobile-client/components/SafeBottomPaddingView';
+import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
@@ -187,7 +187,7 @@ export const ColorCropScreen = ({
 
   return (
     <ScreenScaffold AppBar={<AppBar title={title} />}>
-      <SafeBottomPaddingView>
+      <SafeScrollView minimumPadding={100}>
         <Column padding="md">
           <GestureDetector gesture={Gesture.Simultaneous(pan, pinch)}>
             <Box
@@ -203,7 +203,7 @@ export const ColorCropScreen = ({
           <Box height="sm" />
           <Text variant="body1">{description}</Text>
         </Column>
-      </SafeBottomPaddingView>
+      </SafeScrollView>
       <Fab onPress={onComplete} label={t('general.next')} leftIcon="check" />
     </ScreenScaffold>
   );

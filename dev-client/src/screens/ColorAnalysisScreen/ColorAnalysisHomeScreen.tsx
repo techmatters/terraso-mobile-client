@@ -33,6 +33,7 @@ import {
   Text,
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
 import {getColorFromImages} from 'terraso-mobile-client/model/color/colorDetection';
 import {
   InvalidColorResult,
@@ -131,57 +132,59 @@ export const ColorAnalysisHomeScreen = () => {
 
   return (
     <ScreenScaffold>
-      <Column padding="xl">
-        <Box
-          backgroundColor="#D9D9D9"
-          borderWidth="2px"
-          width="100%"
-          height="180px">
-          <Image source={photo} resizeMode="cover" style={styles.image} />
-          <View position="absolute" top="-18px" right="-18px">
-            <IconButton
-              name="delete"
-              type="md"
-              variant="normal-filled"
-              onPress={() => navigation.pop()}
-            />
-          </View>
-        </Box>
-        <Box height="lg" />
-        <Row justifyContent="space-between">
-          {(
-            [
-              ['reference', onReference, reference?.photo],
-              ['soil', onSoil, soil?.photo],
-            ] as const
-          ).map(([key, onPress, croppedPhoto]) => (
-            <Column key={key} alignItems="flex-start">
-              <Text variant="body1-strong">{t(`soil.color.${key}`)}</Text>
-              <Box height="sm" />
-              <Pressable onPress={onPress}>
-                <Box
-                  width="100px"
-                  height="100px"
-                  backgroundColor="grey.300"
-                  overflow="hidden">
-                  {croppedPhoto ? (
-                    <Image source={croppedPhoto} style={styles.image} />
-                  ) : (
-                    <Box
-                      width="100%"
-                      height="100%"
-                      justifyContent="center"
-                      alignItems="center">
-                      <Icon name="touch-app" color="action.active" />
-                    </Box>
-                  )}
-                </Box>
-              </Pressable>
-            </Column>
-          ))}
-        </Row>
-      </Column>
-      {pitProps && <PhotoConditions {...pitProps} />}
+      <SafeScrollView minimumPadding={100}>
+        <Column padding="xl">
+          <Box
+            backgroundColor="#D9D9D9"
+            borderWidth="2px"
+            width="100%"
+            height="180px">
+            <Image source={photo} resizeMode="cover" style={styles.image} />
+            <View position="absolute" top="-18px" right="-18px">
+              <IconButton
+                name="delete"
+                type="md"
+                variant="normal-filled"
+                onPress={() => navigation.pop()}
+              />
+            </View>
+          </Box>
+          <Box height="lg" />
+          <Row justifyContent="space-between">
+            {(
+              [
+                ['reference', onReference, reference?.photo],
+                ['soil', onSoil, soil?.photo],
+              ] as const
+            ).map(([key, onPress, croppedPhoto]) => (
+              <Column key={key} alignItems="flex-start">
+                <Text variant="body1-strong">{t(`soil.color.${key}`)}</Text>
+                <Box height="sm" />
+                <Pressable onPress={onPress}>
+                  <Box
+                    width="100px"
+                    height="100px"
+                    backgroundColor="grey.300"
+                    overflow="hidden">
+                    {croppedPhoto ? (
+                      <Image source={croppedPhoto} style={styles.image} />
+                    ) : (
+                      <Box
+                        width="100%"
+                        height="100%"
+                        justifyContent="center"
+                        alignItems="center">
+                        <Icon name="touch-app" color="action.active" />
+                      </Box>
+                    )}
+                  </Box>
+                </Pressable>
+              </Column>
+            ))}
+          </Row>
+        </Column>
+        {pitProps && <PhotoConditions {...pitProps} />}
+      </SafeScrollView>
       <ActionsModal
         title={t('soil.color.unexpected_color.title')}
         ref={modalRef}
