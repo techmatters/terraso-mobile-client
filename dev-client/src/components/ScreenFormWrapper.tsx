@@ -26,6 +26,7 @@ import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/Dele
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -87,38 +88,40 @@ export const ScreenFormWrapper = forwardRef(
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Handle platform-specific keyboard avoidance
           style={styles.view}>
-          <Formik
-            innerRef={formikRef}
-            initialValues={initialValues}
-            validationSchema={notesFormSchema}
-            onSubmit={onSubmit}>
-            {children}
-          </Formik>
-          <Row
-            pb={10}
-            paddingHorizontal={5}
-            space={5}
-            justifyContent="flex-end"
-            alignItems="center">
-            <ConfirmModal
-              trigger={onOpen => (
-                <DeleteButton
-                  disabled={isSubmitting}
-                  onPress={() => conditionallyConfirmDelete(onOpen)}
-                />
-              )}
-              title={t('site.notes.confirm_removal_title')}
-              body={t('site.notes.confirm_removal_body')}
-              actionLabel={t('general.delete')}
-              handleConfirm={onDelete}
-            />
-            <ContainedButton
-              onPress={handlePressSubmit}
-              disabled={isSubmitting}
-              size="lg"
-              label={t('general.done')}
-            />
-          </Row>
+          <SafeScrollView minimumPadding={80}>
+            <Formik
+              innerRef={formikRef}
+              initialValues={initialValues}
+              validationSchema={notesFormSchema}
+              onSubmit={onSubmit}>
+              {children}
+            </Formik>
+            <Row
+              pb={10}
+              paddingHorizontal={5}
+              space={5}
+              justifyContent="flex-end"
+              alignItems="center">
+              <ConfirmModal
+                trigger={onOpen => (
+                  <DeleteButton
+                    disabled={isSubmitting}
+                    onPress={() => conditionallyConfirmDelete(onOpen)}
+                  />
+                )}
+                title={t('site.notes.confirm_removal_title')}
+                body={t('site.notes.confirm_removal_body')}
+                actionLabel={t('general.delete')}
+                handleConfirm={onDelete}
+              />
+              <ContainedButton
+                onPress={handlePressSubmit}
+                disabled={isSubmitting}
+                size="lg"
+                label={t('general.done')}
+              />
+            </Row>
+          </SafeScrollView>
         </KeyboardAvoidingView>
       </ScreenScaffold>
     );
