@@ -26,7 +26,7 @@ import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/Dele
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
+import {SafeScrollViewWithButtons} from 'terraso-mobile-client/components/SafeScrollViewWithButtons';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -88,7 +88,7 @@ export const ScreenFormWrapper = forwardRef(
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Handle platform-specific keyboard avoidance
           style={styles.view}>
-          <SafeScrollView minimumPadding={80}>
+          <SafeScrollViewWithButtons>
             <Formik
               innerRef={formikRef}
               initialValues={initialValues}
@@ -121,7 +121,7 @@ export const ScreenFormWrapper = forwardRef(
                 label={t('general.done')}
               />
             </Row>
-          </SafeScrollView>
+          </SafeScrollViewWithButtons>
         </KeyboardAvoidingView>
       </ScreenScaffold>
     );

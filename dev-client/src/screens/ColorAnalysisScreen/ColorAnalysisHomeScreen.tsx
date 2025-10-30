@@ -33,7 +33,7 @@ import {
   Text,
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {SafeScrollView} from 'terraso-mobile-client/components/SafeScrollView';
+import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/SafeScrollViewWithFab';
 import {getColorFromImages} from 'terraso-mobile-client/model/color/colorDetection';
 import {
   InvalidColorResult,
@@ -132,7 +132,7 @@ export const ColorAnalysisHomeScreen = () => {
 
   return (
     <ScreenScaffold>
-      <SafeScrollView minimumPadding={100}>
+      <SafeScrollViewWithFab>
         <Column padding="xl">
           <Box
             backgroundColor="#D9D9D9"
@@ -184,7 +184,7 @@ export const ColorAnalysisHomeScreen = () => {
           </Row>
         </Column>
         {pitProps && <PhotoConditions {...pitProps} />}
-      </SafeScrollView>
+      </SafeScrollViewWithFab>
       <ActionsModal
         title={t('soil.color.unexpected_color.title')}
         ref={modalRef}

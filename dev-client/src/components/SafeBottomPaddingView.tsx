@@ -20,6 +20,7 @@ import {ViewStyle} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SAFE_AREA_BOTTOM_PADDING_DEFAULT} from 'terraso-mobile-client/constants/safeArea';
 
 type Props = {
   children: ReactNode;
@@ -31,10 +32,10 @@ type Props = {
  * A container component that automatically applies bottom padding based on
  * device safe area insets (e.g., for Android soft navigation buttons).
  *
- * This centralizes the logic that was previously duplicated across multiple
- * components as `paddingBottom: Math.max(insets.bottom, 16)`.
+ * Use this for non-scrollable content that needs bottom padding.
+ * For scrollable content, use SafeScrollView or its variants instead.
  *
- * @param minimumPadding - Minimum padding to apply even when insets.bottom is 0 (default: 16)
+ * @param minimumPadding - Minimum padding to apply even when insets.bottom is 0 (default from constant)
  * @param style - Additional styles to apply to the container
  *
  * @example
@@ -44,7 +45,7 @@ type Props = {
  */
 export const SafeBottomPaddingView = ({
   children,
-  minimumPadding = 16,
+  minimumPadding = SAFE_AREA_BOTTOM_PADDING_DEFAULT,
   style,
 }: Props) => {
   const insets = useSafeAreaInsets();

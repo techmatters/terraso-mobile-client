@@ -20,6 +20,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {IScrollViewProps, ScrollView} from 'native-base';
 
+import {SAFE_AREA_BOTTOM_PADDING_DEFAULT} from 'terraso-mobile-client/constants/safeArea';
+
 type Props = IScrollViewProps & {
   minimumPadding?: number;
 };
@@ -31,7 +33,11 @@ type Props = IScrollViewProps & {
  * This ensures scrollable content isn't cut off by system UI elements while
  * avoiding the issue of adding padding to the entire screen container.
  *
- * @param minimumPadding - Minimum padding to apply even when insets.bottom is 0 (default: 16)
+ * Use this base component for general scrollable content without bottom action buttons.
+ * For screens with FAB buttons, use SafeScrollViewWithFab instead.
+ * For screens with button rows at the bottom, use SafeScrollViewWithButtons instead.
+ *
+ * @param minimumPadding - Minimum padding to apply even when insets.bottom is 0 (default from constant)
  *
  * @example
  * <SafeScrollView>
@@ -40,7 +46,7 @@ type Props = IScrollViewProps & {
  */
 export const SafeScrollView = ({
   children,
-  minimumPadding = 16,
+  minimumPadding = SAFE_AREA_BOTTOM_PADDING_DEFAULT,
   contentContainerStyle,
   ...props
 }: Props) => {
