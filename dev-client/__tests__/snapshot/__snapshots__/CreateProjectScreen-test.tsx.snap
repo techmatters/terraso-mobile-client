@@ -328,12 +328,9 @@ exports[`renders correctly 1`] = `
                         >
                           <RCTScrollView
                             contentContainerStyle={
-                              [
-                                {
-                                  "paddingBottom": 16,
-                                },
-                                undefined,
-                              ]
+                              {
+                                "paddingBottom": 16,
+                              }
                             }
                             dataSet={{}}
                             style={

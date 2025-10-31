@@ -33,7 +33,7 @@ export const SAFE_AREA_BOTTOM_PADDING_DEFAULT = 16;
  * Accounts for large button height (~48-56px) + spacing + comfortable scrolling clearance.
  * Use for: Form screens with button rows, dialogs with action buttons at bottom.
  */
-export const SAFE_AREA_BOTTOM_PADDING_WITH_BUTTONS = 80;
+export const SAFE_AREA_BOTTOM_PADDING_WITH_BUTTONS = 100;
 
 /**
  * Bottom padding for screens with FAB (Floating Action Button).

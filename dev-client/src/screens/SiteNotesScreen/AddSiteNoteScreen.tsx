@@ -103,11 +103,11 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
           onDelete={handleDelete}
           isSubmitting={isSubmitting}>
           {formikProps => (
-            <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
+            <Column pt={10} pl={5} pr={5} pb={10}>
               <Heading variant="h6" pb={7}>
                 {t('site.notes.add_title')}
               </Heading>
-              <Box flexGrow={1}>
+              <Box>
                 <SiteNoteForm content={formikProps.values.content || ''} />
               </Box>
             </Column>

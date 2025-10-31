@@ -24,6 +24,7 @@ import {SAFE_AREA_BOTTOM_PADDING_DEFAULT} from 'terraso-mobile-client/constants/
 
 type Props = IScrollViewProps & {
   minimumPadding?: number;
+  disableAutoPadding?: boolean; // Set to true when using spacer Views instead
 };
 
 /**
@@ -48,17 +49,34 @@ export const SafeScrollView = ({
   children,
   minimumPadding = SAFE_AREA_BOTTOM_PADDING_DEFAULT,
   contentContainerStyle,
+  disableAutoPadding = false,
   ...props
 }: Props) => {
   const insets = useSafeAreaInsets();
 
-  const safeContentStyle = useMemo(
-    () => [
-      {paddingBottom: Math.max(insets.bottom, minimumPadding)},
-      contentContainerStyle,
-    ],
-    [insets.bottom, minimumPadding, contentContainerStyle],
-  );
+  const safeContentStyle = useMemo(() => {
+    // If auto-padding is disabled, just pass through contentContainerStyle
+    if (disableAutoPadding) {
+      return contentContainerStyle;
+    }
+
+    const basePadding = Math.max(insets.bottom, minimumPadding);
+    const extraPadding = (contentContainerStyle as any)?.paddingBottom;
+
+    // If contentContainerStyle provides paddingBottom, use only that
+    // Otherwise use basePadding
+    const finalStyle =
+      extraPadding !== undefined
+        ? contentContainerStyle
+        : {paddingBottom: basePadding};
+
+    return finalStyle;
+  }, [
+    insets.bottom,
+    minimumPadding,
+    contentContainerStyle,
+    disableAutoPadding,
+  ]);
 
   return (
     <ScrollView {...props} contentContainerStyle={safeContentStyle}>
