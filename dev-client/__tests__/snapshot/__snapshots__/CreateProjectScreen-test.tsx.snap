@@ -311,6 +311,7 @@ exports[`renders correctly 1`] = `
                         </View>
                       </View>
                       <View
+                        onLayout={[Function]}
                         style={
                           {
                             "flex": 1,

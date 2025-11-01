@@ -53,6 +53,7 @@ export const SiteNoteForm = ({content, editDisabled}: Props) => {
       placeholder={t('site.notes.placeholder_text')}
       value={content}
       multiline={true}
+      // outer SafeScrollView handles scrolling on iOS
       scrollEnabled={Platform.OS === 'android' ? true : false}
       activeUnderlineColor="transparent"
       underlineColor="transparent"

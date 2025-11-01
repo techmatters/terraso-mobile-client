@@ -160,7 +160,7 @@
     "lodash": "^4.17.21",
     "patch-package": "^8.0.1",
     "prettier": "^3.6.2",
-    "react-devtools": "^7.0.0",
+    "react-devtools": "^4.28.5",
     "react-native-svg-transformer": "^1.5.1",
     "react-test-renderer": "19.1.0",
     "ts-node": "^10.9.2",

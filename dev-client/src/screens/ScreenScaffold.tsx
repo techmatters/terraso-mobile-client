@@ -32,6 +32,9 @@ type Props = {
   BottomNavigation?: null;
 };
 
+// Debug flag for keyboard layout visualization and logging
+const DEBUG_KEYBOARD_LAYOUT = false;
+
 export const ScreenScaffold = ({
   children,
   AppBar: PropsAppBar = <AppBar />,
@@ -68,7 +71,9 @@ export const ScreenScaffold = ({
         <RestrictByFlag flag="FF_testing">
           <SyncContent />
         </RestrictByFlag>
-        <Box flex={1}>{children}</Box>
+        <Box flex={1} onLayout={debugLogContentBox}>
+          {children}
+        </Box>
       </Column>
     </SafeAreaView>
   );
@@ -79,3 +84,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+/* =============================
+   Debug Helper Functions
+   ============================= */
+
+const debugLogContentBox = (e: any) => {
+  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  console.log('📦 ScreenScaffold content Box onLayout:', {
+    x: e.nativeEvent.layout.x,
+    y: e.nativeEvent.layout.y,
+    width: e.nativeEvent.layout.width,
+    height: e.nativeEvent.layout.height,
+  });
+};

@@ -43,6 +43,7 @@ import {
   Box,
   Column,
   Row,
+  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
@@ -60,16 +61,42 @@ type Props = {
   isSubmitting: boolean;
 };
 
+// Debug flag for keyboard layout visualization and logging
+const DEBUG_KEYBOARD_LAYOUT = false;
+
+const debugStyles = DEBUG_KEYBOARD_LAYOUT
+  ? {
+      column: {borderWidth: 5, borderColor: 'blue'},
+      columnBg: '#e0f0ff',
+      buttonBox: {borderWidth: 3, borderColor: 'yellow'},
+      buttonBoxBg: '#fff9e0',
+      row: {borderWidth: 2, borderColor: 'red'},
+      rowBg: '#ffe0e0',
+    }
+  : {
+      column: {},
+      columnBg: undefined,
+      buttonBox: {},
+      buttonBoxBg: undefined,
+      row: {},
+      rowBg: undefined,
+    };
+
 export const ScreenFormWrapper = forwardRef(
   ({initialValues, onSubmit, onDelete, children, isSubmitting}: Props, ref) => {
     const formikRef = useRef<FormikProps<{content: string}>>(null);
     const {t} = useTranslation();
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
+    debugLogInsets(insets);
     const [buttonRowHeight, setButtonRowHeight] = useState(
       SAFE_AREA_BOTTOM_PADDING_WITH_BUTTONS,
     );
     const [keyboardHeight, setKeyboardHeight] = useState(0);
+    // The offset from screen top to KeyboardAvoidingView
+    // Initial value = safe area top;
+    // updated value computed in <ScreenScaffoldView> onLayout (line ~300)
+    const [screenTopOffset, setScreenTopOffset] = useState(insets.top);
 
     const notesFormSchema = yup.object().shape({
       content: yup
@@ -108,22 +135,27 @@ export const ScreenFormWrapper = forwardRef(
       [navigation],
     );
 
-    // Calculate total button area height including Row's internal padding plus extra clearance
-    // The Box's onLayout measures the container but we need extra space for comfortable scrolling
-    const totalButtonAreaHeight =
-      buttonRowHeight + Math.max(10, insets.bottom) + 20;
+    // Calculate total button area height for comfortable scrolling clearance
+    // buttonRowHeight already includes the Row's internal padding
+    const totalButtonAreaHeight = buttonRowHeight + 20;
 
     // Track keyboard height to adjust ScrollView padding
     useEffect(() => {
       const keyboardWillShow = Keyboard.addListener(
         Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
         e => {
+          debugLogKeyboardEvent(e, {
+            buttonRowHeight,
+            insetsBottom: insets.bottom,
+            screenTopOffset,
+          });
           setKeyboardHeight(e.endCoordinates.height);
         },
       );
       const keyboardWillHide = Keyboard.addListener(
         Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
         () => {
+          debugLogKeyboardHide();
           setKeyboardHeight(0);
         },
       );
@@ -132,17 +164,29 @@ export const ScreenFormWrapper = forwardRef(
         keyboardWillShow.remove();
         keyboardWillHide.remove();
       };
-    }, []);
+    }, [buttonRowHeight, insets.bottom, screenTopOffset]);
 
     // Shared button row component
+    // Use safe area bottom padding to clear the home indicator area
+    const buttonRowStyle = useMemo(
+      () => [
+        {
+          paddingTop: 10,
+          paddingBottom: Math.max(10, insets.bottom),
+        },
+        debugStyles.row,
+      ],
+      [insets.bottom],
+    );
+
     const buttonRow = (
       <Row
-        style={{paddingBottom: Math.max(10, insets.bottom)}}
+        style={buttonRowStyle}
         paddingHorizontal={5}
         space={5}
         justifyContent="flex-end"
         alignItems="center"
-        backgroundColor="background.default">
+        backgroundColor={debugStyles.rowBg}>
         <ConfirmModal
           trigger={onOpen => (
             <DeleteButton
@@ -190,15 +234,21 @@ export const ScreenFormWrapper = forwardRef(
 
     // Platform-specific button box style
     const buttonBoxStyle = useMemo(
-      () =>
+      () => [
         Platform.OS === 'android' && keyboardHeight > 0
           ? {transform: [{translateY: -keyboardHeight}]}
           : undefined,
+        debugStyles.buttonBox,
+      ],
       [keyboardHeight],
     );
 
     const content = (
-      <Column flex={1}>
+      <Column
+        flex={1}
+        style={[debugStyles.column]}
+        backgroundColor={debugStyles.columnBg}
+        onLayout={withDebugLayout('Column')}>
         <SafeScrollView
           keyboardShouldPersistTaps="handled"
           minimumPadding={0}
@@ -209,9 +259,10 @@ export const ScreenFormWrapper = forwardRef(
         </SafeScrollView>
         <Box
           style={buttonBoxStyle}
-          onLayout={e => {
+          backgroundColor={debugStyles.buttonBoxBg}
+          onLayout={withDebugLayout('Button Box', e => {
             setButtonRowHeight(e.nativeEvent.layout.height);
-          }}>
+          })}>
           {buttonRow}
         </Box>
       </Column>
@@ -219,16 +270,36 @@ export const ScreenFormWrapper = forwardRef(
 
     return (
       <ScreenScaffold BottomNavigation={null} AppBar={null}>
-        {Platform.OS === 'ios' ? (
-          <KeyboardAvoidingView
-            behavior="padding"
-            keyboardVerticalOffset={buttonRowHeight + insets.bottom}
-            style={styles.view}>
-            {content}
-          </KeyboardAvoidingView>
-        ) : (
-          content
-        )}
+        <View
+          flex={1}
+          onLayout={e => {
+            // Measure the absolute position on screen to get the correct offset
+            e.currentTarget.measure(
+              (_x, _y, _width, _height, _pageX, pageY) => {
+                if (
+                  pageY !== undefined &&
+                  Math.abs(screenTopOffset - pageY) > 0.5
+                ) {
+                  setScreenTopOffset(pageY);
+                  debugLogScreenOffset(pageY, screenTopOffset);
+                }
+              },
+            );
+          }}>
+          {Platform.OS === 'ios' ? (
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={screenTopOffset}
+              style={styles.view}
+              onLayout={withDebugLayout('KeyboardAvoidingView', undefined, {
+                currentOffset: screenTopOffset,
+              })}>
+              {content}
+            </KeyboardAvoidingView>
+          ) : (
+            content
+          )}
+        </View>
       </ScreenScaffold>
     );
   },
@@ -237,3 +308,62 @@ export const ScreenFormWrapper = forwardRef(
 const styles = StyleSheet.create({
   view: {flex: 1},
 });
+
+/* =============================
+   Debug Helper Functions
+   ============================= */
+
+const debugLogInsets = (insets: any) => {
+  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  console.log('📱 Safe Area Insets:', insets);
+  const {width: screenWidth, height: screenHeight} =
+    require('react-native').Dimensions.get('window');
+  console.log('📱 Screen Dimensions:', {screenWidth, screenHeight});
+};
+
+const debugLogKeyboardEvent = (e: any, context: any) => {
+  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  console.log('🎹 KEYBOARD EVENT:', {
+    screenY: e.endCoordinates.screenY,
+    height: e.endCoordinates.height,
+    width: e.endCoordinates.width,
+    ...context,
+  });
+};
+
+const debugLogKeyboardHide = () => {
+  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  console.log('🎹 KEYBOARD HIDE');
+};
+
+const debugLogScreenOffset = (pageY: number, previousOffset: number) => {
+  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  console.log('📏 Container screen offset measured:', {
+    pageY,
+    previousOffset,
+  });
+};
+
+const withDebugLayout = (
+  label: string,
+  handler?: (e: any) => void,
+  extraData?: any,
+) => {
+  return (e: any) => {
+    if (DEBUG_KEYBOARD_LAYOUT) {
+      const emoji = label.includes('Button')
+        ? '📦'
+        : label.includes('Keyboard')
+          ? '📏'
+          : '🔵';
+      console.log(`${emoji} ${label} onLayout:`, {
+        x: e.nativeEvent.layout.x,
+        y: e.nativeEvent.layout.y,
+        width: e.nativeEvent.layout.width,
+        height: e.nativeEvent.layout.height,
+        ...extraData,
+      });
+    }
+    handler?.(e);
+  };
+};
