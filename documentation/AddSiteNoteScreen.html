@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Component Hierarchy Viewer</title>
+  </head>
+  <body>
+    <h2>AddSiteNoteScreen Component Hierarchy</h2>
+    <div id="root"></div>
+
+    <script src="component-hierarchy-viewer.js"></script>
+    <script>
+      /* =============================
+         Hierarchy Data (editable)
+         ============================= */
+      const data = {
+        name: "AddSiteNoteScreen",
+        details: ["siteId: string"],
+        children: [
+          {
+            name: "ScreenDataRequirements",
+            details: [
+              "Validates: site exists",
+              "Validates: userCanEditSite",
+            ],
+            children: [
+              {
+                name: "ScreenFormWrapper",
+                details: [
+                  "ref={formWrapperRef}",
+                  "initialValues={{content: ''}}",
+                  "onSubmit={handleAddNote}",
+                  "onDelete={handleDelete}",
+                  "isSubmitting={...}",
+                ],
+                children: [
+                  {
+                    name: "ScreenScaffold",
+                    details: [
+                      "BottomNavigation=null",
+                      "AppBar=null",
+                      "Contains SafeAreaView + SYNC banner (~139px total offset)",
+                    ],
+                    children: [
+                      {
+                        name: "View (Container)",
+                        details: [
+                          "flex=1",
+                          "[NB] onLayout measures screenTopOffset via e.currentTarget.measure()",
+                          "[NB] pageY gives absolute screen position ≈ 139px",
+                          "[NB] Updates screenTopOffset state in ScreenFormWrapper",
+                        ],
+                        children: [
+                          {
+                            name: "KeyboardAvoidingView",
+                            details: [
+                              "[iOS] behavior='padding'",
+                              "[iOS] [NB] keyboardVerticalOffset={screenTopOffset}",
+                              "[NB] screenTopOffset initial = insets.top (62px)",
+                              "[NB] screenTopOffset measured ≈ 139px",
+                            ],
+                            children: [
+                              {
+                                name: "Column (flex=1)",
+                                children: [
+                                  {
+                                    name: "SafeScrollView",
+                                    details: [
+                                      "disableAutoPadding={true}",
+                                      "keyboardShouldPersistTaps='handled'",
+                                      "minimumPadding=0",
+                                      "flex=1",
+                                      "contentContainerStyle={paddingBottom: keyboardHeight > 0 ? keyboardHeight : totalButtonAreaHeight}",
+                                      "totalButtonAreaHeight = buttonRowHeight + 20",
+                                    ],
+                                    children: [
+                                      {
+                                        name: "Formik",
+                                        details: [
+                                          "innerRef={formikRef}",
+                                          "validationSchema={notesFormSchema}",
+                                          "onSubmit={onSubmit}",
+                                        ],
+                                        children: [
+                                          {
+                                            name: "Column (content)",
+                                            details: [
+                                              "pt=10 pl=5 pr=5 pb=10",
+                                              "[NB] NO flex=1 - critical for scrolling!",
+                                            ],
+                                            children: [
+                                              {
+                                                name: "Heading",
+                                                details: ["'Add Note'"],
+                                              },
+                                              {
+                                                name: "Box",
+                                                children: [
+                                                  {
+                                                    name: "SiteNoteForm",
+                                                    details: [
+                                                      "content={formikProps.values.content || ''}",
+                                                      "editDisabled=false (no prop passed)",
+                                                    ],
+                                                    children: [
+                                                      {
+                                                        name: "FormInput",
+                                                        details: [
+                                                          'name="content"',
+                                                          "multiline={true}",
+                                                          "[iOS] scrollEnabled={false} → Outer ScrollView handles scrolling",
+                                                          "[Android] scrollEnabled={true} → Needed for keyboard & text selection",
+                                                          "activeUnderlineColor='transparent'",
+                                                          "underlineColor='transparent'",
+                                                          "style={{backgroundColor:'transparent'}}",
+                                                          "contentStyle={{marginVertical:-20, marginHorizontal:-15}}",
+                                                        ],
+                                                      },
+                                                    ],
+                                                  },
+                                                ],
+                                              },
+                                            ],
+                                          },
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                  {
+                                    name: "Box (Button Container)",
+                                    details: [
+                                      "onLayout captures buttonRowHeight",
+                                      "[iOS] style=undefined",
+                                      "[Android] style={transform: [{translateY: -keyboardHeight}]}",
+                                    ],
+                                    children: [
+                                      {
+                                        name: "Row",
+                                        layout: "horizontal",
+                                        details: [
+                                          "paddingTop=10",
+                                          "paddingBottom={Math.max(10, insets.bottom)}",
+                                          "paddingHorizontal={5}",
+                                          "space={5}",
+                                          'justifyContent="flex-end"',
+                                          'backgroundColor="background.default"',
+                                        ],
+                                        children: [
+                                          { name: "ConfirmModal + DeleteButton" },
+                                          { name: "ContainedButton (Done)" },
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      // Render the hierarchy
+      renderHierarchy(data);
+    </script>
+  </body>
+</html>
