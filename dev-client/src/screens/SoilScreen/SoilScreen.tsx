@@ -18,8 +18,6 @@
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {ScrollView} from 'native-base';
-
 import {SoilIdSoilDataDepthIntervalPresetChoices} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
@@ -35,6 +33,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
@@ -88,7 +87,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
   return (
     <ScreenDataRequirements requirements={requirements}>
       {() => (
-        <ScrollView backgroundColor="grey.300">
+        <SafeScrollView backgroundColor="grey.300">
           <SoilSurfaceStatus siteId={siteId} />
           <Box height="16px" />
           <Row
@@ -134,7 +133,7 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
             />
           </RestrictBySiteRole>
-        </ScrollView>
+        </SafeScrollView>
       )}
     </ScreenDataRequirements>
   );

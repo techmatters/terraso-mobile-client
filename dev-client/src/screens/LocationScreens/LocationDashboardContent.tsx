@@ -19,8 +19,6 @@ import {ReactNode, useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 
-import {ScrollView} from 'native-base';
-
 import {Site, SitePrivacy} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
@@ -35,6 +33,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {StaticMapView} from 'terraso-mobile-client/components/StaticMapView';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
@@ -95,7 +94,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
   const isOffline = useIsOffline();
 
   return (
-    <ScrollView backgroundColor="background.default">
+    <SafeScrollView backgroundColor="background.default">
       <SiteTabJump />
       <StaticMapView
         coords={coords}
@@ -185,7 +184,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
           onExploreDataPress={onExploreDataPress}
         />
       </Column>
-    </ScrollView>
+    </SafeScrollView>
   );
 };
 
