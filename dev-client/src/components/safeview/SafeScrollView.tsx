@@ -36,7 +36,6 @@ type Props = IScrollViewProps & {
  *
  * Use this base component for general scrollable content without bottom action buttons.
  * For screens with FAB buttons, use SafeScrollViewWithFab instead.
- * For screens with button rows at the bottom, use SafeScrollViewWithButtons instead.
  *
  * @param minimumPadding - Minimum padding to apply even when insets.bottom is 0 (default from constant)
  *

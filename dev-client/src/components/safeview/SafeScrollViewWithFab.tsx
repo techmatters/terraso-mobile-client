@@ -28,7 +28,6 @@ import {SAFE_AREA_BOTTOM_PADDING_WITH_FAB} from 'terraso-mobile-client/constants
  * scroll clear of the FAB button, which is absolutely positioned and overlays content.
  *
  * Use this instead of SafeScrollView when your screen has a FAB button.
- * For screens with button rows (not FABs), use SafeScrollViewWithButtons instead.
  * For screens without bottom action buttons, use the base SafeScrollView.
  *
  * @example
