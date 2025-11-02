@@ -29,6 +29,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  View as RNView,
   StyleSheet,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -43,7 +44,6 @@ import {
   Box,
   Column,
   Row,
-  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {debugEnabled} from 'terraso-mobile-client/config';
@@ -84,6 +84,7 @@ const getDebugStyles = () =>
 export const ScreenFormWrapper = forwardRef(
   ({initialValues, onSubmit, onDelete, children, isSubmitting}: Props, ref) => {
     const formikRef = useRef<FormikProps<{content: string}>>(null);
+    const containerRef = useRef<RNView>(null);
     const {t} = useTranslation();
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
@@ -95,7 +96,7 @@ export const ScreenFormWrapper = forwardRef(
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     // The offset from screen top to KeyboardAvoidingView
     // Initial value = safe area top;
-    // updated value computed in <ScreenScaffoldView> onLayout (line ~300)
+    // updated value measured in useLayoutEffect
     const [screenTopOffset, setScreenTopOffset] = useState(insets.top);
 
     const notesFormSchema = yup.object().shape({
@@ -141,24 +142,18 @@ export const ScreenFormWrapper = forwardRef(
 
     // Track keyboard height to adjust ScrollView padding
     useEffect(() => {
-      const keyboardWillShow = Keyboard.addListener(
-        Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-        e => {
-          debugLogKeyboardEvent(e, {
-            buttonRowHeight,
-            insetsBottom: insets.bottom,
-            screenTopOffset,
-          });
-          setKeyboardHeight(e.endCoordinates.height);
-        },
-      );
-      const keyboardWillHide = Keyboard.addListener(
-        Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-        () => {
-          debugLogKeyboardHide();
-          setKeyboardHeight(0);
-        },
-      );
+      const keyboardWillShow = Keyboard.addListener('keyboardDidShow', e => {
+        debugLogKeyboardEvent(e, {
+          buttonRowHeight,
+          insetsBottom: insets.bottom,
+          screenTopOffset,
+        });
+        setKeyboardHeight(e.endCoordinates.height);
+      });
+      const keyboardWillHide = Keyboard.addListener('keyboardDidHide', () => {
+        debugLogKeyboardHide();
+        setKeyboardHeight(0);
+      });
 
       return () => {
         keyboardWillShow.remove();
@@ -270,21 +265,25 @@ export const ScreenFormWrapper = forwardRef(
 
     return (
       <ScreenScaffold BottomNavigation={null} AppBar={null}>
-        <View
-          flex={1}
-          onLayout={e => {
-            // Measure the absolute position on screen to get the correct offset
-            e.currentTarget.measure(
-              (_x, _y, _width, _height, _pageX, pageY) => {
-                if (
-                  pageY !== undefined &&
-                  Math.abs(screenTopOffset - pageY) > 0.5
-                ) {
-                  setScreenTopOffset(pageY);
-                  debugLogScreenOffset(pageY, screenTopOffset);
-                }
-              },
-            );
+        <RNView
+          ref={containerRef}
+          style={styles.container}
+          onLayout={() => {
+            // Measure the absolute position on screen to get the correct offset for KeyboardAvoidingView
+            if (containerRef.current) {
+              containerRef.current.measure(
+                (_x, _y, _width, _height, _pageX, pageY) => {
+                  if (
+                    // this whole if clause might not be needed; see comments below
+                    pageY !== undefined && // some reports of Android calling with undefined
+                    Math.abs(screenTopOffset - pageY) > 0.5 // avoid potential infinite loop due to rounding
+                  ) {
+                    setScreenTopOffset(pageY);
+                    debugLogScreenOffset(pageY, screenTopOffset);
+                  }
+                },
+              );
+            }
           }}>
           {Platform.OS === 'ios' ? (
             <KeyboardAvoidingView
@@ -299,7 +298,7 @@ export const ScreenFormWrapper = forwardRef(
           ) : (
             content
           )}
-        </View>
+        </RNView>
       </ScreenScaffold>
     );
   },
@@ -307,6 +306,7 @@ export const ScreenFormWrapper = forwardRef(
 
 const styles = StyleSheet.create({
   view: {flex: 1},
+  container: {flex: 1},
 });
 
 /* =============================
