@@ -22,6 +22,7 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {SyncContent} from 'terraso-mobile-client/components/SyncContent';
+import {debugEnabled} from 'terraso-mobile-client/config';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {theme} from 'terraso-mobile-client/theme';
@@ -31,10 +32,6 @@ type Props = {
   AppBar?: React.ReactNode;
   BottomNavigation?: null;
 };
-
-// Debug flag for keyboard layout visualization and logging
-const DEBUG_KEYBOARD_LAYOUT =
-  process.env.DEBUG_KEYBOARD_LAYOUT === 'true' ? true : false;
 
 export const ScreenScaffold = ({
   children,
@@ -91,7 +88,7 @@ const styles = StyleSheet.create({
    ============================= */
 
 const debugLogContentBox = (e: any) => {
-  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  if (!debugEnabled) return;
   console.log('📦 ScreenScaffold content Box onLayout:', {
     x: e.nativeEvent.layout.x,
     y: e.nativeEvent.layout.y,

@@ -46,6 +46,7 @@ import {
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
+import {debugEnabled} from 'terraso-mobile-client/config';
 import {SITE_NOTE_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {SAFE_AREA_BOTTOM_PADDING_WITH_BUTTONS} from 'terraso-mobile-client/constants/safeArea';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -61,27 +62,24 @@ type Props = {
   isSubmitting: boolean;
 };
 
-// Debug flag for keyboard layout visualization and logging
-const DEBUG_KEYBOARD_LAYOUT =
-  process.env.DEBUG_KEYBOARD_LAYOUT === 'true' ? true : false;
-
-const debugStyles = DEBUG_KEYBOARD_LAYOUT
-  ? {
-      column: {borderWidth: 5, borderColor: 'blue'},
-      columnBg: '#e0f0ff',
-      buttonBox: {borderWidth: 3, borderColor: 'yellow'},
-      buttonBoxBg: '#fff9e0',
-      row: {borderWidth: 2, borderColor: 'red'},
-      rowBg: '#ffe0e0',
-    }
-  : {
-      column: {},
-      columnBg: undefined,
-      buttonBox: {},
-      buttonBoxBg: undefined,
-      row: {},
-      rowBg: undefined,
-    };
+const getDebugStyles = () =>
+  debugEnabled
+    ? {
+        column: {borderWidth: 5, borderColor: 'blue'},
+        columnBg: '#eff0ff',
+        buttonBox: {borderWidth: 3, borderColor: 'yellow'},
+        buttonBoxBg: '#fff9e0',
+        row: {borderWidth: 2, borderColor: 'red'},
+        rowBg: '#ffe0e0',
+      }
+    : {
+        column: {},
+        columnBg: undefined,
+        buttonBox: {},
+        buttonBoxBg: undefined,
+        row: {},
+        rowBg: undefined,
+      };
 
 export const ScreenFormWrapper = forwardRef(
   ({initialValues, onSubmit, onDelete, children, isSubmitting}: Props, ref) => {
@@ -89,6 +87,7 @@ export const ScreenFormWrapper = forwardRef(
     const {t} = useTranslation();
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
+    const debugStyles = getDebugStyles();
     debugLogInsets(insets);
     const [buttonRowHeight, setButtonRowHeight] = useState(
       SAFE_AREA_BOTTOM_PADDING_WITH_BUTTONS,
@@ -177,7 +176,7 @@ export const ScreenFormWrapper = forwardRef(
         },
         debugStyles.row,
       ],
-      [insets.bottom],
+      [insets.bottom, debugStyles.row],
     );
 
     const buttonRow = (
@@ -241,7 +240,7 @@ export const ScreenFormWrapper = forwardRef(
           : undefined,
         debugStyles.buttonBox,
       ],
-      [keyboardHeight],
+      [keyboardHeight, debugStyles.buttonBox],
     );
 
     const content = (
@@ -315,7 +314,7 @@ const styles = StyleSheet.create({
    ============================= */
 
 const debugLogInsets = (insets: any) => {
-  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  if (!debugEnabled) return;
   console.log('📱 Safe Area Insets:', insets);
   const {width: screenWidth, height: screenHeight} =
     require('react-native').Dimensions.get('window');
@@ -323,7 +322,7 @@ const debugLogInsets = (insets: any) => {
 };
 
 const debugLogKeyboardEvent = (e: any, context: any) => {
-  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  if (!debugEnabled) return;
   console.log('🎹 KEYBOARD EVENT:', {
     screenY: e.endCoordinates.screenY,
     height: e.endCoordinates.height,
@@ -333,12 +332,12 @@ const debugLogKeyboardEvent = (e: any, context: any) => {
 };
 
 const debugLogKeyboardHide = () => {
-  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  if (!debugEnabled) return;
   console.log('🎹 KEYBOARD HIDE');
 };
 
 const debugLogScreenOffset = (pageY: number, previousOffset: number) => {
-  if (!DEBUG_KEYBOARD_LAYOUT) return;
+  if (!debugEnabled) return;
   console.log('📏 Container screen offset measured:', {
     pageY,
     previousOffset,
@@ -351,7 +350,7 @@ const withDebugLayout = (
   extraData?: any,
 ) => {
   return (e: any) => {
-    if (DEBUG_KEYBOARD_LAYOUT) {
+    if (debugEnabled) {
       const emoji = label.includes('Button')
         ? '📦'
         : label.includes('Keyboard')

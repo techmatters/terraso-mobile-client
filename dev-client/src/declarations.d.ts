@@ -30,7 +30,6 @@ declare global {
 declare var process: {
   env: {
     NODE_ENV: 'development' | 'production' | 'test';
-    DEBUG_KEYBOARD_LAYOUT?: string;
   };
 };
 
