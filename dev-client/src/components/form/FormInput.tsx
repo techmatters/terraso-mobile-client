@@ -55,7 +55,8 @@ export const FormInput = memo(
           onChangeText={onChange}
           onBlur={onBlur}
           label={props?.textInputLabel}
-          cursorColor={theme.colors.primary.main}
+          cursorColor={theme.colors.text.primary}
+          selectionColor={theme.colors.text.primary}
           {...props}
         />
       </FormFieldWrapper>

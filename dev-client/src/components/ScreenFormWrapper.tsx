@@ -62,7 +62,8 @@ type Props = {
 };
 
 // Debug flag for keyboard layout visualization and logging
-const DEBUG_KEYBOARD_LAYOUT = true;
+const DEBUG_KEYBOARD_LAYOUT =
+  process.env.DEBUG_KEYBOARD_LAYOUT === 'true' ? true : false;
 
 const debugStyles = DEBUG_KEYBOARD_LAYOUT
   ? {
