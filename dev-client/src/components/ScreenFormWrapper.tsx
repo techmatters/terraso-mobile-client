@@ -62,7 +62,7 @@ type Props = {
 };
 
 // Debug flag for keyboard layout visualization and logging
-const DEBUG_KEYBOARD_LAYOUT = false;
+const DEBUG_KEYBOARD_LAYOUT = true;
 
 const debugStyles = DEBUG_KEYBOARD_LAYOUT
   ? {
