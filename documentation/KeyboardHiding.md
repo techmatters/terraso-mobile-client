@@ -114,9 +114,9 @@ keyboardY = keyboard.screenY - keyboardVerticalOffset;
 
 Plus, in our example, using the size of the buttons looked good because the Delete and Done buttons were close to the size of the fixed content at the top. It was only after being unhappy with inconsistencies and adding debug preview stuff that I finally figured it out.
 
-The tricky thing then was to figure out how to compute the keyboardVerticalOffset or size of all the fixed header stuff above the view. It might be possible to just get the sizes of everything above, that seems harder to maintain.
+The tricky thing then was to figure out how to compute the keyboardVerticalOffset or size of all the fixed header stuff above the view. It might be possible to just get the sizes of everything above, but that seems harder to maintain.
 
-The code that computes the View's y-position is in ScreenFormWrapper.tsx near line 270 (look for containerRef.current.measure). Getting this to work correct was a bit of a struggle, but ultimately not too complicated.
+The code that computes the View's y-position is in ScreenFormWrapper.tsx near line 270 (look for containerRef.current.measure). Getting this to work correctly was a bit of a struggle, but ultimately not too complicated.
 
 I believe KeyboardAvoidingView should do this itself, but maybe early versions of react-native didn't provide a reasonable mechanism for doing so.
 
@@ -163,9 +163,13 @@ I added some stuff here to make diagnosing and testing easier. I prefer leaving 
 
 to your .env file, then you will get extra debug on-screen and in the console.log. If you don't want to rebuild, simply edit src/config/index.ts and change the last false to true in the debugEnabled expression near the bottom.
 
-Visually, here are the highlights (blue) for the part of KeyboardAvoidingView above the padding, and red/yellow for the button box near the bottom:
+Visually, here are the highlights (blue) for the part of KeyboardAvoidingView above the padding, red/yellow for the button box near the bottom, and green for the iOS bottom safe area.
 
-<img src="iPhone%20Screenshot%20Keyboard%20Debug.png"
+<img src="iPhone%20No%20Keyboard.png"
+     alt="image"
+     style="width: 40%; max-width: 300px; border: 1px solid #ccc;">
+
+<img src="iPhone%20Keyboard.png"
      alt="image"
      style="width: 40%; max-width: 300px; border: 1px solid #ccc;">
 
@@ -173,12 +177,14 @@ Visually, here are the highlights (blue) for the part of KeyboardAvoidingView ab
 
 There is some HTML to visualize the component hierarchy for the note editing screens. CAUTION: these screens are a combination of AI generation and hand-editing and are not guaranteed to be correct.
 
-- [AddSiteNoteScreen](./AddSiteNoteScreen.html)
-- [EditSiteNoteScreen](./EditSiteNoteScreen.html)
-- [EditPinnedNoteScreen](./EditPinnedNoteScreen.html)
+- [AddSiteNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/documentation/AddSiteNoteScreen.html)
+- [EditSiteNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/documentation/EditSiteNoteScreen.html)
+- [EditPinnedNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/documentation/EditPinnedNoteScreen.html)
+
+Note: the above links point to github, if you want to see preview locally please just open the files directly using browser.
 
 **Things to look at moving forward**
 
-Currently the box with the buttons inclu2.des padding equal to the insets specified by the platform for UI elements at the bottom of the screen -- for example the home bar on some Android phones, or the curve at the bottom of iPhones.
+The iOS implementation uses padding (the green area) for the iOS safe area, but for Android, still just adds padding into the button bar because I didn't want to change it right now. Longer-term it may be possible to have Android use the same padding area instead of extending the size of the button bar.
 
-You might not notice if you didn't have the debug view (above), so this didn't seem urgent. However, a better solution would be to put in a separate padding layer with this inset value below the KeyboardAvoidingView stuff (or maybe inside and subtract from keyboardVerticalOffset). Or, on iOS, maybe don't bother because the curve at the bottom doesn't actually bump into the buttons. Many solutions possible -- probably not that tough. We should consider adding this to our backlog.
+Also note that the size of this bar is subtracted from keyboardVerticalOffset because we do want the keyboard to overlap this region.

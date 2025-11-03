@@ -60,9 +60,10 @@
                                 name: "KeyboardAvoidingView",
                                 details: [
                                   "[iOS] behavior='padding'",
-                                  "[iOS] [NB] keyboardVerticalOffset={screenTopOffset}",
+                                  "[iOS] [NB] keyboardVerticalOffset={screenTopOffset - insets.bottom}",
                                   "[NB] screenTopOffset initial = insets.top (62px)",
                                   "[NB] screenTopOffset measured ≈ 139px",
+                                  "[NB] Offset reduced by insets.bottom to compensate for safe area spacer",
                                 ],
                                 children: [
                                   {
@@ -144,7 +145,8 @@
                                             layout: "horizontal",
                                             details: [
                                               "paddingTop=10",
-                                              "paddingBottom={Math.max(10, insets.bottom)}",
+                                              "[iOS] paddingBottom=10 (fixed)",
+                                              "[Android] paddingBottom={Math.max(10, insets.bottom)}",
                                               "paddingHorizontal={5}",
                                               "space={5}",
                                               'justifyContent="flex-end"',
@@ -161,6 +163,15 @@
                                       },
                                     ],
                                   },
+                                ],
+                              },
+                              {
+                                name: "Box (Safe Area Spacer)",
+                                details: [
+                                  "[iOS] height={insets.bottom}",
+                                  "Provides clearance for home indicator",
+                                  "Pushed off-screen when keyboard appears",
+                                  "[Android] Not rendered",
                                 ],
                               },
                             ],

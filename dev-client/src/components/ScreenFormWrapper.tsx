@@ -71,6 +71,8 @@ const getDebugStyles = () =>
         buttonBoxBg: '#fff9e0',
         row: {borderWidth: 2, borderColor: 'red'},
         rowBg: '#ffe0e0',
+        safeAreaSpacer: {borderWidth: 2, borderColor: 'green'},
+        safeAreaSpacerBg: '#e0ffe0',
       }
     : {
         column: {},
@@ -79,6 +81,8 @@ const getDebugStyles = () =>
         buttonBoxBg: undefined,
         row: {},
         rowBg: undefined,
+        safeAreaSpacer: {},
+        safeAreaSpacerBg: undefined,
       };
 
 export const ScreenFormWrapper = forwardRef(
@@ -96,7 +100,7 @@ export const ScreenFormWrapper = forwardRef(
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     // The offset from screen top to KeyboardAvoidingView
     // Initial value = safe area top;
-    // updated value measured in useLayoutEffect
+    // updated value measured in onLayout callback via containerRef.current.measure()
     const [screenTopOffset, setScreenTopOffset] = useState(insets.top);
 
     const notesFormSchema = yup.object().shape({
@@ -162,12 +166,14 @@ export const ScreenFormWrapper = forwardRef(
     }, [buttonRowHeight, insets.bottom, screenTopOffset]);
 
     // Shared button row component
-    // Use safe area bottom padding to clear the home indicator area
+    // iOS: Fixed padding (safe area handled by spacer Box)
+    // Android: Include insets.bottom for home bar clearance
     const buttonRowStyle = useMemo(
       () => [
         {
           paddingTop: 10,
-          paddingBottom: Math.max(10, insets.bottom),
+          paddingBottom:
+            Platform.OS === 'ios' ? 10 : Math.max(10, insets.bottom),
         },
         debugStyles.row,
       ],
@@ -239,28 +245,39 @@ export const ScreenFormWrapper = forwardRef(
     );
 
     const content = (
-      <Column
-        flex={1}
-        style={[debugStyles.column]}
-        backgroundColor={debugStyles.columnBg}
-        onLayout={withDebugLayout('Column')}>
-        <SafeScrollView
-          keyboardShouldPersistTaps="handled"
-          minimumPadding={0}
-          contentContainerStyle={scrollContentStyle}
-          disableAutoPadding={true}
-          flex={1}>
-          {renderScrollContent()}
-        </SafeScrollView>
-        <Box
-          style={buttonBoxStyle}
-          backgroundColor={debugStyles.buttonBoxBg}
-          onLayout={withDebugLayout('Button Box', e => {
-            setButtonRowHeight(e.nativeEvent.layout.height);
-          })}>
-          {buttonRow}
-        </Box>
-      </Column>
+      <>
+        <Column
+          flex={1}
+          style={[debugStyles.column]}
+          backgroundColor={debugStyles.columnBg}
+          onLayout={withDebugLayout('Column')}>
+          <SafeScrollView
+            keyboardShouldPersistTaps="handled"
+            minimumPadding={0}
+            contentContainerStyle={scrollContentStyle}
+            disableAutoPadding={true}
+            flex={1}>
+            {renderScrollContent()}
+          </SafeScrollView>
+          <Box
+            style={buttonBoxStyle}
+            backgroundColor={debugStyles.buttonBoxBg}
+            onLayout={withDebugLayout('Button Box', e => {
+              setButtonRowHeight(e.nativeEvent.layout.height);
+            })}>
+            {buttonRow}
+          </Box>
+        </Column>
+        {/* Safe area spacer for home indicator - iOS only, pushed up by KeyboardAvoidingView */}
+        {Platform.OS === 'ios' && (
+          <Box
+            height={insets.bottom}
+            style={debugStyles.safeAreaSpacer}
+            backgroundColor={debugStyles.safeAreaSpacerBg}
+            onLayout={withDebugLayout('Safe Area Spacer')}
+          />
+        )}
+      </>
     );
 
     return (
@@ -288,10 +305,11 @@ export const ScreenFormWrapper = forwardRef(
           {Platform.OS === 'ios' ? (
             <KeyboardAvoidingView
               behavior="padding"
-              keyboardVerticalOffset={screenTopOffset}
+              keyboardVerticalOffset={screenTopOffset - insets.bottom}
               style={styles.view}
               onLayout={withDebugLayout('KeyboardAvoidingView', undefined, {
-                currentOffset: screenTopOffset,
+                currentOffset: screenTopOffset - insets.bottom,
+                insetsBottom: insets.bottom,
               })}>
               {content}
             </KeyboardAvoidingView>
