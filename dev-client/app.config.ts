@@ -89,7 +89,7 @@ const defaultConfig: ExpoConfig = {
   slug: 'landpks',
   version: '1.3.3',
   newArchEnabled: true,
-  orientation: 'portrait',
+  orientation: 'default',
   splash: {
     image: 'src/assets/splash.png',
     backgroundColor: '#028843',
@@ -120,7 +120,7 @@ const defaultConfig: ExpoConfig = {
     buildNumber: buildNumber.toString(),
     icon: 'src/assets/landpks-round.png',
     supportsTablet: true,
-    requireFullScreen: true,
+    requireFullScreen: false,
     usesAppleSignIn: true,
     entitlements: {
       'aps-environment': 'development',
@@ -139,12 +139,32 @@ const defaultConfig: ExpoConfig = {
         'LandPKS Soil ID uses your location to create sites.',
       NSMotionUsageDescription:
         'LandPKS Soil ID uses motion to determine slope steepness',
+      'UISupportedInterfaceOrientations~ipad': [
+        'UIInterfaceOrientationPortrait',
+        'UIInterfaceOrientationPortraitUpsideDown',
+        'UIInterfaceOrientationLandscapeLeft',
+        'UIInterfaceOrientationLandscapeRight',
+      ],
+      UIApplicationSceneManifest: {
+        UIApplicationSupportsMultipleScenes: true,
+        UISceneConfigurations: {
+          UIWindowSceneSessionRoleApplication: [
+            {
+              UISceneClassName: 'UIWindowScene',
+              UISceneConfigurationName: 'Default Configuration',
+              UIWindowSceneSizeRestrictions: {
+                MinimumSize: '{320, 320}',
+                MaximumSize: '{0, 0}',
+              },
+            },
+          ],
+        },
+      },
     },
   },
   plugins: [
     ['expo-apple-authentication'],
     ['expo-localization'],
-    ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
     ['expo-web-browser'],
     ['expo-video'],
     [
