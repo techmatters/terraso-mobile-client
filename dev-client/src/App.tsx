@@ -45,22 +45,36 @@ import {
   patchPersistedReduxState,
 } from 'terraso-mobile-client/store/persistence';
 
-enableFreeze(true);
-
-Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
-
-// Suppress known third-party library warnings that are not actionable:
+// Suppress known third-party library warnings that are not actionable.
+// Must be called BEFORE any imports that generate warnings.
 // - 'SSRProvider': Native Base includes deprecated SSRProvider from React Aria (no-op in React 18+)
 // - 'is not a valid color or brush': Native Base + React 19 compatibility issue where Radio
 //   components internally pass empty strings to react-native-svg. Defensive code prevents
 //   the error, but warning still appears. See WARNINGS_TO_FIX.md Issue #7.
 // - 'Invalid size is used for setting the map view': Mapbox timing issue during app startup.
 //   Maps display correctly despite warnings. See WARNINGS_TO_FIX.md Issue #8.
-LogBox.ignoreLogs([
+const IGNORED_WARNINGS = [
   'SSRProvider',
   'is not a valid color or brush',
   'Invalid size is used for setting the map view',
-]);
+];
+
+// Suppress warnings in app UI (LogBox yellow boxes in development builds)
+LogBox.ignoreLogs(IGNORED_WARNINGS);
+
+// Suppress warnings in console output (LogBox.ignoreLogs has a bug and doesn't filter console)
+const originalWarn = console.warn;
+console.warn = (...args: any[]) => {
+  const message = String(args[0] || '');
+  if (IGNORED_WARNINGS.some(pattern => message.includes(pattern))) {
+    return; // Suppress
+  }
+  originalWarn(...args);
+};
+
+enableFreeze(true);
+
+Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
 let persistedReduxState = loadPersistedReduxState();
 if (persistedReduxState) {
