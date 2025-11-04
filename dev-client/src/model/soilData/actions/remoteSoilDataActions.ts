@@ -49,7 +49,6 @@ export const pushSoilData = async (
   );
 };
 
-// TODO-cknipe: Could this be generalized for arbitrary slices?
 export const unsyncedDataToMutationInput = (
   unsyncedChanges: SyncRecords<SoilData, unknown>,
   unsyncedData: Record<string, SoilData | undefined>,

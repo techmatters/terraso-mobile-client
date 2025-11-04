@@ -47,7 +47,6 @@ export const loadPersistedReduxState = () => {
   }
 };
 
-// TODO-cknipe: Write a test for this
 export const patchPersistedReduxState = (
   state: Partial<AppState>,
 ): Partial<AppState> => {

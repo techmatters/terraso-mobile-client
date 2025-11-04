@@ -35,6 +35,7 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
 import {UpdateUserRatingsInput} from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
+import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useUserRating} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {localUpdateUserRatings} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -127,27 +128,19 @@ export const RateSoilMatchFabWithSheet = ({siteId, soilMatch}: Props) => {
     useSelector(state => selectSite(siteId)(state)) ?? undefined;
 
   // TODO-cknipe: What if the soilMatch disappears? ScreenDataRequirements?
-  const soilMatchId = soilMatch.soilInfo.soilSeries.name;
+  const soilMatchId = getMatchSelectionId(soilMatch);
   const existingRating = useUserRating(siteId, soilMatchId);
 
-  // TODO-cknipe: Remove this and use the redux instead... a selector?
-  // TODO-cknipe: Does posthog capture stuff from offline activity?
-  const [matchRating, setMatchRating] =
-    useState<UserMatchRating>(existingRating);
   const soilData = useSelector(
     siteId ? selectSoilData(siteId) : () => undefined,
   );
   const onMatchRatingChanged = useCallback(
     (value: UserMatchRating) => {
-      setMatchRating(value);
-
       const input: UpdateUserRatingsInput = {
         siteId,
         userRating: {soilMatchId, rating: value},
       };
       dispatch(localUpdateUserRatings(input));
-      // TODO-cknipe: Add to the offline transactions
-      // TODO-cknipe: Do we need a client mutation id?
     },
     [soilMatchId, siteId, dispatch],
   );
@@ -171,7 +164,7 @@ export const RateSoilMatchFabWithSheet = ({siteId, soilMatch}: Props) => {
         soilMatch?.combinedMatch?.rank ?? soilMatch?.locationMatch?.rank ?? -1;
 
       posthog?.capture('soil_match_rating', {
-        rating: matchRating.toLowerCase(),
+        rating: existingRating.toLowerCase(),
         site_name: site?.name ?? 'unknown',
         soil_name: soilMatch?.soilInfo?.soilSeries?.name || 'unknown',
         soil_location_score: locationScore,
@@ -209,7 +202,7 @@ export const RateSoilMatchFabWithSheet = ({siteId, soilMatch}: Props) => {
             UNSURE: {text: t('site.soil_id.matches.rate.unsure')},
           }}
           groupProps={{
-            value: matchRating,
+            value: existingRating,
             name: 'match-rating',
             onChange: onMatchRatingChanged,
           }}
