@@ -2,8 +2,16 @@
    Component Hierarchy Renderer
    ============================= */
 
+// This small script is used to draw pretty pictures of nested components.
+// it is loaded by EditSiteNoteScreen.html and other files in this directory.
+// To see it, just load the .html in your browser.
+
+// If you want additional hierarchies, you can ask claude to generate
+// a new .html file for XXX component, following the pattern in EditSiteNoteScreen.html.
+// CAUTION -- claude might not get it right, use a skeptical eye!
+
 // Inject styles
-const style = document.createElement('style');
+const style = document.createElement("style");
 style.textContent = `
   body {
     font-family: Menlo, monospace;
@@ -121,28 +129,28 @@ style.textContent = `
 document.head.appendChild(style);
 
 const colors = [
-  '#c0d6ff',  // More vibrant blue
-  '#ffe5a0',  // More vibrant yellow
-  '#d4e8ff',  // More vibrant light blue
-  '#ffd4a0',  // More vibrant peach
-  '#e0c8ff',  // More vibrant purple
-  '#c0ffc0',  // More vibrant green
-  '#fff5a0',  // More vibrant light yellow
-  '#b0e0ff',  // More vibrant sky blue
-  '#f0c0ff',  // More vibrant pink
+  "#c0d6ff", // More vibrant blue
+  "#ffe5a0", // More vibrant yellow
+  "#d4e8ff", // More vibrant light blue
+  "#ffd4a0", // More vibrant peach
+  "#e0c8ff", // More vibrant purple
+  "#c0ffc0", // More vibrant green
+  "#fff5a0", // More vibrant light yellow
+  "#b0e0ff", // More vibrant sky blue
+  "#f0c0ff", // More vibrant pink
 ];
 
 // Lighter colors for print
 const printColors = [
-  '#e0ecff',
-  '#fef8e4',
-  '#f0f8ff',
-  '#fff3e6',
-  '#f3f0ff',
-  '#e8ffe6',
-  '#fffbe6',
-  '#e6f7ff',
-  '#f9e6ff',
+  "#e0ecff",
+  "#fef8e4",
+  "#f0f8ff",
+  "#fff3e6",
+  "#f3f0ff",
+  "#e8ffe6",
+  "#fffbe6",
+  "#e6f7ff",
+  "#f9e6ff",
 ];
 
 function getColor(d) {
@@ -150,37 +158,37 @@ function getColor(d) {
 }
 
 function renderDetailLine(line) {
-  const span = document.createElement('div');
+  const span = document.createElement("div");
   span.textContent = line;
-  span.className = 'detail-line';
-  if (/\[iOS\]/i.test(line)) span.classList.add('ios-line');
-  if (/\[Android\]/i.test(line)) span.classList.add('android-line');
-  if (/\[NB\]/i.test(line)) span.classList.add('nb-line');
+  span.className = "detail-line";
+  if (/\[iOS\]/i.test(line)) span.classList.add("ios-line");
+  if (/\[Android\]/i.test(line)) span.classList.add("android-line");
+  if (/\[NB\]/i.test(line)) span.classList.add("nb-line");
   return span;
 }
 
 function renderNode(node, depth = 0, hasSiblings = false) {
-  const el = document.createElement('div');
-  el.className = 'node';
+  const el = document.createElement("div");
+  el.className = "node";
   el.dataset.depth = depth;
 
   // Only apply color if this node has siblings (multiple children at same level)
   if (hasSiblings) {
-    el.style.setProperty('--bg', getColor(depth));
+    el.style.setProperty("--bg", getColor(depth));
   } else {
-    el.style.setProperty('--bg', '#ffffff');
+    el.style.setProperty("--bg", "#ffffff");
   }
 
-  const title = document.createElement('div');
-  title.className = 'title';
+  const title = document.createElement("div");
+  title.className = "title";
   title.textContent = node.name;
   el.appendChild(title);
 
   if (node.details) {
-    const details = document.createElement('div');
-    details.className = 'details';
+    const details = document.createElement("div");
+    details.className = "details";
     if (Array.isArray(node.details)) {
-      node.details.forEach(l => details.appendChild(renderDetailLine(l)));
+      node.details.forEach((l) => details.appendChild(renderDetailLine(l)));
     } else {
       details.textContent = node.details;
     }
@@ -188,16 +196,15 @@ function renderNode(node, depth = 0, hasSiblings = false) {
   }
 
   if (node.children?.length) {
-    const wrap = document.createElement('div');
+    const wrap = document.createElement("div");
     wrap.className =
-      'children ' +
-      (node.layout === 'horizontal' ? 'horizontal' : 'vertical');
+      "children " + (node.layout === "horizontal" ? "horizontal" : "vertical");
 
     // Children have siblings if there are multiple of them
     const childrenHaveSiblings = node.children.length > 1;
 
-    node.children.forEach(c =>
-      wrap.appendChild(renderNode(c, depth + 1, childrenHaveSiblings)),
+    node.children.forEach((c) =>
+      wrap.appendChild(renderNode(c, depth + 1, childrenHaveSiblings))
     );
     el.appendChild(wrap);
   }
@@ -206,5 +213,5 @@ function renderNode(node, depth = 0, hasSiblings = false) {
 }
 
 function renderHierarchy(data) {
-  document.getElementById('root').appendChild(renderNode(data));
+  document.getElementById("root").appendChild(renderNode(data));
 }
