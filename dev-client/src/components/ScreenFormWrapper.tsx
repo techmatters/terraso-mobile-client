@@ -204,7 +204,7 @@ export const ScreenFormWrapper = forwardRef(
           onPress={handlePressSubmit}
           disabled={isSubmitting}
           size="lg"
-          label={t('general.done')}
+          label={t('general.save')}
         />
       </Row>
     );
