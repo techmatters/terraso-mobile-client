@@ -104,11 +104,11 @@ export const EditPinnedNoteScreen = ({projectId}: Props) => {
           onDelete={handleDelete}
           isSubmitting={isSubmitting}>
           {formikProps => (
-            <Column pt={10} pl={5} pr={5} pb={10} flex={1}>
+            <Column pt={10} pl={5} pr={5} pb={10}>
               <Heading variant="h6" pb={7}>
                 {t('projects.inputs.instructions.title')}
               </Heading>
-              <Box flexGrow={1}>
+              <Box>
                 <SiteNoteForm content={formikProps.values.content || ''} />
               </Box>
             </Column>

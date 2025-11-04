@@ -84,4 +84,16 @@ export const APP_CONFIG = {
   posthogHost: ENV_CONFIG.POSTHOG_HOST,
   posthogApiKey: ENV_CONFIG.POSTHOG_API_KEY,
   posthogDebug: ENV_CONFIG.POSTHOG_DEBUG,
+  debugEnabled: ENV_CONFIG.DEBUG_ENABLED === 'true',
 } as const;
+
+// Debug flag for visualization and logging (keyboard layout, etc.)
+// Set DEBUG_ENABLED="true" in .env to enable by default (requires rebuild)
+// OR change 'false' to 'true' below for instant live-reload during development
+// Automatically disabled during tests to prevent snapshot differences
+export const debugEnabled =
+  process.env.NODE_ENV === 'test'
+    ? false
+    : APP_CONFIG.debugEnabled
+      ? true
+      : false;

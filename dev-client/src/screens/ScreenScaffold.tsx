@@ -22,6 +22,7 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Box, Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {SyncContent} from 'terraso-mobile-client/components/SyncContent';
+import {debugEnabled} from 'terraso-mobile-client/config';
 import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {theme} from 'terraso-mobile-client/theme';
@@ -68,7 +69,9 @@ export const ScreenScaffold = ({
         <RestrictByFlag flag="FF_testing">
           <SyncContent />
         </RestrictByFlag>
-        <Box flex={1}>{children}</Box>
+        <Box flex={1} onLayout={debugLogContentBox}>
+          {children}
+        </Box>
       </Column>
     </SafeAreaView>
   );
@@ -79,3 +82,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+/* =============================
+   Debug Helper Functions
+   ============================= */
+
+const debugLogContentBox = (e: any) => {
+  if (!debugEnabled) return;
+  console.log('📦 ScreenScaffold content Box onLayout:', {
+    x: e.nativeEvent.layout.x,
+    y: e.nativeEvent.layout.y,
+    width: e.nativeEvent.layout.width,
+    height: e.nativeEvent.layout.height,
+  });
+};

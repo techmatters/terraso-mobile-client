@@ -42,6 +42,7 @@ import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/safeview/SafeScrollViewWithFab';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
@@ -186,21 +187,23 @@ export const ColorCropScreen = ({
 
   return (
     <ScreenScaffold AppBar={<AppBar title={title} />}>
-      <Column padding="md">
-        <GestureDetector gesture={Gesture.Simultaneous(pan, pinch)}>
-          <Box
-            width="100%"
-            aspectRatio={1}
-            overflow="hidden"
-            onLayout={onLayout}>
-            <Animated.Image source={photo} style={[animatedStyles]} />
-          </Box>
-        </GestureDetector>
-        <Box height="md" />
-        <Text variant="body1-strong">{title}</Text>
-        <Box height="sm" />
-        <Text variant="body1">{description}</Text>
-      </Column>
+      <SafeScrollViewWithFab>
+        <Column padding="md">
+          <GestureDetector gesture={Gesture.Simultaneous(pan, pinch)}>
+            <Box
+              width="100%"
+              aspectRatio={1}
+              overflow="hidden"
+              onLayout={onLayout}>
+              <Animated.Image source={photo} style={[animatedStyles]} />
+            </Box>
+          </GestureDetector>
+          <Box height="md" />
+          <Text variant="body1-strong">{title}</Text>
+          <Box height="sm" />
+          <Text variant="body1">{description}</Text>
+        </Column>
+      </SafeScrollViewWithFab>
       <Fab onPress={onComplete} label={t('general.next')} leftIcon="check" />
     </ScreenScaffold>
   );

@@ -17,7 +17,7 @@
 
 import {useEffect, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, TextInput} from 'react-native';
+import {Platform, StyleSheet, TextInput} from 'react-native';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 
@@ -53,6 +53,8 @@ export const SiteNoteForm = ({content, editDisabled}: Props) => {
       placeholder={t('site.notes.placeholder_text')}
       value={content}
       multiline={true}
+      // outer SafeScrollView handles scrolling on iOS
+      scrollEnabled={Platform.OS === 'android' ? true : false}
       activeUnderlineColor="transparent"
       underlineColor="transparent"
       style={styles.box}

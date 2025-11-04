@@ -311,6 +311,7 @@ exports[`renders correctly 1`] = `
                         </View>
                       </View>
                       <View
+                        onLayout={[Function]}
                         style={
                           {
                             "flex": 1,
@@ -1261,13 +1262,9 @@ exports[`renders correctly 1`] = `
                               >
                                 <RCTScrollView
                                   contentContainerStyle={
-                                    [
-                                      {},
-                                      {
-                                        "dataSet": {},
-                                      },
-                                      {},
-                                    ]
+                                    {
+                                      "paddingBottom": 16,
+                                    }
                                   }
                                   dataSet={{}}
                                   style={

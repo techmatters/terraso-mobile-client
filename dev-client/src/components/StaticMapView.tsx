@@ -95,6 +95,7 @@ type Props = {
   zoomLevel?: number;
   style?: StyleProp<ViewStyle>;
   displayCenterMarker?: boolean;
+  pointerEvents?: 'none' | 'auto' | 'box-none' | 'box-only';
 };
 
 export const StaticMapView = ({
@@ -102,6 +103,7 @@ export const StaticMapView = ({
   zoomLevel = 15,
   style,
   displayCenterMarker,
+  pointerEvents,
 }: Props) => {
   const cameraSettings = useMemo(
     () =>
@@ -125,7 +127,8 @@ export const StaticMapView = ({
       scrollEnabled={false}
       pitchEnabled={false}
       rotateEnabled={false}
-      attributionEnabled={false}>
+      attributionEnabled={false}
+      pointerEvents={pointerEvents}>
       <Mapbox.Camera defaultSettings={cameraSettings} />
       {displayCenterMarker && (
         <Mapbox.MarkerView
