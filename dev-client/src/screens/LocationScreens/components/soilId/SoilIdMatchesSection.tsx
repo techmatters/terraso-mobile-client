@@ -145,7 +145,8 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   }
 };
 
-const getTileVariant = (
+// Only exported for testing
+export const getTileVariant = (
   thisSoilMatch: SoilMatch,
   userRatings: Maybe<UserRatingEntry>[] | undefined,
   selectedSoilId: string | undefined,

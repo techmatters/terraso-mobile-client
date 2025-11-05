@@ -380,4 +380,97 @@ describe('updateUserRatings', () => {
       });
     });
   });
+
+  describe('Edge Cases', () => {
+    // The current type supports null ratings, but we don't currently expect any nulls in actual app behavior, so perhaps they should not
+    test('handles null entries in existing userRatings array', async () => {
+      const existingMetadata: SoilMetadata = {
+        userRatings: [
+          null,
+          {soilMatchId: 'soil-1', rating: 'REJECTED'},
+          null,
+          {soilMatchId: 'soil-2', rating: 'UNSURE'},
+        ],
+      };
+      const state = createMockState('site-1', existingMetadata);
+      const input = createRatingInput('site-1', 'soil-3', 'SELECTED');
+
+      const result = await updateUserRatings(input, state);
+
+      // Null entries are currently preserved by the spread operator
+      expect(result.userRatings).toHaveLength(5);
+      expect(result.userRatings).toContainEqual({
+        soilMatchId: 'soil-1',
+        rating: 'REJECTED',
+      });
+      expect(result.userRatings).toContainEqual({
+        soilMatchId: 'soil-2',
+        rating: 'UNSURE',
+      });
+      expect(result.userRatings).toContainEqual({
+        soilMatchId: 'soil-3',
+        rating: 'SELECTED',
+      });
+      // Verify null entries are preserved (current behavior)
+      expect(result.userRatings.filter(entry => entry === null)).toHaveLength(
+        2,
+      );
+    });
+
+    test('multiple selections in sequence only keeps last', async () => {
+      let state = createMockState('site-1');
+
+      // Select soil-1
+      let input = createRatingInput('site-1', 'soil-1', 'SELECTED');
+      let result = await updateUserRatings(input, state);
+      state = createMockState('site-1', result);
+
+      expect(result.userRatings).toHaveLength(1);
+      expect(result.userRatings[0]).toEqual({
+        soilMatchId: 'soil-1',
+        rating: 'SELECTED',
+      });
+
+      // Select soil-2
+      input = createRatingInput('site-1', 'soil-2', 'SELECTED');
+      result = await updateUserRatings(input, state);
+      state = createMockState('site-1', result);
+
+      expect(result.userRatings).toHaveLength(1);
+      expect(result.userRatings[0]).toEqual({
+        soilMatchId: 'soil-2',
+        rating: 'SELECTED',
+      });
+
+      // Select soil-3
+      input = createRatingInput('site-1', 'soil-3', 'SELECTED');
+      result = await updateUserRatings(input, state);
+
+      expect(result.userRatings).toHaveLength(1);
+      expect(result.userRatings[0]).toEqual({
+        soilMatchId: 'soil-3',
+        rating: 'SELECTED',
+      });
+    });
+
+    test('maintain any other metadata properties besides userRatings', async () => {
+      const existingMetadata = {
+        userRatings: [{soilMatchId: 'soil-1', rating: 'REJECTED'}],
+        someOtherProperty: 'value',
+        anotherProperty: {nested: 'data'},
+      } as SoilMetadata;
+      const state = createMockState('site-1', existingMetadata);
+      const input = createRatingInput('site-1', 'soil-2', 'SELECTED');
+
+      const result = await updateUserRatings(input, state);
+
+      const resultWithExtras = result as SoilMetadata & {
+        someOtherProperty?: string;
+        anotherProperty?: {nested: string};
+      };
+      expect(resultWithExtras.someOtherProperty).toBe('value');
+      expect(resultWithExtras.anotherProperty).toEqual({nested: 'data'});
+      expect(result.userRatings).toHaveLength(2);
+    });
+  });
 });
