@@ -127,7 +127,11 @@ export const RateSoilMatchFabWithSheet = ({siteId, soilMatch}: Props) => {
   const site: Site | undefined =
     useSelector(state => selectSite(siteId)(state)) ?? undefined;
 
-  // TODO-cknipe: What if the soilMatch disappears? ScreenDataRequirements?
+  // TODO-cknipe: What if the soilMatch disappears? Consider:
+  // --> If user is on SoilMatchInfoScreen
+  // --> Selected soil tile at top of soil id screen
+  // --> Color of other match tiles on soil id screen
+  // --> Selected/top match on site dashboard
   const soilMatchId = getMatchSelectionId(soilMatch);
   const existingRating = useUserRating(siteId, soilMatchId);
 
