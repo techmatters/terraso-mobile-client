@@ -60,7 +60,6 @@ const soilMetadataSlice = createSlice({
       state.soilMetadata[action.meta.arg.siteId] = action.payload;
     });
     builder.addCase(localUpdateUserRatings.fulfilled, (state, action) => {
-      console.log('ACTION.PAYLOAD: ', action.payload);
       state.soilMetadata[action.meta.arg.siteId] = action.payload;
     });
   },

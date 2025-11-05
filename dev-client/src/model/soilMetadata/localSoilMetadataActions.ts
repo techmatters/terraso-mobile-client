@@ -43,7 +43,6 @@ export const updateUserRatingsThunk = async (
   return updateUserRatings(input, thunkApi.getState() as AppState);
 };
 
-// TOOD-cknipe: Unit test this
 export const updateUserRatings = async (
   input: UpdateUserRatingsInput,
   state: AppState,
