@@ -20,17 +20,7 @@ import type {
   UserRatingEntry,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {getTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilIdMatchesSection';
-
-// Mock config to avoid ENV_CONFIG errors
-jest.mock('terraso-mobile-client/config/index', () => ({
-  ENV_CONFIG: {
-    TERRASO_BACKEND: 'http://test-backend',
-  },
-  APP_CONFIG: {
-    environment: 'test',
-  },
-}));
+import {getTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
 
 // Helper to create a minimal SoilMatch object
 const createSoilMatch = (name: string): SoilMatch => {

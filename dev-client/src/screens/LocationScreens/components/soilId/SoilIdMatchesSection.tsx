@@ -18,11 +18,7 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {
-  Maybe,
-  SoilMatch,
-  UserRatingEntry,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
@@ -40,7 +36,6 @@ import {
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
 import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
-import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {
   useSelectedSoil,
   useUserRatings,
@@ -50,6 +45,7 @@ import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScree
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
+import {getTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
@@ -143,27 +139,4 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
     default:
       return <SoilMatchesErrorAlert />;
   }
-};
-
-// Only exported for testing
-export const getTileVariant = (
-  thisSoilMatch: SoilMatch,
-  userRatings: Maybe<UserRatingEntry>[] | undefined,
-  selectedSoilId: string | undefined,
-) => {
-  // When a soil is selected, show other soil tiles as if they were "Rejected"(even though in the database they're not)
-  if (selectedSoilId) {
-    return selectedSoilId === getMatchSelectionId(thisSoilMatch)
-      ? 'Selected'
-      : 'Rejected';
-  }
-
-  // Unspecified ratings appear as "Unsure"
-  const thisSoilRating = userRatings?.find(
-    soilRatingEntry =>
-      soilRatingEntry?.soilMatchId === getMatchSelectionId(thisSoilMatch),
-  );
-  const rating = thisSoilRating ? thisSoilRating.rating : 'UNSURE';
-  if (rating === 'REJECTED') return 'Rejected';
-  return 'Default';
 };
