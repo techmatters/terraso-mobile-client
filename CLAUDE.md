@@ -79,6 +79,7 @@ cd dev-client
 ### Import Aliases
 - `terraso-mobile-client/` maps to `src/`
 - `@testing/` maps to `jest/` directory
+- Use modified full path, not relative paths (example: `terraso-mobile-client/model/sync/records`; not `/Users/myName/Documents/dev/mobile-client/dev-client/src/model/sync/records` or `./records`)
 
 ## Development Notes
 
