@@ -16,7 +16,6 @@
  */
 
 import {
-  Maybe,
   SoilMatch,
   UserRatingEntry,
 } from 'terraso-client-shared/graphqlSchema/graphql';
@@ -33,7 +32,7 @@ import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soil
  */
 export const getTileVariant = (
   thisSoilMatch: SoilMatch,
-  userRatings: Maybe<UserRatingEntry>[] | undefined,
+  userRatings: UserRatingEntry[] | undefined,
   selectedSoilId: string | undefined,
 ): 'Selected' | 'Rejected' | 'Default' => {
   // When a soil is selected, show other soil tiles as if they were "Rejected"
@@ -47,7 +46,7 @@ export const getTileVariant = (
   // Unspecified ratings appear as "Unsure" (Default)
   const thisSoilRating = userRatings?.find(
     soilRatingEntry =>
-      soilRatingEntry?.soilMatchId === getMatchSelectionId(thisSoilMatch),
+      soilRatingEntry.soilMatchId === getMatchSelectionId(thisSoilMatch),
   );
   const rating = thisSoilRating ? thisSoilRating.rating : 'UNSURE';
   if (rating === 'REJECTED') return 'Rejected';
