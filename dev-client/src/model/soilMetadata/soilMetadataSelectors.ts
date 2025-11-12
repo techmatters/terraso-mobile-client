@@ -15,6 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {createSelector} from '@reduxjs/toolkit';
+
+import {getUnsyncedRecords} from 'terraso-mobile-client/model/sync/records';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilMetadata = (siteId: string) => (state: AppState) =>
@@ -24,3 +27,16 @@ export const selectUserRatingsMetadata = (siteId?: string) => {
   return (state: AppState) =>
     siteId ? state.soilMetadata.soilMetadata[siteId]?.userRatings : undefined;
 };
+
+export const selectSoilMetadataChanges = (state: AppState) =>
+  state.soilMetadata.soilMetadataSync;
+
+export const selectUnsyncedSoilMetadata = createSelector(
+  selectSoilMetadataChanges,
+  records => getUnsyncedRecords(records),
+);
+
+export const selectUnsyncedMetadataSiteIds = createSelector(
+  selectUnsyncedSoilMetadata,
+  records => Object.keys(records).sort(),
+);

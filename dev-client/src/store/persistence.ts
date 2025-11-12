@@ -53,7 +53,7 @@ export const patchPersistedReduxState = (
   const tempState = upgradeSoilMetadataOct2025(state);
   return merge(tempState, {
     soilData: {soilSync: {}},
-    soilMetadata: {soilMetadata: {}},
+    soilMetadata: {soilMetadata: {}, soilMetadataSync: {}},
     soilIdMatch: {locationBasedMatches: {}, siteDataBasedMatches: {}},
     sync: {pullRequested: false},
   });
@@ -100,6 +100,8 @@ function upgradeSoilMetadataOct2025(
     soilMetadata: {
       ...state.soilMetadata,
       soilMetadata: upgradedEntries,
+      soilMetadataSync: state.soilMetadata.soilMetadataSync ?? {},
+      // TODO-cknipe: Do we need that? What are the consequences if not?
     },
   };
 }

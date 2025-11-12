@@ -17,11 +17,16 @@
 
 import {createSlice, Draft} from '@reduxjs/toolkit';
 
+import {SoilMetadataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 import * as soilMetadataService from 'terraso-client-shared/soilId/soilMetadataService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 import * as localSoilMetadata from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
+import {
+  markEntityModified,
+  SyncRecords,
+} from 'terraso-mobile-client/model/sync/records';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilData/soilDataFunctions';
@@ -29,10 +34,12 @@ export * from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 export type SoilState = {
   /* Note that the keys for these records are the site IDs to which the soil metadata belongs */
   soilMetadata: Record<string, SoilMetadata>;
+  soilMetadataSync: SyncRecords<SoilMetadata, SoilMetadataPushFailureReason>;
 };
 
 export const initialState: SoilState = {
   soilMetadata: {},
+  soilMetadataSync: {},
 };
 
 export const setSoilMetadata = (
@@ -61,6 +68,11 @@ const soilMetadataSlice = createSlice({
     });
     builder.addCase(localUpdateUserRatings.fulfilled, (state, action) => {
       state.soilMetadata[action.meta.arg.siteId] = action.payload;
+      markEntityModified(
+        state.soilMetadataSync,
+        action.meta.arg.siteId,
+        Date.now(),
+      );
     });
   },
 });
