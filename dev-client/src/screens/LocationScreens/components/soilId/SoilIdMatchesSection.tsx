@@ -36,11 +36,16 @@ import {
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
 import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
+import {
+  useSelectedSoil,
+  useUserRatings,
+} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/NoMapDataWarningAlert';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
+import {getTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
@@ -105,6 +110,10 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
     [siteId, isSite, coords, dataRegion, navigation],
   );
 
+  // Ratings are only relevant for sites
+  const userRatings = useUserRatings(siteId);
+  const selectedSoilId = useSelectedSoil(siteId);
+
   switch (status) {
     case 'loading':
       return isOffline ? null : <ActivityIndicator size="small" />;
@@ -118,6 +127,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
             soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
           }
           onPress={() => onMatchTilePress(soilMatch)}
+          variant={getTileVariant(soilMatch, userRatings, selectedSoilId)}
         />
       ));
     }

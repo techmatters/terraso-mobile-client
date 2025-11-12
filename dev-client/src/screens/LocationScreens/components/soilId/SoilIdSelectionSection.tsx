@@ -23,7 +23,7 @@ import {Coords} from 'terraso-client-shared/types';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
-import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
+import {useSelectedSoil} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 
@@ -35,7 +35,7 @@ export const SoilIdSelectionSection = ({
 }: SoilIdSelectionSectionProps) => {
   const navigation = useNavigation();
   const soilIdOutput = useSoilIdOutput({siteId});
-  const {selectedSoilId} = useSoilIdSelection(siteId);
+  const selectedSoilId = useSelectedSoil(siteId);
   const selectedSoilMatch = findSelectedMatch(
     soilIdOutput.matches,
     selectedSoilId,

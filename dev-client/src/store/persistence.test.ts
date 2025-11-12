@@ -127,4 +127,138 @@ describe('patchPersistedReduxState', () => {
     const result = patchPersistedReduxState(state);
     expect(result.soilData!.soilSync).toEqual({a: {}});
   });
+
+  test('migrates selectedSoilId to userRatings and preserves sites without selectedSoilId', () => {
+    const state: any = {
+      soilMetadata: {
+        soilMetadata: {
+          'site-1': {
+            selectedSoilId: 'soil-match-123',
+          },
+          'site-2': {},
+        },
+      },
+    };
+
+    const result = patchPersistedReduxState(state);
+
+    // Assert: both sites still exist in output
+    expect(result.soilMetadata!.soilMetadata).toHaveProperty('site-1');
+    expect(result.soilMetadata!.soilMetadata).toHaveProperty('site-2');
+
+    // Assert: Site 1 userRatings has selected soil
+    expect(result.soilMetadata!.soilMetadata['site-1'].userRatings).toEqual([
+      {soilMatchId: 'soil-match-123', rating: 'SELECTED'},
+    ]);
+
+    // Assert: Site 1 no longer has selectedSoilId property
+    expect(result.soilMetadata!.soilMetadata['site-1']).not.toHaveProperty(
+      'selectedSoilId',
+    );
+
+    // Assert: Site 2 is preserved with empty userRatings
+    expect(result.soilMetadata!.soilMetadata['site-2'].userRatings).toEqual([]);
+    expect(result.soilMetadata!.soilMetadata['site-2']).not.toHaveProperty(
+      'selectedSoilId',
+    );
+
+    // Assert: Original input not mutated
+    expect(state.soilMetadata.soilMetadata['site-1']).toHaveProperty(
+      'selectedSoilId',
+      'soil-match-123',
+    );
+  });
+
+  test('preserves existing userRatings when migrating selectedSoilId', () => {
+    const state: any = {
+      soilMetadata: {
+        soilMetadata: {
+          'site-1': {
+            userRatings: [
+              {soilMatchId: 'soil-1', rating: 'SELECTED'},
+              {soilMatchId: 'soil-2', rating: 'REJECTED'},
+              {soilMatchId: 'soil-3', rating: 'UNSURE'},
+            ],
+          },
+        },
+      },
+    };
+
+    const result = patchPersistedReduxState(state);
+
+    expect(result.soilMetadata!.soilMetadata['site-1'].userRatings).toEqual([
+      {soilMatchId: 'soil-1', rating: 'SELECTED'},
+      {soilMatchId: 'soil-2', rating: 'REJECTED'},
+      {soilMatchId: 'soil-3', rating: 'UNSURE'},
+    ]);
+    expect(result.soilMetadata!.soilMetadata['site-1']).not.toHaveProperty(
+      'selectedSoilId',
+    );
+  });
+
+  test('preserves userRatings and discards selectedSoilId if both', () => {
+    // This shouldn't happen in the actual app, but here just in case
+    const state: any = {
+      soilMetadata: {
+        soilMetadata: {
+          'site-1': {
+            selectedSoilId: 'soil-1',
+            userRatings: [
+              {soilMatchId: 'soil-2', rating: 'REJECTED'},
+              {soilMatchId: 'soil-3', rating: 'UNSURE'},
+            ],
+          },
+        },
+      },
+    };
+
+    const result = patchPersistedReduxState(state);
+
+    expect(result.soilMetadata!.soilMetadata['site-1'].userRatings).toEqual([
+      {soilMatchId: 'soil-2', rating: 'REJECTED'},
+      {soilMatchId: 'soil-3', rating: 'UNSURE'},
+    ]);
+    expect(result.soilMetadata!.soilMetadata['site-1']).not.toHaveProperty(
+      'selectedSoilId',
+    );
+  });
+
+  // This will anger Typescript because the properties don't currently exist, but we want to test that any future properties will be maintained
+  test('preserves other metadata properties when migrating', () => {
+    const state: any = {
+      soilMetadata: {
+        soilMetadata: {
+          'site-1': {
+            selectedSoilId: 'soil-match-123',
+            someCustomProperty: 'important-data',
+            anotherProperty: {nested: 'value'},
+            numericProperty: 42,
+          },
+        },
+      },
+    };
+
+    const result = patchPersistedReduxState(state);
+
+    // @ts-expect-error - Testing that additional properties are preserved
+    expect(result.soilMetadata!.soilMetadata['site-1'].someCustomProperty).toBe(
+      'important-data',
+    );
+    // @ts-expect-error - Testing that additional properties are preserved
+    expect(result.soilMetadata!.soilMetadata['site-1'].anotherProperty).toEqual(
+      {nested: 'value'},
+    );
+    // @ts-expect-error - Testing that additional properties are preserved
+    expect(result.soilMetadata!.soilMetadata['site-1'].numericProperty).toBe(
+      42,
+    );
+
+    // Should still migrate selectedSoilId
+    expect(result.soilMetadata!.soilMetadata['site-1'].userRatings).toEqual([
+      {soilMatchId: 'soil-match-123', rating: 'SELECTED'},
+    ]);
+    expect(result.soilMetadata!.soilMetadata['site-1']).not.toHaveProperty(
+      'selectedSoilId',
+    );
+  });
 });

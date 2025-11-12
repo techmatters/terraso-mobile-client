@@ -36,7 +36,7 @@ import {
 } from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {getTopMatch} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {findSelectedMatch} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
-import {useSoilIdSelection} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
+import {useSelectedSoil} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {getSoilNameDisplayText} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/globalSoilI18nFunctions';
 
 type LocationSoilIdCardProps = {
@@ -111,7 +111,7 @@ const SiteMatchContent = ({siteId}: SiteMatchDisplayProps) => {
     () => getTopMatch(soilIdOutput.matches),
     [soilIdOutput],
   );
-  const {selectedSoilId} = useSoilIdSelection(siteId);
+  const selectedSoilId = useSelectedSoil(siteId);
   const selectedSoilMatch = findSelectedMatch(
     soilIdOutput.matches,
     selectedSoilId,

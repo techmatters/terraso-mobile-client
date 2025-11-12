@@ -15,37 +15,32 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 
-import {selectSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
-import {updateSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {UserMatchRating} from 'terraso-client-shared/graphqlSchema/graphql';
 
-export const useSoilIdSelection = (
-  siteId: string,
-): {
-  selectedSoilId?: string;
-  selectSoilId: (selectedSoilId: string | null) => Promise<void>;
-} => {
-  const dispatch = useDispatch();
+import {selectUserRatingsMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 
-  const soilMetadata = useSelector(selectSoilMetadata(siteId));
-  const selectedSoilId =
-    soilMetadata.selectedSoilId === null ||
-    soilMetadata.selectedSoilId === undefined
-      ? undefined
-      : soilMetadata.selectedSoilId;
-
-  const selectSoilId = useCallback(
-    (newSelection: string | null) =>
-      dispatch(
-        updateSoilMetadata({siteId: siteId, selectedSoilId: newSelection}),
-      ).then(
-        () => {} /* Empty then() to simplify promise return type to void */,
-      ),
-    [dispatch, siteId],
+export const useSelectedSoil = (siteId?: string): string | undefined => {
+  // Any old selectedSoilId's on the model should have been converted to userRatings in persistence.ts or by backend migration
+  const userRatings = useSelector(selectUserRatingsMetadata(siteId));
+  const selectedEntry = userRatings?.find(
+    entry => entry?.rating === 'SELECTED',
   );
+  return selectedEntry?.soilMatchId;
+};
 
-  return {selectedSoilId, selectSoilId};
+export const useUserRating = (
+  siteId: string,
+  soilMatchId?: string,
+): UserMatchRating => {
+  const userRatings = useSelector(selectUserRatingsMetadata(siteId));
+  const thisSoilRating = userRatings?.find(
+    soilRatingEntry => soilRatingEntry?.soilMatchId === soilMatchId,
+  );
+  return thisSoilRating ? thisSoilRating.rating : 'UNSURE';
+};
+
+export const useUserRatings = (siteId: string | undefined) => {
+  return useSelector(selectUserRatingsMetadata(siteId));
 };
