@@ -150,7 +150,7 @@ padding = keyboardVerticalOffset + frame.y + frame.height - keyboardY;
 |  ← extra bottom pad   | (300 px) |
 |  added by KAV         | covers   |
 |                       | screen   |
-+----------------------------------+  ← y = 800 (bottom) 
++----------------------------------+  ← y = 800 (bottom)
 ```
 
 **Debug Tools**
@@ -177,9 +177,9 @@ Visually, here are the highlights (blue) for the part of KeyboardAvoidingView ab
 
 There is some HTML to visualize the component hierarchy for the note editing screens. CAUTION: these screens are a combination of AI generation and hand-editing and are not guaranteed to be correct.
 
-- [AddSiteNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/documentation/AddSiteNoteScreen.html)
-- [EditSiteNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/documentation/EditSiteNoteScreen.html)
-- [EditPinnedNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/documentation/EditPinnedNoteScreen.html)
+- [AddSiteNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/docs/AddSiteNoteScreen.html)
+- [EditSiteNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/docs/EditSiteNoteScreen.html)
+- [EditPinnedNoteScreen](https://htmlpreview.github.io/?https://github.com/techmatters/terraso-mobile-client/blob/main/docs/EditPinnedNoteScreen.html)
 
 Note: the above links point to github, if you want to see preview locally please just open the files directly using browser.
 
