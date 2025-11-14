@@ -31,6 +31,7 @@ jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
     ...jest.requireActual('terraso-mobile-client/store/sync/hooks/syncHooks'),
     useDebouncedIsOffline: jest.fn(),
     useDebouncedUnsyncedSiteIds: jest.fn(),
+    useDebouncedUnsyncedMetadataSiteIds: jest.fn(),
     useIsLoggedIn: jest.fn(),
     usePushDispatch: jest.fn(),
     useRetryInterval: jest.fn(),
@@ -51,6 +52,9 @@ describe('PushDispatcher', () => {
   let useDebouncedUnsyncedSiteIds = jest.mocked(
     syncHooks.useDebouncedUnsyncedSiteIds,
   );
+  let useDebouncedUnsyncedMetadataSiteIds = jest.mocked(
+    syncHooks.useDebouncedUnsyncedMetadataSiteIds,
+  );
 
   let dispatchPush = jest.fn();
   let usePushDispatch = jest.mocked(syncHooks.usePushDispatch);
@@ -68,8 +72,11 @@ describe('PushDispatcher', () => {
     useDebouncedIsOffline.mockReset();
     useIsLoggedIn.mockReset();
     useDebouncedUnsyncedSiteIds.mockReset();
-    useDebouncedUnsyncedSiteIds.mockReset();
-    useDebouncedUnsyncedSiteIds.mockReset();
+    useDebouncedUnsyncedMetadataSiteIds.mockReset();
+
+    // Default to empty arrays
+    useDebouncedUnsyncedSiteIds.mockReturnValue([]);
+    useDebouncedUnsyncedMetadataSiteIds.mockReturnValue([]);
 
     dispatchPush.mockReset();
     usePushDispatch.mockReset();
@@ -95,14 +102,21 @@ describe('PushDispatcher', () => {
 
     expect(useDebouncedIsOffline).toHaveBeenCalledWith(PUSH_DEBOUNCE_MS);
     expect(useDebouncedUnsyncedSiteIds).toHaveBeenCalledWith(PUSH_DEBOUNCE_MS);
+    expect(useDebouncedUnsyncedMetadataSiteIds).toHaveBeenCalledWith(
+      PUSH_DEBOUNCE_MS,
+    );
   });
 
   test('uses correct site IDs for push dispatch', async () => {
     useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
 
     render(<PushDispatcher />);
 
-    expect(usePushDispatch).toHaveBeenCalledWith(['abcd']);
+    expect(usePushDispatch).toHaveBeenCalledWith({
+      soilDataSiteIds: ['abcd'],
+      soilMetadataSiteIds: ['efgh'],
+    });
   });
 
   test('does not dispatch or retry by default', async () => {

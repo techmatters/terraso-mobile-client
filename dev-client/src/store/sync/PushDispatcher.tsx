@@ -23,6 +23,7 @@ import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNoti
 import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import {
   useDebouncedIsOffline,
+  useDebouncedUnsyncedMetadataSiteIds,
   useDebouncedUnsyncedSiteIds,
   useIsLoggedIn,
   usePushDispatch,
@@ -51,10 +52,15 @@ export const PushDispatcher = () => {
   const isOffline = useDebouncedIsOffline(PUSH_DEBOUNCE_MS);
 
   /* Also debounce unsynced IDs so we have a stable state when queuing up a push */
-  const unsyncedSiteIds = useDebouncedUnsyncedSiteIds(PUSH_DEBOUNCE_MS);
+  const unsyncedSoilDataIds = useDebouncedUnsyncedSiteIds(PUSH_DEBOUNCE_MS);
+  const unsyncedMetadataIds =
+    useDebouncedUnsyncedMetadataSiteIds(PUSH_DEBOUNCE_MS);
 
   /* Set up a callback for the dispatcher to use when it determines a push is needed. */
-  const dispatchPushBase = usePushDispatch(unsyncedSiteIds);
+  const dispatchPushBase = usePushDispatch({
+    soilDataSiteIds: unsyncedSoilDataIds,
+    soilMetadataSiteIds: unsyncedMetadataIds,
+  });
 
   /* Connect the push dispatch to sync error notifications */
   const dispatchPush = useCallback(
@@ -70,7 +76,10 @@ export const PushDispatcher = () => {
   );
 
   /* A push is needed when the user is logged in, not offline, and has unsynced data. */
-  const needsPush = isLoggedIn && !isOffline && unsyncedSiteIds.length > 0;
+  const needsPush =
+    isLoggedIn &&
+    !isOffline &&
+    (unsyncedSoilDataIds.length > 0 || unsyncedMetadataIds.length > 0);
 
   /* Set up retry mechanism which will dispatch the push action when it begins. */
   const {beginRetry, endRetry} = useRetryInterval(
@@ -101,11 +110,41 @@ export const PushDispatcher = () => {
 const dispatchResultHasSyncErrors = (
   result: PayloadAction<undefined | object | SyncResults<unknown, unknown>>,
 ): boolean => {
-  return (
-    !!result.payload &&
+  if (!result.payload) {
+    return false;
+  }
+
+  // Handle legacy format (single SyncResults object with errors property)
+  if (
     'errors' in result.payload &&
     Object.keys(result.payload.errors).length > 0
-  );
+  ) {
+    return true;
+  }
+
+  // Handle new format (PushSiteDataResults with soilDataResults and/or soilMetadataResults)
+  if ('soilDataResults' in result.payload) {
+    const soilDataResults = result.payload.soilDataResults as
+      | SyncResults<unknown, unknown>
+      | undefined;
+    if (soilDataResults && Object.keys(soilDataResults.errors).length > 0) {
+      return true;
+    }
+  }
+
+  if ('soilMetadataResults' in result.payload) {
+    const soilMetadataResults = result.payload.soilMetadataResults as
+      | SyncResults<unknown, unknown>
+      | undefined;
+    if (
+      soilMetadataResults &&
+      Object.keys(soilMetadataResults.errors).length > 0
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 const dispatchFailed = (

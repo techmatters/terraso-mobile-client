@@ -17,21 +17,32 @@
 
 import {setUsers} from 'terraso-client-shared/account/accountSlice';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
+import type {
+  SoilData,
+  SoilMetadata,
+} from 'terraso-client-shared/soilId/soilIdTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
 import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
+import * as siteDataActions from 'terraso-mobile-client/model/soilData/actions/siteDataActions';
 import {
   setProjectSettings,
   setSoilData,
   updateSoilIdStatus,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {setSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
+import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
 export const fetchSoilDataForUser = createAsyncThunk(
   'soilId/fetchSoilDataForUser',
   soilDataService.fetchSoilDataForUser,
+);
+
+export const pushSiteData = createAsyncThunk(
+  'soilId/pushSiteData',
+  siteDataActions.pushSiteData,
 );
 
 export const soilIdGlobalReducer = createGlobalReducer(builder => {
@@ -51,5 +62,31 @@ export const soilIdGlobalReducer = createGlobalReducer(builder => {
 
   builder.addCase(fetchSoilDataForUser.rejected, state => {
     updateSoilIdStatus(state.soilData, 'error');
+  });
+
+  builder.addCase(pushSiteData.fulfilled, (state, action) => {
+    const {soilDataResults, soilMetadataResults} = action.payload;
+
+    if (soilDataResults) {
+      applySyncResults(
+        state.soilData.soilData as Record<string, SoilData>,
+        state.soilData.soilSync,
+        soilDataResults,
+        Date.now(),
+      );
+    }
+
+    if (soilMetadataResults) {
+      applySyncResults(
+        state.soilMetadata.soilMetadata as Record<string, SoilMetadata>,
+        state.soilMetadata.soilMetadataSync,
+        soilMetadataResults,
+        Date.now(),
+      );
+    }
+  });
+
+  builder.addCase(pushSiteData.rejected, (_state, action) => {
+    console.error('pushSiteData failed:', action.error);
   });
 });

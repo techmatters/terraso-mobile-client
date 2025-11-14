@@ -20,12 +20,15 @@ import {useCallback, useRef} from 'react';
 import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
+import {
+  fetchSoilDataForUser,
+  pushSiteData,
+} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {
   selectSyncErrorSiteIds,
   selectUnsyncedSiteIds,
 } from 'terraso-mobile-client/model/soilData/soilDataSelectors';
-import {pushSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {selectUnsyncedMetadataSiteIds} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const useIsLoggedIn = () => {
@@ -45,11 +48,32 @@ export const useDebouncedUnsyncedSiteIds = (interval: number) => {
   return unsyncedSiteIds;
 };
 
-export const usePushDispatch = (siteIds: string[]) => {
+export const useDebouncedUnsyncedMetadataSiteIds = (interval: number) => {
+  const [unsyncedMetadataSiteIds] = useDebounce(
+    useSelector(selectUnsyncedMetadataSiteIds),
+    interval,
+  );
+  return unsyncedMetadataSiteIds;
+};
+
+type PushDispatchInputs = {
+  soilDataSiteIds: string[];
+  soilMetadataSiteIds: string[];
+};
+export const usePushDispatch = ({
+  soilDataSiteIds,
+  soilMetadataSiteIds,
+}: PushDispatchInputs) => {
   const dispatch = useDispatch();
   return useCallback(() => {
-    return dispatch(pushSoilData(siteIds));
-  }, [dispatch, siteIds]);
+    // Pass separate arrays to avoid fetching unnecessary sync records
+    return dispatch(
+      pushSiteData({
+        soilDataSiteIds,
+        soilMetadataSiteIds,
+      }),
+    );
+  }, [dispatch, soilDataSiteIds, soilMetadataSiteIds]);
 };
 
 export const useRetryInterval = (interval: number, action: () => void) => {
