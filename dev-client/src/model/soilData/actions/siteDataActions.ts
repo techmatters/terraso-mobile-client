@@ -68,47 +68,50 @@ export const pushSiteData = async (
   const state = thunkApi.getState() as AppState;
 
   // Build records for soilData (filter to only unsynced)
-  let soilDataUnsyncedChanges = {} as SyncRecords<
-    SoilData,
-    SoilDataPushFailureReason
-  >;
-  let soilDataUnsyncedData = {} as Record<string, SoilData | undefined>;
+  let soilDataUnsyncedChanges:
+    | SyncRecords<SoilData, SoilDataPushFailureReason>
+    | undefined;
+  let soilDataUnsyncedData: Record<string, SoilData | undefined> | undefined;
 
   if (input.soilDataSiteIds && input.soilDataSiteIds.length > 0) {
-    soilDataUnsyncedChanges = getUnsyncedRecords(
+    const unsyncedChanges = getUnsyncedRecords(
       getEntityRecords(selectSoilChanges(state), input.soilDataSiteIds),
     );
-    soilDataUnsyncedData = getDataForRecords(
-      soilDataUnsyncedChanges,
-      state.soilData.soilData,
-    );
+    if (Object.keys(unsyncedChanges).length > 0) {
+      soilDataUnsyncedChanges = unsyncedChanges;
+      soilDataUnsyncedData = getDataForRecords(
+        unsyncedChanges,
+        state.soilData.soilData,
+      );
+    }
   }
 
   // Build records for soilMetadata (filter to only unsynced)
-  let soilMetadataUnsyncedChanges = {} as SyncRecords<
-    SoilMetadata,
-    SoilMetadataPushFailureReason
-  >;
-  let soilMetadataUnsyncedData = {} as Record<string, SoilMetadata | undefined>;
+  let soilMetadataUnsyncedChanges:
+    | SyncRecords<SoilMetadata, SoilMetadataPushFailureReason>
+    | undefined;
+  let soilMetadataUnsyncedData:
+    | Record<string, SoilMetadata | undefined>
+    | undefined;
 
   if (input.soilMetadataSiteIds && input.soilMetadataSiteIds.length > 0) {
-    soilMetadataUnsyncedChanges = getUnsyncedRecords(
+    const unsyncedChanges = getUnsyncedRecords(
       getEntityRecords(
         selectSoilMetadataChanges(state),
         input.soilMetadataSiteIds,
       ),
     );
-    soilMetadataUnsyncedData = getDataForRecords(
-      soilMetadataUnsyncedChanges,
-      state.soilMetadata.soilMetadata,
-    );
+    if (Object.keys(unsyncedChanges).length > 0) {
+      soilMetadataUnsyncedChanges = unsyncedChanges;
+      soilMetadataUnsyncedData = getDataForRecords(
+        unsyncedChanges,
+        state.soilMetadata.soilMetadata,
+      );
+    }
   }
 
   // If nothing to push, return empty results
-  if (
-    Object.keys(soilDataUnsyncedChanges).length === 0 &&
-    Object.keys(soilMetadataUnsyncedChanges).length === 0
-  ) {
+  if (!soilDataUnsyncedChanges && !soilMetadataUnsyncedChanges) {
     return {};
   }
 
