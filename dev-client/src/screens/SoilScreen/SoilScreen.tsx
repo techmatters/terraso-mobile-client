@@ -35,6 +35,7 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
+import {DEPTH_MAX} from 'terraso-mobile-client/constants';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   methodRequired,
@@ -68,6 +69,37 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
     () => allDepths.map(({interval}) => interval),
     [allDepths],
   );
+
+  const hasAvailableDepthGaps = useMemo(() => {
+    if (existingDepths.length === 0) {
+      return true; // No depths exist, so gaps are available
+    }
+
+    // Depths are already sorted by useSiteSoilIntervals
+    // Check if first depth starts at 0
+    if (existingDepths[0].depthInterval.start > 0) {
+      return true; // Gap exists before first depth
+    }
+
+    // Check for gaps between consecutive depths
+    for (let i = 0; i < existingDepths.length - 1; i++) {
+      if (
+        existingDepths[i].depthInterval.end <
+        existingDepths[i + 1].depthInterval.start
+      ) {
+        return true; // Gap exists between depths
+      }
+    }
+
+    // Check if last depth ends at max depth
+    if (
+      existingDepths[existingDepths.length - 1].depthInterval.end < DEPTH_MAX
+    ) {
+      return true; // Gap exists after last depth
+    }
+
+    return false; // No gaps available
+  }, [existingDepths]);
 
   const dispatch = useDispatch();
 
@@ -124,15 +156,17 @@ export const SoilScreen = ({siteId}: {siteId: string}) => {
               requiredInputs={projectRequiredInputs}
             />
           ))}
-          <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-            <AddDepthOverlaySheet
-              siteId={siteId}
-              existingDepths={existingDepths}
-              requiredInputs={projectRequiredInputs}
-              siteInProject={!!site.projectId}
-              trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
-            />
-          </RestrictBySiteRole>
+          {hasAvailableDepthGaps && (
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+              <AddDepthOverlaySheet
+                siteId={siteId}
+                existingDepths={existingDepths}
+                requiredInputs={projectRequiredInputs}
+                siteInProject={!!site.projectId}
+                trigger={onOpen => <AddSoilDepthButton onPress={onOpen} />}
+              />
+            </RestrictBySiteRole>
+          )}
         </SafeScrollView>
       )}
     </ScreenDataRequirements>
