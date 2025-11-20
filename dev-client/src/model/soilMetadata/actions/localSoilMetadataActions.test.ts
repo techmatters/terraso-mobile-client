@@ -22,7 +22,7 @@ import * as featureFlags from 'terraso-mobile-client/config/featureFlags';
 import {
   updateUserRatings,
   UpdateUserRatingsInput,
-} from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
+} from 'terraso-mobile-client/model/soilMetadata/actions/localSoilMetadataActions';
 import {AppState} from 'terraso-mobile-client/store';
 
 // Mock config to avoid ENV_CONFIG errors

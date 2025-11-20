@@ -22,7 +22,7 @@ import {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 import * as soilMetadataService from 'terraso-client-shared/soilId/soilMetadataService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
-import * as localSoilMetadata from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
+import * as localSoilMetadata from 'terraso-mobile-client/model/soilMetadata/actions/localSoilMetadataActions';
 import {
   markEntityModified,
   mergeUnsyncedEntities,

@@ -36,6 +36,7 @@ export const selectUserRatingsMetadata = (siteId?: string) => {
 export const selectSoilMetadataChanges = (state: AppState) =>
   state.soilMetadata.soilMetadataSync;
 
+// Furture work: Much of the sync logic for soilMetadata and soilData is duplicated. When we add another entity, it would be good to refactor to reduce duplication in various files (here, in the slices, perhaps in the pushSiteData mutation and associated action, etc.)
 // Note: if you use in dependency lists, this returns a new object every time
 export const selectUnsyncedSoilMetadataSites = createSelector(
   selectSoilMetadataChanges,
