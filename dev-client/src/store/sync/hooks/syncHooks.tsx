@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef} from 'react';
+import {useCallback, useMemo, useRef} from 'react';
 
 import {useDebounce} from 'use-debounce';
 
@@ -25,10 +25,13 @@ import {
   pushSiteData,
 } from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {
-  selectSyncErrorSiteIds,
-  selectUnsyncedSiteIds,
+  selectSoilDataSyncErrorSiteIds,
+  selectUnsyncedSoilDataSiteIds,
 } from 'terraso-mobile-client/model/soilData/soilDataSelectors';
-import {selectUnsyncedMetadataSiteIds} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
+import {
+  selectMetadataSyncErrorSiteIds,
+  selectUnsyncedMetadataSiteIds,
+} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const useIsLoggedIn = () => {
@@ -42,7 +45,7 @@ export const useDebouncedIsOffline = (interval: number) => {
 
 export const useDebouncedUnsyncedSiteIds = (interval: number) => {
   const [unsyncedSiteIds] = useDebounce(
-    useSelector(selectUnsyncedSiteIds),
+    useSelector(selectUnsyncedSoilDataSiteIds),
     interval,
   );
   return unsyncedSiteIds;
@@ -100,8 +103,26 @@ export const useRetryInterval = (interval: number, action: () => void) => {
   return {beginRetry, endRetry};
 };
 
+// Site ids with either data or metadata that is unsynced (no duplicates)
+export const useUnsyncedSiteIds = () => {
+  const unsyncedSoilDataSiteIds = useSelector(selectUnsyncedSoilDataSiteIds);
+  const unsyncedMetadataSiteIds = useSelector(selectUnsyncedMetadataSiteIds);
+  const unsyncedCombinedSiteIds = useMemo(() => {
+    return [
+      ...new Set([...unsyncedSoilDataSiteIds, ...unsyncedMetadataSiteIds]),
+    ];
+  }, [unsyncedSoilDataSiteIds, unsyncedMetadataSiteIds]);
+  return unsyncedCombinedSiteIds;
+};
+
+// Site ids with either data or metadata errors (no duplicates)
 export const useSyncErrorSiteIds = () => {
-  return useSelector(selectSyncErrorSiteIds);
+  const soilDataErrorSiteIds = useSelector(selectSoilDataSyncErrorSiteIds);
+  const metadataErrorSiteIds = useSelector(selectMetadataSyncErrorSiteIds);
+  const combinedErrorSiteIds = useMemo(() => {
+    return [...new Set([...soilDataErrorSiteIds, ...metadataErrorSiteIds])];
+  }, [soilDataErrorSiteIds, metadataErrorSiteIds]);
+  return combinedErrorSiteIds;
 };
 
 export const usePullDispatch = () => {

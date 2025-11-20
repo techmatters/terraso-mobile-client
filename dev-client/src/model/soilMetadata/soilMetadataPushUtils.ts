@@ -34,7 +34,7 @@ export const unsyncedMetadataToMutationInput = (
     .filter(siteId => unsyncedData[siteId] !== undefined)
     .map(siteId => ({
       siteId,
-      // If more data is added to the soilMetadata with offline support, refer to patterns in soilDataDiff to create soilMetadata diffing mechanism.
+      // Future work: If more data is added to the soilMetadata with offline support, refer to patterns in soilDataDiff to create soilMetadata diffing mechanism.
       userRatings: unsyncedData[siteId]!.userRatings.filter(
         rating => rating.rating !== null,
       ).map(rating => ({

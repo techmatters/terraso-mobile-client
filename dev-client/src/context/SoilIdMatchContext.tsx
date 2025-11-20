@@ -33,7 +33,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useValueSet} from 'terraso-mobile-client/hooks/useValueSet';
-import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
+import {selectUnsyncedSoilDataSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
 import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {
   selectNextDataBasedInputs,
@@ -156,7 +156,7 @@ const useSiteInputsToFetch = (siteIds: string[]) => {
    * Select unsynced sites to exclude them from input.
    * (We don't load soil ID for unsynced sites, since the sync might further change soil data.)
    */
-  const unsyncedSiteIds = useSelector(selectUnsyncedSiteIds);
+  const unsyncedSiteIds = useSelector(selectUnsyncedSoilDataSiteIds);
 
   /* Determine the set of sites which need to be fetched because their inputs have changed */
   return useMemo(() => {

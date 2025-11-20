@@ -16,10 +16,18 @@
  */
 
 import {
+  selectMetadataSyncErrorSiteIds,
+  selectMetadataSyncErrorSites,
   selectSoilMetadataChanges,
   selectUnsyncedMetadataSiteIds,
-  selectUnsyncedSoilMetadata,
+  selectUnsyncedSoilMetadataSites,
 } from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
+import {
+  errorRecord,
+  initialRecord,
+  SyncRecord,
+  SyncRecords,
+} from 'terraso-mobile-client/model/sync/records';
 import {AppState} from 'terraso-mobile-client/store';
 
 describe('selectSoilMetadataChanges', () => {
@@ -53,7 +61,7 @@ describe('selectUnsyncedSoilMetadata', () => {
       },
     } as Partial<AppState> as AppState;
 
-    const unsynced = selectUnsyncedSoilMetadata(state);
+    const unsynced = selectUnsyncedSoilMetadataSites(state);
     expect(Object.keys(unsynced).sort()).toEqual([
       'site-unsynced-1',
       'site-unsynced-2',
@@ -71,7 +79,7 @@ describe('selectUnsyncedSoilMetadata', () => {
       },
     } as Partial<AppState> as AppState;
 
-    const unsynced = selectUnsyncedSoilMetadata(state);
+    const unsynced = selectUnsyncedSoilMetadataSites(state);
     expect(Object.keys(unsynced)).toHaveLength(0);
   });
 
@@ -83,7 +91,7 @@ describe('selectUnsyncedSoilMetadata', () => {
       },
     } as Partial<AppState> as AppState;
 
-    const unsynced = selectUnsyncedSoilMetadata(state);
+    const unsynced = selectUnsyncedSoilMetadataSites(state);
     expect(Object.keys(unsynced)).toHaveLength(0);
   });
 });
@@ -136,5 +144,116 @@ describe('selectUnsyncedMetadataSiteIds', () => {
 
     const ids = selectUnsyncedMetadataSiteIds(state);
     expect(ids).toEqual(['site-unsynced-1', 'site-unsynced-2']);
+  });
+});
+
+const createMockState = (
+  soilMetadataSync: SyncRecords<any, any>,
+): Partial<AppState> => ({
+  soilMetadata: {
+    soilMetadataSync,
+  } as any,
+});
+
+describe('selectMetadataSyncErrorSiteIds memoization', () => {
+  it('should return same reference when error site IDs have not changed', () => {
+    // Create initial state with error sites
+    const errorSite1: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR_1', revisionId: 1},
+      Date.now(),
+    );
+    const errorSite2: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR_2', revisionId: 1},
+      Date.now(),
+    );
+
+    const state1 = createMockState({
+      site1: errorSite1,
+      site2: errorSite2,
+      site3: initialRecord(undefined), // Not an error
+    }) as AppState;
+
+    const result1 = selectMetadataSyncErrorSiteIds(state1);
+
+    // Create a new state object (simulating a Redux update)
+    // but with the same error sites
+    const state2 = createMockState({
+      site1: errorSite1, // Same reference
+      site2: errorSite2, // Same reference
+      site3: initialRecord(undefined), // Different reference but not an error
+    }) as AppState;
+
+    const result2 = selectMetadataSyncErrorSiteIds(state2);
+
+    // Verify the content is the same
+    expect(result1).toEqual(['site1', 'site2']);
+    expect(result2).toEqual(['site1', 'site2']);
+
+    // CRITICAL TEST: Verify reference is the same (memoization worked)
+    expect(result1).toBe(result2);
+  });
+
+  it('should return new reference when error site IDs have changed', () => {
+    const errorSite1: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR_1', revisionId: 1},
+      Date.now(),
+    );
+
+    const state1 = createMockState({
+      site1: errorSite1,
+    }) as AppState;
+
+    const result1 = selectMetadataSyncErrorSiteIds(state1);
+
+    // Add a new error site
+    const errorSite2: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR_2', revisionId: 1},
+      Date.now(),
+    );
+
+    const state2 = createMockState({
+      site1: errorSite1,
+      site2: errorSite2, // New error
+    }) as AppState;
+
+    const result2 = selectMetadataSyncErrorSiteIds(state2);
+
+    // Verify the content is different
+    expect(result1).toEqual(['site1']);
+    expect(result2).toEqual(['site1', 'site2']);
+
+    // Verify reference is different (content changed)
+    expect(result1).not.toBe(result2);
+  });
+
+  it('demonstrates that upstream selector returns new objects', () => {
+    // This test proves that getErrorRecords always returns new objects
+    const errorSite: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR', revisionId: 1},
+      Date.now(),
+    );
+
+    const state1 = createMockState({
+      site1: errorSite,
+    }) as AppState;
+
+    const upstream1 = selectMetadataSyncErrorSites(state1);
+
+    const state2 = createMockState({
+      site1: errorSite, // Same error site reference
+    }) as AppState;
+
+    const upstream2 = selectMetadataSyncErrorSites(state2);
+
+    // The upstream selector returns a new object (getErrorRecords behavior)
+    expect(upstream1).not.toBe(upstream2);
+
+    // But the content is the same (same SyncRecord references)
+    expect(upstream1.site1).toBe(upstream2.site1);
   });
 });

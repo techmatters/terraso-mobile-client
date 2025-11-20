@@ -15,9 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {shallowEqual} from 'react-redux';
+
 import {createSelector} from '@reduxjs/toolkit';
 
-import {getUnsyncedRecords} from 'terraso-mobile-client/model/sync/records';
+import {
+  getErrorRecords,
+  getUnsyncedRecords,
+} from 'terraso-mobile-client/model/sync/records';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilMetadata = (siteId: string) => (state: AppState) =>
@@ -31,12 +36,34 @@ export const selectUserRatingsMetadata = (siteId?: string) => {
 export const selectSoilMetadataChanges = (state: AppState) =>
   state.soilMetadata.soilMetadataSync;
 
-export const selectUnsyncedSoilMetadata = createSelector(
+// Note: if you use in dependency lists, this returns a new object every time
+export const selectUnsyncedSoilMetadataSites = createSelector(
   selectSoilMetadataChanges,
   records => getUnsyncedRecords(records),
 );
 
 export const selectUnsyncedMetadataSiteIds = createSelector(
-  selectUnsyncedSoilMetadata,
+  selectUnsyncedSoilMetadataSites,
   records => Object.keys(records).sort(),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
+);
+
+// Note: if you use in dependency lists, this returns a new object every time
+export const selectMetadataSyncErrorSites = createSelector(
+  selectSoilMetadataChanges,
+  getErrorRecords,
+);
+
+export const selectMetadataSyncErrorSiteIds = createSelector(
+  selectMetadataSyncErrorSites,
+  errorSites => Object.keys(errorSites).sort(),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
 );

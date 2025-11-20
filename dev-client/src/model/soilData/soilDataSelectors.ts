@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {shallowEqual} from 'react-redux';
+
 import {createSelector} from '@reduxjs/toolkit';
 
 import {
@@ -32,21 +34,35 @@ export const selectSoilChanges = (state: AppState) => state.soilData.soilSync;
  *
  * (see https://redux.js.org/usage/deriving-data-selectors#optimizing-selectors-with-memoization)
  */
-export const selectUnsyncedSites = createSelector(selectSoilChanges, records =>
-  getUnsyncedRecords(records),
+
+// Note: if you use in dependency lists, this returns a new object every time
+export const selectUnsyncedSoilDataSites = createSelector(
+  selectSoilChanges,
+  records => getUnsyncedRecords(records),
 );
 
-export const selectUnsyncedSiteIds = createSelector(
-  selectUnsyncedSites,
+export const selectUnsyncedSoilDataSiteIds = createSelector(
+  selectUnsyncedSoilDataSites,
   records => Object.keys(records).sort(),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
 );
 
-export const selectSyncErrorSites = createSelector(
+// Note: if you use in dependency lists, this returns a new object every time
+export const selectSoilDataSyncErrorSites = createSelector(
   selectSoilChanges,
   getErrorRecords,
 );
 
-export const selectSyncErrorSiteIds = createSelector(
-  selectSyncErrorSites,
-  errorSites => Object.keys(errorSites),
+export const selectSoilDataSyncErrorSiteIds = createSelector(
+  selectSoilDataSyncErrorSites,
+  errorSites => Object.keys(errorSites).sort(),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
 );

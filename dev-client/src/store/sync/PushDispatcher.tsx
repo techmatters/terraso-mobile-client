@@ -114,15 +114,7 @@ const dispatchResultHasSyncErrors = (
     return false;
   }
 
-  // Handle legacy format (single SyncResults object with errors property)
-  if (
-    'errors' in result.payload &&
-    Object.keys(result.payload.errors).length > 0
-  ) {
-    return true;
-  }
-
-  // Handle new format (PushSiteDataResults with soilDataResults and/or soilMetadataResults)
+  // Handle entity-level sync errors
   if ('soilDataResults' in result.payload) {
     const soilDataResults = result.payload.soilDataResults as
       | SyncResults<unknown, unknown>

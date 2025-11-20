@@ -151,8 +151,10 @@ describe('PushDispatcher', () => {
 
     dispatchPush.mockResolvedValue({
       payload: {
-        data: {},
-        errors: {a: {value: 'DOES_NOT_EXIST'}},
+        soilDataResults: {
+          data: {},
+          errors: {a: {value: 'DOES_NOT_EXIST'}},
+        },
       },
     });
     render(<PushDispatcher />);
@@ -167,8 +169,10 @@ describe('PushDispatcher', () => {
 
     dispatchPush.mockResolvedValue({
       payload: {
-        data: {},
-        errors: {},
+        soilDataResults: {
+          data: {},
+          errors: {},
+        },
       },
     });
     render(<PushDispatcher />);
@@ -258,8 +262,10 @@ describe('PushDispatcher', () => {
   test('shows error notification when retried push has sync error', async () => {
     dispatchPush.mockResolvedValue({
       payload: {
-        data: {},
-        errors: {a: {value: 'DOES_NOT_EXIST'}},
+        soilDataResults: {
+          data: {},
+          errors: {a: {value: 'DOES_NOT_EXIST'}},
+        },
       },
     });
     render(<PushDispatcher />);
@@ -269,5 +275,133 @@ describe('PushDispatcher', () => {
     retryAction();
 
     await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
+  });
+
+  test('shows error notification when push has metadata sync error', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['abcd']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        soilMetadataResults: {
+          data: {},
+          errors: {a: {value: 'DOES_NOT_EXIST'}},
+        },
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
+  });
+
+  test('does not show error notification when metadata push has no sync errors', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['abcd']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        soilMetadataResults: {
+          data: {},
+          errors: {},
+        },
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(0));
+  });
+
+  test('shows error notification when both soilData and metadata have errors', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        soilDataResults: {
+          data: {},
+          errors: {a: {value: 'DOES_NOT_EXIST'}},
+        },
+        soilMetadataResults: {
+          data: {},
+          errors: {b: {value: 'INVALID'}},
+        },
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
+  });
+
+  test('shows error notification when only soilData has errors (metadata succeeds)', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        soilDataResults: {
+          data: {},
+          errors: {a: {value: 'DOES_NOT_EXIST'}},
+        },
+        soilMetadataResults: {
+          data: {},
+          errors: {},
+        },
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
+  });
+
+  test('shows error notification when only metadata has errors (soilData succeeds)', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        soilDataResults: {
+          data: {},
+          errors: {},
+        },
+        soilMetadataResults: {
+          data: {},
+          errors: {b: {value: 'INVALID'}},
+        },
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
+  });
+
+  test('does not show error notification when both soilData and metadata succeed', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        soilDataResults: {
+          data: {},
+          errors: {},
+        },
+        soilMetadataResults: {
+          data: {},
+          errors: {},
+        },
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(0));
   });
 });
