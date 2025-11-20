@@ -25,6 +25,7 @@ import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 import * as localSoilMetadata from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
 import {
   markEntityModified,
+  mergeUnsyncedEntities,
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
 
@@ -46,7 +47,13 @@ export const setSoilMetadata = (
   state: Draft<SoilState>,
   soilMetadata: Record<string, SoilMetadata>,
 ) => {
-  state.soilMetadata = soilMetadata;
+  const {mergedRecords, mergedData} = mergeUnsyncedEntities(
+    state.soilMetadataSync,
+    state.soilMetadata as Record<string, SoilMetadata>,
+    soilMetadata,
+  );
+  state.soilMetadata = mergedData;
+  state.soilMetadataSync = mergedRecords;
 };
 
 export const deleteSoilMetadata = (
