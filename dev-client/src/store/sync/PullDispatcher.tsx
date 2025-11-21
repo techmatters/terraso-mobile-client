@@ -53,18 +53,11 @@ export const PullDispatcher = () => {
     unsyncedSiteIds.length === 0 &&
     appState === 'active';
 
-  // TODO-cknipe: Remove these, put in SyncContent?
-  console.log('Pull allowed? ', pullAllowed);
-  console.log('Pull requested? ', pullRequested);
-
   // Set up a callback for the dispatcher to use when it determines a pull is needed.
   const dispatchPull = usePullDispatch();
 
   useEffect(() => {
     if (pullAllowed && pullRequested) {
-      // TODO-cknipe: Remove this, put in SyncContent?
-      const now = new Date();
-      console.log('Doing a pull at ', now.toLocaleTimeString());
       dispatchPull(currentUserID);
       dispatch(setPullRequested(false));
     }
