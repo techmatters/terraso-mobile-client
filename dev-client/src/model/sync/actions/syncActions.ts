@@ -17,17 +17,17 @@
 
 import type {User} from 'terraso-client-shared/account/accountSlice';
 import type {
-  SiteDataPushInput,
   SoilDataPushEntry,
   SoilDataPushFailureReason,
   SoilMetadataPushEntry,
   SoilMetadataPushFailureReason,
+  UserDataPushInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import type {
   SoilData,
   SoilMetadata,
 } from 'terraso-client-shared/soilId/soilIdTypes';
+import * as syncService from 'terraso-client-shared/soilId/syncService';
 import type {ThunkAPI} from 'terraso-client-shared/store/utils';
 
 import {
@@ -49,7 +49,7 @@ import {
 import type {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import type {AppState} from 'terraso-mobile-client/store';
 
-export type PushSiteDataResults = {
+export type PushUserDataResults = {
   soilDataResults?: SyncResults<SoilData, SoilDataPushFailureReason>;
   soilMetadataResults?: SyncResults<
     SoilMetadata,
@@ -57,14 +57,14 @@ export type PushSiteDataResults = {
   >;
 };
 
-export const pushSiteData = async (
+export const pushUserData = async (
   input: {
     soilDataSiteIds?: string[];
     soilMetadataSiteIds?: string[];
   },
   _: User | null,
   thunkApi: ThunkAPI,
-): Promise<PushSiteDataResults> => {
+): Promise<PushUserDataResults> => {
   const state = thunkApi.getState() as AppState;
 
   // Build records for soilData (filter to only unsynced)
@@ -116,7 +116,7 @@ export const pushSiteData = async (
   }
 
   // Build mutation input
-  const mutationInput: SiteDataPushInput = {
+  const mutationInput: UserDataPushInput = {
     soilDataEntries:
       soilDataUnsyncedChanges && soilDataUnsyncedData
         ? unsyncedSoilDataToMutationInput(
@@ -134,10 +134,10 @@ export const pushSiteData = async (
   };
 
   // Call the service
-  const response = await soilDataService.pushSiteData(mutationInput);
+  const response = await syncService.pushUserData(mutationInput);
 
   // Transform response to results
-  const results: PushSiteDataResults = {};
+  const results: PushUserDataResults = {};
 
   if (soilDataUnsyncedChanges && response.soilDataResults) {
     results.soilDataResults = soilDataMutationResponseToResults(

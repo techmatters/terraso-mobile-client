@@ -20,23 +20,23 @@ import type {
   SoilMetadataPushFailureReason,
   UserMatchRating,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import type {
   SoilData,
   SoilMetadata,
 } from 'terraso-client-shared/soilId/soilIdTypes';
+import * as syncService from 'terraso-client-shared/soilId/syncService';
 
-import {pushSiteData} from 'terraso-mobile-client/model/soilData/actions/siteDataActions';
+import {pushUserData} from 'terraso-mobile-client/model/sync/actions/syncActions';
 import type {SyncRecords} from 'terraso-mobile-client/model/sync/records';
 import type {AppState} from 'terraso-mobile-client/store';
 
-jest.mock('terraso-client-shared/soilId/soilDataService');
+jest.mock('terraso-client-shared/soilId/syncService');
 
-const mockPushSiteData = soilDataService.pushSiteData as jest.MockedFunction<
-  typeof soilDataService.pushSiteData
+const mockPushUserData = syncService.pushUserData as jest.MockedFunction<
+  typeof syncService.pushUserData
 >;
 
-describe('pushSiteData', () => {
+describe('pushUserData', () => {
   const mockGetState = jest.fn();
   const mockThunkAPI = {
     getState: mockGetState,
@@ -62,10 +62,10 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    const results = await pushSiteData({}, null, mockThunkAPI);
+    const results = await pushUserData({}, null, mockThunkAPI);
 
     expect(results).toEqual({});
-    expect(mockPushSiteData).not.toHaveBeenCalled();
+    expect(mockPushUserData).not.toHaveBeenCalled();
   });
 
   it('should return empty results when site IDs have no unsynced changes', async () => {
@@ -93,7 +93,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    const results = await pushSiteData(
+    const results = await pushUserData(
       {
         soilDataSiteIds: ['site-1'],
         soilMetadataSiteIds: ['site-1'],
@@ -103,7 +103,7 @@ describe('pushSiteData', () => {
     );
 
     expect(results).toEqual({});
-    expect(mockPushSiteData).not.toHaveBeenCalled();
+    expect(mockPushUserData).not.toHaveBeenCalled();
   });
 
   it('should push only soilData when only soilData has unsynced changes', async () => {
@@ -132,7 +132,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [
         {
           siteId: 'site-1',
@@ -150,9 +150,9 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    await pushSiteData({soilDataSiteIds: ['site-1']}, null, mockThunkAPI);
+    await pushUserData({soilDataSiteIds: ['site-1']}, null, mockThunkAPI);
 
-    expect(mockPushSiteData).toHaveBeenCalledWith({
+    expect(mockPushUserData).toHaveBeenCalledWith({
       soilDataEntries: expect.any(Array),
       soilMetadataEntries: null,
     });
@@ -187,7 +187,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: null,
       soilMetadataResults: [
         {
@@ -205,9 +205,9 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    await pushSiteData({soilMetadataSiteIds: ['site-1']}, null, mockThunkAPI);
+    await pushUserData({soilMetadataSiteIds: ['site-1']}, null, mockThunkAPI);
 
-    expect(mockPushSiteData).toHaveBeenCalledWith({
+    expect(mockPushUserData).toHaveBeenCalledWith({
       soilDataEntries: null,
       soilMetadataEntries: expect.any(Array),
     });
@@ -252,7 +252,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [
         {
           siteId: 'site-1',
@@ -282,13 +282,13 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    await pushSiteData(
+    await pushUserData(
       {soilDataSiteIds: ['site-1'], soilMetadataSiteIds: ['site-1']},
       null,
       mockThunkAPI,
     );
 
-    expect(mockPushSiteData).toHaveBeenCalledWith({
+    expect(mockPushUserData).toHaveBeenCalledWith({
       soilDataEntries: expect.any(Array),
       soilMetadataEntries: expect.any(Array),
     });
@@ -333,7 +333,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [
         {
           siteId: 'site-1',
@@ -359,7 +359,7 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    const results = await pushSiteData(
+    const results = await pushUserData(
       {soilDataSiteIds: ['site-1'], soilMetadataSiteIds: ['site-1']},
       null,
       mockThunkAPI,
@@ -406,7 +406,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [
         {
           siteId: 'site-1',
@@ -435,13 +435,13 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    await pushSiteData(
+    await pushUserData(
       {soilDataSiteIds: ['site-1', 'site-2']},
       null,
       mockThunkAPI,
     );
 
-    expect(mockPushSiteData).toHaveBeenCalledWith({
+    expect(mockPushUserData).toHaveBeenCalledWith({
       soilDataEntries: expect.arrayContaining([
         expect.objectContaining({siteId: 'site-1'}),
         expect.objectContaining({siteId: 'site-2'}),
@@ -490,7 +490,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [
         {
           siteId: 'site-1',
@@ -519,14 +519,14 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    await pushSiteData(
+    await pushUserData(
       {soilDataSiteIds: ['site-1', 'site-3']}, // Only site-1 and site-3
       null,
       mockThunkAPI,
     );
 
     // Verify only the specified site IDs are sent to the service (site-2 excluded)
-    const callArgs = mockPushSiteData.mock.calls[0][0];
+    const callArgs = mockPushUserData.mock.calls[0][0];
     expect(callArgs.soilDataEntries).toHaveLength(2);
     expect(callArgs.soilDataEntries).toEqual(
       expect.arrayContaining([
@@ -566,10 +566,10 @@ describe('pushSiteData', () => {
     mockGetState.mockReturnValue(mockState);
 
     const networkError = new Error('Network request failed');
-    mockPushSiteData.mockRejectedValue(networkError);
+    mockPushUserData.mockRejectedValue(networkError);
 
     await expect(
-      pushSiteData({soilDataSiteIds: ['site-1']}, null, mockThunkAPI),
+      pushUserData({soilDataSiteIds: ['site-1']}, null, mockThunkAPI),
     ).rejects.toThrow('Network request failed');
   });
 
@@ -611,7 +611,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [
         {
           siteId: 'site-1',
@@ -647,7 +647,7 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    const results = await pushSiteData(
+    const results = await pushUserData(
       {soilDataSiteIds: ['site-1', 'site-2', 'site-3']},
       null,
       mockThunkAPI,
@@ -690,7 +690,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [
         {
           siteId: 'site-1',
@@ -708,14 +708,14 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    await pushSiteData(
+    await pushUserData(
       {soilDataSiteIds: ['site-1', 'site-2']},
       null,
       mockThunkAPI,
     );
 
     // Should only push site-1 since site-2 has no data
-    expect(mockPushSiteData).toHaveBeenCalledWith({
+    expect(mockPushUserData).toHaveBeenCalledWith({
       soilDataEntries: [expect.objectContaining({siteId: 'site-1'})],
       soilMetadataEntries: null,
     });
@@ -748,13 +748,13 @@ describe('pushSiteData', () => {
     mockGetState.mockReturnValue(mockState);
 
     // Service returns empty array instead of null
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [],
       soilMetadataResults: null,
       clientMutationId: null,
     });
 
-    const results = await pushSiteData(
+    const results = await pushUserData(
       {soilDataSiteIds: ['site-1']},
       null,
       mockThunkAPI,
@@ -791,19 +791,19 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    const results = await pushSiteData(
+    const results = await pushUserData(
       {soilDataSiteIds: ['site-1']},
       null,
       mockThunkAPI,
     );
 
     expect(results).toEqual({});
-    expect(mockPushSiteData).not.toHaveBeenCalled();
+    expect(mockPushUserData).not.toHaveBeenCalled();
   });
 
   it('should skip pushing when site IDs are provided but already synced', async () => {
     // Tests defensive filtering: site IDs may have been unsynced when selected by
-    // the dispatcher, but synced by another process before pushSiteData executes
+    // the dispatcher, but synced by another process before pushUserData executes
     const soilSync: SyncRecords<SoilData, SoilDataPushFailureReason> = {
       'site-1': {revisionId: 1, lastSyncedRevisionId: 1}, // Already synced
       'site-2': {revisionId: 2, lastSyncedRevisionId: 2}, // Already synced
@@ -835,14 +835,14 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    const results = await pushSiteData(
+    const results = await pushUserData(
       {soilDataSiteIds: ['site-1', 'site-2']},
       null,
       mockThunkAPI,
     );
 
     expect(results).toEqual({});
-    expect(mockPushSiteData).not.toHaveBeenCalled();
+    expect(mockPushUserData).not.toHaveBeenCalled();
   });
 
   it('should handle duplicate site IDs in input arrays', async () => {
@@ -871,7 +871,7 @@ describe('pushSiteData', () => {
     };
     mockGetState.mockReturnValue(mockState);
 
-    mockPushSiteData.mockResolvedValue({
+    mockPushUserData.mockResolvedValue({
       soilDataResults: [
         {
           siteId: 'site-1',
@@ -889,14 +889,14 @@ describe('pushSiteData', () => {
       clientMutationId: null,
     });
 
-    await pushSiteData(
+    await pushUserData(
       {soilDataSiteIds: ['site-1', 'site-1', 'site-1']}, // Duplicates
       null,
       mockThunkAPI,
     );
 
     // Should only send one entry despite duplicates
-    const callArgs = mockPushSiteData.mock.calls[0][0];
+    const callArgs = mockPushUserData.mock.calls[0][0];
     expect(callArgs.soilDataEntries).toHaveLength(1);
   });
 });

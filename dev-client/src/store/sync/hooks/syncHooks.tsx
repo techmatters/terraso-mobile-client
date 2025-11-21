@@ -21,10 +21,6 @@ import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
-  fetchSoilDataForUser,
-  pushSiteData,
-} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
-import {
   selectSoilDataSyncErrorSiteIds,
   selectUnsyncedSoilDataSiteIds,
 } from 'terraso-mobile-client/model/soilData/soilDataSelectors';
@@ -32,6 +28,10 @@ import {
   selectMetadataSyncErrorSiteIds,
   selectUnsyncedMetadataSiteIds,
 } from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
+import {
+  pullUserData,
+  pushUserData,
+} from 'terraso-mobile-client/model/sync/syncGlobalReducer';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const useIsLoggedIn = () => {
@@ -71,7 +71,7 @@ export const usePushDispatch = ({
   return useCallback(() => {
     // Pass separate arrays to avoid fetching unnecessary sync records
     return dispatch(
-      pushSiteData({
+      pushUserData({
         soilDataSiteIds,
         soilMetadataSiteIds,
       }),
@@ -131,7 +131,7 @@ export const usePullDispatch = () => {
   return useCallback(
     (currentUserID: string) => {
       // If the pull failed, do nothing. Another pull will happen eventually.
-      return dispatch(fetchSoilDataForUser(currentUserID));
+      return dispatch(pullUserData(currentUserID));
     },
     [dispatch],
   );

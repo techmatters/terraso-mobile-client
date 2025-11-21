@@ -37,7 +37,7 @@ import {
 } from 'terraso-mobile-client/model/sync/records';
 import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 
-/** @deprecated use pushSiteData instead */
+/** @deprecated use pushUserData instead */
 export const pushSoilData = async (
   unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,
   unsyncedData: Record<string, SoilData | undefined>,
