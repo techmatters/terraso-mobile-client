@@ -312,8 +312,7 @@ describe('selectSoilDataSyncErrorSiteIds memoization', () => {
     expect(result1).not.toBe(result2);
   });
 
-  it('demonstrates that upstream selector returns new objects', () => {
-    // This test proves that getErrorRecords always returns new objects
+  it('should return same reference when error sites have same shallow content', () => {
     const errorSite: SyncRecord<any, any> = errorRecord(
       initialRecord(undefined),
       {value: 'ERROR', revisionId: 1},
@@ -332,10 +331,10 @@ describe('selectSoilDataSyncErrorSiteIds memoization', () => {
 
     const upstream2 = selectSoilDataSyncErrorSites(state2);
 
-    // The upstream selector returns a new object (getErrorRecords behavior)
-    expect(upstream1).not.toBe(upstream2);
+    // The upstream selector should be memoized by shallow equality
+    expect(upstream1).toBe(upstream2);
 
-    // But the content is the same (same SyncRecord references)
+    // And content should be the same (same SyncRecord references)
     expect(upstream1.site1).toBe(upstream2.site1);
   });
 });

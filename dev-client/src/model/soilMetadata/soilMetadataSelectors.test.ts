@@ -250,7 +250,7 @@ describe('selectMetadataSyncErrorSiteIds memoization', () => {
 
     const upstream2 = selectMetadataSyncErrorSites(state2);
 
-    // The selector now returns the same reference when shallow content is the same
+    // The selector returns the same reference when shallow content is the same
     expect(upstream1).toBe(upstream2);
 
     // And the content is the same (same SyncRecord references)
