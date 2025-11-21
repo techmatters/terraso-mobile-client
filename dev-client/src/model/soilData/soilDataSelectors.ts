@@ -35,10 +35,14 @@ export const selectSoilChanges = (state: AppState) => state.soilData.soilSync;
  * (see https://redux.js.org/usage/deriving-data-selectors#optimizing-selectors-with-memoization)
  */
 
-// Note: if you use in dependency lists, this returns a new object every time
 export const selectUnsyncedSoilDataSites = createSelector(
   selectSoilChanges,
   records => getUnsyncedRecords(records),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
 );
 
 export const selectUnsyncedSoilDataSiteIds = createSelector(
@@ -51,10 +55,14 @@ export const selectUnsyncedSoilDataSiteIds = createSelector(
   },
 );
 
-// Note: if you use in dependency lists, this returns a new object every time
 export const selectSoilDataSyncErrorSites = createSelector(
   selectSoilChanges,
   getErrorRecords,
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
 );
 
 export const selectSoilDataSyncErrorSiteIds = createSelector(

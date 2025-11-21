@@ -230,8 +230,8 @@ describe('selectMetadataSyncErrorSiteIds memoization', () => {
     expect(result1).not.toBe(result2);
   });
 
-  it('demonstrates that upstream selector returns new objects', () => {
-    // This test proves that getErrorRecords always returns new objects
+  it('should return same reference when error sites have same shallow content', () => {
+    // Selector should memoize when array content is the same, even though it makes a new array
     const errorSite: SyncRecord<any, any> = errorRecord(
       initialRecord(undefined),
       {value: 'ERROR', revisionId: 1},
@@ -250,10 +250,10 @@ describe('selectMetadataSyncErrorSiteIds memoization', () => {
 
     const upstream2 = selectMetadataSyncErrorSites(state2);
 
-    // The upstream selector returns a new object (getErrorRecords behavior)
-    expect(upstream1).not.toBe(upstream2);
+    // The selector now returns the same reference when shallow content is the same
+    expect(upstream1).toBe(upstream2);
 
-    // But the content is the same (same SyncRecord references)
+    // And the content is the same (same SyncRecord references)
     expect(upstream1.site1).toBe(upstream2.site1);
   });
 });

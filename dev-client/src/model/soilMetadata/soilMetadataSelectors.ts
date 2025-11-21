@@ -37,10 +37,14 @@ export const selectSoilMetadataChanges = (state: AppState) =>
   state.soilMetadata.soilMetadataSync;
 
 // Future work: Much of the sync logic for soilMetadata and soilData is duplicated. When we add another entity, it would be good to refactor to reduce duplication in various files (in here, the slices, pushUtils files, perhaps in the pushUserData mutation and associated action, etc.)
-// Note: if you use in dependency lists, this returns a new object every time
 export const selectUnsyncedSoilMetadataSites = createSelector(
   selectSoilMetadataChanges,
   records => getUnsyncedRecords(records),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
 );
 
 export const selectUnsyncedMetadataSiteIds = createSelector(
@@ -53,10 +57,14 @@ export const selectUnsyncedMetadataSiteIds = createSelector(
   },
 );
 
-// Note: if you use in dependency lists, this returns a new object every time
 export const selectMetadataSyncErrorSites = createSelector(
   selectSoilMetadataChanges,
   getErrorRecords,
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
 );
 
 export const selectMetadataSyncErrorSiteIds = createSelector(
