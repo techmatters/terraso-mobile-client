@@ -27,14 +27,21 @@ import type {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {AppState} from 'terraso-mobile-client/store';
+import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
 
 const PERSISTED_STATE_KEY = 'persisted-redux-state';
 export const persistenceMiddleware: Middleware<{}, AppState> =
   store => next => action => {
     const result = next(action);
     if (isFlagEnabled('FF_offline')) {
-      const newState = store.getState();
-      kvStorage.setObject(PERSISTED_STATE_KEY, newState);
+      // Clear persisted state on logout
+      if (userLoggedOut.match(action)) {
+        kvStorage.remove(PERSISTED_STATE_KEY);
+      } else {
+        // Normal persistence - save state after every action
+        const newState = store.getState();
+        kvStorage.setObject(PERSISTED_STATE_KEY, newState);
+      }
     }
     return result;
   };

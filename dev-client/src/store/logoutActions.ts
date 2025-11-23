@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,33 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createAction} from '@reduxjs/toolkit';
 
-import {Coords} from 'terraso-client-shared/types';
-
-export type UserLocation = {
-  coords: Coords | null;
-  accuracyM: number | null;
-};
-
-export const initialState = {
-  userLocation: {
-    coords: null,
-    accuracyM: null,
-  } as UserLocation,
-};
-
-const {
-  reducer,
-  actions: {updateLocation},
-} = createSlice({
-  name: 'map',
-  initialState,
-  reducers: {
-    updateLocation(state, action: PayloadAction<UserLocation>) {
-      state.userLocation = action.payload;
-    },
-  },
-});
-
-export {updateLocation, reducer};
+/**
+ * Action dispatched when user logs out.
+ * This triggers state reset and persistence clearing.
+ */
+export const userLoggedOut = createAction('user/loggedOut');

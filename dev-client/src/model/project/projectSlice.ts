@@ -24,7 +24,7 @@ import {
 } from 'terraso-client-shared/project/projectTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
-const initialState = {
+export const initialState = {
   projects: {} as Record<string, Project>,
 };
 

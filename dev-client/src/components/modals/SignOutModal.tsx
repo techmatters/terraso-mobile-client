@@ -23,6 +23,7 @@ import {signOut} from 'terraso-client-shared/account/accountSlice';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalProps} from 'terraso-mobile-client/components/modals/Modal';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
 
 export type LogoutModalProps = Pick<ModalProps, 'trigger'>;
 
@@ -30,6 +31,9 @@ export function SignOutModal({trigger}: LogoutModalProps) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const onSignOut = useCallback(() => {
+    // First dispatch userLoggedOut to reset all user-specific state
+    dispatch(userLoggedOut());
+    // Then call signOut to clear auth token and account state
     dispatch(signOut());
   }, [dispatch]);
 

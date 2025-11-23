@@ -30,7 +30,7 @@ export type ElevationState = {
   elevationCache: Record<ElevationKey, ElevationRecord>;
 };
 
-const initialState: ElevationState = {
+export const initialState: ElevationState = {
   elevationCache: {},
 };
 

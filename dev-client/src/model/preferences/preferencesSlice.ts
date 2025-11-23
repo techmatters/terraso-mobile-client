@@ -21,7 +21,7 @@ import {ColorWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScree
 
 type Preferences = typeof initialState;
 
-const initialState = {
+export const initialState = {
   colorWorkflow: 'MANUAL' satisfies ColorWorkflow as ColorWorkflow,
 } as const;
 
