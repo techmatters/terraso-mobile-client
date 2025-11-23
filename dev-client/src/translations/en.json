@@ -1835,5 +1835,45 @@
     "image": {
         "use_camera": "Use Camera",
         "choose_from_gallery": "Choose from Gallery"
+    },
+    "export": {
+        "menu_title": "Data Export",
+        "title": "Export all your sites",
+        "offline_requirement": "An internet connection is required.",
+        "what_is_in_file": "What is in the file?",
+        "csv_description": "<bold>.csv files</bold> are compatible with spreadsheet software",
+        "json_description": "<bold>.json files</bold> are useful for developers.",
+        "loading": "Loading export settings...",
+        "downloading": "Downloading...",
+        "download_csv": "Share CSV File",
+        "download_json": "Share JSON File",
+        "save_dialog_title": "Save LandPKS Data for {{name}}",
+        "save_error_title": "Save Failed",
+        "save_error_message": "Failed to save file: {{error}}",
+        "share_csv": "Share CSV Link",
+        "share_json": "Share JSON Link",
+        "share_message": "Link to your Sites.\n\nThis is your personal export link. This data will always reflect your latest data and will be valid until you reset it.",
+        "share_title": "LandPKS Data Export for {{name}}'s Sites",
+        "share_dialog_title": "Share LandPKS Link for {{Name}}'s Sites",
+        "share_subject": "Link to {{name}}'s LandPKS Sites",
+        "reset_links": "Reset Share Links",
+        "reset_links_title": "Reset share links?",
+        "reset_links_body": "This will break your current share links. Anyone with your previous links will no longer be able to access the files.",
+        "reset_links_warning": "This will invalidate all existing export links. Anyone with your previous links will no longer be able to access your data.",
+        "file_contents": {
+            "title": "The export file contains:",
+            "site_name": "Site Name",
+            "project_name": "Project Name",
+            "latitude": "Latitude",
+            "longitude": "Longitude",
+            "elevation": "Elevation",
+            "observations": "All observations entered for Slope and Soil (by depth)",
+            "location_ranked_soil": "Location Ranked Soil",
+            "top_match_soil": "Top Match Soil",
+            "user_selected_soil": "User Selected Soil",
+            "land_capability": "Land Capability Classification",
+            "ecological_site": "Ecological Site",
+            "notes": "Notes"
+        }
     }
 }
