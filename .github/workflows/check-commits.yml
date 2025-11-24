@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Check for Conventional Commits
         uses: agenthunt/conventional-commit-checker-action@v2.0.1
