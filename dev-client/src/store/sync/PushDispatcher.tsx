@@ -24,7 +24,7 @@ import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import {
   useDebouncedIsOffline,
   useDebouncedUnsyncedMetadataSiteIds,
-  useDebouncedUnsyncedSiteIds,
+  useDebouncedUnsyncedSoilDataSiteIds,
   useIsLoggedIn,
   usePushDispatch,
   useRetryInterval,
@@ -52,7 +52,8 @@ export const PushDispatcher = () => {
   const isOffline = useDebouncedIsOffline(PUSH_DEBOUNCE_MS);
 
   /* Also debounce unsynced IDs so we have a stable state when queuing up a push */
-  const unsyncedSoilDataIds = useDebouncedUnsyncedSiteIds(PUSH_DEBOUNCE_MS);
+  const unsyncedSoilDataIds =
+    useDebouncedUnsyncedSoilDataSiteIds(PUSH_DEBOUNCE_MS);
   const unsyncedMetadataIds =
     useDebouncedUnsyncedMetadataSiteIds(PUSH_DEBOUNCE_MS);
 

@@ -43,12 +43,12 @@ export const useDebouncedIsOffline = (interval: number) => {
   return isOffline;
 };
 
-export const useDebouncedUnsyncedSiteIds = (interval: number) => {
-  const [unsyncedSiteIds] = useDebounce(
+export const useDebouncedUnsyncedSoilDataSiteIds = (interval: number) => {
+  const [unsyncedSoilDataSiteIds] = useDebounce(
     useSelector(selectUnsyncedSoilDataSiteIds),
     interval,
   );
-  return unsyncedSiteIds;
+  return unsyncedSoilDataSiteIds;
 };
 
 export const useDebouncedUnsyncedMetadataSiteIds = (interval: number) => {

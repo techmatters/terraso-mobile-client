@@ -30,7 +30,7 @@ jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
   return {
     ...jest.requireActual('terraso-mobile-client/store/sync/hooks/syncHooks'),
     useDebouncedIsOffline: jest.fn(),
-    useDebouncedUnsyncedSiteIds: jest.fn(),
+    useDebouncedUnsyncedSoilDataSiteIds: jest.fn(),
     useDebouncedUnsyncedMetadataSiteIds: jest.fn(),
     useIsLoggedIn: jest.fn(),
     usePushDispatch: jest.fn(),
@@ -49,8 +49,8 @@ jest.mock('terraso-mobile-client/context/SyncNotificationContext', () => {
 describe('PushDispatcher', () => {
   let useDebouncedIsOffline = jest.mocked(syncHooks.useDebouncedIsOffline);
   let useIsLoggedIn = jest.mocked(syncHooks.useIsLoggedIn);
-  let useDebouncedUnsyncedSiteIds = jest.mocked(
-    syncHooks.useDebouncedUnsyncedSiteIds,
+  let useDebouncedUnsyncedSoilDataSiteIds = jest.mocked(
+    syncHooks.useDebouncedUnsyncedSoilDataSiteIds,
   );
   let useDebouncedUnsyncedMetadataSiteIds = jest.mocked(
     syncHooks.useDebouncedUnsyncedMetadataSiteIds,
@@ -71,11 +71,11 @@ describe('PushDispatcher', () => {
   beforeEach(() => {
     useDebouncedIsOffline.mockReset();
     useIsLoggedIn.mockReset();
-    useDebouncedUnsyncedSiteIds.mockReset();
+    useDebouncedUnsyncedSoilDataSiteIds.mockReset();
     useDebouncedUnsyncedMetadataSiteIds.mockReset();
 
     // Default to empty arrays
-    useDebouncedUnsyncedSiteIds.mockReturnValue([]);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue([]);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue([]);
 
     dispatchPush.mockReset();
@@ -101,14 +101,16 @@ describe('PushDispatcher', () => {
     render(<PushDispatcher />);
 
     expect(useDebouncedIsOffline).toHaveBeenCalledWith(PUSH_DEBOUNCE_MS);
-    expect(useDebouncedUnsyncedSiteIds).toHaveBeenCalledWith(PUSH_DEBOUNCE_MS);
+    expect(useDebouncedUnsyncedSoilDataSiteIds).toHaveBeenCalledWith(
+      PUSH_DEBOUNCE_MS,
+    );
     expect(useDebouncedUnsyncedMetadataSiteIds).toHaveBeenCalledWith(
       PUSH_DEBOUNCE_MS,
     );
   });
 
   test('uses correct site IDs for push dispatch', async () => {
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
 
     render(<PushDispatcher />);
@@ -122,7 +124,7 @@ describe('PushDispatcher', () => {
   test('does not dispatch or retry by default', async () => {
     useIsLoggedIn.mockReturnValue(false);
     useDebouncedIsOffline.mockReturnValue(true);
-    useDebouncedUnsyncedSiteIds.mockReturnValue([]);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue([]);
 
     render(<PushDispatcher />);
 
@@ -134,7 +136,7 @@ describe('PushDispatcher', () => {
   test('dispatches an initial push when conditions are met', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
 
     dispatchPush.mockResolvedValue({payload: {}});
     render(<PushDispatcher />);
@@ -147,7 +149,7 @@ describe('PushDispatcher', () => {
   test('shows error notification when push has sync error', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
 
     dispatchPush.mockResolvedValue({
       payload: {
@@ -165,7 +167,7 @@ describe('PushDispatcher', () => {
   test('does not show error notification when push has no sync errors', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
 
     dispatchPush.mockResolvedValue({
       payload: {
@@ -183,7 +185,7 @@ describe('PushDispatcher', () => {
   test('begins retry when push has graphql error', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
 
     dispatchPush.mockResolvedValue({payload: {error: 'error'}});
     render(<PushDispatcher />);
@@ -194,7 +196,7 @@ describe('PushDispatcher', () => {
   test('begins retry when push is rejected', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
 
     dispatchPush.mockRejectedValue('error');
     render(<PushDispatcher />);
@@ -205,7 +207,7 @@ describe('PushDispatcher', () => {
   test('ends retry when logged-in changes', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     dispatchPush.mockRejectedValue('error');
     const handle = render(<PushDispatcher />);
 
@@ -218,7 +220,7 @@ describe('PushDispatcher', () => {
   test('ends retry when online changes', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     dispatchPush.mockRejectedValue('error');
     const handle = render(<PushDispatcher />);
 
@@ -231,11 +233,11 @@ describe('PushDispatcher', () => {
   test('ends retry when unsynced ids changes', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     dispatchPush.mockRejectedValue('error');
     const handle = render(<PushDispatcher />);
 
-    useDebouncedUnsyncedSiteIds.mockReturnValue([]);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue([]);
     handle.rerender(<PushDispatcher />);
 
     await waitFor(() => expect(endRetry).toHaveBeenCalledTimes(1));
@@ -316,7 +318,7 @@ describe('PushDispatcher', () => {
   test('shows error notification when both soilData and metadata have errors', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
 
     dispatchPush.mockResolvedValue({
@@ -339,7 +341,7 @@ describe('PushDispatcher', () => {
   test('shows error notification when only soilData has errors (metadata succeeds)', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
 
     dispatchPush.mockResolvedValue({
@@ -362,7 +364,7 @@ describe('PushDispatcher', () => {
   test('shows error notification when only metadata has errors (soilData succeeds)', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
 
     dispatchPush.mockResolvedValue({
@@ -385,7 +387,7 @@ describe('PushDispatcher', () => {
   test('does not show error notification when both soilData and metadata succeed', async () => {
     useIsLoggedIn.mockReturnValue(true);
     useDebouncedIsOffline.mockReturnValue(false);
-    useDebouncedUnsyncedSiteIds.mockReturnValue(['abcd']);
+    useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
 
     dispatchPush.mockResolvedValue({
