@@ -159,6 +159,7 @@ const soilDataSlice = createSlice({
 
 export const {setSoilIdStatus} = soilDataSlice.actions;
 
+/** @deprecated Use pushUserData from syncGlobalReducer instead */
 export const pushSoilData = createAsyncThunk(
   'soilId/pushSoilData',
   soilDataActions.pushSoilDataThunk,

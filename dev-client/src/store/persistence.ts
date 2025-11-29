@@ -18,10 +18,7 @@
 import {Middleware} from '@reduxjs/toolkit';
 import {merge, omit} from 'lodash/fp';
 
-import type {
-  Maybe,
-  UserRatingEntry,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import type {UserRatingEntry} from 'terraso-client-shared/graphqlSchema/graphql';
 import type {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
@@ -53,7 +50,7 @@ export const patchPersistedReduxState = (
   const tempState = upgradeSoilMetadataOct2025(state);
   return merge(tempState, {
     soilData: {soilSync: {}},
-    soilMetadata: {soilMetadata: {}},
+    soilMetadata: {soilMetadata: {}, soilMetadataSync: {}},
     soilIdMatch: {locationBasedMatches: {}, siteDataBasedMatches: {}},
     sync: {pullRequested: false},
   });
@@ -77,7 +74,7 @@ function upgradeSoilMetadataOct2025(
 
   for (const [siteId, siteMetadata] of Object.entries(oldMetadataEntries)) {
     const selectedSoilId = siteMetadata.selectedSoilId;
-    let userRatings: Maybe<UserRatingEntry>[];
+    let userRatings: UserRatingEntry[];
     if (selectedSoilId && !siteMetadata.userRatings) {
       // Migrate selectedSoilId to userRatings, and remove selectedSoilId
       userRatings = [
@@ -100,6 +97,8 @@ function upgradeSoilMetadataOct2025(
     soilMetadata: {
       ...state.soilMetadata,
       soilMetadata: upgradedEntries,
+      soilMetadataSync: state.soilMetadata.soilMetadataSync ?? {},
+      // TODO-cknipe: Do we need that? What are the consequences if not?
     },
   };
 }

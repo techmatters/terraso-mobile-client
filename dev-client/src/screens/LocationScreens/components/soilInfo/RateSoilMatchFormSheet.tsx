@@ -34,7 +34,7 @@ import {TranslatedSubHeading} from 'terraso-mobile-client/components/content/typ
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
-import {UpdateUserRatingsInput} from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
+import {UpdateUserRatingsInput} from 'terraso-mobile-client/model/soilMetadata/actions/localSoilMetadataActions';
 import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soilMetadataFunctions';
 import {useUserRating} from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {localUpdateUserRatings} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';

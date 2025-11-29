@@ -19,7 +19,6 @@ import {cloneDeep} from 'lodash';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
 import type {
-  Maybe,
   UserRatingEntry,
   UserRatingInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
@@ -78,17 +77,17 @@ const initializeResult = (data: SoilMetadata | undefined): SoilMetadata => {
 
 const updateUserRatingsObject = (
   inputRating: UserRatingEntry,
-  existingRatings: Array<Maybe<UserRatingEntry>>,
+  existingRatings: Array<UserRatingEntry>,
 ) => {
   // Remove prior SELECTED rating if new soil got selected
   let updatedRatings =
     inputRating.rating === 'SELECTED'
-      ? existingRatings.filter(entry => entry?.rating !== 'SELECTED')
+      ? existingRatings.filter(entry => entry.rating !== 'SELECTED')
       : [...existingRatings];
 
   // Remove this soil's old rating, add its new rating
   updatedRatings = updatedRatings.filter(
-    entry => entry?.soilMatchId !== inputRating.soilMatchId,
+    entry => entry.soilMatchId !== inputRating.soilMatchId,
   );
   updatedRatings.push(inputRating);
 

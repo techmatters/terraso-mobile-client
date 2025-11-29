@@ -18,7 +18,6 @@
 import {useEffect} from 'react';
 
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
-import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -26,6 +25,7 @@ import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
 import {
   useDebouncedIsOffline,
   usePullDispatch,
+  useUnsyncedSiteIds,
 } from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequester';
 
@@ -43,7 +43,7 @@ export const PullDispatcher = () => {
   // Debounce offline state so we know when it's safe to attempt a pull.
   const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
   // Don't pull when there are changes yet to push.
-  const unsyncedSiteIds = useSelector(selectUnsyncedSiteIds);
+  const unsyncedSiteIds = useUnsyncedSiteIds();
   // Don't bother pulling when app is not in foreground
   const appState = useAppState();
 

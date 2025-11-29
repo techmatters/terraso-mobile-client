@@ -20,7 +20,14 @@ import {useCallback} from 'react';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
-import {selectUnsyncedSiteIds} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
+import {
+  selectSoilDataSyncErrorSiteIds,
+  selectUnsyncedSoilDataSiteIds,
+} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
+import {
+  selectMetadataSyncErrorSiteIds,
+  selectUnsyncedMetadataSiteIds,
+} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
@@ -43,8 +50,22 @@ export const SyncContent = () => {
 };
 
 export const PushInfo = () => {
-  const unsyncedIds = useSelector(selectUnsyncedSiteIds);
-  return <Text>({unsyncedIds.length} changed sites)</Text>;
+  const unsyncedSoilDataIds = useSelector(selectUnsyncedSoilDataSiteIds);
+  const unsyncedSoilMetadataIds = useSelector(selectUnsyncedMetadataSiteIds);
+  const errorSoilDataIds = useSelector(selectSoilDataSyncErrorSiteIds);
+  const errorSoilMetadataIds = useSelector(selectMetadataSyncErrorSiteIds);
+  return (
+    <>
+      <Text>
+        ({unsyncedSoilDataIds.length} soilData |{' '}
+        {unsyncedSoilMetadataIds.length} soilMetadata) unsynced
+      </Text>
+      <Text>
+        ({errorSoilDataIds.length} soilData | {errorSoilMetadataIds.length}{' '}
+        soilMetadata) sync errors
+      </Text>
+    </>
+  );
 };
 
 export const PullInfo = () => {

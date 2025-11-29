@@ -22,9 +22,9 @@ import {
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {
-  mutationResponseToResults,
-  unsyncedDataToMutationInput,
+  soilDataMutationResponseToResults,
   unsyncedDataToMutationInputEntry,
+  unsyncedSoilDataToMutationInput,
 } from 'terraso-mobile-client/model/soilData/actions/remoteSoilDataActions';
 import {SoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {
@@ -32,7 +32,7 @@ import {
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
 
-describe('unsyncedDataToMutationInput', () => {
+describe('unsyncedSoilDataToMutationInput', () => {
   let unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>;
   let unsyncedData: Record<string, SoilData | undefined>;
 
@@ -55,7 +55,10 @@ describe('unsyncedDataToMutationInput', () => {
       },
     };
 
-    const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
+    const input = unsyncedSoilDataToMutationInput(
+      unsyncedChanges,
+      unsyncedData,
+    );
     expect(input.soilDataEntries).toHaveLength(2);
   });
 
@@ -69,7 +72,10 @@ describe('unsyncedDataToMutationInput', () => {
       b: undefined,
     };
 
-    const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
+    const input = unsyncedSoilDataToMutationInput(
+      unsyncedChanges,
+      unsyncedData,
+    );
     expect(input.soilDataEntries).toHaveLength(1);
   });
 });
@@ -141,7 +147,7 @@ describe('unsyncedDataToMutationInputEntry', () => {
   });
 });
 
-describe('mutationResponseToResults', () => {
+describe('soilDataMutationResponseToResults', () => {
   let unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>;
   let response: SoilDataPushEntry[];
 
@@ -163,7 +169,10 @@ describe('mutationResponseToResults', () => {
       },
     ];
 
-    const results = mutationResponseToResults(unsyncedChanges, response);
+    const results = soilDataMutationResponseToResults(
+      unsyncedChanges,
+      response,
+    );
     expect(results.data.a).toEqual({
       revisionId: 10,
       value: {
@@ -183,7 +192,10 @@ describe('mutationResponseToResults', () => {
         },
       },
     ];
-    const results = mutationResponseToResults(unsyncedChanges, response);
+    const results = soilDataMutationResponseToResults(
+      unsyncedChanges,
+      response,
+    );
     expect(results.data).toEqual({});
     expect(results.errors.a).toEqual({revisionId: 10, value: 'DOES_NOT_EXIST'});
   });
