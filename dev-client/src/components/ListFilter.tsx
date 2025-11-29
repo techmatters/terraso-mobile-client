@@ -176,7 +176,7 @@ export const ListFilterProvider = <
   const itemsWithFiltersApplied = useMemo(() => {
     const res: Item[] = Object.entries<FilterFn<Item>>(filters).reduce(
       (x, [name, fn]) => {
-        const currentVal = values[name];
+        const currentVal = appliedValues[name];
         if (currentVal === undefined) {
           return x;
         }
@@ -211,7 +211,7 @@ export const ListFilterProvider = <
             return x.filter(item => fn.f(processed)(getFilterVal(item)));
 
           case 'sorting':
-            const selectedVal = values[name];
+            const selectedVal = appliedValues[name];
             if (selectedVal === undefined) {
               return x;
             }
@@ -254,7 +254,7 @@ export const ListFilterProvider = <
       items,
     );
     return res;
-  }, [items, values, filters]);
+  }, [items, appliedValues, filters]);
 
   const clearUnapplied = useCallback(() => {
     setValues(appliedValues);
