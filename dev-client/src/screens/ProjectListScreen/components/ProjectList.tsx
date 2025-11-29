@@ -23,6 +23,8 @@ import {Project} from 'terraso-client-shared/project/projectTypes';
 
 import {useListFilter} from 'terraso-mobile-client/components/ListFilter';
 import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {ProjectPreviewCard} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectPreviewCard';
 
 const WINDOW_SIZE = 6; // Default is 21, bringing it down as the items in this FlatList are very costly to render
@@ -33,9 +35,14 @@ type RenderItemProps = {
   item: Project;
 };
 
-export const ProjectList = () => {
+type Props = {
+  header?: React.ReactNode;
+};
+
+export const ProjectList = ({header}: Props) => {
   const {t} = useTranslation();
   const {filteredItems} = useListFilter<Project>();
+  const isOffline = useIsOffline();
 
   const renderItem = useCallback(
     ({item}: RenderItemProps) => <ProjectPreviewCard project={item} />,
@@ -47,6 +54,20 @@ export const ProjectList = () => {
     [t],
   );
 
+  const ListHeaderComponent = useMemo(
+    () => (
+      <>
+        {header}
+        {isOffline && (
+          <Box mb="md">
+            <OfflineAlert message={t('projects.offline_create')} />
+          </Box>
+        )}
+      </>
+    ),
+    [header, isOffline, t],
+  );
+
   return (
     <FlatList
       data={filteredItems}
@@ -56,6 +77,7 @@ export const ProjectList = () => {
       ItemSeparatorComponent={ItemSeparatorComponent}
       keyExtractor={keyExtractor}
       ListEmptyComponent={ListEmptyComponent}
+      ListHeaderComponent={ListHeaderComponent}
     />
   );
 };
