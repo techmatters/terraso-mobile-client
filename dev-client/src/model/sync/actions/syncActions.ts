@@ -126,10 +126,7 @@ export const pushUserData = async (
         : null,
     soilMetadataEntries:
       soilMetadataUnsyncedChanges && soilMetadataUnsyncedData
-        ? unsyncedMetadataToMutationInput(
-            soilMetadataUnsyncedChanges,
-            soilMetadataUnsyncedData,
-          )
+        ? unsyncedMetadataToMutationInput(soilMetadataUnsyncedData)
         : null,
   };
 

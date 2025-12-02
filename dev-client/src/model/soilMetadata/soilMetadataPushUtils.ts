@@ -27,14 +27,13 @@ import {getEntityRecord} from 'terraso-mobile-client/model/sync/records';
 import type {SyncResults} from 'terraso-mobile-client/model/sync/results';
 
 export const unsyncedMetadataToMutationInput = (
-  unsyncedChanges: SyncRecords<SoilMetadata, SoilMetadataPushFailureReason>,
   unsyncedData: Record<string, SoilMetadata | undefined>,
 ): SoilMetadataPushInputEntry[] => {
-  return Object.keys(unsyncedChanges)
+  return Object.keys(unsyncedData)
     .filter(siteId => unsyncedData[siteId] !== undefined)
     .map(siteId => ({
       siteId,
-      // Future work: If more data is added to the soilMetadata with offline support, refer to patterns in soilDataDiff and unsyncedDataToMutationInputEntry to create similar soilMetadata diffing mechanism.
+      // Future work: If more data is added to the soilMetadata with offline support, we'll want to create a soilMetadata diffing mechanism. Refer to similar patterns in soilDataDiff and unsyncedDataToMutationInputEntry, and pass unsyncedChanges to this function.
       userRatings: unsyncedData[siteId]!.userRatings.filter(
         rating => rating.rating !== null,
       ).map(rating => ({

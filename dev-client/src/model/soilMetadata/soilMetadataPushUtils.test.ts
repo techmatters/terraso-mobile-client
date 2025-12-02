@@ -29,11 +29,6 @@ import {
 describe('soilMetadata push utilities', () => {
   describe('unsyncedMetadataToMutationInput', () => {
     it('should convert unsynced soilMetadata to mutation input', () => {
-      const unsyncedChanges = {
-        'site-1': {revisionId: 1},
-        'site-2': {revisionId: 1},
-      };
-
       const unsyncedData = {
         'site-1': {
           userRatings: [
@@ -48,10 +43,7 @@ describe('soilMetadata push utilities', () => {
         },
       };
 
-      const result = unsyncedMetadataToMutationInput(
-        unsyncedChanges,
-        unsyncedData,
-      );
+      const result = unsyncedMetadataToMutationInput(unsyncedData);
 
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual({
@@ -64,11 +56,6 @@ describe('soilMetadata push utilities', () => {
     });
 
     it('should skip sites with undefined data', () => {
-      const unsyncedChanges = {
-        'site-1': {revisionId: 1},
-        'site-2': {revisionId: 1},
-      };
-
       const unsyncedData = {
         'site-1': {
           userRatings: [
@@ -78,28 +65,18 @@ describe('soilMetadata push utilities', () => {
         'site-2': undefined,
       };
 
-      const result = unsyncedMetadataToMutationInput(
-        unsyncedChanges,
-        unsyncedData,
-      );
+      const result = unsyncedMetadataToMutationInput(unsyncedData);
 
       expect(result).toHaveLength(1);
       expect(result[0].siteId).toBe('site-1');
     });
 
     it('should handle empty userRatings array', () => {
-      const unsyncedChanges = {
-        'site-1': {revisionId: 1},
-      };
-
       const unsyncedData = {
         'site-1': {userRatings: []},
       };
 
-      const result = unsyncedMetadataToMutationInput(
-        unsyncedChanges,
-        unsyncedData,
-      );
+      const result = unsyncedMetadataToMutationInput(unsyncedData);
 
       expect(result).toHaveLength(1);
       expect(result[0].userRatings).toEqual([]);
