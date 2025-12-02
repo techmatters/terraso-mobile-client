@@ -99,12 +99,12 @@ export function DataExportScreen() {
       if (!currentToken?.token) return;
 
       const url = buildExportUrl(currentToken.token, username, format);
-      const message = t('export.share_message', {name: username});
 
       try {
+        // Share just the URL - the .html page will provide the formatted preview
         await shareUrl(
           url,
-          message,
+          undefined, // No message - let the URL preview speak for itself
           t('export.share_title', {name: username}),
           t('export.share_dialog_title', {name: username}),
           t('export.share_subject', {name: username}),

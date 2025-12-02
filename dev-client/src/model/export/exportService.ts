@@ -115,16 +115,17 @@ export const deleteExportToken = async (token: string): Promise<boolean> => {
  * Builds the export URL for a given token and format
  * @param token - The export token
  * @param username - The username (from the token's resourceId)
- * @param format - The export format (csv or json)
- * @returns The full export URL
+ * @param _format - The export format (csv or json) - not used, kept for API compatibility
+ * @returns The full export URL ending in .html (for HTML page with download links)
  */
 export const buildExportUrl = (
   token: string,
   username: string,
-  format: 'csv' | 'json',
+  _format: 'csv' | 'json',
 ): string => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
-  return `${baseUrl}/export/token/user_all/${token}/${username}.${format}`;
+  // Return URL ending with .html which will display an HTML page with download links
+  return `${baseUrl}/export/token/user_all/${token}/${username}.html`;
 };
 
 /**
