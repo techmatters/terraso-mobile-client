@@ -15,16 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {cloneDeep} from 'lodash';
+
 import {
   selectMetadataSyncErrorSiteIds,
-  selectMetadataSyncErrorSites,
   selectSoilMetadataChanges,
   selectUnsyncedMetadataSiteIds,
-  selectUnsyncedSoilMetadataSites,
 } from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 import {
   errorRecord,
   initialRecord,
+  markEntityModified,
   SyncRecord,
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
@@ -45,54 +46,6 @@ describe('selectSoilMetadataChanges', () => {
 
     const result = selectSoilMetadataChanges(state);
     expect(result).toBe(mockSyncRecords);
-  });
-});
-
-describe('selectUnsyncedSoilMetadata', () => {
-  it('should select unsynced soilMetadata records', () => {
-    const state = {
-      soilMetadata: {
-        soilMetadata: {},
-        soilMetadataSync: {
-          'site-unsynced-1': {revisionId: 1},
-          'site-synced': {revisionId: 2, lastSyncedRevisionId: 2},
-          'site-unsynced-2': {revisionId: 3, lastSyncedRevisionId: 2},
-        },
-      },
-    } as Partial<AppState> as AppState;
-
-    const unsynced = selectUnsyncedSoilMetadataSites(state);
-    expect(Object.keys(unsynced).sort()).toEqual([
-      'site-unsynced-1',
-      'site-unsynced-2',
-    ]);
-  });
-
-  it('should return empty object when no unsynced records', () => {
-    const state = {
-      soilMetadata: {
-        soilMetadata: {},
-        soilMetadataSync: {
-          'site-1': {revisionId: 1, lastSyncedRevisionId: 1},
-          'site-2': {revisionId: 2, lastSyncedRevisionId: 2},
-        },
-      },
-    } as Partial<AppState> as AppState;
-
-    const unsynced = selectUnsyncedSoilMetadataSites(state);
-    expect(Object.keys(unsynced)).toHaveLength(0);
-  });
-
-  it('should return empty object when soilMetadataSync is empty', () => {
-    const state = {
-      soilMetadata: {
-        soilMetadata: {},
-        soilMetadataSync: {},
-      },
-    } as Partial<AppState> as AppState;
-
-    const unsynced = selectUnsyncedSoilMetadataSites(state);
-    expect(Object.keys(unsynced)).toHaveLength(0);
   });
 });
 
@@ -144,6 +97,40 @@ describe('selectUnsyncedMetadataSiteIds', () => {
 
     const ids = selectUnsyncedMetadataSiteIds(state);
     expect(ids).toEqual(['site-unsynced-1', 'site-unsynced-2']);
+  });
+
+  it('returns stable values for input states', () => {
+    // Make state
+    // Copy state deep
+    // They should be same
+
+    const stateA1 = {
+      soilMetadata: {
+        soilMetadata: {},
+        soilMetadataSync: {
+          'site-zzz': {revisionId: 1},
+          'site-aaa': {revisionId: 1, lastSyncedRevisionId: 1},
+          'site-mmm': {revisionId: 2, lastSyncedRevisionId: 1},
+        },
+      },
+    } as Partial<AppState> as AppState;
+
+    markEntityModified(stateA1.soilMetadata.soilMetadataSync, 'a', Date.now());
+    const idsA1 = selectUnsyncedMetadataSiteIds(stateA1);
+
+    const stateA2 = cloneDeep(stateA1);
+    const idsA2 = selectUnsyncedMetadataSiteIds(stateA2);
+
+    const stateB = cloneDeep(stateA1);
+    markEntityModified(
+      stateB.soilMetadata.soilMetadataSync,
+      'site-aaa',
+      Date.now(),
+    );
+    const idsB = selectUnsyncedMetadataSiteIds(stateB);
+
+    expect(idsA1).toBe(idsA2);
+    expect(idsA1).not.toBe(idsB);
   });
 });
 
@@ -228,32 +215,5 @@ describe('selectMetadataSyncErrorSiteIds memoization', () => {
 
     // Verify reference is different (content changed)
     expect(result1).not.toBe(result2);
-  });
-
-  it('should return same reference when error sites have same shallow content', () => {
-    // Selector should memoize when array content is the same, even though it makes a new array
-    const errorSite: SyncRecord<any, any> = errorRecord(
-      initialRecord(undefined),
-      {value: 'ERROR', revisionId: 1},
-      Date.now(),
-    );
-
-    const state1 = createMockState({
-      site1: errorSite,
-    }) as AppState;
-
-    const upstream1 = selectMetadataSyncErrorSites(state1);
-
-    const state2 = createMockState({
-      site1: errorSite, // Same error site reference
-    }) as AppState;
-
-    const upstream2 = selectMetadataSyncErrorSites(state2);
-
-    // The selector returns the same reference when shallow content is the same
-    expect(upstream1).toBe(upstream2);
-
-    // And the content is the same (same SyncRecord references)
-    expect(upstream1.site1).toBe(upstream2.site1);
   });
 });

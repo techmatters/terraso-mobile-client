@@ -35,29 +35,9 @@ export const selectSoilChanges = (state: AppState) => state.soilData.soilSync;
  * (see https://redux.js.org/usage/deriving-data-selectors#optimizing-selectors-with-memoization)
  */
 
-export const selectUnsyncedSoilDataSites = createSelector(
-  selectSoilChanges,
-  records => getUnsyncedRecords(records),
-  {
-    memoizeOptions: {
-      resultEqualityCheck: shallowEqual,
-    },
-  },
-);
-
 export const selectUnsyncedSoilDataSiteIds = createSelector(
-  selectUnsyncedSoilDataSites,
-  records => Object.keys(records).sort(),
-  {
-    memoizeOptions: {
-      resultEqualityCheck: shallowEqual,
-    },
-  },
-);
-
-export const selectSoilDataSyncErrorSites = createSelector(
   selectSoilChanges,
-  getErrorRecords,
+  records => Object.keys(getUnsyncedRecords(records)).sort(),
   {
     memoizeOptions: {
       resultEqualityCheck: shallowEqual,
@@ -66,8 +46,8 @@ export const selectSoilDataSyncErrorSites = createSelector(
 );
 
 export const selectSoilDataSyncErrorSiteIds = createSelector(
-  selectSoilDataSyncErrorSites,
-  errorSites => Object.keys(errorSites).sort(),
+  selectSoilChanges,
+  records => Object.keys(getErrorRecords(records)).sort(),
   {
     memoizeOptions: {
       resultEqualityCheck: shallowEqual,
