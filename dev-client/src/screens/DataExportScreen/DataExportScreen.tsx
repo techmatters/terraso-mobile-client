@@ -101,10 +101,10 @@ export function DataExportScreen() {
       const url = buildExportUrl(currentToken.token, username, format);
 
       try {
-        // Share just the URL - the .html page will provide the formatted preview
+        // Share the URL with a descriptive title
         await shareUrl(
           url,
-          undefined, // No message - let the URL preview speak for itself
+          t('export.share_title', {name: username}), // iOS uses this as the preview title
           t('export.share_title', {name: username}),
           t('export.share_dialog_title', {name: username}),
           t('export.share_subject', {name: username}),
