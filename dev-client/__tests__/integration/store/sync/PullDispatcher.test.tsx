@@ -65,7 +65,7 @@ describe('PullDispatcher', () => {
     },
   } as Partial<ReduxAppState>;
 
-  const stateWithUnsyncedSites = {
+  const stateWithUnsyncedSoilDataSites = {
     soilData: {
       soilData: {},
       projectSettings: {},
@@ -95,6 +95,22 @@ describe('PullDispatcher', () => {
             surfaceSaltSelect: null,
             surfaceStoninessSelect: null,
             waterTableDepthSelect: null,
+          },
+          lastSyncedError: undefined,
+          lastSyncedRevisionId: 1,
+          revisionId: 2,
+        },
+      },
+    },
+  } as Partial<ReduxAppState>;
+
+  const stateWithUnsyncedMetadataSites = {
+    soilMetadata: {
+      soilMetadata: {},
+      soilMetadataSync: {
+        site: {
+          lastSyncedData: {
+            userRatings: [],
           },
           lastSyncedError: undefined,
           lastSyncedRevisionId: 1,
@@ -139,12 +155,23 @@ describe('PullDispatcher', () => {
     expect(dispatchPull).not.toHaveBeenCalled();
   });
 
-  test('does not dispatch pull when there are unsynced site ids yet to push', () => {
+  test('does not dispatch pull when there are unsynced soil data site ids yet to push', () => {
     render(<PullDispatcher />, {
       initialState: {
         ...stateWithLoggedInUser,
         ...stateWithPullRequested,
-        ...stateWithUnsyncedSites,
+        ...stateWithUnsyncedSoilDataSites,
+      },
+    });
+    expect(dispatchPull).not.toHaveBeenCalled();
+  });
+
+  test('does not dispatch pull when there are unsynced soil metadata site ids yet to push', () => {
+    render(<PullDispatcher />, {
+      initialState: {
+        ...stateWithLoggedInUser,
+        ...stateWithPullRequested,
+        ...stateWithUnsyncedMetadataSites,
       },
     });
     expect(dispatchPull).not.toHaveBeenCalled();

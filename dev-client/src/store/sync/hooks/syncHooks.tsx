@@ -15,17 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef} from 'react';
+import {useCallback, useMemo, useRef} from 'react';
 
 import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {
-  selectSyncErrorSiteIds,
-  selectUnsyncedSiteIds,
+  selectSoilDataSyncErrorSiteIds,
+  selectUnsyncedSoilDataSiteIds,
 } from 'terraso-mobile-client/model/soilData/soilDataSelectors';
-import {pushSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {
+  selectMetadataSyncErrorSiteIds,
+  selectUnsyncedMetadataSiteIds,
+} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
+import {
+  pullUserData,
+  pushUserData,
+} from 'terraso-mobile-client/model/sync/syncGlobalReducer';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const useIsLoggedIn = () => {
@@ -37,19 +43,40 @@ export const useDebouncedIsOffline = (interval: number) => {
   return isOffline;
 };
 
-export const useDebouncedUnsyncedSiteIds = (interval: number) => {
-  const [unsyncedSiteIds] = useDebounce(
-    useSelector(selectUnsyncedSiteIds),
+export const useDebouncedUnsyncedSoilDataSiteIds = (interval: number) => {
+  const [unsyncedSoilDataSiteIds] = useDebounce(
+    useSelector(selectUnsyncedSoilDataSiteIds),
     interval,
   );
-  return unsyncedSiteIds;
+  return unsyncedSoilDataSiteIds;
 };
 
-export const usePushDispatch = (siteIds: string[]) => {
+export const useDebouncedUnsyncedMetadataSiteIds = (interval: number) => {
+  const [unsyncedMetadataSiteIds] = useDebounce(
+    useSelector(selectUnsyncedMetadataSiteIds),
+    interval,
+  );
+  return unsyncedMetadataSiteIds;
+};
+
+type PushDispatchInputs = {
+  soilDataSiteIds: string[];
+  soilMetadataSiteIds: string[];
+};
+export const usePushDispatch = ({
+  soilDataSiteIds,
+  soilMetadataSiteIds,
+}: PushDispatchInputs) => {
   const dispatch = useDispatch();
   return useCallback(() => {
-    return dispatch(pushSoilData(siteIds));
-  }, [dispatch, siteIds]);
+    // Pass separate arrays to avoid fetching unnecessary sync records
+    return dispatch(
+      pushUserData({
+        soilDataSiteIds,
+        soilMetadataSiteIds,
+      }),
+    );
+  }, [dispatch, soilDataSiteIds, soilMetadataSiteIds]);
 };
 
 export const useRetryInterval = (interval: number, action: () => void) => {
@@ -76,8 +103,26 @@ export const useRetryInterval = (interval: number, action: () => void) => {
   return {beginRetry, endRetry};
 };
 
+// Site ids with either data or metadata that is unsynced (no duplicates)
+export const useUnsyncedSiteIds = () => {
+  const unsyncedSoilDataSiteIds = useSelector(selectUnsyncedSoilDataSiteIds);
+  const unsyncedMetadataSiteIds = useSelector(selectUnsyncedMetadataSiteIds);
+  const unsyncedCombinedSiteIds = useMemo(() => {
+    return [
+      ...new Set([...unsyncedSoilDataSiteIds, ...unsyncedMetadataSiteIds]),
+    ];
+  }, [unsyncedSoilDataSiteIds, unsyncedMetadataSiteIds]);
+  return unsyncedCombinedSiteIds;
+};
+
+// Site ids with either data or metadata errors (no duplicates)
 export const useSyncErrorSiteIds = () => {
-  return useSelector(selectSyncErrorSiteIds);
+  const soilDataErrorSiteIds = useSelector(selectSoilDataSyncErrorSiteIds);
+  const metadataErrorSiteIds = useSelector(selectMetadataSyncErrorSiteIds);
+  const combinedErrorSiteIds = useMemo(() => {
+    return [...new Set([...soilDataErrorSiteIds, ...metadataErrorSiteIds])];
+  }, [soilDataErrorSiteIds, metadataErrorSiteIds]);
+  return combinedErrorSiteIds;
 };
 
 export const usePullDispatch = () => {
@@ -86,7 +131,7 @@ export const usePullDispatch = () => {
   return useCallback(
     (currentUserID: string) => {
       // If the pull failed, do nothing. Another pull will happen eventually.
-      return dispatch(fetchSoilDataForUser(currentUserID));
+      return dispatch(pullUserData(currentUserID));
     },
     [dispatch],
   );

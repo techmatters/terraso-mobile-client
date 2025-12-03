@@ -56,7 +56,7 @@ export const PullRequester = () => {
     wasPreviouslyOffline.current = isOffline;
   }, [isOffline, dispatch]);
 
-  // Request a pull when most recent push yielded errors
+  // Request a pull when most recent push yielded entity-level errors
   const sitesWithErrors = useSyncErrorSiteIds();
   useEffect(() => {
     if (sitesWithErrors && sitesWithErrors.length > 0) {

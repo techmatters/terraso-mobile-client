@@ -24,9 +24,7 @@ import {selectUserRatingsMetadata} from 'terraso-mobile-client/model/soilMetadat
 export const useSelectedSoil = (siteId?: string): string | undefined => {
   // Any old selectedSoilId's on the model should have been converted to userRatings in persistence.ts or by backend migration
   const userRatings = useSelector(selectUserRatingsMetadata(siteId));
-  const selectedEntry = userRatings?.find(
-    entry => entry?.rating === 'SELECTED',
-  );
+  const selectedEntry = userRatings?.find(entry => entry.rating === 'SELECTED');
   return selectedEntry?.soilMatchId;
 };
 
@@ -36,7 +34,7 @@ export const useUserRating = (
 ): UserMatchRating => {
   const userRatings = useSelector(selectUserRatingsMetadata(siteId));
   const thisSoilRating = userRatings?.find(
-    soilRatingEntry => soilRatingEntry?.soilMatchId === soilMatchId,
+    soilRatingEntry => soilRatingEntry.soilMatchId === soilMatchId,
   );
   return thisSoilRating ? thisSoilRating.rating : 'UNSURE';
 };
