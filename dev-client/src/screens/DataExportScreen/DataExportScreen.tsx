@@ -101,10 +101,10 @@ export function DataExportScreen() {
       const url = buildExportUrl(currentToken.token, username, format);
 
       try {
-        // Share the URL with a descriptive title
+        // Share just the URL - iOS shows rich preview, Android falls back to URL text
         await shareUrl(
           url,
-          t('export.share_title', {name: username}), // iOS uses this as the preview title
+          undefined, // No message - iOS shows just rich preview, Android gets URL as fallback
           t('export.share_title', {name: username}),
           t('export.share_dialog_title', {name: username}),
           t('export.share_subject', {name: username}),
@@ -230,13 +230,6 @@ export function DataExportScreen() {
                 disabled={isOffline || isDownloading}
                 label={t('export.download_csv')}
               />
-
-              <TextButton
-                leftIcon="share"
-                onPress={() => handleShare('csv')}
-                disabled={isOffline}
-                label={t('export.share_csv')}
-              />
             </View>
 
             <Divider />
@@ -254,19 +247,25 @@ export function DataExportScreen() {
                 disabled={isOffline || isDownloading}
                 label={t('export.download_json')}
               />
-
-              <TextButton
-                leftIcon="share"
-                onPress={() => handleShare('json')}
-                disabled={isOffline}
-                label={t('export.share_json')}
-              />
             </View>
 
             <Divider />
 
-            {/* Reset Links Button */}
+            {/* Link Sharing Section */}
             <View>
+              <TranslatedParagraph
+                i18nKey="export.link_description"
+                mb="16px"
+              />
+
+              <TextButton
+                leftIcon="share"
+                onPress={() => handleShare('csv')}
+                disabled={isOffline}
+                label={t('export.share_link')}
+              />
+
+              {/* Reset Links Button */}
               <TextButton
                 type="destructive"
                 leftIcon="refresh"

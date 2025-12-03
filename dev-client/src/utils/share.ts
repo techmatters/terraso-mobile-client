@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Share, ShareAction} from 'react-native';
+import {Platform, Share, ShareAction} from 'react-native';
 
 /**
  * Shares a URL using the platform's native share sheet
@@ -36,12 +36,12 @@ export const shareUrl = async (
 ): Promise<ShareAction> => {
   try {
     // Share URL with message for richer preview
-    // iOS: Both url and message are used
-    // Android: message is used (url field ignored, so include url in message)
+    // iOS: url provides rich preview, message is optional additional text
+    // Android: message is required (url field ignored), so fallback to url if no message
     const result = await Share.share(
       {
         url: url, // iOS only - provides link preview
-        message: message || url, // Android uses this, iOS shows alongside URL
+        message: Platform.OS === 'ios' ? message : message || url, // iOS: optional, Android: required
         title: title,
       },
       {
