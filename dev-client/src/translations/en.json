@@ -261,6 +261,7 @@
         "tabs": {
             "inputs": "Inputs",
             "team": "Team",
+            "export": "Export",
             "sites": "Sites",
             "settings": "Settings"
         },
@@ -1840,6 +1841,9 @@
         "menu_title": "Data Export",
         "title": "Export all your sites",
         "offline_requirement": "An internet connection is required.",
+        "site_export_title": "Export Site",
+        "site_export_description": "Download or share this site's data.",
+        "site_export_button": "Export Site Data",
         "what_is_in_file": "What is in the file?",
         "csv_description": "<bold>.csv files</bold> are compatible with spreadsheet software",
         "json_description": "<bold>.json files</bold> are useful for developers.",
@@ -1862,6 +1866,10 @@
         "reset_links_title": "Reset share links?",
         "reset_links_body": "This will break your current share links. Anyone with your previous links will no longer be able to access the files.",
         "reset_links_warning": "This will invalidate all existing export links. Anyone with your previous links will no longer be able to access your data.",
+        "create_token_error_title": "Failed to Create Link",
+        "create_token_error_message": "Could not create export link. Please check your connection and try again.",
+        "delete_token_error_title": "Failed to Reset Link",
+        "delete_token_error_message": "Could not reset export link. Please check your connection and try again.",
         "file_contents": {
             "title": "The export file contains:",
             "site_name": "Site Name",

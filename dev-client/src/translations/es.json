@@ -246,6 +246,7 @@
         "tabs": {
             "inputs": "Importes",
             "team": "Equipo",
+            "export": "Exportar",
             "sites": "Sitios",
             "settings": "Configuraciones"
         },
@@ -1840,6 +1841,9 @@
         "menu_title": "Exportar Datos",
         "title": "Exportar todos tus sitios",
         "offline_requirement": "Se requiere una conexión a internet.",
+        "site_export_title": "Exportar Sitio",
+        "site_export_description": "Descargar o compartir los datos de este sitio.",
+        "site_export_button": "Exportar Datos del Sitio",
         "what_is_in_file": "¿Qué hay en el archivo?",
         "csv_description": "Los archivos .csv son compatibles con software de hojas de cálculo",
         "json_description": "Los archivos .json son útiles para desarrolladores.",
@@ -1862,6 +1866,10 @@
         "reset_links_title": "¿Restablecer enlaces de compartir?",
         "reset_links_body": "Esto romperá tus enlaces de compartir actuales. Cualquiera con tus enlaces anteriores ya no podrá acceder a los archivos.",
         "reset_links_warning": "Esto invalidará todos los enlaces de exportación existentes. Cualquiera con tus enlaces anteriores ya no podrá acceder a tus datos.",
+        "create_token_error_title": "Error al Crear Enlace",
+        "create_token_error_message": "No se pudo crear el enlace de exportación. Por favor verifica tu conexión e intenta de nuevo.",
+        "delete_token_error_title": "Error al Restablecer Enlace",
+        "delete_token_error_message": "No se pudo restablecer el enlace de exportación. Por favor verifica tu conexión e intenta de nuevo.",
         "file_contents": {
             "title": "El archivo de exportación contiene:",
             "site_name": "Nombre del Sitio",

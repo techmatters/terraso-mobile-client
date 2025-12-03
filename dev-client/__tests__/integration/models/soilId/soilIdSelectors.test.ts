@@ -39,7 +39,7 @@ const appState = (): AppState => {
     account: accountInitialState,
     map: {userLocation: {accuracyM: null, coords: null}},
     elevation: {elevationCache: {}},
-    export: {token: null, isLoading: false, error: null},
+    export: {tokens: {}},
     notifications: {messages: {}},
     preferences: {colorWorkflow: 'MANUAL'},
     project: {projects: {}},

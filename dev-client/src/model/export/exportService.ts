@@ -24,9 +24,9 @@ import type {
   ResourceType,
 } from 'terraso-mobile-client/model/export/exportTypes';
 
-const EXPORT_TOKEN_QUERY = `
-  query ExportToken($resourceType: ResourceTypeEnum!, $resourceId: ID!) {
-    exportToken(resourceType: $resourceType, resourceId: $resourceId) {
+const ALL_EXPORT_TOKENS_QUERY = `
+  query AllExportTokens {
+    allExportTokens {
       token
       resourceType
       resourceId
@@ -38,7 +38,7 @@ const EXPORT_TOKEN_QUERY = `
 const CREATE_EXPORT_TOKEN_MUTATION = `
   mutation CreateExportToken($resourceType: ResourceTypeEnum!, $resourceId: ID!) {
     createExportToken(resourceType: $resourceType, resourceId: $resourceId) {
-      token {
+      tokens {
         token
         resourceType
         resourceId
@@ -51,43 +51,42 @@ const CREATE_EXPORT_TOKEN_MUTATION = `
 const DELETE_EXPORT_TOKEN_MUTATION = `
   mutation DeleteExportToken($token: String!) {
     deleteExportToken(token: $token) {
-      success
+      tokens {
+        token
+        resourceType
+        resourceId
+        userId
+      }
     }
   }
 `;
 
 /**
- * Fetches an export token for a given resource
- * @param resourceType - The type of resource (USER, PROJECT, or SITE)
- * @param resourceId - The ID of the resource
- * @returns The export token if it exists, null otherwise
+ * Fetches all export tokens for the current user
+ * @returns Array of all export tokens
  */
-export const fetchExportToken = async (
-  resourceType: ResourceType,
-  resourceId: string,
-): Promise<ExportToken | null> => {
-  console.log('[Export] fetchExportToken called with:', {
-    resourceType,
-    resourceId,
-  });
-  const response: any = await terrasoApi.requestGraphQL(EXPORT_TOKEN_QUERY, {
-    resourceType,
-    resourceId,
-  });
-  console.log('[Export] fetchExportToken response:', response);
-  return response.exportToken ?? null;
+export const fetchAllExportTokens = async (): Promise<ExportToken[]> => {
+  const response: any = await terrasoApi.requestGraphQL(
+    ALL_EXPORT_TOKENS_QUERY,
+  );
+  console.log('[Export] fetchAllExportTokens response:', response);
+
+  // Backend returns a proper array, but lodash/fp's _.omit() in handleApiErrors
+  // converts arrays to objects with numeric keys. Convert back to array.
+  const tokens = response.allExportTokens ?? [];
+  return Array.isArray(tokens) ? tokens : Object.values(tokens);
 };
 
 /**
  * Creates a new export token for a given resource
  * @param resourceType - The type of resource (USER, PROJECT, or SITE)
  * @param resourceId - The ID of the resource
- * @returns The newly created export token
+ * @returns Array of all export tokens after creation
  */
 export const createExportToken = async (
   resourceType: ResourceType,
   resourceId: string,
-): Promise<ExportToken> => {
+): Promise<ExportToken[]> => {
   console.log('[Export] createExportToken called with:', {
     resourceType,
     resourceId,
@@ -101,27 +100,39 @@ export const createExportToken = async (
   );
   console.log('[Export] createExportToken response:', response);
 
-  if (!response.createExportToken?.token) {
+  if (!response.createExportToken?.tokens) {
     throw new Error('Failed to create export token');
   }
 
-  return response.createExportToken.token;
+  // Backend may return object with numeric keys instead of array
+  const tokens = response.createExportToken.tokens;
+  return Array.isArray(tokens) ? tokens : Object.values(tokens);
 };
 
 /**
- * Deletes the current user's export token
+ * Deletes an export token
  * @param token - The token to delete
- * @returns True if the deletion was successful, false otherwise
+ * @returns Array of all remaining export tokens after deletion
  */
-export const deleteExportToken = async (token: string): Promise<boolean> => {
+export const deleteExportToken = async (
+  token: string,
+): Promise<ExportToken[]> => {
+  console.log('[Export] deleteExportToken called with token:', token);
   const response: any = await terrasoApi.requestGraphQL(
     DELETE_EXPORT_TOKEN_MUTATION,
     {
       token,
     },
   );
+  console.log('[Export] deleteExportToken response:', response);
 
-  return response.deleteExportToken?.success ?? false;
+  if (!response.deleteExportToken?.tokens) {
+    throw new Error('Failed to delete export token');
+  }
+
+  // Backend may return object with numeric keys instead of array
+  const tokens = response.deleteExportToken.tokens;
+  return Array.isArray(tokens) ? tokens : Object.values(tokens);
 };
 
 /**
@@ -139,7 +150,9 @@ export const buildExportUrl = (
   _format: 'csv' | 'json',
 ): string => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
-  const scope = `${resourceType.toLowerCase()}_all`;
+  // USER uses "user_all", but PROJECT and SITE use just "project" and "site"
+  const scope =
+    resourceType === 'USER' ? 'user_all' : resourceType.toLowerCase();
   // Return URL ending with .html which will display an HTML page with download links
   return `${baseUrl}/export/token/${scope}/${token}/${resourceName}.html`;
 };
@@ -159,7 +172,9 @@ export const downloadResourceData = async (
   format: 'csv' | 'json',
 ): Promise<string> => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
-  const scope = `${resourceType.toLowerCase()}_all`;
+  // USER uses "user_all", but PROJECT and SITE use just "project" and "site"
+  const scope =
+    resourceType === 'USER' ? 'user_all' : resourceType.toLowerCase();
   const url = `${baseUrl}/export/id/${scope}/${resourceId}/${resourceName}.${format}`;
 
   console.log('[Export] downloadResourceData called with:', {

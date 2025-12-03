@@ -20,42 +20,73 @@ import {createSlice} from '@reduxjs/toolkit';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 import * as exportService from 'terraso-mobile-client/model/export/exportService';
-import type {ExportToken} from 'terraso-mobile-client/model/export/exportTypes';
+import type {
+  ExportToken,
+  ResourceType,
+} from 'terraso-mobile-client/model/export/exportTypes';
+
+/**
+ * Builds a key for the tokens dictionary
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param resourceId - The ID of the resource
+ * @returns Key in format "RESOURCE_TYPE:resourceId"
+ */
+export const buildTokenKey = (
+  resourceType: ResourceType,
+  resourceId: string,
+): string => `${resourceType}:${resourceId}`;
+
+/**
+ * Converts an array of export tokens into a dictionary
+ * @param tokens - Array of export tokens
+ * @returns Dictionary keyed by "RESOURCE_TYPE:resourceId"
+ */
+const tokensArrayToDict = (tokens: ExportToken[]): Record<string, string> => {
+  const dict: Record<string, string> = {};
+  for (const token of tokens) {
+    const key = buildTokenKey(token.resourceType, token.resourceId);
+    dict[key] = token.token;
+  }
+  return dict;
+};
 
 export type ExportState = {
-  token: ExportToken | null;
-  isLoading: boolean;
-  error: string | null;
+  tokens: Record<string, string>; // {"USER:abc-123": "token-xxx", ...}
 };
 
 const initialState: ExportState = {
-  token: null,
-  isLoading: false,
-  error: null,
+  tokens: {},
 };
 
 /**
- * Fetches an export token for a given resource
- * @param resourceType - The type of resource (USER, PROJECT, or SITE)
- * @param resourceId - The ID of the resource
+ * Fetches all export tokens for the current user
+ * Called during sync/pull operations
  */
-export const fetchExportToken = createAsyncThunk(
-  'export/fetchExportToken',
-  exportService.fetchExportToken,
+export const fetchAllExportTokens = createAsyncThunk(
+  'export/fetchAllExportTokens',
+  exportService.fetchAllExportTokens,
 );
 
 /**
  * Creates a new export token for a given resource
+ * Returns all tokens after creation to keep state in sync
  * @param resourceType - The type of resource (USER, PROJECT, or SITE)
  * @param resourceId - The ID of the resource
  */
 export const createExportToken = createAsyncThunk(
   'export/createExportToken',
-  exportService.createExportToken,
+  ({
+    resourceType,
+    resourceId,
+  }: {
+    resourceType: ResourceType;
+    resourceId: string;
+  }) => exportService.createExportToken(resourceType, resourceId),
 );
 
 /**
  * Deletes an export token
+ * Returns all remaining tokens after deletion to keep state in sync
  * @param token - The token to delete
  */
 export const deleteExportToken = createAsyncThunk(
@@ -66,63 +97,23 @@ export const deleteExportToken = createAsyncThunk(
 const exportSlice = createSlice({
   name: 'export',
   initialState,
-  reducers: {
-    clearError: state => {
-      state.error = null;
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
-    // Fetch export token
-    builder.addCase(fetchExportToken.pending, state => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(fetchExportToken.fulfilled, (state, {payload}) => {
-      state.isLoading = false;
-      state.token = payload;
-    });
-    builder.addCase(fetchExportToken.rejected, (state, {error}) => {
-      state.isLoading = false;
-      state.error = error.message ?? 'Failed to fetch export token';
+    // Fetch all tokens (called during sync)
+    builder.addCase(fetchAllExportTokens.fulfilled, (state, {payload}) => {
+      state.tokens = tokensArrayToDict(payload);
     });
 
-    // Create export token
-    builder.addCase(createExportToken.pending, state => {
-      state.isLoading = true;
-      state.error = null;
-    });
+    // Create token - backend returns all tokens
     builder.addCase(createExportToken.fulfilled, (state, {payload}) => {
-      state.isLoading = false;
-      state.token = payload;
-    });
-    builder.addCase(createExportToken.rejected, (state, {error}) => {
-      state.isLoading = false;
-      state.error = error.message ?? 'Failed to create export token';
+      state.tokens = tokensArrayToDict(payload);
     });
 
-    // Delete export token
-    builder.addCase(deleteExportToken.pending, state => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(
-      deleteExportToken.fulfilled,
-      (state, {payload: success}) => {
-        state.isLoading = false;
-        if (success) {
-          state.token = null;
-        } else {
-          state.error = 'Failed to delete export token';
-        }
-      },
-    );
-    builder.addCase(deleteExportToken.rejected, (state, {error}) => {
-      state.isLoading = false;
-      state.error = error.message ?? 'Failed to delete export token';
+    // Delete token - backend returns all remaining tokens
+    builder.addCase(deleteExportToken.fulfilled, (state, {payload}) => {
+      state.tokens = tokensArrayToDict(payload);
     });
   },
 });
-
-export const {clearError} = exportSlice.actions;
 
 export default exportSlice.reducer;

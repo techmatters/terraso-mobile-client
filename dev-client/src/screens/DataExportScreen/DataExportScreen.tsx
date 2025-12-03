@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, Alert, View} from 'react-native';
 import {Divider} from 'react-native-paper';
@@ -32,19 +32,15 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
-  selectExportIsLoading,
   selectExportToken,
   selectHasExportToken,
 } from 'terraso-mobile-client/model/export/exportSelectors';
+import * as exportService from 'terraso-mobile-client/model/export/exportService';
 import {
-  buildExportUrl,
-  downloadUserData,
-} from 'terraso-mobile-client/model/export/exportService';
-import {
-  createExportToken as createExportTokenAction,
-  deleteExportToken as deleteExportTokenAction,
-  fetchExportToken,
+  createExportToken,
+  deleteExportToken,
 } from 'terraso-mobile-client/model/export/exportSlice';
+import type {ResourceType} from 'terraso-mobile-client/model/export/exportTypes';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ExportFileInfoSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportFileInfoSheet';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -52,22 +48,35 @@ import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {saveFileToDevice} from 'terraso-mobile-client/utils/fileDownload';
 import {shareUrl} from 'terraso-mobile-client/utils/share';
 
-export function DataExportScreen() {
+export type DataExportScreenProps = {
+  resourceType: ResourceType;
+  resourceId: string;
+  resourceName: string;
+  /** Set to true when used in a tab navigator (no AppBar needed) */
+  isTab?: boolean;
+};
+
+export function DataExportScreen({
+  resourceType,
+  resourceId,
+  resourceName,
+  isTab = false,
+}: DataExportScreenProps) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const isOffline = useIsOffline();
   const confirmModalRef = useRef<ModalHandle>(null);
   const infoSheetRef = useRef<ModalHandle>(null);
 
-  const token = useSelector(selectExportToken);
-  const hasToken = useSelector(selectHasExportToken);
-  const isLoading = useSelector(selectExportIsLoading);
-
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const currentUser = useSelector(state => state.account.currentUser?.data);
-  const userId = currentUser?.id;
-  const username = currentUser?.email?.split('@')[0] ?? 'user';
+  // Get token from Redux - fetched during sync
+  const token = useSelector((state: AppState) =>
+    selectExportToken(state, resourceType, resourceId),
+  );
+  const hasToken = useSelector((state: AppState) =>
+    selectHasExportToken(state, resourceType, resourceId),
+  );
 
   // Check if any sites have US data region for conditional ecological site field
   const hasUSSites = useSelector((state: AppState) => {
@@ -75,72 +84,111 @@ export function DataExportScreen() {
     return Object.values(matches).some(match => match?.dataRegion === 'US');
   });
 
-  // Fetch token on mount
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchExportToken(userId));
-    }
-  }, [dispatch, userId]);
-
   const handleShare = useCallback(
     async (format: 'csv' | 'json') => {
-      // Create token if it doesn't exist
+      console.log(
+        '[Export] handleShare called with format:',
+        format,
+        'token:',
+        token,
+      );
+
       let currentToken = token;
-      if (!currentToken && userId) {
-        const result = await dispatch(createExportTokenAction(userId));
-        if (createExportTokenAction.fulfilled.match(result)) {
-          currentToken = result.payload;
+
+      // Create token if it doesn't exist
+      if (!currentToken) {
+        console.log('[Export] No token exists, creating new token...');
+        const result = await dispatch(
+          createExportToken({resourceType, resourceId}),
+        );
+
+        if (createExportToken.fulfilled.match(result)) {
+          // Backend returns all tokens, need to extract ours from Redux
+          // Token will be in Redux now, but we need to build URL immediately
+          // Get the newly created token from the payload
+          const tokens = result.payload;
+          const newToken = tokens.find(
+            tokenData =>
+              tokenData.resourceType === resourceType &&
+              tokenData.resourceId === resourceId,
+          );
+          if (!newToken) {
+            console.error('[Export] Token not found in response');
+            Alert.alert(
+              t('export.create_token_error_title'),
+              t('export.create_token_error_message'),
+              [{text: t('general.dismiss')}],
+            );
+            return;
+          }
+          currentToken = newToken.token;
+          console.log('[Export] Token created successfully:', currentToken);
         } else {
-          console.error('Failed to create export token');
+          console.error('[Export] Failed to create export token:', result);
+          Alert.alert(
+            t('export.create_token_error_title'),
+            t('export.create_token_error_message'),
+            [{text: t('general.dismiss')}],
+          );
           return;
         }
       }
 
-      if (!currentToken?.token) return;
+      if (!currentToken) {
+        console.error(
+          '[Export] No valid token available after creation attempt',
+        );
+        return;
+      }
 
-      const url = buildExportUrl(currentToken.token, username, format);
+      const url = exportService.buildExportUrl(
+        currentToken,
+        resourceName,
+        resourceType,
+        format,
+      );
 
       try {
         // Share just the URL - iOS shows rich preview, Android falls back to URL text
         await shareUrl(
           url,
           undefined, // No message - iOS shows just rich preview, Android gets URL as fallback
-          t('export.share_title', {name: username}),
-          t('export.share_dialog_title', {name: username}),
-          t('export.share_subject', {name: username}),
+          t('export.share_title', {name: resourceName}),
+          t('export.share_dialog_title', {name: resourceName}),
+          t('export.share_subject', {name: resourceName}),
         );
       } catch (err) {
         console.error(`Failed to share ${format.toUpperCase()}:`, err);
       }
     },
-    [token, userId, username, t, dispatch],
+    [token, resourceType, resourceId, resourceName, t, dispatch],
   );
 
   const handleDownload = useCallback(
     async (format: 'csv' | 'json') => {
-      if (!userId) {
-        console.error('No user ID available');
-        return;
-      }
-
       setIsDownloading(true);
 
       try {
         // Download file content from API
-        const content = await downloadUserData(userId, username, format);
+        const content = await exportService.downloadResourceData(
+          resourceType,
+          resourceId,
+          resourceName,
+          format,
+        );
 
         // Clear loading indicator before showing share sheet
         setIsDownloading(false);
-        99;
+
         // Save file to device
         const mimeType = format === 'csv' ? 'text/csv' : 'application/json';
-        const filename = `${username}.${format}`;
+        const filename = `${resourceName}.${format}`;
 
         const result = await saveFileToDevice(
           content,
           filename,
           mimeType,
-          t('export.save_dialog_title', {name: username}),
+          t('export.save_dialog_title', {name: resourceName}),
         );
 
         // Don't show success alert - user gets feedback from the share sheet itself
@@ -177,40 +225,47 @@ export function DataExportScreen() {
         setIsDownloading(false);
       }
     },
-    [userId, username, t],
+    [resourceType, resourceId, resourceName, t],
   );
 
   const handleDownloadCSV = () => handleDownload('csv');
   const handleDownloadJSON = () => handleDownload('json');
 
   const handleResetLinksConfirm = useCallback(async () => {
-    if (token?.token) {
-      await dispatch(deleteExportTokenAction(token.token));
-    }
-  }, [dispatch, token]);
+    if (token) {
+      const result = await dispatch(deleteExportToken(token));
 
-  return (
-    <ScreenScaffold AppBar={<AppBar title={t('export.menu_title')} />}>
+      if (deleteExportToken.rejected.match(result)) {
+        console.error('[Export] Failed to delete token:', result);
+        Alert.alert(
+          t('export.delete_token_error_title'),
+          t('export.delete_token_error_message'),
+          [{text: t('general.dismiss')}],
+        );
+      }
+      // If successful, Redux state is automatically updated with remaining tokens
+    }
+  }, [token, t, dispatch]);
+
+  const content = (
+    <>
       <Column margin="16px" space="16px">
         {/* Title */}
-
-        <Heading variant="h4">{t('export.title')}</Heading>
+        {!isTab && <Heading variant="h4">{t('export.title')}</Heading>}
 
         {/* Always show this message */}
         <TranslatedParagraph i18nKey="export.offline_requirement" />
 
         {/* Loading State */}
-        {(isLoading || isDownloading) && (
+        {isDownloading && (
           <View>
             <ActivityIndicator size="large" />
-            <Text>
-              {isDownloading ? t('export.downloading') : t('export.loading')}
-            </Text>
+            <Text>{t('export.downloading')}</Text>
           </View>
         )}
 
         {/* Main Content */}
-        {!isLoading && !isDownloading && (
+        {!isDownloading && (
           <>
             {/* What is in the file? section */}
             <InternalLink
@@ -289,6 +344,16 @@ export function DataExportScreen() {
 
       {/* Export File Info Sheet */}
       <ExportFileInfoSheet ref={infoSheetRef} includeUSFields={hasUSSites} />
+    </>
+  );
+
+  if (isTab) {
+    return content;
+  }
+
+  return (
+    <ScreenScaffold AppBar={<AppBar title={t('export.menu_title')} />}>
+      {content}
     </ScreenScaffold>
   );
 }

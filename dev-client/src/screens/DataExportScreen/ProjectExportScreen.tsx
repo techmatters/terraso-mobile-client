@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2024 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,35 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
+import {DataExportScreen} from 'terraso-mobile-client/screens/DataExportScreen/DataExportScreen';
 
-export const DEFAULT_STACK_NAVIGATOR_OPTIONS: NativeStackNavigationOptions = {
-  headerShown: false,
-  freezeOnBlur: true,
+type Props = {
+  projectId: string;
+  projectName: string;
 };
 
-export const enum TabRoutes {
-  INPUTS = 'Inputs',
-  TEAM = 'Team',
-  EXPORT = 'Export',
-  SETTINGS = 'Settings',
-  SITES = 'Sites',
+/**
+ * Wrapper for DataExportScreen configured for PROJECT resource type
+ * Receives projectId and projectName as props from navigation
+ */
+export function ProjectExportScreen({projectId, projectName}: Props) {
+  return (
+    <DataExportScreen
+      resourceType="PROJECT"
+      resourceId={projectId}
+      resourceName={projectName}
+    />
+  );
 }
-
-export type TabStackParamList = {
-  [TabRoutes.INPUTS]: {
-    projectId: string;
-  };
-  [TabRoutes.TEAM]: {
-    projectId: string;
-  };
-  [TabRoutes.EXPORT]: {
-    projectId: string;
-  };
-  [TabRoutes.SETTINGS]: {
-    projectId: string;
-  };
-  [TabRoutes.SITES]: {
-    projectId: string;
-  };
-};

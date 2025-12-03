@@ -15,26 +15,48 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {buildTokenKey} from 'terraso-mobile-client/model/export/exportSlice';
+import type {ResourceType} from 'terraso-mobile-client/model/export/exportTypes';
 import {AppState} from 'terraso-mobile-client/store';
 
 /**
- * Selects the export token from the state
+ * Selects the export token for a specific resource
+ * @param state - Redux state
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param resourceId - The ID of the resource
+ * @returns The export token string if it exists, null otherwise
  */
-export const selectExportToken = (state: AppState) => state.export.token;
+export const selectExportToken = (
+  state: AppState,
+  resourceType: ResourceType,
+  resourceId: string,
+): string | null => {
+  const key = buildTokenKey(resourceType, resourceId);
+  return state.export.tokens[key] ?? null;
+};
 
 /**
- * Selects whether an export operation is currently loading
+ * Selects whether an export token exists for a specific resource
+ * @param state - Redux state
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param resourceId - The ID of the resource
+ * @returns True if a token exists for this resource, false otherwise
  */
-export const selectExportIsLoading = (state: AppState) =>
-  state.export.isLoading;
+export const selectHasExportToken = (
+  state: AppState,
+  resourceType: ResourceType,
+  resourceId: string,
+): boolean => {
+  return selectExportToken(state, resourceType, resourceId) !== null;
+};
 
 /**
- * Selects any export error message
+ * Selects all export tokens
+ * @param state - Redux state
+ * @returns Dictionary of all export tokens keyed by "RESOURCE_TYPE:resourceId"
  */
-export const selectExportError = (state: AppState) => state.export.error;
-
-/**
- * Selects whether the user has an active export token
- */
-export const selectHasExportToken = (state: AppState) =>
-  state.export.token !== null;
+export const selectAllExportTokens = (
+  state: AppState,
+): Record<string, string> => {
+  return state.export.tokens;
+};

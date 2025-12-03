@@ -18,6 +18,13 @@
 import {Platform} from 'react-native';
 
 import * as FileSystem from 'expo-file-system';
+import {
+  cacheDirectory,
+  documentDirectory,
+  StorageAccessFramework,
+  writeAsStringAsync,
+} from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
 
 export type SaveFileResult =
   | {success: true; filename: string}
@@ -88,13 +95,6 @@ const saveFileIOS = async (
   dialogTitle?: string,
 ): Promise<SaveFileResult> => {
   try {
-    // Import sharing dynamically for iOS
-    const Sharing = await import('expo-sharing');
-
-    // Use legacy API for compatibility with expo-sharing
-    const {documentDirectory, cacheDirectory, writeAsStringAsync} =
-      await import('expo-file-system/legacy');
-
     // Use cache directory as fallback if documentDirectory is not available
     const baseDirectory = documentDirectory || cacheDirectory;
 
@@ -167,13 +167,11 @@ const saveFileAndroid = async (
 ): Promise<SaveFileResult> => {
   try {
     // Check if SAF is available (Android 11+)
+    // @ts-expect-error - StorageAccessFramework is in legacy API not main export
     if (!FileSystem.StorageAccessFramework) {
       // Fallback to share sheet for older Android versions
       return await saveFileFallback(content, filename, mimeType, dialogTitle);
     }
-
-    // Use legacy API for SAF
-    const {StorageAccessFramework} = await import('expo-file-system/legacy');
 
     // Request directory permissions first
     const permissions =
@@ -236,10 +234,6 @@ const saveFileFallback = async (
   dialogTitle?: string,
 ): Promise<SaveFileResult> => {
   try {
-    const Sharing = await import('expo-sharing');
-    const {documentDirectory, cacheDirectory, writeAsStringAsync} =
-      await import('expo-file-system/legacy');
-
     // Use cache directory as fallback if documentDirectory is not available
     const baseDirectory = documentDirectory || cacheDirectory;
 
