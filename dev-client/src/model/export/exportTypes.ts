@@ -15,9 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+export type ResourceType = 'USER' | 'PROJECT' | 'SITE';
+
 export type ExportToken = {
   token: string;
-  resourceType: string;
+  resourceType: ResourceType;
   resourceId: string;
   userId?: string;
 };

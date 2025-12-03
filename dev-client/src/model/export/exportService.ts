@@ -19,7 +19,10 @@ import {getAuthHeaders} from 'terraso-client-shared/account/auth';
 import {getAPIConfig} from 'terraso-client-shared/config';
 import * as terrasoApi from 'terraso-client-shared/terrasoApi/api';
 
-import type {ExportToken} from 'terraso-mobile-client/model/export/exportTypes';
+import type {
+  ExportToken,
+  ResourceType,
+} from 'terraso-mobile-client/model/export/exportTypes';
 
 const EXPORT_TOKEN_QUERY = `
   query ExportToken($resourceType: ResourceTypeEnum!, $resourceId: ID!) {
@@ -54,36 +57,46 @@ const DELETE_EXPORT_TOKEN_MUTATION = `
 `;
 
 /**
- * Fetches the current user's export token
- * @param userId - The current user's ID
+ * Fetches an export token for a given resource
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param resourceId - The ID of the resource
  * @returns The export token if it exists, null otherwise
  */
 export const fetchExportToken = async (
-  userId: string,
+  resourceType: ResourceType,
+  resourceId: string,
 ): Promise<ExportToken | null> => {
-  console.log('[Export] fetchExportToken called with userId:', userId);
+  console.log('[Export] fetchExportToken called with:', {
+    resourceType,
+    resourceId,
+  });
   const response: any = await terrasoApi.requestGraphQL(EXPORT_TOKEN_QUERY, {
-    resourceType: 'USER',
-    resourceId: userId,
+    resourceType,
+    resourceId,
   });
   console.log('[Export] fetchExportToken response:', response);
   return response.exportToken ?? null;
 };
 
 /**
- * Creates a new export token for the current user
- * @param userId - The current user's ID
+ * Creates a new export token for a given resource
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param resourceId - The ID of the resource
  * @returns The newly created export token
  */
 export const createExportToken = async (
-  userId: string,
+  resourceType: ResourceType,
+  resourceId: string,
 ): Promise<ExportToken> => {
-  console.log('[Export] createExportToken called with userId:', userId);
+  console.log('[Export] createExportToken called with:', {
+    resourceType,
+    resourceId,
+  });
   const response: any = await terrasoApi.requestGraphQL(
     CREATE_EXPORT_TOKEN_MUTATION,
     {
-      resourceType: 'USER',
-      resourceId: userId,
+      resourceType,
+      resourceId,
     },
   );
   console.log('[Export] createExportToken response:', response);
@@ -114,38 +127,45 @@ export const deleteExportToken = async (token: string): Promise<boolean> => {
 /**
  * Builds the export URL for a given token and format
  * @param token - The export token
- * @param username - The username (from the token's resourceId)
+ * @param resourceName - The name to use in the filename (username, project name, or site name)
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
  * @param _format - The export format (csv or json) - not used, kept for API compatibility
  * @returns The full export URL ending in .html (for HTML page with download links)
  */
 export const buildExportUrl = (
   token: string,
-  username: string,
+  resourceName: string,
+  resourceType: ResourceType,
   _format: 'csv' | 'json',
 ): string => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
+  const scope = `${resourceType.toLowerCase()}_all`;
   // Return URL ending with .html which will display an HTML page with download links
-  return `${baseUrl}/export/token/user_all/${token}/${username}.html`;
+  return `${baseUrl}/export/token/${scope}/${token}/${resourceName}.html`;
 };
 
 /**
- * Downloads user data directly from the API with authentication
- * @param userId - The current user's ID
- * @param username - The username for the filename
+ * Downloads resource data directly from the API with authentication
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param resourceId - The ID of the resource
+ * @param resourceName - The name to use in the filename
  * @param format - The export format (csv or json)
  * @returns The file content as a string
  */
-export const downloadUserData = async (
-  userId: string,
-  username: string,
+export const downloadResourceData = async (
+  resourceType: ResourceType,
+  resourceId: string,
+  resourceName: string,
   format: 'csv' | 'json',
 ): Promise<string> => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
-  const url = `${baseUrl}/export/id/user_all/${userId}/${username}.${format}`;
+  const scope = `${resourceType.toLowerCase()}_all`;
+  const url = `${baseUrl}/export/id/${scope}/${resourceId}/${resourceName}.${format}`;
 
-  console.log('[Export] downloadUserData called with:', {
-    userId,
-    username,
+  console.log('[Export] downloadResourceData called with:', {
+    resourceType,
+    resourceId,
+    resourceName,
     format,
     url,
   });

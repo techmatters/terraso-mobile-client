@@ -35,7 +35,9 @@ const initialState: ExportState = {
 };
 
 /**
- * Fetches the current user's export token
+ * Fetches an export token for a given resource
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param resourceId - The ID of the resource
  */
 export const fetchExportToken = createAsyncThunk(
   'export/fetchExportToken',
@@ -43,7 +45,9 @@ export const fetchExportToken = createAsyncThunk(
 );
 
 /**
- * Creates a new export token for the current user
+ * Creates a new export token for a given resource
+ * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param resourceId - The ID of the resource
  */
 export const createExportToken = createAsyncThunk(
   'export/createExportToken',
@@ -51,7 +55,8 @@ export const createExportToken = createAsyncThunk(
 );
 
 /**
- * Deletes the current user's export token
+ * Deletes an export token
+ * @param token - The token to delete
  */
 export const deleteExportToken = createAsyncThunk(
   'export/deleteExportToken',
