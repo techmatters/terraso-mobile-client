@@ -17,8 +17,8 @@
 
 import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ActivityIndicator, Alert, View} from 'react-native';
-import {Divider} from 'react-native-paper';
+import {ActivityIndicator, Alert, StyleSheet, View} from 'react-native';
+import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
 
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
@@ -26,6 +26,7 @@ import {InternalLink} from 'terraso-mobile-client/components/links/InternalLink'
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
+  Box,
   Column,
   Heading,
   Text,
@@ -149,10 +150,16 @@ export function DataExportScreen({
       );
 
       try {
-        // Share just the URL - iOS shows rich preview, Android falls back to URL text
+        // iOS: Shows rich preview from URL, ignores message
+        // Android: Only shows message (URL field ignored), so include URL in message
+        const androidMessage = `${t('export.share_android_message', {
+          resourceType: resourceType.toLowerCase(),
+          name: resourceName,
+        })} ${url}`;
+
         await shareUrl(
           url,
-          undefined, // No message - iOS shows just rich preview, Android gets URL as fallback
+          androidMessage, // Android shows this, iOS ignores it and uses URL for preview
           t('export.share_title', {name: resourceName}),
           t('export.share_dialog_title', {name: resourceName}),
           t('export.share_subject', {name: resourceName}),
@@ -256,16 +263,8 @@ export function DataExportScreen({
         {/* Always show this message */}
         <TranslatedParagraph i18nKey="export.offline_requirement" />
 
-        {/* Loading State */}
-        {isDownloading && (
-          <View>
-            <ActivityIndicator size="large" />
-            <Text>{t('export.downloading')}</Text>
-          </View>
-        )}
-
         {/* Main Content */}
-        {!isDownloading && (
+        {
           <>
             {/* What is in the file? section */}
             <InternalLink
@@ -330,7 +329,7 @@ export function DataExportScreen({
               />
             </View>
           </>
-        )}
+        }
       </Column>
 
       {/* Confirm Reset Modal */}
@@ -344,6 +343,29 @@ export function DataExportScreen({
 
       {/* Export File Info Sheet */}
       <ExportFileInfoSheet ref={infoSheetRef} includeUSFields={hasUSSites} />
+
+      {/* Download Progress Modal */}
+      <Portal>
+        <PaperModal
+          visible={isDownloading}
+          dismissable={false}
+          contentContainerStyle={styles.modalContainer}>
+          <Box bg="$background" padding="lg" borderRadius={8}>
+            <Column space="md" alignItems="center">
+              <ActivityIndicator size="large" />
+              <Heading variant="h6">
+                {t('export.preparing_file', {
+                  resourceType: resourceType.toLowerCase(),
+                  name: resourceName,
+                })}
+              </Heading>
+              <Text textAlign="center">
+                {t('export.preparing_file_message')}
+              </Text>
+            </Column>
+          </Box>
+        </PaperModal>
+      </Portal>
     </>
   );
 
@@ -357,3 +379,12 @@ export function DataExportScreen({
     </ScreenScaffold>
   );
 }
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    padding: 20,
+    margin: 20,
+    borderRadius: 8,
+    backgroundColor: 'white',
+  },
+});
