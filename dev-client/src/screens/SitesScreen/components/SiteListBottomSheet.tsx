@@ -110,6 +110,7 @@ export const SiteListBottomSheet = memo(
         <BottomSheet
           ref={ref}
           snapPoints={snapPoints}
+          enableDynamicSizing={false}
           index={snapIndex}
           backgroundStyle={backgroundStyle}
           handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
