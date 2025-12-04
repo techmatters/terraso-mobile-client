@@ -17,7 +17,13 @@
 
 import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ActivityIndicator, Alert, StyleSheet, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
 
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
@@ -150,16 +156,19 @@ export function DataExportScreen({
       );
 
       try {
-        // iOS: Shows rich preview from URL, ignores message
+        // Get resource-type-specific share message
+        const shareMessageKey =
+          `export.share_message_${resourceType.toLowerCase()}` as const;
+        const shareMessage = t(shareMessageKey, {name: resourceName});
+
+        // iOS: Shows rich preview from URL + message text below
         // Android: Only shows message (URL field ignored), so include URL in message
-        const androidMessage = `${t('export.share_android_message', {
-          resourceType: resourceType.toLowerCase(),
-          name: resourceName,
-        })} ${url}`;
+        const message =
+          Platform.OS === 'ios' ? shareMessage : `${shareMessage}\n\n${url}\n`;
 
         await shareUrl(
           url,
-          androidMessage, // Android shows this, iOS ignores it and uses URL for preview
+          message,
           t('export.share_title', {name: resourceName}),
           t('export.share_dialog_title', {name: resourceName}),
           t('export.share_subject', {name: resourceName}),
@@ -186,6 +195,12 @@ export function DataExportScreen({
 
         // Clear loading indicator before showing share sheet
         setIsDownloading(false);
+
+        // Wait for modal dismiss animation to complete before showing native file picker.
+        // Without this, the file picker can appear while the modal is still visible.
+        // Using a timeout because InteractionManager.runAfterInteractions doesn't
+        // account for the modal's fade-out animation.
+        await new Promise(resolve => setTimeout(() => resolve(undefined), 300));
 
         // Save file to device
         const mimeType = format === 'csv' ? 'text/csv' : 'application/json';
