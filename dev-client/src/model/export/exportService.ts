@@ -71,10 +71,7 @@ export const fetchAllExportTokens = async (): Promise<ExportToken[]> => {
   );
   console.log('[Export] fetchAllExportTokens response:', response);
 
-  // Backend returns a proper array, but lodash/fp's _.omit() in handleApiErrors
-  // converts arrays to objects with numeric keys. Convert back to array.
-  const tokens = response.allExportTokens ?? [];
-  return Array.isArray(tokens) ? tokens : Object.values(tokens);
+  return response.allExportTokens;
 };
 
 /**
@@ -104,9 +101,7 @@ export const createExportToken = async (
     throw new Error('Failed to create export token');
   }
 
-  // Backend may return object with numeric keys instead of array
-  const tokens = response.createExportToken.tokens;
-  return Array.isArray(tokens) ? tokens : Object.values(tokens);
+  return response.createExportToken.tokens;
 };
 
 /**
@@ -130,9 +125,7 @@ export const deleteExportToken = async (
     throw new Error('Failed to delete export token');
   }
 
-  // Backend may return object with numeric keys instead of array
-  const tokens = response.deleteExportToken.tokens;
-  return Array.isArray(tokens) ? tokens : Object.values(tokens);
+  return response.deleteExportToken.tokens;
 };
 
 /**
