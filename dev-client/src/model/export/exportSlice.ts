@@ -94,6 +94,17 @@ export const deleteExportToken = createAsyncThunk(
   exportService.deleteExportToken,
 );
 
+/**
+ * Sets export tokens in the state
+ * Used by soilDataGlobalReducer when fetching all user data
+ */
+export const setExportTokens = (
+  state: ExportState,
+  tokens: ExportToken[],
+): void => {
+  state.tokens = tokensArrayToDict(tokens);
+};
+
 const exportSlice = createSlice({
   name: 'export',
   initialState,

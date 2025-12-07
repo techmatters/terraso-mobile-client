@@ -20,7 +20,6 @@ import {useCallback, useRef} from 'react';
 import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {fetchAllExportTokens} from 'terraso-mobile-client/model/export/exportSlice';
 import {fetchSoilDataForUser} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
 import {
   selectSyncErrorSiteIds,
@@ -85,13 +84,9 @@ export const usePullDispatch = () => {
   const dispatch = useDispatch();
 
   return useCallback(
-    async (currentUserID: string) => {
-      // Fetch all data in parallel
+    (currentUserID: string) => {
       // If the pull failed, do nothing. Another pull will happen eventually.
-      await Promise.all([
-        dispatch(fetchSoilDataForUser(currentUserID)),
-        dispatch(fetchAllExportTokens()),
-      ]);
+      return dispatch(fetchSoilDataForUser(currentUserID));
     },
     [dispatch],
   );
