@@ -21,7 +21,7 @@ import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
-export const initialState = {
+const initialState = {
   sites: {} as Record<string, Site>,
 };
 

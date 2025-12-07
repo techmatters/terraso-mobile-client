@@ -54,7 +54,7 @@ export type ExportState = {
   tokens: Record<string, string>; // {"USER:abc-123": "token-xxx", ...}
 };
 
-export const initialState: ExportState = {
+const initialState: ExportState = {
   tokens: {},
 };
 
