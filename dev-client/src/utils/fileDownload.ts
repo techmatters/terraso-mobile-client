@@ -25,10 +25,13 @@ import {
   writeAsStringAsync,
 } from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
+import {useTranslation} from 'react-i18next';
 
 export type SaveFileResult =
   | {success: true; filename: string}
   | {success: false; error: string; canceled?: boolean};
+
+type TranslateFn = ReturnType<typeof useTranslation>['t'];
 
 /**
  * Gets the appropriate UTI (Uniform Type Identifier) for iOS based on MIME type
@@ -48,37 +51,39 @@ const getUTIForMimeType = (mimeType: string): string => {
 /**
  * Saves a file to the device using the native file picker
  *
- * On iOS: Uses Directory.pickDirectoryAsync() to let user select save location
+ * On iOS: Uses share sheet to let user save to Files, iCloud, etc.
  * On Android: Uses StorageAccessFramework to let user pick save location
  *
  * @param content - The file content as a string
  * @param filename - The desired filename (e.g., "data.csv")
  * @param mimeType - The MIME type (e.g., "text/csv" or "application/json")
- * @param dialogTitle - Optional title for the share dialog (Android)
- * @returns Result indicating success or failure with details
+ * @param t - Translation function for error messages
+ * @param dialogTitle - Optional title for the share dialog
+ * @returns Result indicating success or failure with translated error message
  */
 export const saveFileToDevice = async (
   content: string,
   filename: string,
   mimeType: string,
+  t: TranslateFn,
   dialogTitle?: string,
 ): Promise<SaveFileResult> => {
   try {
     if (Platform.OS === 'ios') {
-      return await saveFileIOS(content, filename, mimeType, dialogTitle);
+      return await saveFileIOS(content, filename, mimeType, t, dialogTitle);
     } else if (Platform.OS === 'android') {
-      return await saveFileAndroid(content, filename, mimeType, dialogTitle);
+      return await saveFileAndroid(content, filename, mimeType, t, dialogTitle);
     } else {
       return {
         success: false,
-        error: 'Unsupported platform',
+        error: t('file_download.error.unsupported_platform'),
       };
     }
   } catch (error) {
     console.error('[FileDownload] Error saving file:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: t('file_download.error.unknown'),
     };
   }
 };
@@ -92,6 +97,7 @@ const saveFileIOS = async (
   content: string,
   filename: string,
   mimeType: string,
+  t: TranslateFn,
   dialogTitle?: string,
 ): Promise<SaveFileResult> => {
   try {
@@ -101,7 +107,7 @@ const saveFileIOS = async (
     if (!baseDirectory) {
       return {
         success: false,
-        error: 'No storage directory available',
+        error: t('file_download.error.no_storage_directory'),
       };
     }
 
@@ -115,7 +121,7 @@ const saveFileIOS = async (
     if (!isSharingAvailable) {
       return {
         success: false,
-        error: 'Sharing is not available on this device',
+        error: t('file_download.error.sharing_unavailable'),
       };
     }
 
@@ -141,14 +147,14 @@ const saveFileIOS = async (
     ) {
       return {
         success: false,
-        error: 'Save canceled',
+        error: t('file_download.error.save_canceled'),
         canceled: true,
       };
     }
 
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to save file',
+      error: t('file_download.error.save_failed'),
     };
   }
 };
@@ -160,6 +166,7 @@ const saveFileAndroid = async (
   content: string,
   filename: string,
   mimeType: string,
+  t: TranslateFn,
   dialogTitle?: string,
 ): Promise<SaveFileResult> => {
   try {
@@ -167,7 +174,13 @@ const saveFileAndroid = async (
     // @ts-expect-error - StorageAccessFramework is in legacy API not main export
     if (!FileSystem.StorageAccessFramework) {
       // Fallback to share sheet for older Android versions
-      return await saveFileFallback(content, filename, mimeType, dialogTitle);
+      return await saveFileFallback(
+        content,
+        filename,
+        mimeType,
+        t,
+        dialogTitle,
+      );
     }
 
     // Request directory permissions first
@@ -177,7 +190,7 @@ const saveFileAndroid = async (
     if (!permissions.granted) {
       return {
         success: false,
-        error: 'No directory selected',
+        error: t('file_download.error.no_directory_selected'),
         canceled: true,
       };
     }
@@ -204,14 +217,14 @@ const saveFileAndroid = async (
     ) {
       return {
         success: false,
-        error: 'Save canceled',
+        error: t('file_download.error.save_canceled'),
         canceled: true,
       };
     }
 
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to save file',
+      error: t('file_download.error.save_failed'),
     };
   }
 };
@@ -224,6 +237,7 @@ const saveFileFallback = async (
   content: string,
   filename: string,
   mimeType: string,
+  t: TranslateFn,
   dialogTitle?: string,
 ): Promise<SaveFileResult> => {
   try {
@@ -233,7 +247,7 @@ const saveFileFallback = async (
     if (!baseDirectory) {
       return {
         success: false,
-        error: 'No storage directory available',
+        error: t('file_download.error.no_storage_directory'),
       };
     }
 
@@ -246,7 +260,7 @@ const saveFileFallback = async (
     if (!isSharingAvailable) {
       return {
         success: false,
-        error: 'Sharing is not available on this device',
+        error: t('file_download.error.sharing_unavailable'),
       };
     }
 
@@ -264,7 +278,7 @@ const saveFileFallback = async (
     console.error('[FileDownload] Fallback save error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to save file',
+      error: t('file_download.error.save_failed'),
     };
   }
 };

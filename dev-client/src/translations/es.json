@@ -1888,5 +1888,16 @@
             "ecological_site": "Sitio Ecológico",
             "notes": "Notas"
         }
+    },
+    "file_download": {
+        "error": {
+            "unsupported_platform": "El guardado de archivos no es compatible con esta plataforma.",
+            "no_storage_directory": "No hay directorio de almacenamiento disponible.",
+            "sharing_unavailable": "Compartir no está disponible en este dispositivo.",
+            "save_canceled": "Guardado cancelado.",
+            "no_directory_selected": "No se seleccionó ningún directorio.",
+            "save_failed": "Error al guardar el archivo.",
+            "unknown": "Ocurrió un error desconocido."
+        }
     }
 }

@@ -1891,5 +1891,16 @@
             "ecological_site": "Ecological Site",
             "notes": "Notes"
         }
+    },
+    "file_download": {
+        "error": {
+            "unsupported_platform": "File saving is not supported on this platform.",
+            "no_storage_directory": "No storage directory available.",
+            "sharing_unavailable": "Sharing is not available on this device.",
+            "save_canceled": "Save canceled.",
+            "no_directory_selected": "No directory selected.",
+            "save_failed": "Failed to save file.",
+            "unknown": "An unknown error occurred."
+        }
     }
 }

@@ -206,6 +206,7 @@ export function DataExportScreen({
           content,
           filename,
           mimeType,
+          t,
           t('export.save_dialog_title', {name: resourceName}),
         );
 
