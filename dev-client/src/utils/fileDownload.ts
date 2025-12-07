@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
 import {Platform} from 'react-native';
 
 import * as FileSystem from 'expo-file-system';
@@ -25,7 +26,6 @@ import {
   writeAsStringAsync,
 } from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
-import {useTranslation} from 'react-i18next';
 
 export type SaveFileResult =
   | {success: true; filename: string}
