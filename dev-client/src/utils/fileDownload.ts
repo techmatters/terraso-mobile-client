@@ -107,7 +107,6 @@ const saveFileIOS = async (
 
     // Save file to app's directory first
     const fileUri = `${baseDirectory}${filename}`;
-    console.log('[FileDownload] Saving file to:', fileUri);
 
     await writeAsStringAsync(fileUri, content);
 
@@ -127,8 +126,6 @@ const saveFileIOS = async (
       mimeType: mimeType,
       dialogTitle: dialogTitle, // iOS only - shows as share sheet title
     });
-
-    console.log('[FileDownload] File shared successfully:', filename);
 
     return {
       success: true,
@@ -195,15 +192,11 @@ const saveFileAndroid = async (
     // Write content to the selected file
     await StorageAccessFramework.writeAsStringAsync(fileUri, content);
 
-    console.log('[FileDownload] File saved successfully to:', fileUri);
-
     return {
       success: true,
       filename,
     };
   } catch (error) {
-    console.error('[FileDownload] Android save error:', error);
-
     // Check if user canceled
     if (
       error instanceof Error &&

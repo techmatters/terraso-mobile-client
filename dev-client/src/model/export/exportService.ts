@@ -69,7 +69,6 @@ export const fetchAllExportTokens = async (): Promise<ExportToken[]> => {
   const response: any = await terrasoApi.requestGraphQL(
     ALL_EXPORT_TOKENS_QUERY,
   );
-  console.log('[Export] fetchAllExportTokens response:', response);
 
   return response.allExportTokens;
 };
@@ -84,10 +83,6 @@ export const createExportToken = async (
   resourceType: ResourceType,
   resourceId: string,
 ): Promise<ExportToken[]> => {
-  console.log('[Export] createExportToken called with:', {
-    resourceType,
-    resourceId,
-  });
   const response: any = await terrasoApi.requestGraphQL(
     CREATE_EXPORT_TOKEN_MUTATION,
     {
@@ -95,7 +90,6 @@ export const createExportToken = async (
       resourceId,
     },
   );
-  console.log('[Export] createExportToken response:', response);
 
   if (!response.createExportToken?.tokens) {
     throw new Error('Failed to create export token');
@@ -112,14 +106,12 @@ export const createExportToken = async (
 export const deleteExportToken = async (
   token: string,
 ): Promise<ExportToken[]> => {
-  console.log('[Export] deleteExportToken called with token:', token);
   const response: any = await terrasoApi.requestGraphQL(
     DELETE_EXPORT_TOKEN_MUTATION,
     {
       token,
     },
   );
-  console.log('[Export] deleteExportToken response:', response);
 
   if (!response.deleteExportToken?.tokens) {
     throw new Error('Failed to delete export token');
@@ -170,14 +162,6 @@ export const downloadResourceData = async (
     resourceType === 'USER' ? 'user_all' : resourceType.toLowerCase();
   const url = `${baseUrl}/export/id/${scope}/${resourceId}/${resourceName}.${format}`;
 
-  console.log('[Export] downloadResourceData called with:', {
-    resourceType,
-    resourceId,
-    resourceName,
-    format,
-    url,
-  });
-
   const authHeaders = await getAuthHeaders();
 
   const response = await fetch(url, {
@@ -202,7 +186,6 @@ export const downloadResourceData = async (
   }
 
   const content = await response.text();
-  console.log('[Export] Download successful, content length:', content.length);
 
   return content;
 };

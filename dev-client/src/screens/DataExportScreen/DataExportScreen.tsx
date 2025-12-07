@@ -93,18 +93,10 @@ export function DataExportScreen({
 
   const handleShare = useCallback(
     async (format: 'csv' | 'json') => {
-      console.log(
-        '[Export] handleShare called with format:',
-        format,
-        'token:',
-        token,
-      );
-
       let currentToken = token;
 
       // Create token if it doesn't exist
       if (!currentToken) {
-        console.log('[Export] No token exists, creating new token...');
         const result = await dispatch(
           createExportToken({resourceType, resourceId}),
         );
@@ -129,7 +121,6 @@ export function DataExportScreen({
             return;
           }
           currentToken = newToken.token;
-          console.log('[Export] Token created successfully:', currentToken);
         } else {
           console.error('[Export] Failed to create export token:', result);
           Alert.alert(
@@ -225,9 +216,7 @@ export function DataExportScreen({
           canceled?: boolean;
         };
 
-        if (canceled) {
-          console.log('Save canceled by user');
-        } else {
+        if (!canceled) {
           Alert.alert(
             t('export.save_error_title'),
             t('export.save_error_message', {error}),
