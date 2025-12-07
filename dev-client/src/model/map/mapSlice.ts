@@ -24,7 +24,7 @@ export type UserLocation = {
   accuracyM: number | null;
 };
 
-export const initialState = {
+const initialState = {
   userLocation: {
     coords: null,
     accuracyM: null,

@@ -16,6 +16,7 @@
  */
 
 import {initialState as elevationInitialState} from 'terraso-mobile-client/model/elevation/elevationSlice';
+import {initialState as exportInitialState} from 'terraso-mobile-client/model/export/exportSlice';
 import {initialState as projectInitialState} from 'terraso-mobile-client/model/project/projectSlice';
 import {initialState as siteInitialState} from 'terraso-mobile-client/model/site/siteSlice';
 import {initialState as soilDataInitialState} from 'terraso-mobile-client/model/soilData/soilDataSlice';
@@ -39,6 +40,7 @@ import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
  * - soilIdMatch: Soil ID match results
  * - sync: Sync state
  * - elevation: Elevation data cache
+ * - export: Export tokens
  *
  * State that is preserved:
  * - preferences: UI preferences (color workflow, etc.) - these are app settings
@@ -56,6 +58,7 @@ export const logoutReducer = createGlobalReducer(builder => {
     state.soilIdMatch = soilIdMatchInitialState;
     state.sync = syncInitialState;
     state.elevation = elevationInitialState;
+    state.export = exportInitialState;
 
     // Preserve preferences (UI settings like color workflow)
     // These are app-level settings, not user data
