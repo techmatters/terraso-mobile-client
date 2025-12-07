@@ -15,10 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {createMockAppState} from '@testing/integration/modelUtils';
 import {renderSelectorHook} from '@testing/integration/utils';
 import {cloneDeep} from 'lodash';
 
-import {initialState as accountInitialState} from 'terraso-client-shared/account/accountSlice';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
@@ -31,35 +31,7 @@ import {
   markEntityModified,
   markEntitySynced,
 } from 'terraso-mobile-client/model/sync/records';
-import {initialState as syncInitialState} from 'terraso-mobile-client/model/sync/syncSlice';
-import {AppState, useSelector} from 'terraso-mobile-client/store';
-
-const appState = (): AppState => {
-  return {
-    account: accountInitialState,
-    map: {userLocation: {accuracyM: null, coords: null}},
-    elevation: {elevationCache: {}},
-    export: {tokens: {}},
-    notifications: {messages: {}},
-    preferences: {colorWorkflow: 'MANUAL'},
-    project: {projects: {}},
-    site: {sites: {}},
-    soilData: {
-      projectSettings: {},
-      soilSync: {},
-      soilData: {},
-      status: 'ready',
-    },
-    soilIdMatch: {
-      locationBasedMatches: {},
-      siteDataBasedMatches: {},
-    },
-    soilMetadata: {
-      soilMetadata: {},
-    },
-    sync: syncInitialState,
-  };
-};
+import {useSelector} from 'terraso-mobile-client/store';
 
 const soilData = (): SoilData => {
   return {
@@ -71,7 +43,7 @@ const soilData = (): SoilData => {
 
 describe('selectUnsyncedSites', () => {
   test('selects unsynced sites only', () => {
-    const state = appState();
+    const state = createMockAppState();
     const now = Date.now();
     markEntitySynced(state.soilData.soilSync, 'a', {value: soilData()}, now);
     markEntityModified(state.soilData.soilSync, 'b', now);
@@ -87,7 +59,7 @@ describe('selectUnsyncedSites', () => {
   });
 
   test('returns stable values for input states only', () => {
-    const stateA = appState();
+    const stateA = createMockAppState();
     markEntityModified(stateA.soilData.soilSync, 'a', Date.now());
 
     const selectedA1 = renderSelectorHook(
@@ -115,7 +87,7 @@ describe('selectUnsyncedSites', () => {
 
 describe('selectUnsyncedSiteIds', () => {
   test('selects unsynced site IDs only, sorted', () => {
-    const state = appState();
+    const state = createMockAppState();
     const now = Date.now();
     markEntitySynced(state.soilData.soilSync, 'a', {value: soilData()}, now);
 
@@ -131,7 +103,7 @@ describe('selectUnsyncedSiteIds', () => {
   });
 
   test('returns stable values for input states', () => {
-    const stateA = appState();
+    const stateA = createMockAppState();
     markEntityModified(stateA.soilData.soilSync, 'a', Date.now());
 
     const selectedA1 = renderSelectorHook(
@@ -159,7 +131,7 @@ describe('selectUnsyncedSiteIds', () => {
 
 describe('selectSyncErrorSites', () => {
   test('selects sync error sites only', () => {
-    const state = appState();
+    const state = createMockAppState();
     const now = Date.now();
     markEntitySynced(state.soilData.soilSync, 'a', {value: soilData()}, now);
     markEntityError(
@@ -184,7 +156,7 @@ describe('selectSyncErrorSites', () => {
   });
 
   test('returns stable values for input states', () => {
-    const stateA = appState();
+    const stateA = createMockAppState();
     markEntityError(
       stateA.soilData.soilSync,
       'a',

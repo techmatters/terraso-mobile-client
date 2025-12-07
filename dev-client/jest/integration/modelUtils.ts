@@ -22,6 +22,9 @@ import {
   initialState as accountInitialState,
   User,
 } from 'terraso-client-shared/account/accountSlice';
+
+import {initialState as syncInitialState} from 'terraso-mobile-client/model/sync/syncSlice';
+import type {AppState} from 'terraso-mobile-client/store';
 import {
   Project,
   ProjectMembership,
@@ -255,3 +258,30 @@ export function initState(
     },
   );
 }
+
+export const createMockAppState = (): AppState => {
+  return {
+    account: accountInitialState,
+    map: {userLocation: {accuracyM: null, coords: null}},
+    elevation: {elevationCache: {}},
+    export: {tokens: {}},
+    notifications: {messages: {}},
+    preferences: {colorWorkflow: 'MANUAL'},
+    project: {projects: {}},
+    site: {sites: {}},
+    soilData: {
+      projectSettings: {},
+      soilSync: {},
+      soilData: {},
+      status: 'ready',
+    },
+    soilIdMatch: {
+      locationBasedMatches: {},
+      siteDataBasedMatches: {},
+    },
+    soilMetadata: {
+      soilMetadata: {},
+    },
+    sync: syncInitialState,
+  };
+};
