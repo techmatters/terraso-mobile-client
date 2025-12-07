@@ -32,6 +32,7 @@ export function ProjectExportScreen({projectId, projectName}: Props) {
       resourceType="PROJECT"
       resourceId={projectId}
       resourceName={projectName}
+      scope="project"
     />
   );
 }

@@ -38,6 +38,7 @@ export function UserDataExportScreen() {
       resourceType="USER"
       resourceId={userId}
       resourceName={username}
+      scope="user_all"
     />
   );
 }

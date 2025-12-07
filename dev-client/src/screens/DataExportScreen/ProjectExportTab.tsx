@@ -41,6 +41,7 @@ export function ProjectExportTab({route}: Props) {
       resourceType="PROJECT"
       resourceId={projectId}
       resourceName={projectName}
+      scope="project"
       isTab={true}
     />
   );

@@ -32,6 +32,7 @@ export function SiteExportScreen({siteId, siteName}: Props) {
       resourceType="SITE"
       resourceId={siteId}
       resourceName={siteName}
+      scope="site"
     />
   );
 }

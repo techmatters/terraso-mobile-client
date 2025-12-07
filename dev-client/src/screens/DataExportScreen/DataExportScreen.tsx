@@ -47,7 +47,10 @@ import {
   createExportToken,
   deleteExportToken,
 } from 'terraso-mobile-client/model/export/exportSlice';
-import type {ResourceType} from 'terraso-mobile-client/model/export/exportTypes';
+import type {
+  ExportScope,
+  ResourceType,
+} from 'terraso-mobile-client/model/export/exportTypes';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ExportFileInfoSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportFileInfoSheet';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -59,6 +62,8 @@ export type DataExportScreenProps = {
   resourceType: ResourceType;
   resourceId: string;
   resourceName: string;
+  /** Export scope for API URLs (e.g., 'user_all', 'project', 'site') */
+  scope: ExportScope;
   /** Set to true when used in a tab navigator (no AppBar needed) */
   isTab?: boolean;
 };
@@ -67,6 +72,7 @@ export function DataExportScreen({
   resourceType,
   resourceId,
   resourceName,
+  scope,
   isTab = false,
 }: DataExportScreenProps) {
   const {t} = useTranslation();
@@ -141,9 +147,8 @@ export function DataExportScreen({
 
       const url = exportService.buildExportUrl(
         currentToken,
+        scope,
         resourceName,
-        resourceType,
-        format,
       );
 
       try {
@@ -168,7 +173,7 @@ export function DataExportScreen({
         console.error(`Failed to share ${format.toUpperCase()}:`, err);
       }
     },
-    [token, resourceType, resourceId, resourceName, t, dispatch],
+    [token, resourceType, resourceId, resourceName, scope, t, dispatch],
   );
 
   const handleDownload = useCallback(
@@ -178,7 +183,7 @@ export function DataExportScreen({
       try {
         // Download file content from API
         const content = await exportService.downloadResourceData(
-          resourceType,
+          scope,
           resourceId,
           resourceName,
           format,
@@ -236,7 +241,7 @@ export function DataExportScreen({
         setIsDownloading(false);
       }
     },
-    [resourceType, resourceId, resourceName, t],
+    [scope, resourceId, resourceName, t],
   );
 
   const handleDownloadCSV = () => handleDownload('csv');

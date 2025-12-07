@@ -20,6 +20,7 @@ import {getAPIConfig} from 'terraso-client-shared/config';
 import * as terrasoApi from 'terraso-client-shared/terrasoApi/api';
 
 import type {
+  ExportScope,
   ExportToken,
   ResourceType,
 } from 'terraso-mobile-client/model/export/exportTypes';
@@ -123,43 +124,34 @@ export const deleteExportToken = async (
 /**
  * Builds the export URL for a given token and format
  * @param token - The export token
+ * @param scope - The export scope (e.g., 'user_all', 'project', 'site')
  * @param resourceName - The name to use in the filename (username, project name, or site name)
- * @param resourceType - The type of resource (USER, PROJECT, or SITE)
- * @param _format - The export format (csv or json) - not used, kept for API compatibility
  * @returns The full export URL ending in .html (for HTML page with download links)
  */
 export const buildExportUrl = (
   token: string,
+  scope: ExportScope,
   resourceName: string,
-  resourceType: ResourceType,
-  _format: 'csv' | 'json',
 ): string => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
-  // USER uses "user_all", but PROJECT and SITE use just "project" and "site"
-  const scope =
-    resourceType === 'USER' ? 'user_all' : resourceType.toLowerCase();
-  // Return URL ending with .html which will display an HTML page with download links
   return `${baseUrl}/export/token/${scope}/${token}/${resourceName}.html`;
 };
 
 /**
  * Downloads resource data directly from the API with authentication
- * @param resourceType - The type of resource (USER, PROJECT, or SITE)
+ * @param scope - The export scope (e.g., 'user_all', 'project', 'site')
  * @param resourceId - The ID of the resource
  * @param resourceName - The name to use in the filename
  * @param format - The export format (csv or json)
  * @returns The file content as a string
  */
 export const downloadResourceData = async (
-  resourceType: ResourceType,
+  scope: ExportScope,
   resourceId: string,
   resourceName: string,
   format: 'csv' | 'json',
 ): Promise<string> => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
-  // USER uses "user_all", but PROJECT and SITE use just "project" and "site"
-  const scope =
-    resourceType === 'USER' ? 'user_all' : resourceType.toLowerCase();
   const url = `${baseUrl}/export/id/${scope}/${resourceId}/${resourceName}.${format}`;
 
   const authHeaders = await getAuthHeaders();

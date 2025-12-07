@@ -17,6 +17,12 @@
 
 export type ResourceType = 'USER' | 'PROJECT' | 'SITE';
 
+/**
+ * Export scope used in API URLs.
+ * Note: USER resource type can map to either 'user_all' or 'user_owned' scope.
+ */
+export type ExportScope = 'user_all' | 'user_owned' | 'project' | 'site';
+
 export type ExportToken = {
   token: string;
   resourceType: ResourceType;
