@@ -32,7 +32,6 @@ import {
 import {projectGlobalReducer} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {siteGlobalReducer} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {soilIdGlobalReducer} from 'terraso-mobile-client/model/soilData/soilDataGlobalReducer';
-import {logoutReducer} from 'terraso-mobile-client/store/logoutReducer';
 import {persistenceMiddleware} from 'terraso-mobile-client/store/persistence';
 import {AppState, rootReducer} from 'terraso-mobile-client/store/reducers';
 
@@ -47,7 +46,6 @@ const globalReducers = [
   soilIdGlobalReducer,
   siteGlobalReducer,
   projectGlobalReducer,
-  logoutReducer,
 ];
 
 export const createStore = (intialState?: Partial<AppState>) =>
