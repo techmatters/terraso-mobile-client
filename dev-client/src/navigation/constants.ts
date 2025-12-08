@@ -25,6 +25,7 @@ export const DEFAULT_STACK_NAVIGATOR_OPTIONS: NativeStackNavigationOptions = {
 export const enum TabRoutes {
   INPUTS = 'Inputs',
   TEAM = 'Team',
+  EXPORT = 'Export',
   SETTINGS = 'Settings',
   SITES = 'Sites',
 }
@@ -34,6 +35,9 @@ export type TabStackParamList = {
     projectId: string;
   };
   [TabRoutes.TEAM]: {
+    projectId: string;
+  };
+  [TabRoutes.EXPORT]: {
     projectId: string;
   };
   [TabRoutes.SETTINGS]: {
