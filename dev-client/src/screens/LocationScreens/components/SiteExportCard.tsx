@@ -1,0 +1,61 @@
+/*
+ * Copyright © 2024 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+import {useTranslation} from 'react-i18next';
+
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {
+  Box,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
+type SiteExportCardProps = {
+  onExportPress: () => void;
+};
+
+export const SiteExportCard = ({onExportPress}: SiteExportCardProps) => {
+  const {t} = useTranslation();
+
+  return (
+    <Box variant="tile" p="18px">
+      <Row alignItems="center">
+        <Box mr={15}>
+          <Icon name="download" size="md" color="primary.main" />
+        </Box>
+        <Text
+          variant="body1"
+          color="primary.lighter"
+          textTransform="uppercase"
+          bold>
+          {t('export.site_export_title')}
+        </Text>
+      </Row>
+      <Box h="15px" />
+      <Text variant="body1" color="primary.contrast" mb="25px">
+        {t('export.site_export_description')}
+      </Text>
+      <ContainedButton
+        stretchToFit
+        rightIcon="chevron-right"
+        onPress={onExportPress}
+        label={t('export.site_export_button')}
+      />
+    </Box>
+  );
+};

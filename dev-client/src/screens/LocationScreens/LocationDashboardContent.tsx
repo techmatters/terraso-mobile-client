@@ -42,6 +42,7 @@ import {SiteTabJump} from 'terraso-mobile-client/navigation/components/SiteTabJu
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {LocationSoilIdCard} from 'terraso-mobile-client/screens/LocationScreens/components/LocationSoilIdCard';
 import {PinnedNoteButton} from 'terraso-mobile-client/screens/LocationScreens/components/PinnedNoteButton';
+import {SiteExportCard} from 'terraso-mobile-client/screens/LocationScreens/components/SiteExportCard';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {formatCoordinate} from 'terraso-mobile-client/util';
 
@@ -90,6 +91,15 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
     (privacy: SitePrivacy) => dispatch(updateSite({id: site!.id, privacy})),
     [site, dispatch],
   );
+
+  const onExportPress = useCallback(() => {
+    if (site) {
+      navigation.navigate('SITE_EXPORT', {
+        siteId: site.id,
+        siteName: site.name,
+      });
+    }
+  }, [navigation, site]);
 
   const isOffline = useIsOffline();
 
@@ -183,6 +193,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
           siteId={site?.id}
           onExploreDataPress={onExploreDataPress}
         />
+        {site && <SiteExportCard onExportPress={onExportPress} />}
       </Column>
     </SafeScrollView>
   );
