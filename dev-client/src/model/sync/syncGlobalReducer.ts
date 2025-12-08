@@ -54,10 +54,7 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
     setProjectSettings(state.soilData, payload.projectSoilSettings);
     setSoilData(state.soilData, payload.soilData);
     setSoilMetadata(state.soilMetadata, payload.soilMetadata);
-    // TODO: exportTokens not yet returned by pullUserData - needs backend update
-    if ('exportTokens' in payload) {
-      setExportTokens(state.export, (payload as any).exportTokens ?? []);
-    }
+    setExportTokens(state.export, payload.exportTokens);
     updateSoilIdStatus(state.soilData, 'ready');
   });
 
