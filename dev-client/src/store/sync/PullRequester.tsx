@@ -40,7 +40,10 @@ export const PullRequester = () => {
   const currentUserID = useSelector(selectCurrentUserID);
   const previousCurrentUserID = useRef<string | undefined>(currentUserID);
   useEffect(() => {
-    if (currentUserID !== undefined && previousCurrentUserID === undefined) {
+    if (
+      currentUserID !== undefined &&
+      previousCurrentUserID.current === undefined
+    ) {
       dispatch(setPullRequested(true));
     }
     previousCurrentUserID.current = currentUserID;
@@ -56,7 +59,7 @@ export const PullRequester = () => {
     wasPreviouslyOffline.current = isOffline;
   }, [isOffline, dispatch]);
 
-  // Request a pull when most recent push yielded entity-level errors
+  // Request a pull when most recent push yielded errors
   const sitesWithErrors = useSyncErrorSiteIds();
   useEffect(() => {
     if (sitesWithErrors && sitesWithErrors.length > 0) {
