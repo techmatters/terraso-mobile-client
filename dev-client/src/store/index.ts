@@ -32,6 +32,7 @@ import {
 import {projectGlobalReducer} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {siteGlobalReducer} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {syncGlobalReducer} from 'terraso-mobile-client/model/sync/syncGlobalReducer';
+import {logoutReducer} from 'terraso-mobile-client/store/logoutReducer';
 import {persistenceMiddleware} from 'terraso-mobile-client/store/persistence';
 import {AppState, rootReducer} from 'terraso-mobile-client/store/reducers';
 
@@ -46,6 +47,7 @@ const globalReducers = [
   siteGlobalReducer,
   projectGlobalReducer,
   syncGlobalReducer,
+  logoutReducer,
 ];
 
 export const createStore = (intialState?: Partial<AppState>) =>
