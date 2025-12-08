@@ -96,7 +96,7 @@ export const deleteExportToken = createAsyncThunk(
 
 /**
  * Sets export tokens in the state
- * Used by soilDataGlobalReducer when fetching all user data
+ * Used by syncGlobalReducer when fetching all user data
  */
 export const setExportTokens = (
   state: ExportState,
