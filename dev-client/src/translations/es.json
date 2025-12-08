@@ -246,6 +246,7 @@
         "tabs": {
             "inputs": "Importes",
             "team": "Equipo",
+            "export": "Exportar",
             "sites": "Sitios",
             "settings": "Configuraciones"
         },
@@ -1835,5 +1836,68 @@
         "link_label": "landpotential.org",
         "link_url": "https://landpotential.org/",
         "get_started": "<bold>Para empezar, utiliza el mapa para crear un sitio:</bold>"
+    },
+    "export": {
+        "menu_title": "Exportar Datos",
+        "title": "Exportar todos tus sitios",
+        "offline_requirement": "Se requiere una conexión a internet.",
+        "site_export_title": "Exportar Sitio",
+        "site_export_description": "Descargar o compartir los datos de este sitio.",
+        "site_export_button": "Exportar Datos del Sitio",
+        "what_is_in_file": "¿Qué hay en el archivo?",
+        "csv_description": "Los archivos .csv son compatibles con software de hojas de cálculo",
+        "json_description": "Los archivos .json son útiles para desarrolladores.",
+        "link_description": "Los enlaces HTTP son útiles para compartir un enlace a los datos más actualizados.",
+        "loading": "Cargando configuración de exportación...",
+        "downloading": "Descargando...",
+        "preparing_file": "Preparando archivo de {{resourceType}} para {{name}}",
+        "preparing_file_message": "Creando tu archivo de exportación. Esto puede tomar un momento...",
+        "download_csv": "DESCARGAR CSV",
+        "download_json": "DESCARGAR JSON",
+        "save_dialog_title": "Guardar Datos LandPKS para {{name}}",
+        "save_error_title": "Error al Guardar",
+        "save_error_message": "Error al guardar el archivo: {{error}}",
+        "share_link": "Compartir Enlace HTTP",
+        "share_csv": "COMPARTIR ENLACE CSV",
+        "share_json": "COMPARTIR ENLACE JSON",
+        "share_message": "Enlace a tus Sitios.\n\nEste es tu enlace de exportación personal. Estos datos siempre reflejarán tus datos más recientes y serán válidos hasta que los restablezcas.",
+        "share_title": "Exportación de Datos LandPKS",
+        "share_dialog_title": "Compartir Datos LandPKS",
+        "share_subject": "Enlace de Exportación de Datos LandPKS",
+        "share_android_message": "Exportar datos de {{resourceType}} para {{name}}:",
+        "reset_links": "Restablecer Enlace",
+        "reset_links_title": "¿Restablecer enlaces de compartir?",
+        "reset_links_body": "Esto romperá tus enlaces de compartir actuales. Cualquiera con tus enlaces anteriores ya no podrá acceder a los archivos.",
+        "reset_links_warning": "Esto invalidará todos los enlaces de exportación existentes. Cualquiera con tus enlaces anteriores ya no podrá acceder a tus datos.",
+        "create_token_error_title": "Error al Crear Enlace",
+        "create_token_error_message": "No se pudo crear el enlace de exportación. Por favor verifica tu conexión e intenta de nuevo.",
+        "delete_token_error_title": "Error al Restablecer Enlace",
+        "delete_token_error_message": "No se pudo restablecer el enlace de exportación. Por favor verifica tu conexión e intenta de nuevo.",
+        "file_contents": {
+            "title": "El archivo de exportación contiene:",
+            "site_name": "Nombre del Sitio",
+            "project_name": "Nombre del Proyecto",
+            "latitude": "Latitud",
+            "longitude": "Longitud",
+            "elevation": "Elevación",
+            "observations": "Todas las observaciones ingresadas para Pendiente y Suelo (por profundidad)",
+            "location_ranked_soil": "Suelo Clasificado por Ubicación",
+            "top_match_soil": "Suelo de Mejor Coincidencia",
+            "user_selected_soil": "Suelo Seleccionado por el Usuario",
+            "land_capability": "Clasificación de Capacidad de la Tierra",
+            "ecological_site": "Sitio Ecológico",
+            "notes": "Notas"
+        }
+    },
+    "file_download": {
+        "error": {
+            "unsupported_platform": "El guardado de archivos no es compatible con esta plataforma.",
+            "no_storage_directory": "No hay directorio de almacenamiento disponible.",
+            "sharing_unavailable": "Compartir no está disponible en este dispositivo.",
+            "save_canceled": "Guardado cancelado.",
+            "no_directory_selected": "No se seleccionó ningún directorio.",
+            "save_failed": "Error al guardar el archivo.",
+            "unknown": "Ocurrió un error desconocido."
+        }
     }
 }
