@@ -549,7 +549,9 @@
     },
     "sign_out": {
         "confirm_body": "Are you sure you want to sign out?",
-        "confirm_action": "Sign out"
+        "confirm_action": "Sign out",
+        "blocked_title": "Cannot Sign Out",
+        "blocked_body": "You have unsynced changes that need to be uploaded before signing out. Please connect to the internet and wait for your data to sync."
     },
     "account": {
         "google_login": "Sign in with Google",
