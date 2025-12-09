@@ -26,6 +26,7 @@ import {
 } from 'react-native';
 import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
 
+import {trackExport} from 'terraso-mobile-client/analytics/exportTracking';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {InternalLink} from 'terraso-mobile-client/components/links/InternalLink';
@@ -152,6 +153,16 @@ export function DataExportScreen({
       );
 
       try {
+        // Track share event
+        trackExport({
+          event: 'export_link_share',
+          resourceType,
+          resourceId,
+          resourceName,
+          scope,
+          format: 'html',
+        });
+
         // Get resource-type-specific share message
         const shareMessageKey =
           `export.share_message_${resourceType.toLowerCase()}` as const;
@@ -179,6 +190,16 @@ export function DataExportScreen({
   const handleDownload = useCallback(
     async (format: 'csv' | 'json') => {
       setIsDownloading(true);
+
+      // Track download event
+      trackExport({
+        event: 'export_file_download',
+        resourceType,
+        resourceId,
+        resourceName,
+        scope,
+        format,
+      });
 
       try {
         // Download file content from API
@@ -242,7 +263,7 @@ export function DataExportScreen({
         setIsDownloading(false);
       }
     },
-    [scope, resourceId, resourceName, t],
+    [resourceType, scope, resourceId, resourceName, t],
   );
 
   const handleDownloadCSV = () => handleDownload('csv');
@@ -250,6 +271,16 @@ export function DataExportScreen({
 
   const handleResetLinksConfirm = useCallback(async () => {
     if (token) {
+      // Track reset event
+      trackExport({
+        event: 'export_link_reset',
+        resourceType,
+        resourceId,
+        resourceName,
+        scope,
+        format: 'html',
+      });
+
       const result = await dispatch(deleteExportToken(token));
 
       if (deleteExportToken.rejected.match(result)) {
@@ -262,7 +293,7 @@ export function DataExportScreen({
       }
       // If successful, Redux state is automatically updated with remaining tokens
     }
-  }, [token, t, dispatch]);
+  }, [token, resourceType, resourceId, resourceName, scope, t, dispatch]);
 
   const content = (
     <>
