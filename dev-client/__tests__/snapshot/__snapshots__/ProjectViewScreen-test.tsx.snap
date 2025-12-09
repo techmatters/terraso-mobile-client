@@ -438,6 +438,13 @@ exports[`renders correctly 1`] = `
                                         "projectId": "1",
                                       },
                                     },
+                                    {
+                                      "key": "Export-stable-nanoid-id",
+                                      "name": "Export",
+                                      "params": {
+                                        "projectId": "1",
+                                      },
+                                    },
                                   ]
                                 }
                                 getItem={[Function]}
@@ -1014,6 +1021,188 @@ exports[`renders correctly 1`] = `
                                               }
                                             >
                                               Team
+                                            </Text>
+                                          </View>
+                                        </View>
+                                      </View>
+                                    </View>
+                                  </View>
+                                  <View
+                                    onFocusCapture={[Function]}
+                                    onLayout={[Function]}
+                                    style={
+                                      [
+                                        {
+                                          "flexDirection": "row",
+                                        },
+                                        null,
+                                      ]
+                                    }
+                                  >
+                                    <View
+                                      accessibilityLabel="Export"
+                                      accessibilityState={
+                                        {
+                                          "busy": undefined,
+                                          "checked": undefined,
+                                          "disabled": undefined,
+                                          "expanded": undefined,
+                                          "selected": false,
+                                        }
+                                      }
+                                      accessibilityValue={
+                                        {
+                                          "max": undefined,
+                                          "min": undefined,
+                                          "now": undefined,
+                                          "text": undefined,
+                                        }
+                                      }
+                                      accessible={true}
+                                      collapsable={false}
+                                      focusable={true}
+                                      href="/PROJECT_VIEW/Export?projectId=1"
+                                      onBlur={[Function]}
+                                      onClick={[Function]}
+                                      onFocus={[Function]}
+                                      onLayout={[Function]}
+                                      onResponderGrant={[Function]}
+                                      onResponderMove={[Function]}
+                                      onResponderRelease={[Function]}
+                                      onResponderTerminate={[Function]}
+                                      onResponderTerminationRequest={[Function]}
+                                      onStartShouldSetResponder={[Function]}
+                                      role="tab"
+                                      style={
+                                        [
+                                          {
+                                            "cursor": "pointer",
+                                            "opacity": 1,
+                                          },
+                                          [
+                                            {
+                                              "backgroundColor": "transparent",
+                                              "borderRadius": 10,
+                                            },
+                                            null,
+                                          ],
+                                        ]
+                                      }
+                                    >
+                                      <View
+                                        pointerEvents="none"
+                                        style={
+                                          [
+                                            {
+                                              "alignItems": "center",
+                                              "flex": 1,
+                                              "justifyContent": "center",
+                                              "minHeight": 48,
+                                              "padding": 10,
+                                            },
+                                            {
+                                              "flexDirection": "row",
+                                              "flexGrow": 1,
+                                              "paddingHorizontal": 16,
+                                              "paddingVertical": 9,
+                                              "width": "auto",
+                                            },
+                                          ]
+                                        }
+                                      >
+                                        <View
+                                          style={
+                                            {
+                                              "margin": 2,
+                                            }
+                                          }
+                                        >
+                                          <View
+                                            collapsable={false}
+                                            style={
+                                              {
+                                                "opacity": 1,
+                                              }
+                                            }
+                                          >
+                                            <Icon
+                                              color="#C05621"
+                                              name="download"
+                                              size={24}
+                                              style={{}}
+                                            />
+                                          </View>
+                                          <View
+                                            collapsable={false}
+                                            style={
+                                              {
+                                                "bottom": 0,
+                                                "left": 0,
+                                                "opacity": 0,
+                                                "position": "absolute",
+                                                "right": 0,
+                                                "top": 0,
+                                              }
+                                            }
+                                          >
+                                            <Icon
+                                              color="#FFFFFF"
+                                              name="download"
+                                              size={24}
+                                              style={{}}
+                                            />
+                                          </View>
+                                        </View>
+                                        <View>
+                                          <View
+                                            collapsable={false}
+                                            style={
+                                              {
+                                                "opacity": 1,
+                                              }
+                                            }
+                                          >
+                                            <Text
+                                              letterSpacing="0.15px"
+                                              lineHeight="24px"
+                                              style={
+                                                {
+                                                  "color": "#C05621",
+                                                  "fontSize": 16,
+                                                  "fontWeight": "400",
+                                                  "textTransform": "uppercase",
+                                                }
+                                              }
+                                            >
+                                              Export
+                                            </Text>
+                                          </View>
+                                          <View
+                                            collapsable={false}
+                                            style={
+                                              {
+                                                "bottom": 0,
+                                                "left": 0,
+                                                "opacity": 0,
+                                                "position": "absolute",
+                                                "right": 0,
+                                                "top": 0,
+                                              }
+                                            }
+                                          >
+                                            <Text
+                                              letterSpacing="0.15px"
+                                              lineHeight="24px"
+                                              style={
+                                                {
+                                                  "color": "#FFFFFF",
+                                                  "fontSize": 16,
+                                                  "fontWeight": "400",
+                                                  "textTransform": "uppercase",
+                                                }
+                                              }
+                                            >
+                                              Export
                                             </Text>
                                           </View>
                                         </View>
@@ -3897,6 +4086,46 @@ exports[`renders correctly 1`] = `
                                   </RCTScrollView>
                                 </View>
                               </View>
+                            </View>
+                            <View
+                              collapsable={false}
+                              style={
+                                {
+                                  "bottom": 0,
+                                  "left": 0,
+                                  "position": "absolute",
+                                  "right": 0,
+                                  "top": 0,
+                                }
+                              }
+                            >
+                              <View
+                                aria-hidden={true}
+                                style={
+                                  [
+                                    {
+                                      "flex": 1,
+                                      "overflow": "hidden",
+                                    },
+                                    null,
+                                    [
+                                      [
+                                        {
+                                          "backgroundColor": "rgb(242, 242, 242)",
+                                        },
+                                        undefined,
+                                      ],
+                                      {
+                                        "bottom": 0,
+                                        "left": 0,
+                                        "position": "absolute",
+                                        "right": 0,
+                                        "top": 0,
+                                      },
+                                    ],
+                                  ]
+                                }
+                              />
                             </View>
                             <View
                               collapsable={false}
