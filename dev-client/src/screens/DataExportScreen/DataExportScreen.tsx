@@ -46,6 +46,7 @@ import type {
   ExportScope,
   ResourceType,
 } from 'terraso-mobile-client/model/export/exportTypes';
+import {selectHasUSSites} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ExportFileInfoSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportFileInfoSheet';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -87,10 +88,7 @@ export function DataExportScreen({
   );
 
   // Check if any sites have US data region for conditional ecological site field
-  const hasUSSites = useSelector((state: AppState) => {
-    const matches = state.soilIdMatch.siteDataBasedMatches;
-    return Object.values(matches).some(match => match?.dataRegion === 'US');
-  });
+  const hasUSSites = useSelector(selectHasUSSites);
 
   const handleShare = useCallback(
     async (format: 'csv' | 'json') => {
@@ -103,9 +101,9 @@ export function DataExportScreen({
         );
 
         if (createExportToken.fulfilled.match(result)) {
-          // Backend returns all tokens, need to extract ours from Redux
-          // Token will be in Redux now, but we need to build URL immediately
-          // Get the newly created token from the payload
+          // Redux state is updated, but our `token` variable still has the stale
+          // value from before the dispatch. Extract the new token from the action
+          // payload so we can use it immediately without waiting for a re-render.
           const tokens = result.payload;
           const newToken = tokens.find(
             tokenData =>
@@ -131,13 +129,6 @@ export function DataExportScreen({
           );
           return;
         }
-      }
-
-      if (!currentToken) {
-        console.error(
-          '[Export] No valid token available after creation attempt',
-        );
-        return;
       }
 
       const url = exportService.buildExportUrl(

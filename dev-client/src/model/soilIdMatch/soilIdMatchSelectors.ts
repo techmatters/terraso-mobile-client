@@ -93,3 +93,12 @@ export const selectNextDataBasedInputs = createSelector(
       ]),
     ),
 );
+
+/**
+ * Selects whether any sites have US data region for soil ID matches.
+ * Used to determine if US-specific fields (like ecological site) should be shown.
+ */
+export const selectHasUSSites = (state: AppState): boolean => {
+  const matches = state.soilIdMatch.siteDataBasedMatches;
+  return Object.values(matches).some(match => match?.dataRegion === 'US');
+};
