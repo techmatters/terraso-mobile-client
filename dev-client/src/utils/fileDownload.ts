@@ -17,6 +17,7 @@
 
 import {useTranslation} from 'react-i18next';
 import {Platform} from 'react-native';
+import Share from 'react-native-share';
 
 import * as FileSystem from 'expo-file-system';
 import {
@@ -25,28 +26,12 @@ import {
   StorageAccessFramework,
   writeAsStringAsync,
 } from 'expo-file-system/legacy';
-import * as Sharing from 'expo-sharing';
 
 export type SaveFileResult =
   | {success: true; filename: string}
   | {success: false; error: string; canceled?: boolean};
 
 type TranslateFn = ReturnType<typeof useTranslation>['t'];
-
-/**
- * Gets the appropriate UTI (Uniform Type Identifier) for iOS based on MIME type
- * UTIs help iOS identify file types and suggest appropriate apps in the share sheet
- */
-const getUTIForMimeType = (mimeType: string): string => {
-  switch (mimeType) {
-    case 'text/csv':
-      return 'public.comma-separated-values-text';
-    case 'application/json':
-      return 'public.json';
-    default:
-      return 'public.item'; // Generic fallback for unknown types
-  }
-};
 
 /**
  * Saves a file to the device using the native file picker
@@ -59,6 +44,7 @@ const getUTIForMimeType = (mimeType: string): string => {
  * @param mimeType - The MIME type (e.g., "text/csv" or "application/json")
  * @param t - Translation function for error messages
  * @param dialogTitle - Optional title for the share dialog
+ * @param subject - Optional email subject for email shares
  * @returns Result indicating success or failure with translated error message
  */
 export const saveFileToDevice = async (
@@ -67,10 +53,18 @@ export const saveFileToDevice = async (
   mimeType: string,
   t: TranslateFn,
   dialogTitle?: string,
+  subject?: string,
 ): Promise<SaveFileResult> => {
   try {
     if (Platform.OS === 'ios') {
-      return await saveFileIOS(content, filename, mimeType, t, dialogTitle);
+      return await saveFileIOS(
+        content,
+        filename,
+        mimeType,
+        t,
+        dialogTitle,
+        subject,
+      );
     } else if (Platform.OS === 'android') {
       return await saveFileAndroid(content, filename, mimeType, t, dialogTitle);
     } else {
@@ -89,7 +83,7 @@ export const saveFileToDevice = async (
 };
 
 /**
- * iOS implementation using share sheet
+ * iOS implementation using share sheet via react-native-share
  * Due to iOS sandboxing, we save to app directory then use share sheet
  * which allows user to save to Files, iCloud, or other locations
  */
@@ -99,6 +93,7 @@ const saveFileIOS = async (
   mimeType: string,
   t: TranslateFn,
   dialogTitle?: string,
+  subject?: string,
 ): Promise<SaveFileResult> => {
   try {
     // Use cache directory as fallback if documentDirectory is not available
@@ -116,21 +111,15 @@ const saveFileIOS = async (
 
     await writeAsStringAsync(fileUri, content);
 
-    // Check if sharing is available
-    const isSharingAvailable = await Sharing.isAvailableAsync();
-    if (!isSharingAvailable) {
-      return {
-        success: false,
-        error: t('file_download.error.sharing_unavailable'),
-      };
-    }
-
-    // Open share sheet (user can save to Files, iCloud, etc.)
-    // Note: shareAsync waits for user to dismiss share sheet before returning
-    await Sharing.shareAsync(fileUri, {
-      UTI: getUTIForMimeType(mimeType), // iOS-specific file type identifier
-      mimeType: mimeType,
-      dialogTitle: dialogTitle, // iOS only - shows as share sheet title
+    // Open share sheet using react-native-share
+    // failOnCancel: false prevents promise rejection when user cancels
+    await Share.open({
+      url: fileUri,
+      type: mimeType,
+      filename: filename,
+      subject: subject,
+      title: dialogTitle,
+      failOnCancel: false,
     });
 
     return {
@@ -140,10 +129,12 @@ const saveFileIOS = async (
   } catch (error) {
     console.error('[FileDownload] iOS save error:', error);
 
-    // Check if user canceled
+    // Check if user canceled (react-native-share throws on cancel by default)
     if (
       error instanceof Error &&
-      (error.message.includes('cancel') || error.message.includes('abort'))
+      (error.message.includes('cancel') ||
+        error.message.includes('abort') ||
+        error.message.includes('User did not share'))
     ) {
       return {
         success: false,
@@ -230,8 +221,8 @@ const saveFileAndroid = async (
 };
 
 /**
- * Fallback implementation using share sheet
- * Used when StorageAccessFramework is not available
+ * Fallback implementation using share sheet via react-native-share
+ * Used when StorageAccessFramework is not available (older Android)
  */
 const saveFileFallback = async (
   content: string,
@@ -255,19 +246,13 @@ const saveFileFallback = async (
     const fileUri = `${baseDirectory}${filename}`;
     await writeAsStringAsync(fileUri, content);
 
-    // Check if sharing is available
-    const isSharingAvailable = await Sharing.isAvailableAsync();
-    if (!isSharingAvailable) {
-      return {
-        success: false,
-        error: t('file_download.error.sharing_unavailable'),
-      };
-    }
-
-    // Open share sheet
-    await Sharing.shareAsync(fileUri, {
-      mimeType: mimeType,
-      dialogTitle: dialogTitle,
+    // Open share sheet using react-native-share
+    await Share.open({
+      url: fileUri,
+      type: mimeType,
+      filename: filename,
+      title: dialogTitle,
+      failOnCancel: false,
     });
 
     return {
