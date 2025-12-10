@@ -26,6 +26,18 @@ import {
  *
  * This ensures that when a user logs out and a different user logs in,
  * the new user starts with a clean state (same as a fresh app install).
+ *
+ * Note: This resets ALL state, including the `preferences` slice which is not
+ * synced to the backend. Currently the only preference is:
+ *
+ *   colorWorkflow: 'MANUAL' | 'CAMERA'
+ *
+ * This is the user's preferred method for entering soil color:
+ *   - 'MANUAL' - User manually selects Munsell color values from dropdowns (default)
+ *   - 'CAMERA' - User takes a photo and the app analyzes color automatically
+ *
+ * Users who prefer the CAMERA workflow will need to re-select it after logging
+ * back in. This is acceptable for now since it's a minor inconvenience.
  */
 export const logoutReducer = createGlobalReducer(builder => {
   builder.addCase(userLoggedOut, () => {
