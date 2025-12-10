@@ -218,6 +218,7 @@ export function DataExportScreen({
           mimeType,
           t,
           t('export.save_dialog_title', {name: resourceName}),
+          t('export.share_subject', {name: resourceName}),
         );
 
         // Don't show success alert - user gets feedback from the share sheet itself
