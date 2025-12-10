@@ -17,13 +17,7 @@
 
 import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Alert, StyleSheet, View} from 'react-native';
 import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
 
 import {trackExport} from 'terraso-mobile-client/analytics/exportTracking';
@@ -168,14 +162,9 @@ export function DataExportScreen({
           `export.share_message_${resourceType.toLowerCase()}` as const;
         const shareMessage = t(shareMessageKey, {name: resourceName});
 
-        // iOS: Shows rich preview from URL + message text below
-        // Android: Only shows message (URL field ignored), so include URL in message
-        const message =
-          Platform.OS === 'ios' ? shareMessage : `${shareMessage}\n\n${url}\n`;
-
         await shareUrl(
           url,
-          message,
+          shareMessage,
           t('export.share_title', {name: resourceName}),
           t('export.share_dialog_title', {name: resourceName}),
           t('export.share_subject', {name: resourceName}),
