@@ -20,6 +20,12 @@ import {getLocales} from 'expo-localization';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 export const SUPPORTED_LANGUAGES = ['en', 'es', 'uk'] as const;
+export const DISPLAY_LANGUAGES = {
+  en: 'English',
+  es: 'Español',
+  uk: 'українська',
+} as const;
+
 export type LanguageOption = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const fallbackLanguage = 'en' as LanguageOption;
@@ -63,3 +69,7 @@ export const getDeviceLanguage = () => {
 
   return deviceLanguage;
 };
+
+export function languageDisplayString(lng: LanguageOption) {
+  return DISPLAY_LANGUAGES[lng];
+}

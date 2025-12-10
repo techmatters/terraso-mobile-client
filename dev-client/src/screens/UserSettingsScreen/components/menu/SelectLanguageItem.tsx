@@ -23,23 +23,19 @@ import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
 import {
-  getLanguage,
+  languageDisplayString,
   LanguageOption,
   setLanguage,
   SUPPORTED_LANGUAGES,
 } from 'terraso-mobile-client/localization';
 
-function languageDisplayString(lng: string) {
-  return lng; // TODO-cknipe
-}
-
 export function SelectLanguageItem() {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const ref = useRef<ModalHandle>(null);
-  // TODO-cknipe: Make this react-y
-  const activeLanguage = getLanguage();
+  const activeLanguage = i18n.language as LanguageOption;
 
-  const onLanguageChange = (lang: LanguageOption) => {
+  const onLanguageChange = async (lang: LanguageOption) => {
+    await i18n.changeLanguage(lang);
     setLanguage(lang);
   };
 
@@ -58,7 +54,7 @@ export function SelectLanguageItem() {
       <MenuList>
         {SUPPORTED_LANGUAGES.map(langCode => {
           const langString = languageDisplayString(langCode);
-          const isActive = langString === activeLanguage;
+          const isActive = langCode === activeLanguage;
           return (
             <MenuItem
               key={langCode}
