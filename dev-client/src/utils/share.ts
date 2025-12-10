@@ -21,7 +21,7 @@ import {Platform, Share, ShareAction} from 'react-native';
  * Shares a URL using the platform's native share sheet
  *
  * @param url - The URL to share (should be a .html URL for export pages)
- * @param message - Message to accompany the URL (shows in some share targets like Messages)
+ * @param message - Message to accompany the URL (used on Android, ignored on iOS)
  * @param title - Optional title for Android share dialog
  * @param dialogTitle - Optional dialog title for Android
  * @param subject - Optional email subject for iOS
@@ -29,19 +29,19 @@ import {Platform, Share, ShareAction} from 'react-native';
  */
 export const shareUrl = async (
   url: string,
-  message?: string,
+  message: string,
   title?: string,
   dialogTitle?: string,
   subject?: string,
 ): Promise<ShareAction> => {
   try {
     // Share URL with message for richer preview
-    // iOS: url provides rich preview, message is optional additional text
-    // Android: message is required (url field ignored), so fallback to url if no message
+    // iOS: url provides rich preview, message omitted to avoid duplicate content in iMessage
+    // Android: message is required (url field ignored), so include message + url
     const result = await Share.share(
       {
         url: url, // iOS only - provides link preview
-        message: Platform.OS === 'ios' ? message : message || url, // iOS: optional, Android: required
+        message: Platform.OS === 'ios' ? undefined : `${message}\n\n${url}\n`,
         title: title,
       },
       {
