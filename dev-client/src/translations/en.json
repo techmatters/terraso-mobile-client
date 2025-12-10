@@ -410,7 +410,8 @@
         "delete_account_pending": "Pending",
         "unknown_version": "Untagged application version {{environment}}",
         "beta": "beta",
-        "version": "Version {{version}} ({{build}}) {{environment}}"
+        "version": "Version {{version}} ({{build}}) {{environment}}",
+        "select_language": "Language: {{language}}"
     },
     "badge": {
         "new": "New"

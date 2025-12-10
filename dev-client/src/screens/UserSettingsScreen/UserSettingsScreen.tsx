@@ -25,6 +25,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
+import {SelectLanguageItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SelectLanguageItem';
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
 import {TosItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/TosItem';
 import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/UserIndicatorComponent';
@@ -43,6 +44,7 @@ export function UserSettingsScreen() {
           <HelpItem />
           <PrivacyItem />
           <TosItem />
+          <SelectLanguageItem />
           <SignOutItem />
           <DeleteAccountItem />
         </MenuList>
