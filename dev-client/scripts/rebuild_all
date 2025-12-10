@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Usage: rebuild_all <ios|android>
+
+PLATFORM="$1"
+
+# Validate argument
+if [[ "$PLATFORM" != "ios" && "$PLATFORM" != "android" ]]; then
+    echo "Usage: rebuild_all <ios|android>"
+    exit 1
+fi
+
+# Ensure we're in dev-client directory
+if [[ "$PWD" == */dev-client ]]; then
+    :
+elif [[ -d "dev-client" ]]; then
+    cd dev-client
+else
+    GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+    if [[ -n "$GIT_ROOT" ]] && [[ -d "$GIT_ROOT/dev-client" ]]; then
+        cd "$GIT_ROOT/dev-client"
+    else
+        echo "Error: Cannot find dev-client directory"
+        exit 1
+    fi
+fi
+
+echo "Building from $PWD for: $PLATFORM"
+
+rm -rf node_modules ios android
+npm install
+npm run prepare
+npm run prebuild
+
+if [[ "$PLATFORM" == "ios" ]]; then
+    if [[ -n "$IOS_DEVICE_ID" ]]; then
+        npm run ios -- --device "$IOS_DEVICE_ID"
+    else
+        npm run ios
+    fi
+else
+    npm run android
+fi
