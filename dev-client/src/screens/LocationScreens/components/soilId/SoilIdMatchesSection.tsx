@@ -45,7 +45,7 @@ import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScree
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
-import {getTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
+import {getMatchListTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
@@ -127,7 +127,11 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
             soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
           }
           onPress={() => onMatchTilePress(soilMatch)}
-          variant={getTileVariant(soilMatch, userRatings, selectedSoilId)}
+          variant={getMatchListTileVariant(
+            soilMatch,
+            userRatings,
+            selectedSoilId,
+          )}
         />
       ));
     }

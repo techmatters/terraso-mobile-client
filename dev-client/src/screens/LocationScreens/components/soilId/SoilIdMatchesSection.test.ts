@@ -20,7 +20,7 @@ import type {
   UserRatingEntry,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
-import {getTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
+import {getMatchListTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
 
 // Helper to create a minimal SoilMatch object
 const createSoilMatch = (name: string): SoilMatch => {
@@ -33,18 +33,22 @@ const createSoilMatch = (name: string): SoilMatch => {
   } as SoilMatch;
 };
 
-describe('getTileVariant', () => {
+describe('getMatchListTileVariant', () => {
   describe('when a soil is selected', () => {
-    test('returns Selected for the selected soil', () => {
+    test('returns Default for the selected soil', () => {
       const soilMatch = createSoilMatch('Typic Hapludolls');
       const userRatings: UserRatingEntry[] = [
         {soilMatchId: 'Typic Hapludolls', rating: 'SELECTED'},
       ];
       const selectedSoilId = 'Typic Hapludolls';
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
-      expect(result).toBe('Selected');
+      expect(result).toBe('Default');
     });
 
     test('returns Rejected for other soils when one is selected', () => {
@@ -54,7 +58,11 @@ describe('getTileVariant', () => {
       ];
       const selectedSoilId = 'Typic Hapludolls';
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Rejected');
     });
@@ -67,7 +75,11 @@ describe('getTileVariant', () => {
       ];
       const selectedSoilId = 'Typic Hapludolls';
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Rejected');
     });
@@ -80,7 +92,11 @@ describe('getTileVariant', () => {
       ];
       const selectedSoilId = 'Typic Hapludolls';
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Rejected');
     });
@@ -92,7 +108,11 @@ describe('getTileVariant', () => {
       const userRatings: UserRatingEntry[] = [];
       const selectedSoilId = undefined;
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Default');
     });
@@ -104,7 +124,11 @@ describe('getTileVariant', () => {
       ];
       const selectedSoilId = undefined;
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Default');
     });
@@ -116,7 +140,11 @@ describe('getTileVariant', () => {
       ];
       const selectedSoilId = undefined;
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Rejected');
     });
@@ -130,7 +158,11 @@ describe('getTileVariant', () => {
       ];
       const selectedSoilId = undefined;
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Default');
     });
@@ -142,7 +174,11 @@ describe('getTileVariant', () => {
       const userRatings: UserRatingEntry[] = [];
       const selectedSoilId = undefined;
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Default');
     });
@@ -152,7 +188,11 @@ describe('getTileVariant', () => {
       const userRatings = undefined;
       const selectedSoilId = undefined;
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Default');
     });
@@ -165,7 +205,11 @@ describe('getTileVariant', () => {
       ];
       const selectedSoilId = undefined;
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Default');
     });
@@ -175,7 +219,11 @@ describe('getTileVariant', () => {
       const userRatings: UserRatingEntry[] = [];
       const selectedSoilId = '';
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       // Empty string is falsy, so should follow the "no selection" path
       expect(result).toBe('Default');
@@ -188,7 +236,11 @@ describe('getTileVariant', () => {
       ];
       const selectedSoilId = undefined;
 
-      const result = getTileVariant(soilMatch, userRatings, selectedSoilId);
+      const result = getMatchListTileVariant(
+        soilMatch,
+        userRatings,
+        selectedSoilId,
+      );
 
       expect(result).toBe('Rejected');
     });
