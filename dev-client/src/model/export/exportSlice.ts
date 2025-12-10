@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, Draft} from '@reduxjs/toolkit';
 
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
@@ -99,7 +99,7 @@ export const deleteExportToken = createAsyncThunk(
  * Used by syncGlobalReducer when fetching all user data
  */
 export const setExportTokens = (
-  state: ExportState,
+  state: Draft<ExportState>,
   tokens: ExportToken[],
 ): void => {
   state.tokens = tokensArrayToDict(tokens);
