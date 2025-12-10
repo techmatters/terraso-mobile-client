@@ -26,7 +26,6 @@ import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
 import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
 import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
 import {CreateSiteScreen} from 'terraso-mobile-client/screens/CreateSiteScreen/CreateSiteScreen';
-import {ProjectExportScreen} from 'terraso-mobile-client/screens/DataExportScreen/ProjectExportScreen';
 import {SiteExportScreen} from 'terraso-mobile-client/screens/DataExportScreen/SiteExportScreen';
 import {UserDataExportScreen} from 'terraso-mobile-client/screens/DataExportScreen/UserDataExportScreen';
 import {DeleteAccountScreen} from 'terraso-mobile-client/screens/DeleteAccountScreen/DeleteAccountScreen';
@@ -110,7 +109,6 @@ export const screenDefinitions = {
   COLOR_GUIDE: ColorGuideScreen,
   COLOR_ANALYSIS: ColorAnalysisScreen,
   DATA_EXPORT: UserDataExportScreen,
-  PROJECT_EXPORT: ProjectExportScreen,
   SITE_EXPORT: SiteExportScreen,
   DELETE_ACCOUNT: DeleteAccountScreen,
 } satisfies ScreenDefinitions;
