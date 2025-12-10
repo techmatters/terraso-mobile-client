@@ -19,10 +19,9 @@ import {useTranslation} from 'react-i18next';
 import {Platform} from 'react-native';
 import Share from 'react-native-share';
 
-import * as FileSystem from 'expo-file-system';
+import {File, Paths} from 'expo-file-system';
 import {
   cacheDirectory,
-  documentDirectory,
   StorageAccessFramework,
   writeAsStringAsync,
 } from 'expo-file-system/legacy';
@@ -95,20 +94,9 @@ const saveFileIOS = async (
   dialogTitle?: string,
   subject?: string,
 ): Promise<SaveFileResult> => {
+  // Save to cache directory for temporary files (cleaned by OS when storage is low)
+  const fileUri = `${cacheDirectory}${filename}`;
   try {
-    // Use cache directory as fallback if documentDirectory is not available
-    const baseDirectory = documentDirectory || cacheDirectory;
-
-    if (!baseDirectory) {
-      return {
-        success: false,
-        error: t('file_download.error.no_storage_directory'),
-      };
-    }
-
-    // Save file to app's directory first
-    const fileUri = `${baseDirectory}${filename}`;
-
     await writeAsStringAsync(fileUri, content);
 
     // Open share sheet using react-native-share
@@ -122,12 +110,27 @@ const saveFileIOS = async (
       failOnCancel: false,
     });
 
+    // On iOS, Share.open resolves after the share sheet is dismissed,
+    // so it's safe to delete the temporary file now
+    try {
+      new File(Paths.cache, filename).delete();
+    } catch {
+      // Ignore deletion errors - file may not exist or already be deleted
+    }
+
     return {
       success: true,
       filename,
     };
   } catch (error) {
     console.error('[FileDownload] iOS save error:', error);
+
+    // Clean up temporary file on error
+    try {
+      new File(Paths.cache, filename).delete();
+    } catch {
+      // Ignore deletion errors
+    }
 
     // Check if user canceled (react-native-share throws on cancel by default)
     if (
@@ -162,8 +165,7 @@ const saveFileAndroid = async (
 ): Promise<SaveFileResult> => {
   try {
     // Check if SAF is available (Android 11+)
-    // @ts-expect-error - StorageAccessFramework is in legacy API not main export
-    if (!FileSystem.StorageAccessFramework) {
+    if (!StorageAccessFramework) {
       // Fallback to share sheet for older Android versions
       return await saveFileFallback(
         content,
@@ -231,19 +233,12 @@ const saveFileFallback = async (
   t: TranslateFn,
   dialogTitle?: string,
 ): Promise<SaveFileResult> => {
+  // Save to cache directory for temporary files (cleaned by OS when storage is low).
+  // Note: On Android, we can't delete after Share.open because the promise
+  // resolves before the share action completes. Files in cache will be
+  // cleaned by the OS when storage is low.
+  const fileUri = `${cacheDirectory}${filename}`;
   try {
-    // Use cache directory as fallback if documentDirectory is not available
-    const baseDirectory = documentDirectory || cacheDirectory;
-
-    if (!baseDirectory) {
-      return {
-        success: false,
-        error: t('file_download.error.no_storage_directory'),
-      };
-    }
-
-    // Save file to app's directory first
-    const fileUri = `${baseDirectory}${filename}`;
     await writeAsStringAsync(fileUri, content);
 
     // Open share sheet using react-native-share
