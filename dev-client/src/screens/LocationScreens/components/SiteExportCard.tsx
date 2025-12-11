@@ -18,12 +18,7 @@
 import {useTranslation} from 'react-i18next';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {
-  Box,
-  Row,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type SiteExportCardProps = {
   onExportPress: () => void;
@@ -34,27 +29,11 @@ export const SiteExportCard = ({onExportPress}: SiteExportCardProps) => {
 
   return (
     <Box variant="tile" p="18px">
-      <Row alignItems="center">
-        <Box mr={15}>
-          <Icon name="download" size="md" color="primary.main" />
-        </Box>
-        <Text
-          variant="body1"
-          color="primary.lighter"
-          textTransform="uppercase"
-          bold>
-          {t('export.site_export_title')}
-        </Text>
-      </Row>
-      <Box h="15px" />
-      <Text variant="body1" color="primary.contrast" mb="25px">
-        {t('export.site_export_description')}
-      </Text>
       <ContainedButton
         stretchToFit
         rightIcon="chevron-right"
         onPress={onExportPress}
-        label={t('export.site_export_button')}
+        label={t('export.site_export_title')}
       />
     </Box>
   );
