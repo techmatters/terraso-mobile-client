@@ -17,6 +17,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+/* Run this script to confirm consistency between translation files and the codebase. It will report discrepancies if there are missing or unused translations (if strings are used in code but not in the translation file, and vice versa).
+ */
+
 // Usage: node find-i18n-keys.mjs [path1] [path2] ... [--catalog path/to/catalog.json] [--json] [--extras]
 
 // easiest way to run: 'npm run check-i18n'
