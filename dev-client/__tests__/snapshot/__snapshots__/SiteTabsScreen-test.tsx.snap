@@ -1704,8 +1704,11 @@ exports[`renders correctly 1`] = `
                                                     }
                                                   >
                                                     <Text
+                                                      letterSpacing="0.15px"
+                                                      lineHeight="24px"
                                                       style={
                                                         {
+                                                          "fontSize": 16,
                                                           "fontWeight": "bold",
                                                         }
                                                       }
@@ -1816,8 +1819,11 @@ exports[`renders correctly 1`] = `
                                                     }
                                                   >
                                                     <Text
+                                                      letterSpacing="0.15px"
+                                                      lineHeight="24px"
                                                       style={
                                                         {
+                                                          "fontSize": 16,
                                                           "fontWeight": "bold",
                                                         }
                                                       }
@@ -1838,8 +1844,11 @@ exports[`renders correctly 1`] = `
                                                     }
                                                   >
                                                     <Text
+                                                      letterSpacing="0.15px"
+                                                      lineHeight="24px"
                                                       style={
                                                         {
+                                                          "fontSize": 16,
                                                           "fontWeight": "bold",
                                                         }
                                                       }
@@ -2285,69 +2294,7 @@ exports[`renders correctly 1`] = `
                                         }
                                       >
                                         <View
-                                          style={
-                                            [
-                                              {
-                                                "flexDirection": "row",
-                                              },
-                                              {
-                                                "alignItems": "center",
-                                              },
-                                            ]
-                                          }
-                                        >
-                                          <View
-                                            style={
-                                              {
-                                                "marginRight": 15,
-                                              }
-                                            }
-                                          >
-                                            <Icon
-                                              color="#028843"
-                                              name="download"
-                                              size={24}
-                                              style={{}}
-                                            />
-                                          </View>
-                                          <Text
-                                            letterSpacing="0.15px"
-                                            lineHeight="24px"
-                                            style={
-                                              {
-                                                "color": "#93E39B",
-                                                "fontSize": 16,
-                                                "fontWeight": "bold",
-                                                "textTransform": "uppercase",
-                                              }
-                                            }
-                                          >
-                                            Export Site
-                                          </Text>
-                                        </View>
-                                        <View
-                                          style={
-                                            {
-                                              "height": 15,
-                                            }
-                                          }
-                                        />
-                                        <Text
-                                          letterSpacing="0.15px"
-                                          lineHeight="24px"
-                                          style={
-                                            {
-                                              "color": "#FFFFFF",
-                                              "fontSize": 16,
-                                              "fontWeight": "400",
-                                              "marginBottom": 25,
-                                            }
-                                          }
-                                        >
-                                          Download or share this site's data.
-                                        </Text>
-                                        <View
-                                          accessibilityLabel="Export Site Data"
+                                          accessibilityLabel="Export Site"
                                           accessibilityRole="button"
                                           accessibilityState={
                                             {
@@ -2423,7 +2370,7 @@ exports[`renders correctly 1`] = `
                                                 ]
                                               }
                                             >
-                                              Export Site Data
+                                              Export Site
                                             </Text>
                                             <Icon
                                               name="chevron-right"
