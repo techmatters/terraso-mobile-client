@@ -29,7 +29,7 @@ export const ExportHelpSheet = forwardRef<ModalHandle, object>((_, ref) => {
   return (
     <InfoSheet
       ref={ref}
-      heading={<Heading variant="h5">{t('export.help.title')}</Heading>}>
+      heading={<Heading variant="h4">{t('export.help.title')}</Heading>}>
       <Heading variant="h6" fontWeight={700} mb="sm">
         {t('export.help.section_file_vs_link')}
       </Heading>
