@@ -51,7 +51,7 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ExportHelpSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportFileInfoSheet';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {saveFileToDevice} from 'terraso-mobile-client/utils/fileDownload';
+import {shareOrSaveFile} from 'terraso-mobile-client/utils/fileDownload';
 import {shareUrl} from 'terraso-mobile-client/utils/share';
 
 export type DataExportScreenProps = {
@@ -200,7 +200,7 @@ export function DataExportScreen({
         const mimeType = format === 'csv' ? 'text/csv' : 'application/json';
         const filename = `${resourceName}.${format}`;
 
-        const result = await saveFileToDevice(
+        const result = await shareOrSaveFile(
           content,
           filename,
           mimeType,

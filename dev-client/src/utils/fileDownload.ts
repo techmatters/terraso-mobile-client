@@ -33,10 +33,12 @@ export type SaveFileResult =
 type TranslateFn = ReturnType<typeof useTranslation>['t'];
 
 /**
- * Saves a file to the device using the native file picker
+ * Shares or saves a file using the native share sheet or file picker
  *
- * On iOS: Uses share sheet to let user save to Files, iCloud, etc.
- * On Android: Uses StorageAccessFramework to let user pick save location
+ * On iOS: Uses share sheet to let user share via email, messaging, AirDrop,
+ *         or save to Files, iCloud, etc.
+ * On Android: Uses StorageAccessFramework to let user pick save location,
+ *             or falls back to share sheet on older versions
  *
  * @param content - The file content as a string
  * @param filename - The desired filename (e.g., "data.csv")
@@ -46,7 +48,7 @@ type TranslateFn = ReturnType<typeof useTranslation>['t'];
  * @param subject - Optional email subject for email shares
  * @returns Result indicating success or failure with translated error message
  */
-export const saveFileToDevice = async (
+export const shareOrSaveFile = async (
   content: string,
   filename: string,
   mimeType: string,
