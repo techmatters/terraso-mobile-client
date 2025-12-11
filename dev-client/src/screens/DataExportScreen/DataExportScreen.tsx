@@ -154,7 +154,6 @@ export function DataExportScreen({
           url,
           shareMessage,
           t('export.share_title', {name: resourceName}),
-          t('export.share_dialog_title', {name: resourceName}),
           t('export.share_subject', {name: resourceName}),
         );
       } catch (err) {

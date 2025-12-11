@@ -1868,7 +1868,6 @@
     "share_message_project": "Це посилання включатиме всі дані сайтів з проекту \"{{name}}\".",
     "share_message_site": "Це посилання включатиме всі дані для сайту \"{{name}}\".",
     "share_title": "Експорт Даних LandPKS",
-    "share_dialog_title": "Поділитися Даними LandPKS",
     "share_subject": "Посилання для Експорту Даних LandPKS",
     "share_android_message": "Експорт даних {{resourceType}} для {{name}}:",
     "reset_links_title": "Скинути посилання для спільного доступу?",
