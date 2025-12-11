@@ -21,15 +21,16 @@ import {ActivityIndicator, Alert, StyleSheet, View} from 'react-native';
 import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
 
 import {trackExport} from 'terraso-mobile-client/analytics/exportTracking';
+import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
-import {InternalLink} from 'terraso-mobile-client/components/links/InternalLink';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Box,
   Column,
   Heading,
+  Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
@@ -46,9 +47,8 @@ import type {
   ExportScope,
   ResourceType,
 } from 'terraso-mobile-client/model/export/exportTypes';
-import {selectHasUSSites} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {ExportFileInfoSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportFileInfoSheet';
+import {ExportHelpSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportFileInfoSheet';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {saveFileToDevice} from 'terraso-mobile-client/utils/fileDownload';
@@ -86,9 +86,6 @@ export function DataExportScreen({
   const hasToken = useSelector((state: AppState) =>
     selectHasExportToken(state, resourceType, resourceId),
   );
-
-  // Check if any sites have US data region for conditional ecological site field
-  const hasUSSites = useSelector(selectHasUSSites);
 
   const handleShare = useCallback(
     async (format: 'csv' | 'json') => {
@@ -280,78 +277,77 @@ export function DataExportScreen({
     <>
       <Column margin="16px" space="16px">
         {/* Title */}
-        {!isTab && <Heading variant="h4">{t('export.title')}</Heading>}
+        <Heading variant="h4">
+          {t(`export.title_${resourceType.toLowerCase()}`)}
+        </Heading>
+
+        {/* Export Help */}
+        <Row alignItems="center">
+          <IconButton
+            type="sm"
+            name="info"
+            onPress={() => infoSheetRef.current?.onOpen()}
+          />
+          <Text
+            variant="body1-medium"
+            color="primary.main"
+            ml="8px"
+            onPress={() => infoSheetRef.current?.onOpen()}>
+            {t('export.help.link_label')}
+          </Text>
+        </Row>
 
         {/* Always show this message */}
         <TranslatedParagraph i18nKey="export.offline_requirement" />
 
-        {/* Main Content */}
-        {
-          <>
-            {/* What is in the file? section */}
-            <InternalLink
-              onPress={() => infoSheetRef.current?.onOpen()}
-              label={t('export.what_is_in_file')}
-            />
+        {/* Save or Share File Section */}
+        <View>
+          <Heading variant="h6" fontWeight={700} mb="md">
+            {t('export.save_or_share_file')}
+          </Heading>
 
-            <Divider />
+          <TranslatedParagraph i18nKey="export.file_description" mb="md" />
 
-            {/* CSV Section */}
-            <View>
-              <TranslatedParagraph i18nKey="export.csv_description" mb="16px" />
+          <TextButton
+            leftIcon="description"
+            onPress={handleDownloadCSV}
+            disabled={isOffline || isDownloading}
+            label={t('export.csv_file')}
+          />
 
-              <TextButton
-                leftIcon="download"
-                onPress={handleDownloadCSV}
-                disabled={isOffline || isDownloading}
-                label={t('export.download_csv')}
-              />
-            </View>
+          <TextButton
+            leftIcon="description"
+            onPress={handleDownloadJSON}
+            disabled={isOffline || isDownloading}
+            label={t('export.json_file')}
+          />
+        </View>
 
-            <Divider />
+        <Divider />
 
-            {/* JSON Section */}
-            <View>
-              <TranslatedParagraph
-                i18nKey="export.json_description"
-                mb="16px"
-              />
+        {/* Share Current Data Section */}
+        <View>
+          <Heading variant="h6" fontWeight={700} mb="md">
+            {t('export.share_current_data')}
+          </Heading>
 
-              <TextButton
-                leftIcon="download"
-                onPress={handleDownloadJSON}
-                disabled={isOffline || isDownloading}
-                label={t('export.download_json')}
-              />
-            </View>
+          <TranslatedParagraph i18nKey="export.link_description" mb="md" />
 
-            <Divider />
+          <TextButton
+            leftIcon="link"
+            onPress={() => handleShare('csv')}
+            disabled={isOffline}
+            label={t('export.live_link')}
+          />
 
-            {/* Link Sharing Section */}
-            <View>
-              <TranslatedParagraph
-                i18nKey="export.link_description"
-                mb="16px"
-              />
-
-              <TextButton
-                leftIcon="share"
-                onPress={() => handleShare('csv')}
-                disabled={isOffline}
-                label={t('export.share_link')}
-              />
-
-              {/* Reset Links Button */}
-              <TextButton
-                type="destructive"
-                leftIcon="refresh"
-                onPress={() => confirmModalRef.current?.onOpen()}
-                disabled={isOffline || !hasToken}
-                label={t('export.reset_links')}
-              />
-            </View>
-          </>
-        }
+          <TextButton
+            type="destructive"
+            leftIcon="refresh"
+            onPress={() => confirmModalRef.current?.onOpen()}
+            disabled={isOffline || !hasToken}
+            label={t('export.reset_live_link')}
+          />
+        </View>
       </Column>
 
       {/* Confirm Reset Modal */}
@@ -363,8 +359,8 @@ export function DataExportScreen({
         handleConfirm={handleResetLinksConfirm}
       />
 
-      {/* Export File Info Sheet */}
-      <ExportFileInfoSheet ref={infoSheetRef} includeUSFields={hasUSSites} />
+      {/* Export Help Sheet */}
+      <ExportHelpSheet ref={infoSheetRef} />
 
       {/* Download Progress Modal */}
       <Portal>
