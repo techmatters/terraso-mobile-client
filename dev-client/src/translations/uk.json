@@ -402,7 +402,8 @@
     "sign_out": "Вийти",
     "delete_account": "Видалити обліковий запис",
     "delete_account_pending": "У процесі, не завершено",
-    "unknown_version": "Версія програми без тегів {{environment}}"
+    "unknown_version": "Версія програми без тегів {{environment}}",
+    "select_language": "Language: {{language}} TK"
   },
   "badge": {
     "new": "Новий"
