@@ -48,7 +48,7 @@ import type {
   ResourceType,
 } from 'terraso-mobile-client/model/export/exportTypes';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {ExportHelpSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportFileInfoSheet';
+import {ExportHelpSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportHelpSheet';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {shareOrSaveFile} from 'terraso-mobile-client/utils/fileDownload';
