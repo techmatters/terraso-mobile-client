@@ -15,63 +15,38 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, useMemo} from 'react';
+import {forwardRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
-import {
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 
-const BASE_EXPORT_FILE_ITEMS = [
-  'export.file_contents.site_name',
-  'export.file_contents.project_name',
-  'export.file_contents.latitude',
-  'export.file_contents.longitude',
-  'export.file_contents.elevation',
-  'export.file_contents.observations',
-  'export.file_contents.location_ranked_soil',
-  'export.file_contents.top_match_soil',
-  'export.file_contents.user_selected_soil',
-  'export.file_contents.land_capability',
-];
-
-const US_ONLY_ITEMS = ['export.file_contents.ecological_site'];
-
-const FINAL_ITEMS = ['export.file_contents.notes'];
-
-type ExportFileInfoSheetProps = {
-  includeUSFields?: boolean;
-};
-
-export const ExportFileInfoSheet = forwardRef<
-  ModalHandle,
-  ExportFileInfoSheetProps
->(({includeUSFields = true}, ref) => {
+export const ExportHelpSheet = forwardRef<ModalHandle, object>((_, ref) => {
   const {t} = useTranslation();
-
-  const items = useMemo(() => {
-    const allItems = [...BASE_EXPORT_FILE_ITEMS];
-    if (includeUSFields) {
-      allItems.push(...US_ONLY_ITEMS);
-    }
-    allItems.push(...FINAL_ITEMS);
-    return allItems;
-  }, [includeUSFields]);
 
   return (
     <InfoSheet
       ref={ref}
-      heading={
-        <Heading variant="h5">{t('export.file_contents.title')}</Heading>
-      }>
-      <BulletList
-        data={items}
-        renderItem={item => <Text variant="body1">{t(item)}</Text>}
+      heading={<Heading variant="h5">{t('export.help.title')}</Heading>}>
+      <Heading variant="h6" fontWeight={700} mb="sm">
+        {t('export.help.section_file_vs_link')}
+      </Heading>
+      <TranslatedParagraph
+        i18nKey="export.help.save_file_description"
+        mb="md"
       />
+      <TranslatedParagraph
+        i18nKey="export.help.live_link_description"
+        mb="lg"
+      />
+
+      <Heading variant="h6" fontWeight={700} mb="sm">
+        {t('export.help.section_format')}
+      </Heading>
+      <TranslatedParagraph i18nKey="export.help.csv_description" mb="md" />
+      <TranslatedParagraph i18nKey="export.help.json_description" />
     </InfoSheet>
   );
 });
