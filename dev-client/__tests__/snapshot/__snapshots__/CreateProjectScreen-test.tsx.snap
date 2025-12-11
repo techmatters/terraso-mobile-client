@@ -1102,8 +1102,11 @@ exports[`renders correctly 1`] = `
                                                   }
                                                 >
                                                   <Text
+                                                    letterSpacing="0.15px"
+                                                    lineHeight="24px"
                                                     style={
                                                       {
+                                                        "fontSize": 16,
                                                         "fontWeight": "bold",
                                                       }
                                                     }
@@ -1214,8 +1217,11 @@ exports[`renders correctly 1`] = `
                                                   }
                                                 >
                                                   <Text
+                                                    letterSpacing="0.15px"
+                                                    lineHeight="24px"
                                                     style={
                                                       {
+                                                        "fontSize": 16,
                                                         "fontWeight": "bold",
                                                       }
                                                     }
@@ -1236,8 +1242,11 @@ exports[`renders correctly 1`] = `
                                                   }
                                                 >
                                                   <Text
+                                                    letterSpacing="0.15px"
+                                                    lineHeight="24px"
                                                     style={
                                                       {
+                                                        "fontSize": 16,
                                                         "fontWeight": "bold",
                                                       }
                                                     }
