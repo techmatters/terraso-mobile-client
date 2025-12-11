@@ -106,6 +106,19 @@ describe('getLanguage', () => {
       expect(result).toBe(fallbackLanguage);
     });
 
+    it('should only consider first language if multiple are set on device', () => {
+      mockKvStorage.getString.mockReturnValue(undefined);
+      mockGetLocales.mockReturnValue([
+        {languageCode: 'zh', languageTag: 'zh-TW'},
+        {languageCode: 'es', languageTag: 'es-ES'},
+      ] as any);
+
+      const result = getLanguage();
+
+      // Even though the app supports the second language (es), the first (zh) is not supported, so it falls back (en)
+      expect(result).toBe(fallbackLanguage);
+    });
+
     it('should verify all supported languages are correctly identified', () => {
       SUPPORTED_LANGUAGES.forEach(lang => {
         mockKvStorage.getString.mockReturnValue(lang);
