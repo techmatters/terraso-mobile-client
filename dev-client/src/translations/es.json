@@ -1882,7 +1882,7 @@
             "link_label": "¿Qué opciones de exportación debo usar?",
             "title": "Opciones de Exportación",
             "section_file_vs_link": "Archivo vs. Enlace",
-            "save_file_description": "<bold>Compartir o Guardar Archivo</bold> crea una copia de tus datos actuales como archivo CSV o JSON y te permite compartirlo usando correo electrónico, mensajería u otras aplicaciones. También puedes guardar el archivo en tu dispositivo.",
+            "save_file_description": "<bold>Compartir o Guardar Archivo</bold> captura los datos actuales de tu sitio como archivo CSV o JSON. Puedes enviar el archivo usando correo electrónico, mensajería u otras aplicaciones, o guardarlo en tu dispositivo.",
             "live_link_description": "<bold>Compartir Enlace a Datos</bold> crea una URL que siempre devuelve tus datos más recientes. Úsalo para integrar con scripts, flujos de trabajo automatizados, o cuando quieras que otros siempre tengan acceso a tus datos más actuales. Restablece el enlace para revocar el acceso de enlaces anteriores.",
             "section_format": "Formato de Archivo",
             "csv_description": "<bold>CSV</bold> (Valores Separados por Comas) funciona con aplicaciones de hojas de cálculo como Excel o Google Sheets. Ideal para ver, ordenar y analizar tus datos en un formato de tabla familiar.",
