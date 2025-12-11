@@ -60,6 +60,7 @@ export function SelectLanguageItem() {
               key={langCode}
               label={langString}
               icon={isActive ? 'check' : undefined}
+              selected={isActive}
               onPress={() => onLanguageChange(langCode)}
             />
           );
