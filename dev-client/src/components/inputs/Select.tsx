@@ -36,17 +36,78 @@ type NullableIf<T, Nullable extends boolean> = Nullable extends true
   ? T | null
   : T;
 
-export type SelectProps<T, Nullable extends boolean> = {
+type SharedSelectProps<T, Nullable extends boolean> = {
   nullable: Nullable;
   options: T[] | readonly T[];
   optionKey?: (_: T) => string;
   value: NullableIf<T, Nullable>;
   onValueChange: (value: NullableIf<T, Nullable>) => void;
-  label?: string;
   unselectedLabel?: string;
   renderValue: (_: T) => string;
+};
+
+export type SelectMenuListProps<
+  T,
+  Nullable extends boolean,
+> = SharedSelectProps<T, Nullable> & {
+  modalRef: React.RefObject<ModalHandle | null>;
+};
+
+export type SelectProps<T, Nullable extends boolean> = SharedSelectProps<
+  T,
+  Nullable
+> & {
+  label?: string;
   disabled?: boolean;
 } & ViewStyle;
+
+export const SelectMenuList = <T, Nullable extends boolean>({
+  nullable,
+  options,
+  optionKey,
+  value,
+  onValueChange,
+  unselectedLabel,
+  renderValue,
+  modalRef,
+}: SelectMenuListProps<T, Nullable>) => {
+  const closeContainingModal = useCallback(
+    () => modalRef.current?.onClose(),
+    [modalRef],
+  );
+
+  const optionsWithNull = useMemo(
+    () => (nullable ? [null, ...options] : options),
+    [nullable, options],
+  );
+
+  return (
+    <MenuList>
+      {optionsWithNull.map(option => {
+        const itemLabel = option ? renderValue(option) : unselectedLabel!;
+        const selected = option === value;
+        let key;
+        if (optionKey) {
+          key = option === null ? null : optionKey(option);
+        } else {
+          key = itemLabel === undefined ? '' : itemLabel;
+        }
+        return (
+          <MenuItem
+            key={key}
+            label={itemLabel}
+            icon={selected ? 'check' : undefined}
+            selected={selected}
+            onPress={() => {
+              onValueChange(option as T);
+              closeContainingModal();
+            }}
+          />
+        );
+      })}
+    </MenuList>
+  );
+};
 
 export const Select = <T, Nullable extends boolean>({
   nullable,
@@ -61,12 +122,6 @@ export const Select = <T, Nullable extends boolean>({
   ...style
 }: SelectProps<T, Nullable>) => {
   const ref = useRef<ModalHandle>(null);
-  const onClose = useCallback(() => ref.current?.onClose(), [ref]);
-
-  const optionsWithNull = useMemo(
-    () => (nullable ? [null, ...options] : options),
-    [nullable, options],
-  );
 
   return (
     <FormOverlaySheet
@@ -101,30 +156,16 @@ export const Select = <T, Nullable extends boolean>({
           </Row>
         </Pressable>
       )}>
-      <MenuList>
-        {optionsWithNull.map(option => {
-          const itemLabel = option ? renderValue(option) : unselectedLabel!;
-          const selected = option === value;
-          let key;
-          if (optionKey) {
-            key = option === null ? null : optionKey(option);
-          } else {
-            key = itemLabel === undefined ? '' : itemLabel;
-          }
-          return (
-            <MenuItem
-              key={key}
-              label={itemLabel}
-              icon={selected ? 'check' : undefined}
-              selected={selected}
-              onPress={() => {
-                onValueChange(option as T);
-                onClose();
-              }}
-            />
-          );
-        })}
-      </MenuList>
+      <SelectMenuList
+        nullable={nullable}
+        options={options}
+        optionKey={optionKey}
+        value={value}
+        onValueChange={onValueChange}
+        unselectedLabel={unselectedLabel}
+        renderValue={renderValue}
+        modalRef={ref}
+      />
     </FormOverlaySheet>
   );
 };

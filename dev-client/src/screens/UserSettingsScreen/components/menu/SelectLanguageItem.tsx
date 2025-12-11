@@ -15,11 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useRef} from 'react';
+import {useCallback, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {SelectMenuList} from 'terraso-mobile-client/components/inputs/Select';
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
-import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {FormOverlaySheet} from 'terraso-mobile-client/components/sheets/FormOverlaySheet';
 import {
@@ -39,6 +39,10 @@ export function SelectLanguageItem() {
     setLanguage(lang);
   };
 
+  const renderLanguageOption = useCallback((option: LanguageOption) => {
+    return languageDisplayString(option);
+  }, []);
+
   return (
     <FormOverlaySheet
       ref={ref}
@@ -51,21 +55,15 @@ export function SelectLanguageItem() {
           onPress={onOpen}
         />
       )}>
-      <MenuList>
-        {SUPPORTED_LANGUAGES.map(langCode => {
-          const langString = languageDisplayString(langCode);
-          const isActive = langCode === activeLanguage;
-          return (
-            <MenuItem
-              key={langCode}
-              label={langString}
-              icon={isActive ? 'check' : undefined}
-              selected={isActive}
-              onPress={() => onLanguageChange(langCode)}
-            />
-          );
-        })}
-      </MenuList>
+      <SelectMenuList
+        nullable={false}
+        options={SUPPORTED_LANGUAGES}
+        optionKey={option => option}
+        value={activeLanguage}
+        onValueChange={onLanguageChange}
+        renderValue={renderLanguageOption}
+        modalRef={ref}
+      />
     </FormOverlaySheet>
   );
 }
