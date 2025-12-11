@@ -181,7 +181,7 @@ if (catalogPath) {
     catalogKeys = new Set(
       collectCatalogKeysFromObject(parsed).sort((a, b) => a.localeCompare(b)),
     );
-    console.log(`\n------ translation file ${catalogPath} ------\n`);
+    console.log(`\n--- translation file ${catalogPath} ---\n`);
   } catch (e) {
     console.error(
       `Failed to read/parse catalog JSON at ${catalogPath}: ${e.message}`,
@@ -202,10 +202,6 @@ const inCatalogNotScan = setDiff(catalogKeys, scanKeys);
 const inScanNotCatalog = setDiff(scanKeys, catalogKeys);
 
 // ---------- Output ----------
-
-console.log('** Warning: these lists may not be complete');
-console.log('** Please use as a secondary check only\n');
-
 if (jsonOutput) {
   const out = {
     scan: {
