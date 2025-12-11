@@ -36,7 +36,7 @@ export function TranslatedParagraph({
 }: TranslatedParagraphProps) {
   return (
     <Text variant={variant} {...textProps}>
-      <TranslatedContent i18nKey={i18nKey} values={values} />
+      <TranslatedContent i18nKey={i18nKey} values={values} variant={variant} />
     </Text>
   );
 }
