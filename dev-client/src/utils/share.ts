@@ -24,7 +24,6 @@ import Share from 'react-native-share';
  * @param url - The URL to share (should be a .html URL for export pages)
  * @param message - Message to accompany the URL (used on Android, ignored on iOS)
  * @param title - Optional title for share dialog
- * @param dialogTitle - Optional dialog title (not used with react-native-share)
  * @param subject - Optional email subject for email shares
  * @returns Promise that resolves when share sheet is dismissed
  */
@@ -32,7 +31,6 @@ export const shareUrl = async (
   url: string,
   message: string,
   title?: string,
-  _dialogTitle?: string,
   subject?: string,
 ): Promise<void> => {
   try {

@@ -1866,7 +1866,6 @@
         "save_error_title": "Save Failed",
         "save_error_message": "Failed to save file: {{error}}",
         "share_title": "LandPKS Data Export for {{name}}'s Sites",
-        "share_dialog_title": "Share LandPKS Link for {{Name}}'s Sites",
         "share_subject": "Link to {{name}}'s LandPKS Sites",
         "share_android_message": "Export {{resourceType}} data for {{name}}:",
         "share_message_user": "This link will include all site data for {{name}} including sites from member projects.",
