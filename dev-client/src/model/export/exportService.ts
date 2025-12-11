@@ -36,9 +36,9 @@ const ALL_EXPORT_TOKENS_QUERY = `
   }
 `;
 
-const CREATE_EXPORT_TOKEN_MUTATION = `
-  mutation CreateExportToken($resourceType: ResourceTypeEnum!, $resourceId: ID!) {
-    createExportToken(resourceType: $resourceType, resourceId: $resourceId) {
+const ADD_EXPORT_TOKEN_MUTATION = `
+  mutation AddExportToken($resourceType: ResourceTypeEnum!, $resourceId: ID!) {
+    addExportToken(resourceType: $resourceType, resourceId: $resourceId) {
       tokens {
         token
         resourceType
@@ -85,18 +85,18 @@ export const createExportToken = async (
   resourceId: string,
 ): Promise<ExportToken[]> => {
   const response: any = await terrasoApi.requestGraphQL(
-    CREATE_EXPORT_TOKEN_MUTATION,
+    ADD_EXPORT_TOKEN_MUTATION,
     {
       resourceType,
       resourceId,
     },
   );
 
-  if (!response.createExportToken?.tokens) {
+  if (!response.addExportToken?.tokens) {
     throw new Error('Failed to create export token');
   }
 
-  return response.createExportToken.tokens;
+  return response.addExportToken.tokens;
 };
 
 /**
