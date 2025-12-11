@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2025 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,35 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
+export type ResourceType = 'USER' | 'PROJECT' | 'SITE';
 
-export const DEFAULT_STACK_NAVIGATOR_OPTIONS: NativeStackNavigationOptions = {
-  headerShown: false,
-  freezeOnBlur: true,
-};
+/**
+ * Export scope used in API URLs.
+ * Note: USER resource type can map to either 'user_all' or 'user_owned' scope.
+ */
+export type ExportScope = 'user_all' | 'user_owned' | 'project' | 'site';
 
-export const enum TabRoutes {
-  INPUTS = 'Inputs',
-  TEAM = 'Team',
-  EXPORT = 'Export',
-  SETTINGS = 'Settings',
-  SITES = 'Sites',
-}
-
-export type TabStackParamList = {
-  [TabRoutes.INPUTS]: {
-    projectId: string;
-  };
-  [TabRoutes.TEAM]: {
-    projectId: string;
-  };
-  [TabRoutes.EXPORT]: {
-    projectId: string;
-  };
-  [TabRoutes.SETTINGS]: {
-    projectId: string;
-  };
-  [TabRoutes.SITES]: {
-    projectId: string;
-  };
+export type ExportToken = {
+  token: string;
+  resourceType: ResourceType;
+  resourceId: string;
+  userId?: string;
 };

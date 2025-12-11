@@ -15,13 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {merge} from 'lodash/fp';
+import {cloneDeep, merge} from 'lodash/fp';
 import {v4 as uuidv4} from 'uuid';
 
 import {
   initialState as accountInitialState,
   User,
 } from 'terraso-client-shared/account/accountSlice';
+
+import type {AppState} from 'terraso-mobile-client/store';
+import {rootReducer} from 'terraso-mobile-client/store/reducers';
 import {
   Project,
   ProjectMembership,
@@ -255,3 +258,9 @@ export function initState(
     },
   );
 }
+
+export const createMockAppState = (): AppState => {
+  // Use rootReducer to get the initial state (same as app startup with no saved state).
+  // Deep clone to ensure tests that mutate state don't affect the shared initialState objects.
+  return cloneDeep(rootReducer(undefined, {type: ''}));
+};

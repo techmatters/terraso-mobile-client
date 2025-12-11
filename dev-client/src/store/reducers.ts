@@ -25,6 +25,7 @@ import {
 import {sharedReducers} from 'terraso-client-shared/store/store';
 
 import {reducer as elevationReducer} from 'terraso-mobile-client/model/elevation/elevationSlice';
+import exportReducer from 'terraso-mobile-client/model/export/exportSlice';
 import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
 import {reducer as preferencesReducer} from 'terraso-mobile-client/model/preferences/preferencesSlice';
 import projectReducer from 'terraso-mobile-client/model/project/projectSlice';
@@ -39,6 +40,7 @@ const sliceReducers = {
   map: mapReducer,
   preferences: preferencesReducer,
   elevation: elevationReducer,
+  export: exportReducer,
   site: siteReducer,
   project: projectReducer,
   soilData: soilDataReducer,

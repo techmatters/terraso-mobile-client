@@ -246,6 +246,7 @@
         "tabs": {
             "inputs": "Importes",
             "team": "Equipo",
+            "export": "Exportar",
             "sites": "Sitios",
             "settings": "Configuraciones"
         },
@@ -1837,5 +1838,65 @@
         "link_label": "landpotential.org",
         "link_url": "https://landpotential.org/",
         "get_started": "<bold>Para empezar, utiliza el mapa para crear un sitio:</bold>"
+    },
+    "export": {
+        "menu_title": "Exportar Datos",
+        "title_user": "Exportar todos tus sitios",
+        "title_project": "Exportar sitios del proyecto",
+        "title_site": "Exportar sitio",
+        "offline_requirement": "Se requiere una conexión a internet.",
+        "save_or_share_file": "Compartir o Guardar Archivo",
+        "file_description": "Comparte o guarda una copia de tus datos actuales como archivo.",
+        "csv_file": "Archivo CSV",
+        "json_file": "Archivo JSON",
+        "share_current_data": "Compartir Enlace a Datos",
+        "link_description": "Crea una URL que siempre devuelve tus datos más recientes.",
+        "live_link": "Enlace en Vivo",
+        "reset_live_link": "Restablecer Enlace en Vivo",
+        "site_export_title": "Exportar Sitio",
+        "site_export_description": "Descargar o compartir los datos de este sitio.",
+        "site_export_button": "Exportar Datos del Sitio",
+        "what_is_in_file": "¿Qué hay en el archivo?",
+        "loading": "Cargando configuración de exportación...",
+        "downloading": "Descargando...",
+        "preparing_file": "Preparando archivo de {{resourceType}} para {{name}}",
+        "preparing_file_message": "Creando tu archivo de exportación. Esto puede tomar un momento...",
+        "save_dialog_title": "Guardar Datos LandPKS para {{name}}",
+        "save_error_title": "Error al Guardar",
+        "save_error_message": "Error al guardar el archivo: {{error}}",
+        "share_message_user": "Este enlace incluirá todos los datos de sitios para {{name}} incluyendo sitios de proyectos miembros.",
+        "share_message_project": "Este enlace incluirá todos los datos de sitios del proyecto \"{{name}}\".",
+        "share_message_site": "Este enlace incluirá todos los datos del sitio \"{{name}}\".",
+        "share_title": "Exportación de Datos LandPKS",
+        "share_dialog_title": "Compartir Datos LandPKS",
+        "share_subject": "Enlace de Exportación de Datos LandPKS",
+        "share_android_message": "Exportar datos de {{resourceType}} para {{name}}:",
+        "reset_links_title": "¿Restablecer enlaces de compartir?",
+        "reset_links_body": "Esto romperá tus enlaces de compartir actuales. Cualquiera con tus enlaces anteriores ya no podrá acceder a los archivos.",
+        "create_token_error_title": "Error al Crear Enlace",
+        "create_token_error_message": "No se pudo crear el enlace de exportación. Por favor verifica tu conexión e intenta de nuevo.",
+        "delete_token_error_title": "Error al Restablecer Enlace",
+        "delete_token_error_message": "No se pudo restablecer el enlace de exportación. Por favor verifica tu conexión e intenta de nuevo.",
+        "help": {
+            "link_label": "¿Qué opciones de exportación debo usar?",
+            "title": "Opciones de Exportación",
+            "section_file_vs_link": "Archivo vs. Enlace",
+            "save_file_description": "<bold>Compartir o Guardar Archivo</bold> crea una copia de tus datos actuales como archivo CSV o JSON y te permite compartirlo usando correo electrónico, mensajería u otras aplicaciones. También puedes guardar el archivo en tu dispositivo.",
+            "live_link_description": "<bold>Compartir Enlace a Datos</bold> crea una URL que siempre devuelve tus datos más recientes. Úsalo para integrar con scripts, flujos de trabajo automatizados, o cuando quieras que otros siempre tengan acceso a tus datos más actuales. Restablece el enlace para revocar el acceso de enlaces anteriores.",
+            "section_format": "Formato de Archivo",
+            "csv_description": "<bold>CSV</bold> (Valores Separados por Comas) funciona con aplicaciones de hojas de cálculo como Excel o Google Sheets. Ideal para ver, ordenar y analizar tus datos en un formato de tabla familiar.",
+            "json_description": "<bold>JSON</bold> (Notación de Objetos JavaScript) es un formato de datos estructurado. Ideal para desarrolladores o para importar en otros sistemas de software."
+        }
+    },
+    "file_download": {
+        "error": {
+            "unsupported_platform": "El guardado de archivos no es compatible con esta plataforma.",
+            "no_storage_directory": "No hay directorio de almacenamiento disponible.",
+            "sharing_unavailable": "Compartir no está disponible en este dispositivo.",
+            "save_canceled": "Guardado cancelado.",
+            "no_directory_selected": "No se seleccionó ningún directorio.",
+            "save_failed": "Error al guardar el archivo.",
+            "unknown": "Ocurrió un error desconocido."
+        }
     }
 }
