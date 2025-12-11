@@ -23,7 +23,7 @@
 
  * Output: 
  * Will print strings with mismatched variables as: 
- *   ----- language code -----
+ *   --- language code ---
  *   "string.name": english_unmatched_vars <--> other_language_unmatched_vars
  */
 
@@ -108,7 +108,7 @@ export function validateTranslation(
  */
 export function formatValidationResult(result) {
   if (result.mismatches.length === 0) {
-    return `----- ${result.language} -----\nNo mismatches found.`;
+    return `--- ${result.language}.json ---\nNo mismatches found.`;
   }
 
   const lines = result.mismatches.map(mismatch => {
@@ -119,7 +119,7 @@ export function formatValidationResult(result) {
     return `"${mismatch.key}": ${englishVars} <--> ${translationVars}`;
   });
 
-  return `----- ${result.language} -----\n${lines.join('\n')}`;
+  return `--- ${result.language}.json ---\n${lines.join('\n')}`;
 }
 
 /**
