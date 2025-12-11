@@ -402,7 +402,8 @@
         "sign_out": "Cerrar sesión",
         "delete_account": "Eliminar cuenta",
         "delete_account_pending": "Pendiente",
-        "unknown_version": "Versión de la aplicación sin etiquetar {{environment}}"
+        "unknown_version": "Versión de la aplicación sin etiquetar {{environment}}",
+        "select_language": "Language: {{language}} TK"
     },
     "badge": {
         "new": "Nuevo"
