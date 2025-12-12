@@ -24,6 +24,7 @@ import type {
   ExportToken,
   ResourceType,
 } from 'terraso-mobile-client/model/export/exportTypes';
+import {sanitizeNameForUrl} from 'terraso-mobile-client/utils/share';
 
 const ALL_EXPORT_TOKENS_QUERY = `
   query AllExportTokens {
@@ -134,7 +135,8 @@ export const buildExportUrl = (
   resourceName: string,
 ): string => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
-  return `${baseUrl}/export/token/${scope}/${token}/${resourceName}.html`;
+  const safeName = sanitizeNameForUrl(resourceName);
+  return `${baseUrl}/export/token/${scope}/${token}/${safeName}.html`;
 };
 
 /**
@@ -152,7 +154,8 @@ export const downloadResourceData = async (
   format: 'csv' | 'json',
 ): Promise<string> => {
   const baseUrl = getAPIConfig().terrasoAPIURL;
-  const url = `${baseUrl}/export/id/${scope}/${resourceId}/${resourceName}.${format}`;
+  const safeName = sanitizeNameForUrl(resourceName);
+  const url = `${baseUrl}/export/id/${scope}/${resourceId}/${safeName}.${format}`;
 
   const authHeaders = await getAuthHeaders();
 
