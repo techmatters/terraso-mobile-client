@@ -28,18 +28,18 @@ import {getMatchSelectionId} from 'terraso-mobile-client/model/soilMetadata/soil
  * @param thisSoilMatch - The soil match to determine the variant for
  * @param userRatings - Array of user ratings for soil matches
  * @param selectedSoilId - The ID of the currently selected soil, if any
- * @returns 'Selected' | 'Rejected' | 'Default' - The tile variant to display
+ * @returns 'Rejected' | 'Default' - The tile variant to display (note: the 'Selected' variant is only used in another section, not for the match list tiles.)
  */
-export const getTileVariant = (
+export const getMatchListTileVariant = (
   thisSoilMatch: SoilMatch,
   userRatings: UserRatingEntry[] | undefined,
   selectedSoilId: string | undefined,
-): 'Selected' | 'Rejected' | 'Default' => {
+): 'Rejected' | 'Default' => {
   // When a soil is selected, show other soil tiles as if they were "Rejected"
   // (even though in the database they're not)
   if (selectedSoilId) {
     return selectedSoilId === getMatchSelectionId(thisSoilMatch)
-      ? 'Selected'
+      ? 'Default'
       : 'Rejected';
   }
 
