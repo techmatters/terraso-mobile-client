@@ -1704,8 +1704,11 @@ exports[`renders correctly 1`] = `
                                                     }
                                                   >
                                                     <Text
+                                                      letterSpacing="0.15px"
+                                                      lineHeight="24px"
                                                       style={
                                                         {
+                                                          "fontSize": 16,
                                                           "fontWeight": "bold",
                                                         }
                                                       }
@@ -1816,8 +1819,11 @@ exports[`renders correctly 1`] = `
                                                     }
                                                   >
                                                     <Text
+                                                      letterSpacing="0.15px"
+                                                      lineHeight="24px"
                                                       style={
                                                         {
+                                                          "fontSize": 16,
                                                           "fontWeight": "bold",
                                                         }
                                                       }
@@ -1838,8 +1844,11 @@ exports[`renders correctly 1`] = `
                                                     }
                                                   >
                                                     <Text
+                                                      letterSpacing="0.15px"
+                                                      lineHeight="24px"
                                                       style={
                                                         {
+                                                          "fontSize": 16,
                                                           "fontWeight": "bold",
                                                         }
                                                       }
@@ -2252,6 +2261,116 @@ exports[`renders correctly 1`] = `
                                               }
                                             >
                                               Explore the data
+                                            </Text>
+                                            <Icon
+                                              name="chevron-right"
+                                              size={20}
+                                              style={
+                                                [
+                                                  [
+                                                    [
+                                                      {
+                                                        "marginLeft": 8,
+                                                      },
+                                                    ],
+                                                    {
+                                                      "color": "#FFFFFF",
+                                                    },
+                                                  ],
+                                                  {},
+                                                ]
+                                              }
+                                            />
+                                          </View>
+                                        </View>
+                                      </View>
+                                      <View
+                                        style={
+                                          {
+                                            "backgroundColor": "#00344D",
+                                            "borderRadius": 4,
+                                            "padding": 18,
+                                          }
+                                        }
+                                      >
+                                        <View
+                                          accessibilityLabel="Export Site"
+                                          accessibilityRole="button"
+                                          accessibilityState={
+                                            {
+                                              "busy": undefined,
+                                              "checked": undefined,
+                                              "disabled": undefined,
+                                              "expanded": undefined,
+                                              "selected": undefined,
+                                            }
+                                          }
+                                          accessibilityValue={
+                                            {
+                                              "max": undefined,
+                                              "min": undefined,
+                                              "now": undefined,
+                                              "text": undefined,
+                                            }
+                                          }
+                                          accessible={true}
+                                          collapsable={false}
+                                          focusable={true}
+                                          onBlur={[Function]}
+                                          onClick={[Function]}
+                                          onFocus={[Function]}
+                                          onResponderGrant={[Function]}
+                                          onResponderMove={[Function]}
+                                          onResponderRelease={[Function]}
+                                          onResponderTerminate={[Function]}
+                                          onResponderTerminationRequest={[Function]}
+                                          onStartShouldSetResponder={[Function]}
+                                        >
+                                          <View
+                                            style={
+                                              [
+                                                {
+                                                  "alignItems": "center",
+                                                  "alignSelf": "flex-start",
+                                                  "borderRadius": 4,
+                                                  "borderWidth": 1,
+                                                  "flexDirection": "row",
+                                                  "justifyContent": "center",
+                                                },
+                                                {
+                                                  "paddingHorizontal": 16,
+                                                  "paddingVertical": 6,
+                                                },
+                                                {
+                                                  "alignSelf": "auto",
+                                                },
+                                                {
+                                                  "backgroundColor": "#028843",
+                                                  "borderColor": "#028843",
+                                                },
+                                              ]
+                                            }
+                                          >
+                                            <Text
+                                              style={
+                                                [
+                                                  [
+                                                    {
+                                                      "fontWeight": "500",
+                                                      "textTransform": "uppercase",
+                                                    },
+                                                    {
+                                                      "fontSize": 14,
+                                                      "lineHeight": 24,
+                                                    },
+                                                  ],
+                                                  {
+                                                    "color": "#FFFFFF",
+                                                  },
+                                                ]
+                                              }
+                                            >
+                                              Export Site
                                             </Text>
                                             <Icon
                                               name="chevron-right"

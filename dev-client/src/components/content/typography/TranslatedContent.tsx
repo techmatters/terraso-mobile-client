@@ -18,21 +18,29 @@
 import {Trans} from 'react-i18next';
 
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {theme} from 'terraso-mobile-client/theme';
+
+type TextVariant = keyof (typeof theme.components)['Text']['variants'];
 
 export type TranslatedContentProps = {
   i18nKey: string;
   values?: {};
+  variant?: TextVariant;
 };
 
-export function TranslatedContent({i18nKey, values}: TranslatedContentProps) {
+export function TranslatedContent({
+  i18nKey,
+  values,
+  variant,
+}: TranslatedContentProps) {
   return (
     <Trans
       i18nKey={i18nKey}
       values={values}
       components={{
-        bold: <Text bold />,
-        italic: <Text italic />,
-        underline: <Text underline />,
+        bold: <Text variant={variant} bold />,
+        italic: <Text variant={variant} italic />,
+        underline: <Text variant={variant} underline />,
       }}
     />
   );

@@ -52,6 +52,12 @@ jest.mock('@gorhom/bottom-sheet', () => ({
 
 jest.mock('expo-asset');
 
+jest.mock('react-native-share', () => ({
+  default: {
+    open: jest.fn(() => Promise.resolve()),
+  },
+}));
+
 jest.mock('@expo/vector-icons/MaterialIcons', () => 'Icon');
 
 // workaround described here:

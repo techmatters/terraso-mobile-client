@@ -40,7 +40,10 @@ export const PullRequester = () => {
   const currentUserID = useSelector(selectCurrentUserID);
   const previousCurrentUserID = useRef<string | undefined>(currentUserID);
   useEffect(() => {
-    if (currentUserID !== undefined && previousCurrentUserID === undefined) {
+    if (
+      currentUserID !== undefined &&
+      previousCurrentUserID.current === undefined
+    ) {
       dispatch(setPullRequested(true));
     }
     previousCurrentUserID.current = currentUserID;

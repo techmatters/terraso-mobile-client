@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import React from 'react';
+
 import {
   TranslatedContent,
   TranslatedContentProps,
@@ -23,16 +25,18 @@ import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type TranslatedParagraphProps = {
   variant?: 'body1' | 'body2';
-} & TranslatedContentProps;
+} & TranslatedContentProps &
+  Omit<React.ComponentProps<typeof Text>, 'variant' | 'children'>;
 
 export function TranslatedParagraph({
   variant = 'body1',
   i18nKey,
   values,
+  ...textProps
 }: TranslatedParagraphProps) {
   return (
-    <Text variant={variant}>
-      <TranslatedContent i18nKey={i18nKey} values={values} />
+    <Text variant={variant} {...textProps}>
+      <TranslatedContent i18nKey={i18nKey} values={values} variant={variant} />
     </Text>
   );
 }

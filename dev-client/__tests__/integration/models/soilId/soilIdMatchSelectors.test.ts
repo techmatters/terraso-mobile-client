@@ -16,6 +16,7 @@
  */
 
 import {
+  createMockAppState,
   createProjectSettings,
   generateProject,
   generateSite,
@@ -23,45 +24,15 @@ import {
 } from '@testing/integration/modelUtils';
 import {renderSelectorHook} from '@testing/integration/utils';
 
-import {initialState as accountInitialState} from 'terraso-client-shared/account/accountSlice';
-
 import {DEFAULT_SOIL_DATA} from 'terraso-mobile-client/model/soilData/soilDataConstants';
 import {SoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {soilDataToIdInput} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchInputs';
 import {selectNextDataBasedInputs} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
-import {initialState as syncInitialState} from 'terraso-mobile-client/model/sync/syncSlice';
-import {AppState, useSelector} from 'terraso-mobile-client/store';
-
-const appState = (): AppState => {
-  return {
-    account: accountInitialState,
-    map: {userLocation: {accuracyM: null, coords: null}},
-    elevation: {elevationCache: {}},
-    notifications: {messages: {}},
-    preferences: {colorWorkflow: 'MANUAL'},
-    project: {projects: {}},
-    site: {sites: {}},
-    soilData: {
-      projectSettings: {},
-      soilSync: {},
-      soilData: {},
-      status: 'ready',
-    },
-    soilIdMatch: {
-      locationBasedMatches: {},
-      siteDataBasedMatches: {},
-    },
-    soilMetadata: {
-      soilMetadata: {},
-      soilMetadataSync: {},
-    },
-    sync: syncInitialState,
-  };
-};
+import {useSelector} from 'terraso-mobile-client/store';
 
 describe('selectNextDataBasedInputs', () => {
   test('supplies default soil data for newly created sites', () => {
-    const state = appState();
+    const state = createMockAppState();
     const selected = renderSelectorHook(
       () => useSelector(s => selectNextDataBasedInputs(s, ['id'])),
       state,
@@ -72,7 +43,7 @@ describe('selectNextDataBasedInputs', () => {
   });
 
   test('only includes data for custom site depths that are visible', () => {
-    const baseAppState = appState();
+    const baseAppState = createMockAppState();
     const site = generateSite();
     const soilData = {
       [site.id]: {
@@ -109,7 +80,7 @@ describe('selectNextDataBasedInputs', () => {
   });
 
   test('includes data at custom project depths', () => {
-    const baseAppState = appState();
+    const baseAppState = createMockAppState();
 
     const project = generateProject();
     const site = generateSite({project});
