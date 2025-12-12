@@ -49,6 +49,7 @@ import type {
 } from 'terraso-mobile-client/model/export/exportTypes';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ExportHelpSheet} from 'terraso-mobile-client/screens/DataExportScreen/components/ExportHelpSheet';
+import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {shareOrSaveFile} from 'terraso-mobile-client/utils/fileDownload';
@@ -276,28 +277,21 @@ export function DataExportScreen({
     <>
       <Column margin="16px" space="16px">
         {/* Title */}
-        <Heading variant="h4">
-          {t(`export.title_${resourceType.toLowerCase()}`)}
-        </Heading>
-
-        {/* Export Help */}
         <Row alignItems="center">
-          <IconButton
-            type="sm"
-            name="info"
-            onPress={() => infoSheetRef.current?.onOpen()}
-          />
-          <Text
-            variant="body1-medium"
-            color="primary.main"
-            ml="8px"
-            onPress={() => infoSheetRef.current?.onOpen()}>
-            {t('export.help.link_label')}
-          </Text>
+          <Heading variant="h4">
+            {t(`export.title_${resourceType.toLowerCase()}`)}
+          </Heading>
+          <Box ml="sm">
+            <IconButton
+              type="sm"
+              name="info"
+              onPress={() => infoSheetRef.current?.onOpen()}
+            />
+          </Box>
         </Row>
 
-        {/* Always show this message */}
-        <TranslatedParagraph i18nKey="export.offline_requirement" />
+        {/* Show offline warning when disconnected */}
+        {isOffline && <OfflineAlert message={t('export.offline_message')} />}
 
         {/* Save or Share File Section */}
         <View>
@@ -307,19 +301,21 @@ export function DataExportScreen({
 
           <TranslatedParagraph i18nKey="export.file_description" mb="md" />
 
-          <TextButton
-            leftIcon="description"
-            onPress={handleDownloadCSV}
-            disabled={isOffline || isDownloading}
-            label={t('export.csv_file')}
-          />
+          <Column space="sm">
+            <TextButton
+              leftIcon="description"
+              onPress={handleDownloadCSV}
+              disabled={isOffline || isDownloading}
+              label={t('export.csv_file')}
+            />
 
-          <TextButton
-            leftIcon="description"
-            onPress={handleDownloadJSON}
-            disabled={isOffline || isDownloading}
-            label={t('export.json_file')}
-          />
+            <TextButton
+              leftIcon="description"
+              onPress={handleDownloadJSON}
+              disabled={isOffline || isDownloading}
+              label={t('export.json_file')}
+            />
+          </Column>
         </View>
 
         <Divider />
@@ -332,20 +328,22 @@ export function DataExportScreen({
 
           <TranslatedParagraph i18nKey="export.link_description" mb="md" />
 
-          <TextButton
-            leftIcon="link"
-            onPress={() => handleShare('csv')}
-            disabled={isOffline}
-            label={t('export.live_link')}
-          />
+          <Column space="sm">
+            <TextButton
+              leftIcon="link"
+              onPress={() => handleShare('csv')}
+              disabled={isOffline}
+              label={t('export.live_link')}
+            />
 
-          <TextButton
-            type="destructive"
-            leftIcon="refresh"
-            onPress={() => confirmModalRef.current?.onOpen()}
-            disabled={isOffline || !hasToken}
-            label={t('export.reset_live_link')}
-          />
+            <TextButton
+              type="destructive"
+              leftIcon="refresh"
+              onPress={() => confirmModalRef.current?.onOpen()}
+              disabled={isOffline || !hasToken}
+              label={t('export.reset_live_link')}
+            />
+          </Column>
         </View>
       </Column>
 
