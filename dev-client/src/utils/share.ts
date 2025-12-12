@@ -19,6 +19,30 @@ import {Platform} from 'react-native';
 import Share from 'react-native-share';
 
 /**
+ * Sanitize a name for use in a URL path.
+ *
+ * Converts spaces to hyphens, removes characters that are problematic
+ * for URLs or filesystems, and leaves Unicode intact (clients auto-encode).
+ *
+ * @example
+ * sanitizeNameForUrl("Project: Phase 1")  // "Project-Phase-1"
+ * sanitizeNameForUrl("Київ Site")         // "Київ-Site"
+ * sanitizeNameForUrl("What's Next?")      // "Whats-Next"
+ */
+export function sanitizeNameForUrl(name: string): string {
+  return (
+    name
+      .trim()
+      .replace(/\s+/g, '-') // spaces → hyphen
+      .replace(/[/:]/g, '-') // path-like chars → hyphen
+      .replace(/[<>"'\\|?*#&=%()]/g, '') // remove URL/filesystem problem chars
+      .replace(/-{2,}/g, '-') // collapse multiple hyphens
+      .replace(/^-+|-+$/g, '') || // trim leading/trailing hyphens
+    'export' // fallback if empty
+  );
+}
+
+/**
  * Shares a URL using the platform's native share sheet via react-native-share
  *
  * @param url - The URL to share (should be a .html URL for export pages)
@@ -36,10 +60,11 @@ export const shareUrl = async (
   try {
     // Share URL with message for richer preview
     // iOS: url provides rich preview, message omitted to avoid duplicate content in iMessage
-    // Android: message is required, so include message + url
+    // Android: message is required, so include message + url (encoded for valid links)
     await Share.open({
       url: Platform.OS === 'ios' ? url : undefined,
-      message: Platform.OS === 'ios' ? undefined : `${message}\n\n${url}\n`,
+      message:
+        Platform.OS === 'ios' ? undefined : `${message}\n\n${encodeURI(url)}\n`,
       title: title,
       subject: subject,
       failOnCancel: false,
