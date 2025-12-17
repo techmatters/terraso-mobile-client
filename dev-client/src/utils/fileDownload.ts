@@ -20,11 +20,7 @@ import {Platform} from 'react-native';
 import Share from 'react-native-share';
 
 import {File, Paths} from 'expo-file-system';
-import {
-  cacheDirectory,
-  StorageAccessFramework,
-  writeAsStringAsync,
-} from 'expo-file-system/legacy';
+import {cacheDirectory, writeAsStringAsync} from 'expo-file-system/legacy';
 
 export type SaveFileResult =
   | {success: true; filename: string}
@@ -67,7 +63,14 @@ export const shareOrSaveFile = async (
         subject,
       );
     } else if (Platform.OS === 'android') {
-      return await saveFileAndroid(content, filename, mimeType, t, dialogTitle);
+      // Use share sheet on Android (same as iOS) to allow both sharing and saving
+      return await saveFileFallback(
+        content,
+        filename,
+        mimeType,
+        t,
+        dialogTitle,
+      );
     } else {
       return {
         success: false,
@@ -156,77 +159,8 @@ const saveFileIOS = async (
 };
 
 /**
- * Android implementation using StorageAccessFramework
- */
-const saveFileAndroid = async (
-  content: string,
-  filename: string,
-  mimeType: string,
-  t: TranslateFn,
-  dialogTitle?: string,
-): Promise<SaveFileResult> => {
-  try {
-    // Check if SAF is available (Android 11+)
-    if (!StorageAccessFramework) {
-      // Fallback to share sheet for older Android versions
-      return await saveFileFallback(
-        content,
-        filename,
-        mimeType,
-        t,
-        dialogTitle,
-      );
-    }
-
-    // Request directory permissions first
-    const permissions =
-      await StorageAccessFramework.requestDirectoryPermissionsAsync();
-
-    if (!permissions.granted) {
-      return {
-        success: false,
-        error: t('file_download.error.no_directory_selected'),
-        canceled: true,
-      };
-    }
-
-    // Create file in selected directory
-    const fileUri = await StorageAccessFramework.createFileAsync(
-      permissions.directoryUri,
-      filename,
-      mimeType,
-    );
-
-    // Write content to the selected file
-    await StorageAccessFramework.writeAsStringAsync(fileUri, content);
-
-    return {
-      success: true,
-      filename,
-    };
-  } catch (error) {
-    // Check if user canceled
-    if (
-      error instanceof Error &&
-      (error.message.includes('cancel') || error.message.includes('abort'))
-    ) {
-      return {
-        success: false,
-        error: t('file_download.error.save_canceled'),
-        canceled: true,
-      };
-    }
-
-    return {
-      success: false,
-      error: t('file_download.error.save_failed'),
-    };
-  }
-};
-
-/**
- * Fallback implementation using share sheet via react-native-share
- * Used when StorageAccessFramework is not available (older Android)
+ * Android implementation using share sheet via react-native-share
+ * Shows share dialog allowing user to share via apps or save to device
  */
 const saveFileFallback = async (
   content: string,
