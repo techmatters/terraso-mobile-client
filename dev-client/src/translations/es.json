@@ -149,6 +149,8 @@
                 "no_map_data_body": "No hay datos de mapas de suelos disponibles para esta ubicación, por lo que LandPKS no puede generar coincidencias de suelos en este momento. Aun así, puedes ingresar observaciones y, si en el futuro los datos del mapa de suelos están disponibles, las coincidencias de suelos aparecerán aquí.",
                 "match_score": "{{score}}",
                 "offline": "Las coincidencias de suelo se actualizarán cuando estés conectado.",
+                "improve_hint": "TK Improve matches by entering data",
+                "improve_description": "TK These scores are currently based on the site's location only. To improve the accuracy of the scores, enter some data at this site (see Site Data below).",
                 "selector": "Este es el suelo correcto",
                 "selected": "Suelo seleccionado",
                 "rate": {
