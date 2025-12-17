@@ -94,22 +94,16 @@ type MatchTilesProps = SoilIdMatchesSectionProps & {soilIdOutput: SoilIdOutput};
 const isEmptySoilData = (soilData: SoilData): boolean => {
   if (!soilData) return true;
 
-  // Check if surface cracks have been set
+  // Check if surface crack data has been set
   const hasCracks = !!soilData.surfaceCracksSelect;
 
-  // Check if any soil properties (texture, color, rock fragment) have been entered
+  // Check if any soil properties (texture, color, rock fragment, etc) have been entered
   // These are stored in depth dependent data
   const hasDepthIntervals =
     Array.isArray(soilData.depthDependentData) &&
     soilData.depthDependentData.length > 0 &&
-    soilData.depthDependentData.some(
-      depthData =>
-        depthData.texture ||
-        depthData.colorHue !== undefined ||
-        depthData.colorValue !== undefined ||
-        depthData.colorChroma !== undefined ||
-        (depthData.rockFragmentVolume !== undefined &&
-          depthData.rockFragmentVolume !== null),
+    Object.values(soilData.depthDependentData).some(
+      depthData => depthData !== null && depthData !== undefined,
     );
 
   return !hasCracks && !hasDepthIntervals;
