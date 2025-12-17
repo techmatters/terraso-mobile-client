@@ -23,7 +23,7 @@ import 'intl-pluralrules';
 
 import {
   fallbackLanguage,
-  getDeviceLanguage,
+  getLanguage,
 } from 'terraso-mobile-client/localization';
 import en from 'terraso-mobile-client/translations/en.json';
 import es from 'terraso-mobile-client/translations/es.json';
@@ -43,7 +43,7 @@ i18n.use(initReactI18next).init({
     },
   },
   debug: __DEV__ && process.env.NODE_ENV !== 'test',
-  lng: getDeviceLanguage(),
+  lng: getLanguage(),
   fallbackLng: fallbackLanguage,
   interpolation: {
     // react already escapes HTML tags by default

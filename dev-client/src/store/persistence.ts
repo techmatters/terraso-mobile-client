@@ -15,26 +15,29 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Middleware} from '@reduxjs/toolkit';
+import {isAction, Middleware} from '@reduxjs/toolkit';
 import {merge, omit} from 'lodash/fp';
 
-import type {
-  Maybe,
-  UserRatingEntry,
-} from 'terraso-client-shared/graphqlSchema/graphql';
+import type {UserRatingEntry} from 'terraso-client-shared/graphqlSchema/graphql';
 import type {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {AppState} from 'terraso-mobile-client/store';
+import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
 
 const PERSISTED_STATE_KEY = 'persisted-redux-state';
 export const persistenceMiddleware: Middleware<{}, AppState> =
   store => next => action => {
     const result = next(action);
     if (isFlagEnabled('FF_offline')) {
-      const newState = store.getState();
-      kvStorage.setObject(PERSISTED_STATE_KEY, newState);
+      // Clear persisted state on logout so next user starts fresh
+      if (isAction(action) && userLoggedOut.match(action)) {
+        kvStorage.remove(PERSISTED_STATE_KEY);
+      } else {
+        const newState = store.getState();
+        kvStorage.setObject(PERSISTED_STATE_KEY, newState);
+      }
     }
     return result;
   };
@@ -53,7 +56,7 @@ export const patchPersistedReduxState = (
   const tempState = upgradeSoilMetadataOct2025(state);
   return merge(tempState, {
     soilData: {soilSync: {}},
-    soilMetadata: {soilMetadata: {}},
+    soilMetadata: {soilMetadata: {}, soilMetadataSync: {}},
     soilIdMatch: {locationBasedMatches: {}, siteDataBasedMatches: {}},
     sync: {pullRequested: false},
   });
@@ -77,7 +80,7 @@ function upgradeSoilMetadataOct2025(
 
   for (const [siteId, siteMetadata] of Object.entries(oldMetadataEntries)) {
     const selectedSoilId = siteMetadata.selectedSoilId;
-    let userRatings: Maybe<UserRatingEntry>[];
+    let userRatings: UserRatingEntry[];
     if (selectedSoilId && !siteMetadata.userRatings) {
       // Migrate selectedSoilId to userRatings, and remove selectedSoilId
       userRatings = [
@@ -100,6 +103,8 @@ function upgradeSoilMetadataOct2025(
     soilMetadata: {
       ...state.soilMetadata,
       soilMetadata: upgradedEntries,
+      soilMetadataSync: state.soilMetadata.soilMetadataSync ?? {},
+      // TODO-cknipe: Do we need that? What are the consequences if not?
     },
   };
 }

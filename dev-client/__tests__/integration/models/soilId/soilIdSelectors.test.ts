@@ -22,14 +22,16 @@ import {initialState as accountInitialState} from 'terraso-client-shared/account
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
-  selectSyncErrorSites,
-  selectUnsyncedSiteIds,
-  selectUnsyncedSites,
+  selectSoilDataSyncErrorSiteIds,
+  selectUnsyncedSoilDataSiteIds,
 } from 'terraso-mobile-client/model/soilData/soilDataSelectors';
 import {
-  markEntityError,
+  errorRecord,
+  initialRecord,
   markEntityModified,
   markEntitySynced,
+  SyncRecord,
+  SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
 import {initialState as syncInitialState} from 'terraso-mobile-client/model/sync/syncSlice';
 import {AppState, useSelector} from 'terraso-mobile-client/store';
@@ -55,6 +57,7 @@ const appState = (): AppState => {
     },
     soilMetadata: {
       soilMetadata: {},
+      soilMetadataSync: {},
     },
     sync: syncInitialState,
   };
@@ -68,51 +71,7 @@ const soilData = (): SoilData => {
   };
 };
 
-describe('selectUnsyncedSites', () => {
-  test('selects unsynced sites only', () => {
-    const state = appState();
-    const now = Date.now();
-    markEntitySynced(state.soilData.soilSync, 'a', {value: soilData()}, now);
-    markEntityModified(state.soilData.soilSync, 'b', now);
-
-    const selected = renderSelectorHook(
-      () => useSelector(selectUnsyncedSites),
-      state,
-    );
-
-    expect(selected).toEqual({
-      b: {lastModifiedAt: now, revisionId: 1},
-    });
-  });
-
-  test('returns stable values for input states only', () => {
-    const stateA = appState();
-    markEntityModified(stateA.soilData.soilSync, 'a', Date.now());
-
-    const selectedA1 = renderSelectorHook(
-      () => useSelector(selectUnsyncedSites),
-      stateA,
-    );
-    const selectedA2 = renderSelectorHook(
-      () => useSelector(selectUnsyncedSites),
-      stateA,
-    );
-
-    const stateB = cloneDeep(stateA);
-    markEntityModified(stateB.soilData.soilSync, 'b', Date.now());
-
-    const selectedB = renderSelectorHook(
-      () => useSelector(selectUnsyncedSites),
-      stateB,
-    );
-
-    expect(selectedA1).toBe(selectedA2);
-    expect(selectedA1).not.toBe(selectedB);
-    expect(selectedA2).not.toBe(selectedB);
-  });
-});
-
-describe('selectUnsyncedSiteIds', () => {
+describe('selectUnsyncedSoilDataSiteIds', () => {
   test('selects unsynced site IDs only, sorted', () => {
     const state = appState();
     const now = Date.now();
@@ -122,7 +81,7 @@ describe('selectUnsyncedSiteIds', () => {
     markEntityModified(state.soilData.soilSync, 'b', now);
 
     const selected = renderSelectorHook(
-      () => useSelector(selectUnsyncedSiteIds),
+      () => useSelector(selectUnsyncedSoilDataSiteIds),
       state,
     );
 
@@ -134,87 +93,122 @@ describe('selectUnsyncedSiteIds', () => {
     markEntityModified(stateA.soilData.soilSync, 'a', Date.now());
 
     const selectedA1 = renderSelectorHook(
-      () => useSelector(selectUnsyncedSiteIds),
+      () => useSelector(selectUnsyncedSoilDataSiteIds),
       stateA,
     );
     const selectedA2 = renderSelectorHook(
-      () => useSelector(selectUnsyncedSiteIds),
+      () => useSelector(selectUnsyncedSoilDataSiteIds),
       stateA,
+    );
+
+    const stateAclone = cloneDeep(stateA);
+    const selectedA3 = renderSelectorHook(
+      () => useSelector(selectUnsyncedSoilDataSiteIds),
+      stateAclone,
     );
 
     const stateB = cloneDeep(stateA);
     markEntityModified(stateB.soilData.soilSync, 'b', Date.now());
 
     const selectedB = renderSelectorHook(
-      () => useSelector(selectUnsyncedSiteIds),
+      () => useSelector(selectUnsyncedSoilDataSiteIds),
       stateB,
     );
 
     expect(selectedA1).toBe(selectedA2);
+    // A1=A3 should be a result of the shallowEqual memoizeOptions
+    expect(selectedA1).toBe(selectedA3);
+
     expect(selectedA1).not.toBe(selectedB);
     expect(selectedA2).not.toBe(selectedB);
+    expect(selectedA3).not.toBe(selectedB);
   });
 });
 
-describe('selectSyncErrorSites', () => {
-  test('selects sync error sites only', () => {
-    const state = appState();
-    const now = Date.now();
-    markEntitySynced(state.soilData.soilSync, 'a', {value: soilData()}, now);
-    markEntityError(
-      state.soilData.soilSync,
-      'b',
-      {revisionId: 1, value: 'DOES_NOT_EXIST'},
-      now,
+const createMockState = (
+  soilSync: SyncRecords<any, any>,
+): Partial<AppState> => ({
+  soilData: {
+    soilSync,
+  } as any,
+});
+
+/*
+ * Test to verify that selectSoilDataSyncErrorSiteIds properly memoizes
+ * even when upstream selectors return new object references
+ */
+describe('selectSoilDataSyncErrorSiteIds memoization', () => {
+  it('should return same reference when error site IDs have not changed', () => {
+    // Create initial state with error sites
+    const errorSite1: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR_1', revisionId: 1},
+      Date.now(),
+    );
+    const errorSite2: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR_2', revisionId: 1},
+      Date.now(),
     );
 
-    const selected = renderSelectorHook(
-      () => useSelector(selectSyncErrorSites),
-      state,
-    );
+    const state1 = createMockState({
+      site1: errorSite1,
+      site2: errorSite2,
+      site3: initialRecord(undefined), // Not an error
+    }) as AppState;
 
-    expect(selected).toEqual({
-      b: {
-        lastSyncedAt: now,
-        lastSyncedRevisionId: 1,
-        lastSyncedError: 'DOES_NOT_EXIST',
-      },
-    });
+    const result1 = selectSoilDataSyncErrorSiteIds(state1);
+
+    // Create a new state object (simulating a Redux update)
+    // but with the same error sites
+    const state2 = createMockState({
+      site1: errorSite1, // Same reference
+      site2: errorSite2, // Same reference
+      site3: initialRecord(undefined), // Different reference but not an error
+    }) as AppState;
+
+    const result2 = selectSoilDataSyncErrorSiteIds(state2);
+
+    // Verify the content is the same
+    expect(result1).toEqual(['site1', 'site2']);
+    expect(result2).toEqual(['site1', 'site2']);
+
+    // CRITICAL TEST: Verify reference is the same (memoization worked)
+    expect(result1).toBe(result2);
   });
 
-  test('returns stable values for input states', () => {
-    const stateA = appState();
-    markEntityError(
-      stateA.soilData.soilSync,
-      'a',
-      {value: 'DOES_NOT_EXIST'},
+  it('should return new reference when error site IDs have changed', () => {
+    const errorSite1: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR_1', revisionId: 1},
       Date.now(),
     );
 
-    const selectedA1 = renderSelectorHook(
-      () => useSelector(selectUnsyncedSites),
-      stateA,
-    );
-    const selectedA2 = renderSelectorHook(
-      () => useSelector(selectUnsyncedSites),
-      stateA,
-    );
+    const state1 = createMockState({
+      site1: errorSite1,
+    }) as AppState;
 
-    const stateB = cloneDeep(stateA);
-    markEntityError(
-      stateB.soilData.soilSync,
-      'b',
-      {revisionId: 1, value: 'DOES_NOT_EXIST'},
+    const result1 = selectSoilDataSyncErrorSiteIds(state1);
+
+    // Add a new error site
+    const errorSite2: SyncRecord<any, any> = errorRecord(
+      initialRecord(undefined),
+      {value: 'ERROR_2', revisionId: 1},
       Date.now(),
     );
 
-    const selectedB = renderSelectorHook(
-      () => useSelector(selectUnsyncedSites),
-      stateB,
-    );
+    const state2 = createMockState({
+      site1: errorSite1,
+      site2: errorSite2, // New error
+    }) as AppState;
 
-    expect(selectedA1).toBe(selectedA2);
-    expect(selectedA1).not.toBe(selectedB);
-    expect(selectedA2).not.toBe(selectedB);
+    const result2 = selectSoilDataSyncErrorSiteIds(state2);
+
+    // Verify the content is different
+    expect(result1).toEqual(['site1']);
+    expect(result2).toEqual(['site1', 'site2']);
+
+    // Verify reference is different (content changed)
+    expect(result1).not.toBe(result2);
   });
 });

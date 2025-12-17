@@ -22,7 +22,7 @@ import * as featureFlags from 'terraso-mobile-client/config/featureFlags';
 import {
   updateUserRatings,
   UpdateUserRatingsInput,
-} from 'terraso-mobile-client/model/soilMetadata/localSoilMetadataActions';
+} from 'terraso-mobile-client/model/soilMetadata/actions/localSoilMetadataActions';
 import {AppState} from 'terraso-mobile-client/store';
 
 // Mock config to avoid ENV_CONFIG errors
@@ -382,41 +382,6 @@ describe('updateUserRatings', () => {
   });
 
   describe('Edge Cases', () => {
-    // The current type supports null ratings, but we don't currently expect any nulls in actual app behavior, so perhaps they should not
-    test('handles null entries in existing userRatings array', async () => {
-      const existingMetadata: SoilMetadata = {
-        userRatings: [
-          null,
-          {soilMatchId: 'soil-1', rating: 'REJECTED'},
-          null,
-          {soilMatchId: 'soil-2', rating: 'UNSURE'},
-        ],
-      };
-      const state = createMockState('site-1', existingMetadata);
-      const input = createRatingInput('site-1', 'soil-3', 'SELECTED');
-
-      const result = await updateUserRatings(input, state);
-
-      // Null entries are currently preserved by the spread operator
-      expect(result.userRatings).toHaveLength(5);
-      expect(result.userRatings).toContainEqual({
-        soilMatchId: 'soil-1',
-        rating: 'REJECTED',
-      });
-      expect(result.userRatings).toContainEqual({
-        soilMatchId: 'soil-2',
-        rating: 'UNSURE',
-      });
-      expect(result.userRatings).toContainEqual({
-        soilMatchId: 'soil-3',
-        rating: 'SELECTED',
-      });
-      // Verify null entries are preserved (current behavior)
-      expect(result.userRatings.filter(entry => entry === null)).toHaveLength(
-        2,
-      );
-    });
-
     test('multiple selections in sequence only keeps last', async () => {
       let state = createMockState('site-1');
 

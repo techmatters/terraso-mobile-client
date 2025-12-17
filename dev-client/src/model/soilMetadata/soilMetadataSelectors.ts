@@ -15,6 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {shallowEqual} from 'react-redux';
+
+import {createSelector} from '@reduxjs/toolkit';
+
+import {
+  getErrorRecords,
+  getUnsyncedRecords,
+} from 'terraso-mobile-client/model/sync/records';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSoilMetadata = (siteId: string) => (state: AppState) =>
@@ -24,3 +32,27 @@ export const selectUserRatingsMetadata = (siteId?: string) => {
   return (state: AppState) =>
     siteId ? state.soilMetadata.soilMetadata[siteId]?.userRatings : undefined;
 };
+
+export const selectSoilMetadataChanges = (state: AppState) =>
+  state.soilMetadata.soilMetadataSync;
+
+// Future work: Much of the sync logic for soilMetadata and soilData is duplicated. When we add another entity, it would be good to refactor to reduce duplication in various files (in here, the slices, pushUtils files, perhaps in the pushUserData mutation and associated action, etc.)
+export const selectUnsyncedMetadataSiteIds = createSelector(
+  selectSoilMetadataChanges,
+  records => Object.keys(getUnsyncedRecords(records)).sort(),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
+);
+
+export const selectMetadataSyncErrorSiteIds = createSelector(
+  selectSoilMetadataChanges,
+  records => Object.keys(getErrorRecords(records)).sort(),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
+);

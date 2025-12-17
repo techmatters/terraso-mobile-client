@@ -61,7 +61,15 @@ jobs:
 
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
+
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          df -h
 
       - name: Set up Node.js
         uses: actions/setup-node@v6

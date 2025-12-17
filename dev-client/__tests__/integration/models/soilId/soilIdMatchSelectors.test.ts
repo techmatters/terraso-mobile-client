@@ -53,6 +53,7 @@ const appState = (): AppState => {
     },
     soilMetadata: {
       soilMetadata: {},
+      soilMetadataSync: {},
     },
     sync: syncInitialState,
   };

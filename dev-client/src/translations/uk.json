@@ -404,7 +404,8 @@
     "sign_out": "Вийти",
     "delete_account": "Видалити обліковий запис",
     "delete_account_pending": "У процесі, не завершено",
-    "unknown_version": "Версія програми без тегів {{environment}}"
+    "unknown_version": "Версія програми без тегів {{environment}}",
+    "select_language": "Language: {{language}} TK"
   },
   "badge": {
     "new": "Новий"
@@ -1808,7 +1809,9 @@
   },
   "sign_out": {
     "confirm_body": "Ви впевнені, що хочете вийти?",
-    "confirm_action": "Вийти"
+    "confirm_action": "Вийти",
+    "blocked_title": "Неможливо вийти",
+    "blocked_body": "У вас є несинхронізовані зміни, які потрібно завантажити перед виходом. Будь ласка, підключіться до інтернету та зачекайте, поки ваші дані синхронізуються."
   },
   "account": {
     "google_login": "Увійти за допомогою Google",

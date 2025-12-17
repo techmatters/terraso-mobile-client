@@ -37,19 +37,20 @@ import {
 } from 'terraso-mobile-client/model/sync/records';
 import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 
+/** @deprecated use pushUserData instead */
 export const pushSoilData = async (
   unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,
   unsyncedData: Record<string, SoilData | undefined>,
 ): Promise<SyncResults<SoilData, SoilDataPushFailureReason>> => {
-  const input = unsyncedDataToMutationInput(unsyncedChanges, unsyncedData);
+  const input = unsyncedSoilDataToMutationInput(unsyncedChanges, unsyncedData);
   const response = await remoteSoilData.pushSoilData(input);
-  return mutationResponseToResults(
+  return soilDataMutationResponseToResults(
     unsyncedChanges,
     response as SoilDataPushEntry[],
   );
 };
 
-export const unsyncedDataToMutationInput = (
+export const unsyncedSoilDataToMutationInput = (
   unsyncedChanges: SyncRecords<SoilData, unknown>,
   unsyncedData: Record<string, SoilData | undefined>,
 ): SoilDataPushInput => {
@@ -95,7 +96,7 @@ export const unsyncedDataToMutationInputEntry = (
   };
 };
 
-export const mutationResponseToResults = (
+export const soilDataMutationResponseToResults = (
   unsyncedChanges: SyncRecords<SoilData, unknown>,
   response: SoilDataPushEntry[],
 ): SyncResults<SoilData, SoilDataPushFailureReason> => {
