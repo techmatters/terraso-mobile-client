@@ -494,7 +494,11 @@ msgstr "Classe de texture"
 
 #: 
 msgid "soil##texture##info##description"
-msgstr "Le sol est composé de particules de différentes tailles. Une fois tous les fragments de roche retirés (plus de $t(soil.texture.info.description_diameter,{&quot;context&quot;:&quot;{{units}}&quot;}) de diamètre), il reste un mélange de sable, de limon et d'argile.<bold> Classe de texture</bold> La texture du sol est déterminée par le pourcentage de sable, de limon et d'argile dans le sol. Toute variation de ce ratio peut avoir un impact important sur le potentiel du sol. La texture du sol détermine de nombreuses caractéristiques importantes de votre terrain, notamment :"
+msgstr "Le sol est constitué de particules de différentes tailles. Une fois que vous avez retiré tous les fragments de roche (tout ce qui a un diamètre supérieur à $t(soil.texture.info.description_diameter,{\"context\" : \"{{units}}\"})), il reste un mélange de sable, de limon et d'argile.\n"
+"\n"
+"La <bold>classe de texture</bold> est déterminée par le pourcentage de sable, de limon et d'argile dans le sol. Toute modification de ce rapport peut avoir des répercussions importantes sur le potentiel du sol.\n"
+"\n"
+"La texture du sol détermine de nombreuses caractéristiques importantes de votre terre, notamment:"
 
 #: 
 msgid "soil##texture##info##point1"
@@ -546,7 +550,11 @@ msgstr "Volume du fragment de roche"
 
 #: 
 msgid "soil##texture##fragment##info##description"
-msgstr "Le volume des fragments de roche mesure la proportion du volume du sol occupée par les roches, définie comme tout diamètre supérieur à $t(soil.texture.fragment.info.description_diameter,{&quot;context&quot;:&quot;{{units}}&quot;}). On peut l'estimer visuellement en comparant le volume du sol avant et après enlèvement des roches, ainsi qu'en comparant le volume des roches enlevées au volume du sol restant. Pour une mesure plus précise, on peut placer les roches de l'échantillon dans un seau contenant un volume d'eau connu et mesurer la variation de volume. Divisez ensuite ce volume par le volume de l'échantillon de sol initial pour obtenir un pourcentage."
+msgstr "Le volume des fragments de roche est une mesure de la quantité de volume du sol occupée par les roches, définie comme tout ce qui est plus grand que $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}) en diamètre.\n"
+"\n"
+"On peut l'estimer visuellement en comparant le volume du sol avant et après l'enlèvement des roches, ainsi qu'en comparant le volume des roches enlevées au volume du sol restant.\n"
+"\n"
+"Pour une mesure plus précise, vous pouvez aussi placer les roches de l'échantillon dans un seau contenant un volume d'eau connu et mesurer la variation de volume. Divisez ensuite ce volume par le volume de l'échantillon de sol initial pour obtenir un pourcentage."
 
 #: 
 msgid "soil##texture##class##CLAY"
@@ -650,7 +658,13 @@ msgstr "2. Préparez l’échantillon de sol."
 
 #: 
 msgid "soil##color##guide##step2##content"
-msgstr "Utilisez de la terre sèche autant que possible. L'application permet d'indiquer si votre sol est humide, mais les estimations de couleur de sol sec sont plus précises. Si votre couche de sol présente plusieurs couleurs (par exemple, des marbrures, des caractéristiques redoximorphiques ou des carbonates), isolez la couleur matricielle dominante du tas. Passez la terre au tamis $t(soil.color.guide.step2.content_size,{&quot;context&quot;:&quot;{{units}}&quot;}) pour créer un tas de sol homogène, ou utilisez vos mains pour sélectionner tout ce qui dépasse $t(soil.color.guide.step2.content_size,{&quot;context&quot;:&quot;{{units}}&quot;}). Aplatissez le tas de terre pour minimiser les ombres dans l'échantillon."
+msgstr "Utilisez autant que possible de la terre sèche. L'application indique bien si votre terre est humide, mais les estimations de couleur pour la terre sèche sont plus précises.\n"
+"\n"
+"Si votre couche de sol présente plusieurs couleurs (par exemple des marbrures, des caractéristiques rédoximorphes ou des carbonates), isolez la couleur dominante de la matrice du tas.\n"
+"\n"
+"Passez la terre au tamis $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) pour créer un tas de terre homogène, ou utilisez vos mains pour trier tout ce qui est plus gros que $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n"
+"\n"
+"Aplatissez le tas de terre pour minimiser les ombres à l'intérieur de l'échantillon de sol."
 
 #: 
 msgid "soil##color##guide##step3##title"
@@ -658,7 +672,9 @@ msgstr "3. Préparez l'éclairage."
 
 #: 
 msgid "soil##color##guide##step3##content"
-msgstr "La photo de la couleur du sol doit être prise dans des conditions de luminosité uniformes et à l'abri du soleil direct. Privilégiez une source lumineuse zénithale plutôt qu'un éclairage latéral."
+msgstr "La photo de la couleur du sol doit être prise dans des conditions d'éclairage uniformes et à l'abri du soleil direct.\n"
+"\n"
+"Privilégiez une source de lumière zénithale à un éclairage latéral."
 
 #: 
 msgid "soil##color##guide##step4##title"
@@ -706,7 +722,11 @@ msgstr "Pente"
 
 #: 
 msgid "slope##info##description"
-msgstr "Décrivez les caractéristiques de la pente du terrain sur lequel se trouve le site. Des instructions pour recueillir chaque observation sont disponibles sur chaque écran de saisie."
+msgstr "Décrivez les caractéristiques de la pente du terrain sur lequel se trouve le site. \n"
+"\n"
+"Des instructions pour recueillir chaque observation sont disponibles sur chaque écran de saisie.\n"
+"\n"
+"{{data_region_text}}"
 
 #: 
 msgid "slope##steepness##description"
@@ -722,7 +742,17 @@ msgstr "Comment utiliser Slope Meter"
 
 #: 
 msgid "slope##steepness##info##description"
-msgstr "Tenez-vous face au site à au moins $t(slope.steepness.info.description_distance, {&quot;context&quot;: &quot;{{units}}&quot;}) de distance. Identifiez la direction de la pente dominante du site. Placez-vous de manière à pouvoir voir la crête ou la silhouette de cette pente dominante (même si vous devrez peut-être vous rapprocher du sol pour la voir). La direction à laquelle vous faites face doit être perpendiculaire à la pente. Si vous tendez les bras le long du corps, la ligne qu'ils forment doit être parallèle à la pente. Positionnez votre téléphone de manière à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente n'est pas facile à voir en position debout.<bold> Méthode alternative</bold> :Si la forme du terrain n'est pas trop courbée ou bosselée, vous pouvez placer un mètre ruban sur le sol du site, puis aligner votre téléphone sur le mètre ruban pour obtenir l'angle de la pente."
+msgstr "Tenez-vous face au site à une distance d'au moins $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) de distance.\n"
+"\n"
+"Identifiez la direction de la pente prédominante sur le site.\n"
+"\n"
+"Placez-vous de manière à pouvoir voir la crête ou la silhouette de cette pente dominante (vous devrez peut-être vous rapprocher du sol pour la voir).\n"
+"\n"
+"Votre direction de regard doit être perpendiculaire à la pente. Si vous tendez les bras sur les côtés, la ligne qu'ils forment doit être parallèle à la pente.\n"
+"\n"
+"Positionnez votre téléphone de façon à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente est difficile à distinguer en position debout.\n"
+"\n"
+"<bold> Autre méthode </bold>: Si le terrain n'est pas trop courbé ou accidenté, vous pouvez placer une règle d'un mètre sur le sol à l'endroit et ensuite aligner votre téléphone sur la règle pour obtenir l'angle de la pente."
 
 #: 
 msgid "slope##shape##title"
@@ -734,7 +764,25 @@ msgstr "Forme de la pente"
 
 #: 
 msgid "slope##shape##info##description"
-msgstr "La forme de la pente désigne la courbure du terrain autour de votre site. Elle est déterminée selon deux axes :<bold> pente descendante</bold> et<bold> pente transversale</bold> Premièrement, déterminez la direction principale de la pente du site. Ignorez les petites bosses et les fossés ; observez environ $t(slope.shape.info.description_distance, {&quot;context&quot;: &quot;{{units}}&quot;}) dans toutes les directions. S'il pleuvait, dans quelle direction générale l'eau s'écoulerait-elle vers le bas ? C'est ce qu'on appelle la<bold> pente descendante</bold> Direction. La direction transversale de la pente peut être déterminée en observant à angle droit (90 degrés) depuis la pente descendante. Si vous vous éloignez du site tout en restant à la même altitude, vous trouverez cette direction.<bold> pente transversale</bold> direction. Deuxièmement, déterminez la forme de la pente pour chaque direction.<bold> Concave</bold> Cela signifie que le terrain s'incline de plus en plus vers le haut à mesure que l'on s'éloigne du point de départ, le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline, lorsqu'elle passe d'une pente raide à une pente plus faible.<bold> Convexe</bold> Signifie que le terrain s'incline de plus en plus vers le bas à mesure que l'on s'éloigne du point de départ dans une direction donnée. Par exemple, la pente descendante est souvent convexe au sommet d'une colline, passant d'une pente faible à une pente plus raide.<bold> Linéaire</bold> Cela signifie que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente ne change pas."
+msgstr "La forme de la pente fait référence à la courbe du terrain dans la zone entourant votre point d'observation.\n"
+"\n"
+"La forme de la pente est déterminée dans deux directions : <bold> pente descendante </bold> et <bold> pente transversale </bold>.\n"
+"\n"
+"Tout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\": \"{{units}} \"}) dans toutes les directions.\n"
+"\n"
+"S'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente ? C'est ce qu'on appelle la direction de la </bold> .\n"
+"\n"
+"La direction de la pente transversale peut être trouvée en regardant à angle droit (90 degrés) par rapport à la direction de la pente descendante.\n"
+"\n"
+"Si vous vous éloignez du site tout en restant à la même altitude, il s'agit de la direction de la pente <bold> .\n"
+"\n"
+"Deuxièmement, déterminez la forme de la pente pour chaque direction.\n"
+"\n"
+"<Bold> signifie que le terrain présente une pente de plus en plus ascendante à mesure qu'on s'éloigne de son point d'observation le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline , là où elle passe d'une pente raide à une pente plus douce.\n"
+"\n"
+"<Bold> signifie que le terrain est en pente descendante croissante lorsqu'on s'éloigne d'un point donné dans une direction particulière. Par exemple, la pente descendante est souvent convexe au sommet d'une colline , car elle passe d'une pente douce à une pente plus abrupte.\n"
+"\n"
+"<Bold> </bold> que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente est continue."
 
 #: 
 msgid "slope##shape##info##concave"
@@ -954,11 +1002,15 @@ msgstr "Allumettes de terre végétale"
 
 #: 
 msgid "site##soil_id##matches##info##description##site"
-msgstr "Les sols listés sont les plus susceptibles d'être trouvés sur le site, d'après les cartes pédologiques {{soilMapSource}} de cet emplacement. Saisissez la pente recommandée et les observations pédologiques pour améliorer la précision des scores de correspondance. La liste se met automatiquement à jour dès la saisie des observations."
+msgstr "Les sols répertoriés sont les plus susceptibles d'être trouvés sur le site d'après les cartes pédologiques de {{soilMapSource}} pour cet emplacement.\n"
+"\n"
+"Saisissez les observations recommandées concernant la pente et le sol afin d'améliorer la précision des scores de correspondance. La liste sera automatiquement mise à jour une fois les observations saisies."
 
 #: 
 msgid "site##soil_id##matches##info##description##temp_location"
-msgstr "Les sols listés sont les plus susceptibles d'être trouvés à cet endroit, d'après les cartes pédologiques de {{soilMapSource}}. Créez un site ici et saisissez les observations recommandées pour améliorer la précision des scores de correspondance."
+msgstr "Les sols répertoriés sont les plus susceptibles d'être trouvés à cet endroit d'après les cartes pédologiques de {{soilMapSource}} .\n"
+"\n"
+"Créez un site ici et saisissez les observations recommandées pour améliorer la précision des scores des matchs."
 
 #: 
 msgid "site##soil_id##matches##match"
@@ -1002,7 +1054,7 @@ msgstr "Propriétés du sol"
 
 #: 
 msgid "site##soil_id##site_data##soil_properties##depth"
-msgstr "Profondeur ($t(site.soil_id.site_data.soil_properties.depth_units, {&quot;context&quot;: &quot;{{units}}&quot;}))"
+msgstr "Profondeur ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))"
 
 #: 
 msgid "site##soil_id##site_data##soil_properties##depth_units_METRIC"
@@ -1298,7 +1350,9 @@ msgstr "Supprimer le projet ?"
 
 #: 
 msgid "projects##settings##delete_description"
-msgstr "Cela supprimera définitivement le projet {{projectName}} et les observations de ses sites. Cette opération est irréversible. Les chefs de projet ont la possibilité de transférer les sites de ce projet pour conserver les observations."
+msgstr "Cela supprimera définitivement le projet {{projectName}} et les observations de ses sites. Cette opération est irréversible.\n"
+"\n"
+"Les chefs de projet ont la possibilité de transférer les sites de ce projet pour conserver les observations."
 
 #: 
 msgid "projects##sites##empty_viewer"
@@ -1354,7 +1408,9 @@ msgstr "Sites de transfert ?"
 
 #: 
 msgid "projects##sites##transfer_site_modal##body"
-msgstr "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. Si des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible."
+msgstr "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. \n"
+"\n"
+"Si des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible."
 
 #: 
 msgid "projects##sites##transfer_site_modal##action_name"
@@ -1630,7 +1686,7 @@ msgstr "Supprimer le compte"
 
 #: 
 msgid "delete_account##confirm##p0"
-msgstr "<bold>{{e-mail}}</bold>"
+msgstr "<bold>{{email}}</bold>"
 
 #: 
 msgid "delete_account##confirm##p1"
@@ -1670,7 +1726,7 @@ msgstr "Supprimer"
 
 #: 
 msgid "delete_account##pending##p0"
-msgstr "<bold>{{e-mail}}</bold>"
+msgstr "<bold>{{email}}</bold>"
 
 #: 
 msgid "delete_account##pending##p1"
@@ -1910,15 +1966,15 @@ msgstr "Appliquer à toutes les profondeurs"
 
 #: 
 msgid "soil##depth##start_label"
-msgstr "À partir de ({{unités}})"
+msgstr "De ({{units}})"
 
 #: 
 msgid "soil##depth##end_label"
-msgstr "À ({{unités}})"
+msgstr "À ({{units}})"
 
 #: 
 msgid "soil##depth##number_required"
-msgstr "$t(soil.depth.depth, {&quot;context&quot;: &quot;{{item}}&quot;}) doit être un nombre"
+msgstr "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) doit être un nombre"
 
 #: 
 msgid "soil##depth##depth_start"
@@ -1994,7 +2050,7 @@ msgstr "Utiliser cette classe de texture"
 
 #: 
 msgid "soil##texture##guide##ribbon_length##SM"
-msgstr "&lt;2,5 cm"
+msgstr "<2,5 cm"
 
 #: 
 msgid "soil##texture##guide##ribbon_length##MD"
@@ -2002,7 +2058,7 @@ msgstr "2,5–5 cm"
 
 #: 
 msgid "soil##texture##guide##ribbon_length##LG"
-msgstr "&gt;5 cm"
+msgstr ">5 cm"
 
 #: 
 msgid "soil##texture##guide##grittyness_type##GRITTY"
@@ -2170,7 +2226,7 @@ msgstr "35–60 %"
 
 #: 
 msgid "soil##texture##rockfragment##VOLUME_60"
-msgstr "&gt;60%"
+msgstr ">60%"
 
 #: 
 msgid "soil##color##confirm_delete##title"
@@ -2454,7 +2510,8 @@ msgstr "<bold>Découvrez l’utilisation potentielle et la valeur de votre terra
 
 #: 
 msgid "info##description2"
-msgstr "<bold>Trouvez plus d'informations et de guides</bold> à:<icon />"
+msgstr "<bold>Trouvez plus d'informations et de guides</bold> à:\n"
+"<icon />"
 
 #: 
 msgid "info##link_label"
@@ -2482,15 +2539,18 @@ msgstr "Classe de texture"
 
 #: 
 msgid "soil##vertical_cracking##no_cracks"
-msgstr "<bold>Pas de fissures</bold> Aucune fissure n’est visible à la surface du sol."
+msgstr "<bold>Pas de fissures</bold>\n"
+"Aucune fissure n’est visible à la surface du sol."
 
 #: 
 msgid "soil##vertical_cracking##surface_cracks"
-msgstr "<bold>Fissures de surface</bold> Les fissures de surface ont une profondeur inférieure à $t(soil.vertical_cracking.description_depth, {&quot;context&quot;: &quot;{{units}}&quot;})."
+msgstr "<bold>Fissures de surface</bold>\n"
+"Les fissures de surface ont une profondeur inférieure à $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"})."
 
 #: 
 msgid "soil##vertical_cracking##deep_vertical_cracks"
-msgstr "<bold>Fissures verticales profondes</bold> Les fissures verticales profondes mesurent au moins $t(soil.vertical_cracking.description_width, {&quot;context&quot;: &quot;{{units}}&quot;}) de large et $t(soil.vertical_cracking.description_depth, {&quot;context&quot;: &quot;{{units}}&quot;}) de profondeur. Vous devriez pouvoir y insérer un crayon."
+msgstr "<bold>Fissures verticales profondes</bold>\n"
+"Les fissures verticales profondes mesurent au moins $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) de large et $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) de profondeur. Vous devriez pouvoir y insérer un crayon."
 
 #: 
 msgid "soil##texture##info##description_end"
@@ -2660,16 +2720,21 @@ msgstr "LandPKS Soil ID utilise les données des cartes pédologiques et les obs
 
 #: 
 msgid "site##soil_id##matches##info##description##site_region_unknown"
-msgstr "Les sols listés sont ceux les plus susceptibles d'être trouvés sur le site, d'après les cartes pédologiques de cet emplacement. Saisissez la pente recommandée et les observations pédologiques pour améliorer la précision des scores de correspondance. La liste se met automatiquement à jour une fois les observations saisies."
+msgstr "Les sols listés sont ceux les plus susceptibles d'être trouvés sur le site, d'après les cartes pédologiques de cet emplacement. \n"
+"\n"
+"Saisissez la pente recommandée et les observations pédologiques pour améliorer la précision des scores de correspondance. La liste se met automatiquement à jour une fois les observations saisies."
 
 #: 
 msgid "site##soil_id##matches##info##description##temp_location_region_unknown"
-msgstr "Les sols listés sont les plus susceptibles d'être trouvés à cet endroit, d'après les cartes pédologiques. Créez un site ici et saisissez les observations recommandées pour améliorer la précision des scores de correspondance."
+msgstr "Les sols listés sont les plus susceptibles d'être trouvés à cet endroit, d'après les cartes pédologiques. \n"
+"\n"
+"Créez un site ici et saisissez les observations recommandées pour améliorer la précision des scores de correspondance."
 
 #: 
 msgid "site##soil_id##matches##info##description##need_help"
 msgstr "\n"
-"<bold>Besoin d'aide ?</bold> Consultez un pédologue pour interpréter les observations et déterminer la correspondance des sols. Pour en savoir plus sur les prédictions des cartes pédologiques et les correspondances d'identification des sols, consultez le site web :"
+"<bold>Besoin d'aide ?</bold>\n"
+"Consultez un pédologue pour interpréter les observations et déterminer la correspondance des sols. Pour en savoir plus sur les prédictions des cartes pédologiques et les correspondances d'identification des sols, consultez le site web :"
 
 #: 
 msgid "site##soil_id##matches##info##description##learn_more_url"
