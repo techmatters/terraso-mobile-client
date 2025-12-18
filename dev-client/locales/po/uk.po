@@ -4969,6 +4969,7 @@ msgid "site##soil_id##matches##rate##unsure"
 msgstr "Not sure yet TK"
 
 #: 
+#, fuzzy
 msgid "soil##depth##edit_title"
-msgstr "Параметри глибини"
+msgstr "Параметри глибини (щодо розрізу грунту)"
 

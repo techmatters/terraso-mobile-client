@@ -925,7 +925,7 @@ msgstr "El nombre del sitio debe tener un máximo de {{max}} caracteres"
 
 #: 
 msgid "site##form##min_latitude_error"
-msgstr "La latitud mínima es {{max}}"
+msgstr "La latitud mínima es {{min}}"
 
 #: 
 msgid "site##form##max_latitude_error"
@@ -933,7 +933,7 @@ msgstr "La latitud máxima es {{max}}"
 
 #: 
 msgid "site##form##min_longitude_error"
-msgstr "La longitud mínima es {{max}}"
+msgstr "La longitud mínima es {{min}}"
 
 #: 
 msgid "site##form##max_longitude_error"
