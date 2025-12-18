@@ -135,11 +135,11 @@
                 "info": {
                     "title": "Allumettes de terre végétale",
                     "description": {
-                        "site": "Les sols listés sont les plus susceptibles d'être trouvés sur le site, d'après les cartes pédologiques {{soilMapSource}} de cet emplacement. Saisissez la pente recommandée et les observations pédologiques pour améliorer la précision des scores de correspondance. La liste se met automatiquement à jour dès la saisie des observations.",
-                        "temp_location": "Les sols listés sont les plus susceptibles d'être trouvés à cet endroit, d'après les cartes pédologiques de {{soilMapSource}}. Créez un site ici et saisissez les observations recommandées pour améliorer la précision des scores de correspondance.",
-                        "site_region_unknown": "Les sols listés sont ceux les plus susceptibles d'être trouvés sur le site, d'après les cartes pédologiques de cet emplacement. Saisissez la pente recommandée et les observations pédologiques pour améliorer la précision des scores de correspondance. La liste se met automatiquement à jour une fois les observations saisies.",
-                        "temp_location_region_unknown": "Les sols listés sont les plus susceptibles d'être trouvés à cet endroit, d'après les cartes pédologiques. Créez un site ici et saisissez les observations recommandées pour améliorer la précision des scores de correspondance.",
-                        "need_help": "\n<bold>Besoin d'aide ?</bold> Consultez un pédologue pour interpréter les observations et déterminer la correspondance des sols. Pour en savoir plus sur les prédictions des cartes pédologiques et les correspondances d'identification des sols, consultez le site web :",
+                        "site": "Les sols répertoriés sont les plus susceptibles d'être trouvés sur le site d'après les cartes pédologiques de {{soilMapSource}} pour cet emplacement.\n\nSaisissez les observations recommandées concernant la pente et le sol afin d'améliorer la précision des scores de correspondance. La liste sera automatiquement mise à jour une fois les observations saisies.",
+                        "temp_location": "Les sols répertoriés sont les plus susceptibles d'être trouvés à cet endroit d'après les cartes pédologiques de {{soilMapSource}} .\n\nCréez un site ici et saisissez les observations recommandées pour améliorer la précision des scores des matchs.",
+                        "site_region_unknown": "Les sols listés sont ceux les plus susceptibles d'être trouvés sur le site, d'après les cartes pédologiques de cet emplacement. \n\nSaisissez la pente recommandée et les observations pédologiques pour améliorer la précision des scores de correspondance. La liste se met automatiquement à jour une fois les observations saisies.",
+                        "temp_location_region_unknown": "Les sols listés sont les plus susceptibles d'être trouvés à cet endroit, d'après les cartes pédologiques. \n\nCréez un site ici et saisissez les observations recommandées pour améliorer la précision des scores de correspondance.",
+                        "need_help": "\n<bold>Besoin d'aide ?</bold>\nConsultez un pédologue pour interpréter les observations et déterminer la correspondance des sols. Pour en savoir plus sur les prédictions des cartes pédologiques et les correspondances d'identification des sols, consultez le site web :",
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
@@ -170,7 +170,7 @@
                 },
                 "soil_properties": {
                     "title": "Propriétés du sol",
-                    "depth": "Profondeur ($t(site.soil_id.site_data.soil_properties.depth_units, {&quot;context&quot;: &quot;{{units}}&quot;}))",
+                    "depth": "Profondeur ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
                     "depth_units_METRIC": "cm",
                     "depth_units_ENGLISH": "”",
                     "texture": "Texture",
@@ -306,7 +306,7 @@
             "archive_description": "Le projet sera déplacé vers les projets archivés, le rendant ainsi accessible en lecture seule. Les membres de l'équipe pourront accéder aux données et les chefs de projet pourront les restaurer à tout moment. Les projets publics archivés resteront consultables sur les portails de données.",
             "delete_button": "Supprimer",
             "delete_button_prompt": "Supprimer le projet ?",
-            "delete_description": "Cela supprimera définitivement le projet {{projectName}} et les observations de ses sites. Cette opération est irréversible. Les chefs de projet ont la possibilité de transférer les sites de ce projet pour conserver les observations."
+            "delete_description": "Cela supprimera définitivement le projet {{projectName}} et les observations de ses sites. Cette opération est irréversible.\n\nLes chefs de projet ont la possibilité de transférer les sites de ce projet pour conserver les observations."
         },
         "sites": {
             "add": "Ajouter des sites",
@@ -341,7 +341,7 @@
             },
             "transfer_site_modal": {
                 "title": "Sites de transfert ?",
-                "body": "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. Si des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible.",
+                "body": "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. \n\nSi des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible.",
                 "action_name": "Transfert"
             }
         },
@@ -554,9 +554,9 @@
             "label_help": "{{max}} caractères max",
             "label_placeholder": "Étiquette",
             "apply_to_all_label": "Appliquer à toutes les profondeurs",
-            "start_label": "À partir de ({{unités}})",
-            "end_label": "À ({{unités}})",
-            "number_required": "$t(soil.depth.depth, {&quot;context&quot;: &quot;{{item}}&quot;}) doit être un nombre",
+            "start_label": "De ({{units}})",
+            "end_label": "À ({{units}})",
+            "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) doit être un nombre",
             "depth_start": "début de profondeur",
             "depth_end": "extrémité de profondeur",
             "update_modal": {
@@ -579,7 +579,7 @@
             "label": "Classe de texture",
             "info": {
                 "title": "Classe de texture",
-                "description": "Le sol est composé de particules de différentes tailles. Une fois tous les fragments de roche retirés (plus de $t(soil.texture.info.description_diameter,{&quot;context&quot;:&quot;{{units}}&quot;}) de diamètre), il reste un mélange de sable, de limon et d'argile.<bold> Classe de texture</bold> La texture du sol est déterminée par le pourcentage de sable, de limon et d'argile dans le sol. Toute variation de ce ratio peut avoir un impact important sur le potentiel du sol. La texture du sol détermine de nombreuses caractéristiques importantes de votre terrain, notamment :",
+                "description": "Le sol est constitué de particules de différentes tailles. Une fois que vous avez retiré tous les fragments de roche (tout ce qui a un diamètre supérieur à $t(soil.texture.info.description_diameter,{\"context\" : \"{{units}}\"})), il reste un mélange de sable, de limon et d'argile.\n\nLa <bold>classe de texture</bold> est déterminée par le pourcentage de sable, de limon et d'argile dans le sol. Toute modification de ce rapport peut avoir des répercussions importantes sur le potentiel du sol.\n\nLa texture du sol détermine de nombreuses caractéristiques importantes de votre terre, notamment:",
                 "point1": "Quelle quantité d'eau le sol peut-il retenir ?",
                 "point2": "La vitesse à laquelle l'eau peut être absorbée et percoler dans le sol",
                 "point3": "La facilité avec laquelle le sol s'érode lorsqu'il est exposé au vent ou à l'eau",
@@ -602,9 +602,9 @@
                 "grittyness_help": "Comment est le sol?",
                 "use_label": "Utiliser cette classe de texture",
                 "ribbon_length": {
-                    "SM": "&lt;2,5 cm",
+                    "SM": "<2,5 cm",
                     "MD": "2,5–5 cm",
-                    "LG": "&gt;5 cm"
+                    "LG": ">5 cm"
                 },
                 "grittyness_type": {
                     "GRITTY": "Graveleux",
@@ -633,7 +633,7 @@
             "fragment": {
                 "info": {
                     "title": "Volume du fragment de roche",
-                    "description": "Le volume des fragments de roche mesure la proportion du volume du sol occupée par les roches, définie comme tout diamètre supérieur à $t(soil.texture.fragment.info.description_diameter,{&quot;context&quot;:&quot;{{units}}&quot;}). On peut l'estimer visuellement en comparant le volume du sol avant et après enlèvement des roches, ainsi qu'en comparant le volume des roches enlevées au volume du sol restant. Pour une mesure plus précise, on peut placer les roches de l'échantillon dans un seau contenant un volume d'eau connu et mesurer la variation de volume. Divisez ensuite ce volume par le volume de l'échantillon de sol initial pour obtenir un pourcentage.",
+                    "description": "Le volume des fragments de roche est une mesure de la quantité de volume du sol occupée par les roches, définie comme tout ce qui est plus grand que $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}) en diamètre.\n\nOn peut l'estimer visuellement en comparant le volume du sol avant et après l'enlèvement des roches, ainsi qu'en comparant le volume des roches enlevées au volume du sol restant.\n\nPour une mesure plus précise, vous pouvez aussi placer les roches de l'échantillon dans un seau contenant un volume d'eau connu et mesurer la variation de volume. Divisez ensuite ce volume par le volume de l'échantillon de sol initial pour obtenir un pourcentage.",
                     "description_diameter_METRIC": "2 mm",
                     "description_diameter_ENGLISH": "1/16”"
                 }
@@ -663,7 +663,7 @@
                 "VOLUME_1_15": "1 à 15 %",
                 "VOLUME_15_35": "15–35 %",
                 "VOLUME_35_60": "35–60 %",
-                "VOLUME_60": "&gt;60%"
+                "VOLUME_60": ">60%"
             }
         },
         "color": {
@@ -698,13 +698,13 @@
                 },
                 "step2": {
                     "title": "2. Préparez l’échantillon de sol.",
-                    "content": "Utilisez de la terre sèche autant que possible. L'application permet d'indiquer si votre sol est humide, mais les estimations de couleur de sol sec sont plus précises. Si votre couche de sol présente plusieurs couleurs (par exemple, des marbrures, des caractéristiques redoximorphiques ou des carbonates), isolez la couleur matricielle dominante du tas. Passez la terre au tamis $t(soil.color.guide.step2.content_size,{&quot;context&quot;:&quot;{{units}}&quot;}) pour créer un tas de sol homogène, ou utilisez vos mains pour sélectionner tout ce qui dépasse $t(soil.color.guide.step2.content_size,{&quot;context&quot;:&quot;{{units}}&quot;}). Aplatissez le tas de terre pour minimiser les ombres dans l'échantillon.",
+                    "content": "Utilisez autant que possible de la terre sèche. L'application indique bien si votre terre est humide, mais les estimations de couleur pour la terre sèche sont plus précises.\n\nSi votre couche de sol présente plusieurs couleurs (par exemple des marbrures, des caractéristiques rédoximorphes ou des carbonates), isolez la couleur dominante de la matrice du tas.\n\nPassez la terre au tamis $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) pour créer un tas de terre homogène, ou utilisez vos mains pour trier tout ce qui est plus gros que $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n\nAplatissez le tas de terre pour minimiser les ombres à l'intérieur de l'échantillon de sol.",
                     "content_size_METRIC": "2 mm",
                     "content_size_ENGLISH": "1/16”"
                 },
                 "step3": {
                     "title": "3. Préparez l'éclairage.",
-                    "content": "La photo de la couleur du sol doit être prise dans des conditions de luminosité uniformes et à l'abri du soleil direct. Privilégiez une source lumineuse zénithale plutôt qu'un éclairage latéral."
+                    "content": "La photo de la couleur du sol doit être prise dans des conditions d'éclairage uniformes et à l'abri du soleil direct.\n\nPrivilégiez une source de lumière zénithale à un éclairage latéral."
                 },
                 "step4": {
                     "title": "4. Placez la carte de référence à côté du sol.",
@@ -795,9 +795,9 @@
                 "SURFACE_CRACKING_ONLY": "Fissures superficielles uniquement",
                 "DEEP_VERTICAL_CRACKS": "Fissures verticales profondes"
             },
-            "no_cracks": "<bold>Pas de fissures</bold> Aucune fissure n’est visible à la surface du sol.",
-            "surface_cracks": "<bold>Fissures de surface</bold> Les fissures de surface ont une profondeur inférieure à $t(soil.vertical_cracking.description_depth, {&quot;context&quot;: &quot;{{units}}&quot;}).",
-            "deep_vertical_cracks": "<bold>Fissures verticales profondes</bold> Les fissures verticales profondes mesurent au moins $t(soil.vertical_cracking.description_width, {&quot;context&quot;: &quot;{{units}}&quot;}) de large et $t(soil.vertical_cracking.description_depth, {&quot;context&quot;: &quot;{{units}}&quot;}) de profondeur. Vous devriez pouvoir y insérer un crayon."
+            "no_cracks": "<bold>Pas de fissures</bold>\nAucune fissure n’est visible à la surface du sol.",
+            "surface_cracks": "<bold>Fissures de surface</bold>\nLes fissures de surface ont une profondeur inférieure à $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}).",
+            "deep_vertical_cracks": "<bold>Fissures verticales profondes</bold>\nLes fissures verticales profondes mesurent au moins $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) de large et $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) de profondeur. Vous devriez pouvoir y insérer un crayon."
         },
         "soil_preset": {
             "header": "Modifier la profondeur des fosses de sol",
@@ -1702,7 +1702,7 @@
         "title": "Pente",
         "info": {
             "title": "Pente",
-            "description": "Décrivez les caractéristiques de la pente du terrain sur lequel se trouve le site. Des instructions pour recueillir chaque observation sont disponibles sur chaque écran de saisie.",
+            "description": "Décrivez les caractéristiques de la pente du terrain sur lequel se trouve le site. \n\nDes instructions pour recueillir chaque observation sont disponibles sur chaque écran de saisie.\n\n{{data_region_text}}",
             "data_region_text_US": "La pente est importante pour identifier le sol. Elle permet également de déterminer son potentiel d'érosion, sa capacité à retenir l'eau, etc.",
             "data_region_text_global_or_unknown": "Les caractéristiques de la pente aident à déterminer le potentiel d’érosion du sol, sa capacité à retenir l’eau, etc."
         },
@@ -1711,7 +1711,7 @@
             "degree": "{{value}}°",
             "info": {
                 "title": "Comment utiliser Slope Meter",
-                "description": "Tenez-vous face au site à au moins $t(slope.steepness.info.description_distance, {&quot;context&quot;: &quot;{{units}}&quot;}) de distance. Identifiez la direction de la pente dominante du site. Placez-vous de manière à pouvoir voir la crête ou la silhouette de cette pente dominante (même si vous devrez peut-être vous rapprocher du sol pour la voir). La direction à laquelle vous faites face doit être perpendiculaire à la pente. Si vous tendez les bras le long du corps, la ligne qu'ils forment doit être parallèle à la pente. Positionnez votre téléphone de manière à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente n'est pas facile à voir en position debout.<bold> Méthode alternative</bold> :Si la forme du terrain n'est pas trop courbée ou bosselée, vous pouvez placer un mètre ruban sur le sol du site, puis aligner votre téléphone sur le mètre ruban pour obtenir l'angle de la pente.",
+                "description": "Tenez-vous face au site à une distance d'au moins $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) de distance.\n\nIdentifiez la direction de la pente prédominante sur le site.\n\nPlacez-vous de manière à pouvoir voir la crête ou la silhouette de cette pente dominante (vous devrez peut-être vous rapprocher du sol pour la voir).\n\nVotre direction de regard doit être perpendiculaire à la pente. Si vous tendez les bras sur les côtés, la ligne qu'ils forment doit être parallèle à la pente.\n\nPositionnez votre téléphone de façon à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente est difficile à distinguer en position debout.\n\n<bold> Autre méthode </bold>: Si le terrain n'est pas trop courbé ou accidenté, vous pouvez placer une règle d'un mètre sur le sol à l'endroit et ensuite aligner votre téléphone sur la règle pour obtenir l'angle de la pente.",
                 "description_distance_METRIC": "4 mètres",
                 "description_distance_ENGLISH": "15 pieds"
             },
@@ -1755,7 +1755,7 @@
             "title": "Forme",
             "info": {
                 "title": "Forme de la pente",
-                "description": "La forme de la pente désigne la courbure du terrain autour de votre site. Elle est déterminée selon deux axes :<bold> pente descendante</bold> et<bold> pente transversale</bold> Premièrement, déterminez la direction principale de la pente du site. Ignorez les petites bosses et les fossés ; observez environ $t(slope.shape.info.description_distance, {&quot;context&quot;: &quot;{{units}}&quot;}) dans toutes les directions. S'il pleuvait, dans quelle direction générale l'eau s'écoulerait-elle vers le bas ? C'est ce qu'on appelle la<bold> pente descendante</bold> Direction. La direction transversale de la pente peut être déterminée en observant à angle droit (90 degrés) depuis la pente descendante. Si vous vous éloignez du site tout en restant à la même altitude, vous trouverez cette direction.<bold> pente transversale</bold> direction. Deuxièmement, déterminez la forme de la pente pour chaque direction.<bold> Concave</bold> Cela signifie que le terrain s'incline de plus en plus vers le haut à mesure que l'on s'éloigne du point de départ, le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline, lorsqu'elle passe d'une pente raide à une pente plus faible.<bold> Convexe</bold> Signifie que le terrain s'incline de plus en plus vers le bas à mesure que l'on s'éloigne du point de départ dans une direction donnée. Par exemple, la pente descendante est souvent convexe au sommet d'une colline, passant d'une pente faible à une pente plus raide.<bold> Linéaire</bold> Cela signifie que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente ne change pas.",
+                "description": "La forme de la pente fait référence à la courbe du terrain dans la zone entourant votre point d'observation.\n\nLa forme de la pente est déterminée dans deux directions : <bold> pente descendante </bold> et <bold> pente transversale </bold>.\n\nTout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\": \"{{units}} \"}) dans toutes les directions.\n\nS'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente ? C'est ce qu'on appelle la direction de la </bold> .\n\nLa direction de la pente transversale peut être trouvée en regardant à angle droit (90 degrés) par rapport à la direction de la pente descendante.\n\nSi vous vous éloignez du site tout en restant à la même altitude, il s'agit de la direction de la pente <bold> .\n\nDeuxièmement, déterminez la forme de la pente pour chaque direction.\n\n<Bold> signifie que le terrain présente une pente de plus en plus ascendante à mesure qu'on s'éloigne de son point d'observation le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline , là où elle passe d'une pente raide à une pente plus douce.\n\n<Bold> signifie que le terrain est en pente descendante croissante lorsqu'on s'éloigne d'un point donné dans une direction particulière. Par exemple, la pente descendante est souvent convexe au sommet d'une colline , car elle passe d'une pente douce à une pente plus abrupte.\n\n<Bold> </bold> que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente est continue.",
                 "concave": "Concave",
                 "convex": "Convexe",
                 "linear": "Linéaire",
@@ -1783,7 +1783,7 @@
     "delete_account": {
         "title": "Supprimer le compte",
         "confirm": {
-            "p0": "<bold>{{e-mail}}</bold>",
+            "p0": "<bold>{{email}}</bold>",
             "p1": "Le compte LandPKS associé à cette adresse e-mail sera supprimé. Ceci supprime :",
             "p2": {
                 "b0": "vos sites non affiliés",
@@ -1799,7 +1799,7 @@
             "delete": "Supprimer"
         },
         "pending": {
-            "p0": "<bold>{{e-mail}}</bold>",
+            "p0": "<bold>{{email}}</bold>",
             "p1": "Votre demande de suppression de compte a été envoyée. Le compte de {{email}} sera supprimé sous cinq jours ouvrés.",
             "p2": "Vous recevrez un e-mail de confirmation lorsque votre compte aura été supprimé."
         }
@@ -1831,7 +1831,7 @@
     "info": {
         "title": "Découvrez le potentiel de votre terrain",
         "description": "<bold>Découvrez l’utilisation potentielle et la valeur de votre terrain.</bold> Déterminez précisément le type de sol et les autres caractéristiques de votre terrain. Obtenez des informations sur les options de pâturage et d'agriculture, la séquestration du carbone, et plus encore.",
-        "description2": "<bold>Trouvez plus d'informations et de guides</bold> à:<icon />",
+        "description2": "<bold>Trouvez plus d'informations et de guides</bold> à:\n<icon />",
         "link_label": "landpks.terraso.org",
         "link_url": "https://landpks.terraso.org/",
         "get_started": "<bold>Pour commencer, utilisez la carte pour créer un site :</bold>"
