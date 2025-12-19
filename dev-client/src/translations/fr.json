@@ -402,7 +402,8 @@
         "sign_out": "se déconnecter",
         "delete_account": "Supprimer le compte",
         "delete_account_pending": "En attente",
-        "unknown_version": "Version d'application non balisée {{environment}}"
+        "unknown_version": "Version d'application non balisée {{environment}}",
+        "select_language": "Langue: {{language}}"
     },
     "badge": {
         "new": "Nouveau"
@@ -1806,7 +1807,9 @@
     },
     "sign_out": {
         "confirm_body": "Êtes-vous sûr de vouloir vous déconnecter ?",
-        "confirm_action": "se déconnecter"
+        "confirm_action": "se déconnecter",
+        "blocked_title": "Impossible de se déconnecter",
+        "blocked_body": "Vous avez des modifications non synchronisées qui doivent être téléchargées avant de vous déconnecter. Veuillez vous connecter à Internet et attendre que vos données soient synchronisées."
     },
     "account": {
         "google_login": "Connectez-vous avec Google",

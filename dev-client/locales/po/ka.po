@@ -25,11 +25,11 @@ msgstr "რუკაზე ძიება"
 
 #: 
 msgid "site##progress"
-msgstr "პროგრესი: {{პროგრესი}}"
+msgstr "პროგრესი: {{progress}}"
 
 #: 
 msgid "site##members"
-msgstr "{{წევრები}} წევრი"
+msgstr "{{members}} წევრი"
 
 #: 
 msgid "site##coords"
@@ -218,7 +218,7 @@ msgstr "ეტიკეტი"
 
 #: 
 msgid "projects##inputs##depths##depth"
-msgstr "სიღრმე ({{ერთეულები}})"
+msgstr "სიღრმე ({{units}})"
 
 #: 
 msgid "projects##team##add"
@@ -478,7 +478,7 @@ msgstr "სიღრმის საზღვრების შეცდომ�
 
 #: 
 msgid "soil##depth##bounds"
-msgstr "{{დაწყება}}–{{დასასრული}}{{ერთეულები}}"
+msgstr "{{start}}–{{end}}{{units}}"
 
 #: 
 msgid "soil##texture##title"
@@ -926,7 +926,7 @@ msgstr "საიტის სახელი უნდა შეიცავდ
 
 #: 
 msgid "site##form##min_latitude_error"
-msgstr "განედი უნდა იყოს მინიმუმ {{წთ}}"
+msgstr "განედი უნდა იყოს მინიმუმ {{min}}"
 
 #: 
 msgid "site##form##max_latitude_error"
@@ -934,7 +934,7 @@ msgstr "განედი უნდა იყოს მაქსიმუმ {{
 
 #: 
 msgid "site##form##min_longitude_error"
-msgstr "გრძედი უნდა იყოს მინიმუმ {{წთ}}"
+msgstr "გრძედი უნდა იყოს მინიმუმ {{min}}"
 
 #: 
 msgid "site##form##max_longitude_error"
@@ -1098,11 +1098,11 @@ msgstr "<bold>ეკოლოგიური ობიექტის ID:</bold>
 
 #: 
 msgid "site##soil_id##soil_info##land_class_label"
-msgstr "<bold>მიწის შესაძლებლობის კლასი:</bold> {{მიწა}}"
+msgstr "<bold>მიწის შესაძლებლობის კლასი:</bold> {{land}}"
 
 #: 
 msgid "site##soil_id##soil_info##data_source_label"
-msgstr "<bold>მონაცემთა წყარო:</bold> {{წყარო}}"
+msgstr "<bold>მონაცემთა წყარო:</bold> {{source}}"
 
 #: 
 msgid "site##soil_id##soil_info##location_url"
@@ -1542,7 +1542,7 @@ msgstr "ბოლო ცვლილება"
 
 #: 
 msgid "general##last_modified_by"
-msgstr "ბოლოს შეცვლილია {{მომხმარებელი}}, {{თარიღი}}"
+msgstr "ბოლოს შეცვლილია {{user}}, {{date}}"
 
 #: 
 msgid "general##select_all"
@@ -1550,7 +1550,7 @@ msgstr "ყველას არჩევა"
 
 #: 
 msgid "general##you_name"
-msgstr "{{სახელი}} (შენ)"
+msgstr "{{name}} (შენ)"
 
 #: 
 msgid "general##email_placeholder"
@@ -1686,7 +1686,7 @@ msgstr "ანგარიშის წაშლა"
 
 #: 
 msgid "delete_account##confirm##p0"
-msgstr "<bold>{{ელ.ფოსტა}}</bold>"
+msgstr "<bold>{{email}}</bold>"
 
 #: 
 msgid "delete_account##confirm##p1"
@@ -1726,7 +1726,7 @@ msgstr "წაშლა"
 
 #: 
 msgid "delete_account##pending##p0"
-msgstr "<bold>{{ელ.ფოსტა}}</bold>"
+msgstr "<bold>{{email}}</bold>"
 
 #: 
 msgid "delete_account##pending##p1"
@@ -1818,7 +1818,7 @@ msgstr "დაკვირვების მოთხოვნები"
 
 #: 
 msgid "soil##required_method"
-msgstr "{{მეთოდი}} (აუცილებელია)"
+msgstr "{{method}} (აუცილებელია)"
 
 #: 
 msgid "soil##collection_method##slope"
@@ -1966,11 +1966,11 @@ msgstr "წაისვით ყველა სიღრმეზე"
 
 #: 
 msgid "soil##depth##start_label"
-msgstr "({{ერთეულები}})-დან"
+msgstr "({{units}})-დან"
 
 #: 
 msgid "soil##depth##end_label"
-msgstr "({{ერთეულები}})-მდე"
+msgstr "({{units}})-მდე"
 
 #: 
 msgid "soil##depth##number_required"
@@ -2014,7 +2014,7 @@ msgstr "{{label}}: {{start}}–{{end}}{{units}}"
 
 #: 
 msgid "soil##depth##bounds_unitless"
-msgstr "{{დაწყება}}–{{დასასრული}}"
+msgstr "{{start}}–{{end}}"
 
 #: 
 msgid "soil##depth##delete_button"
@@ -2458,7 +2458,7 @@ msgstr "100%+"
 
 #: 
 msgid "slope##steepness##select_display"
-msgstr "{{ციცაბო_სახელი}} {{ციცაბო_პროცენტი}}"
+msgstr "{{steepness_name}} {{steepness_percent}}"
 
 #: 
 msgid "slope##shape##long_title"
@@ -2501,6 +2501,7 @@ msgid "image##choose_from_gallery"
 msgstr "აირჩიეთ გალერეიდან"
 
 #: 
+#, fuzzy
 msgid "info##title"
 msgstr "აღმოაჩინეთ თქვენი მიწის პოტენციალი"
 
@@ -2596,7 +2597,7 @@ msgstr "საიტების შექმნა მხოლოდ ონლ
 
 #: 
 msgid "site##soil_id##matches##match_score"
-msgstr "{{ქულა}}"
+msgstr "{{score}}"
 
 #: 
 msgid "site##soil_id##matches##offline"
@@ -4943,4 +4944,16 @@ msgstr "ჯერ არ ვარ დარწმუნებული"
 #: 
 msgid "soil##depth##edit_title"
 msgstr "სიღრმის პარამეტრები"
+
+#: 
+msgid "settings##select_language"
+msgstr "ენა: {{language}}"
+
+#: 
+msgid "sign_out##blocked_title"
+msgstr "გასვლა შეუძლებელია"
+
+#: 
+msgid "sign_out##blocked_body"
+msgstr "თქვენ გაქვთ გაუსინქრონებელი ცვლილებები, რომლებიც უნდა ატვირთოთ სისტემიდან გამოსვლამდე. გთხოვთ, დაუკავშირდეთ ინტერნეტს და დაელოდოთ თქვენი მონაცემების სინქრონიზაციას."
 
