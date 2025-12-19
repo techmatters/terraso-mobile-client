@@ -2509,6 +2509,7 @@ msgid "image##choose_from_gallery"
 msgstr "Виберіть з галереї"
 
 #: 
+#, fuzzy
 msgid "info##title"
 msgstr "Дослідіть потенціал вашої землі"
 
@@ -4972,4 +4973,18 @@ msgstr "Not sure yet TK"
 #, fuzzy
 msgid "soil##depth##edit_title"
 msgstr "Параметри глибини (щодо розрізу грунту)"
+
+#: 
+msgid "settings##select_language"
+msgstr "Мова: {{language}}"
+
+#: 
+#, fuzzy
+msgid "sign_out##blocked_title"
+msgstr "Не вдається вийти"
+
+#: 
+#, fuzzy
+msgid "sign_out##blocked_body"
+msgstr "У вас є несинхронізовані зміни, які потрібно завантажити перед виходом. Підключіться до Інтернету та зачекайте, поки ваші дані синхронізуються."
 

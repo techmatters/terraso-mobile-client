@@ -2501,6 +2501,7 @@ msgid "image##choose_from_gallery"
 msgstr "Choisissez dans la galerie"
 
 #: 
+#, fuzzy
 msgid "info##title"
 msgstr "Découvrez le potentiel de votre terrain"
 
@@ -4943,4 +4944,17 @@ msgstr "Pas encore sûr"
 #: 
 msgid "soil##depth##edit_title"
 msgstr "Options de profondeur"
+
+#: 
+msgid "settings##select_language"
+msgstr "Langue: {{language}}"
+
+#: 
+#, fuzzy
+msgid "sign_out##blocked_title"
+msgstr "Impossible de se déconnecter"
+
+#: 
+msgid "sign_out##blocked_body"
+msgstr "Vous avez des modifications non synchronisées qui doivent être téléchargées avant de vous déconnecter. Veuillez vous connecter à Internet et attendre que vos données soient synchronisées."
 

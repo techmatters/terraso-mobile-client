@@ -403,7 +403,8 @@
         "sign_out": "Cerrar sesión",
         "delete_account": "Eliminar cuenta",
         "delete_account_pending": "Pendiente",
-        "unknown_version": "Versión de la aplicación sin etiquetar {{environment}}"
+        "unknown_version": "Versión de la aplicación sin etiquetar {{environment}}",
+        "select_language": "Idioma: {{language}}"
     },
     "badge": {
         "new": "Nuevo"
@@ -1807,7 +1808,9 @@
     },
     "sign_out": {
         "confirm_body": "¿Seguro que quieres cerrar la sesión?",
-        "confirm_action": "Cerrar sesión"
+        "confirm_action": "Cerrar sesión",
+        "blocked_title": "No se puede cerrar sesión",
+        "blocked_body": "Tiene cambios sin sincronizar que deben cargarse antes de cerrar la sesión. Conéctese a internet y espere a que se sincronicen sus datos."
     },
     "account": {
         "google_login": "Ingresar con Google",
