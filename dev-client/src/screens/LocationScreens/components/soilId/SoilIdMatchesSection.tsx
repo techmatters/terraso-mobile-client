@@ -18,8 +18,6 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator} from 'react-native-paper';
 
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
 import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
@@ -29,10 +27,8 @@ import {ScreenContentSection} from 'terraso-mobile-client/components/content/Scr
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
   Box,
-  Column,
   Heading,
   Row,
-  Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
@@ -47,6 +43,7 @@ import {
   useUserRatings,
 } from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {InfoAlertNoSoilData} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/InfoAlertNoSoilData';
 import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/NoMapDataWarningAlert';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
@@ -94,11 +91,29 @@ type MatchTilesProps = SoilIdMatchesSectionProps & {soilIdOutput: SoilIdOutput};
 const isEmptySoilData = (soilData: SoilData): boolean => {
   if (!soilData) return true;
 
+  // Others fields in SoilData that may need to be checked...
+  // bedrock
+  // crossSlope
+  // downSlope
+  // floodingSelect
+  // grazingSelect
+  // landCoverSelect
+  // limeRequirementsSelect
+  // slopeAspect
+  // slopeLandscapePosition
+  // slopeSteepnessDegree
+  // slopeSteepnessPercent
+  // slopeSteepnessSelect
+  // soilDepthSelect
+  // surfaceSaltSelect
+  // surfaceStoninessSelect
+  // waterTableDepthSelect
+
   // Check if surface crack data has been set
   const hasCracks = !!soilData.surfaceCracksSelect;
 
-  // Check if any soil properties (texture, color, rock fragment, etc) have been entered
-  // These are stored in depth dependent data
+  // Check if any soil depth dependant properties (texture, color, rock fragment, etc)
+  //   have been entered
   const hasDepthIntervals =
     Array.isArray(soilData.depthDependentData) &&
     soilData.depthDependentData.length > 0 &&
@@ -110,7 +125,6 @@ const isEmptySoilData = (soilData: SoilData): boolean => {
 };
 
 const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
-  const {t} = useTranslation();
   const navigation = useNavigation();
   const isOffline = useIsOffline();
   const status = soilIdOutput.status;
@@ -118,7 +132,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   const isSite = !!siteId;
 
   // Check if soil data exists for the site
-  const soilData = useSelector(selectSoilData(siteId || ''));
+  const soilData = useSelector(selectSoilData(siteId ?? ''));
   const showImproveMessage = isSite && isEmptySoilData(soilData);
 
   const onMatchTilePress = useCallback(
@@ -153,27 +167,8 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
       return (
         <>
           {showImproveMessage && (
-            <Box
-              backgroundColor="primary.50"
-              px="12px"
-              py="12px"
-              borderRadius="8px"
-              mb="12px">
-              <Column space="8px">
-                <Row alignItems="center" space="8px">
-                  <MaterialCommunityIcons
-                    name="information-outline"
-                    size={20}
-                    color="black"
-                  />
-                  <Text bold fontSize="16px">
-                    {t('site.soil_id.matches.improve_hint')}
-                  </Text>
-                </Row>
-                <Box pl="24px" pr="24px" mb="8px">
-                  <Text>{t('site.soil_id.matches.improve_description')}</Text>
-                </Box>
-              </Column>
+            <Box mb="12px">
+              <InfoAlertNoSoilData />
             </Box>
           )}
           {sortedMatches.map(soilMatch => (
