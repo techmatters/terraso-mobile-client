@@ -246,6 +246,7 @@
         "tabs": {
             "inputs": "Entrées",
             "team": "Équipe",
+            "export": "TK Export",
             "sites": "Sites",
             "settings": "Paramètres"
         },
@@ -1838,5 +1839,63 @@
         "link_label": "landpks.terraso.org",
         "link_url": "https://landpks.terraso.org/",
         "get_started": "<bold>Pour commencer, utilisez la carte pour créer un site :</bold>"
+    },
+    "export": {
+        "menu_title": "TK Data Export",
+        "title_user": "TK Export all your sites",
+        "title_project": "TK Export project sites",
+        "title_site": "TK Export site",
+        "offline_message": "TK You can only export while online.",
+        "save_or_share_file": "TK Share or Save File",
+        "file_description": "TK Share or save the current data as a file.",
+        "csv_file": "TK CSV File",
+        "json_file": "TK JSON File",
+        "share_current_data": "TK Share Link to Data",
+        "link_description": "TK Share a URL that always returns the latest data.",
+        "live_link": "TK Live Link",
+        "reset_live_link": "TK Reset Live Link",
+        "site_export_title": "TK Export Site",
+        "site_export_description": "TK Download or share this site's data.",
+        "site_export_button": "TK Export Site Data",
+        "what_is_in_file": "TK What is in the file?",
+        "loading": "TK Loading export settings...",
+        "downloading": "TK Downloading...",
+        "preparing_file": "TK Preparing {{resourceType}} file for {{name}}",
+        "preparing_file_message": "TK Creating your export file. This may take a moment...",
+        "save_dialog_title": "TK Save LandPKS Data for {{name}}",
+        "save_error_title": "TK Save Failed",
+        "save_error_message": "TK Failed to save file: {{error}}",
+        "share_title": "TK LandPKS Data Export for {{name}}'s Sites",
+        "share_subject": "TK Link to {{name}}'s LandPKS Sites",
+        "share_android_message": "TK Export {{resourceType}} data for {{name}}:",
+        "share_message_user": "TK This link will include all site data for {{name}} including sites from member projects.",
+        "share_message_project": "TK This link will include all site data from the project \"{{name}}\".",
+        "share_message_site": "TK This link will include all data for the site \"{{name}}\".",
+        "reset_links_title": "TK Reset share links?",
+        "reset_links_body": "TK This will break your current share links. Anyone with your previous links will no longer be able to access the files.",
+        "create_token_error_title": "TK Failed to Create Link",
+        "create_token_error_message": "TK Could not create export link. Please check your connection and try again.",
+        "delete_token_error_title": "TK Failed to Reset Link",
+        "delete_token_error_message": "TK Could not reset export link. Please check your connection and try again.",
+        "help": {
+            "title": "TK Export Options",
+            "section_file_vs_link": "TK File or Link",
+            "save_file_description": "TK <bold>Share or Save File</bold> captures the current site data as a CSV or JSON file. You can send the file using email, messaging, or other applications, or save it to your device.",
+            "live_link_description": "TK <bold>Share Link to Data</bold> creates a URL that always returns the latest data. Use this for integrating with scripts, automated workflows, or when you want others to always have access to your most current data. Reset the link to revoke access from previous links.",
+            "section_format": "TK File Format",
+            "csv_description": "TK <bold>CSV</bold> (Comma-Separated Values) files work with spreadsheet applications like Excel or Google Sheets. Best for viewing, sorting, and analyzing your data in a familiar table format.",
+            "json_description": "TK <bold>JSON</bold> (JavaScript Object Notation) is a structured data format. Best for developers or importing into other software systems."
+        }
+    },
+    "file_download": {
+        "error": {
+            "unsupported_platform": "TK File saving is not supported on this platform.",
+            "no_storage_directory": "TK No storage directory available.",
+            "sharing_unavailable": "TK Sharing is not available on this device.",
+            "save_canceled": "TK Save canceled.",
+            "no_directory_selected": "TK No directory selected.",
+            "save_failed": "TK Failed to save file.",
+            "unknown": "TK An unknown error occurred."
+        }
     }
 }
