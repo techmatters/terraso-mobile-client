@@ -262,20 +262,30 @@ export function ProjectSitesScreen({
       <SiteCardList
         showButtons={showButtons}
         header={
-          <ListFilterModal
-            searchInput={
-              <TextInputFilter
-                name="search"
-                placeholder={t('site.search.placeholder')}
-                label={t('site.search.accessibility_label')}
+          <>
+            <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
+              <Box mb="12px">
+                <ContainedButton
+                  onPress={transferCallback}
+                  label={t('projects.sites.transfer')}
+                />
+              </Box>
+            </RestrictByProjectRole>
+            <ListFilterModal
+              searchInput={
+                <TextInputFilter
+                  name="search"
+                  placeholder={t('site.search.placeholder')}
+                  label={t('site.search.accessibility_label')}
+                />
+              }>
+              <RadioFilter
+                name="sort"
+                label={t('projects.sites.sort.label')}
+                options={sortingOptions}
               />
-            }>
-            <RadioFilter
-              name="sort"
-              label={t('projects.sites.sort.label')}
-              options={sortingOptions}
-            />
-          </ListFilterModal>
+            </ListFilterModal>
+          </>
         }
       />
     </ListFilterProvider>
@@ -294,14 +304,14 @@ export function ProjectSitesScreen({
           <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
             <Text>{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
+          <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
+            <ContainedButton
+              onPress={transferCallback}
+              label={t('projects.sites.transfer')}
+            />
+          </RestrictByProjectRole>
         </>
       )}
-      <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
-        <ContainedButton
-          onPress={transferCallback}
-          label={t('projects.sites.transfer')}
-        />
-      </RestrictByProjectRole>
       {!isEmpty && full}
     </Column>
   );
