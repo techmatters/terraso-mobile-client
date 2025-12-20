@@ -25,7 +25,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-type AlertVariant = 'warning' | 'error';
+type AlertVariant = 'warning' | 'error' | 'info';
 type AlertProps = React.PropsWithChildren<{
   title?: string;
   bodyText: string;
@@ -56,6 +56,8 @@ const boxStyleForVariant = (variant: AlertVariant) => {
   switch (variant) {
     case 'warning':
       return styles.warningBox;
+    case 'info':
+      return styles.infoBox;
     case 'error':
     default:
       return styles.errorBox;
@@ -71,6 +73,15 @@ const AlertIcon = ({variant}: {variant: AlertVariant}) => {
         <Icon
           name="warning-amber"
           color="warning.main"
+          mr={marginRight}
+          size={size}
+        />
+      );
+    case 'info':
+      return (
+        <Icon
+          name="info-outline"
+          color="info.icon"
           mr={marginRight}
           size={size}
         />
@@ -104,6 +115,12 @@ const TitleText = ({variant, text}: VariantTextProps) => {
           {text}
         </Text>
       );
+    case 'info':
+      return (
+        <Text variant={textVariant} color="info.title" mb={marginBottom}>
+          {text}
+        </Text>
+      );
     case 'error':
     default:
       return (
@@ -125,6 +142,12 @@ const BodyText = ({variant, text}: VariantTextProps) => {
           {text}
         </Text>
       );
+    case 'info':
+      return (
+        <Text variant={textVariant} color="info.content" mb={marginBottom}>
+          {text}
+        </Text>
+      );
     case 'error':
     default:
       return (
@@ -139,6 +162,10 @@ const styles = StyleSheet.create({
   warningBox: {
     backgroundColor: 'primary.contrast',
     borderColor: 'warning.main',
+  },
+  infoBox: {
+    backgroundColor: 'info.background',
+    borderColor: 'info.border',
   },
   errorBox: {
     backgroundColor: 'error.background',

@@ -26,6 +26,7 @@ import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpCo
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
+  Box,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -35,18 +36,22 @@ import {
   SoilIdOutput,
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
+import {SoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {
   useSelectedSoil,
   useUserRatings,
 } from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {InfoAlertNoSoilData} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/InfoAlertNoSoilData';
 import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/NoMapDataWarningAlert';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {getMatchListTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
+import {useSelector} from 'terraso-mobile-client/store';
+import {selectSoilData} from 'terraso-mobile-client/store/selectors';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
 
@@ -83,12 +88,52 @@ export const SoilIdMatchesSection = ({
 
 type MatchTilesProps = SoilIdMatchesSectionProps & {soilIdOutput: SoilIdOutput};
 
+const isEmptySoilData = (soilData: SoilData): boolean => {
+  if (!soilData) return true;
+
+  // Others fields in SoilData that may need to be checked...
+  // bedrock
+  // crossSlope
+  // downSlope
+  // floodingSelect
+  // grazingSelect
+  // landCoverSelect
+  // limeRequirementsSelect
+  // slopeAspect
+  // slopeLandscapePosition
+  // slopeSteepnessDegree
+  // slopeSteepnessPercent
+  // slopeSteepnessSelect
+  // soilDepthSelect
+  // surfaceSaltSelect
+  // surfaceStoninessSelect
+  // waterTableDepthSelect
+
+  // Check if surface crack data has been set
+  const hasCracks = !!soilData.surfaceCracksSelect;
+
+  // Check if any soil depth dependant properties (texture, color, rock fragment, etc)
+  //   have been entered
+  const hasDepthIntervals =
+    Array.isArray(soilData.depthDependentData) &&
+    soilData.depthDependentData.length > 0 &&
+    Object.values(soilData.depthDependentData).some(
+      depthData => depthData !== null && depthData !== undefined,
+    );
+
+  return !hasCracks && !hasDepthIntervals;
+};
+
 const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   const navigation = useNavigation();
   const isOffline = useIsOffline();
   const status = soilIdOutput.status;
   const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
+
+  // Check if soil data exists for the site
+  const soilData = useSelector(selectSoilData(siteId ?? ''));
+  const showImproveMessage = isSite && isEmptySoilData(soilData);
 
   const onMatchTilePress = useCallback(
     (soilMatch: SoilMatch) => {
@@ -118,22 +163,32 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
     case 'loading':
       return isOffline ? null : <ActivityIndicator size="small" />;
     case 'ready': {
-      return getSortedMatches(soilIdOutput.matches).map(soilMatch => (
-        <SoilMatchTile
-          key={soilMatch.soilInfo.soilSeries.name}
-          soilName={soilMatch.soilInfo.soilSeries.name}
-          dataRegion={dataRegion}
-          score={
-            soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
-          }
-          onPress={() => onMatchTilePress(soilMatch)}
-          variant={getMatchListTileVariant(
-            soilMatch,
-            userRatings,
-            selectedSoilId,
+      const sortedMatches = getSortedMatches(soilIdOutput.matches);
+      return (
+        <>
+          {showImproveMessage && (
+            <Box mb="12px">
+              <InfoAlertNoSoilData />
+            </Box>
           )}
-        />
-      ));
+          {sortedMatches.map(soilMatch => (
+            <SoilMatchTile
+              key={soilMatch.soilInfo.soilSeries.name}
+              soilName={soilMatch.soilInfo.soilSeries.name}
+              dataRegion={dataRegion}
+              score={
+                soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
+              }
+              onPress={() => onMatchTilePress(soilMatch)}
+              variant={getMatchListTileVariant(
+                soilMatch,
+                userRatings,
+                selectedSoilId,
+              )}
+            />
+          ))}
+        </>
+      );
     }
     case 'DATA_UNAVAILABLE':
       return <NoMapDataWarningAlert />;
