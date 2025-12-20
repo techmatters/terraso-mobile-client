@@ -13,7 +13,12 @@
             "title": "Esta version incluye:",
             "bullet_1": "Identificación global de suelos",
             "bullet_2": "Corrección de errores al cambiar profundidades de suelo",
-            "bullet_3": "Corrección de errores para el algoritmo de identificación de suelos"
+            "bullet_3": "Corrección de errores para el algoritmo de identificación de suelos",
+            "bullet_4": "TK Added \"Unaffiliated\" option to sort sites list",
+            "bullet_5": "TK Fixed issue where offline alert didn't scroll",
+            "bullet_6": "TK Added reminder to collect data for improved Soil ID results",
+            "bullet_7": "TK Updated tagline",
+            "bullet_8": "TK Updated analytics"
         },
         "learn_more": "Aprende más y mantente actualizado:",
         "link_text": "LandPKS de Terraso",
