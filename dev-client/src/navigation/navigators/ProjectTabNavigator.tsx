@@ -27,6 +27,7 @@ import {
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
 import {useDefaultTabOptions} from 'terraso-mobile-client/navigation/hooks/useDefaultTabOptions';
+import {ProjectExportTab} from 'terraso-mobile-client/screens/DataExportScreen/ProjectExportTab';
 import {ProjectInputScreen} from 'terraso-mobile-client/screens/ProjectInputScreen/ProjectInputScreen';
 import {ProjectSettingsScreen} from 'terraso-mobile-client/screens/ProjectSettingsScreen/ProjectSettingsScreen';
 import {ProjectSitesScreen} from 'terraso-mobile-client/screens/ProjectSitesScreen';
@@ -47,6 +48,7 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
   const tabIconNames: Record<keyof TabStackParamList, IconName> = {
     Inputs: 'tune',
     Team: 'people',
+    Export: 'download',
     Settings: 'settings',
     Sites: 'location-on',
   };
@@ -95,6 +97,11 @@ export const ProjectTabNavigator = ({projectId}: Props) => {
       <Tab.Screen
         name={TabRoutes.TEAM}
         component={ProjectTeamScreen}
+        initialParams={{projectId}}
+      />
+      <Tab.Screen
+        name={TabRoutes.EXPORT}
+        component={ProjectExportTab}
         initialParams={{projectId}}
       />
       {restrictScreen(

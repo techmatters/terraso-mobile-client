@@ -261,6 +261,7 @@
         "tabs": {
             "inputs": "Inputs",
             "team": "Team",
+            "export": "Export",
             "sites": "Sites",
             "settings": "Settings"
         },
@@ -1838,5 +1839,63 @@
     "image": {
         "use_camera": "Use Camera",
         "choose_from_gallery": "Choose from Gallery"
+    },
+    "export": {
+        "menu_title": "Data Export",
+        "title_user": "Export all your sites",
+        "title_project": "Export project sites",
+        "title_site": "Export site",
+        "offline_message": "You can only export while online.",
+        "save_or_share_file": "Share or Save File",
+        "file_description": "Share or save the current data as a file.",
+        "csv_file": "CSV File",
+        "json_file": "JSON File",
+        "share_current_data": "Share Link to Data",
+        "link_description": "Share a URL that always returns the latest data.",
+        "live_link": "Live Link",
+        "reset_live_link": "Reset Live Link",
+        "site_export_title": "Export Site",
+        "site_export_description": "Download or share this site's data.",
+        "site_export_button": "Export Site Data",
+        "what_is_in_file": "What is in the file?",
+        "loading": "Loading export settings...",
+        "downloading": "Downloading...",
+        "preparing_file": "Preparing {{resourceType}} file for {{name}}",
+        "preparing_file_message": "Creating your export file. This may take a moment...",
+        "save_dialog_title": "Save LandPKS Data for {{name}}",
+        "save_error_title": "Save Failed",
+        "save_error_message": "Failed to save file: {{error}}",
+        "share_title": "LandPKS Data Export for {{name}}'s Sites",
+        "share_subject": "Link to {{name}}'s LandPKS Sites",
+        "share_android_message": "Export {{resourceType}} data for {{name}}:",
+        "share_message_user": "This link will include all site data for {{name}} including sites from member projects.",
+        "share_message_project": "This link will include all site data from the project \"{{name}}\".",
+        "share_message_site": "This link will include all data for the site \"{{name}}\".",
+        "reset_links_title": "Reset share links?",
+        "reset_links_body": "This will break your current share links. Anyone with your previous links will no longer be able to access the files.",
+        "create_token_error_title": "Failed to Create Link",
+        "create_token_error_message": "Could not create export link. Please check your connection and try again.",
+        "delete_token_error_title": "Failed to Reset Link",
+        "delete_token_error_message": "Could not reset export link. Please check your connection and try again.",
+        "help": {
+            "title": "Export Options",
+            "section_file_vs_link": "File or Link",
+            "save_file_description": "<bold>Share or Save File</bold> captures the current site data as a CSV or JSON file. You can send the file using email, messaging, or other applications, or save it to your device.",
+            "live_link_description": "<bold>Share Link to Data</bold> creates a URL that always returns the latest data. Use this for integrating with scripts, automated workflows, or when you want others to always have access to your most current data. Reset the link to revoke access from previous links.",
+            "section_format": "File Format",
+            "csv_description": "<bold>CSV</bold> (Comma-Separated Values) files work with spreadsheet applications like Excel or Google Sheets. Best for viewing, sorting, and analyzing your data in a familiar table format.",
+            "json_description": "<bold>JSON</bold> (JavaScript Object Notation) is a structured data format. Best for developers or importing into other software systems."
+        }
+    },
+    "file_download": {
+        "error": {
+            "unsupported_platform": "File saving is not supported on this platform.",
+            "no_storage_directory": "No storage directory available.",
+            "sharing_unavailable": "Sharing is not available on this device.",
+            "save_canceled": "Save canceled.",
+            "no_directory_selected": "No directory selected.",
+            "save_failed": "Failed to save file.",
+            "unknown": "An unknown error occurred."
+        }
     }
 }

@@ -22,6 +22,7 @@ import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/Rest
 import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponentList';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {DataExportItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DataExportItem';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
@@ -41,6 +42,7 @@ export function UserSettingsScreen() {
       <Column margin="12px">
         <UserIndicator />
         <MenuList>
+          <DataExportItem />
           <HelpItem />
           <PrivacyItem />
           <TosItem />

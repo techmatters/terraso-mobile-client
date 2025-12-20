@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Technology Matters
+ * Copyright © 2025 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,35 +15,26 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
+import {useTranslation} from 'react-i18next';
 
-export const DEFAULT_STACK_NAVIGATOR_OPTIONS: NativeStackNavigationOptions = {
-  headerShown: false,
-  freezeOnBlur: true,
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
+
+type SiteExportCardProps = {
+  onExportPress: () => void;
 };
 
-export const enum TabRoutes {
-  INPUTS = 'Inputs',
-  TEAM = 'Team',
-  EXPORT = 'Export',
-  SETTINGS = 'Settings',
-  SITES = 'Sites',
-}
+export const SiteExportCard = ({onExportPress}: SiteExportCardProps) => {
+  const {t} = useTranslation();
 
-export type TabStackParamList = {
-  [TabRoutes.INPUTS]: {
-    projectId: string;
-  };
-  [TabRoutes.TEAM]: {
-    projectId: string;
-  };
-  [TabRoutes.EXPORT]: {
-    projectId: string;
-  };
-  [TabRoutes.SETTINGS]: {
-    projectId: string;
-  };
-  [TabRoutes.SITES]: {
-    projectId: string;
-  };
+  return (
+    <Box variant="tile" p="18px">
+      <ContainedButton
+        stretchToFit
+        rightIcon="chevron-right"
+        onPress={onExportPress}
+        label={t('export.site_export_title')}
+      />
+    </Box>
+  );
 };
