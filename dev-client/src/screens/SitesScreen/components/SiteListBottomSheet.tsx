@@ -106,6 +106,39 @@ export const SiteListBottomSheet = memo(
 
       const isEmpty = sites.length === 0;
 
+      const ListHeaderComponent = useMemo(
+        () => (
+          <>
+            <Column px="16px">
+              <Row justifyContent="flex-start" alignItems="center" pb="4">
+                {isEmpty ? (
+                  <>
+                    <MaterialCommunityIcons
+                      name="plus"
+                      size={24}
+                      color="black"
+                      style={styles.communityIcon}
+                    />
+                    <Heading variant="h6">{t('site.list_title_empty')}</Heading>
+                  </>
+                ) : (
+                  <Heading variant="h6">{t('site.list_title')}</Heading>
+                )}
+              </Row>
+              {sites.length > 0 && (
+                <SiteFilterModal useDistance={useDistance} />
+              )}
+            </Column>
+            <RestrictByConnectivity offline={true}>
+              <View style={styles.alertView}>
+                <OfflineAlert message={t('site.offline.alert_body')} />
+              </View>
+            </RestrictByConnectivity>
+          </>
+        ),
+        [isEmpty, t, sites.length, useDistance],
+      );
+
       return (
         <BottomSheet
           ref={ref}
@@ -114,29 +147,6 @@ export const SiteListBottomSheet = memo(
           index={snapIndex}
           backgroundStyle={backgroundStyle}
           handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
-          <Column px="16px">
-            <Row justifyContent="flex-start" alignItems="center" pb="4">
-              {isEmpty ? (
-                <>
-                  <MaterialCommunityIcons
-                    name="plus"
-                    size={24}
-                    color="black"
-                    style={styles.communityIcon}
-                  />
-                  <Heading variant="h6">{t('site.list_title_empty')}</Heading>
-                </>
-              ) : (
-                <Heading variant="h6">{t('site.list_title')}</Heading>
-              )}
-            </Row>
-            {sites.length > 0 && <SiteFilterModal useDistance={useDistance} />}
-          </Column>
-          <RestrictByConnectivity offline={true}>
-            <View style={styles.alertView}>
-              <OfflineAlert message={t('site.offline.alert_body')} />
-            </View>
-          </RestrictByConnectivity>
           {isLoadingData ? (
             <ActivityIndicator size="large" />
           ) : isEmpty ? (
@@ -152,6 +162,7 @@ export const SiteListBottomSheet = memo(
               keyExtractor={keyExtractor}
               renderItem={renderSite}
               ItemSeparatorComponent={ItemSeparatorComponent}
+              ListHeaderComponent={ListHeaderComponent}
               ListFooterComponent={ListFooterComponent}
               ListEmptyComponent={ListEmptyComponent}
             />

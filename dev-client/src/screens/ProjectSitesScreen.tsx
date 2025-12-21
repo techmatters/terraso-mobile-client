@@ -131,7 +131,17 @@ const SiteMenu = ({site}: SiteProps) => {
   );
 };
 
-const SiteCardList = ({showButtons}: {showButtons: boolean}) => {
+type SiteCardListHeaderComponent =
+  | React.ComponentType<any>
+  | React.ReactElement;
+
+const SiteCardList = ({
+  showButtons,
+  header,
+}: {
+  showButtons: boolean;
+  header?: SiteCardListHeaderComponent;
+}) => {
   const {t} = useTranslation();
   const {filteredItems: sites} = useListFilter<Site>();
 
@@ -147,6 +157,7 @@ const SiteCardList = ({showButtons}: {showButtons: boolean}) => {
       keyExtractor={site => site.id}
       ItemSeparatorComponent={() => <Box h="8px" />}
       ListEmptyComponent={<Text>{t('site.search.no_matches')}</Text>}
+      ListHeaderComponent={header}
     />
   );
 };
@@ -248,21 +259,35 @@ export function ProjectSitesScreen({
           },
         },
       }}>
-      <ListFilterModal
-        searchInput={
-          <TextInputFilter
-            name="search"
-            placeholder={t('site.search.placeholder')}
-            label={t('site.search.accessibility_label')}
-          />
-        }>
-        <RadioFilter
-          name="sort"
-          label={t('projects.sites.sort.label')}
-          options={sortingOptions}
-        />
-      </ListFilterModal>
-      <SiteCardList showButtons={showButtons} />
+      <SiteCardList
+        showButtons={showButtons}
+        header={
+          <>
+            <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
+              <Box mb="12px">
+                <ContainedButton
+                  onPress={transferCallback}
+                  label={t('projects.sites.transfer')}
+                />
+              </Box>
+            </RestrictByProjectRole>
+            <ListFilterModal
+              searchInput={
+                <TextInputFilter
+                  name="search"
+                  placeholder={t('site.search.placeholder')}
+                  label={t('site.search.accessibility_label')}
+                />
+              }>
+              <RadioFilter
+                name="sort"
+                label={t('projects.sites.sort.label')}
+                options={sortingOptions}
+              />
+            </ListFilterModal>
+          </>
+        }
+      />
     </ListFilterProvider>
   );
 
@@ -279,14 +304,14 @@ export function ProjectSitesScreen({
           <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
             <Text>{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
+          <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
+            <ContainedButton
+              onPress={transferCallback}
+              label={t('projects.sites.transfer')}
+            />
+          </RestrictByProjectRole>
         </>
       )}
-      <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
-        <ContainedButton
-          onPress={transferCallback}
-          label={t('projects.sites.transfer')}
-        />
-      </RestrictByProjectRole>
       {!isEmpty && full}
     </Column>
   );

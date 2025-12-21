@@ -37,7 +37,6 @@ import {
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {ProjectList} from 'terraso-mobile-client/screens/ProjectListScreen/components/ProjectList';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -91,24 +90,6 @@ export const ProjectListScreen = () => {
           {isLoadingData ? (
             <ActivityIndicator size="large" />
           ) : (
-            activeProjects.length === 0 && (
-              <Box mb="md">
-                <Text bold>{t('projects.none.header')}</Text>
-                <Text>{t('projects.none.info')}</Text>
-              </Box>
-            )
-          )}
-          {isOffline ? (
-            <OfflineAlert message={t('projects.offline_create')} />
-          ) : (
-            <Box alignItems="flex-start" pb="md">
-              <AddButton
-                label={t('projects.create_button')}
-                onPress={onPress}
-              />
-            </Box>
-          )}
-          {activeProjects.length > 0 && (
             <ListFilterProvider
               items={activeProjects}
               filters={{
@@ -146,30 +127,51 @@ export const ProjectListScreen = () => {
                   },
                 },
               }}>
-              <ListFilterModal
-                searchInput={
-                  <TextInputFilter
-                    name="search"
-                    label={t('projects.search_label')}
-                    placeholder={t('projects.search.placeholder')}
-                  />
-                }>
-                <SelectFilter
-                  name="sort"
-                  label={t('projects.sort_label')}
-                  options={SORT_OPTIONS}
-                  renderValue={renderSortOption}
-                />
-                <SelectFilter
-                  name="role"
-                  label={t('projects.role_filter_label')}
-                  renderValue={renderRole}
-                  options={PROJECT_ROLES}
-                  unselectedLabel={t('general.filter.no_role')}
-                  nullable={true}
-                />
-              </ListFilterModal>
-              <ProjectList />
+              <ProjectList
+                header={
+                  <>
+                    {!isOffline && (
+                      <Box alignItems="flex-start" pb="md">
+                        <AddButton
+                          label={t('projects.create_button')}
+                          onPress={onPress}
+                        />
+                      </Box>
+                    )}
+                    {activeProjects.length === 0 && (
+                      <Box mb="md">
+                        <Text bold>{t('projects.none.header')}</Text>
+                        <Text>{t('projects.none.info')}</Text>
+                      </Box>
+                    )}
+                    {activeProjects.length > 0 && (
+                      <ListFilterModal
+                        searchInput={
+                          <TextInputFilter
+                            name="search"
+                            label={t('projects.search_label')}
+                            placeholder={t('projects.search.placeholder')}
+                          />
+                        }>
+                        <SelectFilter
+                          name="sort"
+                          label={t('projects.sort_label')}
+                          options={SORT_OPTIONS}
+                          renderValue={renderSortOption}
+                        />
+                        <SelectFilter
+                          name="role"
+                          label={t('projects.role_filter_label')}
+                          renderValue={renderRole}
+                          options={PROJECT_ROLES}
+                          unselectedLabel={t('general.filter.no_role')}
+                          nullable={true}
+                        />
+                      </ListFilterModal>
+                    )}
+                  </>
+                }
+              />
             </ListFilterProvider>
           )}
         </>
