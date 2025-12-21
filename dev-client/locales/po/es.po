@@ -925,7 +925,7 @@ msgstr "El nombre del sitio debe tener un máximo de {{max}} caracteres"
 
 #: 
 msgid "site##form##min_latitude_error"
-msgstr "La latitud mínima es {{max}}"
+msgstr "La latitud mínima es {{min}}"
 
 #: 
 msgid "site##form##max_latitude_error"
@@ -933,7 +933,7 @@ msgstr "La latitud máxima es {{max}}"
 
 #: 
 msgid "site##form##min_longitude_error"
-msgstr "La longitud mínima es {{max}}"
+msgstr "La longitud mínima es {{min}}"
 
 #: 
 msgid "site##form##max_longitude_error"
@@ -2502,6 +2502,7 @@ msgid "image##choose_from_gallery"
 msgstr "Biblioteca de fotos"
 
 #: 
+#, fuzzy
 msgid "info##title"
 msgstr "Descubre el potencial de tu paisaje"
 
@@ -4949,4 +4950,18 @@ msgstr "Not sure yet TK"
 #: 
 msgid "soil##depth##edit_title"
 msgstr "Opciones de profundidad"
+
+#: 
+msgid "settings##select_language"
+msgstr "Idioma: {{language}}"
+
+#: 
+#, fuzzy
+msgid "sign_out##blocked_title"
+msgstr "No se puede cerrar sesión"
+
+#: 
+#, fuzzy
+msgid "sign_out##blocked_body"
+msgstr "Tiene cambios sin sincronizar que deben cargarse antes de cerrar la sesión. Conéctese a internet y espere a que se sincronicen sus datos."
 

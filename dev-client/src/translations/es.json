@@ -118,9 +118,9 @@
         "form": {
             "name_min_length_error": "El nombre del sitio debe tener un mínimo de {{min}} caracteres",
             "name_max_length_error": "El nombre del sitio debe tener un máximo de {{max}} caracteres",
-            "min_latitude_error": "La latitud mínima es {{max}}",
+            "min_latitude_error": "La latitud mínima es {{min}}",
             "max_latitude_error": "La latitud máxima es {{max}}",
-            "min_longitude_error": "La longitud mínima es {{max}}",
+            "min_longitude_error": "La longitud mínima es {{min}}",
             "max_longitude_error": "La longitud máxima es {{max}}"
         },
         "soil_id": {
@@ -404,7 +404,7 @@
         "delete_account": "Eliminar cuenta",
         "delete_account_pending": "Pendiente",
         "unknown_version": "Versión de la aplicación sin etiquetar {{environment}}",
-        "select_language": "Language: {{language}} TK"
+        "select_language": "Idioma: {{language}}"
     },
     "badge": {
         "new": "Nuevo"
@@ -1810,7 +1810,7 @@
         "confirm_body": "¿Seguro que quieres cerrar la sesión?",
         "confirm_action": "Cerrar sesión",
         "blocked_title": "No se puede cerrar sesión",
-        "blocked_body": "Tienes cambios sin sincronizar que deben cargarse antes de cerrar sesión. Por favor, conéctate a internet y espera a que tus datos se sincronicen."
+        "blocked_body": "Tiene cambios sin sincronizar que deben cargarse antes de cerrar la sesión. Conéctese a internet y espere a que se sincronicen sus datos."
     },
     "account": {
         "google_login": "Ingresar con Google",

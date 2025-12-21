@@ -17,6 +17,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+/* Run this script to confirm consistency between translation files and the codebase. It will report discrepancies if there are missing or unused translations (if strings are used in code but not in the translation file, and vice versa).
+ */
+
 // Usage: node find-i18n-keys.mjs [path1] [path2] ... [--catalog path/to/catalog.json] [--json] [--extras]
 
 // easiest way to run: 'npm run check-i18n'
@@ -178,7 +181,7 @@ if (catalogPath) {
     catalogKeys = new Set(
       collectCatalogKeysFromObject(parsed).sort((a, b) => a.localeCompare(b)),
     );
-    console.log(`\n------ translation file ${catalogPath} ------\n`);
+    console.log(`\n--- translation file ${catalogPath} ---\n`);
   } catch (e) {
     console.error(
       `Failed to read/parse catalog JSON at ${catalogPath}: ${e.message}`,
@@ -199,10 +202,6 @@ const inCatalogNotScan = setDiff(catalogKeys, scanKeys);
 const inScanNotCatalog = setDiff(scanKeys, catalogKeys);
 
 // ---------- Output ----------
-
-console.log('** Warning: these lists may not be complete');
-console.log('** Please use as a secondary check only\n');
-
 if (jsonOutput) {
   const out = {
     scan: {

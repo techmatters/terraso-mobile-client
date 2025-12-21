@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-09-24T18:44:52.112Z\n"
-"PO-Revision-Date: 2025-09-24T18:44:52.113Z\n"
+"POT-Creation-Date: 2025-12-18T22:29:37.060Z\n"
+"PO-Revision-Date: 2025-12-18T22:29:37.061Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -57,7 +57,7 @@ msgid "welcome##get_started"
 msgstr "Get started"
 
 msgid "info##title"
-msgstr "Discover your land’s potential"
+msgstr "Ground-truth your soil decisions"
 
 msgid "info##description"
 msgstr "<bold>Discover the potential use and value of your land.</bold> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more."
@@ -931,6 +931,9 @@ msgstr "beta"
 msgid "settings##version"
 msgstr "Version {{version}} ({{build}}) {{environment}}"
 
+msgid "settings##select_language"
+msgstr "Language: {{language}}"
+
 msgid "badge##new"
 msgstr "New"
 
@@ -1233,6 +1236,12 @@ msgstr "Are you sure you want to sign out?"
 
 msgid "sign_out##confirm_action"
 msgstr "Sign out"
+
+msgid "sign_out##blocked_title"
+msgstr "Cannot Sign Out"
+
+msgid "sign_out##blocked_body"
+msgstr "You have unsynced changes that need to be uploaded before signing out. Please connect to the internet and wait for your data to sync."
 
 msgid "account##google_login"
 msgstr "Sign in with Google"
