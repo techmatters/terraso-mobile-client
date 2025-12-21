@@ -4,16 +4,19 @@
         "next": {
             "title": "Quelle est la prochaine étape ?",
             "subtitle": "Les versions futures incluront :",
-            "bullet_1": "Création de site hors ligne, sélection du sol et notes",
-            "bullet_2": "Téléchargement des données du projet",
-            "bullet_3": "Améliorations de la visualisation des données",
-            "bullet_4": "Observations supplémentaires, telles que les limitations du sol"
+            "bullet_1": "TK Create sites offline",
+            "bullet_2": "TK Edit notes offline"
         },
         "version_includes": {
             "title": "Cette version comprend :",
-            "bullet_1": "Identification mondiale des sols",
-            "bullet_2": "Corrections de bugs pour modifier la profondeur du sol",
-            "bullet_3": "Corrections de bugs pour l'algorithme d'identification du sol"
+            "bullet_1": "TK Added export data feature for projects, individual sites, and all sites visible to user",
+            "bullet_2": "TK Added language picker and experimental translations for French and Georgian",
+            "bullet_3": "TK Updated rate soil experience and made it work offline",
+            "bullet_4": "TK Added \"Unaffiliated\" option to sort sites list",
+            "bullet_5": "TK Fixed issue where offline alert didn't scroll",
+            "bullet_6": "TK Added reminder to collect data for improved Soil ID results",
+            "bullet_7": "TK Updated tagline",
+            "bullet_8": "TK Updated analytics"
         },
         "learn_more": "Apprenez-en plus et restez informé :",
         "link_text": "LandPKS de Terraso",
