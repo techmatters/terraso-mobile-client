@@ -17,9 +17,12 @@
 
 import {useCallback, useEffect, useState} from 'react';
 
-import {useFocusEffect} from '@react-navigation/native';
 import {useFeatureFlag, usePostHog} from 'posthog-react-native';
 
+import {
+  FeatureFlagPollingTrigger,
+  useFeatureFlagPollingContext,
+} from 'terraso-mobile-client/app/PostHog';
 import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
 import {
   Box,
@@ -34,73 +37,44 @@ const PosthogBannerContent = () => {
   const showBanner = useFeatureFlag('banner_message');
   const [message, setMessage] = useState<string | null>(null);
   const [currentPayload, setCurrentPayload] = useState<string | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const posthog = usePostHog();
   const [dismissedPayload, setDismissedPayload] = kvStorage.useString(
     DISMISSED_BANNER_KEY,
     '',
   );
 
-  // Reload feature flags when screen comes into focus
-  useFocusEffect(
-    useCallback(() => {
-      console.log('[PosthogBanner] Screen focused, reloading feature flags');
-      posthog?.reloadFeatureFlags();
-      // Trigger polling
-      setRefreshKey(prev => prev + 1);
-    }, [posthog]),
-  );
+  // Get banner message payload from global polling context
+  const context = useFeatureFlagPollingContext();
+  const bannerMessagePayload = context?.bannerMessagePayload;
 
+  // Update message when payload changes
   useEffect(() => {
-    if (!showBanner) {
+    if (!bannerMessagePayload) {
       setMessage(null);
+      setCurrentPayload(null);
       return;
     }
 
-    if (!posthog) {
-      return;
+    try {
+      const parsed =
+        typeof bannerMessagePayload === 'string'
+          ? JSON.parse(bannerMessagePayload)
+          : bannerMessagePayload;
+      const newMessage = parsed?.message || null;
+      const payloadString = JSON.stringify(parsed);
+
+      setMessage(newMessage);
+      setCurrentPayload(payloadString);
+    } catch (error) {
+      console.error('[PosthogBanner] Failed to parse payload:', error);
+      setMessage(null);
+      setCurrentPayload(null);
     }
+  }, [bannerMessagePayload]);
 
-    const checkForUpdate = () => {
-      const payload = posthog.getFeatureFlagPayload('banner_message');
-
-      if (!payload) {
-        setMessage(null);
-        setCurrentPayload(null);
-        return;
-      }
-
-      try {
-        const parsed =
-          typeof payload === 'string' ? JSON.parse(payload) : payload;
-        const newMessage = parsed?.message || null;
-        const payloadString = JSON.stringify(parsed);
-
-        setMessage(newMessage);
-        setCurrentPayload(payloadString);
-      } catch (error) {
-        console.error('[PosthogBanner] Failed to parse payload:', error);
-        setMessage(null);
-        setCurrentPayload(null);
-      }
-    };
-
-    // Check immediately
-    checkForUpdate();
-
-    // Poll every 1 second for 30 seconds
-    const pollInterval = setInterval(checkForUpdate, 1000);
-
-    // Stop polling after 30 seconds
-    const stopTimeout = setTimeout(() => {
-      clearInterval(pollInterval);
-    }, 30000);
-
-    return () => {
-      clearInterval(pollInterval);
-      clearTimeout(stopTimeout);
-    };
-  }, [showBanner, refreshKey, posthog]);
+  // Clear message when banner is disabled
+  if (!showBanner && message !== null) {
+    setMessage(null);
+  }
 
   const handleDismiss = useCallback(() => {
     if (currentPayload) {
@@ -226,5 +200,10 @@ export const PosthogBanner = () => {
     return null;
   }
 
-  return <PosthogBannerContent />;
+  return (
+    <>
+      <FeatureFlagPollingTrigger />
+      <PosthogBannerContent />
+    </>
+  );
 };
