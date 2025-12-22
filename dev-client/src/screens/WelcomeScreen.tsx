@@ -57,31 +57,13 @@ export const WelcomeScreen = () => {
           <Text variant="body1-strong" mb="sm">
             {t('welcome.version_includes.title')}
           </Text>
-          <TranslatedBulletList
-            i18nKeys={[
-              // This ended up not getting into 1.3.1, but we expect to use the string for the next release
-              'welcome.version_includes.bullet_1',
-              'welcome.version_includes.bullet_2',
-              'welcome.version_includes.bullet_3',
-              'welcome.version_includes.bullet_4',
-              'welcome.version_includes.bullet_5',
-              'welcome.version_includes.bullet_6',
-              'welcome.version_includes.bullet_7',
-              'welcome.version_includes.bullet_8',
-            ]}
-          />
+          <TranslatedBulletList i18nKeyPrefix="welcome.version_includes.bullet_" />
 
           <Text variant="body1-strong">{t('welcome.next.title')}</Text>
           <Text variant="body1" mb="sm">
             {t('welcome.next.subtitle')}
           </Text>
-          <TranslatedBulletList
-            i18nKeys={[
-              // We're not promoting global soil id yet, figured it was easier to just move this here than to re-do the translations in POEditor
-              'welcome.next.bullet_1',
-              'welcome.next.bullet_2',
-            ]}
-          />
+          <TranslatedBulletList i18nKeyPrefix="welcome.next.bullet_" />
 
           <Text variant="body1-strong">{t('welcome.learn_more')}</Text>
 
