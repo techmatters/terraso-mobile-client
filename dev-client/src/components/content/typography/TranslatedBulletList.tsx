@@ -15,23 +15,45 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
+
+import i18n from 'i18next';
+
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 
 type TranslatedBulletListProps = {
   variant?: 'body1' | 'body2';
-  i18nKeys: string[];
+  i18nKeys?: string[];
+  i18nKeyPrefix?: string;
   values?: {};
 };
 
 export function TranslatedBulletList({
   variant = 'body1',
   i18nKeys,
+  i18nKeyPrefix,
   values,
 }: TranslatedBulletListProps) {
+  const keys = useMemo(() => {
+    if (i18nKeys) {
+      return i18nKeys;
+    }
+    if (i18nKeyPrefix) {
+      const result: string[] = [];
+      let index = 1;
+      while (i18n.exists(`${i18nKeyPrefix}${index}`)) {
+        result.push(`${i18nKeyPrefix}${index}`);
+        index++;
+      }
+      return result;
+    }
+    return [];
+  }, [i18nKeys, i18nKeyPrefix]);
+
   return (
     <BulletList
-      data={i18nKeys}
+      data={keys}
       renderItem={i18nKey => (
         <TranslatedParagraph
           i18nKey={i18nKey}
