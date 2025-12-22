@@ -1277,12 +1277,50 @@ exports[`renders correctly 1`] = `
                                     <View
                                       onLayout={[Function]}
                                       style={
-                                        {
-                                          "height": 170,
-                                          "width": "100%",
-                                        }
+                                        [
+                                          {
+                                            "height": 170,
+                                            "width": "100%",
+                                          },
+                                          {
+                                            "overflow": "hidden",
+                                          },
+                                        ]
                                       }
-                                    />
+                                    >
+                                      <View
+                                        style={
+                                          {
+                                            "backgroundColor": "#e0e0e0",
+                                            "flex": 1,
+                                          }
+                                        }
+                                      />
+                                      <View
+                                        style={
+                                          {
+                                            "left": "50%",
+                                            "position": "absolute",
+                                            "top": "50%",
+                                            "transform": [
+                                              {
+                                                "translateX": -12,
+                                              },
+                                              {
+                                                "translateY": -24,
+                                              },
+                                            ],
+                                          }
+                                        }
+                                      >
+                                        <Icon
+                                          color="#C05621"
+                                          name="location-on"
+                                          size={24}
+                                          style={{}}
+                                        />
+                                      </View>
+                                    </View>
                                     <View
                                       style={
                                         {
