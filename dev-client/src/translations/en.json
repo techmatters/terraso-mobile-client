@@ -525,7 +525,7 @@
     },
     "login": {
         "title": "LandPKS Soil ID",
-        "subtitle": "Discover your land’s potential",
+        "subtitle": "Ground-truth your soil decisions",
         "from": "from"
     },
     "delete_account": {
