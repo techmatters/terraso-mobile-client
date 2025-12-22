@@ -124,7 +124,7 @@ exports[`renders correctly 1`] = `
                     }
                   }
                 >
-                  Discover your land’s potential
+                  Ground-truth your soil decisions
                 </Text>
               </View>
               <View

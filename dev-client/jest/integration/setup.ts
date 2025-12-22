@@ -83,7 +83,10 @@ jest.mock('expo-video', () => ({
 }));
 
 jest.mock('terraso-mobile-client/config', () => ({
-  APP_CONFIG: {},
+  APP_CONFIG: {
+    welcomeContentHash: 'test-hash',
+    alwaysShowWelcome: false,
+  },
 }));
 
 setAPIConfig({
