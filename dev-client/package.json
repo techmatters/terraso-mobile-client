@@ -76,6 +76,7 @@
     "munsell": "^1.1.6",
     "native-base": "^3.4.28",
     "posthog-react-native": "^4.10.1",
+    "posthog-react-native-session-replay": "^1.2.1",
     "promise": "^8.3.0",
     "quantize": "^1.0.2",
     "react": "19.1.0",
