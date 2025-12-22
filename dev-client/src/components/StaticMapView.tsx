@@ -15,8 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useMemo} from 'react';
-import {StyleProp, ViewStyle} from 'react-native';
+import {useEffect, useState} from 'react';
+import {
+  Image,
+  LayoutChangeEvent,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import Mapbox, {type Camera} from '@rnmapbox/maps';
 
@@ -88,8 +95,6 @@ export const positionToCoords = (
   longitude: position[0],
 });
 
-const defaultAnchor = {x: 0.5, y: 0};
-
 type Props = {
   coords: Coords;
   zoomLevel?: number;
@@ -103,40 +108,77 @@ export const StaticMapView = ({
   zoomLevel = 15,
   style,
   displayCenterMarker,
-  pointerEvents,
 }: Props) => {
-  const cameraSettings = useMemo(
-    () =>
-      ({
-        centerCoordinate: coordsToPosition(coords),
-        zoomLevel: zoomLevel,
-        animationMode: 'none',
-        animationDuration: 0,
-      }) as const,
-    [coords, zoomLevel],
+  const [snapshotUri, setSnapshotUri] = useState<string | null>(null);
+  const [size, setSize] = useState<{width: number; height: number} | null>(
+    null,
   );
 
+  const onLayout = (event: LayoutChangeEvent) => {
+    const {width, height} = event.nativeEvent.layout;
+    if (width > 0 && height > 0) {
+      setSize({width, height});
+    }
+  };
+
+  useEffect(() => {
+    if (!size) {
+      return;
+    }
+
+    let cancelled = false;
+
+    Mapbox.snapshotManager
+      .takeSnap({
+        centerCoordinate: coordsToPosition(coords),
+        width: size.width,
+        height: size.height,
+        zoomLevel,
+        styleURL: Mapbox.StyleURL.Satellite,
+        writeToDisk: true,
+      })
+      .then(uri => {
+        if (!cancelled) {
+          setSnapshotUri(uri);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [coords, zoomLevel, size]);
+
   return (
-    <Mapbox.MapView
-      localizeLabels={true}
-      style={style}
-      styleURL={Mapbox.StyleURL.Satellite}
-      scaleBarEnabled={false}
-      logoEnabled={false}
-      zoomEnabled={false}
-      scrollEnabled={false}
-      pitchEnabled={false}
-      rotateEnabled={false}
-      attributionEnabled={false}
-      pointerEvents={pointerEvents}>
-      <Mapbox.Camera defaultSettings={cameraSettings} />
-      {displayCenterMarker && (
-        <Mapbox.MarkerView
-          coordinate={cameraSettings.centerCoordinate}
-          anchor={defaultAnchor}>
-          <Icon name="location-on" color="secondary.main" />
-        </Mapbox.MarkerView>
+    <View style={[style, styles.container]} onLayout={onLayout}>
+      {snapshotUri ? (
+        <Image source={{uri: snapshotUri}} style={styles.image} />
+      ) : (
+        <View style={styles.placeholder} />
       )}
-    </Mapbox.MapView>
+      {displayCenterMarker && (
+        <View style={styles.markerContainer}>
+          <Icon name="location-on" color="secondary.main" />
+        </View>
+      )}
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    overflow: 'hidden',
+  },
+  image: {
+    flex: 1,
+  },
+  placeholder: {
+    flex: 1,
+    backgroundColor: '#e0e0e0',
+  },
+  markerContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{translateX: -12}, {translateY: -24}],
+  },
+});
