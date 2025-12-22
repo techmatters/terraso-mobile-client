@@ -22,6 +22,20 @@ import Constants from 'expo-constants';
 import {setAPIConfig, TerrasoAPIConfig} from 'terraso-client-shared/config';
 
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
+import en from 'terraso-mobile-client/translations/en.json';
+
+// Simple hash function for welcome content change detection (djb2 algorithm)
+const simpleHash = (str: string): string => {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    // eslint-disable-next-line no-bitwise
+    hash = (hash * 33) ^ str.charCodeAt(i);
+  }
+  // eslint-disable-next-line no-bitwise
+  return (hash >>> 0).toString(16);
+};
+
+const welcomeContentHash = simpleHash(JSON.stringify(en.welcome));
 
 const ENV_CONFIG = Constants.expoConfig!.extra!;
 
@@ -85,6 +99,8 @@ export const APP_CONFIG = {
   posthogApiKey: ENV_CONFIG.POSTHOG_API_KEY,
   posthogDebug: ENV_CONFIG.POSTHOG_DEBUG,
   debugEnabled: ENV_CONFIG.DEBUG_ENABLED === 'true',
+  alwaysShowWelcome: ENV_CONFIG.ALWAYS_SHOW_WELCOME === 'true',
+  welcomeContentHash,
 } as const;
 
 // Debug flag for visualization and logging (keyboard layout, etc.)
