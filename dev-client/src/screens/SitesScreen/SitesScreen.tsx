@@ -32,6 +32,7 @@ import Mapbox from '@rnmapbox/maps';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
+import {FeatureFlagPollingTrigger} from 'terraso-mobile-client/app/PostHog';
 import {LandPKSInfoButton} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoButton';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -158,6 +159,7 @@ export const SitesScreen = memo(() => {
       AppBar={<AppBar LeftButton={null} RightButton={<LandPKSInfoButton />} />}>
       <ListFilterProvider items={siteList} filters={filters}>
         <Box testID="sites-screen" flex={1}>
+          <FeatureFlagPollingTrigger />
           <PosthogBanner />
           <Box flex={1}>
             <MapHeader
