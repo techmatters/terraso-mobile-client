@@ -41,5 +41,3 @@ export const GEOSPATIAL_CONTEXT_USER_DISTANCE_CACHE = 5;
 export const LOCALE = 'en-US';
 export const MAP_QUERY_MIN_LENGTH = 2;
 export const SEARCH_DEBOUNCE_TIME_MS = 500;
-
-export const WELCOME_SCREEN_SEEN_KEY = 'welcomeScreenAlreadySeen01';

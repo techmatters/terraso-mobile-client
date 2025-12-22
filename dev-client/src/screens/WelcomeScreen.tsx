@@ -25,24 +25,28 @@ import {ScreenContentSection} from 'terraso-mobile-client/components/content/Scr
 import {TranslatedBulletList} from 'terraso-mobile-client/components/content/typography/TranslatedBulletList';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {WELCOME_SCREEN_SEEN_KEY} from 'terraso-mobile-client/constants';
+import {
+  Box,
+  Column,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 export const WelcomeScreen = () => {
   const {t} = useTranslation();
-  const [, setWelcomeScreenAlreadySeen] = kvStorage.useBool(
-    WELCOME_SCREEN_SEEN_KEY,
-    false,
+  const [, setWelcomeScreenSeenForHash] = kvStorage.useString(
+    'welcomeScreenSeenForHash',
+    '',
   );
   const navigation = useNavigation();
 
-  // Welcome screen will only show on first time app is opened, so we expect user needs to log in next
+  // Welcome screen will show on first launch or after welcome content changes
   const onGetStarted = useCallback(() => {
-    setWelcomeScreenAlreadySeen(true);
+    setWelcomeScreenSeenForHash(APP_CONFIG.welcomeContentHash);
     navigation.popTo('LOGIN');
-  }, [navigation, setWelcomeScreenAlreadySeen]);
+  }, [navigation, setWelcomeScreenSeenForHash]);
 
   return (
     <>
@@ -59,7 +63,9 @@ export const WelcomeScreen = () => {
           </Text>
           <TranslatedBulletList i18nKeyPrefix="welcome.version_includes.bullet_" />
 
-          <Text variant="body1-strong">{t('welcome.next.title')}</Text>
+          <Text variant="body1-strong" mb="sm">
+            {t('welcome.next.title')}
+          </Text>
           <Text variant="body1" mb="sm">
             {t('welcome.next.subtitle')}
           </Text>
@@ -67,21 +73,25 @@ export const WelcomeScreen = () => {
 
           <Text variant="body1-strong">{t('welcome.learn_more')}</Text>
 
-          <ExternalLink
-            label={t('welcome.link_text')}
-            url={t('welcome.link_url')}
-          />
+          <Box margin="sm">
+            <ExternalLink
+              label={t('welcome.link_text')}
+              url={t('welcome.link_url')}
+            />
+          </Box>
 
           <TranslatedParagraph i18nKey="welcome.terms" />
 
-          <ExternalLink
-            label={t('general.privacy_policy_link_text')}
-            url={t('general.privacy_policy_link_url')}
-          />
-          <ExternalLink
-            label={t('general.terms_of_service_link_text')}
-            url={t('general.terms_of_service_link_url')}
-          />
+          <Column space="sm" marginTop="sm" margin="sm">
+            <ExternalLink
+              label={t('general.privacy_policy_link_text')}
+              url={t('general.privacy_policy_link_url')}
+            />
+            <ExternalLink
+              label={t('general.terms_of_service_link_text')}
+              url={t('general.terms_of_service_link_url')}
+            />
+          </Column>
 
           {/* To leave room for the FAB */}
           <Box height="70px" />

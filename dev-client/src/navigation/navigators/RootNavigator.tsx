@@ -24,7 +24,7 @@ import {
   setHasAccessTokenAsync,
 } from 'terraso-client-shared/account/accountSlice';
 
-import {WELCOME_SCREEN_SEEN_KEY} from 'terraso-mobile-client/constants';
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {DEFAULT_STACK_NAVIGATOR_OPTIONS} from 'terraso-mobile-client/navigation/constants';
 import {
   modalScreens,
@@ -47,10 +47,14 @@ export const RootNavigator = () => {
     state => state.account.currentUser.data !== null,
   );
 
-  const [welcomeScreenAlreadySeen] = kvStorage.useBool(
-    WELCOME_SCREEN_SEEN_KEY,
-    false,
+  const [welcomeScreenSeenForHash] = kvStorage.useString(
+    'welcomeScreenSeenForHash',
+    '',
   );
+
+  const shouldShowWelcome =
+    APP_CONFIG.alwaysShowWelcome ||
+    welcomeScreenSeenForHash !== APP_CONFIG.welcomeContentHash;
 
   useEffect(() => {
     if (!hasToken) {
@@ -65,11 +69,7 @@ export const RootNavigator = () => {
   return (
     <RootStack.Navigator
       initialRouteName={
-        !welcomeScreenAlreadySeen
-          ? 'WELCOME'
-          : isLoggedIn
-            ? 'BOTTOM_TABS'
-            : 'LOGIN'
+        shouldShowWelcome ? 'WELCOME' : isLoggedIn ? 'BOTTOM_TABS' : 'LOGIN'
       }>
       <RootStack.Group screenOptions={DEFAULT_STACK_NAVIGATOR_OPTIONS}>
         {screens}
