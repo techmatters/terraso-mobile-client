@@ -4,16 +4,15 @@
         "next": {
             "title": "რა არის შემდეგი?",
             "subtitle": "მომავალი ვერსიები მოიცავს:",
-            "bullet_1": "ოფლაინ საიტის შექმნა, ნიადაგის შერჩევა და შენიშვნები",
-            "bullet_2": "პროექტის მონაცემების ჩამოტვირთვა",
-            "bullet_3": "მონაცემთა ვიზუალიზაციის გაუმჯობესებები",
-            "bullet_4": "დამატებითი დაკვირვებები, როგორიცაა ნიადაგის შეზღუდვები"
+            "bullet_1": "TK Create sites offline",
+            "bullet_2": "TK Edit notes offline"
         },
         "version_includes": {
             "title": "ეს ვერსია მოიცავს:",
-            "bullet_1": "ნიადაგის გლობალური იდენტიფიკაცია",
-            "bullet_2": "ნიადაგის სიღრმის შეცვლის შეცდომების გამოსწორება",
-            "bullet_3": "Soil ID ალგორითმის შეცდომების გამოსწორება"
+            "bullet_1": "TK Data export feature for projects, individual sites, and all sites visible to user",
+            "bullet_2": "TK Language picker",
+            "bullet_3": "TK Experimental translations for French and Georgian",
+            "bullet_4": "TK New rate soil experience for easier soil identification"
         },
         "learn_more": "გაიგეთ მეტი და იყავით ინფორმირებული:",
         "link_text": "LandPKS ტერასოდან",

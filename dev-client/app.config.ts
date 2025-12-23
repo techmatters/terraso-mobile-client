@@ -68,6 +68,7 @@ const ENV_CONFIG = {
   // Optional: defaults to undefined (treated as 'false' in config/index.ts)
   POSTHOG_DEBUG: process.env.POSTHOG_DEBUG,
   DEBUG_ENABLED: process.env.DEBUG_ENABLED,
+  ALWAYS_SHOW_WELCOME: process.env.ALWAYS_SHOW_WELCOME,
 };
 
 let buildNumber = 1;

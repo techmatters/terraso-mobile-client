@@ -4,16 +4,15 @@
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "Capacidades sin conexión",
-            "bullet_2": "Descarga de datos del proyecto",
-            "bullet_3": "Mejoras en la visualización de datos",
-            "bullet_4": "Observaciones adicionales, como limitaciones del suelo"
+            "bullet_1": "TK Create sites offline",
+            "bullet_2": "TK Edit notes offline"
         },
         "version_includes": {
             "title": "Esta version incluye:",
-            "bullet_1": "Identificación global de suelos",
-            "bullet_2": "Corrección de errores al cambiar profundidades de suelo",
-            "bullet_3": "Corrección de errores para el algoritmo de identificación de suelos"
+            "bullet_1": "TK Data export feature for projects, individual sites, and all sites visible to user",
+            "bullet_2": "TK Language picker",
+            "bullet_3": "TK Experimental translations for French and Georgian",
+            "bullet_4": "TK New rate soil experience for easier soil identification"
         },
         "learn_more": "Aprende más y mantente actualizado:",
         "link_text": "LandPKS de Terraso",

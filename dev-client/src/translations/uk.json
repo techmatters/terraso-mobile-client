@@ -4,16 +4,15 @@
     "next": {
       "title": "Що далі?",
       "subtitle": "Майбутні версії включатимуть:",
-      "bullet_1": "Створення ділянка офлайн, вибір ґрунту та нотатки",
-      "bullet_2": "Завантаження даних проєкту",
-      "bullet_3": "Покращення візуалізації даних",
-      "bullet_4": "Додаткові спостереження, такі як обмеження ґрунту"
+      "bullet_1": "TK Create sites offline",
+      "bullet_2": "TK Edit notes offline"
     },
     "version_includes": {
       "title": "Ця версія включає:",
-      "bullet_1": "Глобальна ідентифікація ґрунтів",
-      "bullet_2": "Виправлення помилок зі зміною глибини ґрунту",
-      "bullet_3": "Виправлення помилок для алгоритму ідентифікації ґрунту"
+      "bullet_1": "TK Data export feature for projects, individual sites, and all sites visible to user",
+      "bullet_2": "TK Language picker",
+      "bullet_3": "TK Experimental translations for French and Georgian",
+      "bullet_4": "TK New rate soil experience for easier soil identification"
     },
     "learn_more": "Дізнайтеся більше та будьте в курсі подій:",
     "link_text": "LandPKS від Terraso",

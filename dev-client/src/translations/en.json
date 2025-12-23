@@ -3,17 +3,16 @@
         "title": "Welcome to LandPKS Soil ID",
         "version_includes": {
             "title": "This version includes:",
-            "bullet_1": "Global soil identification",
-            "bullet_2": "Bug fixes for changing soil depths",
-            "bullet_3": "Bug fixes for Soil ID algorithm"
+            "bullet_1": "Data export feature for projects, individual sites, and all sites visible to user",
+            "bullet_2": "Language picker",
+            "bullet_3": "Experimental translations for French and Georgian",
+            "bullet_4": "New rate soil experience for easier soil identification"
         },
         "next": {
             "title": "What’s next?",
             "subtitle": "Future versions will include:",
-            "bullet_1": "Offline site creation, soil selection, and notes",
-            "bullet_2": "Project data download",
-            "bullet_3": "Data visualization enhancements",
-            "bullet_4": "Additional observations, such as soil limitations"
+            "bullet_1": "Create sites offline",
+            "bullet_2": "Edit notes offline"
         },
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",
@@ -522,7 +521,7 @@
     },
     "login": {
         "title": "LandPKS Soil ID",
-        "subtitle": "Discover your land’s potential",
+        "subtitle": "Ground-truth your soil decisions",
         "from": "from"
     },
     "delete_account": {
