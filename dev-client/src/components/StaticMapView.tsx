@@ -15,17 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useEffect, useState} from 'react';
-import {
-  Image,
-  LayoutChangeEvent,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {useCallback, useMemo, useRef, useState} from 'react';
+import {Image, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 
-import Mapbox, {type Camera} from '@rnmapbox/maps';
+import Mapbox, {type Camera, type MapView} from '@rnmapbox/maps';
 
 import {Coords} from 'terraso-client-shared/types';
 
@@ -100,7 +93,6 @@ type Props = {
   zoomLevel?: number;
   style?: StyleProp<ViewStyle>;
   displayCenterMarker?: boolean;
-  pointerEvents?: 'none' | 'auto' | 'box-none' | 'box-only';
 };
 
 export const StaticMapView = ({
@@ -109,56 +101,62 @@ export const StaticMapView = ({
   style,
   displayCenterMarker,
 }: Props) => {
+  const mapRef = useRef<MapView>(null);
   const [snapshotUri, setSnapshotUri] = useState<string | null>(null);
-  const [size, setSize] = useState<{width: number; height: number} | null>(
-    null,
+
+  const cameraSettings = useMemo(
+    () =>
+      ({
+        centerCoordinate: coordsToPosition(coords),
+        zoomLevel: zoomLevel,
+        animationMode: 'none',
+        animationDuration: 0,
+      }) as const,
+    [coords, zoomLevel],
   );
 
-  const onLayout = (event: LayoutChangeEvent) => {
-    const {width, height} = event.nativeEvent.layout;
-    if (width > 0 && height > 0) {
-      setSize({width, height});
-    }
-  };
-
-  useEffect(() => {
-    if (!size) {
+  // Capture the map as an image once it's loaded to avoid Android layer issues.
+  // Using false returns base64 data URI (no temp files written to disk).
+  const onMapIdle = useCallback(async () => {
+    if (!mapRef.current) {
       return;
     }
-
-    let cancelled = false;
-
-    Mapbox.snapshotManager
-      .takeSnap({
-        centerCoordinate: coordsToPosition(coords),
-        width: size.width,
-        height: size.height,
-        zoomLevel,
-        styleURL: Mapbox.StyleURL.Satellite,
-        writeToDisk: true,
-      })
-      .then(uri => {
-        if (!cancelled) {
-          setSnapshotUri(uri);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [coords, zoomLevel, size]);
+    try {
+      const uri = await mapRef.current.takeSnap(false);
+      setSnapshotUri(uri);
+    } catch {
+      // Ignore snapshot errors
+    }
+  }, []);
 
   return (
-    <View style={[style, styles.container]} onLayout={onLayout}>
+    <View style={[style, styles.container]}>
       {snapshotUri ? (
-        <Image source={{uri: snapshotUri}} style={styles.image} />
+        <>
+          <Image source={{uri: snapshotUri}} style={styles.fill} />
+          {displayCenterMarker && (
+            <View style={styles.markerContainer}>
+              <Icon name="location-on" color="secondary.main" />
+            </View>
+          )}
+        </>
       ) : (
-        <View style={styles.placeholder} />
-      )}
-      {displayCenterMarker && (
-        <View style={styles.markerContainer}>
-          <Icon name="location-on" color="secondary.main" />
-        </View>
+        <Mapbox.MapView
+          ref={mapRef}
+          localizeLabels={true}
+          style={styles.fill}
+          styleURL={Mapbox.StyleURL.Satellite}
+          scaleBarEnabled={false}
+          logoEnabled={false}
+          zoomEnabled={false}
+          scrollEnabled={false}
+          pitchEnabled={false}
+          rotateEnabled={false}
+          attributionEnabled={false}
+          pointerEvents="none"
+          onMapIdle={onMapIdle}>
+          <Mapbox.Camera defaultSettings={cameraSettings} />
+        </Mapbox.MapView>
       )}
     </View>
   );
@@ -168,12 +166,8 @@ const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
   },
-  image: {
+  fill: {
     flex: 1,
-  },
-  placeholder: {
-    flex: 1,
-    backgroundColor: '#e0e0e0',
   },
   markerContainer: {
     position: 'absolute',
