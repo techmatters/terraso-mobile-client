@@ -22,6 +22,18 @@ import i18n from 'i18next';
 import {BulletList} from 'terraso-mobile-client/components/BulletList';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 
+/**
+ * Props for TranslatedBulletList.
+ *
+ * Use ONE of the following (i18nKeys takes precedence):
+ *
+ * - i18nKeys: Explicit list of translation keys.
+ *   Example: i18nKeys={['welcome.bullet_a', 'welcome.bullet_b']}
+ *
+ * - i18nKeyPrefix: Auto-discovers keys with numbered suffixes (1, 2, 3...).
+ *   Example: i18nKeyPrefix="welcome.version_includes.bullet_"
+ *   This finds: bullet_1, bullet_2, bullet_3, etc. until one doesn't exist.
+ */
 type TranslatedBulletListProps = {
   variant?: 'body1' | 'body2';
   i18nKeys?: string[];
