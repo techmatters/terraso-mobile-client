@@ -9,14 +9,10 @@
         },
         "version_includes": {
             "title": "Esta version incluye:",
-            "bullet_1": "TK Added export data feature for projects, individual sites, and all sites visible to user",
-            "bullet_2": "TK Added language picker and experimental translations for French and Georgian",
-            "bullet_3": "TK Updated rate soil experience and made it work offline",
-            "bullet_4": "TK Added \"Unaffiliated\" option to sort sites list",
-            "bullet_5": "TK Fixed issue where offline alert didn't scroll",
-            "bullet_6": "TK Added reminder to collect data for improved Soil ID results",
-            "bullet_7": "TK Updated tagline",
-            "bullet_8": "TK Updated analytics"
+            "bullet_1": "TK Data export feature for projects, individual sites, and all sites visible to user",
+            "bullet_2": "TK Language picker",
+            "bullet_3": "TK Experimental translations for French and Georgian",
+            "bullet_4": "TK New rate soil experience for easier soil identification"
         },
         "learn_more": "Aprende más y mantente actualizado:",
         "link_text": "LandPKS de Terraso",

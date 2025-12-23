@@ -3,14 +3,10 @@
         "title": "Welcome to LandPKS Soil ID",
         "version_includes": {
             "title": "This version includes:",
-            "bullet_1": "Added export data feature for projects, individual sites, and all sites visible to user",
-            "bullet_2": "Added language picker and experimental translations for French and Georgian",
-            "bullet_3": "Updated rate soil experience and made it work offline",
-            "bullet_4": "Added \"Unaffiliated\" option to sort sites list",
-            "bullet_5": "Fixed issue where offline alert didn’t scroll",
-            "bullet_6": "Added reminder to collect data for improved Soil ID results",
-            "bullet_7": "Updated tagline",
-            "bullet_8": "Updated analytics"
+            "bullet_1": "Data export feature for projects, individual sites, and all sites visible to user",
+            "bullet_2": "Language picker",
+            "bullet_3": "Experimental translations for French and Georgian",
+            "bullet_4": "New rate soil experience for easier soil identification"
         },
         "next": {
             "title": "What’s next?",
