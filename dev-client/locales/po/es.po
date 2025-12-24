@@ -384,8 +384,9 @@ msgid "login##title"
 msgstr "LandPKS Soil ID"
 
 #: 
+#, fuzzy
 msgid "login##subtitle"
-msgstr "Descrubre el potencial de tu suelo"
+msgstr "Utilice datos reales para tomar decisiones sobre el suelo"
 
 #: 
 msgid "login##from"
@@ -800,28 +801,29 @@ msgid "welcome##version_includes##title"
 msgstr "Esta version incluye:"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Identificación global de suelos"
+msgstr "Función de exportación de datos para proyectos, sitios individuales y todos los sitios visibles para el usuario"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Corrección de errores al cambiar profundidades de suelo"
+msgstr "Selector de idioma"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Corrección de errores para el algoritmo de identificación de suelos"
+msgstr "Traducciones experimentales para francés y georgiano"
 
 #: 
+#, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "Capacidades sin conexión"
+msgstr "Crear sitios sin conexión"
 
 #: 
+#, fuzzy
 msgid "welcome##next##bullet_2"
-msgstr "Descarga de datos del proyecto"
-
-#: 
-msgid "welcome##next##bullet_3"
-msgstr "Mejoras en la visualización de datos"
+msgstr "Editar notas sin conexión"
 
 #: 
 msgid "welcome##learn_more"
@@ -857,7 +859,7 @@ msgstr "Tu ubicación"
 
 #: 
 msgid "site##soil_id_prediction"
-msgstr "Identificación de suelo de mejor coincidencia"
+msgstr "Soil ID de mejor coincidencia"
 
 #: 
 msgid "site##ecological_site_prediction"
@@ -985,7 +987,7 @@ msgstr "ROCA DE FONDO"
 
 #: 
 msgid "site##soil_id##title"
-msgstr "Identificación de suelos"
+msgstr "Soil ID"
 
 #: 
 msgid "site##soil_id##description##temp_location"
@@ -1037,7 +1039,7 @@ msgstr "Observaciones del sitio"
 
 #: 
 msgid "site##soil_id##site_data##description"
-msgstr "Mejora los resultados de identificación de suelos ingresando algunas observaciones para este sitio, usando las guías útiles que te acompañarán en el proceso."
+msgstr "Mejora los resultados de Soil ID ingresando algunas observaciones para este sitio, usando las guías útiles que te acompañarán en el proceso."
 
 #: 
 msgid "site##soil_id##site_data##slope##title"
@@ -1740,6 +1742,7 @@ msgid "sign_out##confirm_body"
 msgstr "¿Seguro que quieres cerrar la sesión?"
 
 #: 
+#, fuzzy
 msgid "sign_out##confirm_action"
 msgstr "Cerrar sesión"
 
@@ -1801,7 +1804,7 @@ msgstr "Explorar datos"
 
 #: 
 msgid "soil##soil_id"
-msgstr "Identificación del suelo"
+msgstr "Soil ID"
 
 #: 
 msgid "soil##add_depth_label"
@@ -2504,7 +2507,7 @@ msgstr "Biblioteca de fotos"
 #: 
 #, fuzzy
 msgid "info##title"
-msgstr "Descubre el potencial de tu paisaje"
+msgstr "Utilice datos reales para tomar decisiones sobre el suelo"
 
 #: 
 msgid "info##description"
@@ -2735,7 +2738,7 @@ msgstr "Los suelos enumerados son los más propensos de encontrarse en esta ubic
 #: 
 msgid "site##soil_id##matches##info##description##need_help"
 msgstr "<bold>Need help?</bold>\n"
-"Consulta a un experto en suelos para ayudar a interpretar las observaciones y determinar una correspondencia de suelo. Puedes obtener más información sobre las predicciones del mapa de suelos y las correspondencias de identificación de suelos en el sitio web:"
+"Consulta a un experto en suelos para ayudar a interpretar las observaciones y determinar una correspondencia de suelo. Puedes obtener más información sobre las predicciones del mapa de suelos y las correspondencias de Soil ID en el sitio web:"
 
 #: 
 msgid "site##soil_id##matches##info##description##learn_more_url"
@@ -4898,10 +4901,6 @@ msgid "slope##info##data_region_text_global_or_unknown"
 msgstr "Las características de la pendiente ayudan a determinar el potencial de erosión del suelo, su capacidad para retener agua, etc."
 
 #: 
-msgid "welcome##next##bullet_4"
-msgstr "Observaciones adicionales, como limitaciones del suelo"
-
-#: 
 msgid "general##privacy_policy_link_url"
 msgstr "https://techmatters.org/privacy-policy/"
 
@@ -4918,40 +4917,35 @@ msgid "general##terms_of_service_link_text"
 msgstr "Condiciones de servicio"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##fab"
-msgstr "Rate match TK"
+msgstr "Califica coicidencia"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##title"
-msgstr "Rate this soil match TK"
+msgstr "Califica esta coincidencia de suelo"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##description"
-msgstr "<bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons. TK"
+msgstr "<bold>¿Es este el suelo adecuado?</bold> Utilice su mejor criterio basándose en la descripción del suelo y las comparaciones de propiedades."
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##yes"
-msgstr "Yes, select soil for this site TK"
+msgstr "Sí, seleccione suelo para este sitio"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##no"
-msgstr "No, it's different TK"
+msgstr "No, es diferente"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##unsure"
-msgstr "Not sure yet TK"
+msgstr "Aún no estoy seguro"
 
 #: 
 msgid "soil##depth##edit_title"
 msgstr "Opciones de profundidad"
 
 #: 
+#, fuzzy
 msgid "settings##select_language"
 msgstr "Idioma: {{language}}"
 
@@ -4964,4 +4958,264 @@ msgstr "No se puede cerrar sesión"
 #, fuzzy
 msgid "sign_out##blocked_body"
 msgstr "Tiene cambios sin sincronizar que deben cargarse antes de cerrar la sesión. Conéctese a internet y espere a que se sincronicen sus datos."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_4"
+msgstr "Nueva experiencia de medición de suelos para una identificación más sencilla"
+
+#: 
+#, fuzzy
+msgid "projects##tabs##export"
+msgstr "Exportar"
+
+#: 
+#, fuzzy
+msgid "export##menu_title"
+msgstr "Exportación de datos"
+
+#: 
+#, fuzzy
+msgid "export##title_user"
+msgstr "Exporta todos tus sitios"
+
+#: 
+#, fuzzy
+msgid "export##title_project"
+msgstr "Sitios de proyectos de exportación"
+
+#: 
+#, fuzzy
+msgid "export##title_site"
+msgstr "Sitio de exportación"
+
+#: 
+#, fuzzy
+msgid "export##offline_message"
+msgstr "Solo puedes exportar mientras estés en línea."
+
+#: 
+#, fuzzy
+msgid "export##save_or_share_file"
+msgstr "Compartir o guardar archivo"
+
+#: 
+#, fuzzy
+msgid "export##file_description"
+msgstr "Compartir o guardar los datos actuales como un archivo."
+
+#: 
+#, fuzzy
+msgid "export##csv_file"
+msgstr "Archivo CSV"
+
+#: 
+#, fuzzy
+msgid "export##json_file"
+msgstr "Archivo JSON"
+
+#: 
+#, fuzzy
+msgid "export##share_current_data"
+msgstr "Compartir enlace a datos"
+
+#: 
+#, fuzzy
+msgid "export##link_description"
+msgstr "Comparte una URL que siempre devuelva los datos más recientes."
+
+#: 
+#, fuzzy
+msgid "export##live_link"
+msgstr "Enlace en vivo"
+
+#: 
+#, fuzzy
+msgid "export##reset_live_link"
+msgstr "Restablecer enlace en vivo"
+
+#: 
+#, fuzzy
+msgid "export##site_export_title"
+msgstr "Sitio de exportación"
+
+#: 
+#, fuzzy
+msgid "export##site_export_description"
+msgstr "Descargue o comparta los datos de este sitio."
+
+#: 
+#, fuzzy
+msgid "export##site_export_button"
+msgstr "Exportar datos del sitio"
+
+#: 
+#, fuzzy
+msgid "export##what_is_in_file"
+msgstr "¿Qué hay en el archivo?"
+
+#: 
+#, fuzzy
+msgid "export##loading"
+msgstr "Cargando configuración de exportación..."
+
+#: 
+#, fuzzy
+msgid "export##downloading"
+msgstr "Descargando..."
+
+#: 
+#, fuzzy
+msgid "export##preparing_file"
+msgstr "Preparando el archivo {{resourceType}} para {{name}}"
+
+#: 
+#, fuzzy
+msgid "export##preparing_file_message"
+msgstr "Creando tu archivo de exportación. Esto puede tardar un momento..."
+
+#: 
+#, fuzzy
+msgid "export##save_dialog_title"
+msgstr "Guardar datos de LandPKS para {{name}}"
+
+#: 
+#, fuzzy
+msgid "export##save_error_title"
+msgstr "Error al guardar"
+
+#: 
+#, fuzzy
+msgid "export##save_error_message"
+msgstr "No se pudo guardar el archivo: {{error}}"
+
+#: 
+#, fuzzy
+msgid "export##share_title"
+msgstr "Exportación de datos de LandPKS para los sitios de {{name}}"
+
+#: 
+#, fuzzy
+msgid "export##share_subject"
+msgstr "Enlace a los sitios LandPKS de {{name}}"
+
+#: 
+#, fuzzy
+msgid "export##share_android_message"
+msgstr "Exportar datos de {{resourceType}} para {{name}}:"
+
+#: 
+#, fuzzy
+msgid "export##share_message_user"
+msgstr "Este enlace incluirá todos los datos del sitio {{name}}, incluidos los sitios de los proyectos miembros."
+
+#: 
+#, fuzzy
+msgid "export##share_message_project"
+msgstr "Este enlace incluirá todos los datos del sitio del proyecto \"{{name}}\"."
+
+#: 
+#, fuzzy
+msgid "export##share_message_site"
+msgstr "Este enlace incluirá todos los datos del sitio \"{{name}}\"."
+
+#: 
+#, fuzzy
+msgid "export##reset_links_title"
+msgstr "¿Restablecer enlaces para compartir?"
+
+#: 
+#, fuzzy
+msgid "export##reset_links_body"
+msgstr "Esto romperá tus enlaces para compartir. Quienes tengan tus enlaces anteriores ya no podrán acceder a los archivos."
+
+#: 
+#, fuzzy
+msgid "export##create_token_error_title"
+msgstr "No se pudo crear el enlace"
+
+#: 
+#, fuzzy
+msgid "export##create_token_error_message"
+msgstr "No se pudo crear el enlace de exportación. Verifique su conexión y vuelva a intentarlo."
+
+#: 
+#, fuzzy
+msgid "export##delete_token_error_title"
+msgstr "No se pudo restablecer el enlace"
+
+#: 
+#, fuzzy
+msgid "export##delete_token_error_message"
+msgstr "No se pudo restablecer el enlace de exportación. Verifique su conexión y vuelva a intentarlo."
+
+#: 
+#, fuzzy
+msgid "export##help##title"
+msgstr "Opciones de exportación"
+
+#: 
+#, fuzzy
+msgid "export##help##section_file_vs_link"
+msgstr "Archivo o enlace"
+
+#: 
+#, fuzzy
+msgid "export##help##save_file_description"
+msgstr "<bold>Compartir o guardar archivo</bold> captura los datos actuales del sitio como un archivo CSV o JSON. Puedes enviar el archivo por correo electrónico, mensajería u otras aplicaciones, o guardarlo en tu dispositivo."
+
+#: 
+#, fuzzy
+msgid "export##help##live_link_description"
+msgstr "<bold>Compartir enlace a datos</bold> crea una URL que siempre devuelve los datos más recientes. Úselo para integrar scripts, flujos de trabajo automatizados o cuando desee que otros usuarios siempre tengan acceso a sus datos más recientes. Restablezca el enlace para revocar el acceso de enlaces anteriores."
+
+#: 
+#, fuzzy
+msgid "export##help##section_format"
+msgstr "Formato de archivo"
+
+#: 
+#, fuzzy
+msgid "export##help##csv_description"
+msgstr "Los archivos <bold>CSV</bold> (valores separados por comas) funcionan con aplicaciones de hojas de cálculo como Excel o Hojas de cálculo de Google. Son ideales para ver, ordenar y analizar datos en un formato de tabla familiar."
+
+#: 
+#, fuzzy
+msgid "export##help##json_description"
+msgstr "<bold>JSON</bold> (notación de objetos JavaScript) es un formato de datos estructurado. Ideal para desarrolladores o para importar a otros sistemas de software."
+
+#: 
+#, fuzzy
+msgid "file_download##error##unsupported_platform"
+msgstr "Esta plataforma no admite guardar archivos."
+
+#: 
+#, fuzzy
+msgid "file_download##error##no_storage_directory"
+msgstr "No hay ningún directorio de almacenamiento disponible."
+
+#: 
+#, fuzzy
+msgid "file_download##error##sharing_unavailable"
+msgstr "Compartir no está disponible en este dispositivo."
+
+#: 
+#, fuzzy
+msgid "file_download##error##save_canceled"
+msgstr "Guardar cancelado."
+
+#: 
+#, fuzzy
+msgid "file_download##error##no_directory_selected"
+msgstr "No hay ningún directorio seleccionado"
+
+#: 
+#, fuzzy
+msgid "file_download##error##save_failed"
+msgstr "No se pudo guardar el archivo."
+
+#: 
+#, fuzzy
+msgid "file_download##error##unknown"
+msgstr "Se produjo un error desconocido."
 

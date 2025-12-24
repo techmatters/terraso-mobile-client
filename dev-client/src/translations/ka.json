@@ -4,15 +4,15 @@
         "next": {
             "title": "რა არის შემდეგი?",
             "subtitle": "მომავალი ვერსიები მოიცავს:",
-            "bullet_1": "TK Create sites offline",
-            "bullet_2": "TK Edit notes offline"
+            "bullet_1": "შექმენით საიტები ოფლაინში",
+            "bullet_2": "შენიშვნების რედაქტირება ოფლაინში"
         },
         "version_includes": {
             "title": "ეს ვერსია მოიცავს:",
-            "bullet_1": "TK Data export feature for projects, individual sites, and all sites visible to user",
-            "bullet_2": "TK Language picker",
-            "bullet_3": "TK Experimental translations for French and Georgian",
-            "bullet_4": "TK New rate soil experience for easier soil identification"
+            "bullet_1": "მონაცემთა ექსპორტის ფუნქცია პროექტებისთვის, ინდივიდუალური საიტებისთვის და მომხმარებლისთვის ხილული ყველა საიტისთვის",
+            "bullet_2": "ენის ამომრჩევი",
+            "bullet_3": "ექსპერიმენტული თარგმანები ფრანგული და ქართული ენებისთვის",
+            "bullet_4": "ნიადაგის შეფასების ახალი გამოცდილება ნიადაგის უფრო მარტივი იდენტიფიცირებისთვის"
         },
         "learn_more": "გაიგეთ მეტი და იყავით ინფორმირებული:",
         "link_text": "LandPKS ტერასოდან",
@@ -108,7 +108,7 @@
         "last_updated": "ბოლო ცვლილება: {{date}} {{name}}-ის მიერ",
         "more_info": "შეიტყვეთ მეტი",
         "your_location": "თქვენი მდებარეობა",
-        "soil_id_prediction": "ნიადაგის ID-ის ზედა შესატყვისი",
+        "soil_id_prediction": "Soil ID ზედა შესატყვისი",
         "ecological_site_prediction": "ეკოლოგიური საიტის საუკეთესო შესატყვისი",
         "annual_precip_avg": "წლიური ნალექების საშუალო მაჩვენებელი",
         "elevation_label": "სიმაღლე",
@@ -123,7 +123,7 @@
             "max_longitude_error": "გრძედი უნდა იყოს მაქსიმუმ {{max}}"
         },
         "soil_id": {
-            "title": "ნიადაგის ID",
+            "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID იყენებს ნიადაგის რუკებიდან მიღებულ მონაცემებს ამ ადგილას ნიადაგის პროგნოზების გამოსათვლელად. შექმენით საიტი ამ ადგილას დაკვირვებების შესატანად და შედეგების გასაუმჯობესებლად.",
                 "site_US": "LandPKS Soil ID იყენებს ნიადაგის რუკებიდან მიღებულ მონაცემებს და მომხმარებლების მიერ ამ საიტის შესახებ შეყვანილ დაკვირვებებს, რათა გამოთვალოს საიტის ნიადაგის საუკეთესო შესატყვისები. აირჩიეთ ამ საიტისთვის საუკეთესო შესატყვისი ნიადაგი, რათა გაიგოთ მეტი მისი ეკოლოგიური ადგილისა და სხვა თვისებების შესახებ.",
@@ -138,7 +138,7 @@
                         "temp_location": "ჩამოთვლილი ნიადაგები, {{soilMapSource}} ნიადაგის რუკების მიხედვით, ამ ადგილას ყველაზე ხშირად გვხვდება.\n\nშექმენით საიტი აქ და შეიყვანეთ რეკომენდებული დაკვირვებები შესაბამისობის ქულების სიზუსტის გასაუმჯობესებლად.",
                         "site_region_unknown": "ჩამოთვლილი ნიადაგები, ამ ადგილმდებარეობის ნიადაგის რუკების მიხედვით, ყველაზე მეტად სავარაუდოა, რომ ამ ადგილას მოიძებნოს.\n\nშესაბამისი ქულების სიზუსტის გასაუმჯობესებლად, შეიყვანეთ რეკომენდებული დახრილობა და ნიადაგის დაკვირვებები. დაკვირვებების შეყვანისას სია ავტომატურად განახლდება.",
                         "temp_location_region_unknown": "ჩამოთვლილი ნიადაგები ნიადაგის რუკების მიხედვით, ამ ადგილას ყველაზე მეტად გვხვდება.\n\nშექმენით საიტი აქ და შეიყვანეთ რეკომენდებული დაკვირვებები შესაბამისობის ქულების სიზუსტის გასაუმჯობესებლად.",
-                        "need_help": "\n<bold>დახმარება გჭირდებათ?</bold>\nდაკვირვებების ინტერპრეტაციისა და ნიადაგის შესაბამისობის დასადგენად მიმართეთ ნიადაგის ექსპერტს. ნიადაგის რუკის პროგნოზებისა და ნიადაგის ID-ის შესაბამისობების შესახებ დამატებითი ინფორმაციის მიღება შეგიძლიათ ვებსაიტზე:",
+                        "need_help": "\n<bold> დახმარება გჭირდებათ? </bold>\nდაკვირვებების ინტერპრეტაციისა და ნიადაგის შესაბამისობის დასადგენად, მიმართეთ ნიადაგის ექსპერტს. ნიადაგის რუკის პროგნოზებისა და Soil ID შესაბამისობის შესახებ დამატებითი ინფორმაციის მიღება შეგიძლიათ ვებსაიტზე:",
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
@@ -162,7 +162,7 @@
             },
             "site_data": {
                 "title": "ადგილზე დაკვირვებები",
-                "description": "გააუმჯობესეთ ნიადაგის ID-ის შედეგები ამ საიტისთვის რამდენიმე დაკვირვების შეყვანით, გზამკვლევში მოცემული სასარგებლო სახელმძღვანელოების გამოყენებით.",
+                "description": "გააუმჯობესეთ Soil ID შედეგები ამ საიტისთვის რამდენიმე დაკვირვების შეყვანით, გზამკვლევში მოცემული სასარგებლო სახელმძღვანელოების გამოყენებით.",
                 "slope": {
                     "title": "ფერდობის დახრილობა",
                     "add_data": "შეიყვანეთ ციცაბო"
@@ -245,9 +245,9 @@
         "tabs": {
             "inputs": "შეყვანები",
             "team": "გუნდი",
-            "export": "TK Export",
             "sites": "საიტები",
-            "settings": "პარამეტრები"
+            "settings": "პარამეტრები",
+            "export": "ექსპორტი"
         },
         "inputs": {
             "units": {
@@ -505,7 +505,7 @@
     },
     "login": {
         "title": "LandPKS ნიადაგის ID",
-        "subtitle": "აღმოაჩინეთ თქვენი მიწის პოტენციალი",
+        "subtitle": "გამოიყენეთ ნიადაგის ჭეშმარიტება თქვენი ნიადაგის გადაწყვეტილებებისთვის",
         "from": "-დან"
     },
     "privacy": {
@@ -757,7 +757,7 @@
         "ecological_site_name": "ეკოლოგიური ობიექტის დასახელება",
         "no_matches": "დამთხვევები არ არის",
         "explore_data": "მონაცემების შესწავლა",
-        "soil_id": "ნიადაგის ID",
+        "soil_id": "Soil ID",
         "add_depth_label": "სიღრმის დამატება",
         "project_settings": {
             "pit_required_label": "საჭიროა ნიადაგის ორმო",
@@ -1832,7 +1832,7 @@
         "choose_from_gallery": "აირჩიეთ გალერეიდან"
     },
     "info": {
-        "title": "აღმოაჩინეთ თქვენი მიწის პოტენციალი",
+        "title": "გამოიყენეთ ნიადაგის ჭეშმარიტება თქვენი ნიადაგის გადაწყვეტილებებისთვის",
         "description": "<bold>აღმოაჩინეთ თქვენი მიწის პოტენციური გამოყენება და ღირებულება.</bold> ზუსტად განსაზღვრეთ ნიადაგის ტიპი და თქვენი მიწის სხვა მახასიათებლები. მიიღეთ ინფორმაცია საძოვრებისა და მეურნეობის ვარიანტების, ნახშირბადის შთანთქმის და სხვა საკითხების შესახებ.",
         "description2": "<bold>დამატებითი ინფორმაციისა და სახელმძღვანელოების პოვნა</bold> შეგიძლიათ შემდეგ ბმულზე:\n<icon />",
         "link_label": "landpks.terraso.org",
@@ -1840,61 +1840,61 @@
         "get_started": "<bold>დასაწყებად, გამოიყენეთ რუკა საიტის შესაქმნელად:</bold>"
     },
     "export": {
-        "menu_title": "TK Data Export",
-        "title_user": "TK Export all your sites",
-        "title_project": "TK Export project sites",
-        "title_site": "TK Export site",
-        "offline_message": "TK You can only export while online.",
-        "save_or_share_file": "TK Share or Save File",
-        "file_description": "TK Share or save the current data as a file.",
-        "csv_file": "TK CSV File",
-        "json_file": "TK JSON File",
-        "share_current_data": "TK Share Link to Data",
-        "link_description": "TK Share a URL that always returns the latest data.",
-        "live_link": "TK Live Link",
-        "reset_live_link": "TK Reset Live Link",
-        "site_export_title": "TK Export Site",
-        "site_export_description": "TK Download or share this site's data.",
-        "site_export_button": "TK Export Site Data",
-        "what_is_in_file": "TK What is in the file?",
-        "loading": "TK Loading export settings...",
-        "downloading": "TK Downloading...",
-        "preparing_file": "TK Preparing {{resourceType}} file for {{name}}",
-        "preparing_file_message": "TK Creating your export file. This may take a moment...",
-        "save_dialog_title": "TK Save LandPKS Data for {{name}}",
-        "save_error_title": "TK Save Failed",
-        "save_error_message": "TK Failed to save file: {{error}}",
-        "share_title": "TK LandPKS Data Export for {{name}}'s Sites",
-        "share_subject": "TK Link to {{name}}'s LandPKS Sites",
-        "share_android_message": "TK Export {{resourceType}} data for {{name}}:",
-        "share_message_user": "TK This link will include all site data for {{name}} including sites from member projects.",
-        "share_message_project": "TK This link will include all site data from the project \"{{name}}\".",
-        "share_message_site": "TK This link will include all data for the site \"{{name}}\".",
-        "reset_links_title": "TK Reset share links?",
-        "reset_links_body": "TK This will break your current share links. Anyone with your previous links will no longer be able to access the files.",
-        "create_token_error_title": "TK Failed to Create Link",
-        "create_token_error_message": "TK Could not create export link. Please check your connection and try again.",
-        "delete_token_error_title": "TK Failed to Reset Link",
-        "delete_token_error_message": "TK Could not reset export link. Please check your connection and try again.",
+        "menu_title": "მონაცემთა ექსპორტი",
+        "title_user": "ექსპორტი გაუკეთეთ თქვენს ყველა საიტს",
+        "title_project": "პროექტის საიტების ექსპორტი",
+        "title_site": "ექსპორტის საიტი",
+        "offline_message": "ექსპორტი მხოლოდ ონლაინ რეჟიმში შეგიძლიათ.",
+        "save_or_share_file": "ფაილის გაზიარება ან შენახვა",
+        "file_description": "გააზიარეთ ან შეინახეთ მიმდინარე მონაცემები ფაილის სახით.",
+        "csv_file": "CSV ფაილი",
+        "json_file": "JSON ფაილი",
+        "share_current_data": "მონაცემების ბმულის გაზიარება",
+        "link_description": "გააზიარეთ URL, რომელიც ყოველთვის უახლეს მონაცემებს აბრუნებს.",
+        "live_link": "პირდაპირი ბმული",
+        "reset_live_link": "პირდაპირი ბმულის გადატვირთვა",
+        "site_export_title": "ექსპორტის საიტი",
+        "site_export_description": "ჩამოტვირთეთ ან გააზიარეთ ამ საიტის მონაცემები.",
+        "site_export_button": "საიტის მონაცემების ექსპორტი",
+        "what_is_in_file": "რა არის ფაილში?",
+        "loading": "ექსპორტის პარამეტრები იტვირთება...",
+        "downloading": "ჩამოტვირთვა...",
+        "preparing_file": "მიმდინარეობს {{resourceType}} ფაილის მომზადება {{name}}- სთვის.",
+        "preparing_file_message": "მიმდინარეობს თქვენი ექსპორტის ფაილის შექმნა. ამას შეიძლება გარკვეული დრო დასჭირდეს...",
+        "save_dialog_title": "შეინახეთ LandPKS მონაცემები {{name}}- სთვის",
+        "save_error_title": "შენახვა ვერ მოხერხდა",
+        "save_error_message": "ფაილის შენახვა ვერ მოხერხდა: {{error}}",
+        "share_title": "LandPKS მონაცემთა ექსპორტი {{name}} საიტებისთვის",
+        "share_subject": "ბმული {{name}}-ის LandPKS საიტებზე",
+        "share_android_message": "{{resourceType}} მონაცემების ექსპორტი {{name}}-ისთვის:",
+        "share_message_user": "ეს ბმული მოიცავს {{name}}- ის საიტის ყველა მონაცემს, მათ შორის წევრი პროექტების საიტებს.",
+        "share_message_project": "ეს ბმული მოიცავს პროექტის „{{name}}“ ყველა საიტის მონაცემს.",
+        "share_message_site": "ეს ბმული შეიცავს საიტის „{{name}}“ ყველა მონაცემს.",
+        "reset_links_title": "გაზიარების ბმულების გადაყენება?",
+        "reset_links_body": "ეს დააზიანებს თქვენს მიმდინარე გაზიარების ბმულებს. ნებისმიერი პირი, ვისაც თქვენი წინა ბმულები აქვს, ვეღარ შეძლებს ფაილებზე წვდომას.",
+        "create_token_error_title": "ბმულის შექმნა ვერ მოხერხდა",
+        "create_token_error_message": "ექსპორტის ბმულის შექმნა ვერ მოხერხდა. გთხოვთ, შეამოწმოთ თქვენი კავშირი და ხელახლა სცადოთ.",
+        "delete_token_error_title": "ბმულის გადატვირთვა ვერ მოხერხდა",
+        "delete_token_error_message": "ექსპორტის ბმულის გადატვირთვა ვერ მოხერხდა. გთხოვთ, შეამოწმოთ თქვენი კავშირი და ხელახლა სცადოთ.",
         "help": {
-            "title": "TK Export Options",
-            "section_file_vs_link": "TK File or Link",
-            "save_file_description": "TK <bold>Share or Save File</bold> captures the current site data as a CSV or JSON file. You can send the file using email, messaging, or other applications, or save it to your device.",
-            "live_link_description": "TK <bold>Share Link to Data</bold> creates a URL that always returns the latest data. Use this for integrating with scripts, automated workflows, or when you want others to always have access to your most current data. Reset the link to revoke access from previous links.",
-            "section_format": "TK File Format",
-            "csv_description": "TK <bold>CSV</bold> (Comma-Separated Values) files work with spreadsheet applications like Excel or Google Sheets. Best for viewing, sorting, and analyzing your data in a familiar table format.",
-            "json_description": "TK <bold>JSON</bold> (JavaScript Object Notation) is a structured data format. Best for developers or importing into other software systems."
+            "title": "ექსპორტის პარამეტრები",
+            "section_file_vs_link": "ფაილი ან ბმული",
+            "save_file_description": "<bold>ფაილის გაზიარება ან შენახვა</bold> აღრიცხავს საიტის მიმდინარე მონაცემებს CSV ან JSON ფაილის სახით. შეგიძლიათ ფაილი გაგზავნოთ ელექტრონული ფოსტით, შეტყობინებებით ან სხვა აპლიკაციებით, ან შეინახოთ თქვენს მოწყობილობაზე.",
+            "live_link_description": "<bold>მონაცემებთან ბმულის გაზიარება</bold> ქმნის URL-ს, რომელიც ყოველთვის აბრუნებს უახლეს მონაცემებს. გამოიყენეთ ეს სკრიპტებთან, ავტომატიზირებულ სამუშაო პროცესებთან ინტეგრირებისთვის ან როდესაც გსურთ, რომ სხვებს ყოველთვის ჰქონდეთ წვდომა თქვენს უახლეს მონაცემებზე. წინა ბმულებიდან წვდომის გასაუქმებლად გადააყენეთ ბმული.",
+            "section_format": "ფაილის ფორმატი",
+            "csv_description": "<bold>CSV</bold> (მძიმით გამოყოფილი მნიშვნელობები) ფაილები თავსებადია ცხრილების აპლიკაციებთან, როგორიცაა Excel ან Google Sheets. საუკეთესოა თქვენი მონაცემების ნაცნობ ცხრილის ფორმატში სანახავად, დასახარისხებლად და გასაანალიზებლად.",
+            "json_description": "<bold>JSON</bold> (JavaScript ობიექტის აღნიშვნა) სტრუქტურირებული მონაცემების ფორმატია. საუკეთესოა დეველოპერებისთვის ან სხვა პროგრამულ სისტემებში იმპორტისთვის."
         }
     },
     "file_download": {
         "error": {
-            "unsupported_platform": "TK File saving is not supported on this platform.",
-            "no_storage_directory": "TK No storage directory available.",
-            "sharing_unavailable": "TK Sharing is not available on this device.",
-            "save_canceled": "TK Save canceled.",
-            "no_directory_selected": "TK No directory selected.",
-            "save_failed": "TK Failed to save file.",
-            "unknown": "TK An unknown error occurred."
+            "unsupported_platform": "ფაილის შენახვა ამ პლატფორმაზე მხარდაჭერილი არ არის.",
+            "no_storage_directory": "შენახვის დირექტორია მიუწვდომელია.",
+            "sharing_unavailable": "გაზიარება ამ მოწყობილობაზე მიუწვდომელია.",
+            "save_canceled": "შენახვა გაუქმდა.",
+            "no_directory_selected": "დირექტორია არ არის არჩეული.",
+            "save_failed": "ფაილის შენახვა ვერ მოხერხდა.",
+            "unknown": "უცნობი შეცდომა მოხდა."
         }
     }
 }
