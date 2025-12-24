@@ -1282,19 +1282,31 @@ exports[`renders correctly 1`] = `
                                             "width": "100%",
                                           },
                                           {
+                                            "backgroundColor": "#e0e0e0",
                                             "overflow": "hidden",
                                           },
                                         ]
                                       }
                                     >
                                       <View
-                                        onLayout={[Function]}
                                         style={
                                           {
-                                            "flex": 1,
+                                            "height": "100%",
+                                            "left": -9999,
+                                            "position": "absolute",
+                                            "width": "100%",
                                           }
                                         }
-                                      />
+                                      >
+                                        <View
+                                          onLayout={[Function]}
+                                          style={
+                                            {
+                                              "flex": 1,
+                                            }
+                                          }
+                                        />
+                                      </View>
                                     </View>
                                     <View
                                       style={
