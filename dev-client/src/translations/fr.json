@@ -4,15 +4,15 @@
         "next": {
             "title": "Quelle est la prochaine étape ?",
             "subtitle": "Les versions futures incluront :",
-            "bullet_1": "TK Create sites offline",
-            "bullet_2": "TK Edit notes offline"
+            "bullet_1": "Créer des sites hors ligne",
+            "bullet_2": "Modifier les notes hors ligne"
         },
         "version_includes": {
             "title": "Cette version comprend :",
-            "bullet_1": "TK Data export feature for projects, individual sites, and all sites visible to user",
-            "bullet_2": "TK Language picker",
-            "bullet_3": "TK Experimental translations for French and Georgian",
-            "bullet_4": "TK New rate soil experience for easier soil identification"
+            "bullet_1": "Fonctionnalité d'exportation de données pour les projets, les sites individuels et tous les sites visibles par l'utilisateur",
+            "bullet_2": "Sélecteur de langue",
+            "bullet_3": "Traductions expérimentales pour le français et le géorgien",
+            "bullet_4": "Nouvelle expérience de notation des sols pour une identification plus facile des sols"
         },
         "learn_more": "Apprenez-en plus et restez informé :",
         "link_text": "LandPKS de Terraso",
@@ -108,7 +108,7 @@
         "last_updated": "Dernière modification : {{date}} par {{name}}",
         "more_info": "Apprendre encore plus",
         "your_location": "Votre emplacement",
-        "soil_id_prediction": "Identification du sol Top Match",
+        "soil_id_prediction": "Soil ID Top Match",
         "ecological_site_prediction": "Site écologique Top Match",
         "annual_precip_avg": "Précipitations annuelles moyennes",
         "elevation_label": "Élévation",
@@ -123,7 +123,7 @@
             "max_longitude_error": "La longitude doit être au plus {{max}}"
         },
         "soil_id": {
-            "title": "Identification du sol",
+            "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID utilise les données des cartes pédologiques pour calculer les prédictions concernant le sol à cet endroit. Créez un site à cet endroit pour saisir des observations et améliorer les résultats.",
                 "site_US": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance pédologique la plus adaptée à ce site pour en savoir plus sur son environnement et ses autres propriétés.",
@@ -245,9 +245,9 @@
         "tabs": {
             "inputs": "Entrées",
             "team": "Équipe",
-            "export": "TK Export",
             "sites": "Sites",
-            "settings": "Paramètres"
+            "settings": "Paramètres",
+            "export": "Exporter"
         },
         "inputs": {
             "units": {
@@ -504,8 +504,8 @@
         "SITES": "Identification des sols LandPKS"
     },
     "login": {
-        "title": "Identification des sols LandPKS",
-        "subtitle": "Découvrez le potentiel de votre terrain",
+        "title": "LandPKS Soil ID",
+        "subtitle": "Vérifiez sur le terrain vos décisions concernant le sol",
         "from": "depuis"
     },
     "privacy": {
@@ -757,7 +757,7 @@
         "ecological_site_name": "Nom du site écologique",
         "no_matches": "Aucune correspondance",
         "explore_data": "Explorer les données",
-        "soil_id": "Identification du sol",
+        "soil_id": "Soil ID",
         "add_depth_label": "Ajouter de la profondeur",
         "project_settings": {
             "pit_required_label": "Fosse de sol requise",
@@ -1756,7 +1756,7 @@
             "title": "Forme",
             "info": {
                 "title": "Forme de la pente",
-                "description": "La forme de la pente fait référence à la courbe du terrain dans la zone entourant votre point d'observation.\n\nLa forme de la pente est déterminée dans deux directions : <bold> pente descendante </bold> et <bold> pente transversale </bold>.\n\nTout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\": \"{{units}} \"}) dans toutes les directions.\n\nS'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente ? C'est ce qu'on appelle la direction de la </bold> .\n\nLa direction de la pente transversale peut être trouvée en regardant à angle droit (90 degrés) par rapport à la direction de la pente descendante.\n\nSi vous vous éloignez du site tout en restant à la même altitude, il s'agit de la direction de la pente <bold> .\n\nDeuxièmement, déterminez la forme de la pente pour chaque direction.\n\n<Bold> signifie que le terrain présente une pente de plus en plus ascendante à mesure qu'on s'éloigne de son point d'observation le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline , là où elle passe d'une pente raide à une pente plus douce.\n\n<Bold> signifie que le terrain est en pente descendante croissante lorsqu'on s'éloigne d'un point donné dans une direction particulière. Par exemple, la pente descendante est souvent convexe au sommet d'une colline , car elle passe d'une pente douce à une pente plus abrupte.\n\n<Bold> </bold> que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente est continue.",
+                "description": "La forme de la pente fait référence à la courbe du terrain dans la zone entourant votre point d'observation.\n\nLa forme de la pente est déterminée dans deux directions : <bold>pente descendante</bold> et <bold>pente transversale</bold>.\n\nTout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\": \"{{units}} \"}) dans toutes les directions.\n\nS'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente? C'est ce qu'on appelle la direction de la <bold>pente descendante</bold>.\n\nLa direction de la pente transversale peut être trouvée en regardant à angle droit (90 degrés) par rapport à la direction de la pente descendante.\n\nSi vous vous éloignez du site tout en restant à la même altitude, il s'agit de la direction de la <bold>pente transversale</bold>.\n\nDeuxièmement, déterminez la forme de la pente pour chaque direction.\n\n<bold>Concave</bold> signifie que le terrain présente une pente de plus en plus ascendante à mesure qu'on s'éloigne de son point d'observation le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline , là où elle passe d'une pente raide à une pente plus douce.\n\n<bold>Convexe</bold> signifie que le terrain est en pente descendante croissante lorsqu'on s'éloigne d'un point donné dans une direction particulière. Par exemple, la pente descendante est souvent convexe au sommet d'une colline , car elle passe d'une pente douce à une pente plus abrupte.\n\n<bold>Linéaire</bold> signifie que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente est continue.",
                 "concave": "Concave",
                 "convex": "Convexe",
                 "linear": "Linéaire",
@@ -1832,7 +1832,7 @@
         "choose_from_gallery": "Choisissez dans la galerie"
     },
     "info": {
-        "title": "Découvrez le potentiel de votre terrain",
+        "title": "Vérifiez sur le terrain vos décisions concernant le sol",
         "description": "<bold>Découvrez l’utilisation potentielle et la valeur de votre terrain.</bold> Déterminez précisément le type de sol et les autres caractéristiques de votre terrain. Obtenez des informations sur les options de pâturage et d'agriculture, la séquestration du carbone, et plus encore.",
         "description2": "<bold>Trouvez plus d'informations et de guides</bold> à:\n<icon />",
         "link_label": "landpks.terraso.org",
@@ -1840,61 +1840,61 @@
         "get_started": "<bold>Pour commencer, utilisez la carte pour créer un site :</bold>"
     },
     "export": {
-        "menu_title": "TK Data Export",
-        "title_user": "TK Export all your sites",
-        "title_project": "TK Export project sites",
-        "title_site": "TK Export site",
-        "offline_message": "TK You can only export while online.",
-        "save_or_share_file": "TK Share or Save File",
-        "file_description": "TK Share or save the current data as a file.",
-        "csv_file": "TK CSV File",
-        "json_file": "TK JSON File",
-        "share_current_data": "TK Share Link to Data",
-        "link_description": "TK Share a URL that always returns the latest data.",
-        "live_link": "TK Live Link",
-        "reset_live_link": "TK Reset Live Link",
-        "site_export_title": "TK Export Site",
-        "site_export_description": "TK Download or share this site's data.",
-        "site_export_button": "TK Export Site Data",
-        "what_is_in_file": "TK What is in the file?",
-        "loading": "TK Loading export settings...",
-        "downloading": "TK Downloading...",
-        "preparing_file": "TK Preparing {{resourceType}} file for {{name}}",
-        "preparing_file_message": "TK Creating your export file. This may take a moment...",
-        "save_dialog_title": "TK Save LandPKS Data for {{name}}",
-        "save_error_title": "TK Save Failed",
-        "save_error_message": "TK Failed to save file: {{error}}",
-        "share_title": "TK LandPKS Data Export for {{name}}'s Sites",
-        "share_subject": "TK Link to {{name}}'s LandPKS Sites",
-        "share_android_message": "TK Export {{resourceType}} data for {{name}}:",
-        "share_message_user": "TK This link will include all site data for {{name}} including sites from member projects.",
-        "share_message_project": "TK This link will include all site data from the project \"{{name}}\".",
-        "share_message_site": "TK This link will include all data for the site \"{{name}}\".",
-        "reset_links_title": "TK Reset share links?",
-        "reset_links_body": "TK This will break your current share links. Anyone with your previous links will no longer be able to access the files.",
-        "create_token_error_title": "TK Failed to Create Link",
-        "create_token_error_message": "TK Could not create export link. Please check your connection and try again.",
-        "delete_token_error_title": "TK Failed to Reset Link",
-        "delete_token_error_message": "TK Could not reset export link. Please check your connection and try again.",
+        "menu_title": "Exportation de données",
+        "title_user": "Exportez tous vos sites",
+        "title_project": "Sites de projets d'exportation",
+        "title_site": "Site d'exportation",
+        "offline_message": "Vous ne pouvez exporter que si vous êtes en ligne.",
+        "save_or_share_file": "Partager ou enregistrer le fichier",
+        "file_description": "Partagez ou enregistrez les données actuelles dans un fichier.",
+        "csv_file": "Fichier CSV",
+        "json_file": "Fichier JSON",
+        "share_current_data": "Partager le lien vers les données",
+        "link_description": "Partagez une URL qui renvoie toujours les données les plus récentes.",
+        "live_link": "Lien direct",
+        "reset_live_link": "Réinitialiser le lien en direct",
+        "site_export_title": "Site d'exportation",
+        "site_export_description": "Téléchargez ou partagez les données de ce site.",
+        "site_export_button": "Données du site d'exportation",
+        "what_is_in_file": "Que contient le fichier ?",
+        "loading": "Chargement des paramètres d'exportation...",
+        "downloading": "Téléchargement...",
+        "preparing_file": "Préparation du fichier {{resourceType}} pour {{name}}",
+        "preparing_file_message": "Création de votre fichier d'exportation. Cela peut prendre quelques instants...",
+        "save_dialog_title": "Sauvegarder les données LandPKS pour {{name}}",
+        "save_error_title": "Sauvegarde échouée",
+        "save_error_message": "Échec de l'enregistrement du fichier : {{error}}",
+        "share_title": "Exportation des données LandPKS pour les sites de {{name}}",
+        "share_subject": "Lien vers les sites LandPKS de {{name}}",
+        "share_android_message": "Exporter les données {{resourceType}} pour {{name}}:",
+        "share_message_user": "Ce lien inclura toutes les données du site {{name}}, y compris les sites des projets membres.",
+        "share_message_project": "Ce lien inclura toutes les données du site du projet «{{name}}».",
+        "share_message_site": "Ce lien inclura toutes les données du site «{{name}}».",
+        "reset_links_title": "Réinitialiser les liens de partage ?",
+        "reset_links_body": "Cette action désactivera vos liens de partage actuels. Les personnes disposant de vos anciens liens ne pourront plus accéder aux fichiers.",
+        "create_token_error_title": "Impossible de créer le lien",
+        "create_token_error_message": "Impossible de créer le lien d'exportation. Veuillez vérifier votre connexion et réessayer.",
+        "delete_token_error_title": "Échec de la réinitialisation du lien",
+        "delete_token_error_message": "Impossible de réinitialiser le lien d'exportation. Veuillez vérifier votre connexion et réessayer.",
         "help": {
-            "title": "TK Export Options",
-            "section_file_vs_link": "TK File or Link",
-            "save_file_description": "TK <bold>Share or Save File</bold> captures the current site data as a CSV or JSON file. You can send the file using email, messaging, or other applications, or save it to your device.",
-            "live_link_description": "TK <bold>Share Link to Data</bold> creates a URL that always returns the latest data. Use this for integrating with scripts, automated workflows, or when you want others to always have access to your most current data. Reset the link to revoke access from previous links.",
-            "section_format": "TK File Format",
-            "csv_description": "TK <bold>CSV</bold> (Comma-Separated Values) files work with spreadsheet applications like Excel or Google Sheets. Best for viewing, sorting, and analyzing your data in a familiar table format.",
-            "json_description": "TK <bold>JSON</bold> (JavaScript Object Notation) is a structured data format. Best for developers or importing into other software systems."
+            "title": "Options d'exportation",
+            "section_file_vs_link": "Fichier ou lien",
+            "save_file_description": "<bold>Partager ou enregistrer le fichier</bold> capture les données actuelles du site sous forme de fichier CSV ou JSON. Vous pouvez envoyer le fichier par e-mail, messagerie ou autres applications, ou l'enregistrer sur votre appareil.",
+            "live_link_description": "<bold>Partager le lien vers les données</bold> crée une URL qui renvoie systématiquement les données les plus récentes. Utilisez-le pour l'intégration avec des scripts, des flux de travail automatisés ou lorsque vous souhaitez que d'autres personnes aient toujours accès à vos données les plus récentes. Réinitialisez le lien pour révoquer l'accès des liens précédents.",
+            "section_format": "Format de fichier",
+            "csv_description": "Les fichiers <bold>CSV</bold> (valeurs séparées par des virgules) compatibles avec les tableurs comme Excel ou Google Sheets. Ils sont idéaux pour visualiser, trier et analyser vos données dans un format de tableau familier.",
+            "json_description": "<bold>JSON</bold> (notation d'objet JavaScript) est un format de données structurées. Idéal pour les développeurs ou l'importation dans d'autres systèmes logiciels."
         }
     },
     "file_download": {
         "error": {
-            "unsupported_platform": "TK File saving is not supported on this platform.",
-            "no_storage_directory": "TK No storage directory available.",
-            "sharing_unavailable": "TK Sharing is not available on this device.",
-            "save_canceled": "TK Save canceled.",
-            "no_directory_selected": "TK No directory selected.",
-            "save_failed": "TK Failed to save file.",
-            "unknown": "TK An unknown error occurred."
+            "unsupported_platform": "L'enregistrement de fichiers n'est pas pris en charge sur cette plateforme.",
+            "no_storage_directory": "Aucun répertoire de stockage disponible.",
+            "sharing_unavailable": "Le partage n'est pas disponible sur cet appareil.",
+            "save_canceled": "Sauvegarde annulée.",
+            "no_directory_selected": "Aucun répertoire sélectionné.",
+            "save_failed": "Impossible d'enregistrer le fichier.",
+            "unknown": "Une erreur inconnue s'est produite."
         }
     }
 }

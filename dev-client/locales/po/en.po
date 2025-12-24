@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-12-18T22:29:37.060Z\n"
-"PO-Revision-Date: 2025-12-18T22:29:37.061Z\n"
+"POT-Creation-Date: 2025-12-24T01:12:59.635Z\n"
+"PO-Revision-Date: 2025-12-24T01:12:59.636Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -15,13 +15,16 @@ msgid "welcome##version_includes##title"
 msgstr "This version includes:"
 
 msgid "welcome##version_includes##bullet_1"
-msgstr "Global soil identification"
+msgstr "Data export feature for projects, individual sites, and all sites visible to user"
 
 msgid "welcome##version_includes##bullet_2"
-msgstr "Bug fixes for changing soil depths"
+msgstr "Language picker"
 
 msgid "welcome##version_includes##bullet_3"
-msgstr "Bug fixes for Soil ID algorithm"
+msgstr "Experimental translations for French and Georgian"
+
+msgid "welcome##version_includes##bullet_4"
+msgstr "New rate soil experience for easier soil identification"
 
 msgid "welcome##next##title"
 msgstr "What’s next?"
@@ -30,16 +33,10 @@ msgid "welcome##next##subtitle"
 msgstr "Future versions will include:"
 
 msgid "welcome##next##bullet_1"
-msgstr "Offline site creation, soil selection, and notes"
+msgstr "Create sites offline"
 
 msgid "welcome##next##bullet_2"
-msgstr "Project data download"
-
-msgid "welcome##next##bullet_3"
-msgstr "Data visualization enhancements"
-
-msgid "welcome##next##bullet_4"
-msgstr "Additional observations, such as soil limitations"
+msgstr "Edit notes offline"
 
 msgid "welcome##learn_more"
 msgstr "Learn more and stay updated:"
@@ -613,6 +610,9 @@ msgstr "Inputs"
 msgid "projects##tabs##team"
 msgstr "Team"
 
+msgid "projects##tabs##export"
+msgstr "Export"
+
 msgid "projects##tabs##sites"
 msgstr "Sites"
 
@@ -1184,7 +1184,7 @@ msgid "login##title"
 msgstr "LandPKS Soil ID"
 
 msgid "login##subtitle"
-msgstr "Discover your land’s potential"
+msgstr "Ground-truth your soil decisions"
 
 msgid "login##from"
 msgstr "from"
@@ -3754,3 +3754,153 @@ msgstr "Use Camera"
 
 msgid "image##choose_from_gallery"
 msgstr "Choose from Gallery"
+
+msgid "export##menu_title"
+msgstr "Data Export"
+
+msgid "export##title_user"
+msgstr "Export all your sites"
+
+msgid "export##title_project"
+msgstr "Export project sites"
+
+msgid "export##title_site"
+msgstr "Export site"
+
+msgid "export##offline_message"
+msgstr "You can only export while online."
+
+msgid "export##save_or_share_file"
+msgstr "Share or Save File"
+
+msgid "export##file_description"
+msgstr "Share or save the current data as a file."
+
+msgid "export##csv_file"
+msgstr "CSV File"
+
+msgid "export##json_file"
+msgstr "JSON File"
+
+msgid "export##share_current_data"
+msgstr "Share Link to Data"
+
+msgid "export##link_description"
+msgstr "Share a URL that always returns the latest data."
+
+msgid "export##live_link"
+msgstr "Live Link"
+
+msgid "export##reset_live_link"
+msgstr "Reset Live Link"
+
+msgid "export##site_export_title"
+msgstr "Export Site"
+
+msgid "export##site_export_description"
+msgstr "Download or share this site's data."
+
+msgid "export##site_export_button"
+msgstr "Export Site Data"
+
+msgid "export##what_is_in_file"
+msgstr "What is in the file?"
+
+msgid "export##loading"
+msgstr "Loading export settings..."
+
+msgid "export##downloading"
+msgstr "Downloading..."
+
+msgid "export##preparing_file"
+msgstr "Preparing {{resourceType}} file for {{name}}"
+
+msgid "export##preparing_file_message"
+msgstr "Creating your export file. This may take a moment..."
+
+msgid "export##save_dialog_title"
+msgstr "Save LandPKS Data for {{name}}"
+
+msgid "export##save_error_title"
+msgstr "Save Failed"
+
+msgid "export##save_error_message"
+msgstr "Failed to save file: {{error}}"
+
+msgid "export##share_title"
+msgstr "LandPKS Data Export for {{name}}'s Sites"
+
+msgid "export##share_subject"
+msgstr "Link to {{name}}'s LandPKS Sites"
+
+msgid "export##share_android_message"
+msgstr "Export {{resourceType}} data for {{name}}:"
+
+msgid "export##share_message_user"
+msgstr "This link will include all site data for {{name}} including sites from member projects."
+
+msgid "export##share_message_project"
+msgstr "This link will include all site data from the project \"{{name}}\"."
+
+msgid "export##share_message_site"
+msgstr "This link will include all data for the site \"{{name}}\"."
+
+msgid "export##reset_links_title"
+msgstr "Reset share links?"
+
+msgid "export##reset_links_body"
+msgstr "This will break your current share links. Anyone with your previous links will no longer be able to access the files."
+
+msgid "export##create_token_error_title"
+msgstr "Failed to Create Link"
+
+msgid "export##create_token_error_message"
+msgstr "Could not create export link. Please check your connection and try again."
+
+msgid "export##delete_token_error_title"
+msgstr "Failed to Reset Link"
+
+msgid "export##delete_token_error_message"
+msgstr "Could not reset export link. Please check your connection and try again."
+
+msgid "export##help##title"
+msgstr "Export Options"
+
+msgid "export##help##section_file_vs_link"
+msgstr "File or Link"
+
+msgid "export##help##save_file_description"
+msgstr "<bold>Share or Save File</bold> captures the current site data as a CSV or JSON file. You can send the file using email, messaging, or other applications, or save it to your device."
+
+msgid "export##help##live_link_description"
+msgstr "<bold>Share Link to Data</bold> creates a URL that always returns the latest data. Use this for integrating with scripts, automated workflows, or when you want others to always have access to your most current data. Reset the link to revoke access from previous links."
+
+msgid "export##help##section_format"
+msgstr "File Format"
+
+msgid "export##help##csv_description"
+msgstr "<bold>CSV</bold> (Comma-Separated Values) files work with spreadsheet applications like Excel or Google Sheets. Best for viewing, sorting, and analyzing your data in a familiar table format."
+
+msgid "export##help##json_description"
+msgstr "<bold>JSON</bold> (JavaScript Object Notation) is a structured data format. Best for developers or importing into other software systems."
+
+msgid "file_download##error##unsupported_platform"
+msgstr "File saving is not supported on this platform."
+
+msgid "file_download##error##no_storage_directory"
+msgstr "No storage directory available."
+
+msgid "file_download##error##sharing_unavailable"
+msgstr "Sharing is not available on this device."
+
+msgid "file_download##error##save_canceled"
+msgstr "Save canceled."
+
+msgid "file_download##error##no_directory_selected"
+msgstr "No directory selected."
+
+msgid "file_download##error##save_failed"
+msgstr "Failed to save file."
+
+msgid "file_download##error##unknown"
+msgstr "An unknown error occurred."

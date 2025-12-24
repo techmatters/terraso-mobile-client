@@ -4,15 +4,15 @@
         "next": {
             "title": "¿Qué sigue?",
             "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "TK Create sites offline",
-            "bullet_2": "TK Edit notes offline"
+            "bullet_1": "Crear sitios sin conexión",
+            "bullet_2": "Editar notas sin conexión"
         },
         "version_includes": {
             "title": "Esta version incluye:",
-            "bullet_1": "TK Data export feature for projects, individual sites, and all sites visible to user",
-            "bullet_2": "TK Language picker",
-            "bullet_3": "TK Experimental translations for French and Georgian",
-            "bullet_4": "TK New rate soil experience for easier soil identification"
+            "bullet_1": "Función de exportación de datos para proyectos, sitios individuales y todos los sitios visibles para el usuario",
+            "bullet_2": "Selector de idioma",
+            "bullet_3": "Traducciones experimentales para francés y georgiano",
+            "bullet_4": "Nueva experiencia de medición de suelos para una identificación más sencilla"
         },
         "learn_more": "Aprende más y mantente actualizado:",
         "link_text": "LandPKS de Terraso",
@@ -108,7 +108,7 @@
         "last_updated": "Última modificaión: {{date}} por {{name}}",
         "more_info": "Aprende más",
         "your_location": "Tu ubicación",
-        "soil_id_prediction": "Identificación de suelo de mejor coincidencia",
+        "soil_id_prediction": "Soil ID de mejor coincidencia",
         "ecological_site_prediction": "Sitio ecológico de mejor coincidencia",
         "annual_precip_avg": "Precipitación media anual",
         "elevation_label": "Elevación",
@@ -123,7 +123,7 @@
             "max_longitude_error": "La longitud máxima es {{max}}"
         },
         "soil_id": {
-            "title": "Identificación de suelos",
+            "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID utiliza datos de mapas de suelos para calcular predicciones para el suelo en esta ubicación. Crea un sitio en esta ubicación para introducir datos y mejorar los resultados.",
                 "site_US": "LandPKS Soil ID utiliza datos de mapas de suelos y observaciones ingresadas acerca del sitio para calcular las mejores coincidencias para el suelo del sitio. Elige la mejor coincidencia de suelo para esta ubicación para aprender acerca de su sitio ecológico y otras propiedades.",
@@ -138,7 +138,7 @@
                         "temp_location": "Los suelos enumerados son los más probables de encontrarse en esta ubicación según los mapas de suelos del {{soilMapSource}}.\n\nCrea un sitio aquí e ingresa las observaciones recomendadas para mejorar la precisión de las puntuaciones de coincidencia.",
                         "site_region_unknown": "Los suelos enumerados son los más probables de encontrarse en el sitio, según los mapas de suelos para esta ubicación.\n\nIngresa las observaciones recomendadas sobre la pendiente y el suelo para mejorar la precisión de las puntuaciones de coincidencia. Una vez que se ingresen las observaciones, la lista se actualizará automáticamente.",
                         "temp_location_region_unknown": "Los suelos enumerados son los más propensos de encontrarse en esta ubicación según los mapas de suelos.\n\nCrea un sitio aquí e introduce las observaciones recomendadas para mejorar la precisión de las puntuaciones de coincidencia.",
-                        "need_help": "<bold>Need help?</bold>\nConsulta a un experto en suelos para ayudar a interpretar las observaciones y determinar una correspondencia de suelo. Puedes obtener más información sobre las predicciones del mapa de suelos y las correspondencias de identificación de suelos en el sitio web:",
+                        "need_help": "<bold>Need help?</bold>\nConsulta a un experto en suelos para ayudar a interpretar las observaciones y determinar una correspondencia de suelo. Puedes obtener más información sobre las predicciones del mapa de suelos y las correspondencias de Soil ID en el sitio web:",
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
@@ -152,17 +152,17 @@
                 "selector": "Este es el suelo correcto",
                 "selected": "Suelo seleccionado",
                 "rate": {
-                    "fab": "Rate match TK",
-                    "title": "Rate this soil match TK",
-                    "description": "<bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons. TK",
-                    "yes": "Yes, select soil for this site TK",
-                    "no": "No, it's different TK",
-                    "unsure": "Not sure yet TK"
+                    "fab": "Califica coicidencia",
+                    "title": "Califica esta coincidencia de suelo",
+                    "description": "<bold>¿Es este el suelo adecuado?</bold> Utilice su mejor criterio basándose en la descripción del suelo y las comparaciones de propiedades.",
+                    "yes": "Sí, seleccione suelo para este sitio",
+                    "no": "No, es diferente",
+                    "unsure": "Aún no estoy seguro"
                 }
             },
             "site_data": {
                 "title": "Observaciones del sitio",
-                "description": "Mejora los resultados de identificación de suelos ingresando algunas observaciones para este sitio, usando las guías útiles que te acompañarán en el proceso.",
+                "description": "Mejora los resultados de Soil ID ingresando algunas observaciones para este sitio, usando las guías útiles que te acompañarán en el proceso.",
                 "slope": {
                     "title": "Inclinación de pendiente",
                     "add_data": "Añadir pendiente"
@@ -245,9 +245,9 @@
         "tabs": {
             "inputs": "Importes",
             "team": "Equipo",
-            "export": "Exportar",
             "sites": "Sitios",
-            "settings": "Configuraciones"
+            "settings": "Configuraciones",
+            "export": "Exportar"
         },
         "inputs": {
             "units": {
@@ -505,7 +505,7 @@
     },
     "login": {
         "title": "LandPKS Soil ID",
-        "subtitle": "Descrubre el potencial de tu suelo",
+        "subtitle": "Utilice datos reales para tomar decisiones sobre el suelo",
         "from": "de"
     },
     "privacy": {
@@ -757,7 +757,7 @@
         "ecological_site_name": "Nombre del sitio ecológico",
         "no_matches": "No hay coincidencias",
         "explore_data": "Explorar datos",
-        "soil_id": "Identificación del suelo",
+        "soil_id": "Soil ID",
         "add_depth_label": "Añadir profundidad",
         "project_settings": {
             "pit_required_label": "Pozo de tierra requerido",
@@ -1832,7 +1832,7 @@
         "choose_from_gallery": "Biblioteca de fotos"
     },
     "info": {
-        "title": "Descubre el potencial de tu paisaje",
+        "title": "Utilice datos reales para tomar decisiones sobre el suelo",
         "description": "<bold>Descubre el uso y el valor potenciales de tu paisaje.</bold> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más.",
         "description2": "<bold>Encuentra más información y guías</bold> en:\n<icon />",
         "link_label": "landpotential.org",
@@ -1840,61 +1840,61 @@
         "get_started": "<bold>Para empezar, utiliza el mapa para crear un sitio:</bold>"
     },
     "export": {
-        "menu_title": "Exportar Datos",
-        "title_user": "Exportar todos tus sitios",
-        "title_project": "Exportar sitios del proyecto",
-        "title_site": "Exportar sitio",
+        "menu_title": "Exportación de datos",
+        "title_user": "Exporta todos tus sitios",
+        "title_project": "Sitios de proyectos de exportación",
+        "title_site": "Sitio de exportación",
         "offline_message": "Solo puedes exportar mientras estés en línea.",
-        "save_or_share_file": "Compartir o Guardar Archivo",
-        "file_description": "Comparte o guarda los datos actuales como archivo.",
+        "save_or_share_file": "Compartir o guardar archivo",
+        "file_description": "Compartir o guardar los datos actuales como un archivo.",
         "csv_file": "Archivo CSV",
         "json_file": "Archivo JSON",
-        "share_current_data": "Compartir Enlace a Datos",
-        "link_description": "Comparte una URL que siempre devuelve los datos más recientes.",
-        "live_link": "Enlace en Vivo",
-        "reset_live_link": "Restablecer Enlace en Vivo",
-        "site_export_title": "Exportar Sitio",
-        "site_export_description": "Descargar o compartir los datos de este sitio.",
-        "site_export_button": "Exportar Datos del Sitio",
+        "share_current_data": "Compartir enlace a datos",
+        "link_description": "Comparte una URL que siempre devuelva los datos más recientes.",
+        "live_link": "Enlace en vivo",
+        "reset_live_link": "Restablecer enlace en vivo",
+        "site_export_title": "Sitio de exportación",
+        "site_export_description": "Descargue o comparta los datos de este sitio.",
+        "site_export_button": "Exportar datos del sitio",
         "what_is_in_file": "¿Qué hay en el archivo?",
         "loading": "Cargando configuración de exportación...",
         "downloading": "Descargando...",
-        "preparing_file": "Preparando archivo de {{resourceType}} para {{name}}",
-        "preparing_file_message": "Creando tu archivo de exportación. Esto puede tomar un momento...",
-        "save_dialog_title": "Guardar Datos LandPKS para {{name}}",
-        "save_error_title": "Error al Guardar",
-        "save_error_message": "Error al guardar el archivo: {{error}}",
-        "share_message_user": "Este enlace incluirá todos los datos de sitios para {{name}} incluyendo sitios de proyectos miembros.",
-        "share_message_project": "Este enlace incluirá todos los datos de sitios del proyecto \"{{name}}\".",
-        "share_message_site": "Este enlace incluirá todos los datos del sitio \"{{name}}\".",
-        "share_title": "Exportación de Datos LandPKS",
-        "share_subject": "Enlace de Exportación de Datos LandPKS",
+        "preparing_file": "Preparando el archivo {{resourceType}} para {{name}}",
+        "preparing_file_message": "Creando tu archivo de exportación. Esto puede tardar un momento...",
+        "save_dialog_title": "Guardar datos de LandPKS para {{name}}",
+        "save_error_title": "Error al guardar",
+        "save_error_message": "No se pudo guardar el archivo: {{error}}",
+        "share_title": "Exportación de datos de LandPKS para los sitios de {{name}}",
+        "share_subject": "Enlace a los sitios LandPKS de {{name}}",
         "share_android_message": "Exportar datos de {{resourceType}} para {{name}}:",
-        "reset_links_title": "¿Restablecer enlaces de compartir?",
-        "reset_links_body": "Esto romperá tus enlaces de compartir actuales. Cualquiera con tus enlaces anteriores ya no podrá acceder a los archivos.",
-        "create_token_error_title": "Error al Crear Enlace",
-        "create_token_error_message": "No se pudo crear el enlace de exportación. Por favor verifica tu conexión e intenta de nuevo.",
-        "delete_token_error_title": "Error al Restablecer Enlace",
-        "delete_token_error_message": "No se pudo restablecer el enlace de exportación. Por favor verifica tu conexión e intenta de nuevo.",
+        "share_message_user": "Este enlace incluirá todos los datos del sitio {{name}}, incluidos los sitios de los proyectos miembros.",
+        "share_message_project": "Este enlace incluirá todos los datos del sitio del proyecto \"{{name}}\".",
+        "share_message_site": "Este enlace incluirá todos los datos del sitio \"{{name}}\".",
+        "reset_links_title": "¿Restablecer enlaces para compartir?",
+        "reset_links_body": "Esto romperá tus enlaces para compartir. Quienes tengan tus enlaces anteriores ya no podrán acceder a los archivos.",
+        "create_token_error_title": "No se pudo crear el enlace",
+        "create_token_error_message": "No se pudo crear el enlace de exportación. Verifique su conexión y vuelva a intentarlo.",
+        "delete_token_error_title": "No se pudo restablecer el enlace",
+        "delete_token_error_message": "No se pudo restablecer el enlace de exportación. Verifique su conexión y vuelva a intentarlo.",
         "help": {
-            "title": "Opciones de Exportación",
-            "section_file_vs_link": "Archivo o Enlace",
-            "save_file_description": "<bold>Compartir o Guardar Archivo</bold> captura los datos actuales del sitio como archivo CSV o JSON. Puedes enviar el archivo usando correo electrónico, mensajería u otras aplicaciones, o guardarlo en tu dispositivo.",
-            "live_link_description": "<bold>Compartir Enlace a Datos</bold> crea una URL que siempre devuelve los datos más recientes. Úsalo para integrar con scripts, flujos de trabajo automatizados, o cuando quieras que otros siempre tengan acceso a los datos más actuales. Restablece el enlace para revocar el acceso de enlaces anteriores.",
-            "section_format": "Formato de Archivo",
-            "csv_description": "<bold>CSV</bold> (Valores Separados por Comas) funciona con aplicaciones de hojas de cálculo como Excel o Google Sheets. Ideal para ver, ordenar y analizar tus datos en un formato de tabla familiar.",
-            "json_description": "<bold>JSON</bold> (Notación de Objetos JavaScript) es un formato de datos estructurado. Ideal para desarrolladores o para importar en otros sistemas de software."
+            "title": "Opciones de exportación",
+            "section_file_vs_link": "Archivo o enlace",
+            "save_file_description": "<bold>Compartir o guardar archivo</bold> captura los datos actuales del sitio como un archivo CSV o JSON. Puedes enviar el archivo por correo electrónico, mensajería u otras aplicaciones, o guardarlo en tu dispositivo.",
+            "live_link_description": "<bold>Compartir enlace a datos</bold> crea una URL que siempre devuelve los datos más recientes. Úselo para integrar scripts, flujos de trabajo automatizados o cuando desee que otros usuarios siempre tengan acceso a sus datos más recientes. Restablezca el enlace para revocar el acceso de enlaces anteriores.",
+            "section_format": "Formato de archivo",
+            "csv_description": "Los archivos <bold>CSV</bold> (valores separados por comas) funcionan con aplicaciones de hojas de cálculo como Excel o Hojas de cálculo de Google. Son ideales para ver, ordenar y analizar datos en un formato de tabla familiar.",
+            "json_description": "<bold>JSON</bold> (notación de objetos JavaScript) es un formato de datos estructurado. Ideal para desarrolladores o para importar a otros sistemas de software."
         }
     },
     "file_download": {
         "error": {
-            "unsupported_platform": "El guardado de archivos no es compatible con esta plataforma.",
-            "no_storage_directory": "No hay directorio de almacenamiento disponible.",
+            "unsupported_platform": "Esta plataforma no admite guardar archivos.",
+            "no_storage_directory": "No hay ningún directorio de almacenamiento disponible.",
             "sharing_unavailable": "Compartir no está disponible en este dispositivo.",
-            "save_canceled": "Guardado cancelado.",
-            "no_directory_selected": "No se seleccionó ningún directorio.",
-            "save_failed": "Error al guardar el archivo.",
-            "unknown": "Ocurrió un error desconocido."
+            "save_canceled": "Guardar cancelado.",
+            "no_directory_selected": "No hay ningún directorio seleccionado",
+            "save_failed": "No se pudo guardar el archivo.",
+            "unknown": "Se produjo un error desconocido."
         }
     }
 }

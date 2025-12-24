@@ -382,11 +382,12 @@ msgstr "Налаштування"
 
 #: 
 msgid "login##title"
-msgstr "Ідентифікатор ґрунту LandPKS"
+msgstr "LandPKS Soil ID"
 
 #: 
+#, fuzzy
 msgid "login##subtitle"
-msgstr "Дослідіть потенціал вашої землі"
+msgstr "Використовуйте правду про грунт для своїх рішень щодо грунту"
 
 #: 
 msgid "login##from"
@@ -806,28 +807,29 @@ msgid "welcome##version_includes##title"
 msgstr "Ця версія включає:"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Глобальна ідентифікація ґрунтів"
+msgstr "Функція експорту даних для проектів, окремих сайтів та всіх сайтів, видимих ​​користувачеві"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Виправлення помилок зі зміною глибини ґрунту"
+msgstr "Вибір мови"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Виправлення помилок для алгоритму ідентифікації ґрунту"
+msgstr "Експериментальні переклади з французької та грузинської мов"
 
 #: 
+#, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "Створення ділянка офлайн, вибір ґрунту та нотатки"
+msgstr "Створюйте сайти офлайн"
 
 #: 
+#, fuzzy
 msgid "welcome##next##bullet_2"
-msgstr "Завантаження даних проєкту"
-
-#: 
-msgid "welcome##next##bullet_3"
-msgstr "Покращення візуалізації даних"
+msgstr "Редагувати нотатки офлайн"
 
 #: 
 msgid "welcome##learn_more"
@@ -1639,7 +1641,7 @@ msgstr "Щоб використовувати {{feature}}, надайте LandPK
 
 #: 
 msgid "permissions##gallery_title"
-msgstr "Ідентифікатору ґрунту LandPKS потрібен доступ до вашої фотогалереї"
+msgstr "LandPKS Soil ID потрібен доступ до вашої фотогалереї"
 
 #: 
 msgid "permissions##gallery_body"
@@ -1647,7 +1649,7 @@ msgstr "Щоб використовувати {{feature}}, надайте LandPK
 
 #: 
 msgid "permissions##location_title"
-msgstr "Ідентифікатору ґрунту LandPKS потрібен доступ до вашого місцезнаходження"
+msgstr "LandPKS Soil ID"
 
 #: 
 msgid "permissions##location_body"
@@ -1746,6 +1748,7 @@ msgid "sign_out##confirm_body"
 msgstr "Ви впевнені, що хочете вийти?"
 
 #: 
+#, fuzzy
 msgid "sign_out##confirm_action"
 msgstr "Вийти"
 
@@ -1807,7 +1810,7 @@ msgstr "Переглянути дані"
 
 #: 
 msgid "soil##soil_id"
-msgstr "Ідентифікатор ґрунту"
+msgstr "Soil ID"
 
 #: 
 msgid "soil##add_depth_label"
@@ -1950,7 +1953,6 @@ msgid "soil##soil_preset##CUSTOM"
 msgstr "Користувацька"
 
 #: 
-#, fuzzy
 msgid "soil##depth##add_title"
 msgstr "Додати глибину"
 
@@ -1995,7 +1997,6 @@ msgid "soil##depth##update_modal##title"
 msgstr "Змінити глибину?"
 
 #: 
-#, fuzzy
 msgid "soil##depth##update_modal##body"
 msgstr "Спостереження за ґрунтовими розрізами, введені для цієї глибини, будуть видалені. Цю дію не можна скасувати."
 
@@ -2340,7 +2341,6 @@ msgid "slope##steepness##manual_label"
 msgstr "Вручнк"
 
 #: 
-#, fuzzy
 msgid "slope##steepness##manual_help"
 msgstr "Введіть відсоток або градус крутизни:"
 
@@ -2511,7 +2511,7 @@ msgstr "Виберіть з галереї"
 #: 
 #, fuzzy
 msgid "info##title"
-msgstr "Дослідіть потенціал вашої землі"
+msgstr "Використовуйте правду про грунт для своїх рішень щодо грунту"
 
 #: 
 msgid "info##description"
@@ -2540,7 +2540,7 @@ msgstr "Остання зміна (найменш давня)"
 
 #: 
 msgid "screens##SITES"
-msgstr "Ідентифікатор ґрунту LandPKS"
+msgstr "LandPKS Soil ID"
 
 #: 
 msgid "soil##collection_method_summary##soilTexture"
@@ -4920,10 +4920,6 @@ msgid "slope##info##data_region_text_global_or_unknown"
 msgstr "Характеристики схилів допомагають визначити можливості ерозії ґрунту, його здатність утримувати воду тощо."
 
 #: 
-msgid "welcome##next##bullet_4"
-msgstr "Додаткові спостереження, такі як обмеження ґрунту"
-
-#: 
 msgid "general##privacy_policy_link_url"
 msgstr "https://techmatters.org/privacy-policy/"
 
@@ -4940,41 +4936,35 @@ msgid "general##terms_of_service_link_text"
 msgstr "Умови надання послуг"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##fab"
-msgstr "Rate match TK"
+msgstr "Збіг оцінок"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##title"
-msgstr "Rate this soil match TK"
+msgstr "Оцініть цей збіг ґрунтів"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##description"
-msgstr "<bold>Is this the right soil?</bold> Use your best judgement based on the soil description and property comparisons. TK"
+msgstr "<bold>Це правильний ґрунт?</bold> Використовуйте власне судження, ґрунтуючись на описі ґрунту та порівнянні властивостей."
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##yes"
-msgstr "Yes, select soil for this site TK"
+msgstr "Так, виберіть ґрунт для цієї ділянки"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##no"
-msgstr "No, it's different TK"
+msgstr "Ні, це інакше."
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##unsure"
-msgstr "Not sure yet TK"
+msgstr "Ще не впевнений"
 
 #: 
-#, fuzzy
 msgid "soil##depth##edit_title"
 msgstr "Параметри глибини (щодо розрізу грунту)"
 
 #: 
+#, fuzzy
 msgid "settings##select_language"
 msgstr "Мова: {{language}}"
 
@@ -4987,4 +4977,264 @@ msgstr "Не вдається вийти"
 #, fuzzy
 msgid "sign_out##blocked_body"
 msgstr "У вас є несинхронізовані зміни, які потрібно завантажити перед виходом. Підключіться до Інтернету та зачекайте, поки ваші дані синхронізуються."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_4"
+msgstr "Новий інтерфейс оцінки ґрунту для легшої ідентифікації ґрунту"
+
+#: 
+#, fuzzy
+msgid "projects##tabs##export"
+msgstr "Експорт"
+
+#: 
+#, fuzzy
+msgid "export##menu_title"
+msgstr "Експорт даних"
+
+#: 
+#, fuzzy
+msgid "export##title_user"
+msgstr "Експортуйте всі свої сайти"
+
+#: 
+#, fuzzy
+msgid "export##title_project"
+msgstr "Експорт сайтів проектів"
+
+#: 
+#, fuzzy
+msgid "export##title_site"
+msgstr "Експорт сайту"
+
+#: 
+#, fuzzy
+msgid "export##offline_message"
+msgstr "Експортувати можна лише онлайн."
+
+#: 
+#, fuzzy
+msgid "export##save_or_share_file"
+msgstr "Поділитися або зберегти файл"
+
+#: 
+#, fuzzy
+msgid "export##file_description"
+msgstr "Надішліть або збережіть поточні дані як файл."
+
+#: 
+#, fuzzy
+msgid "export##csv_file"
+msgstr "CSV-файл"
+
+#: 
+#, fuzzy
+msgid "export##json_file"
+msgstr "JSON-файл"
+
+#: 
+#, fuzzy
+msgid "export##share_current_data"
+msgstr "Поділитися посиланням на дані"
+
+#: 
+#, fuzzy
+msgid "export##link_description"
+msgstr "Поділіться URL-адресою, яка завжди повертає найновіші дані."
+
+#: 
+#, fuzzy
+msgid "export##live_link"
+msgstr "Живе посилання"
+
+#: 
+#, fuzzy
+msgid "export##reset_live_link"
+msgstr "Скинути посилання на пряму трансляцію"
+
+#: 
+#, fuzzy
+msgid "export##site_export_title"
+msgstr "Експорт сайту"
+
+#: 
+#, fuzzy
+msgid "export##site_export_description"
+msgstr "Завантажте або поділіться даними цього сайту."
+
+#: 
+#, fuzzy
+msgid "export##site_export_button"
+msgstr "Експорт даних сайту"
+
+#: 
+#, fuzzy
+msgid "export##what_is_in_file"
+msgstr "Що знаходиться у файлі?"
+
+#: 
+#, fuzzy
+msgid "export##loading"
+msgstr "Завантаження налаштувань експорту..."
+
+#: 
+#, fuzzy
+msgid "export##downloading"
+msgstr "Завантаження..."
+
+#: 
+#, fuzzy
+msgid "export##preparing_file"
+msgstr "Підготовка файлу {{resourceType}} для {{name}}"
+
+#: 
+#, fuzzy
+msgid "export##preparing_file_message"
+msgstr "Створення файлу експорту. Це може зайняти деякий час..."
+
+#: 
+#, fuzzy
+msgid "export##save_dialog_title"
+msgstr "Зберегти дані LandPKS для {{name}}"
+
+#: 
+#, fuzzy
+msgid "export##save_error_title"
+msgstr "Збереження не вдалося"
+
+#: 
+#, fuzzy
+msgid "export##save_error_message"
+msgstr "Не вдалося зберегти файл: {{error}}"
+
+#: 
+#, fuzzy
+msgid "export##share_title"
+msgstr "Експорт даних LandPKS для сайтів {{name}}"
+
+#: 
+#, fuzzy
+msgid "export##share_subject"
+msgstr "Посилання на сайти LandPKS користувача {{name}}"
+
+#: 
+#, fuzzy
+msgid "export##share_android_message"
+msgstr "Експорт даних {{resourceType}} для {{name}}:"
+
+#: 
+#, fuzzy
+msgid "export##share_message_user"
+msgstr "Це посилання міститиме всі дані сайту для {{name}}, включаючи сайти з проектів учасників."
+
+#: 
+#, fuzzy
+msgid "export##share_message_project"
+msgstr "Це посилання міститиме всі дані сайту з проєкту «{{name}}»."
+
+#: 
+#, fuzzy
+msgid "export##share_message_site"
+msgstr "Це посилання міститиме всі дані для сайту \"{{name}}\"."
+
+#: 
+#, fuzzy
+msgid "export##reset_links_title"
+msgstr "Скинути посилання для спільного доступу?"
+
+#: 
+#, fuzzy
+msgid "export##reset_links_body"
+msgstr "Це призведе до скасування ваших поточних посилань для спільного доступу. Будь-хто, хто мав ваші попередні посилання, більше не зможе отримати доступ до файлів."
+
+#: 
+#, fuzzy
+msgid "export##create_token_error_title"
+msgstr "Не вдалося створити посилання"
+
+#: 
+#, fuzzy
+msgid "export##create_token_error_message"
+msgstr "Не вдалося створити посилання для експорту. Перевірте з’єднання та повторіть спробу."
+
+#: 
+#, fuzzy
+msgid "export##delete_token_error_title"
+msgstr "Не вдалося скинути посилання"
+
+#: 
+#, fuzzy
+msgid "export##delete_token_error_message"
+msgstr "Не вдалося скинути посилання для експорту. Перевірте з’єднання та повторіть спробу."
+
+#: 
+#, fuzzy
+msgid "export##help##title"
+msgstr "Параметри експорту"
+
+#: 
+#, fuzzy
+msgid "export##help##section_file_vs_link"
+msgstr "Файл або посилання"
+
+#: 
+#, fuzzy
+msgid "export##help##save_file_description"
+msgstr "<bold>Поділитися або зберегти файл</bold> фіксує поточні дані сайту у форматі CSV або JSON. Ви можете надіслати файл електронною поштою, через обмін повідомленнями чи інші програми, або зберегти його на своєму пристрої."
+
+#: 
+#, fuzzy
+msgid "export##help##live_link_description"
+msgstr "<bold>Посилання на дані</bold> створює URL-адресу, яка завжди повертає найновіші дані. Використовуйте це для інтеграції зі скриптами, автоматизованими робочими процесами або коли ви хочете, щоб інші завжди мали доступ до ваших найактуальніших даних. Скиньте посилання, щоб скасувати доступ для попередніх посилань."
+
+#: 
+#, fuzzy
+msgid "export##help##section_format"
+msgstr "Формат файлу"
+
+#: 
+#, fuzzy
+msgid "export##help##csv_description"
+msgstr "<bold>CSV</bold> (значення, розділені комами) працюють із програмами для роботи з електронними таблицями, такими як Excel або Google Таблиці. Найкраще підходять для перегляду, сортування та аналізу даних у звичному табличному форматі."
+
+#: 
+#, fuzzy
+msgid "export##help##json_description"
+msgstr "<bold>JSON</bold> (Нотація об’єктів JavaScript) – це структурований формат даних. Найкраще підходить для розробників або імпорту в інші програмні системи."
+
+#: 
+#, fuzzy
+msgid "file_download##error##unsupported_platform"
+msgstr "Збереження файлів не підтримується на цій платформі."
+
+#: 
+#, fuzzy
+msgid "file_download##error##no_storage_directory"
+msgstr "Немає доступного каталогу для зберігання."
+
+#: 
+#, fuzzy
+msgid "file_download##error##sharing_unavailable"
+msgstr "Спільний доступ недоступний на цьому пристрої."
+
+#: 
+#, fuzzy
+msgid "file_download##error##save_canceled"
+msgstr "Збереження скасовано."
+
+#: 
+#, fuzzy
+msgid "file_download##error##no_directory_selected"
+msgstr "Не вибрано жодного каталогу."
+
+#: 
+#, fuzzy
+msgid "file_download##error##save_failed"
+msgstr "Не вдалося зберегти файл."
+
+#: 
+#, fuzzy
+msgid "file_download##error##unknown"
+msgstr "Сталася невідома помилка."
 
