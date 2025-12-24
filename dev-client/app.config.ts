@@ -176,6 +176,7 @@ const defaultConfig: ExpoConfig = {
         ios: {},
         android: {
           gradleVersion: '8.14.3',
+          minSdkVersion: 26, // Required for PostHog session replay
         },
       },
     ],
