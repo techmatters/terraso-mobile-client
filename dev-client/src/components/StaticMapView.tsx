@@ -15,8 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo, useRef, useState} from 'react';
-import {Image, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {
+  Image,
+  Platform,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import Mapbox, {type Camera, type MapView} from '@rnmapbox/maps';
 
@@ -29,6 +36,44 @@ import {
   LONGITUDE_MAX,
   LONGITUDE_MIN,
 } from 'terraso-mobile-client/constants';
+
+// Queue system for Android - only render one MapView at a time.
+// On Android, multiple simultaneous off-screen MapViews don't reliably fire callbacks.
+// iOS doesn't need this (isMyTurn starts true, skipping the queue entirely).
+type QueueEntry = {callback: () => void; cancelled: boolean};
+const mapLoadQueue: QueueEntry[] = [];
+let isProcessingQueue = false;
+
+const enqueueMapLoad = (callback: () => void): QueueEntry => {
+  const entry: QueueEntry = {callback, cancelled: false};
+  mapLoadQueue.push(entry);
+  processQueue();
+  return entry;
+};
+
+const processQueue = () => {
+  if (isProcessingQueue) {
+    return;
+  }
+
+  while (mapLoadQueue.length > 0) {
+    const next = mapLoadQueue.shift()!;
+
+    // Skip cancelled entries (component unmounted before its turn)
+    if (next.cancelled) {
+      continue;
+    }
+
+    isProcessingQueue = true;
+    next.callback();
+    return;
+  }
+};
+
+const markMapLoadComplete = () => {
+  isProcessingQueue = false;
+  processQueue();
+};
 
 // Extract Position type from Camera's fitBounds method (Position is [longitude, latitude])
 type Position = Parameters<Camera['fitBounds']>[0];
@@ -103,6 +148,8 @@ export const StaticMapView = ({
 }: Props) => {
   const mapRef = useRef<MapView>(null);
   const [snapshotUri, setSnapshotUri] = useState<string | null>(null);
+  // On Android, wait for queue turn before rendering MapView
+  const [isMyTurn, setIsMyTurn] = useState(Platform.OS !== 'android');
 
   const cameraSettings = useMemo(
     () =>
@@ -115,10 +162,46 @@ export const StaticMapView = ({
     [coords, zoomLevel],
   );
 
+  // Track our queue entry to cancel it on unmount
+  const queueEntryRef = useRef<QueueEntry | null>(null);
+  // Track current state in refs for cleanup (closures have stale values)
+  const isMyTurnRef = useRef(isMyTurn);
+  const snapshotUriRef = useRef(snapshotUri);
+  isMyTurnRef.current = isMyTurn;
+  snapshotUriRef.current = snapshotUri;
+
+  // On Android, enqueue this component to wait its turn
+  useEffect(() => {
+    if (Platform.OS === 'android' && !snapshotUri && !isMyTurn) {
+      queueEntryRef.current = enqueueMapLoad(() => {
+        setIsMyTurn(true);
+        isMyTurnRef.current = true;
+      });
+    }
+  }, [snapshotUri, isMyTurn]);
+
+  // Cleanup on unmount only
+  useEffect(() => {
+    return () => {
+      if (Platform.OS === 'android') {
+        if (queueEntryRef.current && !queueEntryRef.current.cancelled) {
+          queueEntryRef.current.cancelled = true;
+        }
+        if (isMyTurnRef.current && !snapshotUriRef.current) {
+          markMapLoadComplete();
+        }
+      }
+    };
+  }, []);
+
   // Capture the map as an image once it's loaded to avoid Android layer issues.
+  // Using onDidFinishLoadingMap instead of onMapIdle for more reliable firing.
   // Using false returns base64 data URI (no temp files written to disk).
-  const onMapIdle = useCallback(async () => {
+  const onDidFinishLoadingMap = useCallback(async () => {
     if (!mapRef.current) {
+      if (Platform.OS === 'android') {
+        markMapLoadComplete();
+      }
       return;
     }
     try {
@@ -127,11 +210,16 @@ export const StaticMapView = ({
     } catch {
       // Ignore snapshot errors
     }
+    if (Platform.OS === 'android') {
+      markMapLoadComplete();
+    }
   }, []);
+
+  const shouldRenderMap = !snapshotUri && isMyTurn;
 
   return (
     <View style={[style, styles.container]}>
-      {!snapshotUri && (
+      {shouldRenderMap && (
         <View style={styles.offscreen}>
           <Mapbox.MapView
             ref={mapRef}
@@ -146,7 +234,7 @@ export const StaticMapView = ({
             rotateEnabled={false}
             attributionEnabled={false}
             pointerEvents="none"
-            onMapIdle={onMapIdle}>
+            onDidFinishLoadingMap={onDidFinishLoadingMap}>
             <Mapbox.Camera defaultSettings={cameraSettings} />
           </Mapbox.MapView>
         </View>
