@@ -131,7 +131,27 @@ export const StaticMapView = ({
 
   return (
     <View style={[style, styles.container]}>
-      {snapshotUri ? (
+      {!snapshotUri && (
+        <View style={styles.offscreen}>
+          <Mapbox.MapView
+            ref={mapRef}
+            localizeLabels={true}
+            style={styles.fill}
+            styleURL={Mapbox.StyleURL.Satellite}
+            scaleBarEnabled={false}
+            logoEnabled={false}
+            zoomEnabled={false}
+            scrollEnabled={false}
+            pitchEnabled={false}
+            rotateEnabled={false}
+            attributionEnabled={false}
+            pointerEvents="none"
+            onMapIdle={onMapIdle}>
+            <Mapbox.Camera defaultSettings={cameraSettings} />
+          </Mapbox.MapView>
+        </View>
+      )}
+      {snapshotUri && (
         <>
           <Image source={{uri: snapshotUri}} style={styles.fill} />
           {displayCenterMarker && (
@@ -140,23 +160,6 @@ export const StaticMapView = ({
             </View>
           )}
         </>
-      ) : (
-        <Mapbox.MapView
-          ref={mapRef}
-          localizeLabels={true}
-          style={styles.fill}
-          styleURL={Mapbox.StyleURL.Satellite}
-          scaleBarEnabled={false}
-          logoEnabled={false}
-          zoomEnabled={false}
-          scrollEnabled={false}
-          pitchEnabled={false}
-          rotateEnabled={false}
-          attributionEnabled={false}
-          pointerEvents="none"
-          onMapIdle={onMapIdle}>
-          <Mapbox.Camera defaultSettings={cameraSettings} />
-        </Mapbox.MapView>
       )}
     </View>
   );
@@ -165,9 +168,16 @@ export const StaticMapView = ({
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
+    backgroundColor: '#e0e0e0',
   },
   fill: {
     flex: 1,
+  },
+  offscreen: {
+    position: 'absolute',
+    left: -9999,
+    width: '100%',
+    height: '100%',
   },
   markerContainer: {
     position: 'absolute',
