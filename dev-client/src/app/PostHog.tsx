@@ -15,23 +15,50 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ReactNode, useContext, useEffect, useRef} from 'react';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {AppState, Platform} from 'react-native';
 
 import Constants from 'expo-constants';
 
-import {NavigationContainerRef} from '@react-navigation/native';
+import {NavigationContainerRef, useFocusEffect} from '@react-navigation/native';
 import {PostHogProvider, usePostHog} from 'posthog-react-native';
 
 import {setPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   children: ReactNode;
   navRef: NavigationContainerRef<any>;
 };
+
+// ---- Feature Flag Polling Context ----
+// Provides a global polling mechanism that can be triggered from anywhere
+// (e.g., screen focus, app foreground)
+// Also provides access to banner message payload
+
+type FeatureFlagPollingContextType = {
+  trigger: () => void;
+  bannerMessagePayload: any;
+};
+
+const FeatureFlagPollingContext =
+  createContext<FeatureFlagPollingContextType | null>(null);
+
+export function useFeatureFlagPollingContext() {
+  const context = useContext(FeatureFlagPollingContext);
+  return context;
+}
 
 // ---- User identification for PostHog ----
 function UserIdentification() {
@@ -163,6 +190,104 @@ function ConnectivityTracker() {
   return null;
 }
 
+// ---- Global Feature Flag Poller ----
+// Polls all registered feature flags every 1s for 30s when triggered
+// Provides both banner_message and session_recording flag updates
+
+type GlobalFeatureFlagPollerProps = {
+  onBannerMessageChange: (payload: any) => void;
+  onSessionRecordingChange: (payload: any) => void;
+  triggerRef: React.MutableRefObject<(() => void) | null>;
+};
+
+function GlobalFeatureFlagPoller({
+  onBannerMessageChange,
+  onSessionRecordingChange,
+  triggerRef,
+}: GlobalFeatureFlagPollerProps) {
+  const posthog = usePostHog();
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Track previous flag values to detect changes
+  const prevFlagValues = useRef<Map<string, any>>(new Map());
+
+  // Expose trigger function via ref
+  useEffect(() => {
+    triggerRef.current = () => {
+      console.log('[GlobalFeatureFlagPoller] Triggering new polling cycle');
+      posthog?.reloadFeatureFlags();
+      setRefreshKey(prev => prev + 1);
+    };
+  }, [posthog, triggerRef]);
+
+  // Auto-trigger on mount
+  useEffect(() => {
+    triggerRef.current?.();
+  }, [triggerRef]);
+
+  // Trigger polling when app comes to foreground
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', state => {
+      if (state === 'active') {
+        console.log('[GlobalFeatureFlagPoller] App came to foreground');
+        triggerRef.current?.();
+      }
+    });
+    return () => sub.remove();
+  }, [triggerRef]);
+
+  useEffect(() => {
+    if (!posthog) {
+      return;
+    }
+
+    const checkForUpdates = () => {
+      // Check banner_message flag
+      const bannerPayload = posthog.getFeatureFlagPayload('banner_message');
+      const prevBannerValue = prevFlagValues.current.get('banner_message');
+      if (JSON.stringify(prevBannerValue) !== JSON.stringify(bannerPayload)) {
+        console.log('[GlobalFeatureFlagPoller] banner_message changed:', {
+          prev: prevBannerValue,
+          new: bannerPayload,
+        });
+        prevFlagValues.current.set('banner_message', bannerPayload);
+        onBannerMessageChange(bannerPayload);
+      }
+
+      // Check session_recording flag
+      const sessionPayload = posthog.getFeatureFlagPayload('session_recording');
+      const prevSessionValue = prevFlagValues.current.get('session_recording');
+      if (JSON.stringify(prevSessionValue) !== JSON.stringify(sessionPayload)) {
+        console.log('[GlobalFeatureFlagPoller] session_recording changed:', {
+          prev: prevSessionValue,
+          new: sessionPayload,
+        });
+        prevFlagValues.current.set('session_recording', sessionPayload);
+        onSessionRecordingChange(sessionPayload);
+      }
+    };
+
+    // Check immediately
+    checkForUpdates();
+
+    // Poll every 1 second for 30 seconds
+    const pollInterval = setInterval(checkForUpdates, 1000);
+
+    // Stop polling after 30 seconds
+    const stopTimeout = setTimeout(() => {
+      clearInterval(pollInterval);
+      console.log('[GlobalFeatureFlagPoller] Stopped polling after 30s');
+    }, 30000);
+
+    return () => {
+      clearInterval(pollInterval);
+      clearTimeout(stopTimeout);
+    };
+  }, [refreshKey, posthog, onBannerMessageChange, onSessionRecordingChange]);
+
+  return null;
+}
+
 // ---- Manual screen tracking using the NavigationContainer ref ----
 function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
   const posthog = usePostHog();
@@ -196,25 +321,115 @@ function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
   return null;
 }
 
+// ---- Session Recording Configuration ----
+// Manages session recording configuration from PostHog feature flags
+// Persists config to survive app restarts
+
+const SESSION_RECORDING_CONFIG_KEY = 'posthog.session_recording_config';
+
+type SessionRecordingConfig = {
+  enabled: boolean;
+  maskAllTextInputs?: boolean;
+  maskAllImages?: boolean;
+  captureLog?: boolean;
+};
+
+// Helper to get persisted session recording config
+export function getSessionRecordingConfig(): SessionRecordingConfig {
+  const stored = kvStorage.getObject<SessionRecordingConfig>(
+    SESSION_RECORDING_CONFIG_KEY,
+  );
+  return (
+    stored ?? {
+      enabled: false,
+      maskAllTextInputs: true,
+      maskAllImages: true,
+      captureLog: true,
+    }
+  );
+}
+
 export function PostHog({children, navRef}: Props) {
   const enabled =
     !!APP_CONFIG.posthogApiKey &&
     !!APP_CONFIG.posthogHost &&
     APP_CONFIG.posthogApiKey !== 'REPLACE_ME';
 
+  // Track when session recording config changes to trigger remount
+  const [remountKey, setRemountKey] = useState(0);
+
+  // Ref to hold the trigger function for the global poller
+  const triggerRef = useRef<(() => void) | null>(null);
+
+  // Handler for session recording config changes
+  const handleSessionRecordingChange = useCallback((payload: any) => {
+    const currentConfig = getSessionRecordingConfig();
+    let newConfig: SessionRecordingConfig;
+    if (!payload || typeof payload !== 'object') {
+      newConfig = {
+        enabled: false,
+        maskAllTextInputs: true,
+        maskAllImages: true,
+        captureLog: true,
+      };
+    } else {
+      newConfig = {
+        enabled: payload.enabled !== false,
+        maskAllTextInputs: payload.maskAllTextInputs !== false,
+        maskAllImages: payload.maskAllImages !== false,
+        captureLog: payload.captureLog !== false,
+      };
+    }
+
+    if (JSON.stringify(currentConfig) !== JSON.stringify(newConfig)) {
+      console.log('[PostHog] Session recording config changed:', {
+        old: currentConfig,
+        new: newConfig,
+      });
+      kvStorage.setObject(SESSION_RECORDING_CONFIG_KEY, newConfig);
+      setRemountKey(prev => prev + 1);
+    }
+  }, []);
+
+  // Handler for banner message changes - we'll expose this via context
+  const [bannerMessagePayload, setBannerMessagePayload] = useState<any>(null);
+  const handleBannerMessageChange = useCallback((payload: any) => {
+    setBannerMessagePayload(payload);
+  }, []);
+
   if (!enabled) {
     console.warn('PostHog API key not set, analytics disabled');
     return <>{children}</>;
   }
 
+  // Get current session recording config
+  const sessionRecordingConfig = getSessionRecordingConfig();
+
   console.log('[PostHog] Initializing with:', {
     host: APP_CONFIG.posthogHost,
     captureAppLifecycleEvents: true,
-    autocaptureScreens: false, // <- we’re doing manual screen tracking
+    autocaptureScreens: false, // <- we're doing manual screen tracking
+    enableSessionReplay: sessionRecordingConfig.enabled,
+    sessionReplayConfig: sessionRecordingConfig.enabled
+      ? {
+          maskAllTextInputs: sessionRecordingConfig.maskAllTextInputs,
+          maskAllImages: sessionRecordingConfig.maskAllImages,
+          captureLog: sessionRecordingConfig.captureLog,
+        }
+      : undefined,
   });
+
+  // Create context value
+  const contextValue = {
+    trigger: () => {
+      triggerRef.current?.();
+    },
+    bannerMessagePayload,
+  };
 
   return (
     <PostHogProvider
+      key={remountKey}
       apiKey={APP_CONFIG.posthogApiKey}
       options={{
         host: APP_CONFIG.posthogHost,
@@ -234,18 +449,56 @@ export function PostHog({children, navRef}: Props) {
                 'unknown',
           platform: APP_CONFIG.environment || 'development',
         }),
+        // Session recording config from feature flags
+        enableSessionReplay: sessionRecordingConfig.enabled,
+        sessionReplayConfig: sessionRecordingConfig.enabled
+          ? {
+              maskAllTextInputs: sessionRecordingConfig.maskAllTextInputs,
+              maskAllImages: sessionRecordingConfig.maskAllImages,
+              captureLog: sessionRecordingConfig.captureLog,
+            }
+          : undefined,
       }}
       // IMPORTANT: turn off SDK's nav autocapture to avoid nav hook errors
       autocapture={{captureScreens: false}}
       // Enable debug logging in development via POSTHOG_DEBUG env var
       // Set POSTHOG_DEBUG=true in .env to see detailed PostHog capture logs
       debug={APP_CONFIG.posthogDebug === 'true'}>
-      <PostHogInstanceSetter />
-      <PosthogLifecycle />
-      <UserIdentification />
-      <ConnectivityTracker />
-      <ScreenTracker navRef={navRef} />
-      {children}
+      <FeatureFlagPollingContext.Provider value={contextValue}>
+        <PostHogInstanceSetter />
+        <PosthogLifecycle />
+        <UserIdentification />
+        <ConnectivityTracker />
+        <ScreenTracker navRef={navRef} />
+        <GlobalFeatureFlagPoller
+          onBannerMessageChange={handleBannerMessageChange}
+          onSessionRecordingChange={handleSessionRecordingChange}
+          triggerRef={triggerRef}
+        />
+        {children}
+      </FeatureFlagPollingContext.Provider>
     </PostHogProvider>
   );
+}
+
+// ---- Feature Flag Polling Trigger ----
+// Component to be placed on screens that should trigger feature flag polling on focus
+// Usage: <FeatureFlagPollingTrigger />
+
+export function FeatureFlagPollingTrigger() {
+  const context = useFeatureFlagPollingContext();
+
+  // Trigger polling when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      if (context) {
+        console.log(
+          '[FeatureFlagPollingTrigger] Screen focused, triggering polling',
+        );
+        context.trigger();
+      }
+    }, [context]),
+  );
+
+  return null;
 }
