@@ -109,7 +109,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
       <StaticMapView
         coords={coords}
         style={styles.mapView}
-        displayCenterMarker={true}
+        displayCenterMarker={false}
       />
       <Box px="16px" py="16px">
         <LocationDetail
