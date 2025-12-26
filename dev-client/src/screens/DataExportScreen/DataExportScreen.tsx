@@ -17,13 +17,15 @@
 
 import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ActivityIndicator, Alert, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
 
 import {trackExport} from 'terraso-mobile-client/analytics/exportTracking';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
+import {ErrorDialog} from 'terraso-mobile-client/components/dialogs/ErrorDialog';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -80,8 +82,20 @@ export function DataExportScreen({
   const isOffline = useIsOffline();
   const confirmModalRef = useRef<ModalHandle>(null);
   const infoSheetRef = useRef<ModalHandle>(null);
+  const errorDialogRef = useRef<ModalHandle>(null);
 
   const [isDownloading, setIsDownloading] = useState(false);
+  const [errorType, setErrorType] = useState<
+    'save' | 'create_link' | 'reset_link'
+  >('save');
+
+  const showError = useCallback(
+    (type: 'save' | 'create_link' | 'reset_link') => {
+      setErrorType(type);
+      errorDialogRef.current?.onOpen();
+    },
+    [],
+  );
 
   // Get token from Redux - fetched during sync
   const token = useSelector((state: AppState) =>
@@ -113,21 +127,13 @@ export function DataExportScreen({
           );
           if (!newToken) {
             console.error('[Export] Token not found in response');
-            Alert.alert(
-              t('export.create_token_error_title'),
-              t('export.create_token_error_message'),
-              [{text: t('general.dismiss')}],
-            );
+            showError('create_link');
             return;
           }
           currentToken = newToken.token;
         } else {
           console.error('[Export] Failed to create export token:', result);
-          Alert.alert(
-            t('export.create_token_error_title'),
-            t('export.create_token_error_message'),
-            [{text: t('general.dismiss')}],
-          );
+          showError('create_link');
           return;
         }
       }
@@ -164,7 +170,16 @@ export function DataExportScreen({
         console.error(`Failed to share ${format.toUpperCase()}:`, err);
       }
     },
-    [token, resourceType, resourceId, resourceName, scope, t, dispatch],
+    [
+      token,
+      resourceType,
+      resourceId,
+      resourceName,
+      scope,
+      t,
+      dispatch,
+      showError,
+    ],
   );
 
   const handleDownload = useCallback(
@@ -218,33 +233,23 @@ export function DataExportScreen({
         }
 
         // Handle failure cases - destructure to help TypeScript
-        const {canceled, error} = result as {
+        const {canceled} = result as {
           success: false;
           error: string;
           canceled?: boolean;
         };
 
         if (!canceled) {
-          Alert.alert(
-            t('export.save_error_title'),
-            t('export.save_error_message', {error}),
-            [{text: t('general.dismiss')}],
-          );
+          showError('save');
         }
       } catch (err) {
         console.error(`Failed to save ${format.toUpperCase()}:`, err);
-        Alert.alert(
-          t('export.save_error_title'),
-          t('export.save_error_message', {
-            error: err instanceof Error ? err.message : 'Unknown error',
-          }),
-          [{text: t('general.dismiss')}],
-        );
+        showError('save');
       } finally {
         setIsDownloading(false);
       }
     },
-    [resourceType, scope, resourceId, resourceName, t],
+    [resourceType, scope, resourceId, resourceName, t, showError],
   );
 
   const handleDownloadCSV = () => handleDownload('csv');
@@ -266,15 +271,19 @@ export function DataExportScreen({
 
       if (deleteExportToken.rejected.match(result)) {
         console.error('[Export] Failed to delete token:', result);
-        Alert.alert(
-          t('export.delete_token_error_title'),
-          t('export.delete_token_error_message'),
-          [{text: t('general.dismiss')}],
-        );
+        showError('reset_link');
       }
       // If successful, Redux state is automatically updated with remaining tokens
     }
-  }, [token, resourceType, resourceId, resourceName, scope, t, dispatch]);
+  }, [
+    token,
+    resourceType,
+    resourceId,
+    resourceName,
+    scope,
+    dispatch,
+    showError,
+  ]);
 
   const content = (
     <>
@@ -387,13 +396,27 @@ export function DataExportScreen({
     </>
   );
 
+  const errorDialog = (
+    <ErrorDialog
+      ref={errorDialogRef}
+      headline={<TranslatedHeading i18nKey="export.error_headline" />}>
+      <TranslatedParagraph i18nKey={`export.error_body_${errorType}`} />
+    </ErrorDialog>
+  );
+
   if (isTab) {
-    return content;
+    return (
+      <>
+        {content}
+        {errorDialog}
+      </>
+    );
   }
 
   return (
     <ScreenScaffold AppBar={<AppBar title={t('export.menu_title')} />}>
       {content}
+      {errorDialog}
     </ScreenScaffold>
   );
 }
