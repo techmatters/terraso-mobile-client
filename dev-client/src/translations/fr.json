@@ -1864,6 +1864,10 @@
         "save_dialog_title": "Sauvegarder les données LandPKS pour {{name}}",
         "save_error_title": "Sauvegarde échouée",
         "save_error_message": "Échec de l'enregistrement du fichier : {{error}}",
+        "error_headline": "TK Save failed",
+        "error_body_save": "TK There was an error in saving the file. Try again, or contact LandPKS support for help.",
+        "error_body_create_link": "TK There was an error in creating the live link. Try again, or contact LandPKS support for help.",
+        "error_body_reset_link": "TK There was an error in resetting the live link. Try again, or contact LandPKS support for help.",
         "share_title": "Exportation des données LandPKS pour les sites de {{name}}",
         "share_subject": "Lien vers les sites LandPKS de {{name}}",
         "share_android_message": "Exporter les données {{resourceType}} pour {{name}}:",
@@ -1893,7 +1897,7 @@
             "sharing_unavailable": "Le partage n'est pas disponible sur cet appareil.",
             "save_canceled": "Sauvegarde annulée.",
             "no_directory_selected": "Aucun répertoire sélectionné.",
-            "save_failed": "Impossible d'enregistrer le fichier.",
+            "save_failed": "TK Unable to write to storage.",
             "unknown": "Une erreur inconnue s'est produite."
         }
     }

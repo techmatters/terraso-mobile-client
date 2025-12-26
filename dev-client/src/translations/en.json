@@ -1864,6 +1864,10 @@
         "save_dialog_title": "Save LandPKS Data for {{name}}",
         "save_error_title": "Save Failed",
         "save_error_message": "Failed to save file: {{error}}",
+        "error_headline": "Save failed",
+        "error_body_save": "There was an error in saving the file. Try again, or contact LandPKS support for help.",
+        "error_body_create_link": "There was an error in creating the live link. Try again, or contact LandPKS support for help.",
+        "error_body_reset_link": "There was an error in resetting the live link. Try again, or contact LandPKS support for help.",
         "share_title": "LandPKS Data Export for {{name}}'s Sites",
         "share_subject": "Link to {{name}}'s LandPKS Sites",
         "share_android_message": "Export {{resourceType}} data for {{name}}:",
@@ -1893,7 +1897,7 @@
             "sharing_unavailable": "Sharing is not available on this device.",
             "save_canceled": "Save canceled.",
             "no_directory_selected": "No directory selected.",
-            "save_failed": "Failed to save file.",
+            "save_failed": "Unable to write to storage.",
             "unknown": "An unknown error occurred."
         }
     }
