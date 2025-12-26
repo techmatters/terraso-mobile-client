@@ -52,7 +52,10 @@ import {ExportHelpSheet} from 'terraso-mobile-client/screens/DataExportScreen/co
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {shareOrSaveFile} from 'terraso-mobile-client/utils/fileDownload';
+import {
+  sanitizeFilename,
+  shareOrSaveFile,
+} from 'terraso-mobile-client/utils/fileDownload';
 import {shareUrl} from 'terraso-mobile-client/utils/share';
 
 export type DataExportScreenProps = {
@@ -198,7 +201,7 @@ export function DataExportScreen({
 
         // Save file to device
         const mimeType = format === 'csv' ? 'text/csv' : 'application/json';
-        const filename = `${resourceName}.${format}`;
+        const filename = `${sanitizeFilename(resourceName)}.${format}`;
 
         const result = await shareOrSaveFile(
           content,
