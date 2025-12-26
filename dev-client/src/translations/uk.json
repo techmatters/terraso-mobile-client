@@ -1864,6 +1864,10 @@
         "save_dialog_title": "Зберегти дані LandPKS для {{name}}",
         "save_error_title": "Збереження не вдалося",
         "save_error_message": "Не вдалося зберегти файл: {{error}}",
+        "error_headline": "TK Save failed",
+        "error_body_save": "TK There was an error in saving the file. Try again, or contact LandPKS support for help.",
+        "error_body_create_link": "TK There was an error in creating the live link. Try again, or contact LandPKS support for help.",
+        "error_body_reset_link": "TK There was an error in resetting the live link. Try again, or contact LandPKS support for help.",
         "share_title": "Експорт даних LandPKS для сайтів {{name}}",
         "share_subject": "Посилання на сайти LandPKS користувача {{name}}",
         "share_android_message": "Експорт даних {{resourceType}} для {{name}}:",
@@ -1893,7 +1897,7 @@
             "sharing_unavailable": "Спільний доступ недоступний на цьому пристрої.",
             "save_canceled": "Збереження скасовано.",
             "no_directory_selected": "Не вибрано жодного каталогу.",
-            "save_failed": "Не вдалося зберегти файл.",
+            "save_failed": "TK Unable to write to storage.",
             "unknown": "Сталася невідома помилка."
         }
     }
