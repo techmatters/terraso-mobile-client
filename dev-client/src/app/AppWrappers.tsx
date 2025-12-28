@@ -29,6 +29,7 @@ import {
 import {NativeBaseProvider} from 'native-base';
 
 import {PostHog} from 'terraso-mobile-client/app/PostHog';
+import {MapSnapshotService} from 'terraso-mobile-client/components/MapSnapshotService';
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
@@ -58,6 +59,7 @@ export const AppWrappers = ({store, children}: Props) => {
 
   return (
     <GestureHandlerRootView style={styles.gestureHandler}>
+      <MapSnapshotService />
       <Provider store={store}>
         <SiteTabJumpContextProvider>
           <NavigationContainer
