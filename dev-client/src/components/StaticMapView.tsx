@@ -18,6 +18,7 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Image,
+  LayoutChangeEvent,
   Platform,
   StyleProp,
   StyleSheet,
@@ -111,6 +112,21 @@ export const StaticMapView = ({
 }: Props) => {
   const mapRef = useRef<MapView>(null);
   const [snapshotUri, setSnapshotUri] = useState<string | null>(null);
+  const [layoutSize, setLayoutSize] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+
+  const onLayout = useCallback((event: LayoutChangeEvent) => {
+    const {width, height} = event.nativeEvent.layout;
+    // Only update if we have valid dimensions and haven't captured yet
+    setLayoutSize(prev => {
+      if (prev === null && width > 0 && height > 0) {
+        return {width: Math.round(width), height: Math.round(height)};
+      }
+      return prev;
+    });
+  }, []);
 
   const cameraSettings = useMemo(
     () =>
@@ -123,14 +139,20 @@ export const StaticMapView = ({
     [coords, zoomLevel],
   );
 
-  // On Android, use the singleton MapSnapshotService
+  // On Android, use the singleton MapSnapshotService once we know our size
   useEffect(() => {
-    if (Platform.OS === 'android') {
-      let cancelled = false;
+    if (Platform.OS === 'android' && layoutSize) {
+      const {promise, cancel} = requestMapSnapshot(
+        coords,
+        zoomLevel,
+        layoutSize.width,
+        layoutSize.height,
+      );
 
-      requestMapSnapshot(coords, zoomLevel)
+      let unmounted = false;
+      promise
         .then(uri => {
-          if (!cancelled) {
+          if (!unmounted) {
             setSnapshotUri(uri);
           }
         })
@@ -139,10 +161,11 @@ export const StaticMapView = ({
         });
 
       return () => {
-        cancelled = true;
+        unmounted = true;
+        cancel(); // Mark request as cancelled so it's skipped if still queued
       };
     }
-  }, [coords, zoomLevel]);
+  }, [coords, zoomLevel, layoutSize]);
 
   // On iOS, capture snapshot locally (MapViews work fine there)
   const onDidFinishLoadingMap = useCallback(async () => {
@@ -160,7 +183,7 @@ export const StaticMapView = ({
   const shouldRenderMap = Platform.OS === 'ios' && !snapshotUri;
 
   return (
-    <View style={[style, styles.container]}>
+    <View style={[style, styles.container]} onLayout={onLayout}>
       {shouldRenderMap && (
         <View style={styles.offscreen}>
           <Mapbox.MapView
