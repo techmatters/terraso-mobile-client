@@ -18,29 +18,7 @@
 import {Platform} from 'react-native';
 import Share from 'react-native-share';
 
-/**
- * Sanitize a name for use in a URL path.
- *
- * Converts spaces to hyphens, removes characters that are problematic
- * for URLs or filesystems, and leaves Unicode intact (clients auto-encode).
- *
- * @example
- * sanitizeNameForUrl("Project: Phase 1")  // "Project-Phase-1"
- * sanitizeNameForUrl("Київ Site")         // "Київ-Site"
- * sanitizeNameForUrl("What's Next?")      // "Whats-Next"
- */
-export function sanitizeNameForUrl(name: string): string {
-  return (
-    name
-      .trim()
-      .replace(/\s+/g, '-') // spaces → hyphen
-      .replace(/[/:]/g, '-') // path-like chars → hyphen
-      .replace(/[<>"'\\|?*#&=%()]/g, '') // remove URL/filesystem problem chars
-      .replace(/-{2,}/g, '-') // collapse multiple hyphens
-      .replace(/^-+|-+$/g, '') || // trim leading/trailing hyphens
-    'export' // fallback if empty
-  );
-}
+export {sanitizeNameForUrl} from 'terraso-mobile-client/utils/sanitize';
 
 /**
  * Shares a URL using the platform's native share sheet via react-native-share
