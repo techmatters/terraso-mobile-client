@@ -113,7 +113,10 @@ const defaultConfig: ExpoConfig = {
       'android.permissions.RECORD_AUDIO',
       'android.permissions.MODIFY_AUDIO_SETTINGS',
       'android.permissions.VIBRATE',
+      // Block broad media permissions - app uses Android Photo Picker instead
+      'android.permission.READ_MEDIA_IMAGES',
       'android.permission.READ_MEDIA_VIDEO',
+      'android.permission.READ_MEDIA_AUDIO',
     ],
   },
   ios: {
