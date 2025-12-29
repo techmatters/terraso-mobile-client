@@ -22,32 +22,13 @@ import Share from 'react-native-share';
 import {File, Paths} from 'expo-file-system';
 import {cacheDirectory, writeAsStringAsync} from 'expo-file-system/legacy';
 
+export {sanitizeFilename} from 'terraso-mobile-client/utils/sanitize';
+
 export type SaveFileResult =
   | {success: true; filename: string}
   | {success: false; error: string; canceled?: boolean};
 
 type TranslateFn = ReturnType<typeof useTranslation>['t'];
-
-/**
- * Sanitizes a string to be safe for use as a filename.
- * Replaces characters that are invalid in filenames on various platforms.
- * Reserves space for extension to be added afterward (e.g., .json).
- */
-export const sanitizeFilename = (name: string): string => {
-  const MAX_LEN = 100; // Conservative limit; reserves space for .json extension
-
-  const sanitized = name
-    .normalize('NFC')
-    .replace(/[/\\:*?"<>|]/g, '-')
-    // eslint-disable-next-line no-control-regex
-    .replace(/[\x00-\x1f\x7f]/g, '')
-    .replace(/^[\s.]+|[\s.]+$/g, '')
-    .replace(/-+/g, '-');
-
-  if (!sanitized) return 'file';
-
-  return sanitized.substring(0, MAX_LEN);
-};
 
 /**
  * Shares or saves a file using the native share sheet or file picker
