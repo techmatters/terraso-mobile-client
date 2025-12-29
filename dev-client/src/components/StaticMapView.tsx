@@ -16,7 +16,7 @@
  */
 
 import {useMemo} from 'react';
-import {StyleProp, ViewStyle} from 'react-native';
+import {Platform, StyleProp, ViewStyle} from 'react-native';
 
 import Mapbox, {type Camera} from '@rnmapbox/maps';
 
@@ -128,7 +128,11 @@ export const StaticMapView = ({
       pitchEnabled={false}
       rotateEnabled={false}
       attributionEnabled={false}
-      pointerEvents={pointerEvents}>
+      pointerEvents={pointerEvents}
+      // Use TextureView on Android to fix z-order issues with thumbnails
+      // bleeding through onto the main map. TextureView respects normal
+      // React Native view hierarchy, unlike SurfaceView.
+      surfaceView={Platform.OS !== 'android'}>
       <Mapbox.Camera defaultSettings={cameraSettings} />
       {displayCenterMarker && (
         <Mapbox.MarkerView
