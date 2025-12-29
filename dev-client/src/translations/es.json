@@ -1876,6 +1876,7 @@
         "share_message_site": "Este enlace incluirá todos los datos del sitio \"{{name}}\".",
         "reset_links_title": "¿Restablecer enlaces para compartir?",
         "reset_links_body": "Esto romperá tus enlaces para compartir. Quienes tengan tus enlaces anteriores ya no podrán acceder a los archivos.",
+        "reset_links_button": "TK Restablecer enlace",
         "create_token_error_title": "No se pudo crear el enlace",
         "create_token_error_message": "No se pudo crear el enlace de exportación. Verifique su conexión y vuelva a intentarlo.",
         "delete_token_error_title": "No se pudo restablecer el enlace",

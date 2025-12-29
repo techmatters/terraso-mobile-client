@@ -364,7 +364,7 @@ export function DataExportScreen({
         ref={confirmModalRef}
         title={t('export.reset_links_title')}
         body={t('export.reset_links_body')}
-        actionLabel="Reset links"
+        actionLabel={t('export.reset_links_button')}
         handleConfirm={handleResetLinksConfirm}
       />
 

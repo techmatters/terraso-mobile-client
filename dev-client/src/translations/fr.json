@@ -1876,6 +1876,7 @@
         "share_message_site": "Ce lien inclura toutes les données du site «{{name}}».",
         "reset_links_title": "Réinitialiser les liens de partage ?",
         "reset_links_body": "Cette action désactivera vos liens de partage actuels. Les personnes disposant de vos anciens liens ne pourront plus accéder aux fichiers.",
+        "reset_links_button": "TK Réinitialiser le lien",
         "create_token_error_title": "Impossible de créer le lien",
         "create_token_error_message": "Impossible de créer le lien d'exportation. Veuillez vérifier votre connexion et réessayer.",
         "delete_token_error_title": "Échec de la réinitialisation du lien",
