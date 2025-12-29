@@ -119,5 +119,5 @@ jobs:
           releaseFiles: ${{ steps.sign_app.outputs.signedFile }}
           track: internal
           status: draft
-          # changesNotSentForReview: true
+          changesNotSentForReview: true
           inAppUpdatePriority: 2
