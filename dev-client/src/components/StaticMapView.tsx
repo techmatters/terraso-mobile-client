@@ -15,17 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {
-  Image,
-  Platform,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {useMemo} from 'react';
+import {StyleProp, ViewStyle} from 'react-native';
 
-import Mapbox, {type Camera, type MapView} from '@rnmapbox/maps';
+import Mapbox, {type Camera} from '@rnmapbox/maps';
 
 import {Coords} from 'terraso-client-shared/types';
 
@@ -36,44 +29,6 @@ import {
   LONGITUDE_MAX,
   LONGITUDE_MIN,
 } from 'terraso-mobile-client/constants';
-
-// Queue system for Android - only render one MapView at a time.
-// On Android, multiple simultaneous off-screen MapViews don't reliably fire callbacks.
-// iOS doesn't need this (isMyTurn starts true, skipping the queue entirely).
-type QueueEntry = {callback: () => void; cancelled: boolean};
-const mapLoadQueue: QueueEntry[] = [];
-let isProcessingQueue = false;
-
-const enqueueMapLoad = (callback: () => void): QueueEntry => {
-  const entry: QueueEntry = {callback, cancelled: false};
-  mapLoadQueue.push(entry);
-  processQueue();
-  return entry;
-};
-
-const processQueue = () => {
-  if (isProcessingQueue) {
-    return;
-  }
-
-  while (mapLoadQueue.length > 0) {
-    const next = mapLoadQueue.shift()!;
-
-    // Skip cancelled entries (component unmounted before its turn)
-    if (next.cancelled) {
-      continue;
-    }
-
-    isProcessingQueue = true;
-    next.callback();
-    return;
-  }
-};
-
-const markMapLoadComplete = () => {
-  isProcessingQueue = false;
-  processQueue();
-};
 
 // Extract Position type from Camera's fitBounds method (Position is [longitude, latitude])
 type Position = Parameters<Camera['fitBounds']>[0];
@@ -133,11 +88,14 @@ export const positionToCoords = (
   longitude: position[0],
 });
 
+const defaultAnchor = {x: 0.5, y: 0};
+
 type Props = {
   coords: Coords;
   zoomLevel?: number;
   style?: StyleProp<ViewStyle>;
   displayCenterMarker?: boolean;
+  pointerEvents?: 'none' | 'auto' | 'box-none' | 'box-only';
 };
 
 export const StaticMapView = ({
@@ -145,12 +103,8 @@ export const StaticMapView = ({
   zoomLevel = 15,
   style,
   displayCenterMarker,
+  pointerEvents,
 }: Props) => {
-  const mapRef = useRef<MapView>(null);
-  const [snapshotUri, setSnapshotUri] = useState<string | null>(null);
-  // On Android, wait for queue turn before rendering MapView
-  const [isMyTurn, setIsMyTurn] = useState(Platform.OS !== 'android');
-
   const cameraSettings = useMemo(
     () =>
       ({
@@ -162,115 +116,27 @@ export const StaticMapView = ({
     [coords, zoomLevel],
   );
 
-  // Track our queue entry to cancel it on unmount
-  const queueEntryRef = useRef<QueueEntry | null>(null);
-  // Track current state in refs for cleanup (closures have stale values)
-  const isMyTurnRef = useRef(isMyTurn);
-  const snapshotUriRef = useRef(snapshotUri);
-  isMyTurnRef.current = isMyTurn;
-  snapshotUriRef.current = snapshotUri;
-
-  // On Android, enqueue this component to wait its turn
-  useEffect(() => {
-    if (Platform.OS === 'android' && !snapshotUri && !isMyTurn) {
-      queueEntryRef.current = enqueueMapLoad(() => {
-        setIsMyTurn(true);
-        isMyTurnRef.current = true;
-      });
-    }
-  }, [snapshotUri, isMyTurn]);
-
-  // Cleanup on unmount only
-  useEffect(() => {
-    return () => {
-      if (Platform.OS === 'android') {
-        if (queueEntryRef.current && !queueEntryRef.current.cancelled) {
-          queueEntryRef.current.cancelled = true;
-        }
-        if (isMyTurnRef.current && !snapshotUriRef.current) {
-          markMapLoadComplete();
-        }
-      }
-    };
-  }, []);
-
-  // Capture the map as an image once it's loaded to avoid Android layer issues.
-  // Using onDidFinishLoadingMap instead of onMapIdle for more reliable firing.
-  // Using false returns base64 data URI (no temp files written to disk).
-  const onDidFinishLoadingMap = useCallback(async () => {
-    if (!mapRef.current) {
-      if (Platform.OS === 'android') {
-        markMapLoadComplete();
-      }
-      return;
-    }
-    try {
-      const uri = await mapRef.current.takeSnap(false);
-      setSnapshotUri(uri);
-    } catch {
-      // Ignore snapshot errors
-    }
-    if (Platform.OS === 'android') {
-      markMapLoadComplete();
-    }
-  }, []);
-
-  const shouldRenderMap = !snapshotUri && isMyTurn;
-
   return (
-    <View style={[style, styles.container]}>
-      {shouldRenderMap && (
-        <View style={styles.offscreen}>
-          <Mapbox.MapView
-            ref={mapRef}
-            localizeLabels={true}
-            style={styles.fill}
-            styleURL={Mapbox.StyleURL.Satellite}
-            scaleBarEnabled={false}
-            logoEnabled={false}
-            zoomEnabled={false}
-            scrollEnabled={false}
-            pitchEnabled={false}
-            rotateEnabled={false}
-            attributionEnabled={false}
-            pointerEvents="none"
-            onDidFinishLoadingMap={onDidFinishLoadingMap}>
-            <Mapbox.Camera defaultSettings={cameraSettings} />
-          </Mapbox.MapView>
-        </View>
+    <Mapbox.MapView
+      localizeLabels={true}
+      style={style}
+      styleURL={Mapbox.StyleURL.Satellite}
+      scaleBarEnabled={false}
+      logoEnabled={false}
+      zoomEnabled={false}
+      scrollEnabled={false}
+      pitchEnabled={false}
+      rotateEnabled={false}
+      attributionEnabled={false}
+      pointerEvents={pointerEvents}>
+      <Mapbox.Camera defaultSettings={cameraSettings} />
+      {displayCenterMarker && (
+        <Mapbox.MarkerView
+          coordinate={cameraSettings.centerCoordinate}
+          anchor={defaultAnchor}>
+          <Icon name="location-on" color="secondary.main" />
+        </Mapbox.MarkerView>
       )}
-      {snapshotUri && (
-        <>
-          <Image source={{uri: snapshotUri}} style={styles.fill} />
-          {displayCenterMarker && (
-            <View style={styles.markerContainer}>
-              <Icon name="location-on" color="secondary.main" />
-            </View>
-          )}
-        </>
-      )}
-    </View>
+    </Mapbox.MapView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    overflow: 'hidden',
-    backgroundColor: '#e0e0e0',
-  },
-  fill: {
-    flex: 1,
-  },
-  offscreen: {
-    position: 'absolute',
-    left: -9999,
-    width: '100%',
-    height: '100%',
-  },
-  markerContainer: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{translateX: -12}, {translateY: -24}],
-  },
-});

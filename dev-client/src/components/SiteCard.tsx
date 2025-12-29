@@ -71,7 +71,11 @@ export const SiteCard = ({
       isPopover={isPopover}>
       {project && <Text variant="body1">{project.name}</Text>}
       <Row alignItems="center" pt="md" justifyContent="space-between">
-        <StaticMapView coords={site} style={styles.mapView} />
+        <StaticMapView
+          coords={site}
+          style={styles.mapView}
+          pointerEvents="none"
+        />
         {project && (
           <PeopleChip count={Object.keys(project.memberships).length} />
         )}
