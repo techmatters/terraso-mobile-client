@@ -22,6 +22,8 @@ import Share from 'react-native-share';
 import {File, Paths} from 'expo-file-system';
 import {cacheDirectory, writeAsStringAsync} from 'expo-file-system/legacy';
 
+export {sanitizeFilename} from 'terraso-mobile-client/utils/sanitize';
+
 export type SaveFileResult =
   | {success: true; filename: string}
   | {success: false; error: string; canceled?: boolean};
