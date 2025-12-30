@@ -1864,6 +1864,10 @@
         "save_dialog_title": "Guardar datos de LandPKS para {{name}}",
         "save_error_title": "Error al guardar",
         "save_error_message": "No se pudo guardar el archivo: {{error}}",
+        "error_headline": "TK Save failed",
+        "error_body_save": "TK There was an error in saving the file. Try again, or contact LandPKS support for help.",
+        "error_body_create_link": "TK There was an error in creating the live link. Try again, or contact LandPKS support for help.",
+        "error_body_reset_link": "TK There was an error in resetting the live link. Try again, or contact LandPKS support for help.",
         "share_title": "Exportación de datos de LandPKS para los sitios de {{name}}",
         "share_subject": "Enlace a los sitios LandPKS de {{name}}",
         "share_android_message": "Exportar datos de {{resourceType}} para {{name}}:",
@@ -1872,6 +1876,7 @@
         "share_message_site": "Este enlace incluirá todos los datos del sitio \"{{name}}\".",
         "reset_links_title": "¿Restablecer enlaces para compartir?",
         "reset_links_body": "Esto romperá tus enlaces para compartir. Quienes tengan tus enlaces anteriores ya no podrán acceder a los archivos.",
+        "reset_links_button": "TK Restablecer enlace",
         "create_token_error_title": "No se pudo crear el enlace",
         "create_token_error_message": "No se pudo crear el enlace de exportación. Verifique su conexión y vuelva a intentarlo.",
         "delete_token_error_title": "No se pudo restablecer el enlace",
@@ -1893,7 +1898,7 @@
             "sharing_unavailable": "Compartir no está disponible en este dispositivo.",
             "save_canceled": "Guardar cancelado.",
             "no_directory_selected": "No hay ningún directorio seleccionado",
-            "save_failed": "No se pudo guardar el archivo.",
+            "save_failed": "TK Unable to write to storage.",
             "unknown": "Se produjo un error desconocido."
         }
     }
