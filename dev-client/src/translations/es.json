@@ -1864,10 +1864,6 @@
         "save_dialog_title": "Guardar datos de LandPKS para {{name}}",
         "save_error_title": "Error al guardar",
         "save_error_message": "No se pudo guardar el archivo: {{error}}",
-        "error_headline": "TK Save failed",
-        "error_body_save": "TK There was an error in saving the file. Try again, or contact LandPKS support for help.",
-        "error_body_create_link": "TK There was an error in creating the live link. Try again, or contact LandPKS support for help.",
-        "error_body_reset_link": "TK There was an error in resetting the live link. Try again, or contact LandPKS support for help.",
         "share_title": "Exportación de datos de LandPKS para los sitios de {{name}}",
         "share_subject": "Enlace a los sitios LandPKS de {{name}}",
         "share_android_message": "Exportar datos de {{resourceType}} para {{name}}:",
@@ -1876,7 +1872,6 @@
         "share_message_site": "Este enlace incluirá todos los datos del sitio \"{{name}}\".",
         "reset_links_title": "¿Restablecer enlaces para compartir?",
         "reset_links_body": "Esto romperá tus enlaces para compartir. Quienes tengan tus enlaces anteriores ya no podrán acceder a los archivos.",
-        "reset_links_button": "TK Restablecer enlace",
         "create_token_error_title": "No se pudo crear el enlace",
         "create_token_error_message": "No se pudo crear el enlace de exportación. Verifique su conexión y vuelva a intentarlo.",
         "delete_token_error_title": "No se pudo restablecer el enlace",
@@ -1889,7 +1884,12 @@
             "section_format": "Formato de archivo",
             "csv_description": "Los archivos <bold>CSV</bold> (valores separados por comas) funcionan con aplicaciones de hojas de cálculo como Excel o Hojas de cálculo de Google. Son ideales para ver, ordenar y analizar datos en un formato de tabla familiar.",
             "json_description": "<bold>JSON</bold> (notación de objetos JavaScript) es un formato de datos estructurado. Ideal para desarrolladores o para importar a otros sistemas de software."
-        }
+        },
+        "error_headline": "Error al guardar",
+        "error_body_save": "Se produjo un error al guardar el archivo. Inténtalo de nuevo o contacta con el soporte de LandPKS para obtener ayuda.",
+        "error_body_create_link": "Se produjo un error al crear el enlace en vivo. Inténtalo de nuevo o contacta con el soporte de LandPKS para obtener ayuda.",
+        "error_body_reset_link": "Se produjo un error al restablecer el enlace en vivo. Inténtalo de nuevo o contacta con el soporte de LandPKS para obtener ayuda.",
+        "reset_links_button": "Restablecer enlace"
     },
     "file_download": {
         "error": {
@@ -1898,7 +1898,7 @@
             "sharing_unavailable": "Compartir no está disponible en este dispositivo.",
             "save_canceled": "Guardar cancelado.",
             "no_directory_selected": "No hay ningún directorio seleccionado",
-            "save_failed": "TK Unable to write to storage.",
+            "save_failed": "No se pudo guardar el archivo.",
             "unknown": "Se produjo un error desconocido."
         }
     }
