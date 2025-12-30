@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-12-24T01:12:59.635Z\n"
-"PO-Revision-Date: 2025-12-24T01:12:59.636Z\n"
+"POT-Creation-Date: 2025-12-30T21:15:23.482Z\n"
+"PO-Revision-Date: 2025-12-30T21:15:23.483Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -3827,6 +3827,18 @@ msgstr "Save Failed"
 msgid "export##save_error_message"
 msgstr "Failed to save file: {{error}}"
 
+msgid "export##error_headline"
+msgstr "Save failed"
+
+msgid "export##error_body_save"
+msgstr "There was an error in saving the file. Try again, or contact LandPKS support for help."
+
+msgid "export##error_body_create_link"
+msgstr "There was an error in creating the live link. Try again, or contact LandPKS support for help."
+
+msgid "export##error_body_reset_link"
+msgstr "There was an error in resetting the live link. Try again, or contact LandPKS support for help."
+
 msgid "export##share_title"
 msgstr "LandPKS Data Export for {{name}}'s Sites"
 
@@ -3846,10 +3858,13 @@ msgid "export##share_message_site"
 msgstr "This link will include all data for the site \"{{name}}\"."
 
 msgid "export##reset_links_title"
-msgstr "Reset share links?"
+msgstr "Reset live link?"
 
 msgid "export##reset_links_body"
-msgstr "This will break your current share links. Anyone with your previous links will no longer be able to access the files."
+msgstr "This will break the current live link. Anyone with a broken link will not be able to access the files."
+
+msgid "export##reset_links_button"
+msgstr "Reset link"
 
 msgid "export##create_token_error_title"
 msgstr "Failed to Create Link"
@@ -3900,7 +3915,7 @@ msgid "file_download##error##no_directory_selected"
 msgstr "No directory selected."
 
 msgid "file_download##error##save_failed"
-msgstr "Failed to save file."
+msgstr "Unable to write to storage."
 
 msgid "file_download##error##unknown"
 msgstr "An unknown error occurred."

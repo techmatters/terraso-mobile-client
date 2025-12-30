@@ -1864,10 +1864,6 @@
         "save_dialog_title": "Sauvegarder les données LandPKS pour {{name}}",
         "save_error_title": "Sauvegarde échouée",
         "save_error_message": "Échec de l'enregistrement du fichier : {{error}}",
-        "error_headline": "TK Save failed",
-        "error_body_save": "TK There was an error in saving the file. Try again, or contact LandPKS support for help.",
-        "error_body_create_link": "TK There was an error in creating the live link. Try again, or contact LandPKS support for help.",
-        "error_body_reset_link": "TK There was an error in resetting the live link. Try again, or contact LandPKS support for help.",
         "share_title": "Exportation des données LandPKS pour les sites de {{name}}",
         "share_subject": "Lien vers les sites LandPKS de {{name}}",
         "share_android_message": "Exporter les données {{resourceType}} pour {{name}}:",
@@ -1876,7 +1872,6 @@
         "share_message_site": "Ce lien inclura toutes les données du site «{{name}}».",
         "reset_links_title": "Réinitialiser les liens de partage ?",
         "reset_links_body": "Cette action désactivera vos liens de partage actuels. Les personnes disposant de vos anciens liens ne pourront plus accéder aux fichiers.",
-        "reset_links_button": "TK Réinitialiser le lien",
         "create_token_error_title": "Impossible de créer le lien",
         "create_token_error_message": "Impossible de créer le lien d'exportation. Veuillez vérifier votre connexion et réessayer.",
         "delete_token_error_title": "Échec de la réinitialisation du lien",
@@ -1889,7 +1884,12 @@
             "section_format": "Format de fichier",
             "csv_description": "Les fichiers <bold>CSV</bold> (valeurs séparées par des virgules) compatibles avec les tableurs comme Excel ou Google Sheets. Ils sont idéaux pour visualiser, trier et analyser vos données dans un format de tableau familier.",
             "json_description": "<bold>JSON</bold> (notation d'objet JavaScript) est un format de données structurées. Idéal pour les développeurs ou l'importation dans d'autres systèmes logiciels."
-        }
+        },
+        "error_headline": "Échec de la sauvegarde",
+        "error_body_save": "Une erreur s'est produite lors de l'enregistrement du fichier. Veuillez réessayer ou contacter l'assistance LandPKS.",
+        "error_body_create_link": "Une erreur s'est produite lors de la création du lien. Veuillez réessayer ou contacter l'assistance LandPKS.",
+        "error_body_reset_link": "Une erreur s'est produite lors de la réinitialisation du lien. Veuillez réessayer ou contacter l'assistance LandPKS.",
+        "reset_links_button": "Réinitialiser le lien"
     },
     "file_download": {
         "error": {
@@ -1898,7 +1898,7 @@
             "sharing_unavailable": "Le partage n'est pas disponible sur cet appareil.",
             "save_canceled": "Sauvegarde annulée.",
             "no_directory_selected": "Aucun répertoire sélectionné.",
-            "save_failed": "TK Unable to write to storage.",
+            "save_failed": "Impossible d'enregistrer le fichier.",
             "unknown": "Une erreur inconnue s'est produite."
         }
     }

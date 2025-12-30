@@ -1864,10 +1864,6 @@
         "save_dialog_title": "Зберегти дані LandPKS для {{name}}",
         "save_error_title": "Збереження не вдалося",
         "save_error_message": "Не вдалося зберегти файл: {{error}}",
-        "error_headline": "TK Save failed",
-        "error_body_save": "TK There was an error in saving the file. Try again, or contact LandPKS support for help.",
-        "error_body_create_link": "TK There was an error in creating the live link. Try again, or contact LandPKS support for help.",
-        "error_body_reset_link": "TK There was an error in resetting the live link. Try again, or contact LandPKS support for help.",
         "share_title": "Експорт даних LandPKS для сайтів {{name}}",
         "share_subject": "Посилання на сайти LandPKS користувача {{name}}",
         "share_android_message": "Експорт даних {{resourceType}} для {{name}}:",
@@ -1876,7 +1872,6 @@
         "share_message_site": "Це посилання міститиме всі дані для сайту \"{{name}}\".",
         "reset_links_title": "Скинути посилання для спільного доступу?",
         "reset_links_body": "Це призведе до скасування ваших поточних посилань для спільного доступу. Будь-хто, хто мав ваші попередні посилання, більше не зможе отримати доступ до файлів.",
-        "reset_links_button": "TK Скинути посилання",
         "create_token_error_title": "Не вдалося створити посилання",
         "create_token_error_message": "Не вдалося створити посилання для експорту. Перевірте з’єднання та повторіть спробу.",
         "delete_token_error_title": "Не вдалося скинути посилання",
@@ -1889,7 +1884,12 @@
             "section_format": "Формат файлу",
             "csv_description": "<bold>CSV</bold> (значення, розділені комами) працюють із програмами для роботи з електронними таблицями, такими як Excel або Google Таблиці. Найкраще підходять для перегляду, сортування та аналізу даних у звичному табличному форматі.",
             "json_description": "<bold>JSON</bold> (Нотація об’єктів JavaScript) – це структурований формат даних. Найкраще підходить для розробників або імпорту в інші програмні системи."
-        }
+        },
+        "error_headline": "Збереження не вдалося",
+        "error_body_save": "Сталася помилка під час збереження файлу. Спробуйте ще раз або зверніться за допомогою до служби підтримки LandPKS.",
+        "error_body_create_link": "Під час створення активного посилання сталася помилка. Спробуйте ще раз або зверніться за допомогою до служби підтримки LandPKS.",
+        "error_body_reset_link": "Сталася помилка під час скидання активного посилання. Спробуйте ще раз або зверніться за допомогою до служби підтримки LandPKS.",
+        "reset_links_button": "Скинути посилання"
     },
     "file_download": {
         "error": {
@@ -1898,7 +1898,7 @@
             "sharing_unavailable": "Спільний доступ недоступний на цьому пристрої.",
             "save_canceled": "Збереження скасовано.",
             "no_directory_selected": "Не вибрано жодного каталогу.",
-            "save_failed": "TK Unable to write to storage.",
+            "save_failed": "Не вдалося зберегти файл.",
             "unknown": "Сталася невідома помилка."
         }
     }

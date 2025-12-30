@@ -1864,10 +1864,6 @@
         "save_dialog_title": "შეინახეთ LandPKS მონაცემები {{name}}- სთვის",
         "save_error_title": "შენახვა ვერ მოხერხდა",
         "save_error_message": "ფაილის შენახვა ვერ მოხერხდა: {{error}}",
-        "error_headline": "TK Save failed",
-        "error_body_save": "TK There was an error in saving the file. Try again, or contact LandPKS support for help.",
-        "error_body_create_link": "TK There was an error in creating the live link. Try again, or contact LandPKS support for help.",
-        "error_body_reset_link": "TK There was an error in resetting the live link. Try again, or contact LandPKS support for help.",
         "share_title": "LandPKS მონაცემთა ექსპორტი {{name}} საიტებისთვის",
         "share_subject": "ბმული {{name}}-ის LandPKS საიტებზე",
         "share_android_message": "{{resourceType}} მონაცემების ექსპორტი {{name}}-ისთვის:",
@@ -1876,7 +1872,6 @@
         "share_message_site": "ეს ბმული შეიცავს საიტის „{{name}}“ ყველა მონაცემს.",
         "reset_links_title": "გაზიარების ბმულების გადაყენება?",
         "reset_links_body": "ეს დააზიანებს თქვენს მიმდინარე გაზიარების ბმულებს. ნებისმიერი პირი, ვისაც თქვენი წინა ბმულები აქვს, ვეღარ შეძლებს ფაილებზე წვდომას.",
-        "reset_links_button": "TK ბმულის გადაყენება",
         "create_token_error_title": "ბმულის შექმნა ვერ მოხერხდა",
         "create_token_error_message": "ექსპორტის ბმულის შექმნა ვერ მოხერხდა. გთხოვთ, შეამოწმოთ თქვენი კავშირი და ხელახლა სცადოთ.",
         "delete_token_error_title": "ბმულის გადატვირთვა ვერ მოხერხდა",
@@ -1889,7 +1884,12 @@
             "section_format": "ფაილის ფორმატი",
             "csv_description": "<bold>CSV</bold> (მძიმით გამოყოფილი მნიშვნელობები) ფაილები თავსებადია ცხრილების აპლიკაციებთან, როგორიცაა Excel ან Google Sheets. საუკეთესოა თქვენი მონაცემების ნაცნობ ცხრილის ფორმატში სანახავად, დასახარისხებლად და გასაანალიზებლად.",
             "json_description": "<bold>JSON</bold> (JavaScript ობიექტის აღნიშვნა) სტრუქტურირებული მონაცემების ფორმატია. საუკეთესოა დეველოპერებისთვის ან სხვა პროგრამულ სისტემებში იმპორტისთვის."
-        }
+        },
+        "error_headline": "შენახვა ვერ მოხერხდა",
+        "error_body_save": "ფაილის შენახვისას შეცდომა მოხდა. სცადეთ ხელახლა ან დაუკავშირდით LandPKS-ის მხარდაჭერის სამსახურს დახმარებისთვის.",
+        "error_body_create_link": "პირდაპირი ბმულის შექმნისას შეცდომა მოხდა. სცადეთ ხელახლა ან დაუკავშირდით LandPKS-ის მხარდაჭერის სამსახურს დახმარებისთვის.",
+        "error_body_reset_link": "პირდაპირი ბმულის გადატვირთვისას შეცდომა მოხდა. სცადეთ ხელახლა ან დაუკავშირდით LandPKS-ის მხარდაჭერის სამსახურს დახმარებისთვის.",
+        "reset_links_button": "ბმულის გადაყენება"
     },
     "file_download": {
         "error": {
@@ -1898,7 +1898,7 @@
             "sharing_unavailable": "გაზიარება ამ მოწყობილობაზე მიუწვდომელია.",
             "save_canceled": "შენახვა გაუქმდა.",
             "no_directory_selected": "დირექტორია არ არის არჩეული.",
-            "save_failed": "TK Unable to write to storage.",
+            "save_failed": "ფაილის შენახვა ვერ მოხერხდა.",
             "unknown": "უცნობი შეცდომა მოხდა."
         }
     }

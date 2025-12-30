@@ -6426,3 +6426,28 @@ msgstr "ფაილის შენახვა ვერ მოხერხდ
 msgid "file_download##error##unknown"
 msgstr "უცნობი შეცდომა მოხდა."
 
+#: 
+#, fuzzy
+msgid "export##error_headline"
+msgstr "შენახვა ვერ მოხერხდა"
+
+#: 
+#, fuzzy
+msgid "export##error_body_save"
+msgstr "ფაილის შენახვისას შეცდომა მოხდა. სცადეთ ხელახლა ან დაუკავშირდით LandPKS-ის მხარდაჭერის სამსახურს დახმარებისთვის."
+
+#: 
+#, fuzzy
+msgid "export##error_body_create_link"
+msgstr "პირდაპირი ბმულის შექმნისას შეცდომა მოხდა. სცადეთ ხელახლა ან დაუკავშირდით LandPKS-ის მხარდაჭერის სამსახურს დახმარებისთვის."
+
+#: 
+#, fuzzy
+msgid "export##error_body_reset_link"
+msgstr "პირდაპირი ბმულის გადატვირთვისას შეცდომა მოხდა. სცადეთ ხელახლა ან დაუკავშირდით LandPKS-ის მხარდაჭერის სამსახურს დახმარებისთვის."
+
+#: 
+#, fuzzy
+msgid "export##reset_links_button"
+msgstr "ბმულის გადაყენება"
+
