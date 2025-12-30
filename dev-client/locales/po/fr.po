@@ -6426,3 +6426,28 @@ msgstr "Impossible d'enregistrer le fichier."
 msgid "file_download##error##unknown"
 msgstr "Une erreur inconnue s'est produite."
 
+#: 
+#, fuzzy
+msgid "export##error_headline"
+msgstr "Échec de la sauvegarde"
+
+#: 
+#, fuzzy
+msgid "export##error_body_save"
+msgstr "Une erreur s'est produite lors de l'enregistrement du fichier. Veuillez réessayer ou contacter l'assistance LandPKS."
+
+#: 
+#, fuzzy
+msgid "export##error_body_create_link"
+msgstr "Une erreur s'est produite lors de la création du lien. Veuillez réessayer ou contacter l'assistance LandPKS."
+
+#: 
+#, fuzzy
+msgid "export##error_body_reset_link"
+msgstr "Une erreur s'est produite lors de la réinitialisation du lien. Veuillez réessayer ou contacter l'assistance LandPKS."
+
+#: 
+#, fuzzy
+msgid "export##reset_links_button"
+msgstr "Réinitialiser le lien"
+

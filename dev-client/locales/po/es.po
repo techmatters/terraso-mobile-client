@@ -5219,3 +5219,28 @@ msgstr "No se pudo guardar el archivo."
 msgid "file_download##error##unknown"
 msgstr "Se produjo un error desconocido."
 
+#: 
+#, fuzzy
+msgid "export##error_headline"
+msgstr "Error al guardar"
+
+#: 
+#, fuzzy
+msgid "export##error_body_save"
+msgstr "Se produjo un error al guardar el archivo. Inténtalo de nuevo o contacta con el soporte de LandPKS para obtener ayuda."
+
+#: 
+#, fuzzy
+msgid "export##error_body_create_link"
+msgstr "Se produjo un error al crear el enlace en vivo. Inténtalo de nuevo o contacta con el soporte de LandPKS para obtener ayuda."
+
+#: 
+#, fuzzy
+msgid "export##error_body_reset_link"
+msgstr "Se produjo un error al restablecer el enlace en vivo. Inténtalo de nuevo o contacta con el soporte de LandPKS para obtener ayuda."
+
+#: 
+#, fuzzy
+msgid "export##reset_links_button"
+msgstr "Restablecer enlace"
+

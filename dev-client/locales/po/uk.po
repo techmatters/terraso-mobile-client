@@ -5238,3 +5238,28 @@ msgstr "Не вдалося зберегти файл."
 msgid "file_download##error##unknown"
 msgstr "Сталася невідома помилка."
 
+#: 
+#, fuzzy
+msgid "export##error_headline"
+msgstr "Збереження не вдалося"
+
+#: 
+#, fuzzy
+msgid "export##error_body_save"
+msgstr "Сталася помилка під час збереження файлу. Спробуйте ще раз або зверніться за допомогою до служби підтримки LandPKS."
+
+#: 
+#, fuzzy
+msgid "export##error_body_create_link"
+msgstr "Під час створення активного посилання сталася помилка. Спробуйте ще раз або зверніться за допомогою до служби підтримки LandPKS."
+
+#: 
+#, fuzzy
+msgid "export##error_body_reset_link"
+msgstr "Сталася помилка під час скидання активного посилання. Спробуйте ще раз або зверніться за допомогою до служби підтримки LandPKS."
+
+#: 
+#, fuzzy
+msgid "export##reset_links_button"
+msgstr "Скинути посилання"
+
