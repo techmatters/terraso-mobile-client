@@ -113,6 +113,7 @@ const defaultConfig: ExpoConfig = {
       'android.permission.RECORD_AUDIO',
       'android.permission.MODIFY_AUDIO_SETTINGS',
       'android.permission.VIBRATE',
+      'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK',
       // Block legacy storage permissions - deprecated on Android 13+, cause Play Store rejection
       'android.permission.READ_EXTERNAL_STORAGE',
       'android.permission.WRITE_EXTERNAL_STORAGE',
