@@ -89,7 +89,7 @@ if (typeof APP_BUILD === 'string') {
 const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
   slug: 'landpks',
-  version: '1.4.1',
+  version: '1.4.2',
   newArchEnabled: true,
   orientation: 'portrait',
   splash: {
@@ -105,18 +105,28 @@ const defaultConfig: ExpoConfig = {
       foregroundImage: 'src/assets/landpks-android-adaptive.png',
     },
     permissions: [
-      'android.permissions.ACCESS_COARSE_LOCATION',
-      'android.permissions.ACCESS_FINE_LOCATION',
+      'android.permission.ACCESS_COARSE_LOCATION',
+      'android.permission.ACCESS_FINE_LOCATION',
     ],
     blockedPermissions: [
-      'android.permissions.ACTIVITY_RECOGNITION',
-      'android.permissions.RECORD_AUDIO',
-      'android.permissions.MODIFY_AUDIO_SETTINGS',
-      'android.permissions.VIBRATE',
+      'android.permission.ACTIVITY_RECOGNITION',
+      'android.permission.RECORD_AUDIO',
+      'android.permission.MODIFY_AUDIO_SETTINGS',
+      'android.permission.VIBRATE',
+      'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK',
+      // Block legacy storage permissions - deprecated on Android 13+, cause Play Store rejection
+      'android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.WRITE_EXTERNAL_STORAGE',
       // Block broad media permissions - app uses Android Photo Picker instead
       'android.permission.READ_MEDIA_IMAGES',
       'android.permission.READ_MEDIA_VIDEO',
       'android.permission.READ_MEDIA_AUDIO',
+      // Note: READ_MEDIA_VISUAL_USER_SELECTED is intentionally NOT blocked -
+      // it's the correct permission for Android 14+ Photo Picker usage
+      // Block SYSTEM_ALERT_WINDOW only in CI/release builds - needed for dev menu in debug
+      ...(ENV_CONFIG.CI === 'true'
+        ? ['android.permission.SYSTEM_ALERT_WINDOW']
+        : []),
     ],
   },
   ios: {
