@@ -145,7 +145,8 @@ export const LoginScreen = () => {
       <Column
         testID="login-screen"
         height="full"
-        justifyContent="space-between">
+        justifyContent="space-between"
+        padding="md">
         <Column alignItems="center" flexGrow={1} justifyContent="center">
           <LandPKSLogo width="144px" height="144px" />
           <Heading
@@ -153,14 +154,16 @@ export const LoginScreen = () => {
             fontWeight="bold"
             fontSize="30px"
             marginTop="34px"
-            color="primary.contrast">
+            color="primary.contrast"
+            textAlign="center">
             {t('login.title')}
           </Heading>
           <Heading
             variant="h5"
             color="primary.contrast"
             fontSize="22px"
-            marginTop="14px">
+            marginTop="14px"
+            textAlign="center">
             {t('login.subtitle')}
           </Heading>
         </Column>
@@ -184,7 +187,7 @@ export const LoginScreen = () => {
           </Text>
         </Column>
         <Column alignItems="center">
-          <Row alignItems="flex-end" mb="6px">
+          <Row alignItems="flex-end">
             <Text variant="body1" color="primary.contrast" mr="5px" mb="6px">
               {t('login.from')}
             </Text>
