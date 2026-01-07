@@ -104,7 +104,6 @@ function upgradeSoilMetadataOct2025(
       ...state.soilMetadata,
       soilMetadata: upgradedEntries,
       soilMetadataSync: state.soilMetadata.soilMetadataSync ?? {},
-      // TODO-cknipe: Do we need that? What are the consequences if not?
     },
   };
 }
