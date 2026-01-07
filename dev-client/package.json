@@ -52,6 +52,7 @@
     "expo-build-properties": "~1.0.9",
     "expo-camera": "~17.0.8",
     "expo-checkbox": "~5.0.7",
+    "expo-clipboard": "~8.0.8",
     "expo-constants": "~18.0.9",
     "expo-crypto": "~15.0.7",
     "expo-dev-client": "~6.0.15",

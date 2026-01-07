@@ -405,6 +405,7 @@
     },
     "settings": {
         "unknown_user": "Unknown user",
+        "copy_access_token": "Copy JWT Access Token",
         "sign_out": "Sign out",
         "delete_account": "Delete account",
         "delete_account_pending": "Pending",
