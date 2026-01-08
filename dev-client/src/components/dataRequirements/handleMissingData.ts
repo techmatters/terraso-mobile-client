@@ -21,38 +21,57 @@ import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-export const useNavToBottomTabsAndShowSyncError = () => {
+export const useNavToBottomTabsAndShowSyncError = (
+  missingEntityType?: string,
+) => {
   const navigation = useNavigation();
   const syncNotifications = useSyncNotificationContext();
 
   return useCallback(() => {
     navigation.popTo('BOTTOM_TABS');
     if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError();
+      syncNotifications.showError(
+        missingEntityType
+          ? {reason: 'missing_data', missingEntityType}
+          : {reason: 'other'},
+      );
     }
-  }, [navigation, syncNotifications]);
+  }, [navigation, syncNotifications, missingEntityType]);
 };
 
-export const usePopNavigationAndShowSyncError = () => {
+export const usePopNavigationAndShowSyncError = (
+  missingEntityType?: string,
+) => {
   const navigation = useNavigation();
   const syncNotifications = useSyncNotificationContext();
 
   return useCallback(() => {
     navigation.pop();
     if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError();
+      syncNotifications.showError(
+        missingEntityType
+          ? {reason: 'missing_data', missingEntityType}
+          : {reason: 'other'},
+      );
     }
-  }, [navigation, syncNotifications]);
+  }, [navigation, syncNotifications, missingEntityType]);
 };
 
-export const useNavToSiteAndShowSyncError = (siteId: string) => {
+export const useNavToSiteAndShowSyncError = (
+  siteId: string,
+  missingEntityType?: string,
+) => {
   const navigation = useNavigation();
   const syncNotifications = useSyncNotificationContext();
 
   return useCallback(() => {
     navigation.popTo('SITE_TABS', {siteId: siteId});
     if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError();
+      syncNotifications.showError(
+        missingEntityType
+          ? {reason: 'missing_data', missingEntityType}
+          : {reason: 'other'},
+      );
     }
-  }, [siteId, navigation, syncNotifications]);
+  }, [siteId, navigation, syncNotifications, missingEntityType]);
 };

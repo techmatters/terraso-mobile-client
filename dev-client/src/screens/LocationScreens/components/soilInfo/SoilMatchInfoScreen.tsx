@@ -81,7 +81,7 @@ export const SiteSoilMatchInfoScreen = ({
 }: ScreenPropsForSite) => {
   const site = useSelector(state => selectSite(siteId)(state)) ?? undefined;
 
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);

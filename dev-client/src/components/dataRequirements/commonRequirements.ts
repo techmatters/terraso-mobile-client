@@ -34,8 +34,11 @@ export const useDefaultSiteDepthRequirements = (
 ) => {
   const site = useSelector(selectSite(siteId));
   const realDepthInterval = useSiteSoilInterval(siteId, depthIntervalSpec);
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const handleMissingDepth = useNavToSiteAndShowSyncError(siteId);
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
+  const handleMissingDepth = useNavToSiteAndShowSyncError(
+    siteId,
+    'depth_interval',
+  );
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
     {data: realDepthInterval, doIfMissing: handleMissingDepth},

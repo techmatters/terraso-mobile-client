@@ -61,8 +61,10 @@ export const AddUserToProjectScreen = ({projectId}: Props) => {
   // wanting to add multiple users at the same time.
 
   const userCanEditProject = useRoleCanEditProject(projectId);
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError('project');
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError(
+    'project_edit_permission',
+  );
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
     {data: userCanEditProject, doIfMissing: handleInsufficientPermissions},

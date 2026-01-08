@@ -66,7 +66,7 @@ export const SlopeScreen = ({siteId}: {siteId: string}) => {
   );
 
   const site = useSelector(selectSite(siteId));
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);

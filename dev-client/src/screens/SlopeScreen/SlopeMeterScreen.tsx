@@ -99,7 +99,7 @@ export const SlopeMeterScreen = ({siteId}: {siteId: string}) => {
   }, [dispatch, siteId, deviceTiltDeg, navigation]);
 
   const site = useSelector(selectSite(siteId));
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);

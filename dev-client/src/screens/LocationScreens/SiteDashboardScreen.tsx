@@ -32,7 +32,7 @@ type Props = {
 export const SiteDashboardScreen = ({siteId}: Props) => {
   const site = useSelector(selectSite(siteId));
 
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);
