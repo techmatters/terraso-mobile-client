@@ -150,7 +150,7 @@
                 "match_score": "{{score}}",
                 "offline": "Las coincidencias de suelo se actualizarán cuando estés conectado.",
                 "improve_hint": "TK Improve matches by entering data",
-                "improve_description": "TK These scores are currently based on the site's location only. To improve the accuracy of the scores, enter some data at this site (see Site Data below).",
+                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
                 "selector": "Este es el suelo correcto",
                 "selected": "Suelo seleccionado",
                 "rate": {
