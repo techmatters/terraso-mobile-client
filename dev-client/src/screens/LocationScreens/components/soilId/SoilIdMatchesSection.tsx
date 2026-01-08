@@ -88,40 +88,56 @@ export const SoilIdMatchesSection = ({
 
 type MatchTilesProps = SoilIdMatchesSectionProps & {soilIdOutput: SoilIdOutput};
 
+/**
+ * Checks if an object has any non-null values, excluding specified keys.
+ *
+ * IMPORTANT: This uses a dynamic approach that automatically includes new fields
+ * added to SoilData or DepthDependentSoilData types. The trade-off is:
+ * - Pro: New user data fields are automatically checked without code changes
+ * - Con: If new system/config fields are added to these types, they must be
+ *   added to the exclusion lists below, otherwise they may cause false positives
+ */
+const hasAnyNonNullValue = (obj: any, excludedKeys: string[]): boolean => {
+  return Object.entries(obj).some(
+    ([key, value]) => !excludedKeys.includes(key) && value != null,
+  );
+};
+
+// System/config fields in SoilData that should not be considered user data
+const SOIL_DATA_EXCLUDED_KEYS = [
+  'site', // Reference to parent site
+  'depthIntervalPreset', // System config (always has a value)
+  'depthIntervals', // Interval configuration, not soil data
+  'depthDependentData', // Handled separately with recursive check
+];
+
+// System/config fields in DepthDependentSoilData that should not be considered user data
+const DEPTH_DATA_EXCLUDED_KEYS = [
+  'site', // Reference to parent site
+  'depthInterval', // Defines the interval bounds, not user-entered soil data
+];
+
 const isEmptySoilData = (soilData: SoilData): boolean => {
   if (!soilData) return true;
 
-  // Others fields in SoilData that may need to be checked...
-  // bedrock
-  // crossSlope
-  // downSlope
-  // floodingSelect
-  // grazingSelect
-  // landCoverSelect
-  // limeRequirementsSelect
-  // slopeAspect
-  // slopeLandscapePosition
-  // slopeSteepnessDegree
-  // slopeSteepnessPercent
-  // slopeSteepnessSelect
-  // soilDepthSelect
-  // surfaceSaltSelect
-  // surfaceStoninessSelect
-  // waterTableDepthSelect
+  // Check if any top-level soil data fields have been set
+  if (hasAnyNonNullValue(soilData, SOIL_DATA_EXCLUDED_KEYS)) {
+    return false;
+  }
 
-  // Check if surface crack data has been set
-  const hasCracks = !!soilData.surfaceCracksSelect;
-
-  // Check if any soil depth dependant properties (texture, color, rock fragment, etc)
-  //   have been entered
-  const hasDepthIntervals =
+  // Check if any depth-dependent data (texture, color, rock fragment, etc) has been entered
+  // Note: depthDependentData entries exist as objects when intervals are added,
+  // but may have all user data fields as null - we need to check inside each entry
+  if (
     Array.isArray(soilData.depthDependentData) &&
-    soilData.depthDependentData.length > 0 &&
-    Object.values(soilData.depthDependentData).some(
-      depthData => depthData !== null && depthData !== undefined,
-    );
+    soilData.depthDependentData.some(depthData =>
+      hasAnyNonNullValue(depthData, DEPTH_DATA_EXCLUDED_KEYS),
+    )
+  ) {
+    return false;
+  }
 
-  return !hasCracks && !hasDepthIntervals;
+  return true;
 };
 
 const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {

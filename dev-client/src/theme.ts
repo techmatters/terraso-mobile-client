@@ -65,10 +65,10 @@ export const theme = extendTheme({
     },
     info: {
       background: '#E5F6FD',
-      border: '#EEEEEE',
-      title: '#1b5135ff',
-      content: '#1b5135ff',
-      icon: '#1b5135ff',
+      border: '#0288d1',
+      title: '#014361',
+      content: '#014361',
+      icon: '#0288d1',
     },
     grey: {
       200: '#EEEEEE',
