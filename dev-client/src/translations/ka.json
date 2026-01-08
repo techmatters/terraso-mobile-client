@@ -399,6 +399,7 @@
         "beta": "ბეტა",
         "version": "ვერსია {{version}} ({{build}}) {{environment}}",
         "unknown_user": "უცნობი მომხმარებელი",
+        "copy_access_token": "TK Copy JWT Access Token",
         "sign_out": "გასვლა",
         "delete_account": "ანგარიშის წაშლა",
         "delete_account_pending": "მოლოდინის რეჟიმშია",

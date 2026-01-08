@@ -399,6 +399,7 @@
         "beta": "beta",
         "version": "Versión {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Usuario desconocido",
+        "copy_access_token": "TK Copy JWT Access Token",
         "sign_out": "Cerrar sesión",
         "delete_account": "Eliminar cuenta",
         "delete_account_pending": "Pendiente",

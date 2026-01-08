@@ -399,6 +399,7 @@
         "beta": "бета-версія",
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Невідомий користувач",
+        "copy_access_token": "TK Copy JWT Access Token",
         "sign_out": "Вийти",
         "delete_account": "Видалити обліковий запис",
         "delete_account_pending": "У процесі, не завершено",
