@@ -149,6 +149,8 @@
                 "no_map_data_body": "ამ მდებარეობისთვის ნიადაგის რუკის მონაცემები არ არის ხელმისაწვდომი, ამიტომ LandPKS-ს არ შეუძლია ნიადაგის შესატყვისების გენერირება. დაკვირვებების შეყვანა კვლავ შესაძლებელია და თუ ნიადაგის რუკის მონაცემები მომავალში ხელმისაწვდომი გახდება, ნიადაგის შესატყვისები აქ გამოჩნდება.",
                 "match_score": "{{score}}",
                 "offline": "ნიადაგის შესაბამისობები განახლდება, როდესაც ონლაინ იქნებით.",
+                "improve_hint": "TK Improve matches by entering data",
+                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
                 "selector": "ეს არის სწორი ნიადაგი",
                 "selected": "შერჩეული ნიადაგი",
                 "rate": {

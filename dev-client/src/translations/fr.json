@@ -149,6 +149,8 @@
                 "no_map_data_body": "Aucune carte des sols n'est disponible pour cet emplacement ; LandPKS ne peut donc pas générer de correspondances de sols. Il est toutefois possible de saisir des observations et, si des cartes des sols sont disponibles ultérieurement, les correspondances apparaîtront ici.",
                 "match_score": "{{score}}",
                 "offline": "Les correspondances de sol seront mises à jour lorsque vous serez en ligne.",
+                "improve_hint": "TK Improve matches by entering data",
+                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
                 "selector": "C'est le bon sol",
                 "selected": "Sol sélectionné",
                 "rate": {

@@ -63,6 +63,13 @@ export const theme = extendTheme({
       main: '#ED6C02',
       content: '#663C00',
     },
+    info: {
+      background: '#E5F6FD',
+      border: '#0288d1',
+      title: '#014361',
+      content: '#014361',
+      icon: '#0288d1',
+    },
     grey: {
       200: '#EEEEEE',
       300: '#E0E0E0',
