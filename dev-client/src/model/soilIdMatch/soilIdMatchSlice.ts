@@ -16,6 +16,7 @@
  */
 
 import {createSlice, Draft} from '@reduxjs/toolkit';
+import PostHog from 'posthog-react-native';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
 import {SoilIdInputData} from 'terraso-client-shared/graphqlSchema/graphql';
@@ -67,7 +68,7 @@ const TIMEOUT_MS = 20_000;
 
 // Helper function to track soil ID lookup events
 const trackSoilIdLookup = (
-  posthog: any,
+  posthog: PostHog | null,
   params: {
     lookupType: 'temporary_location' | 'site';
     coords: Coords;
