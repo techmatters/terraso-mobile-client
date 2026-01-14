@@ -16,9 +16,16 @@
  */
 
 import {useCallback} from 'react';
+import {StyleSheet} from 'react-native';
+import {Divider} from 'react-native-paper';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  Column,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {
   selectLastPullTimestamp,
@@ -36,10 +43,13 @@ import {
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
+import {
+  selectCurrentUserID,
+  selectSites,
+} from 'terraso-mobile-client/store/selectors';
 
-// TODO: I expect this to be removed or modified by the time we actually release the offline feature,
-// but is helpful for manually testing
+// This component is helpful for manually testing,
+// but is not intended to be shown to real users
 export const SyncContent = () => {
   const dispatch = useDispatch();
   const syncInfoOpen = useSelector(selectSyncInfoOpen);
@@ -70,33 +80,15 @@ export const SyncContent = () => {
 
 const SyncInfoExpanded = () => {
   return (
-    <>
-      <Row alignItems="center" justifyContent="space-between" margin="1px">
+    <Box margin="8px">
+      <Row alignItems="center" justifyContent="space-between">
         <PullButton />
         <PullInfo />
         <LastPullTime />
       </Row>
+      <Divider style={styles.dividerTopMargin} />
       <PushInfo />
-    </>
-  );
-};
-
-const PushInfo = () => {
-  const unsyncedSoilDataIds = useSelector(selectUnsyncedSoilDataSiteIds);
-  const unsyncedSoilMetadataIds = useSelector(selectUnsyncedMetadataSiteIds);
-  const errorSoilDataIds = useSelector(selectSoilDataSyncErrorSiteIds);
-  const errorSoilMetadataIds = useSelector(selectMetadataSyncErrorSiteIds);
-  return (
-    <>
-      <Text>
-        ({unsyncedSoilDataIds.length} soilData |{' '}
-        {unsyncedSoilMetadataIds.length} soilMetadata) unsynced
-      </Text>
-      <Text>
-        ({errorSoilDataIds.length} soilData | {errorSoilMetadataIds.length}{' '}
-        soilMetadata) sync errors
-      </Text>
-    </>
+    </Box>
   );
 };
 
@@ -143,3 +135,54 @@ const LastPullTime = () => {
 
   return <Text>{`Last pull:\n${formatted}`}</Text>;
 };
+
+const PushInfo = () => {
+  const unsyncedSoilDataIds = useSelector(selectUnsyncedSoilDataSiteIds);
+  const unsyncedSoilMetadataIds = useSelector(selectUnsyncedMetadataSiteIds);
+  const errorSoilDataIds = useSelector(selectSoilDataSyncErrorSiteIds);
+  const errorSoilMetadataIds = useSelector(selectMetadataSyncErrorSiteIds);
+  return (
+    <>
+      <Text bold>Unsynced</Text>
+      <Row>
+        <Column flex={1}>
+          <Text underline>soilData</Text>
+          <SiteNameList siteIds={unsyncedSoilDataIds} />
+        </Column>
+        <Column flex={1}>
+          <Text underline>soilMetadata</Text>
+          <SiteNameList siteIds={unsyncedSoilMetadataIds} />
+        </Column>
+      </Row>
+      <Text bold>Sync errors</Text>
+      <Row>
+        <Column flex={1}>
+          <Text underline>soilData</Text>
+          <SiteNameList siteIds={errorSoilDataIds} />
+        </Column>
+        <Column flex={1}>
+          <Text underline>soilMetadata</Text>
+          <SiteNameList siteIds={errorSoilMetadataIds} />
+        </Column>
+      </Row>
+    </>
+  );
+};
+
+const SiteNameList = ({siteIds}: {siteIds: string[]}) => {
+  const sites = useSelector(selectSites);
+  if (siteIds.length === 0) {
+    return <Text>None</Text>;
+  }
+  return (
+    <>
+      {siteIds.map(id => (
+        <Text key={id}>• {sites[id]?.name ?? id}</Text>
+      ))}
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  dividerTopMargin: {marginTop: 4},
+});
