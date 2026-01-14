@@ -66,6 +66,11 @@ export const SoilIdMatchesSection = ({
   const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
 
+  // Check if soil data exists for the site
+  const soilData = useSelector(selectSoilData(siteId));
+  const showImproveMessage =
+    isSite && soilIdOutput.status === 'ready' && isEmptySoilData(soilData);
+
   return (
     <ScreenContentSection backgroundColor="grey.200">
       <Row alignItems="center" pb="12px">
@@ -81,6 +86,11 @@ export const SoilIdMatchesSection = ({
       <RestrictByConnectivity offline={true}>
         <OfflineAlert message={t('site.soil_id.matches.offline')} />
       </RestrictByConnectivity>
+      {showImproveMessage && (
+        <Box mb="12px">
+          <InfoAlertNoSoilData />
+        </Box>
+      )}
       <MatchTiles siteId={siteId} coords={coords} soilIdOutput={soilIdOutput} />
     </ScreenContentSection>
   );
@@ -147,10 +157,6 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
 
-  // Check if soil data exists for the site
-  const soilData = useSelector(selectSoilData(siteId));
-  const showImproveMessage = isSite && isEmptySoilData(soilData);
-
   const onMatchTilePress = useCallback(
     (soilMatch: SoilMatch) => {
       if (isSite) {
@@ -182,11 +188,6 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
       const sortedMatches = getSortedMatches(soilIdOutput.matches);
       return (
         <>
-          {showImproveMessage && (
-            <Box mb="12px">
-              <InfoAlertNoSoilData />
-            </Box>
-          )}
           {sortedMatches.map(soilMatch => (
             <SoilMatchTile
               key={soilMatch.soilInfo.soilSeries.name}
