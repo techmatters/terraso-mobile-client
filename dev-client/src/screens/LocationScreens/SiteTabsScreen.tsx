@@ -54,7 +54,7 @@ export const SiteTabsScreen = (props: Props) => {
   const site = useSelector(state => selectSite(siteId)(state));
   const userRole = useSelector(state => selectUserRoleSite(state, siteId));
 
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);

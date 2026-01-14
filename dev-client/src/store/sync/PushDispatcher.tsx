@@ -67,9 +67,14 @@ export const PushDispatcher = () => {
   const dispatchPush = useCallback(
     () =>
       dispatchPushBase().then(result => {
-        if (dispatchResultHasSyncErrors(result)) {
+        const errorCounts = getSyncErrorCounts(result);
+        if (errorCounts.soilDataErrors > 0 || errorCounts.metadataErrors > 0) {
           /* If the push yielded sync errors, notify the user */
-          syncNotifications.showError();
+          syncNotifications.showError({
+            reason: 'push',
+            soilDataErrors: errorCounts.soilDataErrors,
+            metadataErrors: errorCounts.metadataErrors,
+          });
         }
         return result;
       }),
@@ -108,11 +113,13 @@ export const PushDispatcher = () => {
   return <></>;
 };
 
-const dispatchResultHasSyncErrors = (
+const getSyncErrorCounts = (
   result: PayloadAction<undefined | object | SyncResults<unknown, unknown>>,
-): boolean => {
+): {soilDataErrors: number; metadataErrors: number} => {
+  const counts = {soilDataErrors: 0, metadataErrors: 0};
+
   if (!result.payload) {
-    return false;
+    return counts;
   }
 
   // Handle entity-level sync errors
@@ -120,8 +127,8 @@ const dispatchResultHasSyncErrors = (
     const soilDataResults = result.payload.soilDataResults as
       | SyncResults<unknown, unknown>
       | undefined;
-    if (soilDataResults && Object.keys(soilDataResults.errors).length > 0) {
-      return true;
+    if (soilDataResults) {
+      counts.soilDataErrors = Object.keys(soilDataResults.errors).length;
     }
   }
 
@@ -129,15 +136,12 @@ const dispatchResultHasSyncErrors = (
     const soilMetadataResults = result.payload.soilMetadataResults as
       | SyncResults<unknown, unknown>
       | undefined;
-    if (
-      soilMetadataResults &&
-      Object.keys(soilMetadataResults.errors).length > 0
-    ) {
-      return true;
+    if (soilMetadataResults) {
+      counts.metadataErrors = Object.keys(soilMetadataResults.errors).length;
     }
   }
 
-  return false;
+  return counts;
 };
 
 const dispatchFailed = (

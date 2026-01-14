@@ -18,13 +18,17 @@
 import {createContext, useContext, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {
+  SyncConflictInfo,
+  trackSyncError,
+} from 'terraso-mobile-client/analytics/syncErrorTracking';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ErrorDialog} from 'terraso-mobile-client/components/dialogs/ErrorDialog';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 
 export type SyncNotificationHandle = {
-  showError: () => void;
+  showError: (info?: SyncConflictInfo) => void;
 };
 
 const SyncNotificationContext = createContext<SyncNotificationHandle>({
@@ -42,7 +46,10 @@ export const SyncNotificationContextProvider = ({
   const errorDialogRef = useRef<ModalHandle>(null);
   const syncNotificationHandle = useMemo(() => {
     return {
-      showError: () => errorDialogRef.current?.onOpen(),
+      showError: (info?: SyncConflictInfo) => {
+        trackSyncError(info ?? {reason: 'other'});
+        errorDialogRef.current?.onOpen();
+      },
     };
   }, [errorDialogRef]);
 

@@ -54,8 +54,9 @@ export const ReadPinnedNoteScreen = ({projectId}: Props) => {
     navigation.pop();
   };
 
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const handleMissingPinnedNote = usePopNavigationAndShowSyncError();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError('project');
+  const handleMissingPinnedNote =
+    usePopNavigationAndShowSyncError('pinned_note');
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
     {data: content, doIfMissing: handleMissingPinnedNote},

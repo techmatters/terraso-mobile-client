@@ -45,7 +45,7 @@ export const SiteLocationSoilIdScreen = ({siteId, coords}: SiteProps) => {
 
   const site = useSelector(state => selectSite(siteId)(state));
 
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);

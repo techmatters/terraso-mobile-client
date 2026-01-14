@@ -46,17 +46,22 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
   const site = useSelector(state => selectSite(siteId)(state));
   const note = site?.notes[noteId];
   const userCanEditNote = useUserCanEditSiteNote({siteId, noteId});
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const handleMissingSiteNote = useCallback(() => {
     navigation.popTo('SITE_TABS', {
       siteId: siteId,
       initialTab: 'NOTES' as SiteTabName,
     });
     if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError();
+      syncNotifications.showError({
+        reason: 'missing_data',
+        missingEntityType: 'note',
+      });
     }
   }, [navigation, siteId, syncNotifications]);
-  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError(
+    'note_edit_permission',
+  );
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
     {data: note, doIfMissing: handleMissingSiteNote},

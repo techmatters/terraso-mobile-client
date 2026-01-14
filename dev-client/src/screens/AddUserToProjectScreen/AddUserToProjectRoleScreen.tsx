@@ -102,9 +102,11 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
   ]);
 
   const userCanEditProject = useRoleCanEditProject(projectId);
-  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const handleMissingNewUser = usePopNavigationAndShowSyncError();
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError(
+    'project_edit_permission',
+  );
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError('project');
+  const handleMissingNewUser = usePopNavigationAndShowSyncError('new_user');
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
     {data: userCanEditProject, doIfMissing: handleInsufficientPermissions},

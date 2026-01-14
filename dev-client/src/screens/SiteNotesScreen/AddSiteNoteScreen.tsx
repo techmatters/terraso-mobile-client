@@ -85,9 +85,11 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
 
   const site = useSelector(selectSite(siteId));
   const userCanEditSite = useRoleCanEditSite(siteId);
-  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError(
+    'site_edit_permission',
+  );
 
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
     {data: userCanEditSite, doIfMissing: handleInsufficientPermissions},

@@ -100,9 +100,11 @@ export const ManageTeamMemberScreen = ({
   }, [dispatch, projectId, userId, selectedRole, navigation]);
 
   const userCanEditProject = useRoleCanEditProject(projectId);
-  const handleMissingProject = useNavToBottomTabsAndShowSyncError();
-  const handleMissingUser = usePopNavigationAndShowSyncError();
-  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+  const handleMissingProject = useNavToBottomTabsAndShowSyncError('project');
+  const handleMissingUser = usePopNavigationAndShowSyncError('user');
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError(
+    'project_edit_permission',
+  );
   const requirements = useMemoizedRequirements([
     {data: project, doIfMissing: handleMissingProject},
     {data: userCanEditProject, doIfMissing: handleInsufficientPermissions},

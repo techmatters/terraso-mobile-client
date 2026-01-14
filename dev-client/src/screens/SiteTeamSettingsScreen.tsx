@@ -37,8 +37,10 @@ export const SiteTeamSettingsScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
 
   const userCanEditSite = useRoleCanEditSite(siteId);
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
-  const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
+  const handleInsufficientPermissions = usePopNavigationAndShowSyncError(
+    'site_edit_permission',
+  );
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
     {data: userCanEditSite, doIfMissing: handleInsufficientPermissions},

@@ -57,7 +57,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
 
   const isOffline = useIsOffline();
 
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);

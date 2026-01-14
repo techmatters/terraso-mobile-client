@@ -84,7 +84,7 @@ export const SoilSurfaceScreen = ({siteId}: Props) => {
 
   const isViewer = useMemo(() => isProjectViewer(userRole), [userRole]);
 
-  const handleMissingSite = useNavToBottomTabsAndShowSyncError();
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
   ]);
