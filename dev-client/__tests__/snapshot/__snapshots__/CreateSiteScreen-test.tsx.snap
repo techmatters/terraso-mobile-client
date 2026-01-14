@@ -373,7 +373,7 @@ exports[`renders correctly 1`] = `
                                           "borderTopRightRadius": 4,
                                         },
                                         {
-                                          "backgroundColor": "#efefef",
+                                          "backgroundColor": "#EFEFEF",
                                           "minHeight": undefined,
                                           "width": "100%",
                                         },
@@ -655,7 +655,7 @@ exports[`renders correctly 1`] = `
                                           "borderTopRightRadius": 4,
                                         },
                                         {
-                                          "backgroundColor": "#efefef",
+                                          "backgroundColor": "#EFEFEF",
                                           "minHeight": undefined,
                                           "width": "100%",
                                         },
@@ -892,7 +892,7 @@ exports[`renders correctly 1`] = `
                                           "borderTopRightRadius": 4,
                                         },
                                         {
-                                          "backgroundColor": "#efefef",
+                                          "backgroundColor": "#EFEFEF",
                                           "minHeight": undefined,
                                           "width": "100%",
                                         },

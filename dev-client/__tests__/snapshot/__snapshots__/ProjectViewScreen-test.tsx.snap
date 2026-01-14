@@ -2639,7 +2639,7 @@ exports[`renders correctly 1`] = `
                                                       },
                                                       {
                                                         "alignItems": "center",
-                                                        "backgroundColor": "#efefef",
+                                                        "backgroundColor": "#EFEFEF",
                                                         "borderBottomColor": "#8B8B8B",
                                                         "justifyContent": "space-between",
                                                         "padding": 10,
@@ -2807,7 +2807,7 @@ exports[`renders correctly 1`] = `
                                                             "margin": 16,
                                                           },
                                                           {
-                                                            "backgroundColor": "#efefef",
+                                                            "backgroundColor": "#EFEFEF",
                                                           },
                                                         ]
                                                       }
