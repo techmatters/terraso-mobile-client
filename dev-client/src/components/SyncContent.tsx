@@ -18,8 +18,10 @@
 import {useCallback} from 'react';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
+import {selectSyncInfoOpen} from 'terraso-mobile-client/model/devOnly/devOnlySelectors';
+import {setSyncInfoOpen} from 'terraso-mobile-client/model/devOnly/devOnlySlice';
 import {
   selectSoilDataSyncErrorSiteIds,
   selectUnsyncedSoilDataSiteIds,
@@ -36,20 +38,42 @@ import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
 // TODO: I expect this to be removed or modified by the time we actually release the offline feature,
 // but is helpful for manually testing
 export const SyncContent = () => {
+  const dispatch = useDispatch();
+  const syncInfoOpen = useSelector(selectSyncInfoOpen);
+
+  const toggleSyncInfo = useCallback(() => {
+    dispatch(setSyncInfoOpen(!syncInfoOpen));
+  }, [dispatch, syncInfoOpen]);
+
   return (
     <>
       <RestrictByFlag flag="FF_offline">
         <RestrictByFlag flag="FF_testing">
-          <SyncButton />
-          <PullInfo />
-          <PushInfo />
+          <ContainedButton
+            stretchToFit
+            onPress={toggleSyncInfo}
+            label={syncInfoOpen ? 'Close sync info' : 'Open sync info'}
+          />
+          {syncInfoOpen && <SyncInfoExpanded />}
         </RestrictByFlag>
       </RestrictByFlag>
     </>
   );
 };
 
-export const PushInfo = () => {
+const SyncInfoExpanded = () => {
+  return (
+    <>
+      <Row alignItems="center" margin="1px">
+        <PullButton />
+        <PullInfo />
+      </Row>
+      <PushInfo />
+    </>
+  );
+};
+
+const PushInfo = () => {
   const unsyncedSoilDataIds = useSelector(selectUnsyncedSoilDataSiteIds);
   const unsyncedSoilMetadataIds = useSelector(selectUnsyncedMetadataSiteIds);
   const errorSoilDataIds = useSelector(selectSoilDataSyncErrorSiteIds);
@@ -68,7 +92,7 @@ export const PushInfo = () => {
   );
 };
 
-export const PullInfo = () => {
+const PullInfo = () => {
   const pullRequested = useSelector(selectPullRequested);
 
   const requested = pullRequested ? 'requested' : 'not requested';
@@ -79,7 +103,7 @@ export const PullInfo = () => {
   );
 };
 
-export const SyncButton = () => {
+const PullButton = () => {
   const dispatch = useDispatch();
 
   const currentUserID = useSelector(selectCurrentUserID);
@@ -92,6 +116,6 @@ export const SyncButton = () => {
 
   return (
     // TODO-offline: Create string in en.json if we actually want this button for reals
-    <ContainedButton stretchToFit onPress={onSync} label="SYNC: pull" />
+    <ContainedButton onPress={onSync} label="Pull" />
   );
 };
