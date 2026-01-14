@@ -19,3 +19,6 @@ import {AppState} from 'terraso-mobile-client/store';
 
 export const selectSyncInfoOpen = (state: AppState) =>
   state.devOnly.syncInfoOpen;
+
+export const selectLastPullTimestamp = (state: AppState) =>
+  state.devOnly.lastPullTimestamp;

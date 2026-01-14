@@ -20,7 +20,10 @@ import {useCallback} from 'react';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
-import {selectSyncInfoOpen} from 'terraso-mobile-client/model/devOnly/devOnlySelectors';
+import {
+  selectLastPullTimestamp,
+  selectSyncInfoOpen,
+} from 'terraso-mobile-client/model/devOnly/devOnlySelectors';
 import {setSyncInfoOpen} from 'terraso-mobile-client/model/devOnly/devOnlySlice';
 import {
   selectSoilDataSyncErrorSiteIds,
@@ -52,7 +55,11 @@ export const SyncContent = () => {
           <ContainedButton
             stretchToFit
             onPress={toggleSyncInfo}
-            label={syncInfoOpen ? 'Close sync info' : 'Open sync info'}
+            label={
+              syncInfoOpen
+                ? 'Close sync info (dev only)'
+                : 'Open sync info (dev only)'
+            }
           />
           {syncInfoOpen && <SyncInfoExpanded />}
         </RestrictByFlag>
@@ -64,9 +71,10 @@ export const SyncContent = () => {
 const SyncInfoExpanded = () => {
   return (
     <>
-      <Row alignItems="center" margin="1px">
+      <Row alignItems="center" justifyContent="space-between" margin="1px">
         <PullButton />
         <PullInfo />
+        <LastPullTime />
       </Row>
       <PushInfo />
     </>
@@ -95,12 +103,8 @@ const PushInfo = () => {
 const PullInfo = () => {
   const pullRequested = useSelector(selectPullRequested);
 
-  const requested = pullRequested ? 'requested' : 'not requested';
-  return (
-    <>
-      <Text>{`* Pull ${requested}`}</Text>
-    </>
-  );
+  const requested = pullRequested ? '\nrequested!' : 'NOT\nrequested';
+  return <Text>{`Pull ${requested}`}</Text>;
 };
 
 const PullButton = () => {
@@ -118,4 +122,24 @@ const PullButton = () => {
     // TODO-offline: Create string in en.json if we actually want this button for reals
     <ContainedButton onPress={onSync} label="Pull" />
   );
+};
+
+const LastPullTime = () => {
+  const lastPullTimestamp = useSelector(selectLastPullTimestamp);
+
+  if (lastPullTimestamp === null) {
+    return <Text>Last pull: Never</Text>;
+  }
+
+  const date = new Date(lastPullTimestamp);
+  const formatted = date.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  return <Text>{`Last pull:\n${formatted}`}</Text>;
 };

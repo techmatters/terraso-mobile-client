@@ -15,14 +15,25 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
+
+import {SyncTimestamp} from 'terraso-mobile-client/model/sync/records';
 
 export type DevOnlyState = {
   syncInfoOpen: boolean;
+  lastPullTimestamp: SyncTimestamp | null;
 };
 
 export const initialState: DevOnlyState = {
   syncInfoOpen: false,
+  lastPullTimestamp: null,
+};
+
+export const setLastPullTimestamp = (
+  state: Draft<DevOnlyState>,
+  timestamp: SyncTimestamp,
+) => {
+  state.lastPullTimestamp = timestamp;
 };
 
 export const devOnlySlice = createSlice({
