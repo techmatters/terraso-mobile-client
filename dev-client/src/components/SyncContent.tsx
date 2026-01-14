@@ -16,7 +16,7 @@
  */
 
 import {useCallback} from 'react';
-import {StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet, useWindowDimensions} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -79,16 +79,19 @@ export const SyncContent = () => {
 };
 
 const SyncInfoExpanded = () => {
+  const {height} = useWindowDimensions();
   return (
-    <Box margin="8px">
-      <Row alignItems="center" justifyContent="space-between">
-        <PullButton />
-        <PullInfo />
-        <LastPullTime />
-      </Row>
-      <Divider style={styles.dividerTopMargin} />
-      <PushInfo />
-    </Box>
+    <ScrollView style={[styles.scrollViewContainer, {maxHeight: height / 2}]}>
+      <Box margin="8px">
+        <Row alignItems="center" justifyContent="space-between">
+          <PullButton />
+          <PullInfo />
+          <LastPullTime />
+        </Row>
+        <Divider style={styles.dividerTopMargin} />
+        <PushInfo />
+      </Box>
+    </ScrollView>
   );
 };
 
@@ -185,4 +188,5 @@ const SiteNameList = ({siteIds}: {siteIds: string[]}) => {
 
 const styles = StyleSheet.create({
   dividerTopMargin: {marginTop: 4},
+  scrollViewContainer: {flexGrow: 0},
 });
