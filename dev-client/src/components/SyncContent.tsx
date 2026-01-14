@@ -36,6 +36,7 @@ import {
   selectSoilDataSyncErrorSiteIds,
   selectUnsyncedSoilDataSiteIds,
 } from 'terraso-mobile-client/model/soilData/soilDataSelectors';
+import {selectSitesWithSoilIdStatus} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
 import {
   selectMetadataSyncErrorSiteIds,
   selectUnsyncedMetadataSiteIds,
@@ -90,6 +91,7 @@ const SyncInfoExpanded = () => {
         </Row>
         <Divider style={styles.dividerTopMargin} />
         <PushInfo />
+        <SoilIdInfo />
       </Box>
     </ScrollView>
   );
@@ -182,6 +184,19 @@ const SiteNameList = ({siteIds}: {siteIds: string[]}) => {
       {siteIds.map(id => (
         <Text key={id}>• {sites[id]?.name ?? id}</Text>
       ))}
+    </>
+  );
+};
+
+const SoilIdInfo = () => {
+  const sitesAndSoilIdStatus = useSelector(selectSitesWithSoilIdStatus);
+  const sitesLoadingSoilId = Object.entries(sitesAndSoilIdStatus)
+    .filter(([_, value]) => value === 'loading')
+    .map(([siteId, _]) => siteId);
+  return (
+    <>
+      <Text bold>Sites loading Soil ID</Text>
+      <SiteNameList siteIds={sitesLoadingSoilId} />
     </>
   );
 };
