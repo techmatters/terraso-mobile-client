@@ -26,6 +26,7 @@ import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpCo
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {
+  Box,
   Heading,
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -35,18 +36,22 @@ import {
   SoilIdOutput,
   useSoilIdOutput,
 } from 'terraso-mobile-client/hooks/soilIdHooks';
+import {SoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {getSortedMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdRanking';
 import {
   useSelectedSoil,
   useUserRatings,
 } from 'terraso-mobile-client/model/soilMetadata/soilMetadataHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {InfoAlertNoSoilData} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/InfoAlertNoSoilData';
 import {NoMapDataWarningAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/NoMapDataWarningAlert';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {SoilMatchesErrorAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/SoilMatchesErrorAlert';
 import {SoilMatchTile} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/SoilMatchTile';
 import {getMatchListTileVariant} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/soilMatchTileVariants';
 import {TopSoilMatchesInfoContent} from 'terraso-mobile-client/screens/LocationScreens/components/TopSoilMatchesInfoContent';
+import {useSelector} from 'terraso-mobile-client/store';
+import {selectSoilData} from 'terraso-mobile-client/store/selectors';
 
 type SoilIdMatchesSectionProps = {siteId?: string; coords: Coords};
 
@@ -60,6 +65,11 @@ export const SoilIdMatchesSection = ({
   const soilIdOutput = useSoilIdOutput(soilIdInput);
   const dataRegion = soilIdOutput.dataRegion;
   const isSite = !!siteId;
+
+  // Check if soil data exists for the site
+  const soilData = useSelector(selectSoilData(siteId));
+  const showImproveMessage =
+    isSite && soilIdOutput.status === 'ready' && isEmptySoilData(soilData);
 
   return (
     <ScreenContentSection backgroundColor="grey.200">
@@ -76,12 +86,69 @@ export const SoilIdMatchesSection = ({
       <RestrictByConnectivity offline={true}>
         <OfflineAlert message={t('site.soil_id.matches.offline')} />
       </RestrictByConnectivity>
+      {showImproveMessage && (
+        <Box mb="12px">
+          <InfoAlertNoSoilData />
+        </Box>
+      )}
       <MatchTiles siteId={siteId} coords={coords} soilIdOutput={soilIdOutput} />
     </ScreenContentSection>
   );
 };
 
 type MatchTilesProps = SoilIdMatchesSectionProps & {soilIdOutput: SoilIdOutput};
+
+/**
+ * Checks if an object has any non-null values, excluding specified keys.
+ *
+ * IMPORTANT: This uses a dynamic approach that automatically includes new fields
+ * added to SoilData or DepthDependentSoilData types. The trade-off is:
+ * - Pro: New user data fields are automatically checked without code changes
+ * - Con: If new system/config fields are added to these types, they must be
+ *   added to the exclusion lists below, otherwise they may cause false positives
+ */
+const hasAnyNonNullValue = (obj: any, excludedKeys: string[]): boolean => {
+  return Object.entries(obj).some(
+    ([key, value]) => !excludedKeys.includes(key) && value != null,
+  );
+};
+
+// System/config fields in SoilData that should not be considered user data
+const SOIL_DATA_EXCLUDED_KEYS = [
+  'site', // Reference to parent site
+  'depthIntervalPreset', // System config (always has a value)
+  'depthIntervals', // Interval configuration, not soil data
+  'depthDependentData', // Handled separately with recursive check
+];
+
+// System/config fields in DepthDependentSoilData that should not be considered user data
+const DEPTH_DATA_EXCLUDED_KEYS = [
+  'site', // Reference to parent site
+  'depthInterval', // Defines the interval bounds, not user-entered soil data
+];
+
+const isEmptySoilData = (soilData: SoilData): boolean => {
+  if (!soilData) return true;
+
+  // Check if any top-level soil data fields have been set
+  if (hasAnyNonNullValue(soilData, SOIL_DATA_EXCLUDED_KEYS)) {
+    return false;
+  }
+
+  // Check if any depth-dependent data (texture, color, rock fragment, etc) has been entered
+  // Note: depthDependentData entries exist as objects when intervals are added,
+  // but may have all user data fields as null - we need to check inside each entry
+  if (
+    Array.isArray(soilData.depthDependentData) &&
+    soilData.depthDependentData.some(depthData =>
+      hasAnyNonNullValue(depthData, DEPTH_DATA_EXCLUDED_KEYS),
+    )
+  ) {
+    return false;
+  }
+
+  return true;
+};
 
 const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   const navigation = useNavigation();
@@ -118,22 +185,27 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
     case 'loading':
       return isOffline ? null : <ActivityIndicator size="small" />;
     case 'ready': {
-      return getSortedMatches(soilIdOutput.matches).map(soilMatch => (
-        <SoilMatchTile
-          key={soilMatch.soilInfo.soilSeries.name}
-          soilName={soilMatch.soilInfo.soilSeries.name}
-          dataRegion={dataRegion}
-          score={
-            soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
-          }
-          onPress={() => onMatchTilePress(soilMatch)}
-          variant={getMatchListTileVariant(
-            soilMatch,
-            userRatings,
-            selectedSoilId,
-          )}
-        />
-      ));
+      const sortedMatches = getSortedMatches(soilIdOutput.matches);
+      return (
+        <>
+          {sortedMatches.map(soilMatch => (
+            <SoilMatchTile
+              key={soilMatch.soilInfo.soilSeries.name}
+              soilName={soilMatch.soilInfo.soilSeries.name}
+              dataRegion={dataRegion}
+              score={
+                soilMatch.combinedMatch?.score ?? soilMatch.locationMatch.score
+              }
+              onPress={() => onMatchTilePress(soilMatch)}
+              variant={getMatchListTileVariant(
+                soilMatch,
+                userRatings,
+                selectedSoilId,
+              )}
+            />
+          ))}
+        </>
+      );
     }
     case 'DATA_UNAVAILABLE':
       return <NoMapDataWarningAlert />;

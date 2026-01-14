@@ -246,8 +246,9 @@ export const useProjectSoilSettings = (projectId: string) =>
 export const useSiteProjectSoilSettings = (siteId: string) =>
   useProjectSoilSettingsBase(useSelector(selectSite(siteId))?.projectId);
 
-export const selectSoilData = (siteId: string) => (state: AppState) =>
-  getSoilDataForSite(siteId, state.soilData.soilData);
+export const selectSoilData =
+  (siteId: string | undefined) => (state: AppState) =>
+    getSoilDataForSite(siteId, state.soilData.soilData);
 
 export const useSiteSoilIntervals = (siteId: string): AggregatedInterval[] => {
   const projectSettings = useSiteProjectSoilSettings(siteId);

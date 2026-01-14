@@ -77,9 +77,12 @@ export const getVisibleSoilDataForSite = (
 };
 
 export const getSoilDataForSite = (
-  siteId: string,
+  siteId: string | undefined,
   soilData: Record<string, SoilData | undefined>,
-) => soilData[siteId] ?? DEFAULT_SOIL_DATA;
+) =>
+  siteId === undefined
+    ? DEFAULT_SOIL_DATA
+    : (soilData[siteId] ?? DEFAULT_SOIL_DATA);
 
 export const getVisibleDepthIntervals = (
   siteId: string,
