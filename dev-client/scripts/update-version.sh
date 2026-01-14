@@ -76,11 +76,11 @@ git checkout -b "fix/update-version-to-$NEW_VERSION" origin/main
 # Update app.config.ts
 sed -i '' "s/version: '$CURRENT_VERSION'/version: '$NEW_VERSION'/" app.config.ts
 
-# Update package.json
-sed -i '' "s/\"version\": \"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" package.json
+# Update package.json (only the top-level version)
+jq --indent 2 '.version = "'"$NEW_VERSION"'"' package.json > package.json.tmp && mv package.json.tmp package.json
 
-# Update package-lock.json (has version in two places at the top)
-sed -i '' "s/\"version\": \"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" package-lock.json
+# Update package-lock.json (only top-level version and packages[""].version)
+jq --indent 2 '.version = "'"$NEW_VERSION"'" | .packages[""].version = "'"$NEW_VERSION"'"' package-lock.json > package-lock.json.tmp && mv package-lock.json.tmp package-lock.json
 
 BRANCH_NAME="fix/update-version-to-$NEW_VERSION"
 
