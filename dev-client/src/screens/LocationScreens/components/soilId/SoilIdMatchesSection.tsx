@@ -148,7 +148,7 @@ const MatchTiles = ({siteId, coords, soilIdOutput}: MatchTilesProps) => {
   const isSite = !!siteId;
 
   // Check if soil data exists for the site
-  const soilData = useSelector(selectSoilData(siteId ?? ''));
+  const soilData = useSelector(selectSoilData(siteId));
   const showImproveMessage = isSite && isEmptySoilData(soilData);
 
   const onMatchTilePress = useCallback(
