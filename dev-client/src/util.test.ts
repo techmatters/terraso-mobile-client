@@ -34,9 +34,9 @@ describe('isValidCoordinates', () => {
     });
 
     it('accepts boundary values', () => {
-      // TODO: Currently these fail
-      // expect(isValidCoordinates('90, 180')).toBe(true);
-      // expect(isValidCoordinates('-90, -180')).toBe(true);
+      expect(isValidCoordinates('90, 180')).toBe(true);
+      expect(isValidCoordinates('-90, -180')).toBe(true);
+      expect(isValidCoordinates('90.00, -180.00')).toBe(true);
       expect(isValidCoordinates('0, 0')).toBe(true);
     });
 
@@ -68,6 +68,7 @@ describe('isValidCoordinates', () => {
 
   describe('invalid coordinates', () => {
     it('rejects latitude out of range', () => {
+      expect(isValidCoordinates('90.1, 0')).toBe(false);
       expect(isValidCoordinates('91, 0')).toBe(false);
       expect(isValidCoordinates('-91, 0')).toBe(false);
       expect(isValidCoordinates('100, 0')).toBe(false);

@@ -129,7 +129,7 @@ export const sortCompare = (
 
 export const isValidCoordinates = (input: string) => {
   const coordRegex =
-    /^([-+]?[1-8]?\d(?:\.\d+)?),\s*([-+]?180(?:\.0+)?|[-+]?((1[0-7]\d)|([1-9]?\d))(?:\.\d+)?)$/;
+    /^([-+]?90(?:\.0+)?|[-+]?[1-8]?\d(?:\.\d+)?),\s*([-+]?180(?:\.0+)?|[-+]?((1[0-7]\d)|([1-9]?\d))(?:\.\d+)?)$/;
 
   if (!coordRegex.test(input)) {
     return false;
