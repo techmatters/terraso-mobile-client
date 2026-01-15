@@ -24,6 +24,7 @@ import {
 
 import {sharedReducers} from 'terraso-client-shared/store/store';
 
+import devOnlyReducer from 'terraso-mobile-client/model/devOnly/devOnlySlice';
 import {reducer as elevationReducer} from 'terraso-mobile-client/model/elevation/elevationSlice';
 import exportReducer from 'terraso-mobile-client/model/export/exportSlice';
 import {reducer as mapReducer} from 'terraso-mobile-client/model/map/mapSlice';
@@ -47,6 +48,7 @@ const sliceReducers = {
   soilMetadata: soilMetadataReducer,
   soilIdMatch: soilIdMatchReducer,
   sync: syncReducer,
+  devOnly: devOnlyReducer,
 };
 
 export type AppState = StateFromReducersMapObject<typeof sliceReducers>;
