@@ -75,8 +75,7 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
   const isOffline = useIsOffline();
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
-  const {coords, suggestions, querySuggestions, lookupFeature} =
-    useMapSuggestions();
+  const {suggestions, querySuggestions, lookupFeature} = useMapSuggestions();
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const sitesScreen = useSitesScreenContext();
 
@@ -86,20 +85,17 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
     }
   }, [sitesScreen, query]);
 
-  useEffect(() => {
-    if (zoomTo && coords) {
-      zoomTo(coords);
-    }
-  }, [zoomTo, coords]);
-
   const selectMapboxSuggestion = useCallback(
-    (name: string, mapboxId: string) => {
+    async (name: string, mapboxId: string) => {
       setQuery(name);
       setShowAutocomplete(false);
-      lookupFeature(mapboxId);
+      const coords = await lookupFeature(mapboxId);
+      if (zoomTo && coords) {
+        zoomTo(coords);
+      }
       Keyboard.dismiss();
     },
-    [lookupFeature],
+    [lookupFeature, zoomTo],
   );
 
   const selectCoordsSuggestion = useCallback(

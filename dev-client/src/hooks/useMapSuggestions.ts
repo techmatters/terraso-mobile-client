@@ -42,7 +42,6 @@ const {getSuggestions, retrieveFeature} = initMapSearch();
 
 export const useMapSuggestions = () => {
   const isOffline = useIsOffline();
-  const [coords, setCoords] = useState<Coords | undefined>(undefined);
   const [suggestions, setSuggestions] = useState<MapSuggestion[]>([]);
 
   /*
@@ -101,8 +100,6 @@ export const useMapSuggestions = () => {
             return null;
           });
         }
-      } else {
-        setCoords(undefined);
       }
       setSuggestions(newSuggestions);
     },
@@ -114,14 +111,13 @@ export const useMapSuggestions = () => {
   );
 
   const lookupFeature = useCallback(async (mapboxId: string) => {
-    let {features} = await retrieveFeature(mapboxId);
+    const {features} = await retrieveFeature(mapboxId);
     // TODO: For now we are just going to zoom to the first feature
     // Should see what the best way to do this is
-    setCoords(features[0]?.properties?.coordinates);
+    return features[0]?.properties?.coordinates as Coords | undefined;
   }, []);
 
   return {
-    coords,
     suggestions,
     querySuggestions: debouncedQuerySuggestions as (
       queryText: string,
