@@ -39,8 +39,11 @@ import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenCo
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
 import {MapSearchOfflineAlertBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineAlertBox';
-import {MapSearchSuggestionBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
-import {Suggestion} from 'terraso-mobile-client/services/mapSearchService';
+import {
+  CoordsSuggestionBox,
+  MapboxSuggestionBox,
+} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
+import {MapSuggestion} from 'terraso-mobile-client/services/mapSearchService';
 
 const ShowAutocompleteContext = createContext(false);
 
@@ -89,7 +92,7 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
     }
   }, [zoomTo, coords]);
 
-  const selectQuery = useCallback(
+  const selectMapboxSuggestion = useCallback(
     (name: string, mapboxId: string) => {
       setQuery(name);
       setShowAutocomplete(false);
@@ -99,21 +102,38 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
     [lookupFeature],
   );
 
-  const flatListProps: AutocompleteInputProps<Suggestion>['flatListProps'] =
+  const selectCoordsSuggestion = useCallback(
+    (selectedCoords: Coords) => {
+      setQuery(`${selectedCoords.latitude}, ${selectedCoords.longitude}`);
+      setShowAutocomplete(false);
+      if (zoomTo) {
+        zoomTo(selectedCoords);
+      }
+      Keyboard.dismiss();
+    },
+    [zoomTo],
+  );
+
+  const flatListProps: AutocompleteInputProps<MapSuggestion>['flatListProps'] =
     useMemo(
       () => ({
         keyboardShouldPersistTaps: 'always',
-        keyExtractor: suggestion => suggestion.mapbox_id,
-        renderItem: ({item}) => (
-          <MapSearchSuggestionBox
-            name={item.name}
-            address={item.place_formatted}
-            mapboxId={item.mapbox_id}
-            onPress={selectQuery}
-          />
-        ),
+        keyExtractor: suggestion =>
+          suggestion.kind === 'coords' ? suggestion.name : suggestion.mapbox_id,
+        renderItem: ({item}) =>
+          item.kind === 'coords' ? (
+            <CoordsSuggestionBox
+              suggestion={item}
+              onPress={selectCoordsSuggestion}
+            />
+          ) : (
+            <MapboxSuggestionBox
+              suggestion={item}
+              onPress={selectMapboxSuggestion}
+            />
+          ),
       }),
-      [selectQuery],
+      [selectMapboxSuggestion, selectCoordsSuggestion],
     );
 
   const onChangeText = useCallback(

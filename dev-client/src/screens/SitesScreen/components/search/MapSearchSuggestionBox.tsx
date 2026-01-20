@@ -19,34 +19,59 @@ import {useCallback} from 'react';
 
 import {Pressable} from 'native-base';
 
+import {Coords} from 'terraso-client-shared/types';
+
 import {
   Column,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  CoordinateSuggestion,
+  MapboxSuggestion,
+} from 'terraso-mobile-client/services/mapSearchService';
 
-type Props = {
-  name: string;
-  address: string;
-  mapboxId: string;
+type MapboxSuggestionBoxProps = {
+  suggestion: MapboxSuggestion;
   onPress: (name: string, mapboxId: string) => void;
 };
 
-export const MapSearchSuggestionBox = ({
-  name,
-  address,
-  mapboxId,
+export const MapboxSuggestionBox = ({
+  suggestion,
   onPress,
-}: Props) => {
-  const selectSuggestion = useCallback(
-    () => onPress(name, mapboxId),
-    [name, mapboxId, onPress],
+}: MapboxSuggestionBoxProps) => {
+  const handlePress = useCallback(
+    () => onPress(suggestion.name, suggestion.mapbox_id),
+    [suggestion.name, suggestion.mapbox_id, onPress],
   );
 
   return (
-    <Pressable w="100%" py={1} px={3} onPress={selectSuggestion}>
+    <Pressable w="100%" py={1} px={3} onPress={handlePress}>
       <Column>
-        <Text>{name}</Text>
-        <Text>{address}</Text>
+        <Text>{suggestion.name}</Text>
+        <Text>{suggestion.place_formatted}</Text>
+      </Column>
+    </Pressable>
+  );
+};
+
+type CoordsSuggestionBoxProps = {
+  suggestion: CoordinateSuggestion;
+  onPress: (coords: Coords) => void;
+};
+
+export const CoordsSuggestionBox = ({
+  suggestion,
+  onPress,
+}: CoordsSuggestionBoxProps) => {
+  const handlePress = useCallback(
+    () => onPress(suggestion.coords),
+    [suggestion.coords, onPress],
+  );
+
+  return (
+    <Pressable w="100%" py={1} px={3} onPress={handlePress}>
+      <Column>
+        <Text>{suggestion.name}</Text>
       </Column>
     </Pressable>
   );

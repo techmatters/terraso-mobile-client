@@ -17,14 +17,28 @@
 
 import {v4 as uuidv4} from 'uuid';
 
+import {Coords} from 'terraso-client-shared/types';
+
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 
 interface SuggestionResponse {
-  suggestions: Suggestion[];
+  suggestions: MapboxSuggestion[];
   attribution: string;
 }
 
-export interface Suggestion {
+interface RawSuggestionResponse {
+  suggestions: Omit<MapboxSuggestion, 'kind'>[];
+  attribution: string;
+}
+
+export type CoordinateSuggestion = {
+  kind: 'coords';
+  name: string;
+  coords: Coords;
+};
+
+export type MapboxSuggestion = {
+  kind: 'mapbox';
   name: string;
   name_preferred: string;
   mapbox_id: string;
@@ -36,7 +50,9 @@ export interface Suggestion {
   /**
    * See other properties at https://docs.mapbox.com/api/search/search-box/#response-get-suggested-results
    */
-}
+};
+
+export type MapSuggestion = MapboxSuggestion | CoordinateSuggestion;
 
 type Session = {
   token: string;
@@ -88,8 +104,11 @@ export function initMapSearch() {
           `q=${query}&access_token=${ACCESS_TOKEN}&session_token=${session.token}&types=place,address,street,block,poi`,
         {signal},
       );
-      const payload = (await checkResponse(resp)) as SuggestionResponse;
-      return payload;
+      const payload = (await checkResponse(resp)) as RawSuggestionResponse;
+      return {
+        ...payload,
+        suggestions: payload.suggestions.map(s => ({...s, kind: 'mapbox'})),
+      } as SuggestionResponse;
     } finally {
       if (session.queries > SESSION_MAX_QUERIES) {
         session = initSession();
