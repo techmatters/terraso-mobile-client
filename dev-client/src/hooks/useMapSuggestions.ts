@@ -17,14 +17,9 @@
 
 import {useCallback, useState} from 'react';
 
-import {useDebouncedCallback} from 'use-debounce';
-
 import {Coords} from 'terraso-client-shared/types';
 
-import {
-  MAP_QUERY_MIN_LENGTH,
-  SEARCH_DEBOUNCE_TIME_MS,
-} from 'terraso-mobile-client/constants';
+import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
   CoordinateSuggestion,
@@ -105,10 +100,6 @@ export const useMapSuggestions = () => {
     },
     [makeSuggestionsApiCall, isOffline],
   );
-  const debouncedQuerySuggestions = useDebouncedCallback(
-    querySuggestions,
-    SEARCH_DEBOUNCE_TIME_MS,
-  );
 
   const lookupFeature = useCallback(async (mapboxId: string) => {
     const {features} = await retrieveFeature(mapboxId);
@@ -119,9 +110,7 @@ export const useMapSuggestions = () => {
 
   return {
     suggestions,
-    querySuggestions: debouncedQuerySuggestions as (
-      queryText: string,
-    ) => Promise<void>,
+    querySuggestions,
     lookupFeature,
   };
 };
