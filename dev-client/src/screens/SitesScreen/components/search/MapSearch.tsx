@@ -149,12 +149,18 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
     setShowAutocomplete(false);
   }, [setShowAutocomplete]);
 
+  // Only the coordinate suggestion should be shown when offline
+  // Mapbox suggestions should disappear
+  const suggestionsToShow = isOffline
+    ? suggestions.filter(suggestion => suggestion.kind === 'coords')
+    : suggestions;
+
   return (
     <View flex={1} pointerEvents="box-none">
       <ShowAutocompleteContext.Provider value={showAutocomplete}>
         <Autocomplete
-          data={suggestions}
-          hideResults={!showAutocomplete || isOffline}
+          data={suggestionsToShow}
+          hideResults={!showAutocomplete}
           flatListProps={flatListProps}
           inputContainerStyle={styles.inputContainer}
           onChangeText={onChangeText}
