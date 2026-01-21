@@ -19,6 +19,7 @@ import {FeatureFlagControlPanel} from 'terraso-mobile-client/components/FeatureF
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponentList';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -40,20 +41,24 @@ export function UserSettingsScreen() {
         <UiComponentList />
       </RestrictByFlag>
       <FeatureFlagControlPanel />
-      <Column margin="12px">
-        <UserIndicator />
-        <MenuList>
-          <DataExportItem />
-          <HelpItem />
-          <PrivacyItem />
-          <TosItem />
-          <SelectLanguageItem />
-          <CopyAccessTokenItem />
-          <SignOutItem />
-          <DeleteAccountItem />
-        </MenuList>
-        <VersionIndicator />
-      </Column>
+      <SafeScrollView>
+        <Column margin="12px">
+          <UserIndicator />
+          <MenuList>
+            <DataExportItem />
+            <HelpItem />
+            <PrivacyItem />
+            <TosItem />
+            <SelectLanguageItem />
+            <RestrictByFlag flag="FF_testing">
+              <CopyAccessTokenItem />
+            </RestrictByFlag>
+            <SignOutItem />
+            <DeleteAccountItem />
+          </MenuList>
+          <VersionIndicator />
+        </Column>
+      </SafeScrollView>
     </ScreenScaffold>
   );
 }
