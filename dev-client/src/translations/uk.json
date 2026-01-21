@@ -149,7 +149,7 @@
                 "no_map_data_body": "Для цієї ділянки немає даних карти ґрунтів, тому LandPKS не може згенерувати відповідні для цієї ділянки ґрунти. Результати спостережень для цієї ділянки все ще можна вводити і, якщо дані карти ґрунтів стануть доступними в майбутньому, тут з'являться аналоги ґрунтів.",
                 "match_score": "{{score}}",
                 "offline": "Співпадіння ґрунтів оновлюватимуться, коли ви будете онлайн.",
-                "improve_hint": "TK Improve matches by entering data",
+                "improve_hint": "TK Improve the matches",
                 "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
                 "selector": "Це правильно ідентифікований ґрунт",
                 "selected": "Обраний ґрунт",

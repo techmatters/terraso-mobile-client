@@ -125,7 +125,7 @@
                 "no_map_data_title": "No soil map data",
                 "no_map_data_body": "There is no soil map data available for this location, so LandPKS cannot generate soil matches. Observations can still be entered, and if soil map data becomes available in the future, soil matches will appear here.",
                 "offline": "Soil matches will update when you are online.",
-                "improve_hint": "Improve matches by entering data",
+                "improve_hint": "Improve the matches",
                 "improve_description": "These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
                 "rate": {
                     "fab": "Rate match",
