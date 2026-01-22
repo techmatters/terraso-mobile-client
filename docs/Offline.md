@@ -41,11 +41,11 @@ We also had to navigate these challenges within the following constraints:
 
 ## II. Approach
 
-The team performed initial research to inform our process. Perticularly relevant reading for more background:
+The team performed initial research to inform our process. Particularly relevant reading for more background:
 
 - https://developer.android.com/topic/architecture/data-layer/offline-first
 - https://www.whitespectre.com/ideas/how-to-build-offline-first-react-native-apps-with-react-query-and-typescript/
-- TODO(@shrouxm, @knipec): Any other reading that was helpful to you
+- TODO(@shrouxm): Any other reading that was helpful to you
 
 We then partitioned the problem of offline data into the following areas of concern.
 
@@ -69,7 +69,9 @@ We then partitioned the problem of offline data into the following areas of conc
 
    - The server must be queried for a full view of updated state, which the client must then display to the user. This needs to occur when the user first comes online, and it should be able to periodically occur during regular online-mode operation.
 
-TODO(@shrouxm, @knipec): any additional documents (the Mural?) to embed here as reference.
+TODO(@shrouxm): any additional documents to embed here as reference.
+
+- Doc: ["Offline breakdown" mural](https://app.mural.co/t/techmatters9109/m/techmatters9109/1725489007438/2a49531c56794e292433521d263a422be8f13c3b)
 
 ## III. Implementation
 
@@ -79,14 +81,16 @@ The initial scope of the problem was further reduced by selecting a subset of co
 
 After initial research, we decided to integrate with the `netinfo` library (https://github.com/react-native-netinfo/react-native-netinfo) to detect connectivity. The rest of the app can listen for connectivity status using React hooks which are connected to a context encapsulating the library's behavior. This status drives the enabling/disabling of relevant components as well as internal behavior that is dependent on connectivity state.
 
-TODO(@knipec): any other details/reading/etc
+- Doc: [NetInfo investigation](https://docs.google.com/document/d/1yv_Hiw56yi7TioE4hAac8LWu1AAf6tTwXGIel0KEdGY/edit?tab=t.0)
+  Note: permissions may only include internal team members
 
 ### b. Persistence
 
 Persistence is handled through a custom Redux middleware which persists the mobile client's Redux state to the app's device-backed key-value storage when state changes occur. Persisted state is loaded back into Redux when the app reopens. This seemed like the simplest solution that achieved our goals; while we investigated more heavyweight solutions involving local databases, they far exceeded our scope capacity. We elected to implement a custom middleware due to the low initial cost of implementation and a lack of actively-maintained libraries which we felt confident in adopting for such an integral piece of behavior.
 
+When the user signs out, both in-memory Redux state and persisted storage of that redux state are cleared. Because we don't want users to lose data, signing out is blocked if the user has unsynced changes.
+
 TODO(@shrouxm): Handling of transient data, any other details I missed?
-TODO(@knipec): Flushing data on logout?
 
 ### c. Business rules
 
@@ -177,9 +181,9 @@ An internal mechanism called the **Push Dispatcher** listens for app state chang
 1. Dispatch a push action for those entities, which will result in the server recieving the combined diffs of their changes.
 1. If the operation fails, begin a periodic retry cycle which will end when there is a change to the set of unsynced data (which indicates either a successful sync or new changes to push.)
 
-TODO(@shrouxm, @knipec): embed visual diagram from mural doc?
+- ("Push" flowchart)[https://app.mural.co/t/techmatters9109/m/techmatters9109/1725489007438/2a49531c56794e292433521d263a422be8f13c3b?wid=0-1730917322279] from mural doc
 
-The dispatcher sees a debounced view of online status and entity state, to that it does not attempt to e.g. rapidly queue up many push operations as the user makes several subsequent changes. See the `PushDispatcher` component for more detailed implementation documentation.
+The dispatcher sees a debounced view of online status and entity state, so that it does not attempt to e.g. rapidly queue up many push operations as the user makes several subsequent changes. See the `PushDispatcher` component for more detailed implementation documentation.
 
 #### Processing changes on server
 
@@ -201,13 +205,14 @@ Mirroring the push system, an internal mechanism called the **Pull Dispatcher** 
 1. OR a periodic timer has elapsed (on the scale of every five minutes),
 1. Queue a pull to occur when the dispatcher is next able to do so.
 
-TODO(@shrouxm, @knipec): embed visual diagram from mural doc?
+- ("Pull" flowchart)[https://app.mural.co/t/techmatters9109/m/techmatters9109/1725489007438/2a49531c56794e292433521d263a422be8f13c3b?wid=0-1730918257303] from mural doc
+- Doc: (Offline Research: "Pull" (sync) from Server)[https://docs.google.com/document/d/1Z_9mxYD_Ky0OeYG0NaO8YV40oS-C8sJiZR-vfkqXUOM/]
 
 The dispatcher component listenes for queued pulls and, when the app is online with a logged-in user, dispatches a pull until one succeeds, and then clears the pull queue. See the `PullDispatcher` / `PullRequester` components for more detailed implementation documentation.
 
 #### Handling changes while app is running
 
-TODO(@knipec): screen requirements and handling background changes while viewing data
+When the app receives data from the server (either from a full "pull" or a "push" returning data), some objects may have been changed or removed. For the most part, redux can handle this smoothly. However, consider an example where a project manager deleted Site A, or restricted a user's permissions. If the user was viewing a screen that requires the existence of Site A, like the site dashboard, and then a "pull" happens, their data no longer includes Site A, and the screen should no longer be viewable. For cases like these, we created `ScreenDataRequirements`, which allows screens to declare "required" data, and what to do if that data does not exist. Typically when required data does not exist, `SyncNotificationContext.tsx` will show a dialog to inform the user there was a sync conflict, and navigate to a different screen.
 
 ### f. Additional concern: Soil ID
 
