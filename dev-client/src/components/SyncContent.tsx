@@ -16,14 +16,27 @@
  */
 
 import {useCallback} from 'react';
+import {ScrollView, StyleSheet, useWindowDimensions} from 'react-native';
+import {Divider} from 'react-native-paper';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  Column,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
+import {
+  selectLastPullTimestamp,
+  selectSyncInfoOpen,
+} from 'terraso-mobile-client/model/devOnly/devOnlySelectors';
+import {setSyncInfoOpen} from 'terraso-mobile-client/model/devOnly/devOnlySlice';
 import {
   selectSoilDataSyncErrorSiteIds,
   selectUnsyncedSoilDataSiteIds,
 } from 'terraso-mobile-client/model/soilData/soilDataSelectors';
+import {selectSitesWithSoilIdStatus} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSelectors';
 import {
   selectMetadataSyncErrorSiteIds,
   selectUnsyncedMetadataSiteIds,
@@ -31,55 +44,67 @@ import {
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
+import {
+  selectCurrentUserID,
+  selectSites,
+} from 'terraso-mobile-client/store/selectors';
 
-// TODO: I expect this to be removed or modified by the time we actually release the offline feature,
-// but is helpful for manually testing
+// This component is helpful for manually testing,
+// but is not intended to be shown to real users
 export const SyncContent = () => {
+  const dispatch = useDispatch();
+  const syncInfoOpen = useSelector(selectSyncInfoOpen);
+
+  const toggleSyncInfo = useCallback(() => {
+    dispatch(setSyncInfoOpen(!syncInfoOpen));
+  }, [dispatch, syncInfoOpen]);
+
   return (
     <>
       <RestrictByFlag flag="FF_offline">
         <RestrictByFlag flag="FF_testing">
-          <SyncButton />
-          <PullInfo />
-          <PushInfo />
+          <ContainedButton
+            stretchToFit
+            onPress={toggleSyncInfo}
+            label={
+              syncInfoOpen
+                ? 'Close sync info (dev only)'
+                : 'Open sync info (dev only)'
+            }
+          />
+          {syncInfoOpen && <SyncInfoExpanded />}
         </RestrictByFlag>
       </RestrictByFlag>
     </>
   );
 };
 
-export const PushInfo = () => {
-  const unsyncedSoilDataIds = useSelector(selectUnsyncedSoilDataSiteIds);
-  const unsyncedSoilMetadataIds = useSelector(selectUnsyncedMetadataSiteIds);
-  const errorSoilDataIds = useSelector(selectSoilDataSyncErrorSiteIds);
-  const errorSoilMetadataIds = useSelector(selectMetadataSyncErrorSiteIds);
+const SyncInfoExpanded = () => {
+  const {height} = useWindowDimensions();
   return (
-    <>
-      <Text>
-        ({unsyncedSoilDataIds.length} soilData |{' '}
-        {unsyncedSoilMetadataIds.length} soilMetadata) unsynced
-      </Text>
-      <Text>
-        ({errorSoilDataIds.length} soilData | {errorSoilMetadataIds.length}{' '}
-        soilMetadata) sync errors
-      </Text>
-    </>
+    <ScrollView style={[styles.scrollViewContainer, {maxHeight: height / 2}]}>
+      <Box margin="8px">
+        <Row alignItems="center" justifyContent="space-between">
+          <PullButton />
+          <PullInfo />
+          <LastPullTime />
+        </Row>
+        <Divider style={styles.dividerTopMargin} />
+        <PushInfo />
+        <SoilIdInfo />
+      </Box>
+    </ScrollView>
   );
 };
 
-export const PullInfo = () => {
+const PullInfo = () => {
   const pullRequested = useSelector(selectPullRequested);
 
-  const requested = pullRequested ? 'requested' : 'not requested';
-  return (
-    <>
-      <Text>{`* Pull ${requested}`}</Text>
-    </>
-  );
+  const requested = pullRequested ? '\nrequested!' : 'NOT\nrequested';
+  return <Text>{`Pull ${requested}`}</Text>;
 };
 
-export const SyncButton = () => {
+const PullButton = () => {
   const dispatch = useDispatch();
 
   const currentUserID = useSelector(selectCurrentUserID);
@@ -91,7 +116,92 @@ export const SyncButton = () => {
   }, [currentUserID, dispatch]);
 
   return (
-    // TODO-offline: Create string in en.json if we actually want this button for reals
-    <ContainedButton stretchToFit onPress={onSync} label="SYNC: pull" />
+    // Note: This string could go in en.json, but for now I see no need to translate it
+    <ContainedButton onPress={onSync} label="Pull" />
   );
 };
+
+const LastPullTime = () => {
+  const lastPullTimestamp = useSelector(selectLastPullTimestamp);
+
+  if (lastPullTimestamp === null) {
+    return <Text>Last pull: Never</Text>;
+  }
+
+  const date = new Date(lastPullTimestamp);
+  const formatted = date.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  return <Text>{`Last pull:\n${formatted}`}</Text>;
+};
+
+const PushInfo = () => {
+  const unsyncedSoilDataIds = useSelector(selectUnsyncedSoilDataSiteIds);
+  const unsyncedSoilMetadataIds = useSelector(selectUnsyncedMetadataSiteIds);
+  const errorSoilDataIds = useSelector(selectSoilDataSyncErrorSiteIds);
+  const errorSoilMetadataIds = useSelector(selectMetadataSyncErrorSiteIds);
+  return (
+    <>
+      <Text bold>Unsynced</Text>
+      <Row>
+        <Column flex={1}>
+          <Text underline>soilData</Text>
+          <SiteNameList siteIds={unsyncedSoilDataIds} />
+        </Column>
+        <Column flex={1}>
+          <Text underline>soilMetadata</Text>
+          <SiteNameList siteIds={unsyncedSoilMetadataIds} />
+        </Column>
+      </Row>
+      <Text bold>Sync errors</Text>
+      <Row>
+        <Column flex={1}>
+          <Text underline>soilData</Text>
+          <SiteNameList siteIds={errorSoilDataIds} />
+        </Column>
+        <Column flex={1}>
+          <Text underline>soilMetadata</Text>
+          <SiteNameList siteIds={errorSoilMetadataIds} />
+        </Column>
+      </Row>
+    </>
+  );
+};
+
+const SiteNameList = ({siteIds}: {siteIds: string[]}) => {
+  const sites = useSelector(selectSites);
+  if (siteIds.length === 0) {
+    return <Text>None</Text>;
+  }
+  return (
+    <>
+      {siteIds.map(id => (
+        <Text key={id}>• {sites[id]?.name ?? id}</Text>
+      ))}
+    </>
+  );
+};
+
+const SoilIdInfo = () => {
+  const sitesAndSoilIdStatus = useSelector(selectSitesWithSoilIdStatus);
+  const sitesLoadingSoilId = Object.entries(sitesAndSoilIdStatus)
+    .filter(([_, value]) => value === 'loading')
+    .map(([siteId, _]) => siteId);
+  return (
+    <>
+      <Text bold>Sites loading Soil ID</Text>
+      <SiteNameList siteIds={sitesLoadingSoilId} />
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  dividerTopMargin: {marginTop: 4},
+  scrollViewContainer: {flexGrow: 0},
+});

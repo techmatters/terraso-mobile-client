@@ -23,6 +23,7 @@ import type {
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
+import {setLastPullTimestamp} from 'terraso-mobile-client/model/devOnly/devOnlySlice';
 import {setExportTokens} from 'terraso-mobile-client/model/export/exportSlice';
 import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
 import {setSites} from 'terraso-mobile-client/model/site/siteSlice';
@@ -56,6 +57,7 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
     setSoilMetadata(state.soilMetadata, payload.soilMetadata);
     setExportTokens(state.export, payload.exportTokens);
     updateSoilIdStatus(state.soilData, 'ready');
+    setLastPullTimestamp(state.devOnly, Date.now());
   });
 
   builder.addCase(pullUserData.pending, state => {

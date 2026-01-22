@@ -20,7 +20,10 @@ import {createSelector} from '@reduxjs/toolkit';
 import {Coords} from 'terraso-client-shared/types';
 
 import {soilDataToIdInput} from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchInputs';
-import {coordsKey} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {
+  ClientSoilIdStatus,
+  coordsKey,
+} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppState} from 'terraso-mobile-client/store';
 import {getVisibleSoilDataForSite} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
@@ -90,6 +93,24 @@ export const selectNextDataBasedInputs = createSelector(
       Object.entries(soilData).map(([siteId, siteSoilData]) => [
         siteId,
         siteSoilData ? soilDataToIdInput(siteSoilData) : undefined,
+      ]),
+    ),
+);
+
+/* Memoized selector that returns all sites with their soil ID status */
+export const selectSitesWithSoilIdStatus = createSelector(
+  [
+    (state: AppState) => state.site.sites,
+    (state: AppState) => state.soilIdMatch.siteDataBasedMatches,
+  ],
+  (
+    sites,
+    siteDataBasedMatches,
+  ): Record<string, ClientSoilIdStatus | undefined> =>
+    Object.fromEntries(
+      Object.entries(sites).map(([siteId, _]) => [
+        siteId,
+        siteDataBasedMatches[siteId]?.status,
       ]),
     ),
 );
