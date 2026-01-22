@@ -116,7 +116,7 @@ const PullButton = () => {
   }, [currentUserID, dispatch]);
 
   return (
-    // TODO-offline: Create string in en.json if we actually want this button for reals
+    // Note: This string could go in en.json, but for now I see no need to translate it
     <ContainedButton onPress={onSync} label="Pull" />
   );
 };
