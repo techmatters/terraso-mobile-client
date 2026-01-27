@@ -39,8 +39,11 @@ import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenCo
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
 import {MapSearchOfflineAlertBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineAlertBox';
-import {MapSearchSuggestionBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
-import {Suggestion} from 'terraso-mobile-client/services/mapSearchService';
+import {
+  CoordsSuggestionBox,
+  MapboxSuggestionBox,
+} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchSuggestionBox';
+import {MapSuggestion} from 'terraso-mobile-client/services/mapSearchService';
 
 const ShowAutocompleteContext = createContext(false);
 
@@ -72,8 +75,7 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
   const isOffline = useIsOffline();
   const {t} = useTranslation();
   const [query, setQuery] = useState('');
-  const {coords, suggestions, querySuggestions, lookupFeature} =
-    useMapSuggestions();
+  const {suggestions, querySuggestions, lookupFeature} = useMapSuggestions();
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const sitesScreen = useSitesScreenContext();
 
@@ -83,37 +85,51 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
     }
   }, [sitesScreen, query]);
 
-  useEffect(() => {
-    if (zoomTo && coords) {
-      zoomTo(coords);
-    }
-  }, [zoomTo, coords]);
-
-  const selectQuery = useCallback(
-    (name: string, mapboxId: string) => {
+  const selectMapboxSuggestion = useCallback(
+    async (name: string, mapboxId: string) => {
       setQuery(name);
       setShowAutocomplete(false);
-      lookupFeature(mapboxId);
+      const coords = await lookupFeature(mapboxId);
+      if (zoomTo && coords) {
+        zoomTo(coords);
+      }
       Keyboard.dismiss();
     },
-    [lookupFeature],
+    [lookupFeature, zoomTo],
   );
 
-  const flatListProps: AutocompleteInputProps<Suggestion>['flatListProps'] =
+  const selectCoordsSuggestion = useCallback(
+    (selectedCoords: Coords) => {
+      setQuery(`${selectedCoords.latitude}, ${selectedCoords.longitude}`);
+      setShowAutocomplete(false);
+      if (zoomTo) {
+        zoomTo(selectedCoords);
+      }
+      Keyboard.dismiss();
+    },
+    [zoomTo],
+  );
+
+  const flatListProps: AutocompleteInputProps<MapSuggestion>['flatListProps'] =
     useMemo(
       () => ({
         keyboardShouldPersistTaps: 'always',
-        keyExtractor: suggestion => suggestion.mapbox_id,
-        renderItem: ({item}) => (
-          <MapSearchSuggestionBox
-            name={item.name}
-            address={item.place_formatted}
-            mapboxId={item.mapbox_id}
-            onPress={selectQuery}
-          />
-        ),
+        keyExtractor: suggestion =>
+          suggestion.kind === 'coords' ? suggestion.name : suggestion.mapbox_id,
+        renderItem: ({item}) =>
+          item.kind === 'coords' ? (
+            <CoordsSuggestionBox
+              suggestion={item}
+              onPress={selectCoordsSuggestion}
+            />
+          ) : (
+            <MapboxSuggestionBox
+              suggestion={item}
+              onPress={selectMapboxSuggestion}
+            />
+          ),
       }),
-      [selectQuery],
+      [selectMapboxSuggestion, selectCoordsSuggestion],
     );
 
   const onChangeText = useCallback(
@@ -133,12 +149,18 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
     setShowAutocomplete(false);
   }, [setShowAutocomplete]);
 
+  // Only the coordinate suggestion should be shown when offline
+  // Mapbox suggestions should disappear
+  const suggestionsToShow = isOffline
+    ? suggestions.filter(suggestion => suggestion.kind === 'coords')
+    : suggestions;
+
   return (
     <View flex={1} pointerEvents="box-none">
       <ShowAutocompleteContext.Provider value={showAutocomplete}>
         <Autocomplete
-          data={suggestions}
-          hideResults={!showAutocomplete || isOffline}
+          data={suggestionsToShow}
+          hideResults={!showAutocomplete}
           flatListProps={flatListProps}
           inputContainerStyle={styles.inputContainer}
           onChangeText={onChangeText}

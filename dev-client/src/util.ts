@@ -128,8 +128,12 @@ export const sortCompare = (
 };
 
 export const isValidCoordinates = (input: string) => {
+  // Valid strings are of the form <sign><latitude>,<sign><longitude>, where:
+  //  <sign> is optional, can be + or -
+  //  <latitude> can be an integer or decimal from -90 to 90 (inclusive)
+  //  <longitude> can be an integer or decimal from -180 to 180 (inclusive)
   const coordRegex =
-    /^([-+]?[1-8]?\d(?:\.\d+)?),\s*([-+]?180(?:\.0+)?|[-+]?((1[0-7]\d)|([1-9]?\d))(?:\.\d+)?)$/;
+    /^([-+]?90(?:\.0+)?|[-+]?[1-8]?\d(?:\.\d+)?),\s*([-+]?180(?:\.0+)?|[-+]?((1[0-7]\d)|([1-9]?\d))(?:\.\d+)?)$/;
 
   if (!coordRegex.test(input)) {
     return false;

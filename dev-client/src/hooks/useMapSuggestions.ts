@@ -17,18 +17,14 @@
 
 import {useCallback, useState} from 'react';
 
-import {useDebouncedCallback} from 'use-debounce';
-
 import {Coords} from 'terraso-client-shared/types';
 
-import {
-  MAP_QUERY_MIN_LENGTH,
-  SEARCH_DEBOUNCE_TIME_MS,
-} from 'terraso-mobile-client/constants';
+import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
+  CoordinateSuggestion,
   initMapSearch,
-  Suggestion,
+  MapSuggestion,
 } from 'terraso-mobile-client/services/mapSearchService';
 import {isValidCoordinates} from 'terraso-mobile-client/util';
 
@@ -41,8 +37,7 @@ const {getSuggestions, retrieveFeature} = initMapSearch();
 
 export const useMapSuggestions = () => {
   const isOffline = useIsOffline();
-  const [coords, setCoords] = useState<Coords | undefined>(undefined);
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<MapSuggestion[]>([]);
 
   /*
    * We use the AbortController API to cancel pending calls when new ones go out;
@@ -68,19 +63,27 @@ export const useMapSuggestions = () => {
 
   const querySuggestions = useCallback(
     async (queryText: string) => {
+      const newSuggestions = [] as MapSuggestion[];
+      // Add lat long coordinate if
       if (isValidCoordinates(queryText)) {
         const [latitude, longitude] = queryText.split(',').map(Number);
-        setCoords({latitude, longitude});
-        setSuggestions([]);
-      } else if (!isOffline) {
-        setCoords(undefined);
+        const coordSuggestion: CoordinateSuggestion = {
+          kind: 'coords',
+          name: queryText,
+          coords: {latitude, longitude},
+        };
+        newSuggestions.push(coordSuggestion);
+      }
+
+      if (!isOffline) {
         if (queryText.length >= MAP_QUERY_MIN_LENGTH) {
           try {
-            const {suggestions: newSuggestions} =
+            const {suggestions: mapboxSuggestions} =
               await makeSuggestionsApiCall(queryText);
-            setSuggestions(newSuggestions);
+            newSuggestions.push(...mapboxSuggestions);
           } catch (e: any) {
-            if (e.name !== 'AbortError') {
+            if (e.name !== 'AbortError' && newSuggestions.length === 0) {
+              // No need to throw if there's a valid coordinate
               throw e;
             }
           }
@@ -91,33 +94,23 @@ export const useMapSuggestions = () => {
             }
             return null;
           });
-          setSuggestions([]);
         }
-      } else {
-        setCoords(undefined);
-        setSuggestions([]);
       }
+      setSuggestions(newSuggestions);
     },
     [makeSuggestionsApiCall, isOffline],
   );
-  const debouncedQuerySuggestions = useDebouncedCallback(
-    querySuggestions,
-    SEARCH_DEBOUNCE_TIME_MS,
-  );
 
   const lookupFeature = useCallback(async (mapboxId: string) => {
-    let {features} = await retrieveFeature(mapboxId);
+    const {features} = await retrieveFeature(mapboxId);
     // TODO: For now we are just going to zoom to the first feature
     // Should see what the best way to do this is
-    setCoords(features[0]?.properties?.coordinates);
+    return features[0]?.properties?.coordinates as Coords | undefined;
   }, []);
 
   return {
-    coords,
     suggestions,
-    querySuggestions: debouncedQuerySuggestions as (
-      queryText: string,
-    ) => Promise<void>,
+    querySuggestions,
     lookupFeature,
   };
 };
