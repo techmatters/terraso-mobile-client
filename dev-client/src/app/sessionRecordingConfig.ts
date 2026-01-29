@@ -47,16 +47,8 @@ export async function fetchSessionRecordingConfig(): Promise<SessionRecordingCon
   const url = APP_CONFIG.featureFlagUrl;
   const secret = APP_CONFIG.featureFlagSecret;
 
-  console.log('[SessionRecordingConfig] Checking config:', {
-    featureFlagUrl: url ?? '(undefined)',
-    featureFlagSecret: secret ? `(set, ${secret.length} chars)` : '(undefined)',
-  });
-
   // Skip if not configured
   if (!url || !secret) {
-    console.log(
-      '[SessionRecordingConfig] Cloudflare config not set, skipping fetch',
-    );
     return null;
   }
 
@@ -67,13 +59,6 @@ export async function fetchSessionRecordingConfig(): Promise<SessionRecordingCon
 
     // Build URL with signed params
     const requestUrl = `${url}?t=${timestamp}&sig=${signature}`;
-
-    console.log('[SessionRecordingConfig] Fetching config from Cloudflare...', {
-      url,
-      timestamp,
-      signatureLength: signature.length,
-      signaturePrefix: signature.substring(0, 16) + '...',
-    });
 
     // Fetch with timeout
     const controller = new AbortController();
@@ -92,27 +77,15 @@ export async function fetchSessionRecordingConfig(): Promise<SessionRecordingCon
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        console.log(
-          '[SessionRecordingConfig] Fetch failed with status:',
-          response.status,
-        );
         return null;
       }
 
-      const config = (await response.json()) as SessionRecordingConfig;
-      console.log('[SessionRecordingConfig] Fetched config:', config);
-      return config;
-    } catch (fetchError) {
+      return (await response.json()) as SessionRecordingConfig;
+    } catch {
       clearTimeout(timeoutId);
-      if ((fetchError as Error).name === 'AbortError') {
-        console.log('[SessionRecordingConfig] Fetch timed out');
-      } else {
-        console.log('[SessionRecordingConfig] Fetch error:', fetchError);
-      }
       return null;
     }
-  } catch (error) {
-    console.log('[SessionRecordingConfig] Error:', error);
+  } catch {
     return null;
   }
 }

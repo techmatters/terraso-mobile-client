@@ -80,7 +80,6 @@ function UserIdentification() {
 
     if (currentUser?.email) {
       // User is logged in - identify them with PostHog
-      console.log('[PostHog] Identifying user:', currentUser.email);
       // Construct full name from firstName and lastName if available
       const fullName = [currentUser.firstName, currentUser.lastName]
         .filter(Boolean)
@@ -107,7 +106,6 @@ function UserIdentification() {
       );
     } else {
       // User logged out or no user - reset to anonymous
-      console.log('[PostHog] Resetting to anonymous user');
       posthog.reset();
     }
   }, [
@@ -141,13 +139,8 @@ function PosthogLifecycle() {
   useEffect(() => {
     const sub = AppState.addEventListener('change', state => {
       if (state === 'active') {
-        // App came to foreground - reload feature flags
-        console.log(
-          '[PostHog] App came to foreground, reloading feature flags',
-        );
         posthog?.reloadFeatureFlags();
       } else {
-        // App going to background - flush pending events
         posthog?.flush();
       }
     });
@@ -177,11 +170,6 @@ function ConnectivityTracker() {
     // null = unknown, true = offline, false = online
     const connectivityStatus =
       isOffline === null ? 'unknown' : isOffline ? 'offline' : 'online';
-
-    console.log('[PostHog] Connectivity status changed:', {
-      isOffline,
-      connectivityStatus,
-    });
 
     // Register connectivity status as a super property (applies to all events)
     posthog.register({
@@ -219,7 +207,6 @@ function GlobalFeatureFlagPoller({
   // Expose trigger function via ref
   useEffect(() => {
     triggerRef.current = () => {
-      console.log('[GlobalFeatureFlagPoller] Triggering new polling cycle');
       posthog?.reloadFeatureFlags();
       setRefreshKey(prev => prev + 1);
     };
@@ -234,7 +221,6 @@ function GlobalFeatureFlagPoller({
   useEffect(() => {
     const sub = AppState.addEventListener('change', state => {
       if (state === 'active') {
-        console.log('[GlobalFeatureFlagPoller] App came to foreground');
         triggerRef.current?.();
       }
     });
@@ -243,46 +229,25 @@ function GlobalFeatureFlagPoller({
 
   useEffect(() => {
     if (!posthog) {
-      console.log('[GlobalFeatureFlagPoller] No posthog instance yet');
       return;
     }
 
-    console.log('[GlobalFeatureFlagPoller] Starting polling cycle', {
-      refreshKey,
-    });
-
     // Fetch session recording config from Cloudflare at the start of each polling cycle
-    console.log(
-      '[GlobalFeatureFlagPoller] Fetching session recording config from Cloudflare...',
-    );
     fetchSessionRecordingConfig()
       .then(config => {
         if (config) {
-          console.log(
-            '[GlobalFeatureFlagPoller] Cloudflare config received:',
-            config,
-          );
           onCloudflareConfigChange(config);
         }
       })
-      .catch(error => {
-        console.log(
-          '[GlobalFeatureFlagPoller] Error fetching Cloudflare config:',
-          error,
-        );
+      .catch(() => {
+        // Silently ignore fetch errors - will use cached config
       });
 
-    let pollCount = 0;
     const checkForUpdates = () => {
-      pollCount++;
       // Check banner_message flag
       const bannerPayload = posthog.getFeatureFlagPayload('banner_message');
       const prevBannerValue = prevFlagValues.current.get('banner_message');
       if (JSON.stringify(prevBannerValue) !== JSON.stringify(bannerPayload)) {
-        console.log('[GlobalFeatureFlagPoller] banner_message changed:', {
-          prev: prevBannerValue,
-          new: bannerPayload,
-        });
         prevFlagValues.current.set('banner_message', bannerPayload);
         onBannerMessageChange(bannerPayload);
       }
@@ -297,9 +262,6 @@ function GlobalFeatureFlagPoller({
     // Stop polling after 30 seconds
     const stopTimeout = setTimeout(() => {
       clearInterval(pollInterval);
-      console.log('[GlobalFeatureFlagPoller] Stopped polling after 30s', {
-        totalPolls: pollCount,
-      });
     }, 30000);
 
     return () => {
@@ -345,17 +307,13 @@ function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
 }
 
 // ---- Session Recording Configuration ----
-// Session recording is controlled via PostHog feature flag payload with
+// Session recording is controlled via Cloudflare Worker config with
 // client-side computation of shouldRecord based on build number and email.
 
 const SESSION_RECORDING_PAYLOAD_KEY = 'posthog.session_recording_payload';
 
-// ---- Session Recording Payload Structure ----
-// This payload is used to control session recording via feature flags
-// with client-side computation of shouldRecord
-
 type SessionRecordingPayload = {
-  sequence: number; // Monotonically increasing - ignore if <= cached
+  sequence: number; // Legacy field, always 0 for Cloudflare config
   enabledBuilds: string[]; // Build patterns: exact (999), range (100-200), min (300-), max (-500)
   enabledEmails: string[]; // Email patterns with glob support (* = wildcard)
 };
@@ -453,16 +411,9 @@ function buildNumberMatches(
   buildNumber: number,
   enabledBuilds: string[],
 ): boolean {
-  const results = enabledBuilds.map(pattern => ({
-    pattern,
-    matches: buildMatchesPattern(buildNumber, pattern),
-  }));
-  console.log('[PostHog] buildNumberMatches:', {
-    buildNumber,
-    enabledBuilds,
-    results,
-  });
-  return results.some(r => r.matches);
+  return enabledBuilds.some(pattern =>
+    buildMatchesPattern(buildNumber, pattern),
+  );
 }
 
 // ---- Compute shouldRecord ----
@@ -483,16 +434,6 @@ function computeShouldRecord(
     email,
     payload.enabledEmails || [],
   );
-
-  console.log('[PostHog] computeShouldRecord:', {
-    buildNumber,
-    email: email ?? '(none)',
-    enabledBuilds: payload.enabledBuilds,
-    enabledEmails: payload.enabledEmails,
-    buildMatches,
-    emailMatches,
-    result: buildMatches || emailMatches,
-  });
 
   return buildMatches || emailMatches;
 }
@@ -531,18 +472,14 @@ export function useSessionRecordingState() {
 
 // Helper to clear stored session recording payload (for testing)
 export function clearSessionRecordingPayload(): void {
-  console.log('[PostHog] Clearing stored session recording payload');
   kvStorage.remove(SESSION_RECORDING_PAYLOAD_KEY);
 }
 
 // Helper to check if native session replay is active
 export async function checkNativeSessionReplayStatus(): Promise<boolean> {
   try {
-    const isActive = await isSessionReplayEnabled();
-    console.log('[PostHog] Native session replay active:', isActive);
-    return isActive;
-  } catch (e) {
-    console.log('[PostHog] Could not check native session replay status:', e);
+    return await isSessionReplayEnabled();
+  } catch {
     return false;
   }
 }
@@ -568,21 +505,7 @@ function PostHogInner({children, navRef}: Props) {
   // Compute isRecording once on mount from cached payload + current email
   const [isRecording] = useState(() => {
     const cached = getCachedPayload();
-    console.log('[PostHog] Initial isRecording - reading cache:', {
-      cached: JSON.stringify(cached),
-      emailAtRenderTime,
-      currentBuildNumber: getCurrentBuildNumber(),
-    });
-    const shouldRecord = computeShouldRecord(
-      cached?.payload ?? null,
-      emailAtRenderTime,
-    );
-    console.log('[PostHog] Initial isRecording computed:', {
-      cached: cached?.payload,
-      email: emailAtRenderTime,
-      shouldRecord,
-    });
-    return shouldRecord;
+    return computeShouldRecord(cached?.payload ?? null, emailAtRenderTime);
   });
 
   // Track what we WANT (can change during session)
@@ -596,12 +519,6 @@ function PostHogInner({children, navRef}: Props) {
     if (wantRecording !== isRecording) {
       // Wait 5 seconds before showing banner to ensure kvStorage write persisted
       const timeout = setTimeout(() => {
-        console.log(
-          '[PostHog] Showing restart banner - want:',
-          wantRecording,
-          'is:',
-          isRecording,
-        );
         setShowRestartBanner(true);
       }, 5000);
       return () => clearTimeout(timeout);
@@ -617,13 +534,8 @@ function PostHogInner({children, navRef}: Props) {
       cached?.payload ?? null,
       emailAtRenderTime,
     );
-    console.log('[PostHog] Email changed - recomputing wantRecording:', {
-      email: emailAtRenderTime,
-      newWant,
-      currentWant: wantRecording,
-    });
     setWantRecording(newWant);
-  }, [emailAtRenderTime]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [emailAtRenderTime]);
 
   // Ref to hold the trigger function for the global poller
   const triggerRef = useRef<(() => void) | null>(null);
@@ -637,8 +549,6 @@ function PostHogInner({children, navRef}: Props) {
   // Handler for Cloudflare config changes (from polling)
   const handleCloudflareConfigChange = useCallback(
     (config: {enabledBuilds: string[]; enabledEmails: string[]}) => {
-      console.log('[PostHog] handleCloudflareConfigChange:', config);
-
       // Save to cache
       const cachedPayload: CachedSessionRecordingPayload = {
         sequence: 0,
@@ -655,31 +565,14 @@ function PostHogInner({children, navRef}: Props) {
         cachedPayload.payload,
         emailAtRenderTime,
       );
-      console.log('[PostHog] Cloudflare config - recomputed wantRecording:', {
-        newWant,
-        currentWant: wantRecording,
-        isRecording,
-        willShowBanner: newWant !== isRecording,
-      });
       setWantRecording(newWant);
     },
-    [emailAtRenderTime, wantRecording, isRecording],
+    [emailAtRenderTime],
   );
 
   if (!enabled) {
-    console.warn('PostHog API key not set, analytics disabled');
     return <>{children}</>;
   }
-
-  console.log('[PostHog] Initializing with:', {
-    host: APP_CONFIG.posthogHost,
-    enableSessionReplay: isRecording,
-    wantRecording,
-    showRestartBanner,
-    platform: Platform.OS,
-    buildNumber: getCurrentBuildNumber(),
-    email: emailAtRenderTime ?? '(none)',
-  });
 
   // Create context values
   const pollingContextValue = {
@@ -767,17 +660,13 @@ export function PostHog({children, navRef}: Props) {
 
   useEffect(() => {
     const loadConfig = async () => {
-      console.log('[PostHog] Loading session recording config...');
-
       try {
         const config = await fetchSessionRecordingConfig();
 
         if (config) {
           // Successfully fetched from Cloudflare - save to cache
-          // Note: We use sequence 0 for Cloudflare config since it doesn't have sequence numbers
-          // The PostHog feature flag polling (if still used) will have higher sequence numbers
           const cachedPayload: CachedSessionRecordingPayload = {
-            sequence: 0, // Cloudflare config doesn't use sequence
+            sequence: 0,
             payload: {
               sequence: 0,
               enabledBuilds: config.enabledBuilds,
@@ -785,14 +674,9 @@ export function PostHog({children, navRef}: Props) {
             },
           };
           saveCachedPayload(cachedPayload);
-          console.log('[PostHog] Saved Cloudflare config to cache:', config);
-        } else {
-          console.log(
-            '[PostHog] No Cloudflare config, using cached value or default',
-          );
         }
-      } catch (error) {
-        console.log('[PostHog] Error loading config, using cached:', error);
+      } catch {
+        // Silently ignore fetch errors - will use cached config
       }
 
       setConfigLoaded(true);
@@ -804,7 +688,6 @@ export function PostHog({children, navRef}: Props) {
   // While loading config, render children without PostHog
   // Analytics events during this brief window will be silently dropped
   if (!configLoaded) {
-    console.log('[PostHog] Config loading, rendering without PostHog...');
     return <>{children}</>;
   }
 
@@ -822,12 +705,7 @@ export function FeatureFlagPollingTrigger() {
   // Trigger polling when screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      if (context) {
-        console.log(
-          '[FeatureFlagPollingTrigger] Screen focused, triggering polling',
-        );
-        context.trigger();
-      }
+      context?.trigger();
     }, [context]),
   );
 

@@ -74,13 +74,6 @@ const ENV_CONFIG = {
   FEATURE_FLAG_SECRET: process.env.FEATURE_FLAG_SECRET,
 };
 
-// Debug: log feature flag config at build time
-console.log('[app.config.ts] FEATURE_FLAG_URL:', process.env.FEATURE_FLAG_URL);
-console.log(
-  '[app.config.ts] FEATURE_FLAG_SECRET:',
-  process.env.FEATURE_FLAG_SECRET ? '(set)' : '(not set)',
-);
-
 let buildNumber = 1;
 const APP_BUILD = process.env.APP_BUILD;
 

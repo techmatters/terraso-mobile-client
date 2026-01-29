@@ -105,14 +105,12 @@ const SessionReplayDebugExpanded = () => {
     setRefreshKey(prev => prev + 1);
 
     // Trigger polling cycle - this will fetch from Cloudflare and update wantRecording
-    console.log('[SessionReplayDebug] Triggering polling cycle...');
     pollingContext?.trigger();
 
     // Wait a moment for the fetch to complete, then reload cached config
     setTimeout(() => {
       setCachedConfig(getCachedPayload());
       setIsRefetching(false);
-      console.log('[SessionReplayDebug] Refreshed cached config');
     }, 2000);
   }, [pollingContext]);
 
