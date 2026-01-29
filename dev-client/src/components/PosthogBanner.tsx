@@ -22,10 +22,8 @@ import {useFeatureFlag, usePostHog} from 'posthog-react-native';
 import {
   FeatureFlagPollingTrigger,
   useFeatureFlagPollingContext,
-  useSessionRecordingState,
 } from 'terraso-mobile-client/app/PostHog';
 import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
-import {Alert} from 'terraso-mobile-client/components/messages/Alert';
 import {
   Box,
   Row,
@@ -194,49 +192,6 @@ function parseFormattedText(message: string): React.ReactNode {
   });
 }
 
-// ---- Session Recording Restart Banner ----
-// Shows when session recording config has changed and requires app restart
-// This banner is NOT dismissible - it only goes away when user restarts
-
-const SessionRecordingRestartBannerContent = () => {
-  const sessionRecordingState = useSessionRecordingState();
-
-  // Don't show if state not available or no restart needed
-  if (!sessionRecordingState || !sessionRecordingState.showRestartBanner) {
-    return null;
-  }
-
-  const {wantRecording, isRecording} = sessionRecordingState;
-  const title = wantRecording
-    ? 'Session recording enabled'
-    : 'Session recording disabled';
-  const bodyText = wantRecording
-    ? 'Please restart the app to begin recording.'
-    : 'Please restart the app to stop recording.';
-
-  console.log('[SessionRecordingRestartBanner] Showing banner:', {
-    wantRecording,
-    isRecording,
-  });
-
-  return (
-    <Box padding="md">
-      <Alert variant="info" title={title} bodyText={bodyText} />
-    </Box>
-  );
-};
-
-export const SessionRecordingRestartBanner = () => {
-  const posthog = usePostHog();
-
-  // Return null if PostHog is not available (e.g., in tests or when disabled)
-  if (!posthog) {
-    return null;
-  }
-
-  return <SessionRecordingRestartBannerContent />;
-};
-
 export const PosthogBanner = () => {
   const posthog = usePostHog();
 
@@ -248,7 +203,6 @@ export const PosthogBanner = () => {
   return (
     <>
       <FeatureFlagPollingTrigger />
-      <SessionRecordingRestartBannerContent />
       <PosthogBannerContent />
     </>
   );

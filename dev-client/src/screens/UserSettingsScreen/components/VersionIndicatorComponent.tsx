@@ -17,11 +17,13 @@
 
 import {useTranslation} from 'react-i18next';
 
+import {useSessionRecordingState} from 'terraso-mobile-client/app/PostHog';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 
 export function VersionIndicator() {
   const {t} = useTranslation();
+  const sessionRecordingState = useSessionRecordingState();
 
   let environment;
 
@@ -31,6 +33,19 @@ export function VersionIndicator() {
     environment = APP_CONFIG.environment;
   }
 
+  // Session recording indicator: (wi) = both, (w) = want only, (i) = is only
+  let recordingSuffix = '';
+  if (sessionRecordingState) {
+    const {wantRecording, isRecording} = sessionRecordingState;
+    if (wantRecording && isRecording) {
+      recordingSuffix = ' (wi)';
+    } else if (wantRecording) {
+      recordingSuffix = ' (w)';
+    } else if (isRecording) {
+      recordingSuffix = ' (i)';
+    }
+  }
+
   return (
     <Text variant="body2">
       {APP_CONFIG.version && APP_CONFIG.build
@@ -38,7 +53,7 @@ export function VersionIndicator() {
             version: APP_CONFIG.version,
             build: APP_CONFIG.build,
             environment,
-          })
+          }) + recordingSuffix
         : `(${t('settings.unknown_version', {
             environment,
           })})`}

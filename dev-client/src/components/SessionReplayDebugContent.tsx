@@ -26,10 +26,10 @@ import {Divider} from 'react-native-paper';
 
 import Constants from 'expo-constants';
 
-import {usePostHog} from 'posthog-react-native';
-
 import {
   checkNativeSessionReplayStatus,
+  getCachedPayload,
+  useFeatureFlagPollingContext,
   useSessionRecordingState,
 } from 'terraso-mobile-client/app/PostHog';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -40,6 +40,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
+import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useSelector} from 'terraso-mobile-client/store';
 
 // This component is helpful for debugging session replay issues,
@@ -71,9 +72,18 @@ export const SessionReplayDebugContent = () => {
 
 const SessionReplayDebugExpanded = () => {
   const {height} = useWindowDimensions();
-  const posthog = usePostHog();
   const [nativeStatus, setNativeStatus] = useState<boolean | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isRefetching, setIsRefetching] = useState(false);
+  const [cachedConfig, setCachedConfig] = useState(() => getCachedPayload());
+
+  // Get polling context to trigger refresh
+  const pollingContext = useFeatureFlagPollingContext();
+
+  // Determine config source
+  const useCloudflare =
+    !!APP_CONFIG.featureFlagUrl && !!APP_CONFIG.featureFlagSecret;
+  const configSource = useCloudflare ? 'Cloudflare' : 'PostHog';
 
   // Get current user email
   const currentUser = useSelector(state => state.account?.currentUser?.data);
@@ -91,17 +101,20 @@ const SessionReplayDebugExpanded = () => {
   }, [refreshKey]);
 
   const handleRefresh = useCallback(() => {
+    setIsRefetching(true);
     setRefreshKey(prev => prev + 1);
-  }, []);
 
-  // Get current payload from PostHog SDK
-  const currentPayload = posthog?.getFeatureFlagPayload('session_recording') as
-    | {
-        sequence?: number;
-        enabledBuilds?: number[];
-        enabledEmails?: string[];
-      }
-    | undefined;
+    // Trigger polling cycle - this will fetch from Cloudflare and update wantRecording
+    console.log('[SessionReplayDebug] Triggering polling cycle...');
+    pollingContext?.trigger();
+
+    // Wait a moment for the fetch to complete, then reload cached config
+    setTimeout(() => {
+      setCachedConfig(getCachedPayload());
+      setIsRefetching(false);
+      console.log('[SessionReplayDebug] Refreshed cached config');
+    }, 2000);
+  }, [pollingContext]);
 
   // Get session recording state from context
   const sessionRecordingState = useSessionRecordingState();
@@ -111,7 +124,11 @@ const SessionReplayDebugExpanded = () => {
       <Box margin="8px">
         <Row alignItems="center" justifyContent="space-between">
           <Text bold>Session Replay Debug</Text>
-          <ContainedButton onPress={handleRefresh} label="Refresh" />
+          <ContainedButton
+            onPress={handleRefresh}
+            label={isRefetching ? 'Refreshing...' : 'Refresh'}
+            disabled={isRefetching}
+          />
         </Row>
 
         <Divider style={styles.dividerTopMargin} />
@@ -145,12 +162,6 @@ const SessionReplayDebugExpanded = () => {
               : String(sessionRecordingState.wantRecording)}
           </Text>
           <Text>
-            showRestartBanner:{' '}
-            {sessionRecordingState?.showRestartBanner === undefined
-              ? 'undefined'
-              : String(sessionRecordingState.showRestartBanner)}
-          </Text>
-          <Text>
             Native replay active:{' '}
             {nativeStatus === null ? 'checking...' : String(nativeStatus)}
           </Text>
@@ -158,24 +169,26 @@ const SessionReplayDebugExpanded = () => {
 
         <Divider style={styles.dividerTopMargin} />
 
-        {/* Current Payload from Server */}
+        {/* Config Source & Cached Config */}
         <Text bold mt="8px">
-          Current Payload from Server
+          Config Source: {configSource}
         </Text>
         <Column>
-          <Text>sequence: {currentPayload?.sequence ?? 'none'}</Text>
           <Text>
             enabledBuilds:{' '}
-            {currentPayload?.enabledBuilds
-              ? JSON.stringify(currentPayload.enabledBuilds)
+            {cachedConfig?.payload?.enabledBuilds
+              ? JSON.stringify(cachedConfig.payload.enabledBuilds)
               : 'none'}
           </Text>
           <Text>
             enabledEmails:{' '}
-            {currentPayload?.enabledEmails
-              ? JSON.stringify(currentPayload.enabledEmails)
+            {cachedConfig?.payload?.enabledEmails
+              ? JSON.stringify(cachedConfig.payload.enabledEmails)
               : 'none'}
           </Text>
+          {!useCloudflare && (
+            <Text>sequence: {cachedConfig?.sequence ?? 'none'}</Text>
+          )}
         </Column>
 
         <Divider style={styles.dividerTopMargin} />

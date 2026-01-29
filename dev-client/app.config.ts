@@ -69,7 +69,17 @@ const ENV_CONFIG = {
   POSTHOG_DEBUG: process.env.POSTHOG_DEBUG,
   DEBUG_ENABLED: process.env.DEBUG_ENABLED,
   ALWAYS_SHOW_WELCOME: process.env.ALWAYS_SHOW_WELCOME,
+  // Cloudflare Worker for feature flags (session recording config, etc.)
+  FEATURE_FLAG_URL: process.env.FEATURE_FLAG_URL,
+  FEATURE_FLAG_SECRET: process.env.FEATURE_FLAG_SECRET,
 };
+
+// Debug: log feature flag config at build time
+console.log('[app.config.ts] FEATURE_FLAG_URL:', process.env.FEATURE_FLAG_URL);
+console.log(
+  '[app.config.ts] FEATURE_FLAG_SECRET:',
+  process.env.FEATURE_FLAG_SECRET ? '(set)' : '(not set)',
+);
 
 let buildNumber = 1;
 const APP_BUILD = process.env.APP_BUILD;
