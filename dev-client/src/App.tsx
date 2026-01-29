@@ -76,6 +76,18 @@ enableFreeze(true);
 
 Mapbox.setAccessToken(APP_CONFIG.mapboxAccessToken);
 
+/* Developer FYI: To enable the Little Snitch tool to simulate offline mode without losing connection to Metro:
+ * - Uncomment the code below
+ * - import NetInfo from '@react-native-community/netinfo'
+ * - See "Offline Debugging" section in Terraso Development Guide for more info
+ */
+// NetInfo.configure({
+//   reachabilityUrl: 'https://connectivitycheck.gstatic.com/generate_204',
+//   reachabilityTest: async response => response.status === 204,
+//   reachabilityLongTimeout: 2000,
+//   useNativeReachability: false,
+// });
+
 let persistedReduxState = loadPersistedReduxState();
 if (persistedReduxState) {
   persistedReduxState = patchPersistedReduxState(persistedReduxState);
