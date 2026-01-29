@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Technology Matters
+ * Copyright © 2026 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -29,7 +29,12 @@ import {AppState, Platform} from 'react-native';
 import Constants from 'expo-constants';
 
 import {NavigationContainerRef, useFocusEffect} from '@react-navigation/native';
-import {PostHogProvider, usePostHog} from 'posthog-react-native';
+import {
+  PostHog as PostHogClient,
+  PostHogProvider,
+  usePostHog,
+} from 'posthog-react-native';
+import {isEnabled as isSessionReplayEnabled} from 'posthog-react-native-session-replay';
 
 import {setPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
@@ -196,7 +201,10 @@ function ConnectivityTracker() {
 
 type GlobalFeatureFlagPollerProps = {
   onBannerMessageChange: (payload: any) => void;
-  onSessionRecordingChange: (payload: any) => void;
+  onSessionRecordingChange: (
+    payload: any,
+    posthog: PostHogClient | null,
+  ) => void;
   triggerRef: React.MutableRefObject<(() => void) | null>;
 };
 
@@ -238,10 +246,17 @@ function GlobalFeatureFlagPoller({
 
   useEffect(() => {
     if (!posthog) {
+      console.log('[GlobalFeatureFlagPoller] No posthog instance yet');
       return;
     }
 
+    console.log('[GlobalFeatureFlagPoller] Starting polling cycle', {
+      refreshKey,
+    });
+
+    let pollCount = 0;
     const checkForUpdates = () => {
+      pollCount++;
       // Check banner_message flag
       const bannerPayload = posthog.getFeatureFlagPayload('banner_message');
       const prevBannerValue = prevFlagValues.current.get('banner_message');
@@ -254,16 +269,29 @@ function GlobalFeatureFlagPoller({
         onBannerMessageChange(bannerPayload);
       }
 
-      // Check session_recording flag
+      // Check session_recording flag payload
       const sessionPayload = posthog.getFeatureFlagPayload('session_recording');
-      const prevSessionValue = prevFlagValues.current.get('session_recording');
-      if (JSON.stringify(prevSessionValue) !== JSON.stringify(sessionPayload)) {
+      const prevSessionPayload =
+        prevFlagValues.current.get('session_recording');
+
+      // Log on first poll to show initial state
+      if (pollCount === 1) {
+        console.log('[GlobalFeatureFlagPoller] Initial flag state:', {
+          session_recording_payload: sessionPayload,
+          flagsLoaded: sessionPayload !== undefined,
+        });
+      }
+
+      if (
+        JSON.stringify(prevSessionPayload) !== JSON.stringify(sessionPayload)
+      ) {
         console.log('[GlobalFeatureFlagPoller] session_recording changed:', {
-          prev: prevSessionValue,
+          prev: prevSessionPayload,
           new: sessionPayload,
+          pollCount,
         });
         prevFlagValues.current.set('session_recording', sessionPayload);
-        onSessionRecordingChange(sessionPayload);
+        onSessionRecordingChange(sessionPayload, posthog);
       }
     };
 
@@ -276,7 +304,14 @@ function GlobalFeatureFlagPoller({
     // Stop polling after 30 seconds
     const stopTimeout = setTimeout(() => {
       clearInterval(pollInterval);
-      console.log('[GlobalFeatureFlagPoller] Stopped polling after 30s');
+      // Log final state
+      const finalFlagValue = posthog.getFeatureFlag('session_recording');
+      const finalPayload = posthog.getFeatureFlagPayload('session_recording');
+      console.log('[GlobalFeatureFlagPoller] Stopped polling after 30s', {
+        finalFlagValue,
+        finalPayload,
+        totalPolls: pollCount,
+      });
     }, 30000);
 
     return () => {
@@ -322,74 +357,284 @@ function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
 }
 
 // ---- Session Recording Configuration ----
-// Manages session recording configuration from PostHog feature flags
-// Persists config to survive app restarts
+// Session recording is controlled via PostHog feature flag payload with
+// client-side computation of shouldRecord based on build number and email.
 
-const SESSION_RECORDING_CONFIG_KEY = 'posthog.session_recording_config';
+const SESSION_RECORDING_PAYLOAD_KEY = 'posthog.session_recording_payload';
 
-type SessionRecordingConfig = {
-  enabled: boolean;
-  maskAllTextInputs?: boolean;
-  maskAllImages?: boolean;
-  captureLog?: boolean;
+// ---- Session Recording Payload Structure ----
+// This payload is used to control session recording via feature flags
+// with client-side computation of shouldRecord
+
+type SessionRecordingPayload = {
+  sequence: number; // Monotonically increasing - ignore if <= cached
+  enabledBuilds: number[]; // List of build numbers that should record
+  enabledEmails: string[]; // Email patterns with glob support (* = wildcard)
 };
 
-// Helper to get persisted session recording config
-export function getSessionRecordingConfig(): SessionRecordingConfig {
-  const stored = kvStorage.getObject<SessionRecordingConfig>(
-    SESSION_RECORDING_CONFIG_KEY,
+type CachedSessionRecordingPayload = {
+  sequence: number;
+  payload: SessionRecordingPayload;
+};
+
+// ---- Email Glob Matching ----
+// Matches email patterns like "*@techmatters.org" or "specific@example.com"
+
+function emailMatchesPattern(email: string, pattern: string): boolean {
+  // Convert glob pattern to regex
+  // * matches any characters, escape other regex special chars
+  const regexPattern = pattern
+    .replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape special chars except *
+    .replace(/\*/g, '.*'); // Convert * to .*
+
+  const regex = new RegExp(`^${regexPattern}$`, 'i'); // Case insensitive
+  return regex.test(email);
+}
+
+function emailMatchesAnyPattern(
+  email: string | undefined,
+  patterns: string[],
+): boolean {
+  if (!email) return false;
+  return patterns.some(pattern => emailMatchesPattern(email, pattern));
+}
+
+// ---- Build Number Helpers ----
+
+function getCurrentBuildNumber(): number {
+  const buildString =
+    Platform.OS === 'ios'
+      ? Constants.expoConfig?.ios?.buildNumber
+      : Constants.expoConfig?.android?.versionCode?.toString();
+  return parseInt(buildString || '0', 10);
+}
+
+function buildNumberMatches(
+  buildNumber: number,
+  enabledBuilds: number[],
+): boolean {
+  return enabledBuilds.includes(buildNumber);
+}
+
+// ---- Compute shouldRecord ----
+// Returns true if current build OR email matches the payload criteria
+
+function computeShouldRecord(
+  payload: SessionRecordingPayload | null,
+  email: string | undefined,
+): boolean {
+  if (!payload) return false;
+
+  const buildNumber = getCurrentBuildNumber();
+  const buildMatches = buildNumberMatches(
+    buildNumber,
+    payload.enabledBuilds || [],
   );
+  const emailMatches = emailMatchesAnyPattern(
+    email,
+    payload.enabledEmails || [],
+  );
+
+  console.log('[PostHog] computeShouldRecord:', {
+    buildNumber,
+    email: email ?? '(none)',
+    enabledBuilds: payload.enabledBuilds,
+    enabledEmails: payload.enabledEmails,
+    buildMatches,
+    emailMatches,
+    result: buildMatches || emailMatches,
+  });
+
+  return buildMatches || emailMatches;
+}
+
+// ---- Payload Caching ----
+
+function getCachedPayload(): CachedSessionRecordingPayload | null {
   return (
-    stored ?? {
-      enabled: false,
-      maskAllTextInputs: true,
-      maskAllImages: true,
-      captureLog: true,
-    }
+    kvStorage.getObject<CachedSessionRecordingPayload>(
+      SESSION_RECORDING_PAYLOAD_KEY,
+    ) ?? null
   );
 }
 
+function saveCachedPayload(payload: CachedSessionRecordingPayload): void {
+  kvStorage.setObject(SESSION_RECORDING_PAYLOAD_KEY, payload);
+}
+
+// ---- Session Recording State Context ----
+// Provides wantRecording, isRecording, and showRestartBanner to children
+
+type SessionRecordingStateContextType = {
+  wantRecording: boolean;
+  isRecording: boolean;
+  showRestartBanner: boolean;
+};
+
+const SessionRecordingStateContext =
+  createContext<SessionRecordingStateContextType | null>(null);
+
+export function useSessionRecordingState() {
+  return useContext(SessionRecordingStateContext);
+}
+
+// Helper to clear stored session recording payload (for testing)
+export function clearSessionRecordingPayload(): void {
+  console.log('[PostHog] Clearing stored session recording payload');
+  kvStorage.remove(SESSION_RECORDING_PAYLOAD_KEY);
+}
+
+// Helper to check if native session replay is active
+export async function checkNativeSessionReplayStatus(): Promise<boolean> {
+  try {
+    const isActive = await isSessionReplayEnabled();
+    console.log('[PostHog] Native session replay active:', isActive);
+    return isActive;
+  } catch (e) {
+    console.log('[PostHog] Could not check native session replay status:', e);
+    return false;
+  }
+}
+
 export function PostHog({children, navRef}: Props) {
+  // Check if email is available at PostHog component render time
+  // This runs BEFORE PostHogProvider initializes
+  const currentUserFromRedux = useSelector(
+    (state: any) => state.account?.currentUser?.data,
+  );
+  const emailAtRenderTime = currentUserFromRedux?.email;
+
   const enabled =
     !!APP_CONFIG.posthogApiKey &&
     !!APP_CONFIG.posthogHost &&
     APP_CONFIG.posthogApiKey !== 'REPLACE_ME';
 
-  // Track when session recording config changes to trigger remount
-  const [remountKey, setRemountKey] = useState(0);
+  // ---- Session Recording State ----
+  // isRecording: what was computed and bootstrapped on app startup (immutable until restart)
+  // wantRecording: what we WANT based on the latest valid payload (can change during session)
+
+  // Compute isRecording once on mount from cached payload + current email
+  const [isRecording] = useState(() => {
+    const cached = getCachedPayload();
+    const shouldRecord = computeShouldRecord(
+      cached?.payload ?? null,
+      emailAtRenderTime,
+    );
+    console.log('[PostHog] Initial isRecording computed:', {
+      cached: cached?.payload,
+      email: emailAtRenderTime,
+      shouldRecord,
+    });
+    return shouldRecord;
+  });
+
+  // Track what we WANT (can change during session)
+  const [wantRecording, setWantRecording] = useState(isRecording);
+
+  // Track cached sequence number for flapping protection
+  const [cachedSequence, setCachedSequence] = useState(() => {
+    const cached = getCachedPayload();
+    return cached?.sequence ?? 0;
+  });
+
+  // Show restart banner when want != is (with delay to ensure persistence)
+  const [showRestartBanner, setShowRestartBanner] = useState(false);
+
+  // Update restart banner visibility when wantRecording changes
+  useEffect(() => {
+    if (wantRecording !== isRecording) {
+      // Wait 5 seconds before showing banner to ensure kvStorage write persisted
+      const timeout = setTimeout(() => {
+        console.log(
+          '[PostHog] Showing restart banner - want:',
+          wantRecording,
+          'is:',
+          isRecording,
+        );
+        setShowRestartBanner(true);
+      }, 5000);
+      return () => clearTimeout(timeout);
+    } else {
+      setShowRestartBanner(false);
+    }
+  }, [wantRecording, isRecording]);
+
+  // Recompute wantRecording when email changes (login/logout)
+  useEffect(() => {
+    const cached = getCachedPayload();
+    const newWant = computeShouldRecord(
+      cached?.payload ?? null,
+      emailAtRenderTime,
+    );
+    console.log('[PostHog] Email changed - recomputing wantRecording:', {
+      email: emailAtRenderTime,
+      newWant,
+      currentWant: wantRecording,
+    });
+    setWantRecording(newWant);
+  }, [emailAtRenderTime]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Ref to hold the trigger function for the global poller
   const triggerRef = useRef<(() => void) | null>(null);
 
-  // Handler for session recording config changes
-  const handleSessionRecordingChange = useCallback((payload: any) => {
-    const currentConfig = getSessionRecordingConfig();
-    let newConfig: SessionRecordingConfig;
-    if (!payload || typeof payload !== 'object') {
-      newConfig = {
-        enabled: false,
-        maskAllTextInputs: true,
-        maskAllImages: true,
-        captureLog: true,
-      };
-    } else {
-      newConfig = {
-        enabled: payload.enabled !== false,
-        maskAllTextInputs: payload.maskAllTextInputs !== false,
-        maskAllImages: payload.maskAllImages !== false,
-        captureLog: payload.captureLog !== false,
-      };
-    }
-
-    if (JSON.stringify(currentConfig) !== JSON.stringify(newConfig)) {
-      console.log('[PostHog] Session recording config changed:', {
-        old: currentConfig,
-        new: newConfig,
+  // Handler for session recording payload changes
+  // Uses sequence number to protect against server flapping
+  const handleSessionRecordingChange = useCallback(
+    (payload: any, _posthog: PostHogClient | null) => {
+      console.log('[PostHog] handleSessionRecordingChange received:', {
+        payload,
+        currentCachedSequence: cachedSequence,
       });
-      kvStorage.setObject(SESSION_RECORDING_CONFIG_KEY, newConfig);
-      setRemountKey(prev => prev + 1);
-    }
-  }, []);
+
+      // Validate payload structure
+      if (!payload || typeof payload !== 'object') {
+        console.log('[PostHog] Invalid payload - ignoring');
+        return;
+      }
+
+      const newPayload = payload as SessionRecordingPayload;
+
+      // Check sequence number for flapping protection
+      if (
+        typeof newPayload.sequence !== 'number' ||
+        newPayload.sequence <= cachedSequence
+      ) {
+        console.log(
+          '[PostHog] Sequence too low - ignoring (flapping protection)',
+          {
+            newSequence: newPayload.sequence,
+            cachedSequence,
+          },
+        );
+        return;
+      }
+
+      console.log('[PostHog] Valid new payload - processing', {
+        newSequence: newPayload.sequence,
+        enabledBuilds: newPayload.enabledBuilds,
+        enabledEmails: newPayload.enabledEmails,
+      });
+
+      // Save new payload to storage
+      const cachedPayload: CachedSessionRecordingPayload = {
+        sequence: newPayload.sequence,
+        payload: newPayload,
+      };
+      saveCachedPayload(cachedPayload);
+      setCachedSequence(newPayload.sequence);
+
+      // Recompute wantRecording with new payload
+      const newWant = computeShouldRecord(newPayload, emailAtRenderTime);
+      console.log('[PostHog] Recomputed wantRecording:', {
+        newWant,
+        currentWant: wantRecording,
+        isRecording,
+        willShowBanner: newWant !== isRecording,
+      });
+      setWantRecording(newWant);
+    },
+    [cachedSequence, emailAtRenderTime, wantRecording, isRecording],
+  );
 
   // Handler for banner message changes - we'll expose this via context
   const [bannerMessagePayload, setBannerMessagePayload] = useState<any>(null);
@@ -402,34 +647,32 @@ export function PostHog({children, navRef}: Props) {
     return <>{children}</>;
   }
 
-  // Get current session recording config
-  const sessionRecordingConfig = getSessionRecordingConfig();
-
   console.log('[PostHog] Initializing with:', {
     host: APP_CONFIG.posthogHost,
-    captureAppLifecycleEvents: true,
-    autocaptureScreens: false, // <- we're doing manual screen tracking
-    enableSessionReplay: sessionRecordingConfig.enabled,
-    sessionReplayConfig: sessionRecordingConfig.enabled
-      ? {
-          maskAllTextInputs: sessionRecordingConfig.maskAllTextInputs,
-          maskAllImages: sessionRecordingConfig.maskAllImages,
-          captureLog: sessionRecordingConfig.captureLog,
-        }
-      : undefined,
+    enableSessionReplay: isRecording,
+    wantRecording,
+    showRestartBanner,
+    platform: Platform.OS,
+    buildNumber: getCurrentBuildNumber(),
+    email: emailAtRenderTime ?? '(none)',
   });
 
-  // Create context value
-  const contextValue = {
+  // Create context values
+  const pollingContextValue = {
     trigger: () => {
       triggerRef.current?.();
     },
     bannerMessagePayload,
   };
 
+  const sessionRecordingStateValue = {
+    wantRecording,
+    isRecording,
+    showRestartBanner,
+  };
+
   return (
     <PostHogProvider
-      key={remountKey}
       apiKey={APP_CONFIG.posthogApiKey}
       options={{
         host: APP_CONFIG.posthogHost,
@@ -449,34 +692,44 @@ export function PostHog({children, navRef}: Props) {
                 'unknown',
           platform: APP_CONFIG.environment || 'development',
         }),
-        // Session recording config from feature flags
-        enableSessionReplay: sessionRecordingConfig.enabled,
-        sessionReplayConfig: sessionRecordingConfig.enabled
+        // Session recording enabled based on startup computation
+        // This cannot be changed at runtime - requires app restart
+        enableSessionReplay: isRecording,
+        sessionReplayConfig: isRecording
           ? {
-              maskAllTextInputs: sessionRecordingConfig.maskAllTextInputs,
-              maskAllImages: sessionRecordingConfig.maskAllImages,
-              captureLog: sessionRecordingConfig.captureLog,
+              // Safe defaults - no masking on Android to avoid crashes
+              maskAllTextInputs: Platform.OS !== 'android',
+              maskAllImages: Platform.OS !== 'android',
+              captureLog: true,
             }
           : undefined,
+        // Bootstrap with session_recording flag so SDK's linkedFlag check passes
+        bootstrap: {
+          featureFlags: {
+            session_recording: isRecording,
+          },
+        },
       }}
       // IMPORTANT: turn off SDK's nav autocapture to avoid nav hook errors
       autocapture={{captureScreens: false}}
       // Enable debug logging in development via POSTHOG_DEBUG env var
       // Set POSTHOG_DEBUG=true in .env to see detailed PostHog capture logs
       debug={APP_CONFIG.posthogDebug === 'true'}>
-      <FeatureFlagPollingContext.Provider value={contextValue}>
-        <PostHogInstanceSetter />
-        <PosthogLifecycle />
-        <UserIdentification />
-        <ConnectivityTracker />
-        <ScreenTracker navRef={navRef} />
-        <GlobalFeatureFlagPoller
-          onBannerMessageChange={handleBannerMessageChange}
-          onSessionRecordingChange={handleSessionRecordingChange}
-          triggerRef={triggerRef}
-        />
-        {children}
-      </FeatureFlagPollingContext.Provider>
+      <SessionRecordingStateContext.Provider value={sessionRecordingStateValue}>
+        <FeatureFlagPollingContext.Provider value={pollingContextValue}>
+          <PostHogInstanceSetter />
+          <PosthogLifecycle />
+          <UserIdentification />
+          <ConnectivityTracker />
+          <ScreenTracker navRef={navRef} />
+          <GlobalFeatureFlagPoller
+            onBannerMessageChange={handleBannerMessageChange}
+            onSessionRecordingChange={handleSessionRecordingChange}
+            triggerRef={triggerRef}
+          />
+          {children}
+        </FeatureFlagPollingContext.Provider>
+      </SessionRecordingStateContext.Provider>
     </PostHogProvider>
   );
 }

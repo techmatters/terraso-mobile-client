@@ -20,6 +20,7 @@ import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
+import {SessionReplayDebugContent} from 'terraso-mobile-client/components/SessionReplayDebugContent';
 import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponentList';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -41,6 +42,7 @@ export function UserSettingsScreen() {
         <UiComponentList />
       </RestrictByFlag>
       <FeatureFlagControlPanel />
+      <SessionReplayDebugContent />
       <SafeScrollView>
         <Column margin="12px">
           <UserIndicator />
