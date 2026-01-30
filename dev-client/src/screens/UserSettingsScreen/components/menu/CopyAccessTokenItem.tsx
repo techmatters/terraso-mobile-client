@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import * as Clipboard from 'expo-clipboard';
@@ -27,11 +27,14 @@ import {APP_CONFIG} from 'terraso-mobile-client/config';
 
 export const CopyAccessTokenItem = () => {
   const {t} = useTranslation();
+  const [copied, setCopied] = useState(false);
 
   const handleCopyToken = useCallback(async () => {
     const token = await getAPIConfig().tokenStorage.getToken('atoken');
     if (token) {
       await Clipboard.setStringAsync(token);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
     }
   }, []);
 
@@ -43,7 +46,7 @@ export const CopyAccessTokenItem = () => {
     <MenuItem
       variant="default"
       icon="content-copy"
-      label={t('settings.copy_access_token')}
+      label={copied ? t('general.copied') : t('settings.copy_access_token')}
       onPress={handleCopyToken}
     />
   );
