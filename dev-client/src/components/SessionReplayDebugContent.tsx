@@ -40,7 +40,6 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
-import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useSelector} from 'terraso-mobile-client/store';
 
 // This component is helpful for debugging session replay issues,
@@ -79,11 +78,6 @@ const SessionReplayDebugExpanded = () => {
 
   // Get polling context to trigger refresh
   const pollingContext = useFeatureFlagPollingContext();
-
-  // Determine config source
-  const useCloudflare =
-    !!APP_CONFIG.featureFlagUrl && !!APP_CONFIG.featureFlagSecret;
-  const configSource = useCloudflare ? 'Cloudflare' : 'PostHog';
 
   // Get current user email
   const currentUser = useSelector(state => state.account?.currentUser?.data);
@@ -167,9 +161,9 @@ const SessionReplayDebugExpanded = () => {
 
         <Divider style={styles.dividerTopMargin} />
 
-        {/* Config Source & Cached Config */}
+        {/* Cached Config (from Cloudflare) */}
         <Text bold mt="8px">
-          Config Source: {configSource}
+          Cached Config
         </Text>
         <Column>
           <Text>
@@ -184,9 +178,6 @@ const SessionReplayDebugExpanded = () => {
               ? JSON.stringify(cachedConfig.payload.enabledEmails)
               : 'none'}
           </Text>
-          {!useCloudflare && (
-            <Text>sequence: {cachedConfig?.sequence ?? 'none'}</Text>
-          )}
         </Column>
 
         <Divider style={styles.dividerTopMargin} />

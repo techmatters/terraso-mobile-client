@@ -1,0 +1,163 @@
+# Session Recording & Feature Flags
+
+## Architecture Overview
+
+```
+┌─────────────────┐     HMAC-signed request      ┌─────────────────────┐
+│   Mobile App    │ ──────────────────────────►  │  Cloudflare Worker  │
+│                 │                              │                     │
+│  PostHog.tsx    │  ◄────────────────────────   │  /staging or /prod  │
+│                 │     JSON config response     │                     │
+└─────────────────┘                              └──────────┬──────────┘
+                                                            │
+                                                            ▼
+                                                 ┌─────────────────────┐
+                                                 │   Cloudflare KV     │
+                                                 │                     │
+                                                 │ • session-recording-│
+                                                 │   build-numbers     │
+                                                 │ • session-recording-│
+                                                 │   email-patterns    │
+                                                 └─────────────────────┘
+```
+
+## Cloudflare Worker
+
+**Location:** `cloudflare-worker/session-config-worker.js`
+
+**Endpoint:** `https://feature-flags.terraso.org/{staging|prod}?t={timestamp}&sig={signature}`
+
+### Authentication
+
+- HMAC-SHA256 signed requests
+- Signature = HMAC(timestamp, SHARED_SECRET)
+- Timestamps must be within 5 minutes of current time
+
+### KV Keys
+
+| Key | Format | Examples |
+|-----|--------|----------|
+| `session-recording-build-numbers` | Comma or newline separated | `9999`, `100-200`, `300-`, `-500` |
+| `session-recording-email-patterns` | Glob patterns | `*@techmatters.org`, `user@example.com` |
+
+**Build number patterns:**
+- Exact: `999` - matches build 999
+- Range: `100-200` - matches builds 100-200 inclusive
+- Min only: `300-` - matches builds ≥ 300
+- Max only: `-500` - matches builds ≤ 500
+
+### Response Format
+
+```json
+{
+  "enabledBuilds": ["9999", "100-200"],
+  "enabledEmails": ["*@techmatters.org"]
+}
+```
+
+## When Config is Fetched
+
+| Event | Cloudflare Fetch | PostHog Polling |
+|-------|------------------|-----------------|
+| **App startup** (before PostHog init) | ✅ Blocks briefly, caches result | ❌ Not yet initialized |
+| **App mount** (after PostHog init) | ✅ | ✅ |
+| **App comes to foreground** | ✅ | ✅ |
+| **Sites screen focus** | ✅ | ✅ |
+| **Manual refresh** (debug panel) | ✅ | ✅ |
+
+### Polling Cycle Details
+
+A "polling cycle" is triggered by any event above (except initial startup) and does:
+1. **Cloudflare fetch:** Once at the START of the cycle
+2. **PostHog flags:** Polls every 1 second for 30 seconds (for `banner_message` flag)
+
+Both are coupled together - triggering one triggers both.
+
+## Session Recording Decision Flow
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                      APP STARTUP                              │
+├──────────────────────────────────────────────────────────────┤
+│ 1. Fetch config from Cloudflare (3s timeout)                 │
+│ 2. Save to kvStorage cache                                   │
+│ 3. Compute shouldRecord = buildMatches OR emailMatches       │
+│ 4. Initialize PostHog with enableSessionReplay: shouldRecord │
+│ 5. This value (isRecording) is IMMUTABLE until restart       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Three State Variables
+
+| Variable | Description | Mutable? |
+|----------|-------------|----------|
+| `isRecording` | What was computed at startup | No - requires restart |
+| `wantRecording` | What we WANT based on latest config | Yes - updates on fetch |
+| `nativeActive` | Whether native replay module is running | Reflects actual state |
+
+### Version Indicator Suffix
+
+The version string (e.g., "Version 1.4.3 (9999)") shows recording state:
+
+| Suffix | Meaning |
+|--------|---------|
+| *(nothing)* | Not recording (all false) |
+| `(r)` | Recording normally (all true) |
+| `(w)` | Want recording, restart needed to enable |
+| `(in)` | Recording but shouldn't be, restart needed to disable |
+| `(wi)` | JS ready but native failed to start |
+| `(wn)` | Native on but JS missed bootstrap |
+| `(i)` | JS thinks recording but native off (hot reload artifact) |
+| `(n)` | Native stuck on |
+
+## Session Replay Config
+
+```typescript
+sessionReplayConfig: {
+  maskAllTextInputs: false,  // Disabled - caused crashes
+  maskAllImages: false,      // Disabled - not needed
+  captureLog: true,
+}
+```
+
+Masking is disabled on all platforms because it caused stack-related crashes.
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `cloudflare-worker/session-config-worker.js` | Cloudflare Worker serving config from KV |
+| `src/app/sessionRecordingConfig.ts` | Fetch config with HMAC auth (3s timeout) |
+| `src/app/PostHog.tsx` | Main integration, polling, recording state |
+| `src/components/SessionReplayDebugContent.tsx` | Debug panel in settings |
+| `src/screens/.../VersionIndicatorComponent.tsx` | Shows recording state suffix |
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `FEATURE_FLAG_URL` | Cloudflare Worker URL (e.g., `https://feature-flags.terraso.org/staging`) |
+| `FEATURE_FLAG_SECRET` | Shared secret for HMAC signing |
+
+**If env vars are missing or fetch fails:**
+- Session recording is simply disabled
+- Uses cached config if available, otherwise `shouldRecord = false`
+- There is NO fallback to PostHog feature flags
+
+## Testing with Script
+
+```bash
+# From dev-client directory
+./scripts/fetch-feature-flags.sh [staging|prod]
+```
+
+The script reads `FEATURE_FLAG_SECRET` from your `.env` file.
+
+### Manual curl (if needed)
+
+```bash
+TIMESTAMP=$(date +%s)
+SECRET="your-secret-here"
+SIGNATURE=$(echo -n "$TIMESTAMP" | openssl dgst -sha256 -hmac "$SECRET" | cut -d' ' -f2)
+curl "https://feature-flags.terraso.org/staging?t=$TIMESTAMP&sig=$SIGNATURE"
+```
