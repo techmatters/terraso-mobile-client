@@ -29,6 +29,7 @@ import en from 'terraso-mobile-client/translations/en.json';
 import es from 'terraso-mobile-client/translations/es.json';
 import fr from 'terraso-mobile-client/translations/fr.json';
 import ka from 'terraso-mobile-client/translations/ka.json';
+import sw from 'terraso-mobile-client/translations/sw.json';
 import uk from 'terraso-mobile-client/translations/uk.json';
 
 // For changes to make when new languages are added, see https://docs.google.com/document/d/1IEy2LX1_ZSVYTZkAaL9P0IePm2huslViU7BC89KY_Lw/edit?tab=t.0#heading=h.v5pkyfuey9gh
@@ -46,6 +47,9 @@ i18n.use(initReactI18next).init({
     },
     ka: {
       translation: ka,
+    },
+    sw: {
+      translation: sw,
     },
     uk: {
       translation: uk,

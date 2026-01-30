@@ -19,12 +19,20 @@ import {getLocales} from 'expo-localization';
 
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
-export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'ka', 'uk'] as const;
+export const SUPPORTED_LANGUAGES = [
+  'en',
+  'es',
+  'fr',
+  'ka',
+  'sw',
+  'uk',
+] as const;
 export const DISPLAY_LANGUAGES = {
   en: 'English',
   es: 'Español',
   fr: 'Français',
   ka: 'ქართული',
+  sw: 'Kiswahili',
   uk: 'українська',
 } as const;
 
