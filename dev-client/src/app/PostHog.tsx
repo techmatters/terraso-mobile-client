@@ -614,9 +614,9 @@ function PostHogInner({children, navRef}: Props) {
         enableSessionReplay: isRecording,
         sessionReplayConfig: isRecording
           ? {
-              // Safe defaults - no masking on Android to avoid crashes
-              maskAllTextInputs: Platform.OS !== 'android',
-              maskAllImages: Platform.OS !== 'android',
+              // Masking disabled - caused stack-related crashes and we don't need it
+              maskAllTextInputs: false,
+              maskAllImages: false,
               captureLog: true,
             }
           : undefined,
