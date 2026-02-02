@@ -61,21 +61,34 @@
 
 ## When Config is Fetched
 
-| Event | Cloudflare Fetch | PostHog Polling |
-|-------|------------------|-----------------|
-| **App startup** (before PostHog init) | ✅ Blocks briefly, caches result | ❌ Not yet initialized |
+**Two separate fetches happen, but they're coupled together:**
+
+| Fetch | What it gets | Used for |
+|-------|--------------|----------|
+| **Cloudflare fetch** | `enabledBuilds`, `enabledEmails` | Session recording decision |
+| **PostHog polling** | `banner_message` flag | In-app banner messages (unrelated to recording) |
+
+**When each runs:**
+
+| Event | Cloudflare | PostHog |
+|-------|------------|---------|
+| **App startup** | ✅ Defers PostHog init until complete (3s timeout) | ❌ Not yet initialized |
 | **App mount** (after PostHog init) | ✅ | ✅ |
 | **App comes to foreground** | ✅ | ✅ |
 | **Sites screen focus** | ✅ | ✅ |
 | **Manual refresh** (debug panel) | ✅ | ✅ |
 
+> **Note:** At app startup, the UI renders immediately. Only PostHog initialization waits for the
+> Cloudflare fetch to complete (or timeout after 3s). This ensures we have fresh config before
+> making the immutable session recording decision.
+
 ### Polling Cycle Details
 
 A "polling cycle" is triggered by any event above (except initial startup) and does:
-1. **Cloudflare fetch:** Once at the START of the cycle
-2. **PostHog flags:** Polls every 1 second for 30 seconds (for `banner_message` flag)
+1. **Cloudflare fetch:** Once at the START of the cycle (for session recording config)
+2. **PostHog polling:** Every 1 second for 30 seconds (for `banner_message` flag only)
 
-Both are coupled together - triggering one triggers both.
+Both are coupled in the same trigger mechanism.
 
 ## Session Recording Decision Flow
 
@@ -174,13 +187,4 @@ Use the provided script to test the Cloudflare Worker endpoint:
   "enabledBuilds": ["330", "9999"],
   "enabledEmails": ["*@techmatters.org"]
 }
-```
-
-### Manual curl (if needed)
-
-```bash
-TIMESTAMP=$(date +%s)
-SECRET="your-secret-here"
-SIGNATURE=$(echo -n "$TIMESTAMP" | openssl dgst -sha256 -hmac "$SECRET" | cut -d' ' -f2)
-curl "https://feature-flags.terraso.org/staging?t=$TIMESTAMP&sig=$SIGNATURE"
 ```
