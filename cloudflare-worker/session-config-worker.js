@@ -1,6 +1,14 @@
 /**
  * Terraso Feature Flags Worker
  *
+ * DEPLOYMENT NOTE:
+ * This file is NOT part of the mobile client build. It is a standalone Cloudflare Worker
+ * that must be deployed separately to Cloudflare Workers. The mobile client calls this
+ * worker's endpoint to fetch session recording configuration.
+ *
+ * To deploy or update: Use the Cloudflare dashboard or Wrangler CLI.
+ * KV namespace bindings and SHARED_SECRET must be configured in Cloudflare.
+ *
  * Returns feature flag configuration from KV store.
  * Requires signed requests to prevent casual abuse.
  *

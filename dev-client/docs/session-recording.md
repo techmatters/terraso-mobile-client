@@ -25,6 +25,10 @@
 
 **Location:** `cloudflare-worker/session-config-worker.js`
 
+> **Note:** This file is NOT part of the mobile client build. It is a standalone Cloudflare Worker
+> that must be deployed separately to Cloudflare. The mobile client calls this worker's endpoint
+> to fetch configuration. See the Cloudflare dashboard to manage the worker deployment and KV bindings.
+
 **Endpoint:** `https://feature-flags.terraso.org/{staging|prod}?t={timestamp}&sig={signature}`
 
 ### Authentication
@@ -146,12 +150,31 @@ Masking is disabled on all platforms because it caused stack-related crashes.
 
 ## Testing with Script
 
+Use the provided script to test the Cloudflare Worker endpoint:
+
 ```bash
 # From dev-client directory
 ./scripts/fetch-feature-flags.sh [staging|prod]
 ```
 
-The script reads `FEATURE_FLAG_SECRET` from your `.env` file.
+**Requirements:**
+- Your `dev-client/.env` file must contain:
+  - `FEATURE_FLAG_URL` - The worker endpoint (e.g., `https://feature-flags.terraso.org/staging`)
+  - `FEATURE_FLAG_SECRET` - The shared secret for HMAC signing
+
+**What it does:**
+1. Reads credentials from `.env`
+2. Extracts the base URL (strips `/staging` or `/prod` suffix if present)
+3. Generates a signed request with current timestamp
+4. Fetches and displays the JSON config
+
+**Example output:**
+```json
+{
+  "enabledBuilds": ["330", "9999"],
+  "enabledEmails": ["*@techmatters.org"]
+}
+```
 
 ### Manual curl (if needed)
 
