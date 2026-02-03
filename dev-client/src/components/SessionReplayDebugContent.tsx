@@ -200,9 +200,13 @@ const SessionReplayDebugExpanded = () => {
               ⚠ isRecording=true but native is inactive
             </Text>
           )}
-          {sessionRecordingState?.showRestartBanner && (
-            <Text color="orange.600">⚠ Restart required to apply changes</Text>
-          )}
+          {sessionRecordingState &&
+            sessionRecordingState.wantRecording !==
+              sessionRecordingState.isRecording && (
+              <Text color="orange.600">
+                ⚠ Restart required to apply changes
+              </Text>
+            )}
         </Column>
       </Box>
     </ScrollView>

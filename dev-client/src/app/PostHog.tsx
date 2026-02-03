@@ -313,13 +313,11 @@ function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
 const SESSION_RECORDING_PAYLOAD_KEY = 'posthog.session_recording_payload';
 
 type SessionRecordingPayload = {
-  sequence: number; // Legacy field, always 0 for Cloudflare config
   enabledBuilds: string[]; // Build patterns: exact (999), range (100-200), min (300-), max (-500)
   enabledEmails: string[]; // Email patterns with glob support (* = wildcard)
 };
 
 export type CachedSessionRecordingPayload = {
-  sequence: number;
   payload: SessionRecordingPayload;
 };
 
@@ -364,47 +362,24 @@ function getCurrentBuildNumber(): number {
  *   - Max only: "-500" matches builds <= 500
  */
 function buildMatchesPattern(buildNumber: number, pattern: string): boolean {
-  // Defensive: convert to string in case of legacy cached data with numbers
   const trimmed = String(pattern).trim();
 
-  // Check for range patterns (contains hyphen, but not just a leading hyphen for max-only)
-  if (trimmed.includes('-')) {
-    // Max only: "-500" (starts with hyphen, rest is a number)
-    if (trimmed.startsWith('-')) {
-      const maxStr = trimmed.slice(1);
-      const max = parseInt(maxStr, 10);
-      if (!isNaN(max)) {
-        return buildNumber <= max;
-      }
-    }
+  let min = 0;
+  let max = Number.MAX_SAFE_INTEGER;
 
-    // Min only: "300-" (ends with hyphen)
-    if (trimmed.endsWith('-')) {
-      const minStr = trimmed.slice(0, -1);
-      const min = parseInt(minStr, 10);
-      if (!isNaN(min)) {
-        return buildNumber >= min;
-      }
-    }
-
-    // Range: "100-200"
-    const parts = trimmed.split('-');
-    if (parts.length === 2) {
-      const min = parseInt(parts[0], 10);
-      const max = parseInt(parts[1], 10);
-      if (!isNaN(min) && !isNaN(max)) {
-        return buildNumber >= min && buildNumber <= max;
-      }
-    }
+  const rangeMatch = trimmed.match(/^(\d*)-(\d*)$/);
+  if (rangeMatch) {
+    const [, minStr, maxStr] = rangeMatch;
+    if (!minStr && !maxStr) return false; // Reject bare "-"
+    if (minStr) min = parseInt(minStr, 10);
+    if (maxStr) max = parseInt(maxStr, 10);
+  } else {
+    const exact = parseInt(trimmed, 10);
+    if (isNaN(exact)) return false;
+    min = max = exact;
   }
 
-  // Exact match: "999"
-  const exact = parseInt(trimmed, 10);
-  if (!isNaN(exact)) {
-    return buildNumber === exact;
-  }
-
-  return false;
+  return buildNumber >= min && buildNumber <= max;
 }
 
 function buildNumberMatches(
@@ -455,12 +430,11 @@ export function saveCachedPayload(
 }
 
 // ---- Session Recording State Context ----
-// Provides wantRecording, isRecording, and showRestartBanner to children
+// Provides wantRecording and isRecording to children
 
 type SessionRecordingStateContextType = {
   wantRecording: boolean;
   isRecording: boolean;
-  showRestartBanner: boolean;
 };
 
 const SessionRecordingStateContext =
@@ -511,22 +485,6 @@ function PostHogInner({children, navRef}: Props) {
   // Track what we WANT (can change during session)
   const [wantRecording, setWantRecording] = useState(isRecording);
 
-  // Show restart banner when want != is (with delay to ensure persistence)
-  const [showRestartBanner, setShowRestartBanner] = useState(false);
-
-  // Update restart banner visibility when wantRecording changes
-  useEffect(() => {
-    if (wantRecording !== isRecording) {
-      // Wait 5 seconds before showing banner to ensure kvStorage write persisted
-      const timeout = setTimeout(() => {
-        setShowRestartBanner(true);
-      }, 5000);
-      return () => clearTimeout(timeout);
-    } else {
-      setShowRestartBanner(false);
-    }
-  }, [wantRecording, isRecording]);
-
   // Recompute wantRecording when email changes (login/logout)
   useEffect(() => {
     const cached = getCachedPayload();
@@ -551,9 +509,7 @@ function PostHogInner({children, navRef}: Props) {
     (config: {enabledBuilds: string[]; enabledEmails: string[]}) => {
       // Save to cache
       const cachedPayload: CachedSessionRecordingPayload = {
-        sequence: 0,
         payload: {
-          sequence: 0,
           enabledBuilds: config.enabledBuilds,
           enabledEmails: config.enabledEmails,
         },
@@ -585,7 +541,6 @@ function PostHogInner({children, navRef}: Props) {
   const sessionRecordingStateValue = {
     wantRecording,
     isRecording,
-    showRestartBanner,
   };
 
   return (
@@ -666,9 +621,7 @@ export function PostHog({children, navRef}: Props) {
         if (config) {
           // Successfully fetched from Cloudflare - save to cache
           const cachedPayload: CachedSessionRecordingPayload = {
-            sequence: 0,
             payload: {
-              sequence: 0,
               enabledBuilds: config.enabledBuilds,
               enabledEmails: config.enabledEmails,
             },
