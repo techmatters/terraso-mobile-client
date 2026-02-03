@@ -73,7 +73,7 @@ test('feature flags can be disabled', () => {
   });
 });
 
-test('testing feature flag is disabled in production', () => {
+test('testing feature flag is default disabled in production', () => {
   jest.isolateModules(() => {
     jest.mock('terraso-mobile-client/config/index', () => ({
       APP_CONFIG: {
@@ -88,6 +88,25 @@ test('testing feature flag is disabled in production', () => {
 
     expect(isFlagEnabled('FF_testing')).toBe(false);
     expect(willFlagBeEnabledOnReload('FF_testing')).toBe(false);
+  });
+});
+
+test('testing feature flag is disabled in production even if saved as ON in storage', () => {
+  jest.isolateModules(() => {
+    jest.mock('terraso-mobile-client/config/index', () => ({
+      APP_CONFIG: {
+        environment: 'production',
+      },
+    }));
+
+    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
+    kvStorage.setBool('FF_testing', true);
+
+    const {
+      isFlagEnabled,
+    } = require('terraso-mobile-client/config/featureFlags');
+
+    expect(isFlagEnabled('FF_testing')).toBe(false);
   });
 });
 
