@@ -63,7 +63,14 @@ export const setFlagWillBeEnabledOnReload = (
 };
 
 const ENABLED_FLAGS = Object.fromEntries(
-  Object.keys(featureFlags).map(
-    key => [key, willFlagBeEnabledOnReload(key as FeatureFlagName)] as const,
-  ),
+  Object.keys(featureFlags).map(key => {
+    let isEnabled = willFlagBeEnabledOnReload(key as FeatureFlagName);
+
+    // There shouldn't be an opportunity to turn FF_testing on in prod, so this is just for extra safety
+    if (key === 'FF_testing') {
+      isEnabled = isEnabled && APP_CONFIG.environment !== 'production';
+    }
+
+    return [key, isEnabled] as const;
+  }),
 );
