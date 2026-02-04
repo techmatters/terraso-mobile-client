@@ -381,7 +381,7 @@ function computeShouldRecord(
 
 // ---- Config Caching ----
 
-export function getCachedConfig(): SessionRecordingConfig | null {
+function getCachedConfig(): SessionRecordingConfig | null {
   // Handle both old format (with .payload wrapper) and new format (direct)
   const cached = kvStorage.getObject<any>(SESSION_RECORDING_PAYLOAD_KEY);
   if (!cached) return null;
@@ -393,11 +393,12 @@ function saveCachedConfig(config: SessionRecordingConfig): void {
 }
 
 // ---- Session Recording State Context ----
-// Provides wantRecording and isRecording to children
+// Provides recording state and config to children
 
 type SessionRecordingStateContextType = {
   wantRecording: boolean;
   isRecording: boolean;
+  config: SessionRecordingConfig | null;
 };
 
 const SessionRecordingStateContext =
@@ -438,10 +439,16 @@ function PostHogInner({children, navRef}: Props) {
   // ---- Session Recording State ----
   // isRecording: what was computed and bootstrapped on app startup (immutable until restart)
   // wantRecording: what we WANT based on the latest valid payload (can change during session)
+  // config: the current config from cache (for debug display)
+
+  // Track current config (for debug panel)
+  const [config, setConfig] = useState<SessionRecordingConfig | null>(
+    getCachedConfig,
+  );
 
   // Compute isRecording once on mount from cached config + current email
   const [isRecording] = useState(() => {
-    return computeShouldRecord(getCachedConfig(), emailAtRenderTime);
+    return computeShouldRecord(config, emailAtRenderTime);
   });
 
   // Track what we WANT (can change during session)
@@ -449,7 +456,9 @@ function PostHogInner({children, navRef}: Props) {
 
   // Recompute wantRecording when email changes (login/logout)
   useEffect(() => {
-    setWantRecording(computeShouldRecord(getCachedConfig(), emailAtRenderTime));
+    const cachedConfig = getCachedConfig();
+    setConfig(cachedConfig);
+    setWantRecording(computeShouldRecord(cachedConfig, emailAtRenderTime));
   }, [emailAtRenderTime]);
 
   // Ref to hold the trigger function for the global poller
@@ -463,9 +472,10 @@ function PostHogInner({children, navRef}: Props) {
 
   // Handler for Cloudflare config changes (from polling)
   const handleCloudflareConfigChange = useCallback(
-    (config: SessionRecordingConfig) => {
-      saveCachedConfig(config);
-      setWantRecording(computeShouldRecord(config, emailAtRenderTime));
+    (newConfig: SessionRecordingConfig) => {
+      saveCachedConfig(newConfig);
+      setConfig(newConfig);
+      setWantRecording(computeShouldRecord(newConfig, emailAtRenderTime));
     },
     [emailAtRenderTime],
   );
@@ -485,6 +495,7 @@ function PostHogInner({children, navRef}: Props) {
   const sessionRecordingStateValue = {
     wantRecording,
     isRecording,
+    config,
   };
 
   return (

@@ -28,7 +28,6 @@ import Constants from 'expo-constants';
 
 import {
   checkNativeSessionReplayStatus,
-  getCachedConfig,
   useFeatureFlagPollingContext,
   useSessionRecordingState,
 } from 'terraso-mobile-client/app/PostHog';
@@ -72,9 +71,10 @@ export const SessionReplayDebugContent = () => {
 const SessionReplayDebugExpanded = () => {
   const {height} = useWindowDimensions();
   const [nativeStatus, setNativeStatus] = useState<boolean | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
   const [isRefetching, setIsRefetching] = useState(false);
-  const [cachedConfig, setCachedConfig] = useState(() => getCachedConfig());
+
+  // Get session recording state (including config) from context
+  const sessionRecordingState = useSessionRecordingState();
 
   // Get polling context to trigger refresh
   const pollingContext = useFeatureFlagPollingContext();
@@ -89,27 +89,22 @@ const SessionReplayDebugExpanded = () => {
       ? Constants.expoConfig?.ios?.buildNumber
       : Constants.expoConfig?.android?.versionCode?.toString();
 
-  // Load native session replay status
+  // Load native session replay status on mount
   useEffect(() => {
     checkNativeSessionReplayStatus().then(setNativeStatus);
-  }, [refreshKey]);
+  }, []);
 
   const handleRefresh = useCallback(() => {
     setIsRefetching(true);
-    setRefreshKey(prev => prev + 1);
 
-    // Trigger polling cycle - this will fetch from Cloudflare and update wantRecording
+    // Trigger polling cycle - this will fetch from Cloudflare and update context
     pollingContext?.trigger();
 
-    // Wait a moment for the fetch to complete, then reload cached config
+    // Wait a moment for the fetch to complete
     setTimeout(() => {
-      setCachedConfig(getCachedConfig());
       setIsRefetching(false);
     }, 2000);
   }, [pollingContext]);
-
-  // Get session recording state from context
-  const sessionRecordingState = useSessionRecordingState();
 
   return (
     <ScrollView style={[styles.scrollViewContainer, {maxHeight: height / 2}]}>
@@ -161,21 +156,21 @@ const SessionReplayDebugExpanded = () => {
 
         <Divider style={styles.dividerTopMargin} />
 
-        {/* Cached Config (from Cloudflare) */}
+        {/* Config (from Cloudflare) */}
         <Text bold mt="8px">
-          Cached Config
+          Config
         </Text>
         <Column>
           <Text>
             enabledBuilds:{' '}
-            {cachedConfig?.enabledBuilds
-              ? JSON.stringify(cachedConfig.enabledBuilds)
+            {sessionRecordingState?.config?.enabledBuilds
+              ? JSON.stringify(sessionRecordingState.config.enabledBuilds)
               : 'none'}
           </Text>
           <Text>
             enabledEmails:{' '}
-            {cachedConfig?.enabledEmails
-              ? JSON.stringify(cachedConfig.enabledEmails)
+            {sessionRecordingState?.config?.enabledEmails
+              ? JSON.stringify(sessionRecordingState.config.enabledEmails)
               : 'none'}
           </Text>
         </Column>
