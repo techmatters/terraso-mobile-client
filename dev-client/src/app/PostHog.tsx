@@ -132,17 +132,16 @@ function PostHogInstanceSetter() {
   return null;
 }
 
-// ---- Background flush on app losing focus, reload flags on foreground ----
+// ---- Background flush on app losing focus ----
 function PosthogLifecycle() {
   const posthog = usePostHog();
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', state => {
-      if (state === 'active') {
-        posthog?.reloadFeatureFlags();
-      } else {
+      if (state !== 'active') {
         posthog?.flush();
       }
+      // Note: reloadFeatureFlags on foreground is handled by GlobalFeatureFlagPoller
     });
     return () => sub.remove();
   }, [posthog]);
@@ -280,27 +279,15 @@ function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
 
   useEffect(() => {
     const send = () => {
-      const current = navRef.getCurrentRoute();
-      const name = current?.name;
+      const name = navRef.getCurrentRoute()?.name;
       if (!name || prevRouteName.current === name) return;
       prevRouteName.current = name;
-
-      // Map to prettier names if you like:
-      // const pretty = SCREEN_TITLES[name] ?? name;
-      const pretty = name;
-
-      posthog?.screen(pretty, {
-        route: name,
-        // You can also attach params if safe: ...current?.params
-      });
+      posthog?.screen(name, {route: name});
     };
 
-    // Fire on ready + on each nav state change
     if ((navRef as any).isReady?.()) send();
     const unsub = (navRef as any).addListener?.('state', send);
-    return () => {
-      if (unsub) unsub();
-    };
+    return () => unsub?.();
   }, [navRef, posthog]);
 
   return null;
@@ -312,13 +299,9 @@ function ScreenTracker({navRef}: {navRef: NavigationContainerRef<any>}) {
 
 const SESSION_RECORDING_PAYLOAD_KEY = 'posthog.session_recording_payload';
 
-type SessionRecordingPayload = {
+type SessionRecordingConfig = {
   enabledBuilds: string[]; // Build patterns: exact (999), range (100-200), min (300-), max (-500)
   enabledEmails: string[]; // Email patterns with glob support (* = wildcard)
-};
-
-export type CachedSessionRecordingPayload = {
-  payload: SessionRecordingPayload;
 };
 
 // ---- Email Glob Matching ----
@@ -333,14 +316,6 @@ function emailMatchesPattern(email: string, pattern: string): boolean {
 
   const regex = new RegExp(`^${regexPattern}$`, 'i'); // Case insensitive
   return regex.test(email);
-}
-
-function emailMatchesAnyPattern(
-  email: string | undefined,
-  patterns: string[],
-): boolean {
-  if (!email) return false;
-  return patterns.some(pattern => emailMatchesPattern(email, pattern));
 }
 
 // ---- Build Number Helpers ----
@@ -382,51 +357,39 @@ function buildMatchesPattern(buildNumber: number, pattern: string): boolean {
   return buildNumber >= min && buildNumber <= max;
 }
 
-function buildNumberMatches(
-  buildNumber: number,
-  enabledBuilds: string[],
-): boolean {
-  return enabledBuilds.some(pattern =>
-    buildMatchesPattern(buildNumber, pattern),
-  );
-}
-
 // ---- Compute shouldRecord ----
-// Returns true if current build OR email matches the payload criteria
+// Returns true if current build OR email matches the config criteria
 
 function computeShouldRecord(
-  payload: SessionRecordingPayload | null,
+  config: SessionRecordingConfig | null,
   email: string | undefined,
 ): boolean {
-  if (!payload) return false;
+  if (!config) return false;
 
   const buildNumber = getCurrentBuildNumber();
-  const buildMatches = buildNumberMatches(
-    buildNumber,
-    payload.enabledBuilds || [],
+  const buildMatches = (config.enabledBuilds || []).some(pattern =>
+    buildMatchesPattern(buildNumber, pattern),
   );
-  const emailMatches = emailMatchesAnyPattern(
-    email,
-    payload.enabledEmails || [],
-  );
+  const emailMatches =
+    email !== undefined &&
+    (config.enabledEmails || []).some(pattern =>
+      emailMatchesPattern(email, pattern),
+    );
 
   return buildMatches || emailMatches;
 }
 
-// ---- Payload Caching ----
+// ---- Config Caching ----
 
-export function getCachedPayload(): CachedSessionRecordingPayload | null {
-  return (
-    kvStorage.getObject<CachedSessionRecordingPayload>(
-      SESSION_RECORDING_PAYLOAD_KEY,
-    ) ?? null
-  );
+export function getCachedConfig(): SessionRecordingConfig | null {
+  // Handle both old format (with .payload wrapper) and new format (direct)
+  const cached = kvStorage.getObject<any>(SESSION_RECORDING_PAYLOAD_KEY);
+  if (!cached) return null;
+  return cached.payload ?? cached;
 }
 
-export function saveCachedPayload(
-  payload: CachedSessionRecordingPayload,
-): void {
-  kvStorage.setObject(SESSION_RECORDING_PAYLOAD_KEY, payload);
+function saveCachedConfig(config: SessionRecordingConfig): void {
+  kvStorage.setObject(SESSION_RECORDING_PAYLOAD_KEY, config);
 }
 
 // ---- Session Recording State Context ----
@@ -476,10 +439,9 @@ function PostHogInner({children, navRef}: Props) {
   // isRecording: what was computed and bootstrapped on app startup (immutable until restart)
   // wantRecording: what we WANT based on the latest valid payload (can change during session)
 
-  // Compute isRecording once on mount from cached payload + current email
+  // Compute isRecording once on mount from cached config + current email
   const [isRecording] = useState(() => {
-    const cached = getCachedPayload();
-    return computeShouldRecord(cached?.payload ?? null, emailAtRenderTime);
+    return computeShouldRecord(getCachedConfig(), emailAtRenderTime);
   });
 
   // Track what we WANT (can change during session)
@@ -487,12 +449,7 @@ function PostHogInner({children, navRef}: Props) {
 
   // Recompute wantRecording when email changes (login/logout)
   useEffect(() => {
-    const cached = getCachedPayload();
-    const newWant = computeShouldRecord(
-      cached?.payload ?? null,
-      emailAtRenderTime,
-    );
-    setWantRecording(newWant);
+    setWantRecording(computeShouldRecord(getCachedConfig(), emailAtRenderTime));
   }, [emailAtRenderTime]);
 
   // Ref to hold the trigger function for the global poller
@@ -506,22 +463,9 @@ function PostHogInner({children, navRef}: Props) {
 
   // Handler for Cloudflare config changes (from polling)
   const handleCloudflareConfigChange = useCallback(
-    (config: {enabledBuilds: string[]; enabledEmails: string[]}) => {
-      // Save to cache
-      const cachedPayload: CachedSessionRecordingPayload = {
-        payload: {
-          enabledBuilds: config.enabledBuilds,
-          enabledEmails: config.enabledEmails,
-        },
-      };
-      saveCachedPayload(cachedPayload);
-
-      // Recompute wantRecording
-      const newWant = computeShouldRecord(
-        cachedPayload.payload,
-        emailAtRenderTime,
-      );
-      setWantRecording(newWant);
+    (config: SessionRecordingConfig) => {
+      saveCachedConfig(config);
+      setWantRecording(computeShouldRecord(config, emailAtRenderTime));
     },
     [emailAtRenderTime],
   );
@@ -548,7 +492,6 @@ function PostHogInner({children, navRef}: Props) {
       apiKey={APP_CONFIG.posthogApiKey}
       options={{
         host: APP_CONFIG.posthogHost,
-        disabled: false,
         captureAppLifecycleEvents: true,
         // batching knobs (tune as you like)
         flushAt: 20, // number of events to queue before flushing (send to server)
@@ -614,28 +557,18 @@ export function PostHog({children, navRef}: Props) {
   const [configLoaded, setConfigLoaded] = useState(false);
 
   useEffect(() => {
-    const loadConfig = async () => {
-      try {
-        const config = await fetchSessionRecordingConfig();
-
+    fetchSessionRecordingConfig()
+      .then(config => {
         if (config) {
-          // Successfully fetched from Cloudflare - save to cache
-          const cachedPayload: CachedSessionRecordingPayload = {
-            payload: {
-              enabledBuilds: config.enabledBuilds,
-              enabledEmails: config.enabledEmails,
-            },
-          };
-          saveCachedPayload(cachedPayload);
+          saveCachedConfig(config);
         }
-      } catch {
+      })
+      .catch(() => {
         // Silently ignore fetch errors - will use cached config
-      }
-
-      setConfigLoaded(true);
-    };
-
-    loadConfig();
+      })
+      .finally(() => {
+        setConfigLoaded(true);
+      });
   }, []);
 
   // While loading config, render children without PostHog

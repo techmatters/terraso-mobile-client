@@ -28,7 +28,7 @@ import Constants from 'expo-constants';
 
 import {
   checkNativeSessionReplayStatus,
-  getCachedPayload,
+  getCachedConfig,
   useFeatureFlagPollingContext,
   useSessionRecordingState,
 } from 'terraso-mobile-client/app/PostHog';
@@ -74,7 +74,7 @@ const SessionReplayDebugExpanded = () => {
   const [nativeStatus, setNativeStatus] = useState<boolean | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isRefetching, setIsRefetching] = useState(false);
-  const [cachedConfig, setCachedConfig] = useState(() => getCachedPayload());
+  const [cachedConfig, setCachedConfig] = useState(() => getCachedConfig());
 
   // Get polling context to trigger refresh
   const pollingContext = useFeatureFlagPollingContext();
@@ -103,7 +103,7 @@ const SessionReplayDebugExpanded = () => {
 
     // Wait a moment for the fetch to complete, then reload cached config
     setTimeout(() => {
-      setCachedConfig(getCachedPayload());
+      setCachedConfig(getCachedConfig());
       setIsRefetching(false);
     }, 2000);
   }, [pollingContext]);
@@ -168,14 +168,14 @@ const SessionReplayDebugExpanded = () => {
         <Column>
           <Text>
             enabledBuilds:{' '}
-            {cachedConfig?.payload?.enabledBuilds
-              ? JSON.stringify(cachedConfig.payload.enabledBuilds)
+            {cachedConfig?.enabledBuilds
+              ? JSON.stringify(cachedConfig.enabledBuilds)
               : 'none'}
           </Text>
           <Text>
             enabledEmails:{' '}
-            {cachedConfig?.payload?.enabledEmails
-              ? JSON.stringify(cachedConfig.payload.enabledEmails)
+            {cachedConfig?.enabledEmails
+              ? JSON.stringify(cachedConfig.enabledEmails)
               : 'none'}
           </Text>
         </Column>
