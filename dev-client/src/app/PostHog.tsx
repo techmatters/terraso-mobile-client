@@ -422,6 +422,15 @@ export async function checkNativeSessionReplayStatus(): Promise<boolean> {
   }
 }
 
+// Check if PostHog is enabled (API key configured)
+function isPostHogEnabled(): boolean {
+  return (
+    !!APP_CONFIG.posthogApiKey &&
+    !!APP_CONFIG.posthogHost &&
+    APP_CONFIG.posthogApiKey !== 'REPLACE_ME'
+  );
+}
+
 // Internal PostHog component - assumes config has already been loaded
 function PostHogInner({children, navRef}: Props) {
   // Check if email is available at PostHog component render time
@@ -431,10 +440,7 @@ function PostHogInner({children, navRef}: Props) {
   );
   const emailAtRenderTime = currentUserFromRedux?.email;
 
-  const enabled =
-    !!APP_CONFIG.posthogApiKey &&
-    !!APP_CONFIG.posthogHost &&
-    APP_CONFIG.posthogApiKey !== 'REPLACE_ME';
+  const enabled = isPostHogEnabled();
 
   // ---- Session Recording State ----
   // isRecording: what was computed and bootstrapped on app startup (immutable until restart)
@@ -565,9 +571,15 @@ function PostHogInner({children, navRef}: Props) {
 // This ensures we have fresh config for the session recording decision
 
 export function PostHog({children, navRef}: Props) {
-  const [configLoaded, setConfigLoaded] = useState(false);
+  const enabled = isPostHogEnabled();
+  const [configLoaded, setConfigLoaded] = useState(!enabled);
 
   useEffect(() => {
+    // Skip config loading if PostHog is disabled
+    if (!enabled) {
+      return;
+    }
+
     fetchSessionRecordingConfig()
       .then(config => {
         if (config) {
@@ -580,7 +592,7 @@ export function PostHog({children, navRef}: Props) {
       .finally(() => {
         setConfigLoaded(true);
       });
-  }, []);
+  }, [enabled]);
 
   // While loading config, render children without PostHog
   // Analytics events during this brief window will be silently dropped
