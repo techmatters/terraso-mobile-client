@@ -28,6 +28,13 @@ fi
 echo "Building from $PWD for: $PLATFORM"
 
 rm -rf node_modules ios android
+
+# Clear Gradle build cache (can cause stale artifact issues)
+if [[ "$PLATFORM" == "android" ]]; then
+    echo "Clearing Gradle build cache..."
+    rm -rf ~/.gradle/caches/build-cache-1
+fi
+
 npm install
 npm run prepare
 npm run prebuild
