@@ -24,7 +24,7 @@ import * as soilIdService from 'terraso-client-shared/soilId/soilIdService';
 import {createAsyncThunk, ThunkAPI} from 'terraso-client-shared/store/utils';
 import {Coords} from 'terraso-client-shared/types';
 
-import {getPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
+import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
 import {
   CoordsKey,
   coordsKey,

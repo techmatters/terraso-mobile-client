@@ -22,7 +22,7 @@ import {useFeatureFlag, usePostHog} from 'posthog-react-native';
 import {
   FeatureFlagPollingTrigger,
   useFeatureFlagPollingContext,
-} from 'terraso-mobile-client/app/PostHog';
+} from 'terraso-mobile-client/app/posthog/PostHog';
 import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
 import {
   Box,

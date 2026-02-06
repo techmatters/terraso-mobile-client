@@ -32,7 +32,7 @@ import Mapbox from '@rnmapbox/maps';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
-import {FeatureFlagPollingTrigger} from 'terraso-mobile-client/app/PostHog';
+import {FeatureFlagPollingTrigger} from 'terraso-mobile-client/app/posthog/PostHog';
 import {LandPKSInfoButton} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoButton';
 import {ListFilterProvider} from 'terraso-mobile-client/components/ListFilter';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';

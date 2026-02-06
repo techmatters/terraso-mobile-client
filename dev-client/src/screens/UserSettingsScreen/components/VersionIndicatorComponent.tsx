@@ -21,7 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {
   checkNativeSessionReplayStatus,
   useSessionRecordingState,
-} from 'terraso-mobile-client/app/PostHog';
+} from 'terraso-mobile-client/app/posthog/PostHog';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 

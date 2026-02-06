@@ -44,4 +44,5 @@ SIGNATURE=$(echo -n "$TIMESTAMP" | openssl dgst -sha256 -hmac "$FEATURE_FLAG_SEC
 # Make request
 URL="$WORKER_URL/$ENV?t=$TIMESTAMP&sig=$SIGNATURE"
 echo "Fetching from: $ENV"
+echo "URL: $URL"
 curl -s "$URL" | jq .

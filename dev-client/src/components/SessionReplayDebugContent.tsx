@@ -30,7 +30,7 @@ import {
   checkNativeSessionReplayStatus,
   useFeatureFlagPollingContext,
   useSessionRecordingState,
-} from 'terraso-mobile-client/app/PostHog';
+} from 'terraso-mobile-client/app/posthog/PostHog';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
   Box,

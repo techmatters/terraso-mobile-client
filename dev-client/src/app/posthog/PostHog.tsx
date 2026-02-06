@@ -32,8 +32,12 @@ import {NavigationContainerRef, useFocusEffect} from '@react-navigation/native';
 import {PostHogProvider, usePostHog} from 'posthog-react-native';
 import {isEnabled as isSessionReplayEnabled} from 'posthog-react-native-session-replay';
 
-import {setPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
-import {fetchSessionRecordingConfig} from 'terraso-mobile-client/app/sessionRecordingConfig';
+import {
+  buildMatchesPattern,
+  emailMatchesPattern,
+} from 'terraso-mobile-client/app/posthog/patternMatching';
+import {setPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
+import {fetchSessionRecordingConfig} from 'terraso-mobile-client/app/posthog/sessionRecordingConfig';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
@@ -304,20 +308,6 @@ type SessionRecordingConfig = {
   enabledEmails: string[]; // Email patterns with glob support (* = wildcard)
 };
 
-// ---- Email Glob Matching ----
-// Matches email patterns like "*@techmatters.org" or "specific@example.com"
-
-function emailMatchesPattern(email: string, pattern: string): boolean {
-  // Convert glob pattern to regex
-  // * matches any characters, escape other regex special chars
-  const regexPattern = pattern
-    .replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape special chars except *
-    .replace(/\*/g, '.*'); // Convert * to .*
-
-  const regex = new RegExp(`^${regexPattern}$`, 'i'); // Case insensitive
-  return regex.test(email);
-}
-
 // ---- Build Number Helpers ----
 
 function getCurrentBuildNumber(): number {
@@ -326,35 +316,6 @@ function getCurrentBuildNumber(): number {
       ? Constants.expoConfig?.ios?.buildNumber
       : Constants.expoConfig?.android?.versionCode?.toString();
   return parseInt(buildString || '0', 10);
-}
-
-/**
- * Check if a build number matches a single pattern.
- * Patterns can be:
- *   - Exact: "999" matches build 999
- *   - Range: "100-200" matches builds 100-200 inclusive
- *   - Min only: "300-" matches builds >= 300
- *   - Max only: "-500" matches builds <= 500
- */
-function buildMatchesPattern(buildNumber: number, pattern: string): boolean {
-  const trimmed = String(pattern).trim();
-
-  let min = 0;
-  let max = Number.MAX_SAFE_INTEGER;
-
-  const rangeMatch = trimmed.match(/^(\d*)-(\d*)$/);
-  if (rangeMatch) {
-    const [, minStr, maxStr] = rangeMatch;
-    if (!minStr && !maxStr) return false; // Reject bare "-"
-    if (minStr) min = parseInt(minStr, 10);
-    if (maxStr) max = parseInt(maxStr, 10);
-  } else {
-    const exact = parseInt(trimmed, 10);
-    if (isNaN(exact)) return false;
-    min = max = exact;
-  }
-
-  return buildNumber >= min && buildNumber <= max;
 }
 
 // ---- Compute shouldRecord ----
