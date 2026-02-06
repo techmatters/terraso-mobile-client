@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {getPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
+import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
 import type {
   ExportScope,
   ResourceType,

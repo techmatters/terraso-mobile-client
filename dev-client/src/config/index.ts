@@ -98,6 +98,8 @@ export const APP_CONFIG = {
   posthogHost: ENV_CONFIG.POSTHOG_HOST,
   posthogApiKey: ENV_CONFIG.POSTHOG_API_KEY,
   posthogDebug: ENV_CONFIG.POSTHOG_DEBUG,
+  featureFlagUrl: ENV_CONFIG.FEATURE_FLAG_URL,
+  featureFlagSecret: ENV_CONFIG.FEATURE_FLAG_SECRET,
   debugEnabled: ENV_CONFIG.DEBUG_ENABLED === 'true',
   alwaysShowWelcome: ENV_CONFIG.ALWAYS_SHOW_WELCOME === 'true',
   welcomeContentHash,

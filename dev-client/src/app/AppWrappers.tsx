@@ -28,7 +28,7 @@ import {
 } from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
 
-import {PostHog} from 'terraso-mobile-client/app/PostHog';
+import {PostHog} from 'terraso-mobile-client/app/posthog/PostHog';
 import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPermissionsContext';
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';

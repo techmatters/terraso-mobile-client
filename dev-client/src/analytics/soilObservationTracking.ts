@@ -17,7 +17,7 @@
 
 import {DepthInterval} from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {getPostHogInstance} from 'terraso-mobile-client/app/posthogInstance';
+import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
 
 export type SoilObservationType =
   | 'slope_steepness'

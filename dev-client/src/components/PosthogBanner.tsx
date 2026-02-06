@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Technology Matters
+ * Copyright © 2026 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -22,7 +22,7 @@ import {useFeatureFlag, usePostHog} from 'posthog-react-native';
 import {
   FeatureFlagPollingTrigger,
   useFeatureFlagPollingContext,
-} from 'terraso-mobile-client/app/PostHog';
+} from 'terraso-mobile-client/app/posthog/PostHog';
 import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
 import {
   Box,

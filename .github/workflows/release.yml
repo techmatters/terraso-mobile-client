@@ -23,6 +23,7 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+      FEATURE_FLAG_SECRET: ${{ secrets.FEATURE_FLAG_SECRET }}
 
   android-build-release:
     name: Build and sign Android app
@@ -40,3 +41,4 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+      FEATURE_FLAG_SECRET: ${{ secrets.FEATURE_FLAG_SECRET }}

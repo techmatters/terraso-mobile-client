@@ -36,6 +36,8 @@ on:
         required: false
       POSTHOG_API_KEY:
         required: false
+      FEATURE_FLAG_SECRET:
+        required: false
 jobs:
   ios-build:
     name: iOS Build
@@ -61,6 +63,8 @@ jobs:
       SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
       POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
       POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+      FEATURE_FLAG_URL: ${{ vars.FEATURE_FLAG_URL }}
+      FEATURE_FLAG_SECRET: ${{ secrets.FEATURE_FLAG_SECRET }}
       CLANG: clang
       CLANGPLUSPLUS: clang++
       LD: clang
