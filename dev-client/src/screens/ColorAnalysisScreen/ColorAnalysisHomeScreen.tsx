@@ -23,6 +23,7 @@ import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservat
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
+import {ErrorDialog} from 'terraso-mobile-client/components/dialogs/ErrorDialog';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ActionsModal} from 'terraso-mobile-client/components/modals/ActionsModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
@@ -59,6 +60,7 @@ export const ColorAnalysisHomeScreen = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const modalRef = useRef<ModalHandle>(null);
+  const errorDialogRef = useRef<ModalHandle>(null);
   const [colorResult, setColorResult] = useState<InvalidColorResult | null>(
     null,
   );
@@ -90,16 +92,20 @@ export const ColorAnalysisHomeScreen = () => {
     }
 
     return () => {
-      const color = getColorFromImages({
-        reference: reference.photo,
-        soil: soil.photo,
-      });
+      try {
+        const color = getColorFromImages({
+          reference: reference.photo,
+          soil: soil.photo,
+        });
 
-      if ('result' in color) {
-        dispatchColor(color.result);
-      } else {
-        modalRef.current?.onOpen();
-        setColorResult(color);
+        if ('result' in color) {
+          dispatchColor(color.result);
+        } else {
+          modalRef.current?.onOpen();
+          setColorResult(color);
+        }
+      } catch {
+        errorDialogRef.current?.onOpen();
       }
     };
   }, [reference, soil, dispatchColor]);
@@ -209,6 +215,11 @@ export const ColorAnalysisHomeScreen = () => {
           </Row>
         )}
       </ActionsModal>
+      <ErrorDialog
+        ref={errorDialogRef}
+        headline={t('soil.color.analysis_error.headline')}>
+        {t('soil.color.analysis_error.body')}
+      </ErrorDialog>
       <Fab
         label={t('soil.color.analyze')}
         disabled={onAnalyze === null}

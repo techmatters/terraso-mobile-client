@@ -741,6 +741,10 @@
                 "your_result": "Votre résultat",
                 "use_suggestion": "Suggestion d'utilisation"
             },
+            "analysis_error": {
+                "headline": "Une erreur s'est produite",
+                "body": "Une erreur technique s'est produite lors de l'identification de la couleur du sol. Veuillez réessayer ou contacter help@terraso.org pour obtenir de l'aide."
+            },
             "crop_reference": "Recadrez l'image pour afficher uniquement le Post-it 3M Jaune Canari. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
             "crop_soil": "Recadrez l'image pour afficher uniquement l'échantillon de sol. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
             "soil_condition": "État du sol :",

@@ -741,6 +741,10 @@
                 "your_result": "Matokeo yako",
                 "use_suggestion": "Tumia pendekezo"
             },
+            "analysis_error": {
+                "headline": "Kuna kitu kimeenda vibaya",
+                "body": "Kulikuwa na hitilafu ya kiufundi katika kutambua rangi ya udongo. Tafadhali jaribu tena, au wasiliana na help@terraso.org kwa usaidizi."
+            },
             "crop_reference": "Kata picha ili kuonyesha tu Kidokezo cha 3M Canary Yellow Post-it. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
             "crop_soil": "Kata picha ili kuonyesha sampuli ya udongo pekee. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
             "soil_condition": "Hali ya udongo:",

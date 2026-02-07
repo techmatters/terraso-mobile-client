@@ -741,6 +741,10 @@
                 "your_result": "Tu resultado",
                 "use_suggestion": "Usar sugerencia"
             },
+            "analysis_error": {
+                "headline": "Algo salió mal",
+                "body": "Hubo un error técnico al identificar el color del suelo. Inténtalo de nuevo o contacta a help@terraso.org para obtener ayuda."
+            },
             "crop_reference": "Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo canario. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "crop_soil": "Recorta la imagen para mostrar sólo la muestra de suelo. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "soil_condition": "Condición del suelo:",

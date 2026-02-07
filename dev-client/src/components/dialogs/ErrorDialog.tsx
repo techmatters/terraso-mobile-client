@@ -30,7 +30,11 @@ import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButto
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
-import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Heading,
+  Text,
+  View,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export type ErrorDialogProps = React.PropsWithChildren<{
@@ -61,7 +65,9 @@ export const ErrorDialog = forwardRef<
           </View>
           {headline && (
             <View style={styles.headline}>
-              <Text color="error.content">{headline}</Text>
+              <Heading variant="h6" color="error.content">
+                {headline}
+              </Heading>
             </View>
           )}
           <View>

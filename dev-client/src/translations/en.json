@@ -814,6 +814,10 @@
                 "your_result": "Your result",
                 "use_suggestion": "Use suggestion"
             },
+            "analysis_error": {
+                "headline": "Something went wrong",
+                "body": "There was a technical error identifying the soil color. Please try again, or contact help@terraso.org for help."
+            },
             "hue": "Hue",
             "value": "Value",
             "chroma": "Chroma",
