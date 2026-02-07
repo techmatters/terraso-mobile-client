@@ -21,6 +21,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -207,9 +208,20 @@ function GlobalFeatureFlagPoller({
   // Track previous flag values to detect changes
   const prevFlagValues = useRef<Map<string, any>>(new Map());
 
+  // Track last trigger time to debounce successive calls
+  // 15 seconds is reasonable since polling runs for 30 seconds after each trigger
+  const lastTriggerTime = useRef(0);
+  const TRIGGER_DEBOUNCE_MS = 15000;
+
   // Expose trigger function via ref
   useEffect(() => {
     triggerRef.current = () => {
+      const now = Date.now();
+      const timeSinceLastTrigger = now - lastTriggerTime.current;
+      if (timeSinceLastTrigger < TRIGGER_DEBOUNCE_MS) {
+        return;
+      }
+      lastTriggerTime.current = now;
       posthog?.reloadFeatureFlags();
       setRefreshKey(prev => prev + 1);
     };
@@ -440,30 +452,44 @@ function PostHogInner({children, navRef}: Props) {
   // Handler for Cloudflare config changes (from polling)
   const handleCloudflareConfigChange = useCallback(
     (newConfig: SessionRecordingConfig) => {
-      saveCachedConfig(newConfig);
-      setConfig(newConfig);
-      setWantRecording(computeShouldRecord(newConfig, emailAtRenderTime));
+      // Only update state if config actually changed to avoid re-render loops
+      setConfig(prevConfig => {
+        const configChanged =
+          JSON.stringify(prevConfig) !== JSON.stringify(newConfig);
+        if (!configChanged) {
+          return prevConfig; // No change, don't update state
+        }
+        saveCachedConfig(newConfig);
+        setWantRecording(computeShouldRecord(newConfig, emailAtRenderTime));
+        return newConfig;
+      });
     },
     [emailAtRenderTime],
+  );
+
+  // Create context values - memoized to prevent unnecessary re-renders of consumers
+  const pollingContextValue = useMemo(
+    () => ({
+      trigger: () => {
+        triggerRef.current?.();
+      },
+      bannerMessagePayload,
+    }),
+    [bannerMessagePayload],
+  );
+
+  const sessionRecordingStateValue = useMemo(
+    () => ({
+      wantRecording,
+      isRecording,
+      config,
+    }),
+    [wantRecording, isRecording, config],
   );
 
   if (!enabled) {
     return <>{children}</>;
   }
-
-  // Create context values
-  const pollingContextValue = {
-    trigger: () => {
-      triggerRef.current?.();
-    },
-    bannerMessagePayload,
-  };
-
-  const sessionRecordingStateValue = {
-    wantRecording,
-    isRecording,
-    config,
-  };
 
   return (
     <PostHogProvider

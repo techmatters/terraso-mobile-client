@@ -1,0 +1,12 @@
+name = "terraso-feature-flags"
+main = "session-config-worker.js"
+compatibility_date = "2026-02-06"
+
+# KV Namespace bindings (IDs from Cloudflare dashboard)
+[[kv_namespaces]]
+binding = "FEATURE_FLAGS_PROD"
+id = "586400088e7e4be396345ca0472e4dee"
+
+[[kv_namespaces]]
+binding = "FEATURE_FLAGS_STAGING"
+id = "091eec3903874891b035dc2863eb3c25"
