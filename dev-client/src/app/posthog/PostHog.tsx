@@ -55,7 +55,7 @@ type Props = {
 // Also provides access to banner message payload
 
 type FeatureFlagPollingContextType = {
-  trigger: () => void;
+  trigger: (force?: boolean) => void;
   bannerMessagePayload: any;
 };
 
@@ -194,7 +194,7 @@ type GlobalFeatureFlagPollerProps = {
     enabledBuilds: string[];
     enabledEmails: string[];
   }) => void;
-  triggerRef: React.MutableRefObject<(() => void) | null>;
+  triggerRef: React.MutableRefObject<((force?: boolean) => void) | null>;
 };
 
 function GlobalFeatureFlagPoller({
@@ -215,10 +215,10 @@ function GlobalFeatureFlagPoller({
 
   // Expose trigger function via ref
   useEffect(() => {
-    triggerRef.current = () => {
+    triggerRef.current = (force?: boolean) => {
       const now = Date.now();
       const timeSinceLastTrigger = now - lastTriggerTime.current;
-      if (timeSinceLastTrigger < TRIGGER_DEBOUNCE_MS) {
+      if (!force && timeSinceLastTrigger < TRIGGER_DEBOUNCE_MS) {
         return;
       }
       lastTriggerTime.current = now;
@@ -441,7 +441,7 @@ function PostHogInner({children, navRef}: Props) {
   }, [emailAtRenderTime]);
 
   // Ref to hold the trigger function for the global poller
-  const triggerRef = useRef<(() => void) | null>(null);
+  const triggerRef = useRef<((force?: boolean) => void) | null>(null);
 
   // Handler for banner message changes - we'll expose this via context
   const [bannerMessagePayload, setBannerMessagePayload] = useState<any>(null);
@@ -470,8 +470,8 @@ function PostHogInner({children, navRef}: Props) {
   // Create context values - memoized to prevent unnecessary re-renders of consumers
   const pollingContextValue = useMemo(
     () => ({
-      trigger: () => {
-        triggerRef.current?.();
+      trigger: (force?: boolean) => {
+        triggerRef.current?.(force);
       },
       bannerMessagePayload,
     }),
