@@ -97,8 +97,8 @@ const SessionReplayDebugExpanded = () => {
   const handleRefresh = useCallback(() => {
     setIsRefetching(true);
 
-    // Trigger polling cycle - this will fetch from Cloudflare and update context
-    pollingContext?.trigger();
+    // Trigger polling cycle with force=true to bypass debouncing
+    pollingContext?.trigger(true);
 
     // Wait a moment for the fetch to complete
     setTimeout(() => {
