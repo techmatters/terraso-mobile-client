@@ -27,9 +27,26 @@
 
 > **Note:** This file is NOT part of the mobile client build. It is a standalone Cloudflare Worker
 > that must be deployed separately to Cloudflare. The mobile client calls this worker's endpoint
-> to fetch configuration. See the Cloudflare dashboard to manage the worker deployment and KV bindings.
+> to fetch configuration.
 
 **Endpoint:** `https://feature-flags.terraso.org/{staging|prod}?t={timestamp}&sig={signature}`
+
+### Deploying the Worker
+
+From the `cloudflare-worker/` directory:
+
+```bash
+# Deploy the worker (requires wrangler CLI and Cloudflare login)
+wrangler deploy
+
+# Watch live request logs (useful for debugging)
+wrangler tail terraso-feature-flags
+```
+
+**Prerequisites:**
+- Install wrangler: `npm install -g wrangler`
+- Login to Cloudflare: `wrangler login`
+- Ensure `SHARED_SECRET` is set in Cloudflare dashboard (Settings > Variables)
 
 ### Authentication
 
@@ -144,8 +161,9 @@ Masking is disabled on all platforms because it caused stack-related crashes.
 | File | Purpose |
 |------|---------|
 | `cloudflare-worker/session-config-worker.js` | Cloudflare Worker serving config from KV |
-| `src/app/sessionRecordingConfig.ts` | Fetch config with HMAC auth (3s timeout) |
-| `src/app/PostHog.tsx` | Main integration, polling, recording state |
+| `cloudflare-worker/wrangler.toml` | Wrangler deployment config (KV bindings) |
+| `src/app/posthog/sessionRecordingConfig.ts` | Fetch config with HMAC auth (3s timeout) |
+| `src/app/posthog/PostHog.tsx` | Main integration, polling, recording state |
 | `src/components/SessionReplayDebugContent.tsx` | Debug panel in settings |
 | `src/screens/.../VersionIndicatorComponent.tsx` | Shows recording state suffix |
 

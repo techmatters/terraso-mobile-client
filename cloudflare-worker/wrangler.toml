@@ -1,3 +1,10 @@
+# Terraso Feature Flags Cloudflare Worker
+#
+# Deploy:  wrangler deploy
+# Tail:    wrangler tail terraso-feature-flags
+#
+# Note: SHARED_SECRET must be set in Cloudflare dashboard (Settings > Variables)
+
 name = "terraso-feature-flags"
 main = "session-config-worker.js"
 compatibility_date = "2026-02-06"
