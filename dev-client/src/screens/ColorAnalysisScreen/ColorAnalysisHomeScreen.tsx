@@ -25,6 +25,7 @@ import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {ErrorDialog} from 'terraso-mobile-client/components/dialogs/ErrorDialog';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {TextWithLinks} from 'terraso-mobile-client/components/links/TextWithLinks';
 import {ActionsModal} from 'terraso-mobile-client/components/modals/ActionsModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -34,6 +35,7 @@ import {
   Text,
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/safeview/SafeScrollViewWithFab';
 import {getColorFromImages} from 'terraso-mobile-client/model/color/colorDetection';
 import {
@@ -217,9 +219,21 @@ export const ColorAnalysisHomeScreen = () => {
       </ActionsModal>
       <ErrorDialog
         ref={errorDialogRef}
-        headline={t('soil.color.analysis_error.headline')}>
-        {t('soil.color.analysis_error.body')}
+        headline={t('soil.color.analysis_error.headline')}
+        showSupportButton={false}
+        showDivider>
+        <TextWithLinks color="error.content">
+          {t('soil.color.analysis_error.body')}
+        </TextWithLinks>
       </ErrorDialog>
+      <RestrictByFlag flag="FF_testing">
+        <View style={styles.debugButton}>
+          <DialogButton
+            label="Test Error Dialog"
+            onPress={() => errorDialogRef.current?.onOpen()}
+          />
+        </View>
+      </RestrictByFlag>
       <Fab
         label={t('soil.color.analyze')}
         disabled={onAnalyze === null}
@@ -232,4 +246,9 @@ export const ColorAnalysisHomeScreen = () => {
 
 const styles = StyleSheet.create({
   image: {width: '100%', height: '100%'},
+  debugButton: {
+    position: 'absolute',
+    bottom: 100,
+    left: 16,
+  },
 });

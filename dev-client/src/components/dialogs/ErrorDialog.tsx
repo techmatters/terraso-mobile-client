@@ -24,7 +24,7 @@ import {
 } from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
-import {Modal, Portal} from 'react-native-paper';
+import {Divider, Modal, Portal} from 'react-native-paper';
 
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
@@ -32,7 +32,6 @@ import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink'
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Heading,
-  Text,
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -40,6 +39,8 @@ import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBase
 export type ErrorDialogProps = React.PropsWithChildren<{
   headline?: React.ReactNode;
   supportUrl?: string;
+  showSupportButton?: boolean;
+  showDivider?: boolean;
 }>;
 
 /**
@@ -48,48 +49,60 @@ export type ErrorDialogProps = React.PropsWithChildren<{
 export const ErrorDialog = forwardRef<
   ModalHandle,
   React.PropsWithChildren<ErrorDialogProps>
->(({headline, supportUrl, children}, forwardedRef) => {
-  const {t} = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const onOpen = useCallback(() => setIsOpen(true), [setIsOpen]);
-  const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
-  const modalHandle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
-  useImperativeHandle(forwardedRef, () => modalHandle, [modalHandle]);
+>(
+  (
+    {
+      headline,
+      supportUrl,
+      showSupportButton = true,
+      showDivider = false,
+      children,
+    },
+    forwardedRef,
+  ) => {
+    const {t} = useTranslation();
+    const [isOpen, setIsOpen] = useState(false);
+    const onOpen = useCallback(() => setIsOpen(true), [setIsOpen]);
+    const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
+    const modalHandle = useMemo(() => ({onClose, onOpen}), [onOpen, onClose]);
+    useImperativeHandle(forwardedRef, () => modalHandle, [modalHandle]);
 
-  return (
-    <Portal>
-      <Modal visible={isOpen} onDismiss={onClose} testID="error-dialog">
-        <View style={styles.container}>
-          <View style={styles.icon}>
-            <Icon name="error" color="error.main" size="md" />
-          </View>
-          {headline && (
-            <View style={styles.headline}>
-              <Heading variant="h6" color="error.content">
-                {headline}
-              </Heading>
+    return (
+      <Portal>
+        <Modal visible={isOpen} onDismiss={onClose} testID="error-dialog">
+          <View style={styles.container}>
+            <View style={styles.icon}>
+              <Icon name="error" color="error.main" size="md" />
             </View>
-          )}
-          <View>
-            <Text color="error.content">{children}</Text>
+            {headline && (
+              <View style={styles.headline}>
+                <Heading variant="h6" color="error.content">
+                  {headline}
+                </Heading>
+              </View>
+            )}
+            <View>{children}</View>
+            {showDivider && <Divider style={styles.divider} />}
+            <View style={styles.actions}>
+              {showSupportButton && (
+                <ExternalLink
+                  type="alertError"
+                  label={t('general.support')}
+                  url={supportUrl ?? t('general.help.url')}
+                />
+              )}
+              <DialogButton
+                type="alertError"
+                label={t('general.dismiss')}
+                onPress={onClose}
+              />
+            </View>
           </View>
-          <View style={styles.actions}>
-            <ExternalLink
-              type="alertError"
-              label={t('general.support')}
-              url={supportUrl ?? t('general.help.url')}
-            />
-            <DialogButton
-              type="alertError"
-              label={t('general.dismiss')}
-              onPress={onClose}
-            />
-          </View>
-        </View>
-      </Modal>
-    </Portal>
-  );
-});
+        </Modal>
+      </Portal>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -107,10 +120,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     alignItems: 'center',
   },
+  divider: {
+    marginTop: 24,
+  },
   actions: {
     marginTop: 24,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  dismissText: {},
 });
