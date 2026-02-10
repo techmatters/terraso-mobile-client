@@ -25,7 +25,6 @@ import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {ErrorDialog} from 'terraso-mobile-client/components/dialogs/ErrorDialog';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {TextWithLinks} from 'terraso-mobile-client/components/links/TextWithLinks';
 import {ActionsModal} from 'terraso-mobile-client/components/modals/ActionsModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -219,12 +218,8 @@ export const ColorAnalysisHomeScreen = () => {
       </ActionsModal>
       <ErrorDialog
         ref={errorDialogRef}
-        headline={t('soil.color.analysis_error.headline')}
-        showSupportButton={false}
-        showDivider>
-        <TextWithLinks color="error.content">
-          {t('soil.color.analysis_error.body')}
-        </TextWithLinks>
+        headline={t('soil.color.analysis_error.headline')}>
+        {t('soil.color.analysis_error.body')}
       </ErrorDialog>
       <RestrictByFlag flag="FF_testing">
         <View style={styles.debugButton}>

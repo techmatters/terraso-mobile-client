@@ -816,7 +816,7 @@
             },
             "analysis_error": {
                 "headline": "Something went wrong",
-                "body": "There was a technical error identifying the soil color. Please try again, or contact <link url=\"mailto:help@terraso.org\">help@terraso.org</link> for help."
+                "body": "There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
             },
             "hue": "Hue",
             "value": "Value",

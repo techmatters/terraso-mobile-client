@@ -32,6 +32,7 @@ import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink'
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
   Heading,
+  Text,
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
@@ -81,7 +82,7 @@ export const ErrorDialog = forwardRef<
                 </Heading>
               </View>
             )}
-            <View>{children}</View>
+            <Text color="error.content">{children}</Text>
             {showDivider && <Divider style={styles.divider} />}
             <View style={styles.actions}>
               {showSupportButton && (
