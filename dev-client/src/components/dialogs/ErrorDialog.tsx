@@ -77,7 +77,7 @@ export const ErrorDialog = forwardRef<
             </View>
             {headline && (
               <View style={styles.headline}>
-                <Heading variant="h6" color="error.content">
+                <Heading variant="h4" color="error.content">
                   {headline}
                 </Heading>
               </View>
