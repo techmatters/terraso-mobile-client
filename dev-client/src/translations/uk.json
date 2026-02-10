@@ -741,6 +741,10 @@
                 "your_result": "Ваш результат",
                 "use_suggestion": "Використати пропозицію"
             },
+            "analysis_error": {
+                "headline": "TK Something went wrong",
+                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+            },
             "crop_reference": "Обріжте зображення, щоб показати лише 3M Canary Yellow Post-it. Зведіть зображення великим і вказівним пальцями, щоб збільшити масштаб (зведенням пальців всередину) або зменшити масштаб (зведенням пальців назовні). Перемістіть зображення в рамці, провівши пальцем одним пальцем.",
             "crop_soil": "Обріжте зображення, щоб показати лише зразок ґрунту. Для збільшення або зменшення зображення зведіть або розведіть великий і вказівний пальці. Переміщуйте зображення свайпом одним пальцем.",
             "soil_condition": "Стан ґрунту:",
