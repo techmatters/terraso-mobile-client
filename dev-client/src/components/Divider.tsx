@@ -20,8 +20,8 @@ import {DividerProps, Divider as PaperDivider} from 'react-native-paper';
 
 /**
  * Wrapper around react-native-paper's Divider that ensures visibility
- * on high-DPI displays (like iPads) where hairline-width dividers
- * can become invisible.
+ * and consistent thickness on high-DPI displays (like iPads) where
+ * hairline-width dividers can become invisible or render inconsistently.
  */
 export const Divider = ({style, ...props}: DividerProps) => {
   return <PaperDivider style={[styles.divider, style]} {...props} />;
@@ -29,7 +29,7 @@ export const Divider = ({style, ...props}: DividerProps) => {
 
 const styles = StyleSheet.create({
   divider: {
-    height: 1,
-    backgroundColor: '#BDBDBD', // grey.400 - medium gray
+    height: 2,
+    backgroundColor: '#E0E0E0', // grey.300 - light gray, thicker line needs lighter color
   },
 });

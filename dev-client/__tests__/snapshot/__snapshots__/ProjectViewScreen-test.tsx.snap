@@ -2899,8 +2899,8 @@ exports[`renders correctly 1`] = `
                                                         false,
                                                         [
                                                           {
-                                                            "backgroundColor": "#BDBDBD",
-                                                            "height": 1,
+                                                            "backgroundColor": "#E0E0E0",
+                                                            "height": 2,
                                                           },
                                                           undefined,
                                                         ],
@@ -3041,8 +3041,8 @@ exports[`renders correctly 1`] = `
                                                         false,
                                                         [
                                                           {
-                                                            "backgroundColor": "#BDBDBD",
-                                                            "height": 1,
+                                                            "backgroundColor": "#E0E0E0",
+                                                            "height": 2,
                                                           },
                                                           undefined,
                                                         ],
@@ -3183,8 +3183,8 @@ exports[`renders correctly 1`] = `
                                                         false,
                                                         [
                                                           {
-                                                            "backgroundColor": "#BDBDBD",
-                                                            "height": 1,
+                                                            "backgroundColor": "#E0E0E0",
+                                                            "height": 2,
                                                           },
                                                           undefined,
                                                         ],
@@ -3325,8 +3325,8 @@ exports[`renders correctly 1`] = `
                                                         false,
                                                         [
                                                           {
-                                                            "backgroundColor": "#BDBDBD",
-                                                            "height": 1,
+                                                            "backgroundColor": "#E0E0E0",
+                                                            "height": 2,
                                                           },
                                                           undefined,
                                                         ],
@@ -3392,8 +3392,8 @@ exports[`renders correctly 1`] = `
                                                   false,
                                                   [
                                                     {
-                                                      "backgroundColor": "#BDBDBD",
-                                                      "height": 1,
+                                                      "backgroundColor": "#E0E0E0",
+                                                      "height": 2,
                                                     },
                                                     undefined,
                                                   ],
@@ -3453,8 +3453,8 @@ exports[`renders correctly 1`] = `
                                                   false,
                                                   [
                                                     {
-                                                      "backgroundColor": "#BDBDBD",
-                                                      "height": 1,
+                                                      "backgroundColor": "#E0E0E0",
+                                                      "height": 2,
                                                     },
                                                     undefined,
                                                   ],
@@ -3514,8 +3514,8 @@ exports[`renders correctly 1`] = `
                                                   false,
                                                   [
                                                     {
-                                                      "backgroundColor": "#BDBDBD",
-                                                      "height": 1,
+                                                      "backgroundColor": "#E0E0E0",
+                                                      "height": 2,
                                                     },
                                                     undefined,
                                                   ],
@@ -3575,8 +3575,8 @@ exports[`renders correctly 1`] = `
                                                   false,
                                                   [
                                                     {
-                                                      "backgroundColor": "#BDBDBD",
-                                                      "height": 1,
+                                                      "backgroundColor": "#E0E0E0",
+                                                      "height": 2,
                                                     },
                                                     undefined,
                                                   ],
@@ -3636,8 +3636,8 @@ exports[`renders correctly 1`] = `
                                                   false,
                                                   [
                                                     {
-                                                      "backgroundColor": "#BDBDBD",
-                                                      "height": 1,
+                                                      "backgroundColor": "#E0E0E0",
+                                                      "height": 2,
                                                     },
                                                     undefined,
                                                   ],
@@ -3697,8 +3697,8 @@ exports[`renders correctly 1`] = `
                                                   false,
                                                   [
                                                     {
-                                                      "backgroundColor": "#BDBDBD",
-                                                      "height": 1,
+                                                      "backgroundColor": "#E0E0E0",
+                                                      "height": 2,
                                                     },
                                                     undefined,
                                                   ],
@@ -3758,8 +3758,8 @@ exports[`renders correctly 1`] = `
                                                   false,
                                                   [
                                                     {
-                                                      "backgroundColor": "#BDBDBD",
-                                                      "height": 1,
+                                                      "backgroundColor": "#E0E0E0",
+                                                      "height": 2,
                                                     },
                                                     undefined,
                                                   ],
