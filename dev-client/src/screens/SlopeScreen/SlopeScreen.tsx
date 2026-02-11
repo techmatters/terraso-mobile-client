@@ -16,7 +16,6 @@
  */
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Divider} from 'react-native-paper';
 
 import {ScrollView} from 'native-base';
 
@@ -29,6 +28,7 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {
   Heading,
   Row,

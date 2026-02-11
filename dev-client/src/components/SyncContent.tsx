@@ -17,9 +17,9 @@
 
 import {useCallback} from 'react';
 import {ScrollView, StyleSheet, useWindowDimensions} from 'react-native';
-import {Divider} from 'react-native-paper';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {
   Box,
   Column,

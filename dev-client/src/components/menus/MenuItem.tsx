@@ -18,8 +18,9 @@
 import {useMemo} from 'react';
 import {PressableProps, StyleSheet, View} from 'react-native';
 import {Pressable} from 'react-native-gesture-handler';
-import {Divider, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {Icon, IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 

@@ -17,7 +17,6 @@
 
 import {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Divider} from 'react-native-paper';
 
 import {addMessage} from 'terraso-client-shared/notifications/notificationsSlice';
 
@@ -33,6 +32,7 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {offlineProjectScreenMessage} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {

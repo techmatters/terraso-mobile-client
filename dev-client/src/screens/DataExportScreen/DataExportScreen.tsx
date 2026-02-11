@@ -18,7 +18,7 @@
 import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
-import {Divider, Modal as PaperModal, Portal} from 'react-native-paper';
+import {Modal as PaperModal, Portal} from 'react-native-paper';
 
 import {trackExport} from 'terraso-mobile-client/analytics/exportTracking';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
@@ -26,6 +26,7 @@ import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ErrorDialog} from 'terraso-mobile-client/components/dialogs/ErrorDialog';
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {

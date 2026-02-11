@@ -17,7 +17,7 @@
 
 import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ActivityIndicator, Divider} from 'react-native-paper';
+import {ActivityIndicator} from 'react-native-paper';
 
 import {TFunction} from 'i18next';
 
@@ -28,6 +28,7 @@ import {ContainedButton} from 'terraso-mobile-client/components/buttons/Containe
 import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
 import {CreateSiteButton} from 'terraso-mobile-client/components/buttons/special/CreateSiteButton';
 import {Card} from 'terraso-mobile-client/components/Card';
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {
   Box,
   Column,
