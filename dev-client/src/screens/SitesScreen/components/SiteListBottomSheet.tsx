@@ -151,6 +151,7 @@ export const SiteListBottomSheet = memo(
             <ActivityIndicator size="large" />
           ) : isEmpty ? (
             <BottomSheetScrollView>
+              {ListHeaderComponent}
               <EmptySiteMessage />
             </BottomSheetScrollView>
           ) : (
