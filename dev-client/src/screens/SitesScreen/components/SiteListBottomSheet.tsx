@@ -125,9 +125,7 @@ export const SiteListBottomSheet = memo(
                   <Heading variant="h6">{t('site.list_title')}</Heading>
                 )}
               </Row>
-              {sites.length > 0 && (
-                <SiteFilterModal useDistance={useDistance} />
-              )}
+              {!isEmpty && <SiteFilterModal useDistance={useDistance} />}
             </Column>
             <RestrictByConnectivity offline={true}>
               <View style={styles.alertView}>
@@ -136,7 +134,7 @@ export const SiteListBottomSheet = memo(
             </RestrictByConnectivity>
           </>
         ),
-        [isEmpty, t, sites.length, useDistance],
+        [isEmpty, t, useDistance],
       );
 
       return (
