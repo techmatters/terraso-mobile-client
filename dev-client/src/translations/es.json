@@ -741,6 +741,10 @@
                 "your_result": "Tu resultado",
                 "use_suggestion": "Usar sugerencia"
             },
+            "analysis_error": {
+                "headline": "TK Something went wrong",
+                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+            },
             "crop_reference": "Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo canario. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "crop_soil": "Recorta la imagen para mostrar sólo la muestra de suelo. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "soil_condition": "Condición del suelo:",
