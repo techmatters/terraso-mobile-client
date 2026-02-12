@@ -18,6 +18,8 @@
 import {StyleSheet} from 'react-native';
 import {DividerProps, Divider as PaperDivider} from 'react-native-paper';
 
+import {theme} from 'terraso-mobile-client/theme';
+
 /**
  * Wrapper around react-native-paper's Divider that ensures visibility
  * and consistent thickness on high-DPI displays (like iPads) where
@@ -30,6 +32,6 @@ export const Divider = ({style, ...props}: DividerProps) => {
 const styles = StyleSheet.create({
   divider: {
     height: 2,
-    backgroundColor: '#E0E0E0', // grey.300 - light gray, thicker line needs lighter color
+    backgroundColor: theme.colors.grey[300], // Use theme color for consistency
   },
 });
