@@ -741,6 +741,10 @@
                 "your_result": "თქვენი შედეგი",
                 "use_suggestion": "შეთავაზების გამოყენება"
             },
+            "analysis_error": {
+                "headline": "TK Something went wrong",
+                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+            },
             "crop_reference": "სურათის ჩამოჭრა მხოლოდ 3M კანარის ყვითელი პოსტ-იტ ბარათის საჩვენებლად. სურათის გასადიდებლად (შიგნით მოჭერით) ან გასაშლელად (გარე მოჭერით) მოჭერით ცერა და საჩვენებელი თითებით. სურათის ჩარჩოში გადატანა ერთი თითით გადაფურცვლით.",
             "crop_soil": "სურათის ჩამოჭრა მხოლოდ ნიადაგის ნიმუშის საჩვენებლად. სურათის გასადიდებლად (შიგნით მოჭერით) ან გასაშლელად (გარე მოჭერით) მოჭერით ცერა და საჩვენებელი თითებით. სურათის ჩარჩოში გადასატანად ერთი თითით გადაფურცლეთ.",
             "soil_condition": "ნიადაგის მდგომარეობა:",

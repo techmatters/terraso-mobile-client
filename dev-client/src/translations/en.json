@@ -814,6 +814,10 @@
                 "your_result": "Your result",
                 "use_suggestion": "Use suggestion"
             },
+            "analysis_error": {
+                "headline": "Something went wrong",
+                "body": "There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+            },
             "hue": "Hue",
             "value": "Value",
             "chroma": "Chroma",
