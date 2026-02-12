@@ -17,7 +17,6 @@
 
 import React, {useCallback, useEffect} from 'react';
 import {FlatList, View} from 'react-native';
-import {Divider} from 'react-native-paper';
 
 import Mapbox from '@rnmapbox/maps';
 
@@ -26,6 +25,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {CloseButton} from 'terraso-mobile-client/components/buttons/icons/common/CloseButton';
 import {Card} from 'terraso-mobile-client/components/Card';
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
 import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';

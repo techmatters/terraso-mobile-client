@@ -18,7 +18,6 @@
 import {useCallback, useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
-import {Divider} from 'react-native-paper';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'native-base';
@@ -26,6 +25,7 @@ import {ScrollView} from 'native-base';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';

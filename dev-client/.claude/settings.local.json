@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr view:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git merge-base:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(adb logcat:*)",
+      "Bash(adb shell:*)",
+      "WebFetch(domain:us-assets.i.posthog.com)",
+      "Bash(npm run format:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run check-ts:*)",
+      "Bash(git stash:*)",
+      "Bash(python3:*)",
+      "Bash(ls:*)",
+      "Bash(npm run test:*)"
+    ]
+  }
+}

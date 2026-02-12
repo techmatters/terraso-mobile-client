@@ -17,10 +17,11 @@
 import {useCallback, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {Divider, Switch} from 'react-native-paper';
+import {Switch} from 'react-native-paper';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {
   Heading,
   Text,

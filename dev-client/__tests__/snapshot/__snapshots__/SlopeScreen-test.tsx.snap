@@ -409,7 +409,13 @@ Slope characteristics help determine the soil’s erosion potential, ability to 
                             undefined,
                             false,
                             false,
-                            undefined,
+                            [
+                              {
+                                "backgroundColor": "#E0E0E0",
+                                "height": 2,
+                              },
+                              undefined,
+                            ],
                           ]
                         }
                       />
@@ -521,7 +527,13 @@ Slope characteristics help determine the soil’s erosion potential, ability to 
                             undefined,
                             false,
                             false,
-                            undefined,
+                            [
+                              {
+                                "backgroundColor": "#E0E0E0",
+                                "height": 2,
+                              },
+                              undefined,
+                            ],
                           ]
                         }
                       />

@@ -16,8 +16,8 @@
  */
 import React, {useMemo} from 'react';
 import {StyleSheet} from 'react-native';
-import {Divider} from 'react-native-paper';
 
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {
   Box,
   Row,

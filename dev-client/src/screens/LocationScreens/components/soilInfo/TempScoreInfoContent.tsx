@@ -15,11 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Divider} from 'react-native-paper';
-
 import {SoilMatch} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
+import {Divider} from 'terraso-mobile-client/components/Divider';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
