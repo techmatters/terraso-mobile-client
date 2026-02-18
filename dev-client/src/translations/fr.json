@@ -398,7 +398,7 @@
         "offline_cant_edit": "Vous êtes hors ligne. Les projets ne peuvent pas être modifiés."
     },
     "settings": {
-        "beta": "bêta",
+        "staging": "staging",
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Utilisateur inconnu",
         "copy_access_token": "TK Copy JWT Access Token",

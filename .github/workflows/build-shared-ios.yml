@@ -42,7 +42,7 @@ jobs:
   ios-build:
     name: iOS Build
     runs-on: macos-26
-    environment: ${{ ((startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, 'beta')) && 'production') || (startsWith(github.ref, 'refs/tags/v') && 'staging') }}
+    environment: ${{ ((startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, 'staging')) && 'production') || (startsWith(github.ref, 'refs/tags/v') && 'staging') }}
     env:
       STRICT: ${{ inputs.STRICT }}
       ENV: ${{ vars.ENV }}

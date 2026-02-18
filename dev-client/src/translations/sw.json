@@ -398,7 +398,7 @@
         "offline_cant_edit": "Uko nje ya mtandao. Miradi haiwezi kuhaririwa."
     },
     "settings": {
-        "beta": "beta",
+        "staging": "staging",
         "version": "Toleo {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Mtumiaji asiyejulikana",
         "copy_access_token": "Copy JWT Access Token",
