@@ -57,11 +57,32 @@ export const PullDispatcher = () => {
   const dispatchPull = usePullDispatch();
 
   useEffect(() => {
+    if (pullRequested && !pullAllowed) {
+      console.log(
+        '⬇️ PullDispatcher: pull requested but blocked:',
+        !currentUserID ? 'no user' : '',
+        isOffline ? 'offline' : '',
+        unsyncedSiteIds.length > 0
+          ? `${unsyncedSiteIds.length} unsynced sites`
+          : '',
+        appState !== 'active' ? `appState=${appState}` : '',
+      );
+    }
     if (pullAllowed && pullRequested) {
+      console.log('⬇️ PullDispatcher: dispatching pull');
       dispatchPull(currentUserID);
       dispatch(setPullRequested(false));
     }
-  }, [pullRequested, pullAllowed, dispatchPull, currentUserID, dispatch]);
+  }, [
+    pullRequested,
+    pullAllowed,
+    dispatchPull,
+    currentUserID,
+    dispatch,
+    isOffline,
+    unsyncedSiteIds,
+    appState,
+  ]);
 
   return <></>;
 };

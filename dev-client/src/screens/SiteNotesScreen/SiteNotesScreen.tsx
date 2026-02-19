@@ -32,6 +32,7 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -56,6 +57,7 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
   }, [navigation, siteId]);
 
   const isOffline = useIsOffline();
+  const notesDisabledOffline = isOffline && !isFlagEnabled('FF_offline');
 
   const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
@@ -77,8 +79,8 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
                 pl={4}
                 pb={4}
                 pr={4}
-                alignItems={isOffline ? undefined : 'flex-start'}>
-                {isOffline ? (
+                alignItems={notesDisabledOffline ? undefined : 'flex-start'}>
+                {notesDisabledOffline ? (
                   <OfflineAlert message={t('site.notes.offline')} />
                 ) : (
                   <ContainedButton

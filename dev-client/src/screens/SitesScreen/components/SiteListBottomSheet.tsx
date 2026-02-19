@@ -42,6 +42,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {EmptySiteMessage} from 'terraso-mobile-client/screens/SitesScreen/components/EmptySiteMessage';
@@ -127,11 +128,13 @@ export const SiteListBottomSheet = memo(
               </Row>
               {!isEmpty && <SiteFilterModal useDistance={useDistance} />}
             </Column>
-            <RestrictByConnectivity offline={true}>
-              <View style={styles.alertView}>
-                <OfflineAlert message={t('site.offline.alert_body')} />
-              </View>
-            </RestrictByConnectivity>
+            {!isFlagEnabled('FF_offline') && (
+              <RestrictByConnectivity offline={true}>
+                <View style={styles.alertView}>
+                  <OfflineAlert message={t('site.offline.alert_body')} />
+                </View>
+              </RestrictByConnectivity>
+            )}
           </>
         ),
         [isEmpty, t, useDistance],

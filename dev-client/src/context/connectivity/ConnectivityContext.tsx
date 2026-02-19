@@ -27,18 +27,30 @@ import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 
 export type ConnectivityContextType = {
   isOffline: boolean | null;
+  isOfflineOverride: boolean | null;
+  setIsOfflineOverride: (value: boolean | null) => void;
 };
+
+const noopSetOverride = () => {};
 
 export const ConnectivityContext = createContext<ConnectivityContextType>({
   isOffline: null,
+  isOfflineOverride: null,
+  setIsOfflineOverride: noopSetOverride,
 });
 
 export const ConnectivityContextProvider = ({
   children,
 }: React.PropsWithChildren) => {
-  const [isOffline, setIsOffline] = useState<boolean | null>(null);
+  const [realIsOffline, setRealIsOffline] = useState<boolean | null>(null);
+  const [isOfflineOverride, setIsOfflineOverride] = useState<boolean | null>(
+    null,
+  );
   const netInfoSubscriptionRef = useRef<NetInfoSubscription | null>(null);
   const appState = useAppState();
+
+  const isOffline =
+    isOfflineOverride !== null ? isOfflineOverride : realIsOffline;
 
   const stopMonitoringReachability = useCallback(() => {
     if (netInfoSubscriptionRef.current) {
@@ -51,7 +63,7 @@ export const ConnectivityContextProvider = ({
     stopMonitoringReachability();
 
     netInfoSubscriptionRef.current = addEventListener(state => {
-      setIsOffline(
+      setRealIsOffline(
         getIsOffline({
           isConnected: state.isConnected,
           isInternetReachable: state.isInternetReachable,
@@ -69,7 +81,8 @@ export const ConnectivityContextProvider = ({
   }, [appState, startMonitoringReachability, stopMonitoringReachability]);
 
   return (
-    <ConnectivityContext.Provider value={{isOffline}}>
+    <ConnectivityContext.Provider
+      value={{isOffline, isOfflineOverride, setIsOfflineOverride}}>
       {children}
     </ConnectivityContext.Provider>
   );

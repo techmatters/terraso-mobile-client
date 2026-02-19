@@ -45,6 +45,40 @@ export const applySyncResults = <D, E>(
   const upToDateData = getValuesForCurrentRevisions(records, results.data);
   const upToDateErrors = getValuesForCurrentRevisions(records, results.errors);
 
+  const staleDataIds = Object.keys(results.data).filter(
+    id => !(id in upToDateData),
+  );
+  const staleErrorIds = Object.keys(results.errors).filter(
+    id => !(id in upToDateErrors),
+  );
+  if (staleDataIds.length > 0) {
+    console.log(
+      '🔄 applySyncResults: discarding stale data for:',
+      staleDataIds,
+    );
+  }
+  if (staleErrorIds.length > 0) {
+    console.log(
+      '🔄 applySyncResults: discarding stale errors for:',
+      staleErrorIds,
+    );
+  }
+  if (Object.keys(upToDateData).length > 0) {
+    console.log(
+      '🔄 applySyncResults: marking synced:',
+      Object.keys(upToDateData),
+    );
+  }
+  if (Object.keys(upToDateErrors).length > 0) {
+    console.log(
+      '🔄 applySyncResults: marking errors:',
+      Object.keys(upToDateErrors),
+      Object.fromEntries(
+        Object.entries(upToDateErrors).map(([id, v]) => [id, v.value]),
+      ),
+    );
+  }
+
   /* Mark the successes as synced, record their data */
   markEntitiesSynced(records, upToDateData, at);
   applySyncedValuesToData(data, upToDateData);

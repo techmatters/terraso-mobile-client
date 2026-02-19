@@ -19,16 +19,39 @@ import {Site} from 'terraso-client-shared/site/siteTypes';
 
 export const siteFeatureCollection = (
   sites: Pick<Site, 'id' | 'latitude' | 'longitude'>[],
-): GeoJSON.FeatureCollection<GeoJSON.Point> => ({
-  type: 'FeatureCollection',
-  // TODO: Filter sometimes returns undefined; figure out why and fix
-  features: sites.map(site => ({
-    type: 'Feature',
-    id: site.id,
-    properties: {},
-    geometry: {
-      type: 'Point',
-      coordinates: [site.longitude, site.latitude],
-    },
-  })),
-});
+): GeoJSON.FeatureCollection<GeoJSON.Point> => {
+  const badSites = sites.filter(
+    site =>
+      typeof site.latitude !== 'number' ||
+      typeof site.longitude !== 'number' ||
+      isNaN(site.latitude) ||
+      isNaN(site.longitude),
+  );
+  if (badSites.length > 0) {
+    console.error(
+      '🗺️ siteFeatureCollection: sites with bad coordinates:',
+      badSites.map(s => ({id: s.id, lat: s.latitude, lon: s.longitude})),
+    );
+  }
+
+  return {
+    type: 'FeatureCollection',
+    features: sites
+      .filter(
+        site =>
+          typeof site.latitude === 'number' &&
+          typeof site.longitude === 'number' &&
+          !isNaN(site.latitude) &&
+          !isNaN(site.longitude),
+      )
+      .map(site => ({
+        type: 'Feature' as const,
+        id: site.id,
+        properties: {},
+        geometry: {
+          type: 'Point' as const,
+          coordinates: [site.longitude, site.latitude],
+        },
+      })),
+  };
+};

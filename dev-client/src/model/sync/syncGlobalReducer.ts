@@ -16,6 +16,7 @@
  */
 
 import {setUsers} from 'terraso-client-shared/account/accountSlice';
+import type {Site} from 'terraso-client-shared/site/siteTypes';
 import type {
   SoilData,
   SoilMetadata,
@@ -35,6 +36,7 @@ import {
 import {setSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import * as syncActions from 'terraso-mobile-client/model/sync/actions/syncActions';
 import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
+import {logSyncSummary} from 'terraso-mobile-client/model/sync/syncDebugLog';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
 export const pullUserData = createAsyncThunk(
@@ -49,6 +51,15 @@ export const pushUserData = createAsyncThunk(
 
 export const syncGlobalReducer = createGlobalReducer(builder => {
   builder.addCase(pullUserData.fulfilled, (state, {payload}) => {
+    console.log(
+      '⬇️ pull fulfilled:',
+      Object.keys(payload.sites).length,
+      'sites,',
+      Object.keys(payload.soilData).length,
+      'soilData,',
+      Object.keys(payload.soilMetadata).length,
+      'soilMetadata',
+    );
     setProjects(state.project, payload.projects);
     setSites(state.site, payload.sites);
     setUsers(state.account, payload.users);
@@ -60,16 +71,31 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
     setLastPullTimestamp(state.devOnly, Date.now());
   });
 
-  builder.addCase(pullUserData.pending, state => {
-    updateSoilIdStatus(state.soilData, 'loading');
+  builder.addCase(pullUserData.pending, () => {
+    console.log('⬇️ pull pending...');
   });
 
-  builder.addCase(pullUserData.rejected, state => {
-    updateSoilIdStatus(state.soilData, 'error');
+  builder.addCase(pullUserData.rejected, (_state, action) => {
+    console.error('⬇️ pull rejected:', action.error);
   });
 
   builder.addCase(pushUserData.fulfilled, (state, action) => {
-    const {soilDataResults, soilMetadataResults} = action.payload;
+    const {soilDataResults, soilMetadataResults, siteResults} = action.payload;
+    console.log(
+      '⬆️ push fulfilled:',
+      'soilData:',
+      soilDataResults
+        ? `${Object.keys(soilDataResults.data).length} ok, ${Object.keys(soilDataResults.errors).length} err`
+        : 'none',
+      'soilMetadata:',
+      soilMetadataResults
+        ? `${Object.keys(soilMetadataResults.data).length} ok, ${Object.keys(soilMetadataResults.errors).length} err`
+        : 'none',
+      'sites:',
+      siteResults
+        ? `${Object.keys(siteResults.data).length} ok, ${Object.keys(siteResults.errors).length} err`
+        : 'none',
+    );
 
     if (soilDataResults) {
       applySyncResults(
@@ -88,9 +114,37 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
         Date.now(),
       );
     }
+
+    if (siteResults) {
+      applySyncResults(
+        state.site.sites as Record<string, Site>,
+        state.site.siteSync,
+        siteResults,
+        Date.now(),
+      );
+    }
+
+    logSyncSummary(
+      'pushResult',
+      'soilData',
+      state.soilData.soilSync,
+      state.soilData.soilData as Record<string, unknown>,
+    );
+    logSyncSummary(
+      'pushResult',
+      'soilMetadata',
+      state.soilMetadata.soilMetadataSync,
+      state.soilMetadata.soilMetadata as Record<string, unknown>,
+    );
+    logSyncSummary(
+      'pushResult',
+      'site',
+      state.site.siteSync,
+      state.site.sites as Record<string, unknown>,
+    );
   });
 
   builder.addCase(pushUserData.rejected, (_state, action) => {
-    console.error('pushUserData failed:', action.error);
+    console.error('⬆️ push rejected:', action.error);
   });
 });

@@ -23,6 +23,7 @@ import {
   removeSiteFromAllProjects,
   removeSiteFromProject,
 } from 'terraso-mobile-client/model/project/projectSlice';
+import * as siteActions from 'terraso-mobile-client/model/site/actions/siteActions';
 import {
   deleteSites,
   updateProjectOfSite,
@@ -31,13 +32,18 @@ import {
 import {deleteSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {deleteSiteMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
 import {deleteSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
+import {markEntityModified} from 'terraso-mobile-client/model/sync/records';
+import {logSyncChange} from 'terraso-mobile-client/model/sync/syncDebugLog';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
-export const addSite = createAsyncThunk('site/addSite', siteService.addSite);
+export const addSite = createAsyncThunk(
+  'site/addSite',
+  siteActions.addSiteAction,
+);
 
 export const updateSite = createAsyncThunk(
   'site/updateSite',
-  siteService.updateSite,
+  siteActions.updateSiteAction,
 );
 
 export const deleteSite = createAsyncThunk(
@@ -59,6 +65,14 @@ export const siteGlobalReducer = createGlobalReducer(builder => {
       });
     }
     updateSites(state.site, {[payload.id]: payload});
+    markEntityModified(state.site.siteSync, payload.id, Date.now());
+    logSyncChange(
+      'addSite',
+      'site',
+      payload.id,
+      state.site.siteSync[payload.id],
+      state.site.sites[payload.id],
+    );
   });
 
   builder.addCase(updateSite.fulfilled, (state, {payload}) => {
@@ -70,6 +84,14 @@ export const siteGlobalReducer = createGlobalReducer(builder => {
       });
     }
     updateSites(state.site, {[payload.id]: payload});
+    markEntityModified(state.site.siteSync, payload.id, Date.now());
+    logSyncChange(
+      'updateSite',
+      'site',
+      payload.id,
+      state.site.siteSync[payload.id],
+      state.site.sites[payload.id],
+    );
   });
 
   builder.addCase(deleteSite.fulfilled, (state, {payload}) => {

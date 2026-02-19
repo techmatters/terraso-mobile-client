@@ -44,9 +44,25 @@ export const persistenceMiddleware: Middleware<{}, AppState> =
 
 export const loadPersistedReduxState = () => {
   if (isFlagEnabled('FF_offline')) {
-    return (
-      kvStorage.getObject<Partial<AppState>>(PERSISTED_STATE_KEY) ?? undefined
-    );
+    const state =
+      kvStorage.getObject<Partial<AppState>>(PERSISTED_STATE_KEY) ?? undefined;
+    if (state?.site?.sites) {
+      const badSites = Object.values(state.site.sites).filter(
+        (s: any) =>
+          typeof s.latitude !== 'number' || typeof s.longitude !== 'number',
+      );
+      if (badSites.length > 0) {
+        console.error(
+          '💾 loadPersistedReduxState: persisted sites with bad coords:',
+          badSites.map((s: any) => ({
+            id: s.id,
+            lat: s.latitude,
+            lon: s.longitude,
+          })),
+        );
+      }
+    }
+    return state;
   }
 };
 
@@ -55,7 +71,8 @@ export const patchPersistedReduxState = (
 ): Partial<AppState> => {
   const tempState = upgradeSoilMetadataOct2025(state);
   return merge(tempState, {
-    soilData: {soilSync: {}},
+    site: {siteSync: {}},
+    soilData: {soilSync: {}, status: 'ready' as const},
     soilMetadata: {soilMetadata: {}, soilMetadataSync: {}},
     soilIdMatch: {locationBasedMatches: {}, siteDataBasedMatches: {}},
     sync: {pullRequested: false},

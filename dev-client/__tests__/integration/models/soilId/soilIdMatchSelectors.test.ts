@@ -61,7 +61,7 @@ describe('selectNextDataBasedInputs', () => {
 
     const state = {
       ...baseAppState,
-      site: {sites: {[site.id]: site}},
+      site: {sites: {[site.id]: site}, siteSync: {}},
       soilData: {
         ...baseAppState.soilData,
         soilData: soilData,
@@ -110,7 +110,7 @@ describe('selectNextDataBasedInputs', () => {
 
     const state = {
       ...baseAppState,
-      site: {sites: {[site.id]: site}},
+      site: {sites: {[site.id]: site}, siteSync: {}},
       project: {projects: {[project.id]: project}},
       soilData: {
         ...baseAppState.soilData,

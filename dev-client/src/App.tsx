@@ -35,6 +35,13 @@ import 'terraso-mobile-client/config';
 
 import {enableFreeze} from 'react-native-screens';
 
+/* Developer FYI: To enable the Little Snitch tool to simulate offline mode without losing connection to Metro:
+ * - Uncomment the code below
+ * - import NetInfo from '@react-native-community/netinfo'
+ * - See "Offline Debugging" section in Terraso Development Guide for more info
+ */
+import NetInfo from '@react-native-community/netinfo';
+
 import {AppContent} from 'terraso-mobile-client/app/AppContent';
 import {AppWrappers} from 'terraso-mobile-client/app/AppWrappers';
 import {wrapSentry} from 'terraso-mobile-client/app/Sentry';
@@ -82,17 +89,12 @@ if (persistedReduxState) {
 }
 const store = createStore(persistedReduxState);
 
-/* Developer FYI: To enable the Little Snitch tool to simulate offline mode without losing connection to Metro:
- * - Uncomment the code below
- * - import NetInfo from '@react-native-community/netinfo'
- * - See "Offline Debugging" section in Terraso Development Guide for more info
- */
-// NetInfo.configure({
-//   reachabilityUrl: 'https://connectivitycheck.gstatic.com/generate_204',
-//   reachabilityTest: async response => response.status === 204,
-//   reachabilityLongTimeout: 2000,
-//   useNativeReachability: false,
-// });
+NetInfo.configure({
+  reachabilityUrl: 'https://connectivitycheck.gstatic.com/generate_204',
+  reachabilityTest: async response => response.status === 204,
+  reachabilityLongTimeout: 2000,
+  useNativeReachability: false,
+});
 
 const App = () => {
   return (

@@ -23,6 +23,7 @@ import type {
   SoilMetadataPushFailureReason,
   UserDataPushInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
+import type {Site} from 'terraso-client-shared/site/siteTypes';
 import type {
   SoilData,
   SoilMetadata,
@@ -30,6 +31,11 @@ import type {
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 import type {ThunkAPI} from 'terraso-client-shared/store/utils';
 
+import {
+  pushSiteChanges,
+  SitePushFailureReason,
+} from 'terraso-mobile-client/model/site/actions/remoteSiteActions';
+import {selectSiteChanges} from 'terraso-mobile-client/model/site/siteSelectors';
 import {
   soilDataMutationResponseToResults,
   unsyncedSoilDataToMutationInput,
@@ -55,12 +61,14 @@ export type PushUserDataResults = {
     SoilMetadata,
     SoilMetadataPushFailureReason
   >;
+  siteResults?: SyncResults<Site, SitePushFailureReason>;
 };
 
 export const pushUserData = async (
   input: {
     soilDataSiteIds?: string[];
     soilMetadataSiteIds?: string[];
+    siteSiteIds?: string[];
   },
   _: User | null,
   thunkApi: ThunkAPI,
@@ -110,44 +118,74 @@ export const pushUserData = async (
     }
   }
 
+  // Build records for sites (filter to only unsynced)
+  let siteUnsyncedChanges: SyncRecords<Site, SitePushFailureReason> | undefined;
+  let siteUnsyncedData: Record<string, Site> | undefined;
+
+  if (input.siteSiteIds && input.siteSiteIds.length > 0) {
+    const unsyncedChanges = getUnsyncedRecords(
+      getEntityRecords(selectSiteChanges(state), input.siteSiteIds),
+    );
+    if (Object.keys(unsyncedChanges).length > 0) {
+      siteUnsyncedChanges = unsyncedChanges;
+      siteUnsyncedData = getDataForRecords(
+        unsyncedChanges,
+        state.site.sites,
+      ) as Record<string, Site>;
+    }
+  }
+
   // If nothing to push, return empty results
-  if (!soilDataUnsyncedChanges && !soilMetadataUnsyncedChanges) {
+  if (
+    !soilDataUnsyncedChanges &&
+    !soilMetadataUnsyncedChanges &&
+    !siteUnsyncedChanges
+  ) {
     return {};
   }
 
-  // Build mutation input
-  const mutationInput: UserDataPushInput = {
-    soilDataEntries:
-      soilDataUnsyncedChanges && soilDataUnsyncedData
-        ? unsyncedSoilDataToMutationInput(
-            soilDataUnsyncedChanges,
-            soilDataUnsyncedData,
-          ).soilDataEntries
-        : null,
-    soilMetadataEntries:
-      soilMetadataUnsyncedChanges && soilMetadataUnsyncedData
-        ? unsyncedMetadataToMutationInput(soilMetadataUnsyncedData)
-        : null,
-  };
-
-  // Call the service
-  const response = await syncService.pushUserData(mutationInput);
-
-  // Transform response to results
   const results: PushUserDataResults = {};
 
-  if (soilDataUnsyncedChanges && response.soilDataResults) {
-    results.soilDataResults = soilDataMutationResponseToResults(
-      soilDataUnsyncedChanges,
-      response.soilDataResults as SoilDataPushEntry[],
+  // Push site changes first so new sites exist on the server
+  // before soil data/metadata references them
+  if (siteUnsyncedChanges && siteUnsyncedData) {
+    results.siteResults = await pushSiteChanges(
+      siteUnsyncedChanges,
+      siteUnsyncedData,
     );
   }
 
-  if (soilMetadataUnsyncedChanges && response.soilMetadataResults) {
-    results.soilMetadataResults = metadataMutationResponseToResults(
-      soilMetadataUnsyncedChanges,
-      response.soilMetadataResults as SoilMetadataPushEntry[],
-    );
+  // Push soil data and metadata via the bulk pushUserData mutation
+  if (soilDataUnsyncedChanges || soilMetadataUnsyncedChanges) {
+    const mutationInput: UserDataPushInput = {
+      soilDataEntries:
+        soilDataUnsyncedChanges && soilDataUnsyncedData
+          ? unsyncedSoilDataToMutationInput(
+              soilDataUnsyncedChanges,
+              soilDataUnsyncedData,
+            ).soilDataEntries
+          : null,
+      soilMetadataEntries:
+        soilMetadataUnsyncedChanges && soilMetadataUnsyncedData
+          ? unsyncedMetadataToMutationInput(soilMetadataUnsyncedData)
+          : null,
+    };
+
+    const response = await syncService.pushUserData(mutationInput);
+
+    if (soilDataUnsyncedChanges && response.soilDataResults) {
+      results.soilDataResults = soilDataMutationResponseToResults(
+        soilDataUnsyncedChanges,
+        response.soilDataResults as SoilDataPushEntry[],
+      );
+    }
+
+    if (soilMetadataUnsyncedChanges && response.soilMetadataResults) {
+      results.soilMetadataResults = metadataMutationResponseToResults(
+        soilMetadataUnsyncedChanges,
+        response.soilMetadataResults as SoilMetadataPushEntry[],
+      );
+    }
   }
 
   return results;
