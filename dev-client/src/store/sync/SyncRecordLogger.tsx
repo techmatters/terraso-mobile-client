@@ -101,11 +101,10 @@ const fmt = (v: unknown): string => {
   return s.length > 30 ? s.slice(0, 30) + '…' : s;
 };
 
-const fmtFields = (obj: Record<string, unknown>): string => {
+const fmtFieldLines = (obj: Record<string, unknown>): string[] => {
   return Object.entries(obj)
     .filter(([_, v]) => v !== undefined)
-    .map(([k, v]) => `${k}=${fmt(v)}`)
-    .join(', ');
+    .map(([k, v]) => `${k}=${fmt(v)}`);
 };
 
 // --- Site diff ---
@@ -114,9 +113,12 @@ const logSiteDiff = (curr: Site, prev: Site | undefined) => {
   const tag = prev === undefined ? ' (new site)' : '';
   console.log(`              id: ${curr.id}${tag}`);
   const changed = getChangedSiteFields(curr, prev);
-  const definedFields = fmtFields(changed);
-  if (definedFields.length > 0) {
-    console.log(`              fields: ${definedFields}`);
+  const fieldLines = fmtFieldLines(changed);
+  if (fieldLines.length > 0) {
+    console.log('              fields:');
+    for (const line of fieldLines) {
+      console.log(`                ${line}`);
+    }
   }
 
   const newNotes = getNewNotes(curr.notes, prev?.notes);
@@ -129,7 +131,7 @@ const logSiteDiff = (curr: Site, prev: Site | undefined) => {
   }
 
   if (
-    definedFields.length === 0 &&
+    fieldLines.length === 0 &&
     newNotes.length === 0 &&
     updated.length === 0 &&
     deleted.length === 0
@@ -142,9 +144,12 @@ const logSiteDiff = (curr: Site, prev: Site | undefined) => {
 
 const logSoilDataDiff = (curr: SoilData, prev: SoilData | undefined) => {
   const changed = getChangedSoilDataFields(curr, prev);
-  const definedFields = fmtFields(changed);
-  if (definedFields.length > 0) {
-    console.log(`              fields: ${definedFields}`);
+  const fieldLines = fmtFieldLines(changed);
+  if (fieldLines.length > 0) {
+    console.log('              fields:');
+    for (const line of fieldLines) {
+      console.log(`                ${line}`);
+    }
   }
 
   const deletedDI = getDeletedDepthIntervals(curr, prev);
@@ -154,20 +159,26 @@ const logSoilDataDiff = (curr: SoilData, prev: SoilData | undefined) => {
 
   const changedDI = getChangedDepthIntervals(curr, prev);
   for (const di of changedDI) {
-    console.log(
-      `              depth[${depthIntervalKey(di.depthInterval)}]: ${fmtFields(di.changedFields)}`,
-    );
+    const diLines = fmtFieldLines(di.changedFields);
+    console.log(`              depth[${depthIntervalKey(di.depthInterval)}]:`);
+    for (const line of diLines) {
+      console.log(`                ${line}`);
+    }
   }
 
   const changedDD = getChangedDepthDependentData(curr, prev);
   for (const dd of changedDD) {
+    const ddLines = fmtFieldLines(dd.changedFields);
     console.log(
-      `              depthDep[${depthIntervalKey(dd.depthInterval)}]: ${fmtFields(dd.changedFields)}`,
+      `              depthDep[${depthIntervalKey(dd.depthInterval)}]:`,
     );
+    for (const line of ddLines) {
+      console.log(`                ${line}`);
+    }
   }
 
   if (
-    definedFields.length === 0 &&
+    fieldLines.length === 0 &&
     deletedDI.length === 0 &&
     changedDI.length === 0 &&
     changedDD.length === 0
