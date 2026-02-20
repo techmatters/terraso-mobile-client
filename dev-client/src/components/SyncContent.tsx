@@ -123,9 +123,11 @@ const SyncInfoExpanded = () => {
       <Box margin="8px">
         <Row alignItems="center" justifyContent="space-between">
           <OfflineToggle />
-          <PullButton disabled={useIsOffline()} />
-          <PullInfo />
-          <LastPullTime />
+          <Row alignItems="center" space="8px">
+            <PullButton disabled={useIsOffline()} />
+            <PullPending />
+            <LastPullTime />
+          </Row>
         </Row>
         <Divider style={styles.dividerTopMargin} />
         <PushInfo />
@@ -135,11 +137,12 @@ const SyncInfoExpanded = () => {
   );
 };
 
-const PullInfo = () => {
+const PullPending = () => {
   const pullRequested = useSelector(selectPullRequested);
-
-  const requested = pullRequested ? '\nrequested!' : 'NOT\nrequested';
-  return <Text>{`Pull ${requested}`}</Text>;
+  if (!pullRequested) {
+    return null;
+  }
+  return <Text>pending...</Text>;
 };
 
 const PullButton = ({disabled}: {disabled?: boolean}) => {
@@ -160,20 +163,17 @@ const LastPullTime = () => {
   const lastPullTimestamp = useSelector(selectLastPullTimestamp);
 
   if (lastPullTimestamp === null) {
-    return <Text>Last pull: Never</Text>;
+    return <Text>Never</Text>;
   }
 
   const date = new Date(lastPullTimestamp);
   const formatted = date.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
-    second: '2-digit',
     hour12: true,
   });
 
-  return <Text>{`Last pull:\n${formatted}`}</Text>;
+  return <Text>{formatted}</Text>;
 };
 
 const PushInfo = () => {

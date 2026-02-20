@@ -136,7 +136,7 @@ const logSiteDiff = (curr: Site, prev: Site | undefined) => {
     updated.length === 0 &&
     deleted.length === 0
   ) {
-    console.log('              (no diff)');
+    // no diff — skip silently
   }
 };
 
@@ -183,7 +183,7 @@ const logSoilDataDiff = (curr: SoilData, prev: SoilData | undefined) => {
     changedDI.length === 0 &&
     changedDD.length === 0
   ) {
-    console.log('              (no diff)');
+    // no diff — skip silently
   }
 };
 
@@ -242,7 +242,6 @@ export const SyncRecordLogger = () => {
     console.log(B);
     if (entries.length === 0) {
       console.log('📋 SYNC RECORDS: (none)');
-      console.log(B);
       return;
     }
 
@@ -267,7 +266,6 @@ export const SyncRecordLogger = () => {
         logSoilMetaPayload(siteId, soilMetadata[siteId]);
       }
     }
-    console.log(B);
   }, [siteSync, soilSync, metadataSync, sites, soilData, soilMetadata]);
 
   return null;

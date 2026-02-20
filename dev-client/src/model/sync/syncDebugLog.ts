@@ -49,6 +49,19 @@ const fmt = (val: unknown, max = 30): string => {
   }
 };
 
+const statusLabel = (rec: SyncRecord<unknown, unknown>): string => {
+  if (isUnsynced(rec) && isError(rec)) {
+    return 'UNSYNCED+ERR';
+  }
+  if (isUnsynced(rec)) {
+    return 'UNSYNCED';
+  }
+  if (isError(rec)) {
+    return 'ERROR';
+  }
+  return 'SYNCED';
+};
+
 const recInfo = (r: SyncRecord<unknown, unknown>): string => {
   const p = [
     `rev=${r.revisionId ?? '-'}`,
@@ -66,7 +79,7 @@ const recInfo = (r: SyncRecord<unknown, unknown>): string => {
 };
 
 /**
- * Log a single entity's sync state after a change.
+ * Log a single entity's sync state after a change (one line).
  * Call after markEntityModified or similar single-entity ops.
  */
 export const logSyncChange = (
@@ -79,14 +92,17 @@ export const logSyncChange = (
   if (!isFlagEnabled('FF_testing')) {
     return;
   }
-  console.log(B);
-  console.log(`🔍 ${action} [${type}] ${sid(siteId)}`);
-  console.log(`   ${recInfo(record)}`);
-  logDiff(data, record.lastSyncedData);
-  if (record.lastSyncedError) {
-    console.log(`   error: ${fmt(record.lastSyncedError)}`);
-  }
-  console.log(B);
+  const name =
+    data && typeof data === 'object' && 'name' in data
+      ? String((data as {name: string}).name)
+      : sid(siteId);
+  const rv = String(record.revisionId ?? '-');
+  const sr = String(record.lastSyncedRevisionId ?? '-');
+  const status = statusLabel(record);
+  const err = record.lastSyncedError ? ' +ERR' : '';
+  console.log(
+    `🔍 ${action} [${type}] ${name} (${sid(siteId)}) ${rv}/${sr} ${status}${err}`,
+  );
 };
 
 /**
@@ -130,8 +146,6 @@ export const logSyncSummary = (
     }
     console.log(`   error: ${fmt(rec.lastSyncedError)}`);
   }
-
-  console.log(B);
 };
 
 const logDiff = (curr: unknown, prev: unknown) => {

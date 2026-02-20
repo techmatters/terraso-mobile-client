@@ -157,6 +157,15 @@ export const pushUserData = async (
 
   // Push soil data and metadata via the bulk pushUserData mutation
   if (soilDataUnsyncedChanges || soilMetadataUnsyncedChanges) {
+    console.log(
+      '📤 pushUserData (bulk):',
+      soilDataUnsyncedChanges
+        ? `${Object.keys(soilDataUnsyncedChanges).length} soilData`
+        : '0 soilData',
+      soilMetadataUnsyncedChanges
+        ? `${Object.keys(soilMetadataUnsyncedChanges).length} soilMetadata`
+        : '0 soilMetadata',
+    );
     const mutationInput: UserDataPushInput = {
       soilDataEntries:
         soilDataUnsyncedChanges && soilDataUnsyncedData
