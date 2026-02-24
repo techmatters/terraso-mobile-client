@@ -412,7 +412,7 @@
         "delete_account": "Delete account",
         "delete_account_pending": "Pending",
         "unknown_version": "Untagged application version {{environment}}",
-        "beta": "beta",
+        "staging": "staging",
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "select_language": "Language: {{language}}"
     },

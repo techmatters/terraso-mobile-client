@@ -24,7 +24,7 @@ import {withSentry} from '@sentry/react-native/expo';
 
 import {fromEntries} from 'terraso-client-shared/utils';
 
-const BUILD_REGEX = /^v?(?<build>[0-9]+)(?<tag>beta)?$/;
+const BUILD_REGEX = /^v?(?<build>[0-9]+)(?<tag>staging)?$/;
 
 const STRICT = process.env.STRICT === 'true';
 
@@ -81,7 +81,7 @@ if (typeof APP_BUILD === 'string') {
   const result = BUILD_REGEX.exec(APP_BUILD);
   if (result === null) {
     throw Error(
-      `invalid app build: ${APP_BUILD}. should be v[0-9]+ or v[0-9]+beta`,
+      `invalid app build: ${APP_BUILD}. should be v[0-9]+ or v[0-9]+staging`,
     );
   }
   buildNumber = parseInt(result.groups!.build, 10);

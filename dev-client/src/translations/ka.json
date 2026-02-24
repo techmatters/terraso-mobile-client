@@ -398,7 +398,7 @@
         "offline_cant_edit": "თქვენ ხაზგარეშე ხართ. პროექტების რედაქტირება შეუძლებელია."
     },
     "settings": {
-        "beta": "ბეტა",
+        "staging": "staging",
         "version": "ვერსია {{version}} ({{build}}) {{environment}}",
         "unknown_user": "უცნობი მომხმარებელი",
         "copy_access_token": "TK Copy JWT Access Token",

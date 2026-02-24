@@ -398,7 +398,7 @@
         "offline_cant_edit": "Ви офлайн. Проекти не можна редагувати."
     },
     "settings": {
-        "beta": "бета-версія",
+        "staging": "staging",
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Невідомий користувач",
         "copy_access_token": "TK Copy JWT Access Token",

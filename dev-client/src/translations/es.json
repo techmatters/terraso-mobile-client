@@ -398,7 +398,7 @@
         "offline_cant_edit": "Estás desconectado. Los proyectos no se pueden editar."
     },
     "settings": {
-        "beta": "beta",
+        "staging": "staging",
         "version": "Versión {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Usuario desconocido",
         "copy_access_token": "TK Copy JWT Access Token",
