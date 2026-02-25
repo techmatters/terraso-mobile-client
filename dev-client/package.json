@@ -26,7 +26,8 @@
     "localization-check-missing": "node scripts/localization/missing-check.mjs",
     "prepare": "cd .. && husky ./dev-client/.husky",
     "check-i18n": "bash scripts/localization/check-i18n.sh",
-    "postinstall": "node scripts/fix-duplicate-react.js && npx patch-package"
+    "postinstall": "node scripts/fix-duplicate-react.js && npx patch-package",
+    "generate-munsell-test-data": "node scripts/generateMunsellTestData.js"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.1.1",
