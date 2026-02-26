@@ -248,10 +248,11 @@ export const SyncRecordLogger = () => {
     console.log('📋 SYNC RECORDS (push order)');
     for (const {type, siteId, rec} of entries) {
       const name = sites[siteId]?.name ?? siteId.slice(0, 8);
+      const elevation = sites[siteId]?.elevation;
       const rv = String(rec.revisionId ?? '-');
       const sr = String(rec.lastSyncedRevisionId ?? '-');
       console.log(
-        `   ${type.padEnd(10)} ${name.slice(0, 20).padEnd(20)} ${rv.padStart(2)}/${sr.padEnd(2)} ${statusLabel(rec)}`,
+        `   ${type.padEnd(10)} ${name.slice(0, 20).padEnd(20)} ${rv.padStart(2)}/${sr.padEnd(2)} ${statusLabel(rec)} e=${elevation}m`,
       );
 
       // Log diffs for each type

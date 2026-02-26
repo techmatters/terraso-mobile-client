@@ -22,7 +22,6 @@ import {
 import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 
-import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
 import {
   getChangedSiteFields,
   getDeletedNotes,
@@ -63,37 +62,25 @@ export const pushSiteChanges = async (
       const isNew = record.lastSyncedData === undefined;
 
       try {
-        // Fetch elevation if missing before push
-        // TODO-cknipe: But want to save the elevation in the Site in redux. Just in case the push fails, prefer not to fetch again unnecessarily.
-        let siteToSync = site;
-        if (siteToSync.elevation == null) {
-          const elevation = await fetchElevationForCoords(
-            siteToSync.latitude,
-            siteToSync.longitude,
-          );
-          if (elevation !== null) {
-            siteToSync = {...siteToSync, elevation};
-          }
-          console.log('⛰️ pushSiteChanges: Elevation = ', elevation);
-        }
-
         // 1. Push site-level changes
         if (isNew) {
           // Backend accepts client-generated UUID via optional `id` field.
           // The shared library types haven't been regenerated yet, so we cast.
-          console.log('📤 pushSiteChanges: addSite', siteId);
+          console.log(
+            `📤 pushSiteChanges: addSite ${site.name} with elevation ${site.elevation}`,
+          );
           await siteService.addSite({
             id: siteId,
-            name: siteToSync.name,
-            latitude: siteToSync.latitude,
-            longitude: siteToSync.longitude,
-            elevation: siteToSync.elevation,
-            privacy: siteToSync.privacy,
-            projectId: siteToSync.projectId,
+            name: site.name,
+            latitude: site.latitude,
+            longitude: site.longitude,
+            elevation: site.elevation,
+            privacy: site.privacy,
+            projectId: site.projectId,
           } as SiteAddMutationInput);
         } else {
           const changedFields = getChangedSiteFields(
-            siteToSync,
+            site,
             record.lastSyncedData,
           );
           if (Object.keys(changedFields).length > 0) {

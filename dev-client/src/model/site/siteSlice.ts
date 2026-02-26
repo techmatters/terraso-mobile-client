@@ -129,7 +129,23 @@ export const deleteSites = (state: Draft<SiteState>, siteIds: string[]) => {
 const siteSlice = createSlice({
   name: 'site',
   initialState,
-  reducers: {},
+  reducers: {
+    setSiteElevation: (
+      state,
+      action: {payload: {siteId: string; elevation: number}},
+    ) => {
+      const {siteId, elevation} = action.payload;
+      if (state.sites[siteId]) {
+        state.sites[siteId].elevation = elevation;
+        console.log(
+          `. Updated site elevation (${elevation}) for ${state.sites[siteId].name}`,
+        );
+        // Note: We intentionally do NOT mark the site as modified for sync here. If later you do want to change elevation and mark the site modified, make a separate action.
+        // The elevation is being fetched as part of sync, and the site
+        // is already marked as unsynced. The push will include the elevation.
+      }
+    },
+  },
   extraReducers: builder => {
     // TODO: add case to delete site if not found
     builder.addCase(fetchSite.fulfilled, (state, {payload: site}) => {
@@ -194,4 +210,5 @@ const siteSlice = createSlice({
   },
 });
 
+export const {setSiteElevation} = siteSlice.actions;
 export default siteSlice.reducer;

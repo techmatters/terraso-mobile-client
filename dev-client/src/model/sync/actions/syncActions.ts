@@ -31,11 +31,13 @@ import type {
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 import type {ThunkAPI} from 'terraso-client-shared/store/utils';
 
+import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
 import {
   pushSiteChanges,
   SitePushFailureReason,
 } from 'terraso-mobile-client/model/site/actions/remoteSiteActions';
 import {selectSiteChanges} from 'terraso-mobile-client/model/site/siteSelectors';
+import {setSiteElevation} from 'terraso-mobile-client/model/site/siteSlice';
 import {
   soilDataMutationResponseToResults,
   unsyncedSoilDataToMutationInput,
@@ -54,6 +56,48 @@ import {
 } from 'terraso-mobile-client/model/sync/records';
 import type {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import type {AppState} from 'terraso-mobile-client/store';
+
+/**
+ * Fetches elevation for all sites that are missing it.
+ * Updates Redux state with fetched elevations and returns updated site data.
+ * Elevation fetch failures are non-blocking - sites continue without elevation.
+ */
+const fetchMissingElevations = async (
+  siteData: Record<string, Site>,
+  dispatch: ThunkAPI['dispatch'],
+): Promise<Record<string, Site>> => {
+  const sitesNeedingElevation = Object.entries(siteData).filter(
+    ([_, site]) => site.elevation == null,
+  );
+
+  if (sitesNeedingElevation.length === 0) {
+    return siteData;
+  }
+
+  // Fetch all elevations in parallel
+  const elevationResults = await Promise.all(
+    sitesNeedingElevation.map(async ([siteId, site]) => {
+      const elevation = await fetchElevationForCoords(
+        site.latitude,
+        site.longitude,
+      );
+
+      console.log(`⛰️ Elevation for ${site.name} = ${elevation}`);
+      return {siteId, elevation};
+    }),
+  );
+
+  // Update Redux and build updated site data
+  const updatedSiteData = {...siteData};
+  for (const {siteId, elevation} of elevationResults) {
+    if (elevation !== null) {
+      dispatch(setSiteElevation({siteId, elevation}));
+      updatedSiteData[siteId] = {...updatedSiteData[siteId], elevation};
+    }
+  }
+
+  return updatedSiteData;
+};
 
 export type PushUserDataResults = {
   soilDataResults?: SyncResults<SoilData, SoilDataPushFailureReason>;
@@ -149,9 +193,14 @@ export const pushUserData = async (
   // Push site changes first so new sites exist on the server
   // before soil data/metadata references them
   if (siteUnsyncedChanges && siteUnsyncedData) {
+    // Fetch elevation for sites missing it before pushing
+    const siteDataWithElevation = await fetchMissingElevations(
+      siteUnsyncedData,
+      thunkApi.dispatch,
+    );
     results.siteResults = await pushSiteChanges(
       siteUnsyncedChanges,
-      siteUnsyncedData,
+      siteDataWithElevation,
     );
   }
 

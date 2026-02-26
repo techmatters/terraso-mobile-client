@@ -43,16 +43,26 @@ export const getElevation = async (
   return elevation;
 };
 
+const ELEVATION_FETCH_TIMEOUT_MS = 10000; // 10 seconds
+
 /**
  * Fetch elevation for coordinates. For use outside React components.
- * Returns null if fetch fails (non-blocking).
+ * Returns null if fetch fails or times out (non-blocking).
  */
 export const fetchElevationForCoords = async (
   latitude: number,
   longitude: number,
 ): Promise<number | null> => {
   try {
-    const elevation = await getElevation(latitude, longitude);
+    const elevationPromise = getElevation(latitude, longitude);
+    const timeoutPromise = new Promise<undefined>(resolve =>
+      setTimeout(() => {
+        console.log(`⛰️ Elevation timed out for ${latitude}, ${longitude}`);
+        resolve(undefined);
+      }, ELEVATION_FETCH_TIMEOUT_MS),
+    );
+
+    const elevation = await Promise.race([elevationPromise, timeoutPromise]);
     return elevation ?? null;
   } catch (error) {
     console.warn('Failed to fetch elevation during sync:', error);
