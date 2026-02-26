@@ -42,3 +42,20 @@ export const getElevation = async (
   }
   return elevation;
 };
+
+/**
+ * Fetch elevation for coordinates. For use outside React components.
+ * Returns null if fetch fails (non-blocking).
+ */
+export const fetchElevationForCoords = async (
+  latitude: number,
+  longitude: number,
+): Promise<number | null> => {
+  try {
+    const elevation = await getElevation(latitude, longitude);
+    return elevation ?? null;
+  } catch (error) {
+    console.warn('Failed to fetch elevation during sync:', error);
+    return null;
+  }
+};
