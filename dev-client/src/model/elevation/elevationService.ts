@@ -55,17 +55,19 @@ export const fetchElevationForCoords = async (
 ): Promise<number | null> => {
   try {
     const elevationPromise = getElevation(latitude, longitude);
-    const timeoutPromise = new Promise<undefined>(resolve =>
-      setTimeout(() => {
-        console.log(`⛰️ Elevation timed out for ${latitude}, ${longitude}`);
-        resolve(undefined);
-      }, ELEVATION_FETCH_TIMEOUT_MS),
+    const timeoutReturn = 'timeout';
+    const timeoutPromise = new Promise<typeof timeoutReturn>(resolve =>
+      setTimeout(() => resolve(timeoutReturn), ELEVATION_FETCH_TIMEOUT_MS),
     );
 
-    const elevation = await Promise.race([elevationPromise, timeoutPromise]);
-    return elevation ?? null;
+    const result = await Promise.race([elevationPromise, timeoutPromise]);
+    if (result === timeoutReturn) {
+      console.log('timeout');
+      return null;
+    }
+    return result ?? null;
   } catch (error) {
-    console.warn('Failed to fetch elevation during sync:', error);
+    console.warn('Failed to fetch elevation', error);
     return null;
   }
 };
