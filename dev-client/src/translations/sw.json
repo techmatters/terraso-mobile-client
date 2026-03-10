@@ -149,8 +149,8 @@
                 "no_map_data_body": "Hakuna data ya ramani ya udongo inayopatikana kwa eneo hili, kwa hivyo LandPKS haiwezi kutoa ulinganifu wa udongo. Uchunguzi bado unaweza kuingizwa, na ikiwa data ya ramani ya udongo itapatikana katika siku zijazo, ulinganifu wa udongo utaonekana hapa.",
                 "match_score": "{{score}}",
                 "offline": "Vipimo vya udongo vitasasishwa ukiwa mtandaoni.",
-                "improve_hint": "TK Improve the matches",
-                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
+                "improve_hint": "Boresha mechi",
+                "improve_description": "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Eneo hapa chini.)",
                 "selector": "Huu ndio udongo sahihi",
                 "selected": "Udongo Uliochaguliwa",
                 "rate": {
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "Toleo {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Mtumiaji asiyejulikana",
-        "copy_access_token": "Copy JWT Access Token",
+        "copy_access_token": "Nakili Tokeni ya Ufikiaji ya JWT",
         "sign_out": "Toka",
         "delete_account": "Futa akaunti",
         "delete_account_pending": "Inasubiri",
@@ -742,8 +742,8 @@
                 "use_suggestion": "Tumia pendekezo"
             },
             "analysis_error": {
-                "headline": "TK Something went wrong",
-                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+                "headline": "Kuna kitu kimeenda vibaya",
+                "body": "Kulikuwa na tatizo la kutambua rangi ya udongo. Hakikisha unafuata maagizo ya uchambuzi wa picha, na ujaribu tena. Ikiwa bado una tatizo, wasiliana na usaidizi."
             },
             "crop_reference": "Kata picha ili kuonyesha tu Kidokezo cha 3M Canary Yellow Post-it. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
             "crop_soil": "Kata picha ili kuonyesha sampuli ya udongo pekee. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",

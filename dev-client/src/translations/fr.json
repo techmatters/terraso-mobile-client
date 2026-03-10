@@ -149,8 +149,8 @@
                 "no_map_data_body": "Aucune carte des sols n'est disponible pour cet emplacement ; LandPKS ne peut donc pas générer de correspondances de sols. Il est toutefois possible de saisir des observations et, si des cartes des sols sont disponibles ultérieurement, les correspondances apparaîtront ici.",
                 "match_score": "{{score}}",
                 "offline": "Les correspondances de sol seront mises à jour lorsque vous serez en ligne.",
-                "improve_hint": "TK Improve the matches",
-                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
+                "improve_hint": "Améliorer les correspondances",
+                "improve_description": "Ces correspondances sont basées uniquement sur les cartes des sols. Pour améliorer les résultats, veuillez saisir vos observations sur ce site (voir la section « Observations sur le site » ci-dessous).",
                 "selector": "C'est le bon sol",
                 "selected": "Sol sélectionné",
                 "rate": {
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Utilisateur inconnu",
-        "copy_access_token": "TK Copy JWT Access Token",
+        "copy_access_token": "Copie du jeton d'accès JWT",
         "sign_out": "se déconnecter",
         "delete_account": "Supprimer le compte",
         "delete_account_pending": "En attente",
@@ -742,8 +742,8 @@
                 "use_suggestion": "Utiliser la suggestion"
             },
             "analysis_error": {
-                "headline": "TK Something went wrong",
-                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+                "headline": "Quelque chose s'est mal passé",
+                "body": "Un problème est survenu lors de l'identification de la couleur du sol. Veuillez suivre les instructions d'analyse photo et réessayer. Si le problème persiste, contactez l'assistance."
             },
             "crop_reference": "Recadrez l'image pour afficher uniquement le Post-it 3M Jaune Canari. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
             "crop_soil": "Recadrez l'image pour afficher uniquement l'échantillon de sol. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",

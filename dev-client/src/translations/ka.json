@@ -149,8 +149,8 @@
                 "no_map_data_body": "ამ მდებარეობისთვის ნიადაგის რუკის მონაცემები არ არის ხელმისაწვდომი, ამიტომ LandPKS-ს არ შეუძლია ნიადაგის შესატყვისების გენერირება. დაკვირვებების შეყვანა კვლავ შესაძლებელია და თუ ნიადაგის რუკის მონაცემები მომავალში ხელმისაწვდომი გახდება, ნიადაგის შესატყვისები აქ გამოჩნდება.",
                 "match_score": "{{score}}",
                 "offline": "ნიადაგის შესაბამისობები განახლდება, როდესაც ონლაინ იქნებით.",
-                "improve_hint": "TK Improve the matches",
-                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
+                "improve_hint": "ნიადაგის ნაყოფიერი ფენის შესაბამისობის გაუმჯობესება",
+                "improve_description": "ეს შესაბამისობები მხოლოდ ნიადაგის რუკებს ეფუძნება. შედეგების გასაუმჯობესებლად, ამ ადგილზე შეიყვანეთ დაკვირვებები (იხილეთ ქვემოთ „ადგილზე დაკვირვებები\".)",
                 "selector": "ეს არის სწორი ნიადაგი",
                 "selected": "შერჩეული ნიადაგი",
                 "rate": {
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "ვერსია {{version}} ({{build}}) {{environment}}",
         "unknown_user": "უცნობი მომხმარებელი",
-        "copy_access_token": "TK Copy JWT Access Token",
+        "copy_access_token": "JWT წვდომის ტოკენის კოპირება",
         "sign_out": "გასვლა",
         "delete_account": "ანგარიშის წაშლა",
         "delete_account_pending": "მოლოდინის რეჟიმშია",
@@ -742,8 +742,8 @@
                 "use_suggestion": "შეთავაზების გამოყენება"
             },
             "analysis_error": {
-                "headline": "TK Something went wrong",
-                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+                "headline": "რაღაც არასწორად მოხდა",
+                "body": "ნიადაგის ფერის იდენტიფიცირებისას პრობლემა წარმოიშვა. დარწმუნდით, რომ ფოტოანალიზის ინსტრუქციებს მიჰყევით და ხელახლა სცადეთ. თუ პრობლემა კვლავ გაქვთ, დაუკავშირდით მხარდაჭერის სამსახურს."
             },
             "crop_reference": "სურათის ჩამოჭრა მხოლოდ 3M კანარის ყვითელი პოსტ-იტ ბარათის საჩვენებლად. სურათის გასადიდებლად (შიგნით მოჭერით) ან გასაშლელად (გარე მოჭერით) მოჭერით ცერა და საჩვენებელი თითებით. სურათის ჩარჩოში გადატანა ერთი თითით გადაფურცვლით.",
             "crop_soil": "სურათის ჩამოჭრა მხოლოდ ნიადაგის ნიმუშის საჩვენებლად. სურათის გასადიდებლად (შიგნით მოჭერით) ან გასაშლელად (გარე მოჭერით) მოჭერით ცერა და საჩვენებელი თითებით. სურათის ჩარჩოში გადასატანად ერთი თითით გადაფურცლეთ.",
