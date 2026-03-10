@@ -118,9 +118,9 @@
             "name_min_length_error": "Jina la tovuti lazima liwe na angalau herufi {{min}}",
             "name_max_length_error": "Jina la tovuti lazima liwe na herufi zisizozidi {{max}}",
             "min_latitude_error": "Latitudo lazima iwe angalau {{min}}",
-            "max_latitude_error": "Latitudo lazima iwe angalau {{max}}",
+            "max_latitude_error": "Latitudo lazima iwe isizidi {{max}}",
             "min_longitude_error": "Longitudo lazima iwe angalau {{min}}",
-            "max_longitude_error": "Longitudo lazima iwe angalau {{max}}"
+            "max_longitude_error": "Longitudo lazima iwe isizidi {{max}}"
         },
         "soil_id": {
             "title": "Kitambulisho cha Udongo",
@@ -149,8 +149,8 @@
                 "no_map_data_body": "Hakuna data ya ramani ya udongo inayopatikana kwa eneo hili, kwa hivyo LandPKS haiwezi kutoa ulinganifu wa udongo. Uchunguzi bado unaweza kuingizwa, na ikiwa data ya ramani ya udongo itapatikana katika siku zijazo, ulinganifu wa udongo utaonekana hapa.",
                 "match_score": "{{score}}",
                 "offline": "Vipimo vya udongo vitasasishwa ukiwa mtandaoni.",
-                "improve_hint": "Boresha mechi",
-                "improve_description": "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Eneo hapa chini.)",
+                "improve_hint": "TK Improve the matches",
+                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
                 "selector": "Huu ndio udongo sahihi",
                 "selected": "Udongo Uliochaguliwa",
                 "rate": {
@@ -171,7 +171,7 @@
                 },
                 "soil_properties": {
                     "title": "Sifa za Udongo",
-                    "depth": "Kina ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"))",
+                    "depth": "Kina ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
                     "depth_units_METRIC": "cm",
                     "depth_units_ENGLISH": "\"",
                     "texture": "Umbile",
@@ -196,8 +196,8 @@
                 "outside_map_label": "Katika kitengo cha ramani kilicho karibu, umbali wa {{distance}} {{units}}",
                 "map_units_METRIC": "mita",
                 "properties_header": "Sifa za Udongo",
-                "description_title": "<Maelezo ya herufi nzito</i>",
-                "management_title": "<bold>Usimamizi</bols>",
+                "description_title": "<bold>Maelezo</bold>",
+                "management_title": "<bold>Usimamizi</bold>",
                 "FAO_HWSD": "FAO HWSD",
                 "USDA_NRCS": "USDA NRCS"
             },
@@ -239,7 +239,7 @@
         },
         "create": {
             "public": "Umma",
-            "private": "Privat",
+            "private": "Binafsi",
             "name_label": "Jina la Mradi",
             "description_label": "Maelezo ya Mradi",
             "privacy_label": "Faragha ya Data"
@@ -253,9 +253,9 @@
         },
         "inputs": {
             "units": {
-                "heading": "Vipimo vya Vipimo",
+                "heading": "Vitengo vya Vipimo",
                 "a11yLabel": "vitengo vya vipimo",
-                "english": "Kiingereza (ndani, futi, pauni)",
+                "english": "Kiingereza (inchi, futi, pauni)",
                 "metric": "Kipimo (cm, m, kg)"
             },
             "instructions": {
@@ -283,7 +283,7 @@
             "soil_source": {
                 "heading": "Chanzo Chaguo-Msingi cha Taarifa za Udongo",
                 "survey": "Utafiti wa Udongo wa USDA NRCS",
-                "grids": "Mifumo ya Udongo",
+                "grids": "SoilGrids",
                 "a11yLabel": "chanzo chaguo-msingi cha taarifa za udongo"
             }
         },
@@ -361,7 +361,7 @@
         "search_label": "Ingiza maandishi ili kuchuja miradi kwa majina",
         "role_filter_label": "Chuja miradi kwa majukumu",
         "edit": {
-            "input_header": "Mipangilio ya Mradi Mkuu"
+            "input_header": "Mipangilio ya Jumla ya Mradi"
         },
         "add_user": {
             "heading": "Ongeza Mwanachama wa Timu",
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "Toleo {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Mtumiaji asiyejulikana",
-        "copy_access_token": "Nakili Tokeni ya Ufikiaji ya JWT",
+        "copy_access_token": "Copy JWT Access Token",
         "sign_out": "Toka",
         "delete_account": "Futa akaunti",
         "delete_account_pending": "Inasubiri",
@@ -417,7 +417,7 @@
         "save": "Hifadhi",
         "use": "Tumia",
         "details": "Maelezo",
-        "apply": "Tuma maombi",
+        "apply": "Tumia",
         "role": {
             "MANAGER": "Meneja",
             "CONTRIBUTOR": "Mchangiaji",
@@ -519,8 +519,8 @@
             "title": "Umma"
         },
         "private": {
-            "inline": "Privat",
-            "title": "Privat"
+            "inline": "binafsi",
+            "title": "Binafsi"
         }
     },
     "geo": {
@@ -561,7 +561,7 @@
             "apply_to_all_label": "Paka kwa kina chote",
             "start_label": "Kutoka ({{units}})",
             "end_label": "Kwa ({{units}})",
-            "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\") lazima iwe nambari",
+            "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) lazima iwe nambari",
             "depth_start": "mwanzo wa kina",
             "depth_end": "mwisho wa kina",
             "update_modal": {
@@ -638,29 +638,29 @@
             "fragment": {
                 "info": {
                     "title": "Kiasi cha Kipande cha Mwamba",
-                    "description": "Ujazo wa vipande vya mwamba ni kipimo cha kiasi cha ujazo wa udongo kinachochukuliwa na miamba, ambacho hufafanuliwa kama kitu chochote kikubwa kuliko kipenyo cha $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\").\n\nHii inaweza kukadiriwa kwa kuibua kwa kulinganisha ujazo wa udongo kabla na baada ya kuondoa miamba, na pia kwa kulinganisha ujazo wa miamba iliyoondolewa na ujazo wa udongo uliobaki.\n\nVinginevyo, kwa kipimo sahihi zaidi, unaweza kuweka miamba kutoka kwa sampuli kwenye ndoo yenye ujazo unaojulikana wa maji na kupima mabadiliko ya ujazo. Kisha gawanya ujazo huo kwa ujazo wa sampuli ya asili ya udongo ili kupata asilimia.",
+                    "description": "Ujazo wa vipande vya mwamba ni kipimo cha kiasi cha ujazo wa udongo kinachochukuliwa na miamba, ambacho hufafanuliwa kama kitu chochote kikubwa kuliko kipenyo cha $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}).\n\nHii inaweza kukadiriwa kwa kuibua kwa kulinganisha ujazo wa udongo kabla na baada ya kuondoa miamba, na pia kwa kulinganisha ujazo wa miamba iliyoondolewa na ujazo wa udongo uliobaki.\n\nVinginevyo, kwa kipimo sahihi zaidi, unaweza kuweka miamba kutoka kwa sampuli kwenye ndoo yenye ujazo unaojulikana wa maji na kupima mabadiliko ya ujazo. Kisha gawanya ujazo huo kwa ujazo wa sampuli ya asili ya udongo ili kupata asilimia.",
                     "description_diameter_METRIC": "2mm",
                     "description_diameter_ENGLISH": "1/16”"
                 }
             },
             "class": {
-                "CLAY": "Udongo",
+                "CLAY": "Mfinyanzi",
                 "LOAM": "Loamu",
                 "SAND": "Mchanga",
                 "SILT": "Tope",
-                "CLAY_LOAM": "Udongo wa Loam",
+                "CLAY_LOAM": "Loamu ya Mfinyanzi",
                 "LOAMY_SAND": "Mchanga wa Loamy",
-                "SANDY_CLAY": "Udongo wa Mchanga",
-                "SANDY_CLAY_LOAM": "Loam ya Udongo wa Mchanga",
+                "SANDY_CLAY": "Mfinyanzi wa Mchanga",
+                "SANDY_CLAY_LOAM": "Loamu ya Mfinyanzi wa Mchanga",
                 "SANDY_LOAM": "Mchanga wa Loam",
-                "SILTY_CLAY": "Udongo wa Madoa",
+                "SILTY_CLAY": "Mfinyanzi wa Tope",
                 "SILTY_CLAY_LOAM": "Loam ya Udongo wa Sili",
                 "SILT_LOAM": "Loam ya Silt"
             },
             "guide_intro": "Hujui darasa la umbile? Tumia mwongozo wa hatua kwa hatua.",
             "use_guide_label": "Mwongozo wa Matumizi",
-            "clay_title": "Asilimia ya Udongo",
-            "clay_label": "Asilimia ya udongo",
+            "clay_title": "Asilimia ya Mfinyanzi",
+            "clay_label": "Asilimia ya mfinyanzi",
             "clay_help": "0–100%",
             "fragment_title": "Kiasi cha Kipande cha Mwamba",
             "rockfragment": {
@@ -682,7 +682,7 @@
                 "p2": "Rangi ya udongo inaweza kupimwa kwa kutumia kitabu cha Munsell au spectrometer.",
                 "p3": "Katika programu hii, unaweza pia kupiga picha ukitumia kadi ya marejeleo kama vile Post-it Note ili kubaini rangi ya udongo wako."
             },
-            "hue": "Rangi ya hudhurungi",
+            "hue": "Rangi kuu",
             "value": "Thamani",
             "chroma": "Kroma",
             "workflow": {
@@ -703,7 +703,7 @@
                 },
                 "step2": {
                     "title": "2. Tayarisha Sampuli ya Udongo.",
-                    "content": "Tumia udongo mkavu inapowezekana. Programu ina njia ya kuonyesha kama udongo wako una unyevunyevu, lakini makadirio ya rangi ya udongo mkavu ni sahihi zaidi.\n\nIkiwa safu yako ya udongo ina rangi nyingi (yaani madoadoa, vipengele vya redoksimofik, au kaboneti), tenga rangi ya matrix inayotawala kutoka kwenye rundo.\n\nChuja udongo kupitia chujio cha $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\") ili kuunda rundo la udongo wenye umbo moja, au tumia mikono yako kuchagua kitu chochote kikubwa kuliko $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\")).\n\nLainisha rundo la udongo ili kupunguza vivuli ndani ya sampuli ya udongo.",
+                    "content": "Tumia udongo mkavu inapowezekana. Programu ina njia ya kuonyesha kama udongo wako una unyevunyevu, lakini makadirio ya rangi ya udongo mkavu ni sahihi zaidi.\n\nIkiwa safu yako ya udongo ina rangi nyingi (yaani madoadoa, vipengele vya redoksimofik, au kaboneti), tenga rangi ya matrix inayotawala kutoka kwenye rundo.\n\nChuja udongo kupitia chujio cha $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) ili kuunda rundo la udongo wenye umbo moja, au tumia mikono yako kuchagua kitu chochote kikubwa kuliko $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n\nLainisha rundo la udongo ili kupunguza vivuli ndani ya sampuli ya udongo.",
                     "content_size_METRIC": "2mm",
                     "content_size_ENGLISH": "1/16”"
                 },
@@ -742,8 +742,8 @@
                 "use_suggestion": "Tumia pendekezo"
             },
             "analysis_error": {
-                "headline": "Kuna kitu kimeenda vibaya",
-                "body": "Kulikuwa na tatizo la kutambua rangi ya udongo. Hakikisha unafuata maagizo ya uchambuzi wa picha, na ujaribu tena. Ikiwa bado una tatizo, wasiliana na usaidizi."
+                "headline": "TK Something went wrong",
+                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
             },
             "crop_reference": "Kata picha ili kuonyesha tu Kidokezo cha 3M Canary Yellow Post-it. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
             "crop_soil": "Kata picha ili kuonyesha sampuli ya udongo pekee. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
@@ -794,7 +794,7 @@
             "soilTexture": "Inajumuisha darasa la umbile na ujazo wa vipande vya mwamba"
         },
         "vertical_cracking": {
-            "description": "Nyufa hukua katika udongo wenye udongo mwingi baada ya kukauka. Nyufa zinaweza kuwa za kudumu, au zinaweza kutoweka baada ya muda. <bold>Pima nyufa za udongo wakati udongo umekauka.</bold>",
+            "description": "Nyufa hukua katika udongo wenye mfinyanzi mwingi baada ya kukauka. Nyufa zinaweza kuwa za kudumu, au zinaweza kutoweka baada ya muda. <bold>Pima nyufa za udongo wakati udongo umekauka.</bold>",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "Sentimita 25",
@@ -805,8 +805,8 @@
                 "DEEP_VERTICAL_CRACKS": "Nyufa za wima zenye kina kirefu"
             },
             "no_cracks": "<bold>Hakuna Nyufa</bold>\nHakuna nyufa zinazoonekana kwenye uso wa udongo.",
-            "surface_cracks": "<bold>Mipasuko ya Uso</bold>\nMipasuko ya uso ni chini ya $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\") kina.",
-            "deep_vertical_cracks": "<bold>Mipasuko ya Wima ya Kina</bold>\nMipasuko ya wima ya kina kirefu ni angalau $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\") pana na $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\") kina kirefu. Unapaswa kuwa na uwezo wa kuweka penseli ndani ya mipasuko."
+            "surface_cracks": "<bold>Mipasuko ya Uso</bold>\nMipasuko ya uso ni chini ya $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) kina.",
+            "deep_vertical_cracks": "<bold>Mipasuko ya Wima ya Kina</bold>\nMipasuko ya wima ya kina kirefu ni angalau $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) pana na $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) kina kirefu. Unapaswa kuwa na uwezo wa kuweka penseli ndani ya mipasuko."
         },
         "soil_preset": {
             "header": "Badilisha kina cha shimo la udongo",
@@ -1720,20 +1720,20 @@
             "degree": "{{value}}°",
             "info": {
                 "title": "Jinsi ya kutumia Kipima Mteremko",
-                "description": "Simama ukiangalia eneo kutoka angalau $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\") mbali.\n\nTambua mwelekeo wa mteremko mkuu kwenye eneo hilo.\n\nSimama ili uweze kuona ukingo au umbo la mteremko huo mkuu (ingawa unaweza kuhitaji kukaribia ardhi ili kuuona.)\n\nUelekeo unaoelekea unapaswa kuwa sawa na mwelekeo wa mteremko. Ukinyoosha mikono yako kwa pande zako, mstari wanaotengeneza unapaswa kuwa sambamba na mwelekeo wa mteremko.\n\nWeka simu yako ili mstari mweupe imara ulingane na mteremko wa nchi; jaribu kuweka mstari mweupe kando ya mteremko. Unaweza kuhitaji kuinama ikiwa umbo la mteremko si rahisi kuona ukiwa umesimama.\n\n<bold>Njia Mbadala</bold>: Ikiwa umbo la ardhi halijapinda sana au kuwa na matuta, unaweza kuweka kijiti cha yadi chini kwenye eneo la ujenzi na kisha upange simu yako kwenye kijiti ili kupata pembe ya mteremko.",
+                "description": "Simama ukiangalia eneo kutoka angalau $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) mbali.\n\nTambua mwelekeo wa mteremko mkuu kwenye eneo hilo.\n\nSimama ili uweze kuona ukingo au umbo la mteremko huo mkuu (ingawa unaweza kuhitaji kukaribia ardhi ili kuuona.)\n\nUelekeo unaoelekea unapaswa kuwa sawa na mwelekeo wa mteremko. Ukinyoosha mikono yako kwa pande zako, mstari wanaotengeneza unapaswa kuwa sambamba na mwelekeo wa mteremko.\n\nWeka simu yako ili mstari mweupe imara ulingane na mteremko wa nchi; jaribu kuweka mstari mweupe kando ya mteremko. Unaweza kuhitaji kuinama ikiwa umbo la mteremko si rahisi kuona ukiwa umesimama.\n\n<bold>Njia Mbadala</bold>: Ikiwa umbo la ardhi halijapinda sana au kuwa na matuta, unaweza kuweka kijiti cha yadi chini kwenye eneo la ujenzi na kisha upange simu yako kwenye kijiti ili kupata pembe ya mteremko.",
                 "description_distance_METRIC": "Mita 4",
                 "description_distance_ENGLISH": "Futi 15"
             },
             "short_title": "Mwinuko",
             "long_title": "Mteremko Mwinuko",
-            "manual_label": "Mwongozo",
-            "manual_help": "Ingiza Asilimia au Shahada ya Mwinuko",
+            "manual_label": "Kwa mkono",
+            "manual_help": "Ingiza Asilimia au Digrii ya Mwinamo",
             "confirm_title": "Badilisha mteremko?",
             "confirm_body": "Una uhakika unataka kupindua mwinuko wa mteremko?",
             "percentage_placeholder": "Asilimia",
             "percentage_help": "0%–999%",
             "degree_help": "0°–89°",
-            "degree_placeholder": "Shahada",
+            "degree_placeholder": "Digrii",
             "slope_meter": "Kipima Mteremko",
             "camera_grant": "Toa Ruhusa ya Kamera",
             "no_camera": "Hakuna Ufikiaji wa Kamera",
@@ -1745,7 +1745,7 @@
                 "GENTLE_PERCENT": "2–5%",
                 "MODERATE": "Wastani",
                 "MODERATE_PERCENT": "5–10%",
-                "ROLLING": "Kuzungusha",
+                "ROLLING": "Vilima Laini",
                 "ROLLING_PERCENT": "10–15%",
                 "HILLY": "Hilly",
                 "HILLY_PERCENT": "15–30%",
@@ -1764,8 +1764,8 @@
             "title": "Umbo",
             "info": {
                 "title": "Umbo la Mteremko",
-                "description": "Umbo la mteremko hurejelea jinsi ardhi inavyopinda katika eneo linalozunguka sehemu ya eneo lako.\n\nUmbo la mteremko huamuliwa katika pande mbili: <bold>downslope</bold> na <bold>cross-slope</bold>.\n\nKwanza, tambua mwelekeo mkuu wa mteremko kwenye eneo hilo. Puuza matuta madogo au mitaro; angalia kuhusu $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\") katika pande zote.\n\nIkiwa mvua ingenyesha, maji yangetiririka katika mwelekeo gani wa jumla kushuka? Hii inaitwa mwelekeo <bold>downslope</bold>.\n\nMwelekeo wa mteremko unaweza kupatikana kwa kuangalia pembe ya kulia (digrii 90) kutoka upande wa mteremko.\n\nUkitoka kwenye eneo hilo huku ukibaki kwenye mwinuko sawa, huu ndio mwelekeo <bold>cross-slope</bold>.\n\nPili, tambua umbo la mteremko kwa kila mwelekeo.\n\n<bold>Concave</bold> inamaanisha kwamba ardhi inapanda juu zaidi unapohama kutoka sehemu yako kando ya mteremko au mteremko wa chini. Kwa mfano, mteremko wa chini mara nyingi huwa na mkunjo chini ya kilima unapobadilika kutoka mteremko mkali hadi ule usio na kina kirefu.\n\n<bold>Convex</bold> inamaanisha kwamba ardhi inashuka zaidi unapohama kutoka sehemu yako kando ya mwelekeo fulani. Kwa mfano, mteremko wa chini mara nyingi huwa na mkunjo juu ya kilima unapobadilika kutoka sehemu isiyo na kina kirefu hadi ile yenye mwinuko zaidi.\n\n<bold>Linear</bold> inamaanisha mteremko unaendana katika mwelekeo mzima wa mwelekeo fulani. Haimaanishi kwamba ardhi ni tambarare; inamaanisha tu kwamba mteremko haubadiliki.",
-                "concave": "Mlango",
+                "description": "Umbo la mteremko hurejelea jinsi ardhi inavyopinda katika eneo linalozunguka sehemu ya eneo lako.\n\nUmbo la mteremko huamuliwa katika pande mbili: <bold>downslope</bold> na <bold>cross-slope</bold>.\n\nKwanza, tambua mwelekeo mkuu wa mteremko kwenye eneo hilo. Puuza matuta madogo au mitaro; angalia kuhusu $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) katika pande zote.\n\nIkiwa mvua ingenyesha, maji yangetiririka katika mwelekeo gani wa jumla kushuka? Hii inaitwa mwelekeo <bold>downslope</bold>.\n\nMwelekeo wa mteremko unaweza kupatikana kwa kuangalia pembe ya kulia (digrii 90) kutoka upande wa mteremko.\n\nUkitoka kwenye eneo hilo huku ukibaki kwenye mwinuko sawa, huu ndio mwelekeo <bold>cross-slope</bold>.\n\nPili, tambua umbo la mteremko kwa kila mwelekeo.\n\n<bold>Concave</bold> inamaanisha kwamba ardhi inapanda juu zaidi unapohama kutoka sehemu yako kando ya mteremko au mteremko wa chini. Kwa mfano, mteremko wa chini mara nyingi huwa na mkunjo chini ya kilima unapobadilika kutoka mteremko mkali hadi ule usio na kina kirefu.\n\n<bold>Convex</bold> inamaanisha kwamba ardhi inashuka zaidi unapohama kutoka sehemu yako kando ya mwelekeo fulani. Kwa mfano, mteremko wa chini mara nyingi huwa na mkunjo juu ya kilima unapobadilika kutoka sehemu isiyo na kina kirefu hadi ile yenye mwinuko zaidi.\n\n<bold>Linear</bold> inamaanisha mteremko unaendana katika mwelekeo mzima wa mwelekeo fulani. Haimaanishi kwamba ardhi ni tambarare; inamaanisha tu kwamba mteremko haubadiliki.",
+                "concave": "Konkevu",
                 "convex": "Mbonyeo",
                 "linear": "Mstari",
                 "description_distance_METRIC": "Mita 20–30",
@@ -1775,7 +1775,7 @@
             },
             "long_title": "Umbo la Mteremko",
             "select_labels": {
-                "CONCAVE": "Mlango",
+                "CONCAVE": "Konkevu",
                 "CONVEX": "Mbonyeo",
                 "LINEAR": "Mstari"
             }

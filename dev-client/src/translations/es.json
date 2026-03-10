@@ -8,7 +8,7 @@
             "bullet_2": "Editar notas sin conexión"
         },
         "version_includes": {
-            "title": "Esta version incluye:",
+            "title": "Esta versión incluye:",
             "bullet_1": "Función de exportación de datos para proyectos, sitios individuales y todos los sitios visibles para el usuario",
             "bullet_2": "Selector de idioma",
             "bullet_3": "Traducciones experimentales para francés y georgiano",
@@ -30,7 +30,7 @@
         "empty": {
             "info": "<bold>Tres formas de crear un sitio:</bold>",
             "map": "Toca en cualquier lugar del mapa",
-            "icon": "Toca el icóno Mi ubicación",
+            "icon": "Toca el icono Mi ubicación",
             "coords": "Introduce las coordenadas, la dirección o el término de búsqueda en la barra de búsqueda del mapa",
             "summary": "Un sitio te permite recopilar y guardar observaciones, aprender más sobre el terreno y su potencial, y compartirlo con los demás."
         },
@@ -38,7 +38,7 @@
             "title": "Crear sitio",
             "description": "Crea un sitio aquí para guardar esta ubicación, recopilar observaciones y ver informes más detallados.",
             "gps": "Usar mi ubicación actual (GPS)",
-            "pin": "Usar ubicacion marcada en el mapa",
+            "pin": "Usar ubicación marcada en el mapa",
             "manual": "Introducir coordenadas",
             "latitude": "Latitud",
             "longitude": "Longitud",
@@ -46,7 +46,7 @@
             "name_label": "Nombre del sitio",
             "location_label": "Ubicación del sitio",
             "location_accuracy": "Precisión GPS: {{accuracyM}} m",
-            "add_to_project_label": "Anadir al proyecto",
+            "add_to_project_label": "Añadir al proyecto",
             "add_to_project_caption": "Proyecto",
             "add_to_project_tooltip": "El sitio heredará la configuración del proyecto, incluyendo los requisitos de recopilación de datos y los miembros del equipo. Cree nuevos proyectos utilizando la pestaña Proyectos en la navegación inferior.",
             "privacy_tooltip": "Los proyectos públicos sincronizarán los datos con portales de datos públicos.",
@@ -92,9 +92,9 @@
                 "distanceAsc": "Distancia (más cercana)",
                 "distanceDesc": "Distance (más lejana)"
             },
-            "accessibility_label": "Ordenar sitios por nombre",
-            "filter_projects": "Ordenar sitios por proyecto",
-            "filter_role": "Ordenar sitios por rol",
+            "accessibility_label": "Filtrar sitios por nombre del sitio",
+            "filter_projects": "Filtrar sitios por proyecto",
+            "filter_role": "Filtrar sitios por rol",
             "no_matches": "Ningún sitio coincide con las opciones de búsqueda y filtro actuales.",
             "offline": "No estás conectado. La búsqueda no está disponible, pero puedes introducir las coordenadas exactas."
         },
@@ -105,7 +105,7 @@
             "NOTES": "Notas"
         },
         "list_title": "Lista de sitios",
-        "last_updated": "Última modificaión: {{date}} por {{name}}",
+        "last_updated": "Última modificación: {{date}} por {{name}}",
         "more_info": "Aprende más",
         "your_location": "Tu ubicación",
         "soil_id_prediction": "Soil ID de mejor coincidencia",
@@ -138,7 +138,7 @@
                         "temp_location": "Los suelos enumerados son los más probables de encontrarse en esta ubicación según los mapas de suelos del {{soilMapSource}}.\n\nCrea un sitio aquí e ingresa las observaciones recomendadas para mejorar la precisión de las puntuaciones de coincidencia.",
                         "site_region_unknown": "Los suelos enumerados son los más probables de encontrarse en el sitio, según los mapas de suelos para esta ubicación.\n\nIngresa las observaciones recomendadas sobre la pendiente y el suelo para mejorar la precisión de las puntuaciones de coincidencia. Una vez que se ingresen las observaciones, la lista se actualizará automáticamente.",
                         "temp_location_region_unknown": "Los suelos enumerados son los más propensos de encontrarse en esta ubicación según los mapas de suelos.\n\nCrea un sitio aquí e introduce las observaciones recomendadas para mejorar la precisión de las puntuaciones de coincidencia.",
-                        "need_help": "<bold>Need help?</bold>\nConsulta a un experto en suelos para ayudar a interpretar las observaciones y determinar una correspondencia de suelo. Puedes obtener más información sobre las predicciones del mapa de suelos y las correspondencias de Soil ID en el sitio web:",
+                        "need_help": "<bold>¿Necesitas ayuda?</bold>\nConsulta a un experto en suelos para ayudar a interpretar las observaciones y determinar una correspondencia de suelo. Puedes obtener más información sobre las predicciones del mapa de suelos y las correspondencias de Soil ID en el sitio web:",
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
@@ -149,8 +149,8 @@
                 "no_map_data_body": "No hay datos de mapas de suelos disponibles para esta ubicación, por lo que LandPKS no puede generar coincidencias de suelos en este momento. Aun así, puedes ingresar observaciones y, si en el futuro los datos del mapa de suelos están disponibles, las coincidencias de suelos aparecerán aquí.",
                 "match_score": "{{score}}",
                 "offline": "Las coincidencias de suelo se actualizarán cuando estés conectado.",
-                "improve_hint": "Mejorar las coincidencias",
-                "improve_description": "Estas coincidencias se basan únicamente en mapas de suelos. Para mejorar los resultados, introduzca sus observaciones en este sitio (consulte \"Observaciones del sitio\" más abajo).",
+                "improve_hint": "TK Improve the matches",
+                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
                 "selector": "Este es el suelo correcto",
                 "selected": "Suelo seleccionado",
                 "rate": {
@@ -197,7 +197,7 @@
                 "map_units_METRIC": "metros",
                 "properties_header": "Propiedades del suelo",
                 "description_title": "<bold>Descripción</bold>",
-                "management_title": "<bold>Management</bold>",
+                "management_title": "<bold>Manejo</bold>",
                 "FAO_HWSD": "FAO HWSD",
                 "USDA_NRCS": "USDA NRCS"
             },
@@ -211,7 +211,7 @@
             "soil_properties_score_info": {
                 "header": "Puntuación de las propiedades del suelo",
                 "p1": "La puntuación de las propiedades del suelo refleja la similitud entre el suelo compatible y las observaciones ingresadas para este sitio.",
-                "p2": "La puntuación más alto de Propiedades del suelo significa que las observaciones ingresadas por el usuario son similares a la coincidencia de suelo. Un puntaje bajo significa que los dos son menos similares, y es menos probable que esta coincidencia sea la identificación correcta del suelo para el sitio.",
+                "p2": "Una puntuación más alta de Propiedades del suelo significa que las observaciones ingresadas por el usuario son similares a la coincidencia de suelo. Un puntaje bajo significa que los dos son menos similares, y es menos probable que esta coincidencia sea la identificación correcta del suelo para el sitio.",
                 "p3": "Cuantas más observaciones ingreses para un sitio, más confiable será la puntuación de propiedades del suelo.",
                 "p4": "LandPKS Soil ID considera las siguientes propiedades en el cálculo de la puntuación de las propiedades del suelo:",
                 "bullets": {
@@ -245,7 +245,7 @@
             "privacy_label": "Privacidad de datos"
         },
         "tabs": {
-            "inputs": "Importes",
+            "inputs": "Entradas",
             "team": "Equipo",
             "sites": "Sitios",
             "settings": "Configuraciones",
@@ -339,11 +339,11 @@
             "remove_site_modal": {
                 "title": "¿Eliminar sitio de este proyecto?",
                 "body": "Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros del proyecto dejarán de tener acceso.",
-                "action_name": "Eliminar sitio."
+                "action_name": "Eliminar sitio"
             },
             "transfer_site_modal": {
                 "title": "¿Transferir sitios?",
-                "body": "Los sitios transferidos utilizarán las entradas, ajustes y funciones de los miembros del equipo de este proyecto.\n\nSi los centros tienen observaciones introducidas a profundidades diferentes de las especificadas en este proyecto, esas observaciones se eliminarán. Esto no se puede deshacer.",
+                "body": "Los sitios transferidos utilizarán las entradas, ajustes y funciones de los miembros del equipo de este proyecto.\n\nSi los sitios tienen observaciones introducidas a profundidades diferentes de las especificadas en este proyecto, esas observaciones se eliminarán. Esto no se puede deshacer.",
                 "action_name": "Transferir"
             }
         },
@@ -358,8 +358,8 @@
         "learn_more": "Aprende más acerca del uso de proyectos",
         "create_button": "Crear proyecto",
         "go_to": "Ir al proyecto",
-        "search_label": "Introduce texto para filtar proyectos por nombre",
-        "role_filter_label": "Ordenar proyectos por rol",
+        "search_label": "Introduce texto para filtrar proyectos por nombre",
+        "role_filter_label": "Filtrar proyectos por rol",
         "edit": {
             "input_header": "Configuraciones generales del proyecto"
         },
@@ -379,7 +379,7 @@
             "remove": "Eliminar del proyecto",
             "remove_help": "Elimine el acceso del miembro a este proyecto, manteniendo cualquier dato que haya contribuido a los sitios",
             "confirm_removal_title": "¿Eliminar del proyecto?",
-            "confirm_removal_body": "Esto eliminará al miembro del proyecto. Conservará los observaciones que haya aportado sobre el sitio.",
+            "confirm_removal_body": "Esto eliminará al miembro del proyecto. Conservará las observaciones que haya aportado sobre el sitio.",
             "confirm_removal_action": "Eliminar"
         },
         "transfer_sites": {
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "Versión {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Usuario desconocido",
-        "copy_access_token": "Copiar token de acceso JWT",
+        "copy_access_token": "TK Copy JWT Access Token",
         "sign_out": "Cerrar sesión",
         "delete_account": "Eliminar cuenta",
         "delete_account_pending": "Pendiente",
@@ -424,7 +424,7 @@
             "VIEWER": "Espectador"
         },
         "cancel": "Cancelar",
-        "copied": "Copiado!",
+        "copied": "¡Copiado!",
         "add": "Añadir",
         "submit": "Enviar",
         "change": "Cambiar",
@@ -454,7 +454,7 @@
         "info": {
             "privacy_title": "Privacidad de datos LandPKS",
             "privacy_item1": "<bold>Sitios públicos</bold> son visibles para cualquier persona en el portal de datos LandPKS.",
-            "privacy_item2": "Se incluyen todos los observaciones ingresados en la aplicación móvil LandPKS Soil ID, excepto la información de identificación personal (IIP).",
+            "privacy_item2": "Se incluyen todas las observaciones ingresadas en la aplicación móvil LandPKS Soil ID, excepto la información de identificación personal (IIP).",
             "privacy_item3": "<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo para la persona quien lo creó. Esa persona puede cambiar la privacidad en cualquier momento.",
             "privacy_item4": "<bold>La configuración de privacidad de un proyecto determina la privacidad de sus sitios afiliados.</bold> Los sitios que pertenecen a un proyecto privado son visibles para los miembros del equipo del proyecto. Un administrador de proyectos puede cambiar la privacidad en cualquier momento.",
             "data_portal_link_url": "https://landpks.terraso.org/portal",
@@ -466,7 +466,7 @@
         "create": "Crear",
         "delete": "Eliminar",
         "close": "Cerrar",
-        "offline_title": "Estás fuera de linea",
+        "offline_title": "Estás fuera de línea",
         "support": "Soporte",
         "help": {
             "label": "Ayuda y soporte",
@@ -476,7 +476,7 @@
             "label": "Condiciones de servicio",
             "url": "https://terraso.org/terms-of-service/"
         },
-        "not_available_offine": "No disponible fuera de linea",
+        "not_available_offine": "No disponible fuera de línea",
         "offline_sign_in_title": "Inicio de sesión no disponible sin conexión",
         "offline_sign_in_body": "Para utilizar LandPKS Soil ID sin conexión, primero debes iniciar sesión en línea.",
         "not_available": "No disponible",
@@ -487,7 +487,7 @@
         "terms_of_service_link_text": "Condiciones de servicio"
     },
     "errors": {
-        "generic": "Error al guardar la informacion de la identificación del suelo.",
+        "generic": "Error al guardar la información de la identificación del suelo.",
         "sync_conflict": {
             "headline": "Conflicto de proyectos",
             "body": "Este proyecto ha cambiado. Más información y ayuda en el sitio web de LandPKS.",
@@ -529,7 +529,7 @@
             "title": "Latitud"
         },
         "longitude": {
-            "inline": "Longitud",
+            "inline": "longitud",
             "title": "Longitud"
         },
         "elevation": {
@@ -558,19 +558,19 @@
             "data_inputs_title": "Mostrar/ocultar observaciones del suelo",
             "label_help": "{{max}} caracteres máximo",
             "label_placeholder": "Etiquetar",
-            "apply_to_all_label": "Alicar a todas las profundidades",
+            "apply_to_all_label": "Aplicar a todas las profundidades",
             "start_label": "De ({{units}})",
             "end_label": "A ({{units}})",
             "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) debe ser un número",
             "depth_start": "profundidad inicial",
             "depth_end": "profundidad final",
             "update_modal": {
-                "title": "¿Cambiar profunidad?",
+                "title": "¿Cambiar profundidad?",
                 "body": "Las observaciones de la fosa de suelo que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
                 "action": "Cambiar"
             },
             "delete_modal": {
-                "title": "¿Eliminar profundad?",
+                "title": "¿Eliminar profundidad?",
                 "body": "Las observaciones que se hayan introducido a esta profundidad se borrarán. Esta acción no se puede deshacer.",
                 "action": "Eliminar"
             },
@@ -601,7 +601,7 @@
                 "ball": "Forma una bola:",
                 "ribbon": "Forma una cinta",
                 "grittyness": "Toca el suelo:",
-                "ball_help": "Se puede formar una bola con el suelo?",
+                "ball_help": "¿Se puede formar una bola con el suelo?",
                 "ribbon_help": "¿Se puede formar una cinta con el suelo?",
                 "ribbon_length_help": "¿Cuánto mide la cinta de largo?",
                 "grittyness_help": "¿Cómo se siente el suelo?",
@@ -697,7 +697,7 @@
                         "1": "Usar solo notas Post-it nuevas.",
                         "2": "Apila al menos 3 notas Post-it una encima de otra.",
                         "3": "Asegúrate de que todas las notas Post-it están planas, sin escritura, y sin suciedad.",
-                        "4": "Asegúrate de que cada nota Post-it no se está degradada con la luz solar, ya que puede existir una variación considerable en función de la exposición al sol.",
+                        "4": "Asegúrate de que cada nota Post-it no esté degradada con la luz solar, ya que puede existir una variación considerable en función de la exposición al sol.",
                         "5": "Guarda las notas Post-it en sobres oscuros para evitar la exposición al sol."
                     }
                 },
@@ -709,7 +709,7 @@
                 },
                 "step3": {
                     "title": "3. Prepara la iluminación.",
-                    "content": "El foto del color del suelo debe tomarse en condiciones de iluminación uniforme y a la sombra del sol directo.\n\nIntenta usar una fuente de luz superior en lugar de una iluminación lateral."
+                    "content": "La foto del color del suelo debe tomarse en condiciones de iluminación uniforme y a la sombra del sol directo.\n\nIntenta usar una fuente de luz superior en lugar de una iluminación lateral."
                 },
                 "step4": {
                     "title": "4. Coloca la tarjeta de referencia al lado del suelo.",
@@ -742,8 +742,8 @@
                 "use_suggestion": "Usar sugerencia"
             },
             "analysis_error": {
-                "headline": "Algo salió mal",
-                "body": "Hubo un problema al identificar el color del suelo. Asegúrate de seguir las instrucciones del análisis fotográfico y vuelve a intentarlo. Si el problema persiste, contacta con el servicio de asistencia."
+                "headline": "TK Something went wrong",
+                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
             },
             "crop_reference": "Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo canario. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "crop_soil": "Recorta la imagen para mostrar sólo la muestra de suelo. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
@@ -1751,7 +1751,7 @@
                 "HILLY_PERCENT": "15–30%",
                 "STEEP": "Empinada",
                 "STEEP_PERCENT": "30–50%",
-                "MODERATELY_STEEP": "Moderademente empinada",
+                "MODERATELY_STEEP": "Moderadamente empinada",
                 "MODERATELY_STEEP_PERCENT": "30–50%",
                 "VERY_STEEP": "Muy empinada",
                 "VERY_STEEP_PERCENT": "60–100%",
@@ -1766,7 +1766,7 @@
                 "title": "Forma de pendiente",
                 "description": "La forma de la pendiente se refiere a la forma en que se curva el terreno en la zona que rodea el punto de tu emplazamiento.\n\nLa forma de la pendiente se determina en dos direcciones: <bold>pendiente descendente</bold> y <bold>pendiente transversal</bold>.\n\nEn primer lugar, determina la dirección principal de la pendiente en el lugar. No tomes en cuenta pequeños baches o zanjas; mira alrededor de $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) en todas las direcciones.\n\nSi lloviera, ¿en qué dirección general fluiría el agua cuesta abajo? Esto se denomina la dirección <bold>pendiente abajo</bold>.\n\nLa dirección de la pendiente transversal se puede encontrar mirando en ángulo recto (90 grados) desde la dirección de la pendiente descendente.\n\nSi te alejas del lugar manteniendo la misma elevación, ésta es la dirección de la <bold>pendiente transversal</bold>.\n\nEn segundo lugar, determine la forma de la pendiente para cada dirección.\n\n<bold>Cóncava</bold> significa que el terreno se inclina cada vez más hacia arriba a medida que te alejas de tu punto a lo largo de la pendiente transversal o de la pendiente descendente. Por ejemplo, la pendiente descendente suele ser cóncava al pie de una colina, ya que pasa de una pendiente pronunciada a otra más superficial.\n\n<bold>Convexa</bold> significa que el terreno se inclina cada vez más hacia abajo a medida que se aleja de su punto a lo largo de una dirección determinada. Por ejemplo, la pendiente descendente suele ser convexa en la cima de una colina al pasar de una pendiente poco profunda a otra más pronunciada.\n\n<bold>Lineal</bold> significa que la pendiente es constante a lo largo de toda una dirección determinada. No significa necesariamente que el terreno sea llano; sólo significa que la pendiente no cambia.",
                 "concave": "Cóncava",
-                "convex": "Conveza",
+                "convex": "Convexa",
                 "linear": "Lineal",
                 "description_distance_METRIC": "20-30 metros",
                 "description_distance_ENGLISH": "60-90 pies",
@@ -1785,9 +1785,9 @@
         "camera_title": "LandPKS Soil ID requiere acceso a tu cámara",
         "camera_body": "Para usar {{feature}}, concede a LandPKS Soil ID acceso a tu cámara en los ajustes del dispositivo.",
         "gallery_title": "LandPKS Soil ID requiere acceso a tu galería de fotos",
-        "gallery_body": "Para usar {{feature}}, concede a LandPKS Soil ID acceso a a tu galería de fotos en los ajustes del dispositivo.",
+        "gallery_body": "Para usar {{feature}}, concede a LandPKS Soil ID acceso a tu galería de fotos en los ajustes del dispositivo.",
         "location_title": "LandPKS Soil ID requiere acceso a tu ubicación",
-        "location_body": "Para disfrutar de la mejor experiencia cartográfica, concede a LandPKS Soil ID acceso a a tu ubicación en los ajustes del dispositivo."
+        "location_body": "Para disfrutar de la mejor experiencia cartográfica, concede a LandPKS Soil ID acceso a tu ubicación en los ajustes del dispositivo."
     },
     "delete_account": {
         "title": "Eliminar cuenta",
@@ -1801,9 +1801,9 @@
             "p3": "Lo siguiente no se borrará:",
             "p4": {
                 "b0": "observaciones que contribuiste a un proyecto del que no eres el único responsable",
-                "b1": "tu cuenta Terraso (incluye grupos, suelo, y mapas de historias"
+                "b1": "tu cuenta Terraso (incluye grupos, paisajes, y mapas de historias)"
             },
-            "p5": "<bold>Introduce tu direccion de email para confirmar la eliminación:</bold>",
+            "p5": "<bold>Introduce tu dirección de email para confirmar la eliminación:</bold>",
             "cancel": "Cancelar",
             "delete": "Eliminar"
         },
@@ -1850,8 +1850,8 @@
     "export": {
         "menu_title": "Exportación de datos",
         "title_user": "Exporta todos tus sitios",
-        "title_project": "Sitios de proyectos de exportación",
-        "title_site": "Sitio de exportación",
+        "title_project": "Exportar sitios del proyecto",
+        "title_site": "Exportar sitio",
         "offline_message": "Solo puedes exportar mientras estés en línea.",
         "save_or_share_file": "Compartir o guardar archivo",
         "file_description": "Compartir o guardar los datos actuales como un archivo.",
@@ -1861,7 +1861,7 @@
         "link_description": "Comparte una URL que siempre devuelva los datos más recientes.",
         "live_link": "Enlace en vivo",
         "reset_live_link": "Restablecer enlace en vivo",
-        "site_export_title": "Sitio de exportación",
+        "site_export_title": "Exportar sitio",
         "site_export_description": "Descargue o comparta los datos de este sitio.",
         "site_export_button": "Exportar datos del sitio",
         "what_is_in_file": "¿Qué hay en el archivo?",

@@ -3,7 +3,7 @@
         "title": "Bienvenue sur LandPKS Soil ID",
         "next": {
             "title": "Quelle est la prochaine étape ?",
-            "subtitle": "Les versions futures incluront:",
+            "subtitle": "Les versions futures incluront :",
             "bullet_1": "Créer des sites hors ligne",
             "bullet_2": "Modifier les notes hors ligne"
         },
@@ -50,7 +50,7 @@
             "add_to_project_caption": "Projet",
             "add_to_project_tooltip": "Le site héritera des paramètres du projet, notamment des exigences de collecte de données et des membres de l'équipe. Créez de nouveaux projets via l'onglet « Projets » dans la barre de navigation inférieure.",
             "privacy_tooltip": "Les projets publics synchroniseront les données avec les portails de données publics. ",
-            "privacy_tooltip_link": "Apprendre encore plus"
+            "privacy_tooltip_link": "En savoir plus"
         },
         "dashboard": {
             "privacy": "Confidentialité des données",
@@ -61,11 +61,11 @@
             "archive_button_help_text": "Marquer ce site en lecture seule",
             "delete_button": "Supprimer ce site",
             "location_accuracy": "Précision de localisation",
-            "default_title": "Broche temporaire",
+            "default_title": "Marqueur temporaire",
             "speed_dial": {
                 "note_label": "NOTE",
                 "photo_label": "PHOTO",
-                "bedrock_label": "BASE"
+                "bedrock_label": "ROCHE MÈRE"
             }
         },
         "notes": {
@@ -106,7 +106,7 @@
         },
         "list_title": "Liste des sites",
         "last_updated": "Dernière modification : {{date}} par {{name}}",
-        "more_info": "Apprendre encore plus",
+        "more_info": "En savoir plus",
         "your_location": "Votre emplacement",
         "soil_id_prediction": "Soil ID Top Match",
         "ecological_site_prediction": "Site écologique Top Match",
@@ -130,9 +130,9 @@
                 "site_global_or_unknown": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance la plus pertinente pour ce site afin d'en savoir plus sur ses caractéristiques et autres descriptions."
             },
             "matches": {
-                "title": "Correspondance des Sols",
+                "title": "Allumettes de terre végétale",
                 "info": {
-                    "title": "Correspondance des sols",
+                    "title": "Allumettes de terre végétale",
                     "description": {
                         "site": "Les sols répertoriés sont les plus susceptibles d'être trouvés sur le site d'après les cartes pédologiques de {{soilMapSource}} pour cet emplacement.\n\nSaisissez les observations recommandées concernant la pente et le sol afin d'améliorer la précision des scores de correspondance. La liste sera automatiquement mise à jour une fois les observations saisies.",
                         "temp_location": "Les sols répertoriés sont les plus susceptibles d'être trouvés à cet endroit d'après les cartes pédologiques de {{soilMapSource}} .\n\nCréez un site ici et saisissez les observations recommandées pour améliorer la précision des scores des matchs.",
@@ -149,8 +149,8 @@
                 "no_map_data_body": "Aucune carte des sols n'est disponible pour cet emplacement ; LandPKS ne peut donc pas générer de correspondances de sols. Il est toutefois possible de saisir des observations et, si des cartes des sols sont disponibles ultérieurement, les correspondances apparaîtront ici.",
                 "match_score": "{{score}}",
                 "offline": "Les correspondances de sol seront mises à jour lorsque vous serez en ligne.",
-                "improve_hint": "Améliorer les correspondances",
-                "improve_description": "Ces correspondances sont basées uniquement sur les cartes des sols. Pour améliorer les résultats, veuillez saisir vos observations sur ce site (voir la section « Observations sur le site » ci-dessous).",
+                "improve_hint": "TK Improve the matches",
+                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
                 "selector": "C'est le bon sol",
                 "selected": "Sol sélectionné",
                 "rate": {
@@ -166,7 +166,7 @@
                 "title": "Observations du site",
                 "description": "Améliorez les résultats d'identification du sol en saisissant certaines observations pour ce site à l'aide des guides utiles tout au long du processus.",
                 "slope": {
-                    "title": "Pente raide",
+                    "title": "Inclinaison de la pente",
                     "add_data": "Entrez la pente"
                 },
                 "soil_properties": {
@@ -181,7 +181,7 @@
                 },
                 "cracks": {
                     "title": "Fissures du sol",
-                    "add_data": "Entrez dans les fissures"
+                    "add_data": "Saisir les fissures"
                 }
             },
             "soil_info": {
@@ -189,7 +189,7 @@
                 "eco_descr_url": "Description complète du site écologique",
                 "eco_name_label": "<bold>Nom du site écologique :</bold>  {{name}}",
                 "eco_id_label": "<bold>ID du site écologique :</bold> {{id}}",
-                "land_class_label": "<bold>Classe de capacité foncière :</bold> {{land}}",
+                "land_class_label": "<bold>Classe de capacité des terres :</bold> {{land}}",
                 "data_source_label": "<bold>Source des données :</bold> {{source}}",
                 "location_url": "Afficher l'emplacement sur le Web du sol",
                 "inside_map_label": "Dans l'unité de cartographie des sols",
@@ -269,7 +269,7 @@
                 "preset": {
                     "NRCS": "NRCS/GSP",
                     "BLM": "Norme de surveillance BLM",
-                    "CUSTOM": "Coutume…",
+                    "CUSTOM": "Personnalisé…",
                     "NONE": "Aucun spécifié"
                 },
                 "label": "Étiquette",
@@ -277,13 +277,13 @@
                 "confirm_preset": {
                     "title": "Changer de profondeur ?",
                     "body": "Les observations de fosses pédologiques saisies seront supprimées. Cette action est irréversible.",
-                    "confirm": "Changement"
+                    "confirm": "Modifier"
                 }
             },
             "soil_source": {
                 "heading": "Source d'informations sur les sols par défaut",
                 "survey": "Enquête sur les sols du NRCS de l'USDA",
-                "grids": "Grilles de sol",
+                "grids": "SoilGrids",
                 "a11yLabel": "source d'informations sur les sols par défaut"
             }
         },
@@ -304,7 +304,7 @@
             "copy_download_link": "Copier le lien de téléchargement du projet",
             "download_link_description": "Un fichier zippé contenant toutes les ressources du projet, incluant un fichier .csv contenant les données du site, les notes de terrain, les journaux d'audit et les photos. Toute personne disposant de ce lien peut consulter l'ensemble des ressources.",
             "archive_button": "Archive",
-            "archive_button_prompt": "Projet d'archives ?",
+            "archive_button_prompt": "Archiver le projet ?",
             "archive_description": "Le projet sera déplacé vers les projets archivés, le rendant ainsi accessible en lecture seule. Les membres de l'équipe pourront accéder aux données et les chefs de projet pourront les restaurer à tout moment. Les projets publics archivés resteront consultables sur les portails de données.",
             "delete_button": "Supprimer",
             "delete_button_prompt": "Supprimer le projet ?",
@@ -312,7 +312,7 @@
         },
         "sites": {
             "add": "Ajouter des sites",
-            "transfer": "Sites de transfert",
+            "transfer": "Transférer des sites",
             "create": "Créer des sites",
             "search": {
                 "placeholder": "Recherche",
@@ -342,7 +342,7 @@
                 "action_name": "Supprimer le site"
             },
             "transfer_site_modal": {
-                "title": "Sites de transfert ?",
+                "title": "Transférer les sites ?",
                 "body": "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. \n\nSi des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible.",
                 "action_name": "Transfert"
             }
@@ -383,7 +383,7 @@
             "confirm_removal_action": "Retirer"
         },
         "transfer_sites": {
-            "heading": "Sites de transfert vers ce projet",
+            "heading": "Transférer des sites vers ce projet",
             "description": "Transférez les sites LandPKS Soil ID que vous gérez vers ce projet. Lors du transfert, les sites utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet.",
             "unaffiliated": "Non affilié"
         },
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Utilisateur inconnu",
-        "copy_access_token": "Copie du jeton d'accès JWT",
+        "copy_access_token": "TK Copy JWT Access Token",
         "sign_out": "se déconnecter",
         "delete_account": "Supprimer le compte",
         "delete_account_pending": "En attente",
@@ -419,15 +419,15 @@
         "details": "Détails",
         "apply": "Appliquer",
         "role": {
-            "MANAGER": "Directeur",
-            "CONTRIBUTOR": "Participant",
-            "VIEWER": "Téléspectateur"
+            "MANAGER": "Gestionnaire",
+            "CONTRIBUTOR": "Contributeur",
+            "VIEWER": "Lecteur"
         },
         "cancel": "Annuler",
         "copied": "Copié !",
         "add": "Ajouter",
         "submit": "Soumettre",
-        "change": "Changement",
+        "change": "Modifier",
         "done": "Fait",
         "required": "Requis",
         "yes": "Oui",
@@ -480,14 +480,14 @@
         "offline_sign_in_title": "La connexion hors ligne n'est pas disponible",
         "offline_sign_in_body": "Pour utiliser LandPKS Soil ID hors ligne, vous devez d'abord vous connecter en ligne.",
         "not_available": "Pas disponible",
-        "learn_more": "Apprendre encore plus",
+        "learn_more": "En savoir plus",
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
         "privacy_policy_link_text": "politique de confidentialité",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Conditions d'utilisation"
     },
     "errors": {
-        "generic": "Erreur lors de l'enregistrement des informations de Soil ID.",
+        "generic": "Erreur lors de l'enregistrement des informations d'identification du sol.",
         "sync_conflict": {
             "headline": "Conflit de projet",
             "body": "Ce projet a évolué. Pour en savoir plus et obtenir de l'aide, consultez le site web de LandPKS.",
@@ -538,7 +538,7 @@
         }
     },
     "soil": {
-        "bedrock": "Base",
+        "bedrock": "Roche mère",
         "loading": "Chargement…",
         "error": "Erreur",
         "surface": "Surface du sol",
@@ -567,7 +567,7 @@
             "update_modal": {
                 "title": "Changer la profondeur ?",
                 "body": "Les observations de fosses pédologiques saisies à cette profondeur seront supprimées. Cette action est irréversible.",
-                "action": "Changement"
+                "action": "Modifier"
             },
             "delete_modal": {
                 "title": "Supprimer la profondeur ?",
@@ -645,7 +645,7 @@
             },
             "class": {
                 "CLAY": "Argile",
-                "LOAM": "Terreau",
+                "LOAM": "Loam",
                 "SAND": "Sable",
                 "SILT": "Limon",
                 "CLAY_LOAM": "loam argileux",
@@ -655,10 +655,10 @@
                 "SANDY_LOAM": "loam sableux",
                 "SILTY_CLAY": "Argile limoneuse",
                 "SILTY_CLAY_LOAM": "loam argilo-limoneux",
-                "SILT_LOAM": "limon limoneux"
+                "SILT_LOAM": "Loam limoneux"
             },
             "guide_intro": "Vous ne connaissez pas la classe de texture ? Utilisez le guide étape par étape.",
-            "use_guide_label": "Guide d'utilisation",
+            "use_guide_label": "Utiliser le guide",
             "clay_title": "Pourcentage d'argile",
             "clay_label": "Pourcentage d'argile",
             "clay_help": "0–100 %",
@@ -739,11 +739,11 @@
                 "body": "Ce n'est pas une couleur de sol typique. Souhaitez-vous continuer quand même ou utiliser la couleur suggérée la plus proche ?",
                 "suggestion": "Suggestion",
                 "your_result": "Votre résultat",
-                "use_suggestion": "Suggestion d'utilisation"
+                "use_suggestion": "Utiliser la suggestion"
             },
             "analysis_error": {
-                "headline": "Quelque chose s'est mal passé",
-                "body": "Un problème est survenu lors de l'identification de la couleur du sol. Veuillez suivre les instructions d'analyse photo et réessayer. Si le problème persiste, contactez l'assistance."
+                "headline": "TK Something went wrong",
+                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
             },
             "crop_reference": "Recadrez l'image pour afficher uniquement le Post-it 3M Jaune Canari. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
             "crop_soil": "Recadrez l'image pour afficher uniquement l'échantillon de sol. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
@@ -751,7 +751,7 @@
             "lighting_condition": "La photo a un éclairage uniforme et aucune ombre :",
             "use_photo_instead": "Vous ne connaissez pas les valeurs de couleur du sol ? Utilisez plutôt une photo (guide inclus).",
             "photo_need_help": "Pour utiliser une photo afin de déterminer la couleur du sol, vous aurez besoin d'un Post-it 3M Jaune Canari comme référence de couleur et d'un échantillon de sol correctement préparé. Besoin d'aide ? Suivez le guide étape par étape.",
-            "use_guide_label": "Guide d'utilisation",
+            "use_guide_label": "Utiliser le guide",
             "color_photo_soil_condition": {
                 "MOIST": "Humide",
                 "DRY": "Sec"
@@ -814,7 +814,7 @@
             "label": "Profondeurs",
             "NRCS": "NRCS/GSP (par défaut)",
             "BLM": "Norme de surveillance BLM",
-            "CUSTOM": "Coutume"
+            "CUSTOM": "Personnalisé"
         },
         "collection_method_summary": {
             "soilTexture": "Classe de texture"
@@ -1071,7 +1071,7 @@
                 "management": "Ce sont, en général, d'excellents sols pour la production agricole. Leur porosité et leur capacité de rétention d'eau sont excellentes et ils conviennent à une grande variété de systèmes de production agricole. Leur capacité de rétention d'eau est modérée à élevée et pourrait donc convenir aux systèmes de production en zones arides. "
             },
             "glossic_chernozems": {
-                "name": "Chernozems brillants",
+                "name": "Chernozems glossiques",
                 "description": "Les chernozems brillants sont des sols très productifs dotés de bonnes propriétés physiques et chimiques. Ils présentent une excellente qualité de sol et des couches arables sombres et riches. Leur teneur en matière organique est élevée, et s'étend jusqu'aux horizons souterrains. ",
                 "management": "Ce sont, en général, d'excellents sols pour la production agricole. Ils présentent une excellente porosité et une excellente rétention d'eau, et conviennent à un large éventail de systèmes de production agricole."
             },
@@ -1725,7 +1725,7 @@
                 "description_distance_ENGLISH": "15 pieds"
             },
             "short_title": "Pente",
-            "long_title": "Pente raide",
+            "long_title": "Inclinaison de la pente",
             "manual_label": "Manuel",
             "manual_help": "Entrez le pourcentage ou le degré de pente",
             "confirm_title": "Changer de pente ?",
@@ -1745,7 +1745,7 @@
                 "GENTLE_PERCENT": "2 à 5 %",
                 "MODERATE": "Modéré",
                 "MODERATE_PERCENT": "5 à 10 %",
-                "ROLLING": "Roulement",
+                "ROLLING": "Vallonné",
                 "ROLLING_PERCENT": "10 à 15 %",
                 "HILLY": "Vallonné",
                 "HILLY_PERCENT": "15–30 %",
@@ -1850,8 +1850,8 @@
     "export": {
         "menu_title": "Exportation de données",
         "title_user": "Exportez tous vos sites",
-        "title_project": "Sites de projets d'exportation",
-        "title_site": "Site d'exportation",
+        "title_project": "Exporter les sites du projet",
+        "title_site": "Exporter le site",
         "offline_message": "Vous ne pouvez exporter que si vous êtes en ligne.",
         "save_or_share_file": "Partager ou enregistrer le fichier",
         "file_description": "Partagez ou enregistrez les données actuelles dans un fichier.",
@@ -1861,9 +1861,9 @@
         "link_description": "Partagez une URL qui renvoie toujours les données les plus récentes.",
         "live_link": "Lien direct",
         "reset_live_link": "Réinitialiser le lien en direct",
-        "site_export_title": "Site d'exportation",
+        "site_export_title": "Exporter le site",
         "site_export_description": "Téléchargez ou partagez les données de ce site.",
-        "site_export_button": "Données du site d'exportation",
+        "site_export_button": "Exporter les données du site",
         "what_is_in_file": "Que contient le fichier ?",
         "loading": "Chargement des paramètres d'exportation...",
         "downloading": "Téléchargement...",
