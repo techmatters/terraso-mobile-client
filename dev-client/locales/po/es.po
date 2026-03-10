@@ -280,10 +280,6 @@ msgid "projects##search##nameDesc"
 msgstr "Ordenar (Z - A)"
 
 #: 
-msgid "settings##beta"
-msgstr "beta"
-
-#: 
 msgid "settings##version"
 msgstr "Versión {{version}} ({{build}}) {{environment}}"
 
@@ -5243,4 +5239,36 @@ msgstr "Se produjo un error al restablecer el enlace en vivo. Inténtalo de nuev
 #, fuzzy
 msgid "export##reset_links_button"
 msgstr "Restablecer enlace"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##improve_hint"
+msgstr "Mejorar las coincidencias"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##improve_description"
+msgstr "Estas coincidencias se basan únicamente en mapas de suelos. Para mejorar los resultados, introduzca sus observaciones en este sitio (consulte \"Observaciones del sitio\" más abajo)."
+
+#: 
+msgid "settings##copy_access_token"
+msgstr "Copiar token de acceso JWT"
+
+#: 
+msgid "settings##staging"
+msgstr "staging"
+
+#: 
+msgid "general##copied"
+msgstr "Copiado!"
+
+#: 
+#, fuzzy
+msgid "soil##color##analysis_error##headline"
+msgstr "Algo salió mal"
+
+#: 
+#, fuzzy
+msgid "soil##color##analysis_error##body"
+msgstr "Hubo un problema al identificar el color del suelo. Asegúrate de seguir las instrucciones del análisis fotográfico y vuelve a intentarlo. Si el problema persiste, contacta con el servicio de asistencia."
 

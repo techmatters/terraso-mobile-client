@@ -149,8 +149,8 @@
                 "no_map_data_body": "Для цієї ділянки немає даних карти ґрунтів, тому LandPKS не може згенерувати відповідні для цієї ділянки ґрунти. Результати спостережень для цієї ділянки все ще можна вводити і, якщо дані карти ґрунтів стануть доступними в майбутньому, тут з'являться аналоги ґрунтів.",
                 "match_score": "{{score}}",
                 "offline": "Співпадіння ґрунтів оновлюватимуться, коли ви будете онлайн.",
-                "improve_hint": "TK Improve the matches",
-                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
+                "improve_hint": "Покращуйте матчі",
+                "improve_description": "Ці зіставлення базуються лише на ґрунтових картах. Щоб покращити результати, введіть спостереження на цій ділянці (див. Спостереження за ділянкою нижче).",
                 "selector": "Це правильно ідентифікований ґрунт",
                 "selected": "Обраний ґрунт",
                 "rate": {
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Невідомий користувач",
-        "copy_access_token": "TK Copy JWT Access Token",
+        "copy_access_token": "Копіювати токен доступу JWT",
         "sign_out": "Вийти",
         "delete_account": "Видалити обліковий запис",
         "delete_account_pending": "У процесі, не завершено",
@@ -742,8 +742,8 @@
                 "use_suggestion": "Використати пропозицію"
             },
             "analysis_error": {
-                "headline": "TK Something went wrong",
-                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+                "headline": "Щось пішло не так",
+                "body": "Виникла проблема з визначенням кольору ґрунту. Переконайтеся, що ви дотримуєтеся інструкцій з аналізу фотографій, і спробуйте ще раз. Якщо проблема не зникає, зверніться до служби підтримки."
             },
             "crop_reference": "Обріжте зображення, щоб показати лише 3M Canary Yellow Post-it. Зведіть зображення великим і вказівним пальцями, щоб збільшити масштаб (зведенням пальців всередину) або зменшити масштаб (зведенням пальців назовні). Перемістіть зображення в рамці, провівши пальцем одним пальцем.",
             "crop_soil": "Обріжте зображення, щоб показати лише зразок ґрунту. Для збільшення або зменшення зображення зведіть або розведіть великий і вказівний пальці. Переміщуйте зображення свайпом одним пальцем.",

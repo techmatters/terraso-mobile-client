@@ -20,7 +20,7 @@ msgstr "Quelle est la prochaine étape ?"
 #: 
 #, fuzzy
 msgid "welcome##next##subtitle"
-msgstr "Les versions futures incluront :"
+msgstr "Les versions futures incluront:"
 
 #: 
 #, fuzzy
@@ -350,11 +350,6 @@ msgstr "Nom (Z à A)"
 
 #: 
 #, fuzzy
-msgid "settings##beta"
-msgstr "bêta"
-
-#: 
-#, fuzzy
 msgid "settings##version"
 msgstr "Version {{version}} ({{build}}) {{environment}}"
 
@@ -401,7 +396,7 @@ msgstr "Directeur"
 #: 
 #, fuzzy
 msgid "general##role##CONTRIBUTOR"
-msgstr "Donateur"
+msgstr "Participant"
 
 #: 
 #, fuzzy
@@ -461,7 +456,7 @@ msgstr "Procéder"
 #: 
 #, fuzzy
 msgid "errors##generic"
-msgstr "Erreur lors de l'enregistrement des informations d'identification du sol."
+msgstr "Erreur lors de l'enregistrement des informations de Soil ID."
 
 #: 
 #, fuzzy
@@ -1222,14 +1217,13 @@ msgid "site##soil_id##description##temp_location"
 msgstr "LandPKS Soil ID utilise les données des cartes pédologiques pour calculer les prédictions concernant le sol à cet endroit. Créez un site à cet endroit pour saisir des observations et améliorer les résultats."
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##title"
-msgstr "Allumettes de terre végétale"
+msgstr "Correspondance des Sols"
 
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##info##title"
-msgstr "Allumettes de terre végétale"
+msgstr "Correspondance des sols"
 
 #: 
 #, fuzzy
@@ -6450,4 +6444,36 @@ msgstr "Une erreur s'est produite lors de la réinitialisation du lien. Veuillez
 #, fuzzy
 msgid "export##reset_links_button"
 msgstr "Réinitialiser le lien"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##improve_hint"
+msgstr "Améliorer les correspondances"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##improve_description"
+msgstr "Ces correspondances sont basées uniquement sur les cartes des sols. Pour améliorer les résultats, veuillez saisir vos observations sur ce site (voir la section « Observations sur le site » ci-dessous)."
+
+#: 
+msgid "settings##copy_access_token"
+msgstr "Copie du jeton d'accès JWT"
+
+#: 
+msgid "settings##staging"
+msgstr "staging"
+
+#: 
+msgid "general##copied"
+msgstr "Copié !"
+
+#: 
+#, fuzzy
+msgid "soil##color##analysis_error##headline"
+msgstr "Quelque chose s'est mal passé"
+
+#: 
+#, fuzzy
+msgid "soil##color##analysis_error##body"
+msgstr "Un problème est survenu lors de l'identification de la couleur du sol. Veuillez suivre les instructions d'analyse photo et réessayer. Si le problème persiste, contactez l'assistance."
 
