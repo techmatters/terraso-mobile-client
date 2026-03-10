@@ -349,11 +349,6 @@ msgstr "Jina (Z hadi A)"
 
 #: 
 #, fuzzy
-msgid "settings##beta"
-msgstr "beta"
-
-#: 
-#, fuzzy
 msgid "settings##version"
 msgstr "Toleo {{version}} ({{build}}) {{environment}}"
 
@@ -6444,4 +6439,36 @@ msgstr "Kulikuwa na hitilafu katika kuweka upya kiungo cha moja kwa moja. Jaribu
 #, fuzzy
 msgid "export##reset_links_button"
 msgstr "Weka upya kiungo"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##improve_hint"
+msgstr "Boresha mechi"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##matches##improve_description"
+msgstr "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Eneo hapa chini.)"
+
+#: 
+msgid "settings##copy_access_token"
+msgstr "Nakili Tokeni ya Ufikiaji ya JWT"
+
+#: 
+msgid "settings##staging"
+msgstr "staging"
+
+#: 
+msgid "general##copied"
+msgstr "Imenakiliwa!"
+
+#: 
+#, fuzzy
+msgid "soil##color##analysis_error##headline"
+msgstr "Kuna kitu kimeenda vibaya"
+
+#: 
+#, fuzzy
+msgid "soil##color##analysis_error##body"
+msgstr "Kulikuwa na tatizo la kutambua rangi ya udongo. Hakikisha unafuata maagizo ya uchambuzi wa picha, na ujaribu tena. Ikiwa bado una tatizo, wasiliana na usaidizi."
 

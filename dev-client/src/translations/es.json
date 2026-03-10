@@ -149,8 +149,8 @@
                 "no_map_data_body": "No hay datos de mapas de suelos disponibles para esta ubicación, por lo que LandPKS no puede generar coincidencias de suelos en este momento. Aun así, puedes ingresar observaciones y, si en el futuro los datos del mapa de suelos están disponibles, las coincidencias de suelos aparecerán aquí.",
                 "match_score": "{{score}}",
                 "offline": "Las coincidencias de suelo se actualizarán cuando estés conectado.",
-                "improve_hint": "TK Improve the matches",
-                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
+                "improve_hint": "Mejorar las coincidencias",
+                "improve_description": "Estas coincidencias se basan únicamente en mapas de suelos. Para mejorar los resultados, introduzca sus observaciones en este sitio (consulte \"Observaciones del sitio\" más abajo).",
                 "selector": "Este es el suelo correcto",
                 "selected": "Suelo seleccionado",
                 "rate": {
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "Versión {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Usuario desconocido",
-        "copy_access_token": "TK Copy JWT Access Token",
+        "copy_access_token": "Copiar token de acceso JWT",
         "sign_out": "Cerrar sesión",
         "delete_account": "Eliminar cuenta",
         "delete_account_pending": "Pendiente",
@@ -424,7 +424,7 @@
             "VIEWER": "Espectador"
         },
         "cancel": "Cancelar",
-        "copied": "¡Copiado!",
+        "copied": "Copiado!",
         "add": "Añadir",
         "submit": "Enviar",
         "change": "Cambiar",
@@ -742,8 +742,8 @@
                 "use_suggestion": "Usar sugerencia"
             },
             "analysis_error": {
-                "headline": "TK Something went wrong",
-                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+                "headline": "Algo salió mal",
+                "body": "Hubo un problema al identificar el color del suelo. Asegúrate de seguir las instrucciones del análisis fotográfico y vuelve a intentarlo. Si el problema persiste, contacta con el servicio de asistencia."
             },
             "crop_reference": "Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo canario. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "crop_soil": "Recorta la imagen para mostrar sólo la muestra de suelo. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
