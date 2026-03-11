@@ -836,7 +836,7 @@ async function main() {
       // Compare msgid/msgstr content, ignore header differences
       try {
         const currentContent = readFileSync(localPath);
-        const oldContent = execSync(`git show HEAD:${file}`, {
+        const oldContent = execSync(`git show HEAD:${repoPrefix}${localPath}`, {
           encoding: 'buffer',
           stdio: ['pipe', 'pipe', 'pipe'],
         });
@@ -845,21 +845,21 @@ async function main() {
         const diff = diffMaps(currentMap, oldMap);
         if (diffSize(diff) > 0) {
           verbose(
-            `  ${file}: ${diff.added.size} added, ${diff.removed.size} removed, ${diff.changed.size} changed -> stage`,
+            `  ${localPath}: ${diff.added.size} added, ${diff.removed.size} removed, ${diff.changed.size} changed -> stage`,
           );
-          filesToStage.push(file);
+          filesToStage.push(localPath);
         } else {
-          verbose(`  ${file}: metadata-only changes -> skip`);
+          verbose(`  ${localPath}: metadata-only changes -> skip`);
         }
       } catch {
         // New file or can't read old version — stage it
-        verbose(`  ${file}: new or unreadable -> stage`);
-        filesToStage.push(file);
+        verbose(`  ${localPath}: new or unreadable -> stage`);
+        filesToStage.push(localPath);
       }
     } else {
       // JSON files — always stage if git reports a diff
-      verbose(`  ${file}: json changed -> stage`);
-      filesToStage.push(file);
+      verbose(`  ${localPath}: json changed -> stage`);
+      filesToStage.push(localPath);
     }
   }
 
