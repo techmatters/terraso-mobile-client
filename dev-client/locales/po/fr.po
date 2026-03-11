@@ -20,7 +20,7 @@ msgstr "Quelle est la prochaine étape ?"
 #: 
 #, fuzzy
 msgid "welcome##next##subtitle"
-msgstr "Les versions futures incluront :"
+msgstr "Les versions futures incluront:"
 
 #: 
 #, fuzzy
