@@ -51,7 +51,7 @@ import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleCo
 import {PROJECT_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   deleteSite,
-  updateSite,
+  onlineOnlyUpdateSite,
 } from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {
   TabRoutes,
@@ -79,7 +79,7 @@ const SiteMenu = ({site}: SiteProps) => {
 
   const removeSiteFromProjectCallback = async () => {
     const input = {id: site.id, projectId: null};
-    return dispatch(updateSite(input));
+    return dispatch(onlineOnlyUpdateSite(input));
   };
 
   return (

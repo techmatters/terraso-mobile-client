@@ -46,6 +46,12 @@ export const updateSite = createAsyncThunk(
   siteActions.updateSiteAction,
 );
 
+// Used for update actions that are not yet supported offline
+export const onlineOnlyUpdateSite = createAsyncThunk(
+  'site/onlineOnlyUpdateSite',
+  siteService.updateSite,
+);
+
 export const deleteSite = createAsyncThunk(
   'site/deleteSite',
   siteService.deleteSite,
@@ -76,13 +82,6 @@ export const siteGlobalReducer = createGlobalReducer(builder => {
   });
 
   builder.addCase(updateSite.fulfilled, (state, {payload}) => {
-    removeSiteFromAllProjects(state.project, payload.id);
-    if (payload.projectId) {
-      addSiteToProject(state.project, {
-        siteId: payload.id,
-        projectId: payload.projectId,
-      });
-    }
     updateSites(state.site, {[payload.id]: payload});
     markEntityModified(state.site.siteSync, payload.id, Date.now());
     logSyncChange(
@@ -92,6 +91,17 @@ export const siteGlobalReducer = createGlobalReducer(builder => {
       state.site.siteSync[payload.id],
       state.site.sites[payload.id],
     );
+  });
+
+  builder.addCase(onlineOnlyUpdateSite.fulfilled, (state, {payload}) => {
+    removeSiteFromAllProjects(state.project, payload.id);
+    if (payload.projectId) {
+      addSiteToProject(state.project, {
+        siteId: payload.id,
+        projectId: payload.projectId,
+      });
+    }
+    updateSites(state.site, {[payload.id]: payload});
   });
 
   builder.addCase(deleteSite.fulfilled, (state, {payload}) => {
