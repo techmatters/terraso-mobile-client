@@ -65,7 +65,7 @@
             "speed_dial": {
                 "note_label": "შენიშვნა",
                 "photo_label": "ფოტო",
-                "bedrock_label": "კლდოვანი ქვა"
+                "bedrock_label": "ფუნდამენტური ქანი"
             }
         },
         "notes": {
@@ -142,7 +142,7 @@
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
-                "match": "მატჩი",
+                "match": "მსგავსება",
                 "error_generic_title": "ნიადაგის რუკის მოძიება შეუძლებელია",
                 "error_generic_body": "LandPKS-მა ვერ შეძლო ამ მდებარეობისთვის ნიადაგის რუკის მოძიება. სცადეთ აპლიკაციის შეჩერება და ხელახლა გაშვება. თუ პრობლემა გაგრძელდა, სცადეთ მოგვიანებით ან გაგზავნეთ დახმარების მოთხოვნა ვებსაიტის landpks.terraso.org მეშვეობით.",
                 "no_map_data_title": "ნიადაგის რუკის მონაცემები არ არის",
@@ -538,7 +538,7 @@
         }
     },
     "soil": {
-        "bedrock": "ქვაკუთხედი",
+        "bedrock": "ფუნდამენტური ქანი",
         "loading": "იტვირთება…",
         "error": "შეცდომა",
         "surface": "ნიადაგის ზედაპირი",
@@ -780,7 +780,7 @@
             "verticalCracking": "ნიადაგის ბზარები",
             "carbonates": "კარბონატები",
             "ph": "pH",
-            "soilOrganicCarbonMatter": "სოციალური ქსელი/სომ",
+            "soilOrganicCarbonMatter": "ნიადაგის ორგანული ნახშირბადი (SOC) და ნიადაგის ორგანული ნივთიერება (SOM)",
             "electricalConductivity": "ელექტროგამტარობა",
             "sodiumAdsorptionRatio": "SAR",
             "soilStructure": "სტრუქტურა",

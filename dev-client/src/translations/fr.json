@@ -130,9 +130,9 @@
                 "site_global_or_unknown": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance la plus pertinente pour ce site afin d'en savoir plus sur ses caractéristiques et autres descriptions."
             },
             "matches": {
-                "title": "Allumettes de terre végétale",
+                "title": "Correspondance des Sols",
                 "info": {
-                    "title": "Allumettes de terre végétale",
+                    "title": "Correspondance des sols",
                     "description": {
                         "site": "Les sols répertoriés sont les plus susceptibles d'être trouvés sur le site d'après les cartes pédologiques de {{soilMapSource}} pour cet emplacement.\n\nSaisissez les observations recommandées concernant la pente et le sol afin d'améliorer la précision des scores de correspondance. La liste sera automatiquement mise à jour une fois les observations saisies.",
                         "temp_location": "Les sols répertoriés sont les plus susceptibles d'être trouvés à cet endroit d'après les cartes pédologiques de {{soilMapSource}} .\n\nCréez un site ici et saisissez les observations recommandées pour améliorer la précision des scores des matchs.",
