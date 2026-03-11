@@ -84,9 +84,9 @@
         "search": {
             "placeholder": "Buscar sitios",
             "sort": {
-                "label": "Ordenar sitios por",
-                "nameAsc": "Nombre (A - Z)",
-                "nameDesc": "Nombre (Z - A)",
+                "label": "Ordenar sitios por changed local",
+                "nameAsc": "Nombre (A - Z) changed local",
+                "nameDesc": "Nombre (Z - A) changed same",
                 "lastModAsc": "Última modificación (más reciente)",
                 "lastModDesc": "Última modificación (menos reciente)",
                 "distanceAsc": "Distancia (más cercana)",
