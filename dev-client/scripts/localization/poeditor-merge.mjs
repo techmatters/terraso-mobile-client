@@ -906,6 +906,13 @@ async function main() {
     commitLines.push(`${lang}: ${summaryParts.join(', ')}`);
 
     // Show details (combine local + POEditor changes)
+    // Truncate lines to stay under commitlint body-max-line-length (100)
+    const MAX_LINE = 100;
+    const truncLine = line => {
+      // Replace newlines so multiline strings don't create extra body lines
+      const flat = line.replace(/\n/g, '↵');
+      return flat.length > MAX_LINE ? flat.slice(0, MAX_LINE - 1) + '…' : flat;
+    };
     let detailCount = 0;
     const MAX_DETAILS = 50;
 
@@ -913,7 +920,7 @@ async function main() {
     const allAdded = new Map([...localDiff.added, ...poeditorDiff.added]);
     for (const [, value] of allAdded) {
       if (detailCount >= MAX_DETAILS) break;
-      commitLines.push(`  + "${value}"`);
+      commitLines.push(truncLine(`  + "${value}"`));
       detailCount++;
     }
 
@@ -921,7 +928,7 @@ async function main() {
     const allChanged = new Map([...localDiff.changed, ...poeditorDiff.changed]);
     for (const [, {old: oldVal, new: newVal}] of allChanged) {
       if (detailCount >= MAX_DETAILS) break;
-      commitLines.push(`  "${oldVal}" → "${newVal}"`);
+      commitLines.push(truncLine(`  "${oldVal}" → "${newVal}"`));
       detailCount++;
     }
 
@@ -929,7 +936,7 @@ async function main() {
     const allRemoved = new Set([...localDiff.removed, ...poeditorDiff.removed]);
     for (const msgid of allRemoved) {
       if (detailCount >= MAX_DETAILS) break;
-      commitLines.push(`  - "${msgid}"`);
+      commitLines.push(truncLine(`  - "${msgid}"`));
       detailCount++;
     }
 
