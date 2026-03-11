@@ -10,7 +10,7 @@ msgstr ""
 #: 
 #, fuzzy
 msgid "welcome##title"
-msgstr "Karibu kwenye LandPKS Soil ID"
+msgstr "Karibu kwenye LandPKS Udongo ID"
 
 #: 
 #, fuzzy
@@ -45,8 +45,7 @@ msgstr "{{lat}}, {{long}}"
 #: 
 #, fuzzy
 msgid "site##empty##info"
-msgstr "<bold>Njia tatu za kuunda tovuti:</bold>\n"
-""
+msgstr "Njia tatu za kuunda tovuti:"
 
 #: 
 #, fuzzy
@@ -186,7 +185,7 @@ msgstr "Umma"
 #: 
 #, fuzzy
 msgid "projects##create##private"
-msgstr "Binafsi"
+msgstr "Privat"
 
 #: 
 #, fuzzy
@@ -211,7 +210,7 @@ msgstr "Mipangilio"
 #: 
 #, fuzzy
 msgid "projects##inputs##units##heading"
-msgstr "Vitengo vya Vipimo"
+msgstr "Vipimo vya Vipimo"
 
 #: 
 #, fuzzy
@@ -221,7 +220,7 @@ msgstr "vitengo vya vipimo"
 #: 
 #, fuzzy
 msgid "projects##inputs##units##english"
-msgstr "Kiingereza (inchi, futi, pauni)"
+msgstr "Kiingereza (ndani, futi, pauni)"
 
 #: 
 #, fuzzy
@@ -301,7 +300,7 @@ msgstr "Ongeza tovuti"
 #: 
 #, fuzzy
 msgid "projects##sites##transfer"
-msgstr "Hamisha Tovuti"
+msgstr "Tovuti za Uhamisho"
 
 #: 
 #, fuzzy
@@ -386,7 +385,7 @@ msgstr "Maelezo"
 #: 
 #, fuzzy
 msgid "general##apply"
-msgstr "Tumia"
+msgstr "Tuma maombi"
 
 #: 
 #, fuzzy
@@ -471,7 +470,7 @@ msgstr "Mipangilio"
 #: 
 #, fuzzy
 msgid "login##title"
-msgstr "LandPKS Soil ID"
+msgstr "Kitambulisho cha Udongo cha LandPKS"
 
 #: 
 #, fuzzy
@@ -501,12 +500,12 @@ msgstr "Umma"
 #: 
 #, fuzzy
 msgid "privacy##private##inline"
-msgstr "binafsi"
+msgstr "Privat"
 
 #: 
 #, fuzzy
 msgid "privacy##private##title"
-msgstr "Binafsi"
+msgstr "Privat"
 
 #: 
 #, fuzzy
@@ -680,7 +679,7 @@ msgstr "Kiasi cha Kipande cha Mwamba"
 #: 
 #, fuzzy
 msgid "soil##texture##fragment##info##description"
-msgstr "Ujazo wa vipande vya mwamba ni kipimo cha kiasi cha ujazo wa udongo kinachochukuliwa na miamba, ambacho hufafanuliwa kama kitu chochote kikubwa kuliko kipenyo cha $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}).\n"
+msgstr "Ujazo wa vipande vya mwamba ni kipimo cha kiasi cha ujazo wa udongo kinachochukuliwa na miamba, ambacho hufafanuliwa kama kitu chochote kikubwa kuliko kipenyo cha $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\").\n"
 "\n"
 "Hii inaweza kukadiriwa kwa kuibua kwa kulinganisha ujazo wa udongo kabla na baada ya kuondoa miamba, na pia kwa kulinganisha ujazo wa miamba iliyoondolewa na ujazo wa udongo uliobaki.\n"
 "\n"
@@ -689,7 +688,7 @@ msgstr "Ujazo wa vipande vya mwamba ni kipimo cha kiasi cha ujazo wa udongo kina
 #: 
 #, fuzzy
 msgid "soil##texture##class##CLAY"
-msgstr "Mfinyanzi"
+msgstr "Udongo"
 
 #: 
 #, fuzzy
@@ -749,7 +748,7 @@ msgstr "Katika programu hii, unaweza pia kupiga picha ukitumia kadi ya marejeleo
 #: 
 #, fuzzy
 msgid "soil##color##hue"
-msgstr "Rangi kuu"
+msgstr "Rangi ya hudhurungi"
 
 #: 
 #, fuzzy
@@ -818,7 +817,7 @@ msgstr "Tumia udongo mkavu inapowezekana. Programu ina njia ya kuonyesha kama ud
 "\n"
 "Ikiwa safu yako ya udongo ina rangi nyingi (yaani madoadoa, vipengele vya redoksimofik, au kaboneti), tenga rangi ya matrix inayotawala kutoka kwenye rundo.\n"
 "\n"
-"Chuja udongo kupitia chujio cha $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) ili kuunda rundo la udongo wenye umbo moja, au tumia mikono yako kuchagua kitu chochote kikubwa kuliko $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n"
+"Chuja udongo kupitia chujio cha $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\") ili kuunda rundo la udongo wenye umbo moja, au tumia mikono yako kuchagua kitu chochote kikubwa kuliko $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\")).\n"
 "\n"
 "Lainisha rundo la udongo ili kupunguza vivuli ndani ya sampuli ya udongo."
 
@@ -916,7 +915,7 @@ msgstr "Jinsi ya kutumia Kipima Mteremko"
 #: 
 #, fuzzy
 msgid "slope##steepness##info##description"
-msgstr "Simama ukiangalia eneo kutoka angalau $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) mbali.\n"
+msgstr "Simama ukiangalia eneo kutoka angalau $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\") mbali.\n"
 "\n"
 "Tambua mwelekeo wa mteremko mkuu kwenye eneo hilo.\n"
 "\n"
@@ -926,7 +925,7 @@ msgstr "Simama ukiangalia eneo kutoka angalau $t(slope.steepness.info.descriptio
 "\n"
 "Weka simu yako ili mstari mweupe imara ulingane na mteremko wa nchi; jaribu kuweka mstari mweupe kando ya mteremko. Unaweza kuhitaji kuinama ikiwa umbo la mteremko si rahisi kuona ukiwa umesimama.\n"
 "\n"
-"<bold>Njia Mbadala</bold>: Ikiwa umbo la ardhi halijapinda sana au kuwa na matuta, unaweza kuweka kijiti cha yadi chini kwenye eneo la ujenzi na kisha upange simu yako kwenye kijiti ili kupata pembe ya mteremko."
+"<bold>Njia Mbadala</bold>: Ikiwa umbo la ardhi halijapinda sana au kuwa na matuta, unaweza kuweka kijiti cha yadi chini kwenye eneo la ujenzi na kisha upange simu yako kwenye kijiti ili kupata pembe ya mteremko."
 
 #: 
 #, fuzzy
@@ -945,7 +944,7 @@ msgstr "Umbo la mteremko hurejelea jinsi ardhi inavyopinda katika eneo linalozun
 "\n"
 "Umbo la mteremko huamuliwa katika pande mbili: <bold>downslope</bold> na <bold>cross-slope</bold>.\n"
 "\n"
-"Kwanza, tambua mwelekeo mkuu wa mteremko kwenye eneo hilo. Puuza matuta madogo au mitaro; angalia kuhusu $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) katika pande zote.\n"
+"Kwanza, tambua mwelekeo mkuu wa mteremko kwenye eneo hilo. Puuza matuta madogo au mitaro; angalia kuhusu $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\") katika pande zote.\n"
 "\n"
 "Ikiwa mvua ingenyesha, maji yangetiririka katika mwelekeo gani wa jumla kushuka? Hii inaitwa mwelekeo <bold>downslope</bold>.\n"
 "\n"
@@ -964,7 +963,7 @@ msgstr "Umbo la mteremko hurejelea jinsi ardhi inavyopinda katika eneo linalozun
 #: 
 #, fuzzy
 msgid "slope##shape##info##concave"
-msgstr "Konkevu"
+msgstr "Mlango"
 
 #: 
 #, fuzzy
@@ -1139,7 +1138,7 @@ msgstr "Latitudo lazima iwe angalau {{min}}"
 #: 
 #, fuzzy
 msgid "site##form##max_latitude_error"
-msgstr "Latitudo lazima iwe isizidi {{max}}"
+msgstr "Latitudo lazima iwe angalau {{max}}"
 
 #: 
 #, fuzzy
@@ -1149,7 +1148,7 @@ msgstr "Longitudo lazima iwe angalau {{min}}"
 #: 
 #, fuzzy
 msgid "site##form##max_longitude_error"
-msgstr "Longitudo lazima iwe isizidi {{max}}"
+msgstr "Longitudo lazima iwe angalau {{max}}"
 
 #: 
 #, fuzzy
@@ -1204,7 +1203,7 @@ msgstr "PICHA"
 #: 
 #, fuzzy
 msgid "site##dashboard##speed_dial##bedrock_label"
-msgstr "MWAMBA"
+msgstr "BEDROCK"
 
 #: 
 #, fuzzy
@@ -1214,7 +1213,7 @@ msgstr "Kitambulisho cha Udongo"
 #: 
 #, fuzzy
 msgid "site##soil_id##description##temp_location"
-msgstr "LandPKS Soil ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda tovuti katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo."
+msgstr "LandPKS Udongo ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda tovuti katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo."
 
 #: 
 #, fuzzy
@@ -1224,7 +1223,7 @@ msgstr "Vipimo Bora vya Udongo"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##info##title"
-msgstr "Vinalingana na udongo"
+msgstr "Vinalingana na udongo wa juu"
 
 #: 
 #, fuzzy
@@ -1293,7 +1292,7 @@ msgstr "Sifa za Udongo"
 #: 
 #, fuzzy
 msgid "site##soil_id##site_data##soil_properties##depth"
-msgstr "Kina ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))"
+msgstr "Kina ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"))"
 
 #: 
 #, fuzzy
@@ -1563,7 +1562,7 @@ msgstr "Utafiti wa Udongo wa USDA NRCS"
 #: 
 #, fuzzy
 msgid "projects##inputs##soil_source##grids"
-msgstr "SoilGrids"
+msgstr "Mifumo ya Udongo"
 
 #: 
 #, fuzzy
@@ -1623,7 +1622,7 @@ msgstr "Ondoka"
 #: 
 #, fuzzy
 msgid "projects##edit##input_header"
-msgstr "Mipangilio ya Jumla ya Mradi"
+msgstr "Mipangilio ya Mradi Mkuu"
 
 #: 
 #, fuzzy
@@ -1643,7 +1642,7 @@ msgstr "Kumbukumbu"
 #: 
 #, fuzzy
 msgid "projects##settings##archive_button_prompt"
-msgstr "Hifadhi Mradi?"
+msgstr "Mradi wa Kumbukumbu?"
 
 #: 
 #, fuzzy
@@ -1827,12 +1826,12 @@ msgstr "Ondoa"
 #: 
 #, fuzzy
 msgid "projects##transfer_sites##heading"
-msgstr "Hamisha Tovuti kwenye Mradi huu"
+msgstr "Hamisha Maeneo kwenye Mradi huu"
 
 #: 
 #, fuzzy
 msgid "projects##transfer_sites##description"
-msgstr "Hamisha tovuti za LandPKS Soil ID unazosimamia kwenye mradi huu. Unapohamisha tovuti, zitatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu."
+msgstr "Hamisha tovuti za LandPKS Udongo unazosimamia kwenye mradi huu. Unapohamisha tovuti, zitatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu."
 
 #: 
 #, fuzzy
@@ -2007,7 +2006,7 @@ msgstr "Nenda kwenye mipangilio"
 #: 
 #, fuzzy
 msgid "permissions##camera_title"
-msgstr "LandPKS Soil ID inahitaji kufikia kamera yako"
+msgstr "LandPKS Udongo ID inahitaji kufikia kamera yako"
 
 #: 
 #, fuzzy
@@ -2017,7 +2016,7 @@ msgstr "Ili kutumia {{feature}}, ruhusu LandPKS Soil ID kufikia kamera yako kati
 #: 
 #, fuzzy
 msgid "permissions##gallery_title"
-msgstr "LandPKS Soil ID inahitaji kufikia ghala lako la picha"
+msgstr "LandPKS Udongo ID inahitaji kufikia ghala lako la picha"
 
 #: 
 #, fuzzy
@@ -2027,7 +2026,7 @@ msgstr "Ili kutumia {{feature}}, ruhusu LandPKS Soil ID kufikia ghala lako la pi
 #: 
 #, fuzzy
 msgid "permissions##location_title"
-msgstr "LandPKS Soil ID inahitaji kufikia eneo lako"
+msgstr "LandPKS Udongo ID inahitaji kufikia eneo lako"
 
 #: 
 #, fuzzy
@@ -2337,7 +2336,7 @@ msgstr "Inajumuisha darasa la umbile na ujazo wa vipande vya mwamba"
 #: 
 #, fuzzy
 msgid "soil##vertical_cracking##description"
-msgstr "Nyufa hukua katika udongo wenye mfinyanzi mwingi baada ya kukauka. Nyufa zinaweza kuwa za kudumu, au zinaweza kutoweka baada ya muda. <bold>Pima nyufa za udongo wakati udongo umekauka.</bold>"
+msgstr "Nyufa hukua katika udongo wenye udongo mwingi baada ya kukauka. Nyufa zinaweza kuwa za kudumu, au zinaweza kutoweka baada ya muda. <bold>Pima nyufa za udongo wakati udongo umekauka.</bold>"
 
 #: 
 #, fuzzy
@@ -2442,7 +2441,7 @@ msgstr "Kwa ({{units}})"
 #: 
 #, fuzzy
 msgid "soil##depth##number_required"
-msgstr "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) lazima iwe nambari"
+msgstr "$t(soil.depth.depth, {\"context\": \"{{item}}\") lazima iwe nambari"
 
 #: 
 #, fuzzy
@@ -2642,7 +2641,7 @@ msgstr "Acha utepe uangukie kiasili kutokana na uvutano. Pima urefu wa sehemu, u
 #: 
 #, fuzzy
 msgid "soil##texture##guide##grittyness_details_1"
-msgstr "<bold>Mkali</bold> inamaanisha unaweza kuhisi chembe za pekee kwenye udongo."
+msgstr "<bold>Gritty</bold> inamaanisha unaweza kuhisi chembe za pekee kwenye udongo."
 
 #: 
 #, fuzzy
@@ -2667,12 +2666,12 @@ msgstr "Mwongozo wa Matumizi"
 #: 
 #, fuzzy
 msgid "soil##texture##clay_title"
-msgstr "Asilimia ya Mfinyanzi"
+msgstr "Asilimia ya Udongo"
 
 #: 
 #, fuzzy
 msgid "soil##texture##clay_label"
-msgstr "Asilimia ya mfinyanzi"
+msgstr "Asilimia ya udongo"
 
 #: 
 #, fuzzy
@@ -2697,7 +2696,7 @@ msgstr "1/16”"
 #: 
 #, fuzzy
 msgid "soil##texture##class##CLAY_LOAM"
-msgstr "Loamu ya Mfinyanzi"
+msgstr "Udongo wa Loam"
 
 #: 
 #, fuzzy
@@ -2707,32 +2706,32 @@ msgstr "Mchanga wa Loamy"
 #: 
 #, fuzzy
 msgid "soil##texture##class##SANDY_CLAY"
-msgstr "Mfinyanzi wa Mchanga"
+msgstr "Udongo wa Mchanga"
 
 #: 
 #, fuzzy
 msgid "soil##texture##class##SANDY_CLAY_LOAM"
-msgstr "Loamu ya Mfinyanzi wa Mchanga"
+msgstr "Loam ya Udongo wa Mchanga"
 
 #: 
 #, fuzzy
 msgid "soil##texture##class##SANDY_LOAM"
-msgstr "Mchanga wa Loamu"
+msgstr "Mchanga wa Loam"
 
 #: 
 #, fuzzy
 msgid "soil##texture##class##SILTY_CLAY"
-msgstr "Mfinyanzi wa Tope"
+msgstr "Udongo wa Madoa"
 
 #: 
 #, fuzzy
 msgid "soil##texture##class##SILTY_CLAY_LOAM"
-msgstr "Loamu ya Mfinyanzi wa Tope"
+msgstr "Loam ya Udongo wa Sili"
 
 #: 
 #, fuzzy
 msgid "soil##texture##class##SILT_LOAM"
-msgstr "Loamu ya Tope"
+msgstr "Loam ya Silt"
 
 #: 
 #, fuzzy
@@ -2887,12 +2886,12 @@ msgstr "Mteremko Mwinuko"
 #: 
 #, fuzzy
 msgid "slope##steepness##manual_label"
-msgstr "Kwa mkono"
+msgstr "Mwongozo"
 
 #: 
 #, fuzzy
 msgid "slope##steepness##manual_help"
-msgstr "Ingiza Asilimia au Digrii ya Mwinamo"
+msgstr "Ingiza Asilimia au Shahada ya Mwinuko"
 
 #: 
 #, fuzzy
@@ -2922,7 +2921,7 @@ msgstr "0°–89°"
 #: 
 #, fuzzy
 msgid "slope##steepness##degree_placeholder"
-msgstr "Digrii"
+msgstr "Shahada"
 
 #: 
 #, fuzzy
@@ -2942,7 +2941,7 @@ msgstr "Hakuna Ufikiaji wa Kamera"
 #: 
 #, fuzzy
 msgid "slope##steepness##no_camera_explanation"
-msgstr "Kwa matokeo bora zaidi, ruhusu LandPKS Soil ID itumie kamera yako katika Mipangilio"
+msgstr "Kwa matokeo bora zaidi, ruhusu LandPKS Udongo ID itumie kamera yako katika Mipangilio"
 
 #: 
 #, fuzzy
@@ -2987,7 +2986,7 @@ msgstr "5–10%"
 #: 
 #, fuzzy
 msgid "slope##steepness##select_labels##ROLLING"
-msgstr "Vilima Laini"
+msgstr "Kuzungusha"
 
 #: 
 #, fuzzy
@@ -2997,7 +2996,7 @@ msgstr "10–15%"
 #: 
 #, fuzzy
 msgid "slope##steepness##select_labels##HILLY"
-msgstr "Milimani"
+msgstr "Hilly"
 
 #: 
 #, fuzzy
@@ -3077,7 +3076,7 @@ msgstr "Mteremko wa Msalaba"
 #: 
 #, fuzzy
 msgid "slope##shape##select_labels##CONCAVE"
-msgstr "Konkevu"
+msgstr "Mlango"
 
 #: 
 #, fuzzy
@@ -3138,7 +3137,7 @@ msgstr "Ilibadilishwa Mara ya Mwisho (sio ya hivi karibuni)"
 #: 
 #, fuzzy
 msgid "screens##SITES"
-msgstr "LandPKS Soil ID"
+msgstr "Kitambulisho cha Udongo cha LandPKS"
 
 #: 
 #, fuzzy
@@ -3155,13 +3154,13 @@ msgstr "<bold>Hakuna Nyufa</bold>\n"
 #, fuzzy
 msgid "soil##vertical_cracking##surface_cracks"
 msgstr "<bold>Mipasuko ya Uso</bold>\n"
-"Mipasuko ya uso ni chini ya $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) kina."
+"Mipasuko ya uso ni chini ya $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\") kina."
 
 #: 
 #, fuzzy
 msgid "soil##vertical_cracking##deep_vertical_cracks"
 msgstr "<bold>Mipasuko ya Wima ya Kina</bold>\n"
-"Mipasuko ya wima ya kina kirefu ni angalau $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) pana na $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) kina kirefu. Unapaswa kuwa na uwezo wa kuweka penseli ndani ya mipasuko."
+"Mipasuko ya wima ya kina kirefu ni angalau $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\") pana na $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\") kina kirefu. Unapaswa kuwa na uwezo wa kuweka penseli ndani ya mipasuko."
 
 #: 
 #, fuzzy
@@ -3268,7 +3267,7 @@ msgstr "Uko nje ya mtandao. Utafutaji haupatikani, lakini unaweza kuingiza viwia
 #: 
 #, fuzzy
 msgid "general##dismiss"
-msgstr "Acha"
+msgstr "Ondoa"
 
 #: 
 #, fuzzy
@@ -3328,7 +3327,7 @@ msgstr "Ingia haipatikani nje ya mtandao"
 #: 
 #, fuzzy
 msgid "general##offline_sign_in_body"
-msgstr "Ili kutumia LandPKS Soil ID nje ya mtandao, lazima kwanza uingie ukiwa mtandaoni."
+msgstr "Ili kutumia LandPKS Udongo ID nje ya mtandao, lazima kwanza uingie ukiwa mtandaoni."
 
 #: 
 #, fuzzy
@@ -3363,12 +3362,12 @@ msgstr "Uko nje ya mtandao. Miradi haiwezi kuhaririwa."
 #: 
 #, fuzzy
 msgid "site##soil_id##description##site_US"
-msgstr "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine."
+msgstr "Kitambulisho cha Udongo cha LandPKS hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine."
 
 #: 
 #, fuzzy
 msgid "site##soil_id##description##site_global_or_unknown"
-msgstr "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu sifa za udongo na maelezo mengine."
+msgstr "Kitambulisho cha Udongo cha LandPKS hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu sifa za udongo na maelezo mengine."
 
 #: 
 #, fuzzy
@@ -3399,12 +3398,12 @@ msgstr "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
 #: 
 #, fuzzy
 msgid "site##soil_id##soil_info##description_title"
-msgstr "<bold>Maelezo</bold>"
+msgstr "<Maelezo ya herufi nzito</i>"
 
 #: 
 #, fuzzy
 msgid "site##soil_id##soil_info##management_title"
-msgstr "<bold>Usimamizi</bold>"
+msgstr "<bold>Usimamizi</bols>"
 
 #: 
 #, fuzzy
@@ -6449,7 +6448,7 @@ msgstr "Boresha mechi"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##improve_description"
-msgstr "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Tovuti hapa chini.)"
+msgstr "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Eneo hapa chini.)"
 
 #: 
 msgid "settings##copy_access_token"

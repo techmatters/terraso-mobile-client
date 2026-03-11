@@ -20,7 +20,7 @@ msgstr "Quelle est la prochaine étape ?"
 #: 
 #, fuzzy
 msgid "welcome##next##subtitle"
-msgstr "Les versions futures incluront :"
+msgstr "Les versions futures incluront:"
 
 #: 
 #, fuzzy
@@ -256,7 +256,7 @@ msgstr "Norme de surveillance BLM"
 #: 
 #, fuzzy
 msgid "projects##inputs##depths##preset##CUSTOM"
-msgstr "Personnalisé…"
+msgstr "Coutume…"
 
 #: 
 #, fuzzy
@@ -301,7 +301,7 @@ msgstr "Ajouter des sites"
 #: 
 #, fuzzy
 msgid "projects##sites##transfer"
-msgstr "Transférer des sites"
+msgstr "Sites de transfert"
 
 #: 
 #, fuzzy
@@ -391,17 +391,17 @@ msgstr "Appliquer"
 #: 
 #, fuzzy
 msgid "general##role##MANAGER"
-msgstr "Gestionnaire"
+msgstr "Directeur"
 
 #: 
 #, fuzzy
 msgid "general##role##CONTRIBUTOR"
-msgstr "Contributeur"
+msgstr "Participant"
 
 #: 
 #, fuzzy
 msgid "general##role##VIEWER"
-msgstr "Lecteur"
+msgstr "Téléspectateur"
 
 #: 
 #, fuzzy
@@ -421,7 +421,7 @@ msgstr "Soumettre"
 #: 
 #, fuzzy
 msgid "general##change"
-msgstr "Modifier"
+msgstr "Changement"
 
 #: 
 #, fuzzy
@@ -456,7 +456,7 @@ msgstr "Procéder"
 #: 
 #, fuzzy
 msgid "errors##generic"
-msgstr "Erreur lors de l'enregistrement des informations d'identification du sol."
+msgstr "Erreur lors de l'enregistrement des informations de Soil ID."
 
 #: 
 #, fuzzy
@@ -541,7 +541,7 @@ msgstr "Élévation"
 #: 
 #, fuzzy
 msgid "soil##bedrock"
-msgstr "Roche mère"
+msgstr "Base"
 
 #: 
 #, fuzzy
@@ -694,7 +694,7 @@ msgstr "Argile"
 #: 
 #, fuzzy
 msgid "soil##texture##class##LOAM"
-msgstr "Loam"
+msgstr "Terreau"
 
 #: 
 #, fuzzy
@@ -911,7 +911,7 @@ msgstr "{{value}}°"
 #: 
 #, fuzzy
 msgid "slope##steepness##info##title"
-msgstr "Comment utiliser l'Inclinomètre"
+msgstr "Comment utiliser Slope Meter"
 
 #: 
 #, fuzzy
@@ -926,7 +926,7 @@ msgstr "Tenez-vous face au site à une distance d'au moins $t(slope.steepness.in
 "\n"
 "Positionnez votre téléphone de façon à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente est difficile à distinguer en position debout.\n"
 "\n"
-"<bold>Autre méthode</bold>: Si le terrain n'est pas trop courbé ou accidenté, vous pouvez placer une règle d'un mètre sur le sol à l'endroit et ensuite aligner votre téléphone sur la règle pour obtenir l'angle de la pente."
+"<bold> Autre méthode </bold>: Si le terrain n'est pas trop courbé ou accidenté, vous pouvez placer une règle d'un mètre sur le sol à l'endroit et ensuite aligner votre téléphone sur la règle pour obtenir l'angle de la pente."
 
 #: 
 #, fuzzy
@@ -945,7 +945,7 @@ msgstr "La forme de la pente fait référence à la courbe du terrain dans la zo
 "\n"
 "La forme de la pente est déterminée dans deux directions : <bold>pente descendante</bold> et <bold>pente transversale</bold>.\n"
 "\n"
-"Tout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\":\"{{units}}\"}) dans toutes les directions.\n"
+"Tout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\": \"{{units}} \"}) dans toutes les directions.\n"
 "\n"
 "S'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente? C'est ce qu'on appelle la direction de la <bold>pente descendante</bold>.\n"
 "\n"
@@ -1039,7 +1039,7 @@ msgstr "Dernière modification : {{date}} par {{name}}"
 #: 
 #, fuzzy
 msgid "site##more_info"
-msgstr "En savoir plus"
+msgstr "Apprendre encore plus"
 
 #: 
 #, fuzzy
@@ -1049,12 +1049,12 @@ msgstr "Votre emplacement"
 #: 
 #, fuzzy
 msgid "site##soil_id_prediction"
-msgstr "Meilleure correspondance Soil ID"
+msgstr "Soil ID Top Match"
 
 #: 
 #, fuzzy
 msgid "site##ecological_site_prediction"
-msgstr "Meilleure correspondance du site écologique"
+msgstr "Site écologique Top Match"
 
 #: 
 #, fuzzy
@@ -1119,7 +1119,7 @@ msgstr "Les projets publics synchroniseront les données avec les portails de do
 #: 
 #, fuzzy
 msgid "site##create##privacy_tooltip_link"
-msgstr "En savoir plus"
+msgstr "Apprendre encore plus"
 
 #: 
 #, fuzzy
@@ -1189,7 +1189,7 @@ msgstr "Précision de localisation"
 #: 
 #, fuzzy
 msgid "site##dashboard##default_title"
-msgstr "Marqueur temporaire"
+msgstr "Broche temporaire"
 
 #: 
 #, fuzzy
@@ -1204,7 +1204,7 @@ msgstr "PHOTO"
 #: 
 #, fuzzy
 msgid "site##dashboard##speed_dial##bedrock_label"
-msgstr "ROCHE MÈRE"
+msgstr "BASE"
 
 #: 
 #, fuzzy
@@ -1242,7 +1242,7 @@ msgstr "Les sols répertoriés sont les plus susceptibles d'être trouvés à ce
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##match"
-msgstr "correspondance"
+msgstr "correspondre"
 
 #: 
 #, fuzzy
@@ -1277,7 +1277,7 @@ msgstr "Améliorez les résultats d'identification du sol en saisissant certaine
 #: 
 #, fuzzy
 msgid "site##soil_id##site_data##slope##title"
-msgstr "Inclinaison de la pente"
+msgstr "Pente raide"
 
 #: 
 #, fuzzy
@@ -1337,7 +1337,7 @@ msgstr "Description complète du site écologique"
 #: 
 #, fuzzy
 msgid "site##soil_id##soil_info##eco_name_label"
-msgstr "<bold>Nom du site écologique :</bold> {{name}}"
+msgstr "<bold>Nom du site écologique :</bold>  {{name}}"
 
 #: 
 #, fuzzy
@@ -1347,7 +1347,7 @@ msgstr "<bold>ID du site écologique :</bold> {{id}}"
 #: 
 #, fuzzy
 msgid "site##soil_id##soil_info##land_class_label"
-msgstr "<bold>Classe de capacité des terres :</bold> {{land}}"
+msgstr "<bold>Classe de capacité foncière :</bold> {{land}}"
 
 #: 
 #, fuzzy
@@ -1562,7 +1562,7 @@ msgstr "Enquête sur les sols du NRCS de l'USDA"
 #: 
 #, fuzzy
 msgid "projects##inputs##soil_source##grids"
-msgstr "SoilGrids"
+msgstr "Grilles de sol"
 
 #: 
 #, fuzzy
@@ -1592,7 +1592,7 @@ msgstr "Les observations de fosses pédologiques saisies seront supprimées. Cet
 #: 
 #, fuzzy
 msgid "projects##inputs##depths##confirm_preset##confirm"
-msgstr "Modifier"
+msgstr "Changement"
 
 #: 
 #, fuzzy
@@ -1617,7 +1617,7 @@ msgstr "Cela supprimera votre accès au projet, mais les données que vous avez 
 #: 
 #, fuzzy
 msgid "projects##team##leave_project_modal##action_name"
-msgstr "Quitter"
+msgstr "Partir"
 
 #: 
 #, fuzzy
@@ -1637,12 +1637,12 @@ msgstr "Un fichier zippé contenant toutes les ressources du projet, incluant un
 #: 
 #, fuzzy
 msgid "projects##settings##archive_button"
-msgstr "Archiver"
+msgstr "Archive"
 
 #: 
 #, fuzzy
 msgid "projects##settings##archive_button_prompt"
-msgstr "Archiver le projet ?"
+msgstr "Projet d'archives ?"
 
 #: 
 #, fuzzy
@@ -1729,7 +1729,7 @@ msgstr "Supprimer le site"
 #: 
 #, fuzzy
 msgid "projects##sites##transfer_site_modal##title"
-msgstr "Transférer les sites ?"
+msgstr "Sites de transfert ?"
 
 #: 
 #, fuzzy
@@ -1826,7 +1826,7 @@ msgstr "Retirer"
 #: 
 #, fuzzy
 msgid "projects##transfer_sites##heading"
-msgstr "Transférer des sites vers ce projet"
+msgstr "Sites de transfert vers ce projet"
 
 #: 
 #, fuzzy
@@ -1976,7 +1976,7 @@ msgstr "Toutes les observations saisies dans l'application mobile LandPKS Soil I
 #: 
 #, fuzzy
 msgid "general##info##privacy_item3"
-msgstr "<bold>Un site privé</bold> non affilié à un projet n'est visible que par la personne qui l'a créé. Cette personne peut modifier la confidentialité à tout moment."
+msgstr "<bold>Un site privé</bold> Les informations non affiliées à un projet ne sont visibles que par leur créateur. Ce dernier peut modifier la confidentialité à tout moment."
 
 #: 
 #, fuzzy
@@ -2336,7 +2336,7 @@ msgstr "Inclut la classe de texture et le volume des fragments de roche"
 #: 
 #, fuzzy
 msgid "soil##vertical_cracking##description"
-msgstr "Des fissures se forment dans les sols argileux après leur assèchement. Elles peuvent être permanentes ou disparaître avec le temps. <bold>Mesurez les fissures du sol lorsque le sol est sec.</bold>"
+msgstr "Des fissures se forment dans les sols argileux après leur assèchement. Elles peuvent être permanentes ou disparaître avec le temps.<bold> Mesurez les fissures du sol lorsque le sol est sec.</bold>"
 
 #: 
 #, fuzzy
@@ -2401,7 +2401,7 @@ msgstr "Norme de surveillance BLM"
 #: 
 #, fuzzy
 msgid "soil##soil_preset##CUSTOM"
-msgstr "Personnalisé"
+msgstr "Coutume"
 
 #: 
 #, fuzzy
@@ -2466,7 +2466,7 @@ msgstr "Les observations de fosses pédologiques saisies à cette profondeur ser
 #: 
 #, fuzzy
 msgid "soil##depth##update_modal##action"
-msgstr "Modifier"
+msgstr "Changement"
 
 #: 
 #, fuzzy
@@ -2661,7 +2661,7 @@ msgstr "Vous ne connaissez pas la classe de texture ? Utilisez le guide étape 
 #: 
 #, fuzzy
 msgid "soil##texture##use_guide_label"
-msgstr "Utiliser le guide"
+msgstr "Guide d'utilisation"
 
 #: 
 #, fuzzy
@@ -2696,7 +2696,7 @@ msgstr "1/16”"
 #: 
 #, fuzzy
 msgid "soil##texture##class##CLAY_LOAM"
-msgstr "Loam argileux"
+msgstr "loam argileux"
 
 #: 
 #, fuzzy
@@ -2711,12 +2711,12 @@ msgstr "Argile sableuse"
 #: 
 #, fuzzy
 msgid "soil##texture##class##SANDY_CLAY_LOAM"
-msgstr "Loam argilo-sableux"
+msgstr "loam argilo-sableux"
 
 #: 
 #, fuzzy
 msgid "soil##texture##class##SANDY_LOAM"
-msgstr "Loam sableux"
+msgstr "loam sableux"
 
 #: 
 #, fuzzy
@@ -2726,12 +2726,12 @@ msgstr "Argile limoneuse"
 #: 
 #, fuzzy
 msgid "soil##texture##class##SILTY_CLAY_LOAM"
-msgstr "Loam argilo-limoneux"
+msgstr "loam argilo-limoneux"
 
 #: 
 #, fuzzy
 msgid "soil##texture##class##SILT_LOAM"
-msgstr "Loam limoneux"
+msgstr "limon limoneux"
 
 #: 
 #, fuzzy
@@ -2796,7 +2796,7 @@ msgstr "Votre résultat"
 #: 
 #, fuzzy
 msgid "soil##color##unexpected_color##use_suggestion"
-msgstr "Utiliser la suggestion"
+msgstr "Suggestion d'utilisation"
 
 #: 
 #, fuzzy
@@ -2851,7 +2851,7 @@ msgstr "Pour utiliser une photo afin de déterminer la couleur du sol, vous aure
 #: 
 #, fuzzy
 msgid "soil##color##use_guide_label"
-msgstr "Utiliser le guide"
+msgstr "Guide d'utilisation"
 
 #: 
 #, fuzzy
@@ -2881,7 +2881,7 @@ msgstr "Pente"
 #: 
 #, fuzzy
 msgid "slope##steepness##long_title"
-msgstr "Inclinaison de la pente"
+msgstr "Pente raide"
 
 #: 
 #, fuzzy
@@ -2986,7 +2986,7 @@ msgstr "5 à 10 %"
 #: 
 #, fuzzy
 msgid "slope##steepness##select_labels##ROLLING"
-msgstr "Vallonné"
+msgstr "Roulement"
 
 #: 
 #, fuzzy
@@ -2996,7 +2996,7 @@ msgstr "10 à 15 %"
 #: 
 #, fuzzy
 msgid "slope##steepness##select_labels##HILLY"
-msgstr "Accidenté"
+msgstr "Vallonné"
 
 #: 
 #, fuzzy
@@ -3242,7 +3242,7 @@ msgstr "Fissures du sol"
 #: 
 #, fuzzy
 msgid "site##soil_id##site_data##cracks##add_data"
-msgstr "Saisir les fissures"
+msgstr "Entrez dans les fissures"
 
 #: 
 #, fuzzy
@@ -3292,7 +3292,7 @@ msgstr "Vous êtes hors ligne"
 #: 
 #, fuzzy
 msgid "general##support"
-msgstr "Assistance"
+msgstr "Soutien"
 
 #: 
 #, fuzzy
@@ -3362,7 +3362,7 @@ msgstr "Vous êtes hors ligne. Les projets ne peuvent pas être modifiés."
 #: 
 #, fuzzy
 msgid "site##soil_id##description##site_US"
-msgstr "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance pédologique la plus adaptée à ce site pour en savoir plus sur son site écologique et ses autres propriétés."
+msgstr "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance pédologique la plus adaptée à ce site pour en savoir plus sur son environnement et ses autres propriétés."
 
 #: 
 #, fuzzy
@@ -3423,7 +3423,7 @@ msgstr "LandPKS base ses correspondances de sols sur des cartes pédologiques. L
 #: 
 #, fuzzy
 msgid "general##learn_more"
-msgstr "En savoir plus"
+msgstr "Apprendre encore plus"
 
 #: 
 #, fuzzy
@@ -4178,7 +4178,7 @@ msgstr "Ce sont, en général, d'excellents sols pour la production agricole. Le
 #: 
 #, fuzzy
 msgid "soil##match_info##glossic_chernozems##name"
-msgstr "Chernozems glossiques"
+msgstr "Chernozems brillants"
 
 #: 
 #, fuzzy
@@ -6113,7 +6113,7 @@ msgstr "Conditions d'utilisation"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##rate##fab"
-msgstr "Évaluer la correspondance"
+msgstr "Correspondance des taux"
 
 #: 
 #, fuzzy
@@ -6183,12 +6183,12 @@ msgstr "Exportez tous vos sites"
 #: 
 #, fuzzy
 msgid "export##title_project"
-msgstr "Exporter les sites du projet"
+msgstr "Sites de projets d'exportation"
 
 #: 
 #, fuzzy
 msgid "export##title_site"
-msgstr "Exporter le site"
+msgstr "Site d'exportation"
 
 #: 
 #, fuzzy
@@ -6238,7 +6238,7 @@ msgstr "Réinitialiser le lien en direct"
 #: 
 #, fuzzy
 msgid "export##site_export_title"
-msgstr "Exporter le site"
+msgstr "Site d'exportation"
 
 #: 
 #, fuzzy
@@ -6248,7 +6248,7 @@ msgstr "Téléchargez ou partagez les données de ce site."
 #: 
 #, fuzzy
 msgid "export##site_export_button"
-msgstr "Exporter les données du site"
+msgstr "Données du site d'exportation"
 
 #: 
 #, fuzzy
@@ -6378,7 +6378,7 @@ msgstr "Format de fichier"
 #: 
 #, fuzzy
 msgid "export##help##csv_description"
-msgstr "Les fichiers <bold>CSV</bold> (valeurs séparées par des virgules) sont compatibles avec les tableurs comme Excel ou Google Sheets. Ils sont idéaux pour visualiser, trier et analyser vos données dans un format de tableau familier."
+msgstr "Les fichiers <bold>CSV</bold> (valeurs séparées par des virgules) compatibles avec les tableurs comme Excel ou Google Sheets. Ils sont idéaux pour visualiser, trier et analyser vos données dans un format de tableau familier."
 
 #: 
 #, fuzzy
@@ -6453,7 +6453,7 @@ msgstr "Améliorer les correspondances"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##improve_description"
-msgstr "Ces correspondances sont basées uniquement sur les cartes des sols. Pour améliorer les résultats, veuillez saisir vos observations sur ce site (voir la section « Observations sur le site » ci-dessous)."
+msgstr "Ces correspondances sont basées uniquement sur les cartes des sols. Pour améliorer les résultats, veuillez saisir vos observations sur ce site (voir la section « Observations sur le site » ci-dessous)."
 
 #: 
 msgid "settings##copy_access_token"
