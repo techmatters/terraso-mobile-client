@@ -225,8 +225,8 @@ function diffMaps(currentMap, baselineMap) {
   return {added, removed, changed};
 }
 
-/** Build a minimal PO file containing only the given entries. */
-function buildPartialPo(entries) {
+/** Build a minimal PO file containing only the given entries. If fuzzy is true, mark all entries as fuzzy. */
+function buildPartialPo(entries, {fuzzy = false} = {}) {
   const data = {
     charset: 'utf-8',
     headers: {
@@ -237,10 +237,14 @@ function buildPartialPo(entries) {
     },
   };
   for (const [msgid, msgstr] of entries) {
-    data.translations[''][msgid] = {
+    const entry = {
       msgid,
       msgstr: [msgstr],
     };
+    if (fuzzy) {
+      entry.comments = {flag: 'fuzzy'};
+    }
+    data.translations[''][msgid] = entry;
   }
   return gettextParser.po.compile(data);
 }
@@ -770,7 +774,7 @@ async function main() {
         );
         continue;
       }
-      const partialPo = buildPartialPo(entries);
+      const partialPo = buildPartialPo(entries, {fuzzy: true});
       const partialPoPath = path.join(tmpDir, `${lang}.po`);
       writeFileSync(partialPoPath, partialPo);
       verbose(

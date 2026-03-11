@@ -84,8 +84,9 @@ If there are local English changes, upload the locally-generated `en.po` to POEd
 For each non-English language that has local changes:
 
 - Build a **partial PO** containing only the changed/added entries. This avoids overwriting POEditor-only translations.
+- All entries are marked with `#, fuzzy` in the PO file, so translators can review them in POEditor.
 - Entries starting with `TK ` (placeholder translations) are skipped — they are not uploaded.
-- Upload to POEditor (without `--fuzzy-trigger`).
+- Upload to POEditor (without `--fuzzy-trigger` — fuzzy is set per-entry in the PO file instead).
 - Respect rate limits (21s) between uploads.
 
 ### Phase 3: Download, convert, commit, tag
