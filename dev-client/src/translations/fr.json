@@ -108,8 +108,8 @@
         "last_updated": "Dernière modification : {{date}} par {{name}}",
         "more_info": "En savoir plus",
         "your_location": "Votre emplacement",
-        "soil_id_prediction": "Soil ID Top Match",
-        "ecological_site_prediction": "Site écologique Top Match",
+        "soil_id_prediction": "Meilleure correspondance Soil ID",
+        "ecological_site_prediction": "Meilleure correspondance du site écologique",
         "annual_precip_avg": "Précipitations annuelles moyennes",
         "elevation_label": "Élévation",
         "elevation_value": "{{value}} {{units}}",
@@ -126,7 +126,7 @@
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID utilise les données des cartes pédologiques pour calculer les prédictions concernant le sol à cet endroit. Créez un site à cet endroit pour saisir des observations et améliorer les résultats.",
-                "site_US": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance pédologique la plus adaptée à ce site pour en savoir plus sur son environnement et ses autres propriétés.",
+                "site_US": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance pédologique la plus adaptée à ce site pour en savoir plus sur son site écologique et ses autres propriétés.",
                 "site_global_or_unknown": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance la plus pertinente pour ce site afin d'en savoir plus sur ses caractéristiques et autres descriptions."
             },
             "matches": {
@@ -142,7 +142,7 @@
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
-                "match": "correspondre",
+                "match": "correspondance",
                 "error_generic_title": "Impossible de récupérer la carte des sols",
                 "error_generic_body": "LandPKS n'a pas pu récupérer la carte des sols pour cet emplacement. Essayez d'arrêter puis de redémarrer l'application. Si le problème persiste, réessayez ultérieurement ou envoyez une demande d'assistance via le site web landpks.terraso.org.",
                 "no_map_data_title": "Aucune donnée cartographique des sols",
@@ -154,7 +154,7 @@
                 "selector": "C'est le bon sol",
                 "selected": "Sol sélectionné",
                 "rate": {
-                    "fab": "Correspondance des taux",
+                    "fab": "Évaluer la correspondance",
                     "title": "Évaluez cette correspondance de sol",
                     "description": "<bold>Est-ce le bon sol ?</bold> Utilisez votre meilleur jugement en fonction de la description du sol et des comparaisons de propriétés.",
                     "yes": "Oui, sélectionnez le sol pour ce site",
@@ -187,7 +187,7 @@
             "soil_info": {
                 "series_descr_url": "Description complète de la série sur les sols",
                 "eco_descr_url": "Description complète du site écologique",
-                "eco_name_label": "<bold>Nom du site écologique :</bold>  {{name}}",
+                "eco_name_label": "<bold>Nom du site écologique :</bold> {{name}}",
                 "eco_id_label": "<bold>ID du site écologique :</bold> {{id}}",
                 "land_class_label": "<bold>Classe de capacité des terres :</bold> {{land}}",
                 "data_source_label": "<bold>Source des données :</bold> {{source}}",
@@ -294,7 +294,7 @@
                 "trigger": "Quitter le projet",
                 "title": "Quitter le projet ?",
                 "body": "Cela supprimera votre accès au projet, mais les données que vous avez fournies resteront avec le projet.",
-                "action_name": "Partir"
+                "action_name": "Quitter"
             }
         },
         "settings": {
@@ -303,7 +303,7 @@
             "delete": "Supprimer ce projet",
             "copy_download_link": "Copier le lien de téléchargement du projet",
             "download_link_description": "Un fichier zippé contenant toutes les ressources du projet, incluant un fichier .csv contenant les données du site, les notes de terrain, les journaux d'audit et les photos. Toute personne disposant de ce lien peut consulter l'ensemble des ressources.",
-            "archive_button": "Archive",
+            "archive_button": "Archiver",
             "archive_button_prompt": "Archiver le projet ?",
             "archive_description": "Le projet sera déplacé vers les projets archivés, le rendant ainsi accessible en lecture seule. Les membres de l'équipe pourront accéder aux données et les chefs de projet pourront les restaurer à tout moment. Les projets publics archivés resteront consultables sur les portails de données.",
             "delete_button": "Supprimer",
@@ -455,7 +455,7 @@
             "privacy_title": "Confidentialité des données LandPKS",
             "privacy_item1": "<bold>Sites publics</bold> sont visibles par tous sur le portail de données LandPKS.",
             "privacy_item2": "Toutes les observations saisies dans l'application mobile LandPKS Soil ID sont incluses, à l'exception des informations personnelles identifiables (PII).",
-            "privacy_item3": "<bold>Un site privé</bold> Les informations non affiliées à un projet ne sont visibles que par leur créateur. Ce dernier peut modifier la confidentialité à tout moment.",
+            "privacy_item3": "<bold>Un site privé</bold> non affilié à un projet n'est visible que par la personne qui l'a créé. Cette personne peut modifier la confidentialité à tout moment.",
             "privacy_item4": "<bold>Les paramètres de confidentialité d'un projet déterminent la confidentialité de ses sites affiliés.</bold> Les sites appartenant à un projet privé sont visibles par les membres de l'équipe projet. Un chef de projet peut modifier la confidentialité à tout moment.",
             "data_portal_link_url": "https://landpks.terraso.org/portal",
             "data_portal_link_text": "Portail de données LandPKS"
@@ -467,7 +467,7 @@
         "delete": "Supprimer",
         "close": "Fermer",
         "offline_title": "Vous êtes hors ligne",
-        "support": "Soutien",
+        "support": "Assistance",
         "help": {
             "label": "Aide et support",
             "url": "https://landpks.terraso.org/help/"
@@ -648,13 +648,13 @@
                 "LOAM": "Loam",
                 "SAND": "Sable",
                 "SILT": "Limon",
-                "CLAY_LOAM": "loam argileux",
+                "CLAY_LOAM": "Loam argileux",
                 "LOAMY_SAND": "Sable limoneux",
                 "SANDY_CLAY": "Argile sableuse",
-                "SANDY_CLAY_LOAM": "loam argilo-sableux",
-                "SANDY_LOAM": "loam sableux",
+                "SANDY_CLAY_LOAM": "Loam argilo-sableux",
+                "SANDY_LOAM": "Loam sableux",
                 "SILTY_CLAY": "Argile limoneuse",
-                "SILTY_CLAY_LOAM": "loam argilo-limoneux",
+                "SILTY_CLAY_LOAM": "Loam argilo-limoneux",
                 "SILT_LOAM": "Loam limoneux"
             },
             "guide_intro": "Vous ne connaissez pas la classe de texture ? Utilisez le guide étape par étape.",
@@ -794,7 +794,7 @@
             "soilTexture": "Inclut la classe de texture et le volume des fragments de roche"
         },
         "vertical_cracking": {
-            "description": "Des fissures se forment dans les sols argileux après leur assèchement. Elles peuvent être permanentes ou disparaître avec le temps.<bold> Mesurez les fissures du sol lorsque le sol est sec.</bold>",
+            "description": "Des fissures se forment dans les sols argileux après leur assèchement. Elles peuvent être permanentes ou disparaître avec le temps. <bold>Mesurez les fissures du sol lorsque le sol est sec.</bold>",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "25 cm",
@@ -1719,8 +1719,8 @@
             "description": "Saisissez la pente manuellement, à l'aide du compteur de pente ou en sélectionnant parmi les images ci-dessous.",
             "degree": "{{value}}°",
             "info": {
-                "title": "Comment utiliser Slope Meter",
-                "description": "Tenez-vous face au site à une distance d'au moins $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) de distance.\n\nIdentifiez la direction de la pente prédominante sur le site.\n\nPlacez-vous de manière à pouvoir voir la crête ou la silhouette de cette pente dominante (vous devrez peut-être vous rapprocher du sol pour la voir).\n\nVotre direction de regard doit être perpendiculaire à la pente. Si vous tendez les bras sur les côtés, la ligne qu'ils forment doit être parallèle à la pente.\n\nPositionnez votre téléphone de façon à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente est difficile à distinguer en position debout.\n\n<bold> Autre méthode </bold>: Si le terrain n'est pas trop courbé ou accidenté, vous pouvez placer une règle d'un mètre sur le sol à l'endroit et ensuite aligner votre téléphone sur la règle pour obtenir l'angle de la pente.",
+                "title": "Comment utiliser l'Inclinomètre",
+                "description": "Tenez-vous face au site à une distance d'au moins $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) de distance.\n\nIdentifiez la direction de la pente prédominante sur le site.\n\nPlacez-vous de manière à pouvoir voir la crête ou la silhouette de cette pente dominante (vous devrez peut-être vous rapprocher du sol pour la voir).\n\nVotre direction de regard doit être perpendiculaire à la pente. Si vous tendez les bras sur les côtés, la ligne qu'ils forment doit être parallèle à la pente.\n\nPositionnez votre téléphone de façon à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente est difficile à distinguer en position debout.\n\n<bold>Autre méthode</bold>: Si le terrain n'est pas trop courbé ou accidenté, vous pouvez placer une règle d'un mètre sur le sol à l'endroit et ensuite aligner votre téléphone sur la règle pour obtenir l'angle de la pente.",
                 "description_distance_METRIC": "4 mètres",
                 "description_distance_ENGLISH": "15 pieds"
             },
@@ -1747,7 +1747,7 @@
                 "MODERATE_PERCENT": "5 à 10 %",
                 "ROLLING": "Vallonné",
                 "ROLLING_PERCENT": "10 à 15 %",
-                "HILLY": "Vallonné",
+                "HILLY": "Accidenté",
                 "HILLY_PERCENT": "15–30 %",
                 "STEEP": "Raide",
                 "STEEP_PERCENT": "30 à 50 %",
@@ -1764,7 +1764,7 @@
             "title": "Forme",
             "info": {
                 "title": "Forme de la pente",
-                "description": "La forme de la pente fait référence à la courbe du terrain dans la zone entourant votre point d'observation.\n\nLa forme de la pente est déterminée dans deux directions : <bold>pente descendante</bold> et <bold>pente transversale</bold>.\n\nTout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\": \"{{units}} \"}) dans toutes les directions.\n\nS'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente? C'est ce qu'on appelle la direction de la <bold>pente descendante</bold>.\n\nLa direction de la pente transversale peut être trouvée en regardant à angle droit (90 degrés) par rapport à la direction de la pente descendante.\n\nSi vous vous éloignez du site tout en restant à la même altitude, il s'agit de la direction de la <bold>pente transversale</bold>.\n\nDeuxièmement, déterminez la forme de la pente pour chaque direction.\n\n<bold>Concave</bold> signifie que le terrain présente une pente de plus en plus ascendante à mesure qu'on s'éloigne de son point d'observation le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline , là où elle passe d'une pente raide à une pente plus douce.\n\n<bold>Convexe</bold> signifie que le terrain est en pente descendante croissante lorsqu'on s'éloigne d'un point donné dans une direction particulière. Par exemple, la pente descendante est souvent convexe au sommet d'une colline , car elle passe d'une pente douce à une pente plus abrupte.\n\n<bold>Linéaire</bold> signifie que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente est continue.",
+                "description": "La forme de la pente fait référence à la courbe du terrain dans la zone entourant votre point d'observation.\n\nLa forme de la pente est déterminée dans deux directions : <bold>pente descendante</bold> et <bold>pente transversale</bold>.\n\nTout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\":\"{{units}}\"}) dans toutes les directions.\n\nS'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente? C'est ce qu'on appelle la direction de la <bold>pente descendante</bold>.\n\nLa direction de la pente transversale peut être trouvée en regardant à angle droit (90 degrés) par rapport à la direction de la pente descendante.\n\nSi vous vous éloignez du site tout en restant à la même altitude, il s'agit de la direction de la <bold>pente transversale</bold>.\n\nDeuxièmement, déterminez la forme de la pente pour chaque direction.\n\n<bold>Concave</bold> signifie que le terrain présente une pente de plus en plus ascendante à mesure qu'on s'éloigne de son point d'observation le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline , là où elle passe d'une pente raide à une pente plus douce.\n\n<bold>Convexe</bold> signifie que le terrain est en pente descendante croissante lorsqu'on s'éloigne d'un point donné dans une direction particulière. Par exemple, la pente descendante est souvent convexe au sommet d'une colline , car elle passe d'une pente douce à une pente plus abrupte.\n\n<bold>Linéaire</bold> signifie que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente est continue.",
                 "concave": "Concave",
                 "convex": "Convexe",
                 "linear": "Linéaire",
@@ -1890,7 +1890,7 @@
             "save_file_description": "<bold>Partager ou enregistrer le fichier</bold> capture les données actuelles du site sous forme de fichier CSV ou JSON. Vous pouvez envoyer le fichier par e-mail, messagerie ou autres applications, ou l'enregistrer sur votre appareil.",
             "live_link_description": "<bold>Partager le lien vers les données</bold> crée une URL qui renvoie systématiquement les données les plus récentes. Utilisez-le pour l'intégration avec des scripts, des flux de travail automatisés ou lorsque vous souhaitez que d'autres personnes aient toujours accès à vos données les plus récentes. Réinitialisez le lien pour révoquer l'accès des liens précédents.",
             "section_format": "Format de fichier",
-            "csv_description": "Les fichiers <bold>CSV</bold> (valeurs séparées par des virgules) compatibles avec les tableurs comme Excel ou Google Sheets. Ils sont idéaux pour visualiser, trier et analyser vos données dans un format de tableau familier.",
+            "csv_description": "Les fichiers <bold>CSV</bold> (valeurs séparées par des virgules) sont compatibles avec les tableurs comme Excel ou Google Sheets. Ils sont idéaux pour visualiser, trier et analyser vos données dans un format de tableau familier.",
             "json_description": "<bold>JSON</bold> (notation d'objet JavaScript) est un format de données structurées. Idéal pour les développeurs ou l'importation dans d'autres systèmes logiciels."
         },
         "error_headline": "Échec de la sauvegarde",

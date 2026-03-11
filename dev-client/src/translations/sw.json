@@ -1,6 +1,6 @@
 {
     "welcome": {
-        "title": "Karibu kwenye LandPKS Udongo ID",
+        "title": "Karibu kwenye LandPKS Soil ID",
         "next": {
             "title": "Nini kitafuata?",
             "subtitle": "Matoleo yajayo yatajumuisha:",
@@ -28,7 +28,7 @@
         "members": "{{members}} Wanachama",
         "coords": "{{lat}}, {{long}}",
         "empty": {
-            "info": "Njia tatu za kuunda tovuti:",
+            "info": "<bold>Njia tatu za kuunda tovuti:</bold>\n",
             "map": "Gusa popote kwenye ramani",
             "icon": "Gusa aikoni ya Mahali Pangu",
             "coords": "Ingiza viwianishi, anwani, au neno la utafutaji katika upau wa utafutaji wa ramani",
@@ -65,7 +65,7 @@
             "speed_dial": {
                 "note_label": "DOKEZO",
                 "photo_label": "PICHA",
-                "bedrock_label": "BEDROCK"
+                "bedrock_label": "MWAMBA"
             }
         },
         "notes": {
@@ -125,14 +125,14 @@
         "soil_id": {
             "title": "Kitambulisho cha Udongo",
             "description": {
-                "temp_location": "LandPKS Udongo ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda tovuti katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo.",
-                "site_US": "Kitambulisho cha Udongo cha LandPKS hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine.",
-                "site_global_or_unknown": "Kitambulisho cha Udongo cha LandPKS hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu sifa za udongo na maelezo mengine."
+                "temp_location": "LandPKS Soil ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda tovuti katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo.",
+                "site_US": "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine.",
+                "site_global_or_unknown": "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu sifa za udongo na maelezo mengine."
             },
             "matches": {
                 "title": "Vipimo Bora vya Udongo",
                 "info": {
-                    "title": "Vinalingana na udongo wa juu",
+                    "title": "Vinalingana na udongo",
                     "description": {
                         "site": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana kwenye eneo kulingana na ramani za udongo za {{soilMapSource}} kwa eneo hili.\n\nIngiza mteremko na uchunguzi wa udongo unaopendekezwa ili kuboresha usahihi wa alama zinazolingana. Uchunguzi unapoingizwa, orodha itasasishwa kiotomatiki.",
                         "temp_location": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana katika eneo hili kulingana na ramani za udongo za {{soilMapSource}}.\n\nUnda tovuti hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi.",
@@ -150,7 +150,7 @@
                 "match_score": "{{score}}",
                 "offline": "Vipimo vya udongo vitasasishwa ukiwa mtandaoni.",
                 "improve_hint": "Boresha mechi",
-                "improve_description": "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Eneo hapa chini.)",
+                "improve_description": "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Tovuti hapa chini.)",
                 "selector": "Huu ndio udongo sahihi",
                 "selected": "Udongo Uliochaguliwa",
                 "rate": {
@@ -304,7 +304,7 @@
             "copy_download_link": "Nakili kiungo cha kupakua mradi",
             "download_link_description": "Faili iliyofungwa ya mali zote za mradi ikijumuisha faili ya .csv ya data ya tovuti, madokezo ya sehemu, kumbukumbu za ukaguzi, na picha. Mtu yeyote aliye na kiungo hiki anaweza kuona mali zote.",
             "archive_button": "Kumbukumbu",
-            "archive_button_prompt": "Mradi wa Kumbukumbu?",
+            "archive_button_prompt": "Hifadhi Mradi?",
             "archive_description": "Mradi utahamishiwa kwenye Miradi Iliyohifadhiwa, na kuifanya iwe ya kusoma pekee. Wajumbe wa timu wanaweza kufikia data, na wasimamizi wa miradi wanaweza kuirejesha wakati wowote. Miradi ya umma iliyohifadhiwa itabaki kuonekana kwenye milango ya data.",
             "delete_button": "Futa",
             "delete_button_prompt": "Ungependa kufuta mradi?",
@@ -312,7 +312,7 @@
         },
         "sites": {
             "add": "Ongeza tovuti",
-            "transfer": "Tovuti za Uhamisho",
+            "transfer": "Hamisha Tovuti",
             "create": "Unda Tovuti",
             "search": {
                 "placeholder": "Tafuta",
@@ -383,8 +383,8 @@
             "confirm_removal_action": "Ondoa"
         },
         "transfer_sites": {
-            "heading": "Hamisha Maeneo kwenye Mradi huu",
-            "description": "Hamisha tovuti za LandPKS Udongo unazosimamia kwenye mradi huu. Unapohamisha tovuti, zitatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu.",
+            "heading": "Hamisha Tovuti kwenye Mradi huu",
+            "description": "Hamisha tovuti za LandPKS Soil ID unazosimamia kwenye mradi huu. Unapohamisha tovuti, zitatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu.",
             "unaffiliated": "Isiyo na Uhusiano"
         },
         "form": {
@@ -462,7 +462,7 @@
         },
         "character_limit": "Herufi {{current}} / {{limit}}",
         "open_settings": "Nenda kwenye mipangilio",
-        "dismiss": "Ondoa",
+        "dismiss": "Acha",
         "create": "Unda",
         "delete": "Futa",
         "close": "Funga",
@@ -478,7 +478,7 @@
         },
         "not_available_offine": "Haipatikani nje ya mtandao",
         "offline_sign_in_title": "Ingia haipatikani nje ya mtandao",
-        "offline_sign_in_body": "Ili kutumia LandPKS Udongo ID nje ya mtandao, lazima kwanza uingie ukiwa mtandaoni.",
+        "offline_sign_in_body": "Ili kutumia LandPKS Soil ID nje ya mtandao, lazima kwanza uingie ukiwa mtandaoni.",
         "not_available": "Haipatikani",
         "learn_more": "Pata maelezo zaidi",
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
@@ -505,10 +505,10 @@
         "COLOR_GUIDE": "Mwongozo wa Rangi ya Udongo",
         "COLOR_ANALYSIS_HOME": "Uchambuzi wa Picha",
         "DELETE_ACCOUNT": "Mipangilio",
-        "SITES": "Kitambulisho cha Udongo cha LandPKS"
+        "SITES": "LandPKS Soil ID"
     },
     "login": {
-        "title": "Kitambulisho cha Udongo cha LandPKS",
+        "title": "LandPKS Soil ID",
         "subtitle": "Ukweli wa msingi maamuzi yako ya udongo",
         "from": "kutoka"
     },
@@ -631,7 +631,7 @@
                 "ribbon_details_3": "Utepe unapaswa kuwa sambamba na sakafu, usielekeze juu au chini.",
                 "ribbon_details_4": "Ikiwa udongo utabomoka badala ya kushikana unapobonyeza ili kuunda utepe, basi haufanyi utepe.",
                 "ribbon_details_5": "Acha utepe uangukie kiasili kutokana na uvutano. Pima urefu wa sehemu, ukipuuza kingo zilizochakaa.",
-                "grittyness_details_1": "<bold>Gritty</bold> inamaanisha unaweza kuhisi chembe za pekee kwenye udongo.",
+                "grittyness_details_1": "<bold>Mkali</bold> inamaanisha unaweza kuhisi chembe za pekee kwenye udongo.",
                 "grittyness_details_2": "<bold>Laini</bold> inamaanisha kwamba udongo uliolowa unateleza au una sabuni.",
                 "grittyness_details_3": "<bold>Kutokuwa na mchanga au laini</bold> kunamaanisha kuwa hakuna umbile lolote kati ya hayo mawili linalotawala. Bado unaweza kuhisi chembe za mchanga au sabuni, lakini hisia ya udongo si hasa moja au nyingine."
             },
@@ -652,10 +652,10 @@
                 "LOAMY_SAND": "Mchanga wa Loamy",
                 "SANDY_CLAY": "Mfinyanzi wa Mchanga",
                 "SANDY_CLAY_LOAM": "Loamu ya Mfinyanzi wa Mchanga",
-                "SANDY_LOAM": "Mchanga wa Loam",
+                "SANDY_LOAM": "Mchanga wa Loamu",
                 "SILTY_CLAY": "Mfinyanzi wa Tope",
-                "SILTY_CLAY_LOAM": "Loam ya Udongo wa Sili",
-                "SILT_LOAM": "Loam ya Silt"
+                "SILTY_CLAY_LOAM": "Loamu ya Mfinyanzi wa Tope",
+                "SILT_LOAM": "Loamu ya Tope"
             },
             "guide_intro": "Hujui darasa la umbile? Tumia mwongozo wa hatua kwa hatua.",
             "use_guide_label": "Mwongozo wa Matumizi",
@@ -1737,7 +1737,7 @@
             "slope_meter": "Kipima Mteremko",
             "camera_grant": "Toa Ruhusa ya Kamera",
             "no_camera": "Hakuna Ufikiaji wa Kamera",
-            "no_camera_explanation": "Kwa matokeo bora zaidi, ruhusu LandPKS Udongo ID itumie kamera yako katika Mipangilio",
+            "no_camera_explanation": "Kwa matokeo bora zaidi, ruhusu LandPKS Soil ID itumie kamera yako katika Mipangilio",
             "select_labels": {
                 "FLAT": "Gorofa",
                 "FLAT_PERCENT": "0–2%",
@@ -1747,7 +1747,7 @@
                 "MODERATE_PERCENT": "5–10%",
                 "ROLLING": "Vilima Laini",
                 "ROLLING_PERCENT": "10–15%",
-                "HILLY": "Hilly",
+                "HILLY": "Milimani",
                 "HILLY_PERCENT": "15–30%",
                 "STEEP": "Mwinuko",
                 "STEEP_PERCENT": "30–50%",
@@ -1782,11 +1782,11 @@
         }
     },
     "permissions": {
-        "camera_title": "LandPKS Udongo ID inahitaji kufikia kamera yako",
+        "camera_title": "LandPKS Soil ID inahitaji kufikia kamera yako",
         "camera_body": "Ili kutumia {{feature}}, ruhusu LandPKS Soil ID kufikia kamera yako katika mipangilio ya kifaa.",
-        "gallery_title": "LandPKS Udongo ID inahitaji kufikia ghala lako la picha",
+        "gallery_title": "LandPKS Soil ID inahitaji kufikia ghala lako la picha",
         "gallery_body": "Ili kutumia {{feature}}, ruhusu LandPKS Soil ID kufikia ghala lako la picha katika mipangilio ya kifaa.",
-        "location_title": "LandPKS Udongo ID inahitaji kufikia eneo lako",
+        "location_title": "LandPKS Soil ID inahitaji kufikia eneo lako",
         "location_body": "Kwa matumizi bora ya ramani, ruhusu LandPKS Soil ID kufikia eneo lako katika mipangilio ya kifaa."
     },
     "delete_account": {
