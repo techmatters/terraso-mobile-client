@@ -505,7 +505,7 @@
         "COLOR_GUIDE": "ნიადაგის ფერის სახელმძღვანელო",
         "COLOR_ANALYSIS_HOME": "ფოტოანალიზი",
         "DELETE_ACCOUNT": "პარამეტრები",
-        "SITES": "LandPKS ნიადაგის ID"
+        "SITES": "LandPKS Soil ID"
     },
     "login": {
         "title": "LandPKS ნიადაგის ID",

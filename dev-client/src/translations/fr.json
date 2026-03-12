@@ -505,7 +505,7 @@
         "COLOR_GUIDE": "Guide des couleurs du sol",
         "COLOR_ANALYSIS_HOME": "Analyse photographique",
         "DELETE_ACCOUNT": "Paramètres",
-        "SITES": "Identification des sols LandPKS"
+        "SITES": "LandPKS Soil ID"
     },
     "login": {
         "title": "LandPKS Soil ID",
