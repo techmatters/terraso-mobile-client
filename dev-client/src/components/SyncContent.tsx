@@ -124,7 +124,7 @@ const SyncInfoExpanded = () => {
         <Row alignItems="center" justifyContent="space-between">
           <OfflineToggle />
           <Row alignItems="center" space="8px">
-            <PullButton disabled={useIsOffline()} />
+            <PullButton />
             <PullPending />
             <LastPullTime />
           </Row>
