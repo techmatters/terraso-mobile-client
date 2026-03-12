@@ -17,15 +17,8 @@
 
 import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
 
+import {SITE_UPDATE_FIELDS} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {diffFields} from 'terraso-mobile-client/model/soilData/actions/soilDataDiff';
-
-const SITE_UPDATE_FIELDS: (keyof Site)[] = [
-  'name',
-  'latitude',
-  'longitude',
-  'elevation',
-  'privacy',
-];
 
 export const getChangedSiteFields = (
   curr: Site,

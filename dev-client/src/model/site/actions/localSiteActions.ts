@@ -27,13 +27,8 @@ import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {AppState} from 'terraso-mobile-client/store';
 
-const SITE_UPDATE_FIELDS: (keyof SiteUpdateMutationInput & keyof Site)[] = [
-  'name',
-  'latitude',
-  'longitude',
-  'elevation',
-  'privacy',
-];
+export const SITE_UPDATE_FIELDS: (keyof SiteUpdateMutationInput &
+  keyof Site)[] = ['name', 'latitude', 'longitude', 'elevation', 'privacy'];
 
 export const addSite = (input: SiteAddMutationInput, state: AppState): Site => {
   const currentUser = state.account.currentUser.data;
