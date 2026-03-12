@@ -21,6 +21,7 @@ import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {SitePushFailureReason} from 'terraso-mobile-client/model/site/actions/remoteSiteActions';
 import * as siteActions from 'terraso-mobile-client/model/site/actions/siteActions';
 import {
@@ -137,9 +138,11 @@ const siteSlice = createSlice({
       const {siteId, elevation} = action.payload;
       if (state.sites[siteId]) {
         state.sites[siteId].elevation = elevation;
-        console.log(
-          `. Updated site elevation (${elevation}) for ${state.sites[siteId].name}`,
-        );
+        if (syncDebugEnabled) {
+          console.log(
+            `. Updated site elevation (${elevation}) for ${state.sites[siteId].name}`,
+          );
+        }
         // Note: We intentionally do NOT mark the site as modified for sync here. If later you do want to change elevation and mark the site modified, make a separate action.
         // The elevation is being fetched as part of sync, and the site
         // is already marked as unsynced. The push will include the elevation.

@@ -21,7 +21,7 @@
  * Temporary — remove when offline sync is stable.
  */
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {
   isError,
   isUnsynced,
@@ -89,7 +89,7 @@ export const logSyncChange = (
   record: SyncRecord<unknown, unknown>,
   data?: unknown,
 ) => {
-  if (!isFlagEnabled('FF_testing')) {
+  if (!syncDebugEnabled) {
     return;
   }
   const name =
@@ -115,7 +115,7 @@ export const logSyncSummary = (
   records: SyncRecords<unknown, unknown>,
   data?: Record<string, unknown>,
 ) => {
-  if (!isFlagEnabled('FF_testing')) {
+  if (!syncDebugEnabled) {
     return;
   }
 

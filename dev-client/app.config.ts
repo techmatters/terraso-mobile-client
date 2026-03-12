@@ -68,6 +68,7 @@ const ENV_CONFIG = {
   // Optional: defaults to undefined (treated as 'false' in config/index.ts)
   POSTHOG_DEBUG: process.env.POSTHOG_DEBUG,
   DEBUG_ENABLED: process.env.DEBUG_ENABLED,
+  SYNC_DEBUG_ENABLED: process.env.SYNC_DEBUG_ENABLED,
   ALWAYS_SHOW_WELCOME: process.env.ALWAYS_SHOW_WELCOME,
   // Cloudflare Worker for feature flags (session recording config, etc.)
   FEATURE_FLAG_URL: process.env.FEATURE_FLAG_URL,

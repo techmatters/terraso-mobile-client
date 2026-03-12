@@ -19,6 +19,7 @@ import {useCallback, useEffect} from 'react';
 
 import {PayloadAction} from '@reduxjs/toolkit';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import {
@@ -106,19 +107,23 @@ export const PushDispatcher = () => {
   useEffect(() => {
     /* Dispatch a push if needed */
     if (needsPush) {
-      console.log(
-        '⬆️ PushDispatcher: pushing',
-        unsyncedSoilDataIds.length,
-        'soilData,',
-        unsyncedMetadataIds.length,
-        'metadata,',
-        unsyncedSiteIds.length,
-        'sites',
-      );
+      if (syncDebugEnabled) {
+        console.log(
+          '⬆️ PushDispatcher: pushing',
+          unsyncedSoilDataIds.length,
+          'soilData,',
+          unsyncedMetadataIds.length,
+          'metadata,',
+          unsyncedSiteIds.length,
+          'sites',
+        );
+      }
       dispatchPush()
         .then(result => {
           if (dispatchFailed(result)) {
-            console.log('⬆️ PushDispatcher: push failed, starting retry');
+            if (syncDebugEnabled) {
+              console.log('⬆️ PushDispatcher: push failed, starting retry');
+            }
             beginRetry();
           }
         })

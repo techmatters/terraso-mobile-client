@@ -22,6 +22,7 @@ import {
 import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {
   getChangedSiteFields,
   getDeletedNotes,
@@ -66,9 +67,11 @@ export const pushSiteChanges = async (
         if (isNew) {
           // Backend accepts client-generated UUID via optional `id` field.
           // The shared library types haven't been regenerated yet, so we cast.
-          console.log(
-            `📤 pushSiteChanges: addSite ${site.name} with elevation ${site.elevation}`,
-          );
+          if (syncDebugEnabled) {
+            console.log(
+              `📤 pushSiteChanges: addSite ${site.name} with elevation ${site.elevation}`,
+            );
+          }
           await siteService.addSite({
             id: siteId,
             name: site.name,
@@ -84,11 +87,13 @@ export const pushSiteChanges = async (
             record.lastSyncedData,
           );
           if (Object.keys(changedFields).length > 0) {
-            console.log(
-              '📤 pushSiteChanges: updateSite',
-              siteId,
-              changedFields,
-            );
+            if (syncDebugEnabled) {
+              console.log(
+                '📤 pushSiteChanges: updateSite',
+                siteId,
+                changedFields,
+              );
+            }
             await siteService.updateSite({
               id: siteId,
               ...changedFields,
@@ -105,7 +110,9 @@ export const pushSiteChanges = async (
 
         for (const note of newNotes) {
           // Backend accepts client-generated UUID via optional `id` field.
-          console.log('📤 pushSiteChanges: addSiteNote', note.id);
+          if (syncDebugEnabled) {
+            console.log('📤 pushSiteChanges: addSiteNote', note.id);
+          }
           await siteService.addSiteNote({
             id: note.id,
             siteId: siteId,
@@ -114,7 +121,9 @@ export const pushSiteChanges = async (
         }
 
         for (const note of updatedNotes) {
-          console.log('📤 pushSiteChanges: updateSiteNote', note.id);
+          if (syncDebugEnabled) {
+            console.log('📤 pushSiteChanges: updateSiteNote', note.id);
+          }
           await siteService.updateSiteNote({
             id: note.id,
             content: note.content,
@@ -126,12 +135,16 @@ export const pushSiteChanges = async (
           record.lastSyncedData?.notes,
         );
         for (const note of deletedNotes) {
-          console.log('📤 pushSiteChanges: deleteSiteNote', note.id);
+          if (syncDebugEnabled) {
+            console.log('📤 pushSiteChanges: deleteSiteNote', note.id);
+          }
           await siteService.deleteSiteNote(note);
         }
 
         // 3. Fetch canonical server state (includes all notes)
-        console.log('📤 pushSiteChanges: fetchSite', siteId);
+        if (syncDebugEnabled) {
+          console.log('📤 pushSiteChanges: fetchSite', siteId);
+        }
         const serverSite = await siteService.fetchSite(siteId);
 
         results.data[siteId] = {

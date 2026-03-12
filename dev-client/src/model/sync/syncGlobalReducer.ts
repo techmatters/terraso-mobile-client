@@ -24,6 +24,7 @@ import type {
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {setLastPullTimestamp} from 'terraso-mobile-client/model/devOnly/devOnlySlice';
 import {setExportTokens} from 'terraso-mobile-client/model/export/exportSlice';
 import {setProjects} from 'terraso-mobile-client/model/project/projectSlice';
@@ -51,15 +52,17 @@ export const pushUserData = createAsyncThunk(
 
 export const syncGlobalReducer = createGlobalReducer(builder => {
   builder.addCase(pullUserData.fulfilled, (state, {payload}) => {
-    console.log(
-      '⬇️ pull fulfilled:',
-      Object.keys(payload.sites).length,
-      'sites,',
-      Object.keys(payload.soilData).length,
-      'soilData,',
-      Object.keys(payload.soilMetadata).length,
-      'soilMetadata',
-    );
+    if (syncDebugEnabled) {
+      console.log(
+        '⬇️ pull fulfilled:',
+        Object.keys(payload.sites).length,
+        'sites,',
+        Object.keys(payload.soilData).length,
+        'soilData,',
+        Object.keys(payload.soilMetadata).length,
+        'soilMetadata',
+      );
+    }
     setProjects(state.project, payload.projects);
     setSites(state.site, payload.sites);
     setUsers(state.account, payload.users);
@@ -72,7 +75,9 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
   });
 
   builder.addCase(pullUserData.pending, () => {
-    console.log('⬇️ pull pending...');
+    if (syncDebugEnabled) {
+      console.log('⬇️ pull pending...');
+    }
   });
 
   builder.addCase(pullUserData.rejected, (_state, action) => {
@@ -81,21 +86,23 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
 
   builder.addCase(pushUserData.fulfilled, (state, action) => {
     const {soilDataResults, soilMetadataResults, siteResults} = action.payload;
-    console.log(
-      '⬆️ push fulfilled:',
-      'soilData:',
-      soilDataResults
-        ? `${Object.keys(soilDataResults.data).length} ok, ${Object.keys(soilDataResults.errors).length} err`
-        : 'none',
-      'soilMetadata:',
-      soilMetadataResults
-        ? `${Object.keys(soilMetadataResults.data).length} ok, ${Object.keys(soilMetadataResults.errors).length} err`
-        : 'none',
-      'sites:',
-      siteResults
-        ? `${Object.keys(siteResults.data).length} ok, ${Object.keys(siteResults.errors).length} err`
-        : 'none',
-    );
+    if (syncDebugEnabled) {
+      console.log(
+        '⬆️ push fulfilled:',
+        'soilData:',
+        soilDataResults
+          ? `${Object.keys(soilDataResults.data).length} ok, ${Object.keys(soilDataResults.errors).length} err`
+          : 'none',
+        'soilMetadata:',
+        soilMetadataResults
+          ? `${Object.keys(soilMetadataResults.data).length} ok, ${Object.keys(soilMetadataResults.errors).length} err`
+          : 'none',
+        'sites:',
+        siteResults
+          ? `${Object.keys(siteResults.data).length} ok, ${Object.keys(siteResults.errors).length} err`
+          : 'none',
+      );
+    }
 
     if (soilDataResults) {
       applySyncResults(

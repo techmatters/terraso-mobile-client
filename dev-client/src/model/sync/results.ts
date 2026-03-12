@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {
   getEntityRecord,
   markEntitiesError,
@@ -51,25 +52,25 @@ export const applySyncResults = <D, E>(
   const staleErrorIds = Object.keys(results.errors).filter(
     id => !(id in upToDateErrors),
   );
-  if (staleDataIds.length > 0) {
+  if (staleDataIds.length > 0 && syncDebugEnabled) {
     console.log(
       '🔄 applySyncResults: discarding stale data for:',
       staleDataIds,
     );
   }
-  if (staleErrorIds.length > 0) {
+  if (staleErrorIds.length > 0 && syncDebugEnabled) {
     console.log(
       '🔄 applySyncResults: discarding stale errors for:',
       staleErrorIds,
     );
   }
-  if (Object.keys(upToDateData).length > 0) {
+  if (Object.keys(upToDateData).length > 0 && syncDebugEnabled) {
     console.log(
       '🔄 applySyncResults: marking synced:',
       Object.keys(upToDateData),
     );
   }
-  if (Object.keys(upToDateErrors).length > 0) {
+  if (Object.keys(upToDateErrors).length > 0 && syncDebugEnabled) {
     console.log(
       '🔄 applySyncResults: marking errors:',
       Object.keys(upToDateErrors),

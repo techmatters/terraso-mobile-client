@@ -26,6 +26,7 @@ import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
 import {ThunkAPI} from 'terraso-client-shared/store/utils';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import * as localSite from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {AppState} from 'terraso-mobile-client/store';
@@ -38,10 +39,14 @@ export const addSiteAction = async (
   if (isFlagEnabled('FF_offline')) {
     const state = thunkApi.getState() as AppState;
     const result = localSite.addSite(input, state);
-    console.log('🏗️ addSiteAction (local)', result.id, input.name);
+    if (syncDebugEnabled) {
+      console.log('🏗️ addSiteAction (local)', result.id, input.name);
+    }
     return Promise.resolve(result);
   } else {
-    console.log('🏗️ addSiteAction (remote)', input.name);
+    if (syncDebugEnabled) {
+      console.log('🏗️ addSiteAction (remote)', input.name);
+    }
     return siteService.addSite(input);
   }
 };
@@ -55,10 +60,14 @@ export const updateSiteAction = async (
     const state = thunkApi.getState() as AppState;
     const site = state.site.sites[input.id];
     const result = localSite.updateSite(input, site);
-    console.log('✏️ updateSiteAction (local)', input.id, input);
+    if (syncDebugEnabled) {
+      console.log('✏️ updateSiteAction (local)', input.id, input);
+    }
     return Promise.resolve(result);
   } else {
-    console.log('✏️ updateSiteAction (remote)', input.id, input);
+    if (syncDebugEnabled) {
+      console.log('✏️ updateSiteAction (remote)', input.id, input);
+    }
     return siteService.updateSite(input);
   }
 };
@@ -71,15 +80,19 @@ export const addSiteNoteAction = async (
   if (isFlagEnabled('FF_offline')) {
     const state = thunkApi.getState() as AppState;
     const result = localSite.addSiteNote(input, state);
-    console.log(
-      '📝 addSiteNoteAction (local)',
-      result.id,
-      'for site',
-      input.siteId,
-    );
+    if (syncDebugEnabled) {
+      console.log(
+        '📝 addSiteNoteAction (local)',
+        result.id,
+        'for site',
+        input.siteId,
+      );
+    }
     return Promise.resolve(result);
   } else {
-    console.log('📝 addSiteNoteAction (remote)', 'for site', input.siteId);
+    if (syncDebugEnabled) {
+      console.log('📝 addSiteNoteAction (remote)', 'for site', input.siteId);
+    }
     return siteService.addSiteNote(input);
   }
 };
@@ -92,10 +105,14 @@ export const updateSiteNoteAction = async (
   if (isFlagEnabled('FF_offline')) {
     const state = thunkApi.getState() as AppState;
     const note = findSiteNote(state, input.id);
-    console.log('📝 updateSiteNoteAction (local)', input.id);
+    if (syncDebugEnabled) {
+      console.log('📝 updateSiteNoteAction (local)', input.id);
+    }
     return Promise.resolve(localSite.updateSiteNote(input, note));
   } else {
-    console.log('📝 updateSiteNoteAction (remote)', input.id);
+    if (syncDebugEnabled) {
+      console.log('📝 updateSiteNoteAction (remote)', input.id);
+    }
     return siteService.updateSiteNote(input);
   }
 };
@@ -105,15 +122,19 @@ export const deleteSiteNoteAction = async (
   _: User | null,
 ): Promise<SiteNote> => {
   if (isFlagEnabled('FF_offline')) {
-    console.log(
-      '🗑️ deleteSiteNoteAction (local)',
-      input.id,
-      'for site',
-      input.siteId,
-    );
+    if (syncDebugEnabled) {
+      console.log(
+        '🗑️ deleteSiteNoteAction (local)',
+        input.id,
+        'for site',
+        input.siteId,
+      );
+    }
     return Promise.resolve(input);
   } else {
-    console.log('🗑️ deleteSiteNoteAction (remote)', input.id);
+    if (syncDebugEnabled) {
+      console.log('🗑️ deleteSiteNoteAction (remote)', input.id);
+    }
     return siteService.deleteSiteNote(input);
   }
 };

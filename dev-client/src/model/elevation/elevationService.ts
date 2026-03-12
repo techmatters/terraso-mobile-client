@@ -62,12 +62,12 @@ export const fetchElevationForCoords = async (
 
     const result = await Promise.race([elevationPromise, timeoutPromise]);
     if (result === timeoutReturn) {
-      console.log('timeout');
+      console.warn(`Elevation timed out for (${latitude}, ${longitude})`);
       return null;
     }
     return result ?? null;
   } catch (error) {
-    console.warn('Failed to fetch elevation', error);
+    console.warn(`Elevation errored for (${latitude}, ${longitude}): `, error);
     return null;
   }
 };

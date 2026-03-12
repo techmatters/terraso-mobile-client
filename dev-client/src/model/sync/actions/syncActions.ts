@@ -33,6 +33,7 @@ import type {
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 import type {ThunkAPI} from 'terraso-client-shared/store/utils';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
 import {
   pushSiteChanges,
@@ -85,7 +86,9 @@ const fetchMissingElevations = async (
         site.longitude,
       );
 
-      console.log(`⛰️ Elevation for ${site.name} = ${elevation}`);
+      if (syncDebugEnabled) {
+        console.log(`⛰️ Elevation for ${site.name} = ${elevation}`);
+      }
       return {siteId, elevation};
     }),
   );
@@ -120,9 +123,11 @@ const prefetchSatelliteTilesForNewSites = (
     },
   );
 
-  console.log(
-    `🛰️ Prefetching satellite tiles for ${newlySyncedSites.length} new sites`,
-  );
+  if (syncDebugEnabled) {
+    console.log(
+      `🛰️ Prefetching satellite tiles for ${newlySyncedSites.length} new sites`,
+    );
+  }
 
   if (newlySyncedSites.length === 0) {
     return;
@@ -155,11 +160,16 @@ const prefetchSatelliteTilesForNewSites = (
             ], // SW [lng, lat]
           ],
         },
-        (_pack, status) =>
-          console.log(`🛰️ Satellite pack progress for ${site.name}:`, status),
+        (_pack, status) => {
+          if (syncDebugEnabled) {
+            console.log(`🛰️ Satellite pack progress for ${site.name}:`, status);
+          }
+        },
       );
 
-      console.log(`🛰️ Created offline satellite pack for site ${site.name}`);
+      if (syncDebugEnabled) {
+        console.log(`🛰️ Created offline satellite pack for site ${site.name}`);
+      }
     }),
   ).catch(err => console.warn('🛰️ Error prefetching satellite tiles:', err));
 };
@@ -273,15 +283,17 @@ export const pushUserData = async (
 
   // Push soil data and metadata via the bulk pushUserData mutation
   if (soilDataUnsyncedChanges || soilMetadataUnsyncedChanges) {
-    console.log(
-      '📤 pushUserData (bulk):',
-      soilDataUnsyncedChanges
-        ? `${Object.keys(soilDataUnsyncedChanges).length} soilData`
-        : '0 soilData',
-      soilMetadataUnsyncedChanges
-        ? `${Object.keys(soilMetadataUnsyncedChanges).length} soilMetadata`
-        : '0 soilMetadata',
-    );
+    if (syncDebugEnabled) {
+      console.log(
+        '📤 pushUserData (bulk):',
+        soilDataUnsyncedChanges
+          ? `${Object.keys(soilDataUnsyncedChanges).length} soilData`
+          : '0 soilData',
+        soilMetadataUnsyncedChanges
+          ? `${Object.keys(soilMetadataUnsyncedChanges).length} soilMetadata`
+          : '0 soilMetadata',
+      );
+    }
     const mutationInput: UserDataPushInput = {
       soilDataEntries:
         soilDataUnsyncedChanges && soilDataUnsyncedData

@@ -30,7 +30,7 @@ import type {
   SoilMetadata,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {
   getChangedSiteFields,
   getDeletedNotes,
@@ -222,7 +222,7 @@ export const SyncRecordLogger = () => {
   const prevKeyRef = useRef<string>('');
 
   useEffect(() => {
-    if (!isFlagEnabled('FF_testing')) {
+    if (!syncDebugEnabled) {
       return;
     }
 
