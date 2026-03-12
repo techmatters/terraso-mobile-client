@@ -849,7 +849,10 @@ async function main() {
           );
           filesToStage.push(localPath);
         } else {
-          verbose(`  ${localPath}: metadata-only changes -> skip`);
+          console.log(
+            `  Restoring ${localPath} (metadata-only changes, no translation differences)`,
+          );
+          execSync(`git checkout -- ${localPath}`, {stdio: 'inherit'});
         }
       } catch {
         // New file or can't read old version — stage it
@@ -1004,8 +1007,11 @@ async function main() {
 
   console.log('\nDone! Merge complete.');
   console.log('Remember to push the commit and tags when ready:');
-  console.log('  git push && git push --tags');
+  console.log(
+    '  git push && git push --force origin translations/latest && git push --tags',
+  );
   console.log(`\nChanges summarized: open ${report.path}`);
+  execSync(`open ${report.path}`);
 }
 
 main().catch(err => {
