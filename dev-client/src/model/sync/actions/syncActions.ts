@@ -15,8 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import Mapbox from '@rnmapbox/maps';
-
 import type {User} from 'terraso-client-shared/account/accountSlice';
 import type {
   SoilDataPushEntry,
@@ -54,7 +52,6 @@ import {selectSoilMetadataChanges} from 'terraso-mobile-client/model/soilMetadat
 import type {SyncRecords} from 'terraso-mobile-client/model/sync/records';
 import {
   getDataForRecords,
-  getEntityRecord,
   getEntityRecords,
   getUnsyncedRecords,
 } from 'terraso-mobile-client/model/sync/records';
@@ -103,75 +100,6 @@ const fetchMissingElevations = async (
   }
 
   return updatedSiteData;
-};
-
-// Bounding box half-width in degrees (~1km at equator), covering what StaticMapView shows at zoom 15
-const SATELLITE_PREFETCH_DELTA = 0.01;
-
-/**
- * Creates Mapbox offline packs for newly synced sites so satellite images are
- * available offline. Fire-and-forget: failures don't block sync.
- */
-const prefetchSatelliteTilesForNewSites = (
-  siteResults: SyncResults<Site, SitePushFailureReason>,
-  siteUnsyncedChanges: SyncRecords<Site, SitePushFailureReason>,
-): void => {
-  const newlySyncedSites = Object.entries(siteResults.data).filter(
-    ([siteId]) => {
-      const record = getEntityRecord(siteUnsyncedChanges, siteId);
-      return record.lastSyncedData === undefined;
-    },
-  );
-
-  if (syncDebugEnabled) {
-    console.log(
-      `🛰️ Prefetching satellite tiles for ${newlySyncedSites.length} new sites`,
-    );
-  }
-
-  if (newlySyncedSites.length === 0) {
-    return;
-  }
-
-  Promise.allSettled(
-    newlySyncedSites.map(async ([siteId, {value: site}]) => {
-      const packName = `site-${siteId}-satellite`;
-
-      const existingPack = await Mapbox.offlineManager.getPack(packName);
-      if (existingPack) {
-        return;
-      }
-
-      const {latitude, longitude} = site;
-      await Mapbox.offlineManager.createPack(
-        {
-          name: packName,
-          styleURL: Mapbox.StyleURL.Satellite,
-          minZoom: 14,
-          maxZoom: 16,
-          bounds: [
-            [
-              longitude + SATELLITE_PREFETCH_DELTA,
-              latitude + SATELLITE_PREFETCH_DELTA,
-            ], // NE [lng, lat]
-            [
-              longitude - SATELLITE_PREFETCH_DELTA,
-              latitude - SATELLITE_PREFETCH_DELTA,
-            ], // SW [lng, lat]
-          ],
-        },
-        (_pack, status) => {
-          if (syncDebugEnabled) {
-            console.log(`🛰️ Satellite pack progress for ${site.name}:`, status);
-          }
-        },
-      );
-
-      if (syncDebugEnabled) {
-        console.log(`🛰️ Created offline satellite pack for site ${site.name}`);
-      }
-    }),
-  ).catch(err => console.warn('🛰️ Error prefetching satellite tiles:', err));
 };
 
 export type PushUserDataResults = {
@@ -277,8 +205,6 @@ export const pushUserData = async (
       siteUnsyncedChanges,
       siteDataWithElevation,
     );
-    // Fire-and-forget: prefetch satellite tiles for newly created sites
-    prefetchSatelliteTilesForNewSites(results.siteResults, siteUnsyncedChanges);
   }
 
   // Push soil data and metadata via the bulk pushUserData mutation
