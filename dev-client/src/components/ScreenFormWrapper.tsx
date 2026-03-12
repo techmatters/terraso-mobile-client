@@ -60,7 +60,6 @@ type Props = {
   onDelete: () => void;
   children: (formikProps: FormikProps<{content: string}>) => React.JSX.Element;
   isSubmitting: boolean;
-  deleteDisabled?: boolean;
 };
 
 const getDebugStyles = () =>
@@ -87,17 +86,7 @@ const getDebugStyles = () =>
       };
 
 export const ScreenFormWrapper = forwardRef(
-  (
-    {
-      initialValues,
-      onSubmit,
-      onDelete,
-      children,
-      isSubmitting,
-      deleteDisabled,
-    }: Props,
-    ref,
-  ) => {
+  ({initialValues, onSubmit, onDelete, children, isSubmitting}: Props, ref) => {
     const formikRef = useRef<FormikProps<{content: string}>>(null);
     const containerRef = useRef<RNView>(null);
     const {t} = useTranslation();
@@ -202,7 +191,7 @@ export const ScreenFormWrapper = forwardRef(
         <ConfirmModal
           trigger={onOpen => (
             <DeleteButton
-              disabled={isSubmitting || deleteDisabled}
+              disabled={isSubmitting}
               onPress={() => conditionallyConfirmDelete(onOpen)}
             />
           )}
