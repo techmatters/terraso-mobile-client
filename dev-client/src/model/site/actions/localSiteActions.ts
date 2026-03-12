@@ -53,8 +53,9 @@ export const updateSite = (
 ): Site => {
   const updates: Partial<Site> = {};
   for (const field of SITE_UPDATE_FIELDS) {
-    if (input[field] !== undefined) {
-      (updates as any)[field] = input[field];
+    const value = input[field];
+    if (value !== undefined) {
+      Object.assign(updates, {[field]: value});
     }
   }
   return {
