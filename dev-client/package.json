@@ -24,6 +24,7 @@
     "localization-to-po": "node scripts/localization/transform-to.mjs po",
     "localization-to-json": "node scripts/localization/transform-to.mjs json",
     "localization-check-missing": "node scripts/localization/missing-check.mjs",
+    "localization-fill-missing": "node scripts/localization/fill-missing.mjs",
     "poeditor-download": "node --env-file=.env scripts/localization/poeditor-download.mjs",
     "poeditor-upload": "node --env-file=.env scripts/localization/poeditor-upload.mjs",
     "poeditor-merge": "node --env-file=.env scripts/localization/poeditor-merge.mjs",
