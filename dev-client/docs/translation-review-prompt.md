@@ -9,18 +9,23 @@ Review translations for the LandPKS Soil ID app using Claude Code.
 To review all languages at once, paste this into Claude Code:
 
 ```
-Please review translations for all non-English languages in src/translations/ using the
-prompt in docs/translation-review-prompt.md. Run all languages in parallel using background
-agents. Do not prompt for permission at any step. Write results to docs/translation-review-LANG.md
-for each language. Do not apply any changes to the JSON files.
+Please review translations for all non-English
+languages in src/translations/ using the prompt in
+docs/translation-review-prompt.md. Run all languages
+in parallel using background agents. Do not prompt
+for permission at any step. Write results to
+docs/translation-review-LANG.md for each language.
+Do not apply any changes to the JSON files.
 ```
 
 To review a single language:
 
 ```
-Please review LANG translations using the prompt in docs/translation-review-prompt.md.
-Write results to docs/translation-review-LANG.md. Do not apply any changes to the JSON files.
-Do not prompt for permission at any step.
+Please review LANG translations using the prompt
+in docs/translation-review-prompt.md. Write results
+to docs/translation-review-LANG.md. Do not apply
+any changes to the JSON files. Do not prompt for
+permission at any step.
 ```
 
 ### Applying fixes
@@ -28,8 +33,11 @@ Do not prompt for permission at any step.
 After reviewing a `translation-review-LANG.md` file, paste this into Claude Code:
 
 ```
-Please apply all the fixes from docs/translation-review-LANG.md to src/translations/LANG.json.
-Read the review file, then apply each suggested fix. Skip any items I've marked with [SKIP].
+Please apply all the fixes from
+docs/translation-review-LANG.md to
+src/translations/LANG.json. Read the review file,
+then apply each suggested fix. Skip any items I've
+marked with [SKIP].
 After applying, run: npm run format
 ```
 
@@ -49,15 +57,20 @@ To skip an issue, either delete it from the review file or add `[SKIP]` to its h
 After adding TK placeholders (via `npm run localization-fill-missing`), you can use Claude to generate real translations. These will be marked fuzzy on the next POEditor sync so translators can review them.
 
 ```
-Please translate all TK placeholder strings in src/translations/LANG.json.
-This is the LandPKS Soil ID app — a soil science field app for soil scientists,
-agronomists, and land managers. Use accurate soil science terminology.
-For each string starting with "TK ", replace it with a proper LANGUAGE_NAME translation
-of the English text (without the "TK " prefix).
-Preserve all formatting: <bold> tags, \n newlines, {{variables}}, and $t() references.
-For FAO/UNESCO soil taxonomy names, use the official LANGUAGE_NAME term if one exists,
-otherwise keep the Latin/English name.
-Do not prompt for permission. After translating, run: npm run format
+Please translate all TK placeholder strings in
+src/translations/LANG.json. This is the LandPKS
+Soil ID app — a soil science field app for soil
+scientists, agronomists, and land managers. Use
+accurate soil science terminology. For each string
+starting with "TK ", replace it with a proper
+LANGUAGE_NAME translation of the English text
+(without the "TK " prefix). Preserve all
+formatting: <bold> tags, \n newlines, {{variables}},
+and $t() references. For FAO/UNESCO soil taxonomy
+names, use the official LANGUAGE_NAME term if one
+exists, otherwise keep the Latin/English name.
+Do not prompt for permission.
+After translating, run: npm run format
 ```
 
 ---
