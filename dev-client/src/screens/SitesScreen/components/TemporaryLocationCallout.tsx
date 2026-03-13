@@ -154,8 +154,7 @@ type ElevationDisplayProps = {
 
 const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
   const isOffline = useIsOffline();
-
-  if (isOffline) {
+  if (isOffline && elevation.value === undefined) {
     return <NotAvailableOffline />;
   } else if (elevation.fetching) {
     return <ActivityIndicator size="small" />;
@@ -244,7 +243,7 @@ const NotAvailableOffline = () => {
   const {t} = useTranslation();
 
   return (
-    <Text textTransform="uppercase" bold color="error.main">
+    <Text textTransform="uppercase" bold color="text.primary">
       {t('general.not_available_offine')}
     </Text>
   );

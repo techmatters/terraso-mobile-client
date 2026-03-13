@@ -103,6 +103,11 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
 
   const isOffline = useIsOffline();
 
+  let displayElevation = renderElevation(t, elevation);
+  if (isOffline && elevation === undefined) {
+    displayElevation = t('general.not_available_offine');
+  }
+
   return (
     <SafeScrollView backgroundColor="background.default">
       <SiteTabJump />
@@ -122,7 +127,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
         />
         <LocationDetail
           label={t('geo.elevation.title')}
-          value={renderElevation(t, elevation)}
+          value={displayElevation}
         />
         {!site && (
           <Box>
