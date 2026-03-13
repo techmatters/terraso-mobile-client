@@ -159,7 +159,6 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
         {site && !project && (
           <Row>
             <RadioBlock
-              allDisabled={isOffline}
               label={
                 <Row alignItems="center">
                   <Text variant="body1" bold>
