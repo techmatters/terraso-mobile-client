@@ -1,6 +1,6 @@
 {
   "name": "LandPKS Soil ID",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "private": true,
   "scripts": {
     "android": "expo run:android",
@@ -32,8 +32,7 @@
     "generate-munsell-test-data": "node scripts/generateMunsellTestData.js",
     "prepare": "cd .. && husky ./dev-client/.husky",
     "check-i18n": "bash scripts/localization/check-i18n.sh",
-    "postinstall": "node scripts/fix-duplicate-react.js && npx patch-package",
-    "generate-munsell-test-data": "node scripts/generateMunsellTestData.js"
+    "postinstall": "node scripts/fix-duplicate-react.js && npx patch-package"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.1.1",
