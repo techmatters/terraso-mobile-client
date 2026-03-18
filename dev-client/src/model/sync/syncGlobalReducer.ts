@@ -36,6 +36,11 @@ import {
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {setSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import * as syncActions from 'terraso-mobile-client/model/sync/actions/syncActions';
+import {
+  initialRecord,
+  isUnsynced,
+  markEntitiesModified,
+} from 'terraso-mobile-client/model/sync/records';
 import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
 import {logSyncSummary} from 'terraso-mobile-client/model/sync/syncDebugLog';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
@@ -72,6 +77,34 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
     setExportTokens(state.export, payload.exportTokens);
     updateSoilIdStatus(state.soilData, 'ready');
     setLastPullTimestamp(state.devOnly, Date.now());
+
+    // Mark sites missing elevation as needing sync so their elevation
+    // is fetched and pushed on the next push.
+    // Unsynced sites will already have been marked modified.
+    const sitesNeedingElevation = Object.keys(payload.sites).filter(id => {
+      const siteSync = state.site.siteSync[id];
+      return (
+        (payload.sites[id].elevation === null ||
+          payload.sites[id].elevation === undefined) &&
+        !isUnsynced(siteSync ?? initialRecord(undefined))
+      );
+    });
+    if (syncDebugEnabled) {
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log(
+        `- ${sitesNeedingElevation.length} sites still need elevation after pull:`,
+      );
+      sitesNeedingElevation.forEach(siteToPrint => {
+        console.log(payload.sites[siteToPrint].name);
+      });
+    }
+    if (sitesNeedingElevation.length > 0) {
+      markEntitiesModified(
+        state.site.siteSync,
+        sitesNeedingElevation,
+        Date.now(),
+      );
+    }
   });
 
   builder.addCase(pullUserData.pending, () => {
