@@ -26,13 +26,13 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {
   CreateSiteForm,
   FormState,
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
+import {resolveElevation} from 'terraso-mobile-client/screens/CreateSiteScreen/resolveElevation';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
@@ -63,16 +63,12 @@ export const CreateSiteView = ({
   const onSave = useCallback(
     async ({...form}: FormState) => {
       const {...site} = validationSchema.cast(form);
-      let finalElevation = elevation;
-
-      const latLongWasChanged =
-        site.latitude !== sitePin?.latitude ||
-        site.longitude !== sitePin?.longitude;
-      if (latLongWasChanged) {
-        finalElevation = isOffline
-          ? undefined
-          : await fetchElevationForCoords(site.latitude, site.longitude);
-      }
+      const finalElevation = await resolveElevation(
+        sitePin,
+        {latitude: site.latitude, longitude: site.longitude},
+        elevation,
+        isOffline,
+      );
       const createdSite = await createSiteCallback({
         ...site,
         elevation: finalElevation,
