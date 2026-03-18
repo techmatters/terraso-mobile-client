@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-12-30T21:15:23.482Z\n"
-"PO-Revision-Date: 2025-12-30T21:15:23.483Z\n"
+"POT-Creation-Date: 2026-03-11T22:12:42.185Z\n"
+"PO-Revision-Date: 2026-03-11T22:12:42.186Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
@@ -251,10 +251,10 @@ msgid "site##soil_id##description##site_global_or_unknown"
 msgstr "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about soil characteristics and other descriptions."
 
 msgid "site##soil_id##matches##title"
-msgstr "Top Soil Matches"
+msgstr "Soil Matches"
 
 msgid "site##soil_id##matches##info##title"
-msgstr "Top soil matches"
+msgstr "Soil matches"
 
 msgid "site##soil_id##matches##info##description##site"
 msgstr ""
@@ -309,6 +309,12 @@ msgstr "There is no soil map data available for this location, so LandPKS cannot
 
 msgid "site##soil_id##matches##offline"
 msgstr "Soil matches will update when you are online."
+
+msgid "site##soil_id##matches##improve_hint"
+msgstr "Improve the matches"
+
+msgid "site##soil_id##matches##improve_description"
+msgstr "These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)"
 
 msgid "site##soil_id##matches##rate##fab"
 msgstr "Rate match"
@@ -913,6 +919,9 @@ msgstr "Last Modified (least recent)"
 msgid "settings##unknown_user"
 msgstr "Unknown user"
 
+msgid "settings##copy_access_token"
+msgstr "Copy JWT Access Token"
+
 msgid "settings##sign_out"
 msgstr "Sign out"
 
@@ -925,8 +934,8 @@ msgstr "Pending"
 msgid "settings##unknown_version"
 msgstr "Untagged application version {{environment}}"
 
-msgid "settings##beta"
-msgstr "beta"
+msgid "settings##staging"
+msgstr "staging"
 
 msgid "settings##version"
 msgstr "Version {{version}} ({{build}}) {{environment}}"
@@ -996,6 +1005,9 @@ msgstr "English"
 
 msgid "general##cancel"
 msgstr "Cancel"
+
+msgid "general##copied"
+msgstr "Copied!"
 
 msgid "general##add"
 msgstr "Add"
@@ -1816,6 +1828,12 @@ msgstr "Your result"
 
 msgid "soil##color##unexpected_color##use_suggestion"
 msgstr "Use suggestion"
+
+msgid "soil##color##analysis_error##headline"
+msgstr "Something went wrong"
+
+msgid "soil##color##analysis_error##body"
+msgstr "There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
 
 msgid "soil##color##hue"
 msgstr "Hue"

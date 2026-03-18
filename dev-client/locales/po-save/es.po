@@ -52,9 +52,8 @@ msgid "site##create##gps"
 msgstr "Usar mi ubicación actual (GPS)"
 
 #: 
-#, fuzzy
 msgid "site##create##pin"
-msgstr "Usar ubicación marcada en el mapa"
+msgstr "Usar ubicacion marcada en el mapa"
 
 #: 
 msgid "site##create##manual"
@@ -153,9 +152,8 @@ msgid "projects##create##private"
 msgstr "Privado"
 
 #: 
-#, fuzzy
 msgid "projects##tabs##inputs"
-msgstr "Entradas"
+msgstr "Importes"
 
 #: 
 msgid "projects##tabs##team"
@@ -186,9 +184,8 @@ msgid "projects##inputs##units##metric"
 msgstr "Métrico (cm, m, kg)"
 
 #: 
-#, fuzzy
 msgid "projects##inputs##instructions##title"
-msgstr "Nota destacada"
+msgstr "Nota fija"
 
 #: 
 msgid "projects##inputs##instructions##description"
@@ -367,9 +364,8 @@ msgid "general##proceed"
 msgstr "Proceder"
 
 #: 
-#, fuzzy
 msgid "errors##generic"
-msgstr "Error al guardar la información de la identificación del suelo."
+msgstr "Error al guardar la informacion de la identificación del suelo."
 
 #: 
 msgid "screens##LOGIN"
@@ -386,7 +382,7 @@ msgstr "LandPKS Soil ID"
 #: 
 #, fuzzy
 msgid "login##subtitle"
-msgstr "Utiliza datos reales para tomar decisiones sobre el suelo"
+msgstr "Utilice datos reales para tomar decisiones sobre el suelo"
 
 #: 
 msgid "login##from"
@@ -421,9 +417,8 @@ msgid "geo##latitude##title"
 msgstr "Latitud"
 
 #: 
-#, fuzzy
 msgid "geo##longitude##inline"
-msgstr "longitud"
+msgstr "Longitud"
 
 #: 
 msgid "geo##longitude##title"
@@ -646,9 +641,8 @@ msgid "soil##color##guide##step1##bullets##3"
 msgstr "Asegúrate de que todas las notas Post-it están planas, sin escritura, y sin suciedad."
 
 #: 
-#, fuzzy
 msgid "soil##color##guide##step1##bullets##4"
-msgstr "Asegúrate de que cada nota Post-it no esté degradada con la luz solar, ya que puede existir una variación considerable en función de la exposición al sol."
+msgstr "Asegúrate de que cada nota Post-it no se está degradada con la luz solar, ya que puede existir una variación considerable en función de la exposición al sol."
 
 #: 
 msgid "soil##color##guide##step1##bullets##5"
@@ -673,9 +667,8 @@ msgid "soil##color##guide##step3##title"
 msgstr "3. Prepara la iluminación."
 
 #: 
-#, fuzzy
 msgid "soil##color##guide##step3##content"
-msgstr "La foto del color del suelo debe tomarse en condiciones de iluminación uniforme y a la sombra del sol directo.\n"
+msgstr "El foto del color del suelo debe tomarse en condiciones de iluminación uniforme y a la sombra del sol directo.\n"
 "\n"
 "Intenta usar una fuente de luz superior en lugar de una iluminación lateral."
 
@@ -792,18 +785,16 @@ msgid "slope##shape##info##concave"
 msgstr "Cóncava"
 
 #: 
-#, fuzzy
 msgid "slope##shape##info##convex"
-msgstr "Convexa"
+msgstr "Conveza"
 
 #: 
 msgid "slope##shape##info##linear"
 msgstr "Lineal"
 
 #: 
-#, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "Esta versión incluye:"
+msgstr "Esta version incluye:"
 
 #: 
 #, fuzzy
@@ -851,9 +842,8 @@ msgid "site##list_title"
 msgstr "Lista de sitios"
 
 #: 
-#, fuzzy
 msgid "site##last_updated"
-msgstr "Última modificación: {{date}} por {{name}}"
+msgstr "Última modificaión: {{date}} por {{name}}"
 
 #: 
 msgid "site##more_info"
@@ -904,18 +894,16 @@ msgid "site##create##location_accuracy"
 msgstr "Precisión GPS: {{accuracyM}} m"
 
 #: 
-#, fuzzy
 msgid "site##create##add_to_project_label"
-msgstr "Añadir al proyecto"
+msgstr "Anadir al proyecto"
 
 #: 
 msgid "site##create##add_to_project_caption"
 msgstr "Proyecto"
 
 #: 
-#, fuzzy
 msgid "site##create##add_to_project_tooltip"
-msgstr "El sitio heredará la configuración del proyecto, incluyendo los requisitos de recopilación de datos y los miembros del equipo. Crea nuevos proyectos utilizando la pestaña Proyectos en la navegación inferior."
+msgstr "El sitio heredará la configuración del proyecto, incluyendo los requisitos de recopilación de datos y los miembros del equipo. Cree nuevos proyectos utilizando la pestaña Proyectos en la navegación inferior."
 
 #: 
 msgid "site##create##privacy_tooltip"
@@ -1030,9 +1018,8 @@ msgid "site##soil_id##matches##error_generic_title"
 msgstr "No se puede obtener el mapa del suelo"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Intenta detener y reiniciar la aplicación. Si el problema continúa, vuelve a intentarlo más tarde o envía una solicitud de soporte a través del sitio web landpks.terraso.org."
+msgstr "LandPKS no ha podido obtener el mapa de suelos de esta ubicación. Intente detener y reiniciar la aplicación. Si el problema continúa, vuelva a intentarlo más tarde o envíe una solicitud de soporte a través del sitio web landpks.terraso.org."
 
 #: 
 msgid "site##soil_id##matches##no_map_data_title"
@@ -1159,9 +1146,8 @@ msgid "site##soil_id##soil_properties_score_info##p1"
 msgstr "La puntuación de las propiedades del suelo refleja la similitud entre el suelo compatible y las observaciones ingresadas para este sitio."
 
 #: 
-#, fuzzy
 msgid "site##soil_id##soil_properties_score_info##p2"
-msgstr "Una puntuación más alta de Propiedades del suelo significa que las observaciones ingresadas por el usuario son similares a la coincidencia de suelo. Un puntaje bajo significa que los dos son menos similares, y es menos probable que esta coincidencia sea la identificación correcta del suelo para el sitio."
+msgstr "La puntuación más alto de Propiedades del suelo significa que las observaciones ingresadas por el usuario son similares a la coincidencia de suelo. Un puntaje bajo significa que los dos son menos similares, y es menos probable que esta coincidencia sea la identificación correcta del suelo para el sitio."
 
 #: 
 msgid "site##soil_id##soil_properties_score_info##p3"
@@ -1224,19 +1210,16 @@ msgid "site##notes##placeholder_text"
 msgstr "Empieza a escribir tu nota…"
 
 #: 
-#, fuzzy
 msgid "site##search##accessibility_label"
-msgstr "Filtrar sitios por nombre del sitio"
+msgstr "Ordenar sitios por nombre"
 
 #: 
-#, fuzzy
 msgid "site##search##filter_projects"
-msgstr "Filtrar sitios por proyecto"
+msgstr "Ordenar sitios por proyecto"
 
 #: 
-#, fuzzy
 msgid "site##search##filter_role"
-msgstr "Filtrar sitios por rol"
+msgstr "Ordenar sitios por rol"
 
 #: 
 msgid "site##search##no_matches"
@@ -1255,14 +1238,12 @@ msgid "projects##go_to"
 msgstr "Ir al proyecto"
 
 #: 
-#, fuzzy
 msgid "projects##search_label"
-msgstr "Introduce texto para filtrar proyectos por nombre"
+msgstr "Introduce texto para filtar proyectos por nombre"
 
 #: 
-#, fuzzy
 msgid "projects##role_filter_label"
-msgstr "Filtrar proyectos por rol"
+msgstr "Ordenar proyectos por rol"
 
 #: 
 msgid "projects##create##name_label"
@@ -1371,14 +1352,12 @@ msgstr "Esto eliminará permanentemente el proyecto {{projectName}} y las observ
 "Los administradores del proyecto tienen la opción de transferir los sitios a otro proyecto para conservar las observaciones."
 
 #: 
-#, fuzzy
 msgid "projects##sites##empty_viewer"
-msgstr "El proyecto aún no tiene sitios."
+msgstr "El proyecto aun no tiene sitios."
 
 #: 
-#, fuzzy
 msgid "projects##sites##empty_contributor"
-msgstr "Puedes transferir sitios LandPKS Soil ID existentes a este proyecto. También puedes crear nuevos sitios en la pestaña Sitios y añadirlos a este proyecto."
+msgstr "Puedes transferir sitios LandPKS Soil ID existentes a este proyecto. También puede crear nuevos sitios en la pestaña Sitios y añadirlos a este proyecto."
 
 #: 
 msgid "projects##sites##go_to"
@@ -1409,29 +1388,26 @@ msgid "projects##sites##delete_site_modal##action_name"
 msgstr "Eliminar"
 
 #: 
-#, fuzzy
 msgid "projects##sites##remove_site_modal##title"
-msgstr "¿Quitar sitio de este proyecto?"
+msgstr "¿Eliminar sitio de este proyecto?"
 
 #: 
 msgid "projects##sites##remove_site_modal##body"
 msgstr "Sólo tú tendrás acceso a este sitio y sus datos. Los demás miembros del proyecto dejarán de tener acceso."
 
 #: 
-#, fuzzy
 msgid "projects##sites##remove_site_modal##action_name"
-msgstr "Eliminar sitio"
+msgstr "Eliminar sitio."
 
 #: 
 msgid "projects##sites##transfer_site_modal##title"
 msgstr "¿Transferir sitios?"
 
 #: 
-#, fuzzy
 msgid "projects##sites##transfer_site_modal##body"
 msgstr "Los sitios transferidos utilizarán las entradas, ajustes y funciones de los miembros del equipo de este proyecto.\n"
 "\n"
-"Si los sitios tienen observaciones introducidas a profundidades diferentes de las especificadas en este proyecto, esas observaciones se eliminarán. Esto no se puede deshacer."
+"Si los centros tienen observaciones introducidas a profundidades diferentes de las especificadas en este proyecto, esas observaciones se eliminarán. Esto no se puede deshacer."
 
 #: 
 msgid "projects##sites##transfer_site_modal##action_name"
@@ -1474,9 +1450,8 @@ msgid "projects##manage_member##manager_help"
 msgstr "Puede visualizar y editar todos los aspectos del proyecto y sus sitios afiliados"
 
 #: 
-#, fuzzy
 msgid "projects##manage_member##contributor_help"
-msgstr "Puede ver datos de sitios, añadir y editar observaciones del sitio"
+msgstr "Puede visualizar, añadir y editar observaciones del sitio"
 
 #: 
 msgid "projects##manage_member##viewer_help"
@@ -1487,18 +1462,16 @@ msgid "projects##manage_member##remove"
 msgstr "Eliminar del proyecto"
 
 #: 
-#, fuzzy
 msgid "projects##manage_member##remove_help"
-msgstr "Elimina el acceso del miembro a este proyecto, manteniendo cualquier dato que haya contribuido a los sitios"
+msgstr "Elimine el acceso del miembro a este proyecto, manteniendo cualquier dato que haya contribuido a los sitios"
 
 #: 
 msgid "projects##manage_member##confirm_removal_title"
 msgstr "¿Eliminar del proyecto?"
 
 #: 
-#, fuzzy
 msgid "projects##manage_member##confirm_removal_body"
-msgstr "Esto eliminará al miembro del proyecto. Conservará las observaciones que haya aportado sobre el sitio."
+msgstr "Esto eliminará al miembro del proyecto. Conservará los observaciones que haya aportado sobre el sitio."
 
 #: 
 msgid "projects##manage_member##confirm_removal_action"
@@ -1617,19 +1590,16 @@ msgid "general##info##privacy_title"
 msgstr "Privacidad de datos LandPKS"
 
 #: 
-#, fuzzy
 msgid "general##info##privacy_item1"
-msgstr "<bold>Los sitios públicos</bold> son visibles para cualquier persona en el portal de datos LandPKS."
+msgstr "<bold>Sitios públicos</bold> son visibles para cualquier persona en el portal de datos LandPKS."
 
 #: 
-#, fuzzy
 msgid "general##info##privacy_item2"
-msgstr "Se incluyen todas las observaciones ingresadas en la aplicación móvil LandPKS Soil ID, excepto la información de identificación personal (IIP)."
+msgstr "Se incluyen todos los observaciones ingresados en la aplicación móvil LandPKS Soil ID, excepto la información de identificación personal (IIP)."
 
 #: 
-#, fuzzy
 msgid "general##info##privacy_item3"
-msgstr "<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo para la persona que lo creó. Esa persona puede cambiar la privacidad en cualquier momento."
+msgstr "<bold>Un sitio privado</bold> no afiliado a un proyecto es visible sólo para la persona quien lo creó. Esa persona puede cambiar la privacidad en cualquier momento."
 
 #: 
 msgid "general##info##privacy_item4"
@@ -1664,18 +1634,16 @@ msgid "permissions##gallery_title"
 msgstr "LandPKS Soil ID requiere acceso a tu galería de fotos"
 
 #: 
-#, fuzzy
 msgid "permissions##gallery_body"
-msgstr "Para usar {{feature}}, concede a LandPKS Soil ID acceso a tu galería de fotos en los ajustes del dispositivo."
+msgstr "Para usar {{feature}}, concede a LandPKS Soil ID acceso a a tu galería de fotos en los ajustes del dispositivo."
 
 #: 
 msgid "permissions##location_title"
 msgstr "LandPKS Soil ID requiere acceso a tu ubicación"
 
 #: 
-#, fuzzy
 msgid "permissions##location_body"
-msgstr "Para disfrutar de la mejor experiencia cartográfica, concede a LandPKS Soil ID acceso a tu ubicación en los ajustes del dispositivo."
+msgstr "Para disfrutar de la mejor experiencia cartográfica, concede a LandPKS Soil ID acceso a a tu ubicación en los ajustes del dispositivo."
 
 #: 
 msgid "screens##PROJECT_LIST"
@@ -1738,14 +1706,12 @@ msgid "delete_account##confirm##p4##b0"
 msgstr "observaciones que contribuiste a un proyecto del que no eres el único responsable"
 
 #: 
-#, fuzzy
 msgid "delete_account##confirm##p4##b1"
-msgstr "tu cuenta Terraso (incluye grupos, paisajes, y mapas de historias)"
+msgstr "tu cuenta Terraso (incluye grupos, suelo, y mapas de historias"
 
 #: 
-#, fuzzy
 msgid "delete_account##confirm##p5"
-msgstr "<bold>Introduce tu dirección de email para confirmar la eliminación:</bold>"
+msgstr "<bold>Introduce tu direccion de email para confirmar la eliminación:</bold>"
 
 #: 
 msgid "delete_account##confirm##cancel"
@@ -1994,9 +1960,8 @@ msgid "soil##depth##label_placeholder"
 msgstr "Etiquetar"
 
 #: 
-#, fuzzy
 msgid "soil##depth##apply_to_all_label"
-msgstr "Aplicar a todas las profundidades"
+msgstr "Alicar a todas las profundidades"
 
 #: 
 msgid "soil##depth##start_label"
@@ -2019,9 +1984,8 @@ msgid "soil##depth##depth_end"
 msgstr "profundidad final"
 
 #: 
-#, fuzzy
 msgid "soil##depth##update_modal##title"
-msgstr "¿Cambiar profundidad?"
+msgstr "¿Cambiar profunidad?"
 
 #: 
 msgid "soil##depth##update_modal##body"
@@ -2032,9 +1996,8 @@ msgid "soil##depth##update_modal##action"
 msgstr "Cambiar"
 
 #: 
-#, fuzzy
 msgid "soil##depth##delete_modal##title"
-msgstr "¿Eliminar profundidad?"
+msgstr "¿Eliminar profundad?"
 
 #: 
 msgid "soil##depth##delete_modal##body"
@@ -2065,9 +2028,8 @@ msgid "soil##texture##info##description_diameter_ENGLISH"
 msgstr "1/16”"
 
 #: 
-#, fuzzy
 msgid "soil##texture##guide##ball_help"
-msgstr "¿Se puede formar una bola con el suelo?"
+msgstr "Se puede formar una bola con el suelo?"
 
 #: 
 msgid "soil##texture##guide##ribbon_help"
@@ -2182,9 +2144,8 @@ msgid "soil##texture##guide##grittyness_details_3"
 msgstr "<bold>Ni granulado ni suave</bold> significa que no predomina ninguna de esas dos texturas. Es posible que aún se perciban algunos granos de arena o algo jabonoso pero al tacto, pero ninguna predomina."
 
 #: 
-#, fuzzy
 msgid "soil##texture##guide_intro"
-msgstr "¿No conoces la clase de textura? Utiliza la guía paso a paso."
+msgstr "¿No conoce la clase de textura? Utilice la guía paso a paso."
 
 #: 
 msgid "soil##texture##use_guide_label"
@@ -2412,9 +2373,8 @@ msgid "slope##steepness##no_camera"
 msgstr "Sin acceso a la cámara"
 
 #: 
-#, fuzzy
 msgid "slope##steepness##no_camera_explanation"
-msgstr "Para el mejor resultado, concede a LandPKS Soil ID acceso a tu cámara desde configuraciones."
+msgstr "Para el mejor resultado, concede a LandPKS Soil ID acceso tu cámara desde configuraciones."
 
 #: 
 msgid "slope##steepness##info##description_distance_METRIC"
@@ -2473,14 +2433,12 @@ msgid "slope##steepness##select_labels##STEEP_PERCENT"
 msgstr "30–50%"
 
 #: 
-#, fuzzy
 msgid "slope##steepness##select_labels##MODERATELY_STEEP"
-msgstr "Moderadamente empinada"
+msgstr "Moderademente empinada"
 
 #: 
-#, fuzzy
 msgid "slope##steepness##select_labels##MODERATELY_STEEP_PERCENT"
-msgstr "50–60%"
+msgstr "30–50%"
 
 #: 
 msgid "slope##steepness##select_labels##VERY_STEEP"
@@ -2545,12 +2503,11 @@ msgstr "Biblioteca de fotos"
 #: 
 #, fuzzy
 msgid "info##title"
-msgstr "Utiliza datos reales para tomar decisiones sobre el suelo"
+msgstr "Utilice datos reales para tomar decisiones sobre el suelo"
 
 #: 
-#, fuzzy
 msgid "info##description"
-msgstr "<bold>Descubre el uso y el valor potenciales de tu terreno.</bold> Determina con precisión el tipo de suelo y otras características de tu terreno. Obtén información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más."
+msgstr "<bold>Descubre el uso y el valor potenciales de tu paisaje.</bold> Determina con precisión el tipo de suelo y otras características de tu paisaje. Obtiene información sobre opciones de pastoreo y agricultura, secuestro de carbono y mucho más."
 
 #: 
 msgid "info##description2"
@@ -2558,14 +2515,12 @@ msgstr "<bold>Encuentra más información y guías</bold> en:\n"
 "<icon />"
 
 #: 
-#, fuzzy
 msgid "info##link_label"
-msgstr "landpks.terraso.org"
+msgstr "landpotential.org"
 
 #: 
-#, fuzzy
 msgid "info##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "projects##search##lastModAsc"
@@ -2609,9 +2564,8 @@ msgstr "\n"
 "Los administradores de proyecto pueden eliminar el sitio de este proyecto para conservar sus datos."
 
 #: 
-#, fuzzy
 msgid "welcome##terms"
-msgstr "Al utilizar LandPKS aceptas nuestra política de privacidad y términos de servicio."
+msgstr "Al utilizar LandPKS usted acepta nuestra política de privacidad y términos de servicio."
 
 #: 
 msgid "info##get_started"
@@ -2626,9 +2580,8 @@ msgid "site##empty##map"
 msgstr "Toca en cualquier lugar del mapa"
 
 #: 
-#, fuzzy
 msgid "site##empty##icon"
-msgstr "Toca el icono Mi ubicación"
+msgstr "Toca el icóno Mi ubicación"
 
 #: 
 msgid "site##empty##coords"
@@ -2699,9 +2652,8 @@ msgid "general##close"
 msgstr "Cerrar"
 
 #: 
-#, fuzzy
 msgid "general##offline_title"
-msgstr "Estás fuera de línea"
+msgstr "Estás fuera de linea"
 
 #: 
 msgid "general##support"
@@ -2724,9 +2676,8 @@ msgid "general##tos##url"
 msgstr "https://terraso.org/terms-of-service/"
 
 #: 
-#, fuzzy
 msgid "general##not_available_offine"
-msgstr "No disponible fuera de línea"
+msgstr "No disponible fuera de linea"
 
 #: 
 msgid "general##offline_sign_in_title"
@@ -2781,9 +2732,8 @@ msgstr "Los suelos enumerados son los más propensos de encontrarse en esta ubic
 "Crea un sitio aquí e introduce las observaciones recomendadas para mejorar la precisión de las puntuaciones de coincidencia."
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##info##description##need_help"
-msgstr "<bold>¿Necesitas ayuda?</bold>\n"
+msgstr "<bold>Need help?</bold>\n"
 "Consulta a un experto en suelos para ayudar a interpretar las observaciones y determinar una correspondencia de suelo. Puedes obtener más información sobre las predicciones del mapa de suelos y las correspondencias de Soil ID en el sitio web:"
 
 #: 
@@ -2795,9 +2745,8 @@ msgid "site##soil_id##soil_info##description_title"
 msgstr "<bold>Descripción</bold>"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##soil_info##management_title"
-msgstr "<bold>Manejo</bold>"
+msgstr "<bold>Management</bold>"
 
 #: 
 msgid "site##soil_id##soil_info##FAO_HWSD"
@@ -2812,9 +2761,8 @@ msgid "site##soil_id##location_score_info##p2_region_unknown"
 msgstr "LandPKS basa las coincidencias de suelo en los mapas de suelos. Los mapas de suelos tradicionales no predicen un único suelo para cada ubicación, sino que se organizan en “unidades cartográficas de suelos” que contienen múltiples suelos posibles. Se estima que cada posible suelo de una unidad cartográfica cubre un determinado porcentaje de la unidad."
 
 #: 
-#, fuzzy
 msgid "general##learn_more"
-msgstr "Aprende más"
+msgstr "Aprender más"
 
 #: 
 msgid "soil##match_info##acrisols##name"
@@ -2997,9 +2945,8 @@ msgid "soil##match_info##mollic_andosols##management"
 msgstr "La preservación del suelo superficial con su materia orgánica es importante, y la prevención de la erosión es crítica. Las prácticas de gestión de la tierra deben maximizar la cobertura del suelo. Debido a que estos suelos se forman a partir de materiales volcánicos, una parte de su carga de suelo es positiva, lo que significa que pueden \"fijar\" el fósforo, haciendo que no esté disponible para las plantas en la temporada de cultivo. Las prácticas bien documentadas, como la aplicación en banda (directamente sobre la semilla o a un lado y abajo de la semilla) de fertilizantes fosfatados, ayudarán a reducir la fijación de P. La fertilización adicional y la aplicación de cal, además del P, también serán necesarias para garantizar un crecimiento y rendimiento adecuados de los cultivos. Los cultivos de cobertura y las rotaciones que incluyan leguminosas y la inclusión de cultivos con alta biomasa serán beneficiosos, ya que añaden materia orgánica y nitrógeno para el cultivo posterior. Los sistemas agroforestales pueden ayudar a minimizar la erosión."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##umbric_andosols##name"
-msgstr "Andosoles Úmbricos"
+msgstr "Andosoles Úbricos"
 
 #: 
 msgid "soil##match_info##umbric_andosols##description"
@@ -3070,14 +3017,12 @@ msgid "soil##match_info##aric_anthrosols##management"
 msgstr "Debido a que estos suelos han tenido una alteración/agotamiento/adición humana a largo plazo, sus características son muy variables y se pueden asignar pocas pautas generales de gestión. Los productores deben estudiar cuidadosamente sus campos y examinar la variabilidad en sus áreas para determinar las diferentes necesidades de manejo. El manejo debe ser utilizado para asegurar que la estructura del suelo y la porosidad sean preservadas en estos suelos. Serían beneficiosos los cultivos de cobertura y las rotaciones que incluyan leguminosas y la inclusión de cultivos con alta biomasa, añadiendo materia orgánica y nitrógeno para el cultivo posterior. Para un mejor rendimiento se recomienda la fertilización."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##cumulic_anthrosols##name"
-msgstr "Antrósoles Cúmulicos"
+msgstr "Antrósoles Cúmulos"
 
 #: 
-#, fuzzy
 msgid "soil##match_info##cumulic_anthrosols##description"
-msgstr "Los Antrosoles Cúmulicos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos tienen horizontes superficiales de textura fina (con alto contenido en arcilla) debido a la irrigación y/o adiciones de larga duración."
+msgstr "Los Antrosoles Cúmulos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Estos suelos tienen horizontes superficiales de textura fina (con alto contenido en arcilla) debido a la irrigación y/o adiciones de larga duración."
 
 #: 
 msgid "soil##match_info##cumulic_anthrosols##management"
@@ -3336,9 +3281,8 @@ msgid "soil##match_info##vertic_cambisols##management"
 msgstr "En regiones templadas los suelos tendrán un alto contenido de cationes básicos (potasio, calcio y magnesio), mientras que en regiones más húmedas pueden tener niveles más bajos de nutrientes del suelo. El tipo de arcilla de este suelo se expande cuando se humedece y se encoge cuando se seca. Aunque son fértiles, hay que tener cuidado de no labrar excesivamente estos suelos, ya que su estructura podría verse afectada negativamente."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##ferralic_cambisols##name"
-msgstr "Cambisoles Ferrálicos"
+msgstr "Cambisoles Ferrálico"
 
 #: 
 msgid "soil##match_info##ferralic_cambisols##description"
@@ -3437,9 +3381,8 @@ msgid "soil##match_info##gleyic_chernozems##name"
 msgstr "Chernozemes Gleyicos"
 
 #: 
-#, fuzzy
 msgid "soil##match_info##gleyic_chernozems##description"
-msgstr "Los Chernozemes Gleyicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los Chernozems Gleyicos están saturados de agua subterránea poco profunda por encima de un metro de profundidad del suelo."
+msgstr "Los Chernozemes Gleyicos son suelos altamente productivos con buenas propiedades físicas y químicas. Tienen una alta calidad de suelo y capas superficiales oscuras y ricas. Los Chernozems Gléyicos están saturados de agua subterránea poco profunda por encima de un metro de profundidad del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_chernozems##management"
@@ -3686,14 +3629,12 @@ msgid "soil##match_info##andic_gleysols##management"
 msgstr "Estos suelos están saturados, y si se cultivan se requiere un drenaje importante. Una vez drenados, estos suelos pueden ser muy productivos. El nivel freático debe bajarse mediante un drenaje profundo. Una vez drenados, puede ser necesario el encalado, ya que la materia orgánica comienza a descomponerse. Las prácticas bien documentadas, como la aplicación en banda (directamente sobre la semilla o a un lado y abajo de la semilla) de fertilizantes fosfatados, ayudarán a reducir la fijación de P."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##mollic_gleysols##name"
-msgstr "Gleysoles Mólicos"
+msgstr "Gleysolel mólicos"
 
 #: 
-#, fuzzy
 msgid "soil##match_info##mollic_gleysols##description"
-msgstr "Los Gleysoles Mólicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Mólicos tienen relativamente más materia orgánica y nutrientes en los horizontes superficiales."
+msgstr "Los Gleysolel Mólicos tienen aguas subterráneas poco profundas y están saturados durante gran parte del año. El drenaje profundo es necesario para el cultivo. Los Gleysoles Mólicos tienen relativamente más materia orgánica y nutrientes en los horizontes superficiales."
 
 #: 
 msgid "soil##match_info##mollic_gleysols##management"
@@ -3928,9 +3869,8 @@ msgid "soil##match_info##luvic_kastanozems##management"
 msgstr "Son suelos productivos, con acumulaciones de arcilla y carbonato. La productividad mejorará con la fertilización (especialmente el fósforo) y el riego. El mayor contenido de arcilla en este suelo puede ayudar a retener el agua para la producción de cultivos."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##calcic_kastanozems##name"
-msgstr "Kastanozems Cálcicos"
+msgstr "Kastanozems Calcicos"
 
 #: 
 msgid "soil##match_info##calcic_kastanozems##description"
@@ -4013,9 +3953,8 @@ msgid "soil##match_info##mollic_leptosols##management"
 msgstr "Debido a que estos suelos son poco profundos, rocosos y erosionables, deben utilizarse para cultivos perennes y no deben ser labrados. Deben utilizarse prácticas para mantener la materia orgánica y la cobertura. Sólo deben considerarse los usos para pastoreo o agroforestales. La preservación del suelo superficial con su materia orgánica es importante, y la prevención de la erosión es fundamental. Estos suelos pueden ser productivos para la agricultura, pero el enfoque debe ser el uso para el pastoreo. Cualquier uso para el cultivo debe limitarse y combinarse con prácticas de conservación del suelo."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##umbric_leptosols##name"
-msgstr "Leptosoles Úmbricos"
+msgstr "Leptosoles Úbricos"
 
 #: 
 msgid "soil##match_info##umbric_leptosols##description"
@@ -4126,9 +4065,8 @@ msgid "soil##match_info##gleyic_lixisols##name"
 msgstr "Lixisoles Gleyicos"
 
 #: 
-#, fuzzy
 msgid "soil##match_info##gleyic_lixisols##description"
-msgstr "Los Lixisoles Gleyicos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. Los Lixisoles Gleyicos están saturados con aguas subterráneas poco profundas por encima de un metro."
+msgstr "Los Lixisoles Gleyicos se forman en climas cálidos con subsuelos relativamente arcillosos dominados por caolinita y óxidos de hierro, pero con una saturación de bases relativamente alta. Los Lixisoles Gléyicos están saturados con aguas subterráneas poco profundas por encima de un metro."
 
 #: 
 msgid "soil##match_info##gleyic_lixisols##management"
@@ -4235,9 +4173,8 @@ msgid "soil##match_info##gleyic_luvisols##name"
 msgstr "Luvisoles Gleyicos"
 
 #: 
-#, fuzzy
 msgid "soil##match_info##gleyic_luvisols##description"
-msgstr "Los Luvisoles Gleyicos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Gleyicos están saturados con agua subterránea poco profunda en el metro superior del perfil del suelo."
+msgstr "Los Luvisoles Gleyicos son suelos productivos con alta saturación de la base y subsuelos relativamente arcillosos. Los Luvisoles Gléyicos están saturados con agua subterránea poco profunda en el metro superior del perfil del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_luvisols##management"
@@ -4352,14 +4289,12 @@ msgid "soil##match_info##stagnic_phaeozems##management"
 msgstr "Estos suelos son altamente productivos y fértiles, y constituyen excelentes tierras de cultivo. Son ricos en materia orgánica. Sin embargo, corren el riesgo de perder el suelo por la erosión del viento y del agua. Por lo tanto, se necesitan prácticas para mantener la cobertura del suelo (mantillos, labranza de conservación, cortavientos). Puede ser necesario el drenaje de estos suelos. Dado que la saturación es causada por el agua superficial, podría ser útil el drenaje superficial y/o el mantenimiento de la cubierta para mejorar la infiltración y la retención de agua. Considerar el uso de cultivos con raíces poco profundas. Si se fertiliza y no se drena, es posible la pérdida de nitrógeno (N) aplicado por desnitrificación o lixiviación. Se puede conseguir un uso más eficiente del N por parte de los cultivos en estos suelos mediante:  1) el drenaje, y, 2) el uso de fertilizantes de N de liberación lenta (si están disponibles)."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##gleyic_phaeozems##name"
-msgstr "Feozems Gleyicos"
+msgstr "Foazems Gleyicos"
 
 #: 
-#, fuzzy
 msgid "soil##match_info##gleyic_phaeozems##description"
-msgstr "Los Feozems Gleyicos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los Feozems Gleyicos están saturados de agua subterránea poco profunda a menos de un metro de la superficie del suelo."
+msgstr "Los Foazems Gleyicos son suelos fértiles y productivos de pastizales con una materia orgánica y una saturación de bases relativamente altas. Su presencia en climas secos significa que es probable que el riego sea necesario para la producción. Los Feozems Gleyicos están saturados de agua subterránea poco profunda a menos de un metro de la superficie del suelo."
 
 #: 
 msgid "soil##match_info##gleyic_phaeozems##management"
@@ -4558,9 +4493,8 @@ msgid "soil##match_info##gelic_podzols##management"
 msgstr "Los Podzoles están muy lixiviados y, por lo tanto, tienen una baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Si se utiliza para el cultivo, se debe tener cuidado de mantener la materia orgánica, ya que al abrirse el permafrost se producirá un hundimiento del suelo."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##gleyic_podzols##name"
-msgstr "Podzoles Gleyicos"
+msgstr "Podzoles Gléyicos"
 
 #: 
 msgid "soil##match_info##gleyic_podzols##description"
@@ -4571,9 +4505,8 @@ msgid "soil##match_info##gleyic_podzols##management"
 msgstr "Los Podzoles están muy lixiviados y, por tanto, son suelos de baja fertilidad. Las capas superficiales suelen ser bastante ácidas (pH < 4,5), por lo que es necesario el encalado. Debido al alto grado de erosión, los suelos también tienen un alto contenido de aluminio soluble y fijan el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo, necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Aunque no se recomienda, si estos suelos se utilizan para el cultivo, necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Puede ser necesario el drenaje de estos suelos. Sin embargo, al tratarse de una saturación vía aguas subterráneas esto puede no ser posible, sobre todo por la necesidad de arado profundo para romper las capas del subsuelo. Si se fertiliza y no se drena, es posible que se pierda el nitrógeno (N) aplicado por desnitrificación o lixiviación. Esta gestión cuidadosa del N debe ir acompañada del encalado y la gestión del P."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##eutric_podzoluvisols##name"
-msgstr "Podzoluvisoles Eutríticos"
+msgstr "Podzoluvisols Eutríticos"
 
 #: 
 msgid "soil##match_info##eutric_podzoluvisols##description"
@@ -4584,9 +4517,8 @@ msgid "soil##match_info##eutric_podzoluvisols##management"
 msgstr "Estos suelos tienen un horizonte superficial lixiviado que responderá a la fertilización y, en algunos casos, al drenaje. Los horizontes superficiales del suelo suelen ser ácidos (pH < 4,5) y necesitarán encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijarán el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización. Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##dystric_podzoluvisols##name"
-msgstr "Podzoluvisoles Dístricos"
+msgstr "Podzoluvisols Dístricos"
 
 #: 
 msgid "soil##match_info##dystric_podzoluvisols##description"
@@ -4609,9 +4541,8 @@ msgid "soil##match_info##stagnic_podzoluvisols##management"
 msgstr "Estos suelos tienen un horizonte subterráneo blanqueado que responderá a la fertilización y, en algunos casos, al drenaje. Los horizontes superficiales del suelo suelen ser ácidos (pH < 4,5) y necesitarán encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijarán el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización.*Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla.*Puede ser necesario el drenaje de estos suelos. Dado que la saturación es causada por el agua superficial, podría ser útil el drenaje superficial y/o el mantenimiento de la cubierta para mejorar la infiltración y la retención de agua.*Considerar el uso de cultivos con raíces poco profundas.*Si se fertiliza y no se drena, es posible la pérdida de nitrógeno (N) aplicado por desnitrificación o lixiviación. Se puede conseguir un uso más eficiente del N por parte de los cultivos en estos suelos mediante:  1) el drenaje, y, 2) el uso de fertilizantes de N de liberación lenta, si están disponibles."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##gleyic_podzoluvisols##name"
-msgstr "Podzoluvisoles Gleyicos"
+msgstr "Podzoluvisols Gleyicos"
 
 #: 
 msgid "soil##match_info##gleyic_podzoluvisols##description"
@@ -4622,9 +4553,8 @@ msgid "soil##match_info##gleyic_podzoluvisols##management"
 msgstr "Estos suelos tienen un horizonte subterráneo blanqueado que responderá a la fertilización y, en algunos casos, al drenaje. Los horizontes superficiales del suelo suelen ser ácidos (pH < 4,5) y necesitarán encalado. Debido al alto grado de meteorización, los suelos también tienen un alto contenido de aluminio soluble y fijarán el fósforo, creando deficiencias de P. Aunque no se recomienda, si estos suelos se utilizan para el cultivo necesitarán un arado profundo (para romper las capas del subsuelo), encalado y fertilización.*Será necesario un cuidado específico con la fertilización de P, y se recomienda el uso de banda en la colocación de P en la semilla. Puede ser necesario el drenaje de estos suelos. Si se fertiliza y no se drena, es posible que se pierda el nitrógeno (N) aplicado por desnitrificación o lixiviación. Si se fertiliza y no se drena, es posible que se pierda el nitrógeno (N) aplicado por desnitrificación o lixiviación:  1) el drenaje, y, 2) el uso de fertilizantes de N de liberación lenta, si están disponibles."
 
 #: 
-#, fuzzy
 msgid "soil##match_info##gelic_podzoluvisols##name"
-msgstr "Podzoluvisoles Gélicos"
+msgstr "Podzoluvisols Gélicos"
 
 #: 
 msgid "soil##match_info##gelic_podzoluvisols##description"
@@ -4983,23 +4913,20 @@ msgid "general##terms_of_service_link_text"
 msgstr "Condiciones de servicio"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##fab"
-msgstr "Califica coincidencia"
+msgstr "Califica coicidencia"
 
 #: 
 msgid "site##soil_id##matches##rate##title"
 msgstr "Califica esta coincidencia de suelo"
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##description"
-msgstr "<bold>¿Es este el suelo adecuado?</bold> Utiliza tu mejor criterio basándote en la descripción del suelo y las comparaciones de propiedades."
+msgstr "<bold>¿Es este el suelo adecuado?</bold> Utilice su mejor criterio basándose en la descripción del suelo y las comparaciones de propiedades."
 
 #: 
-#, fuzzy
 msgid "site##soil_id##matches##rate##yes"
-msgstr "Sí, selecciona suelo para este sitio"
+msgstr "Sí, seleccione suelo para este sitio"
 
 #: 
 msgid "site##soil_id##matches##rate##no"
@@ -5031,7 +4958,7 @@ msgstr "Tiene cambios sin sincronizar que deben cargarse antes de cerrar la sesi
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "Nueva experiencia de calificación de suelos para una identificación más sencilla"
+msgstr "Nueva experiencia de medición de suelos para una identificación más sencilla"
 
 #: 
 #, fuzzy
@@ -5051,12 +4978,12 @@ msgstr "Exporta todos tus sitios"
 #: 
 #, fuzzy
 msgid "export##title_project"
-msgstr "Exportar sitios del proyecto"
+msgstr "Sitios de proyectos de exportación"
 
 #: 
 #, fuzzy
 msgid "export##title_site"
-msgstr "Exportar sitio"
+msgstr "Sitio de exportación"
 
 #: 
 #, fuzzy
@@ -5106,12 +5033,12 @@ msgstr "Restablecer enlace en vivo"
 #: 
 #, fuzzy
 msgid "export##site_export_title"
-msgstr "Exportar sitio"
+msgstr "Sitio de exportación"
 
 #: 
 #, fuzzy
 msgid "export##site_export_description"
-msgstr "Descarga o comparte los datos de este sitio."
+msgstr "Descargue o comparta los datos de este sitio."
 
 #: 
 #, fuzzy
@@ -5206,7 +5133,7 @@ msgstr "No se pudo crear el enlace"
 #: 
 #, fuzzy
 msgid "export##create_token_error_message"
-msgstr "No se pudo crear el enlace de exportación. Verifica tu conexión y vuelve a intentarlo."
+msgstr "No se pudo crear el enlace de exportación. Verifique su conexión y vuelva a intentarlo."
 
 #: 
 #, fuzzy
@@ -5216,7 +5143,7 @@ msgstr "No se pudo restablecer el enlace"
 #: 
 #, fuzzy
 msgid "export##delete_token_error_message"
-msgstr "No se pudo restablecer el enlace de exportación. Verifica tu conexión y vuelve a intentarlo."
+msgstr "No se pudo restablecer el enlace de exportación. Verifique su conexión y vuelva a intentarlo."
 
 #: 
 #, fuzzy
@@ -5236,7 +5163,7 @@ msgstr "<bold>Compartir o guardar archivo</bold> captura los datos actuales del 
 #: 
 #, fuzzy
 msgid "export##help##live_link_description"
-msgstr "<bold>Compartir enlace a datos</bold> crea una URL que siempre devuelve los datos más recientes. Úsalo para integrar scripts, flujos de trabajo automatizados o cuando desees que otros usuarios siempre tengan acceso a tus datos más recientes. Restablece el enlace para revocar el acceso de enlaces anteriores."
+msgstr "<bold>Compartir enlace a datos</bold> crea una URL que siempre devuelve los datos más recientes. Úselo para integrar scripts, flujos de trabajo automatizados o cuando desee que otros usuarios siempre tengan acceso a sus datos más recientes. Restablezca el enlace para revocar el acceso de enlaces anteriores."
 
 #: 
 #, fuzzy
@@ -5321,7 +5248,7 @@ msgstr "Mejorar las coincidencias"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##improve_description"
-msgstr "Estas coincidencias se basan únicamente en mapas de suelos. Para mejorar los resultados, introduce tus observaciones en este sitio (consulta \"Observaciones del sitio\" más abajo)."
+msgstr "Estas coincidencias se basan únicamente en mapas de suelos. Para mejorar los resultados, introduzca sus observaciones en este sitio (consulte \"Observaciones del sitio\" más abajo)."
 
 #: 
 msgid "settings##copy_access_token"
@@ -5332,9 +5259,8 @@ msgid "settings##staging"
 msgstr "staging"
 
 #: 
-#, fuzzy
 msgid "general##copied"
-msgstr "¡Copiado!"
+msgstr "Copiado!"
 
 #: 
 #, fuzzy

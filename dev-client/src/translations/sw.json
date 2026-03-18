@@ -1,15 +1,15 @@
 {
     "welcome": {
-        "title": "Karibu kwenye LandPKS Udongo ID",
+        "title": "Karibu kwenye LandPKS Soil ID",
         "next": {
             "title": "Nini kitafuata?",
             "subtitle": "Matoleo yajayo yatajumuisha:",
-            "bullet_1": "Unda tovuti nje ya mtandao",
+            "bullet_1": "Unda maeneo nje ya mtandao",
             "bullet_2": "Hariri madokezo nje ya mtandao"
         },
         "version_includes": {
             "title": "Toleo hili linajumuisha:",
-            "bullet_1": "Kipengele cha usafirishaji data kwa miradi, tovuti za kibinafsi, na tovuti zote zinazoonekana kwa mtumiaji",
+            "bullet_1": "Kipengele cha usafirishaji data kwa miradi, maeneo ya kibinafsi, na maeneo yote yanayoonekana kwa mtumiaji",
             "bullet_2": "Kiteuzi cha lugha",
             "bullet_3": "Tafsiri za majaribio za Kifaransa na Kijojia",
             "bullet_4": "Uzoefu mpya wa kiwango cha udongo kwa ajili ya utambuzi rahisi wa udongo"
@@ -28,27 +28,27 @@
         "members": "{{members}} Wanachama",
         "coords": "{{lat}}, {{long}}",
         "empty": {
-            "info": "Njia tatu za kuunda tovuti:",
+            "info": "<bold>Njia tatu za kuunda eneo:</bold>\n",
             "map": "Gusa popote kwenye ramani",
             "icon": "Gusa aikoni ya Mahali Pangu",
             "coords": "Ingiza viwianishi, anwani, au neno la utafutaji katika upau wa utafutaji wa ramani",
-            "summary": "Tovuti hukuruhusu kukusanya na kuhifadhi uchunguzi, kujifunza zaidi kuhusu ardhi na uwezo wake, na kushiriki na wengine."
+            "summary": "Eneo hukuruhusu kukusanya na kuhifadhi uchunguzi, kujifunza zaidi kuhusu ardhi na uwezo wake, na kushiriki na wengine."
         },
         "create": {
-            "title": "Unda Tovuti",
-            "description": "Unda tovuti hapa ili kuhifadhi eneo hili, kuingiza uchunguzi, na kuona ripoti za kina zaidi.",
+            "title": "Unda Eneo",
+            "description": "Unda eneo hapa ili kuhifadhi eneo hili, kuingiza uchunguzi, na kuona ripoti za kina zaidi.",
             "gps": "Tumia eneo langu la sasa (GPS)",
             "pin": "Tumia pini ya ramani",
             "manual": "Ingiza viwianishi",
             "latitude": "Latitudo",
             "longitude": "Longitudo",
-            "button_label": "Unda Tovuti Hapa",
-            "name_label": "Jina la Tovuti",
-            "location_label": "Mahali pa Tovuti",
+            "button_label": "Unda Eneo Hapa",
+            "name_label": "Jina la Eneo",
+            "location_label": "Mahali pa Eneo",
             "location_accuracy": "Usahihi wa GPS: {{accuracyM}} m",
             "add_to_project_label": "Ongeza kwenye Mradi",
             "add_to_project_caption": "Mradi",
-            "add_to_project_tooltip": "Tovuti hiyo itarithi mipangilio ya mradi, ikiwa ni pamoja na mahitaji ya ukusanyaji wa data na wanachama wa timu. Unda miradi mipya kwa kutumia kichupo cha Miradi katika urambazaji wa chini.",
+            "add_to_project_tooltip": "Eneo hilo litarithi mipangilio ya mradi, ikiwa ni pamoja na mahitaji ya ukusanyaji wa data na wanachama wa timu. Unda miradi mipya kwa kutumia kichupo cha Miradi katika urambazaji wa chini.",
             "privacy_tooltip": "Miradi ya umma itasawazisha data na milango ya data ya umma. ",
             "privacy_tooltip_link": "Pata maelezo zaidi"
         },
@@ -56,23 +56,23 @@
             "privacy": "Faragha ya Data",
             "team_button": "Timu",
             "transfer_label": "Uhamisho hadi Mradi",
-            "copy_download_link_button": "Nakili kiungo cha kupakua tovuti",
-            "archive_button": "Hifadhi tovuti hii",
-            "archive_button_help_text": "Weka alama kwenye tovuti hii kwa ajili ya kusoma pekee",
-            "delete_button": "Futa tovuti hii",
+            "copy_download_link_button": "Nakili kiungo cha kupakua eneo",
+            "archive_button": "Hifadhi eneo hili",
+            "archive_button_help_text": "Weka alama kwenye eneo hili kwa ajili ya kusoma pekee",
+            "delete_button": "Futa eneo hili",
             "location_accuracy": "Usahihi wa Eneo",
             "default_title": "Pini ya Muda",
             "speed_dial": {
                 "note_label": "DOKEZO",
                 "photo_label": "PICHA",
-                "bedrock_label": "BEDROCK"
+                "bedrock_label": "MWAMBA"
             }
         },
         "notes": {
-            "title": "Vidokezo vya Tovuti",
+            "title": "Vidokezo vya Eneo",
             "add_note_label": "Ongeza Dokezo",
-            "add_title": "Dokezo la Tovuti",
-            "edit_title": "Dokezo la Tovuti",
+            "add_title": "Dokezo la Eneo",
+            "edit_title": "Dokezo la Eneo",
             "note_attribution": "{{createdAt}} na {{name}}",
             "confirm_removal_title": "Futa dokezo?",
             "confirm_removal_body": "Kitendo hiki hakiwezi kutenduliwa.",
@@ -82,9 +82,9 @@
             "offline": "Kuandika na kuhariri madokezo kunapatikana mtandaoni pekee."
         },
         "search": {
-            "placeholder": "Tafuta tovuti",
+            "placeholder": "Tafuta maeneo",
             "sort": {
-                "label": "Panga tovuti kulingana na",
+                "label": "Panga maeneo kulingana na",
                 "nameAsc": "Jina (A hadi Z)",
                 "nameDesc": "Jina (Z hadi A)",
                 "lastModAsc": "Ilibadilishwa Mara ya Mwisho (ya hivi karibuni)",
@@ -92,52 +92,52 @@
                 "distanceAsc": "Umbali (karibu zaidi)",
                 "distanceDesc": "Umbali (mbali zaidi)"
             },
-            "accessibility_label": "Chuja tovuti kwa jina la tovuti",
-            "filter_projects": "Chuja tovuti kwa mradi",
-            "filter_role": "Chuja tovuti kwa jukumu",
-            "no_matches": "Hakuna tovuti zinazolingana na chaguo za utafutaji na vichujio vya sasa.",
+            "accessibility_label": "Chuja maeneo kwa jina la eneo",
+            "filter_projects": "Chuja maeneo kwa mradi",
+            "filter_role": "Chuja maeneo kwa jukumu",
+            "no_matches": "Hakuna maeneo yanayolingana na chaguo za utafutaji na vichujio vya sasa.",
             "offline": "Uko nje ya mtandao. Utafutaji haupatikani, lakini unaweza kuingiza viwianishi halisi."
         },
         "tabs": {
-            "SITE": "Tovuti",
+            "SITE": "Eneo",
             "SLOPE": "Mteremko",
             "SOIL": "Udongo",
             "NOTES": "Vidokezo"
         },
-        "list_title": "Orodha ya Tovuti",
+        "list_title": "Orodha ya Maeneo",
         "last_updated": "Ilibadilishwa Mara ya Mwisho: {{date}} na {{name}}",
         "more_info": "Pata maelezo zaidi",
         "your_location": "Eneo lako",
         "soil_id_prediction": "Kitambulisho cha Udongo Kinacholingana Zaidi",
-        "ecological_site_prediction": "Ulinganisho Bora wa Tovuti ya Kiikolojia",
+        "ecological_site_prediction": "Ulinganisho Bora wa Eneo la Kiikolojia",
         "annual_precip_avg": "Wastani wa mvua kwa mwaka",
         "elevation_label": "Mwinuko",
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "haijulikani",
         "form": {
-            "name_min_length_error": "Jina la tovuti lazima liwe na angalau herufi {{min}}",
-            "name_max_length_error": "Jina la tovuti lazima liwe na herufi zisizozidi {{max}}",
+            "name_min_length_error": "Jina la eneo lazima liwe na angalau herufi {{min}}",
+            "name_max_length_error": "Jina la eneo lazima liwe na herufi zisizozidi {{max}}",
             "min_latitude_error": "Latitudo lazima iwe angalau {{min}}",
-            "max_latitude_error": "Latitudo lazima iwe angalau {{max}}",
+            "max_latitude_error": "Latitudo lazima iwe isizidi {{max}}",
             "min_longitude_error": "Longitudo lazima iwe angalau {{min}}",
-            "max_longitude_error": "Longitudo lazima iwe angalau {{max}}"
+            "max_longitude_error": "Longitudo lazima iwe isizidi {{max}}"
         },
         "soil_id": {
             "title": "Kitambulisho cha Udongo",
             "description": {
-                "temp_location": "LandPKS Udongo ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda tovuti katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo.",
-                "site_US": "Kitambulisho cha Udongo cha LandPKS hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine.",
-                "site_global_or_unknown": "Kitambulisho cha Udongo cha LandPKS hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu sifa za udongo na maelezo mengine."
+                "temp_location": "LandPKS Soil ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda eneo katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo.",
+                "site_US": "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu eneo hili ili kukokotoa ulinganifu bora wa udongo wa eneo. Chagua ulinganifu bora wa udongo kwa eneo hili ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine.",
+                "site_global_or_unknown": "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu eneo hili ili kukokotoa ulinganifu bora wa udongo wa eneo. Chagua ulinganifu bora wa udongo kwa eneo hili ili kujifunza kuhusu sifa za udongo na maelezo mengine."
             },
             "matches": {
                 "title": "Vipimo Bora vya Udongo",
                 "info": {
-                    "title": "Vinalingana na udongo wa juu",
+                    "title": "Vinalingana na udongo",
                     "description": {
                         "site": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana kwenye eneo kulingana na ramani za udongo za {{soilMapSource}} kwa eneo hili.\n\nIngiza mteremko na uchunguzi wa udongo unaopendekezwa ili kuboresha usahihi wa alama zinazolingana. Uchunguzi unapoingizwa, orodha itasasishwa kiotomatiki.",
-                        "temp_location": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana katika eneo hili kulingana na ramani za udongo za {{soilMapSource}}.\n\nUnda tovuti hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi.",
+                        "temp_location": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana katika eneo hili kulingana na ramani za udongo za {{soilMapSource}}.\n\nUnda eneo hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi.",
                         "site_region_unknown": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana kwenye eneo kulingana na ramani za udongo kwa eneo hili.\n\nIngiza mteremko uliopendekezwa na uchunguzi wa udongo ili kuboresha usahihi wa alama zinazolingana. Uchunguzi unapoingizwa, orodha itasasishwa kiotomatiki.",
-                        "temp_location_region_unknown": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana katika eneo hili kulingana na ramani za udongo.\n\nUnda tovuti hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi.",
+                        "temp_location_region_unknown": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana katika eneo hili kulingana na ramani za udongo.\n\nUnda eneo hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi.",
                         "need_help": "\n<bold>Unahitaji msaada?</bold>\nWasiliana na mtaalamu wa udongo ili akusaidie kutafsiri uchunguzi na kubaini ulinganifu wa udongo. Unaweza kujifunza zaidi kuhusu utabiri wa ramani ya udongo na ulinganifu wa vitambulisho vya udongo kwenye tovuti:",
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
@@ -149,8 +149,8 @@
                 "no_map_data_body": "Hakuna data ya ramani ya udongo inayopatikana kwa eneo hili, kwa hivyo LandPKS haiwezi kutoa ulinganifu wa udongo. Uchunguzi bado unaweza kuingizwa, na ikiwa data ya ramani ya udongo itapatikana katika siku zijazo, ulinganifu wa udongo utaonekana hapa.",
                 "match_score": "{{score}}",
                 "offline": "Vipimo vya udongo vitasasishwa ukiwa mtandaoni.",
-                "improve_hint": "TK Improve the matches",
-                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
+                "improve_hint": "Boresha mechi",
+                "improve_description": "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Eneo hapa chini.)",
                 "selector": "Huu ndio udongo sahihi",
                 "selected": "Udongo Uliochaguliwa",
                 "rate": {
@@ -163,15 +163,15 @@
                 }
             },
             "site_data": {
-                "title": "Uchunguzi wa Tovuti",
-                "description": "Boresha matokeo ya Utambulisho wa Udongo kwa kuingiza baadhi ya uchunguzi wa tovuti hii kwa kutumia miongozo muhimu njiani.",
+                "title": "Uchunguzi wa Eneo",
+                "description": "Boresha matokeo ya Utambulisho wa Udongo kwa kuingiza baadhi ya uchunguzi wa eneo hili kwa kutumia miongozo muhimu njiani.",
                 "slope": {
                     "title": "Mteremko Mwinuko",
                     "add_data": "Ingiza mwinuko"
                 },
                 "soil_properties": {
                     "title": "Sifa za Udongo",
-                    "depth": "Kina ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"))",
+                    "depth": "Kina ($t(site.soil_id.site_data.soil_properties.depth_units, {\"context\": \"{{units}}\"}))",
                     "depth_units_METRIC": "cm",
                     "depth_units_ENGLISH": "\"",
                     "texture": "Umbile",
@@ -186,7 +186,7 @@
             },
             "soil_info": {
                 "series_descr_url": "Maelezo Kamili ya Mfululizo wa Udongo",
-                "eco_descr_url": "Maelezo Kamili ya Tovuti ya Kiikolojia",
+                "eco_descr_url": "Maelezo Kamili ya Eneo la Kiikolojia",
                 "eco_name_label": "<bold>Jina la Eneo la Kiikolojia:</bold> {{name}}",
                 "eco_id_label": "<bold>Kitambulisho cha Eneo la Kiikolojia:</bold> {{id}}",
                 "land_class_label": "<bold>Darasa la Uwezo wa Ardhi:</bold> {{land}}",
@@ -196,8 +196,8 @@
                 "outside_map_label": "Katika kitengo cha ramani kilicho karibu, umbali wa {{distance}} {{units}}",
                 "map_units_METRIC": "mita",
                 "properties_header": "Sifa za Udongo",
-                "description_title": "<Maelezo ya herufi nzito</i>",
-                "management_title": "<bold>Usimamizi</bols>",
+                "description_title": "<bold>Maelezo</bold>",
+                "management_title": "<bold>Usimamizi</bold>",
                 "FAO_HWSD": "FAO HWSD",
                 "USDA_NRCS": "USDA NRCS"
             },
@@ -224,9 +224,9 @@
                 "offline": "Alama ya sifa za udongo itasasishwa ukiwa mtandaoni."
             }
         },
-        "list_title_empty": "Unda Tovuti",
+        "list_title_empty": "Unda Eneo",
         "offline": {
-            "alert_body": "Tovuti zinaweza kuundwa tu wakati wa mtandaoni."
+            "alert_body": "Maeneo yanaweza kuundwa tu wakati wa mtandaoni."
         }
     },
     "projects": {
@@ -235,11 +235,11 @@
         "header": "Miradi",
         "none": {
             "header": "Huna miradi yoyote.",
-            "info": "Miradi hukuruhusu kupanga tovuti, kuweka mahitaji, na kusimamia wanachama wa timu."
+            "info": "Miradi hukuruhusu kupanga maeneo, kuweka mahitaji, na kusimamia wanachama wa timu."
         },
         "create": {
             "public": "Umma",
-            "private": "Privat",
+            "private": "Binafsi",
             "name_label": "Jina la Mradi",
             "description_label": "Maelezo ya Mradi",
             "privacy_label": "Faragha ya Data"
@@ -247,20 +247,20 @@
         "tabs": {
             "inputs": "Ingizo",
             "team": "Timu",
-            "sites": "Tovuti",
+            "sites": "Maeneo",
             "settings": "Mipangilio",
             "export": "Hamisha"
         },
         "inputs": {
             "units": {
-                "heading": "Vipimo vya Vipimo",
+                "heading": "Vitengo vya Vipimo",
                 "a11yLabel": "vitengo vya vipimo",
-                "english": "Kiingereza (ndani, futi, pauni)",
+                "english": "Kiingereza (inchi, futi, pauni)",
                 "metric": "Kipimo (cm, m, kg)"
             },
             "instructions": {
                 "title": "Dokezo Lililobandikwa",
-                "description": "Maudhui haya yataonyeshwa juu ya sehemu ya Vidokezo ya kila tovuti katika mradi huu.",
+                "description": "Maudhui haya yataonyeshwa juu ya sehemu ya Vidokezo ya kila eneo katika mradi huu.",
                 "screen_title": "Dokezo Lililobandikwa",
                 "add_label": "Dokezo"
             },
@@ -283,7 +283,7 @@
             "soil_source": {
                 "heading": "Chanzo Chaguo-Msingi cha Taarifa za Udongo",
                 "survey": "Utafiti wa Udongo wa USDA NRCS",
-                "grids": "Mifumo ya Udongo",
+                "grids": "SoilGrids",
                 "a11yLabel": "chanzo chaguo-msingi cha taarifa za udongo"
             }
         },
@@ -302,48 +302,48 @@
             "archive": "Hifadhi mradi huu kwenye kumbukumbu",
             "delete": "Futa mradi huu",
             "copy_download_link": "Nakili kiungo cha kupakua mradi",
-            "download_link_description": "Faili iliyofungwa ya mali zote za mradi ikijumuisha faili ya .csv ya data ya tovuti, madokezo ya sehemu, kumbukumbu za ukaguzi, na picha. Mtu yeyote aliye na kiungo hiki anaweza kuona mali zote.",
+            "download_link_description": "Faili iliyofungwa ya mali zote za mradi ikijumuisha faili ya .csv ya data ya maeneo, madokezo ya sehemu, kumbukumbu za ukaguzi, na picha. Mtu yeyote aliye na kiungo hiki anaweza kuona mali zote.",
             "archive_button": "Kumbukumbu",
-            "archive_button_prompt": "Mradi wa Kumbukumbu?",
+            "archive_button_prompt": "Hifadhi Mradi?",
             "archive_description": "Mradi utahamishiwa kwenye Miradi Iliyohifadhiwa, na kuifanya iwe ya kusoma pekee. Wajumbe wa timu wanaweza kufikia data, na wasimamizi wa miradi wanaweza kuirejesha wakati wowote. Miradi ya umma iliyohifadhiwa itabaki kuonekana kwenye milango ya data.",
             "delete_button": "Futa",
             "delete_button_prompt": "Ungependa kufuta mradi?",
-            "delete_description": "Hii itafuta kabisa mradi {{projectName}} na uchunguzi wa tovuti zake. Hii haiwezi kutenduliwa.\n\nWasimamizi wa miradi wana chaguo la kuhamisha tovuti kutoka mradi huu ili kuweka uchunguzi wa tovuti."
+            "delete_description": "Hii itafuta kabisa mradi {{projectName}} na uchunguzi wa maeneo yake. Hii haiwezi kutenduliwa.\n\nWasimamizi wa miradi wana chaguo la kuhamisha maeneo kutoka mradi huu ili kuweka uchunguzi wa maeneo."
         },
         "sites": {
-            "add": "Ongeza tovuti",
-            "transfer": "Tovuti za Uhamisho",
-            "create": "Unda Tovuti",
+            "add": "Ongeza maeneo",
+            "transfer": "Hamisha Maeneo",
+            "create": "Unda Maeneo",
             "search": {
                 "placeholder": "Tafuta",
-                "accessility_label": "Tafuta tovuti"
+                "accessility_label": "Tafuta maeneo"
             },
             "sort": {
-                "label": "Panga tovuti kulingana na:",
-                "nameAsc": "Jina la tovuti (A hadi Z)",
+                "label": "Panga maeneo kulingana na:",
+                "nameAsc": "Jina la eneo (A hadi Z)",
                 "updatedAtAsc": "Tarehe iliyobadilishwa (ya hivi karibuni)",
                 "distanceAsc": "Umbali (karibu zaidi na mimi)"
             },
-            "empty_viewer": "Mradi huu hauna tovuti bado.",
-            "empty_contributor": "Unaweza kuhamisha tovuti zilizopo za LandPKS Soil ID kwenye mradi huu. Unaweza pia kuunda tovuti mpya kwenye kichupo cha Sites na kuziongeza kwenye mradi huu.",
-            "go_to": "Nenda kwenye Tovuti",
+            "empty_viewer": "Mradi huu hauna maeneo bado.",
+            "empty_contributor": "Unaweza kuhamisha maeneo yaliyopo ya LandPKS Soil ID kwenye mradi huu. Unaweza pia kuunda maeneo mapya kwenye kichupo cha Sites na kuyaongeza kwenye mradi huu.",
+            "go_to": "Nenda kwenye Eneo",
             "audit_log": "Kumbukumbu ya Ukaguzi",
             "remove_site": "Ondoa kwenye Mradi",
-            "delete_site": "Futa Tovuti",
+            "delete_site": "Futa Eneo",
             "delete_site_modal": {
-                "title": "Futa tovuti?",
-                "body": "Hii itafuta kabisa tovuti {{siteName}} na uchunguzi wake wote. Hii haiwezi kutenduliwa.",
+                "title": "Futa eneo?",
+                "body": "Hii itafuta kabisa eneo {{siteName}} na uchunguzi wake wote. Hii haiwezi kutenduliwa.",
                 "action_name": "Futa",
-                "project": "\n\nWasimamizi wa miradi wanaweza kuondoa tovuti kutoka kwa mradi huu ili kuhifadhi data yake."
+                "project": "\n\nWasimamizi wa miradi wanaweza kuondoa eneo kutoka kwa mradi huu ili kuhifadhi data yake."
             },
             "remove_site_modal": {
-                "title": "Ungependa kuondoa tovuti kutoka kwa mradi?",
-                "body": "Ni wewe pekee utakayeweza kufikia tovuti hii. Washiriki wengine wa timu ya mradi hawatakuwa na ufikiaji tena.",
-                "action_name": "Ondoa Tovuti"
+                "title": "Ungependa kuondoa eneo kutoka kwa mradi?",
+                "body": "Ni wewe pekee utakayeweza kufikia eneo hili. Washiriki wengine wa timu ya mradi hawatakuwa na ufikiaji tena.",
+                "action_name": "Ondoa Eneo"
             },
             "transfer_site_modal": {
-                "title": "Tovuti za kuhamisha?",
-                "body": "Tovuti zilizohamishwa zitatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu.\n\nIkiwa tovuti zina uchunguzi ulioingizwa kwa kina tofauti na kile kilichoainishwa katika mradi huu, uchunguzi huo utafutwa. Hili haliwezi kutenduliwa.",
+                "title": "Maeneo ya kuhamisha?",
+                "body": "Maeneo yaliyohamishwa yatatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu.\n\nIkiwa maeneo yana uchunguzi ulioingizwa kwa kina tofauti na kile kilichoainishwa katika mradi huu, uchunguzi huo utafutwa. Hili haliwezi kutenduliwa.",
                 "action_name": "Uhamisho"
             }
         },
@@ -361,7 +361,7 @@
         "search_label": "Ingiza maandishi ili kuchuja miradi kwa majina",
         "role_filter_label": "Chuja miradi kwa majukumu",
         "edit": {
-            "input_header": "Mipangilio ya Mradi Mkuu"
+            "input_header": "Mipangilio ya Jumla ya Mradi"
         },
         "add_user": {
             "heading": "Ongeza Mwanachama wa Timu",
@@ -373,18 +373,18 @@
         "manage_member": {
             "title": "Dhibiti Mwanachama wa Timu",
             "project_role": "Jukumu la Mradi",
-            "manager_help": "Inaweza kutazama na kuhariri vipengele vyote vya mradi na tovuti zake zinazohusiana",
-            "contributor_help": "Inaweza kutazama data ya tovuti, na kuongeza na kuhariri uchunguzi",
-            "viewer_help": "Inaweza kuona data na uchunguzi wa tovuti",
+            "manager_help": "Inaweza kutazama na kuhariri vipengele vyote vya mradi na maeneo yake yanayohusiana",
+            "contributor_help": "Inaweza kutazama data ya eneo, na kuongeza na kuhariri uchunguzi",
+            "viewer_help": "Inaweza kuona data na uchunguzi wa eneo",
             "remove": "Ondoa kwenye mradi",
-            "remove_help": "Ondoa ufikiaji wa mshiriki wa timu kwenye mradi huu, ukihifadhi uchunguzi wowote uliochangia kwenye tovuti",
+            "remove_help": "Ondoa ufikiaji wa mshiriki wa timu kwenye mradi huu, ukihifadhi uchunguzi wowote uliochangia kwenye maeneo",
             "confirm_removal_title": "Ungependa kuondoa kutoka kwa Mradi?",
             "confirm_removal_body": "Hii itamwondoa mshiriki wa timu kwenye mradi. Uchunguzi wao wa eneo uliotolewa utahifadhiwa.",
             "confirm_removal_action": "Ondoa"
         },
         "transfer_sites": {
             "heading": "Hamisha Maeneo kwenye Mradi huu",
-            "description": "Hamisha tovuti za LandPKS Udongo unazosimamia kwenye mradi huu. Unapohamisha tovuti, zitatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu.",
+            "description": "Hamisha maeneo ya LandPKS Soil ID unayosimamia kwenye mradi huu. Unapohamisha maeneo, yatatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu.",
             "unaffiliated": "Isiyo na Uhusiano"
         },
         "form": {
@@ -401,7 +401,7 @@
         "staging": "staging",
         "version": "Toleo {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Mtumiaji asiyejulikana",
-        "copy_access_token": "Copy JWT Access Token",
+        "copy_access_token": "Nakili Tokeni ya Ufikiaji ya JWT",
         "sign_out": "Toka",
         "delete_account": "Futa akaunti",
         "delete_account_pending": "Inasubiri",
@@ -412,12 +412,12 @@
         "new": "Mpya"
     },
     "general": {
-        "sites": "tovuti",
+        "sites": "maeneo",
         "users": "watumiaji",
         "save": "Hifadhi",
         "use": "Tumia",
         "details": "Maelezo",
-        "apply": "Tuma maombi",
+        "apply": "Tumia",
         "role": {
             "MANAGER": "Meneja",
             "CONTRIBUTOR": "Mchangiaji",
@@ -453,16 +453,16 @@
         "nullable_option": "Hakuna",
         "info": {
             "privacy_title": "Faragha ya Data ya LandPKS",
-            "privacy_item1": "<bold>Tovuti za umma</bold> zinaonekana kwa mtu yeyote kwenye lango la data la LandPKS.",
+            "privacy_item1": "<bold>Maeneo ya umma</bold> yanaonekana kwa mtu yeyote kwenye lango la data la LandPKS.",
             "privacy_item2": "Uchunguzi wote ulioingizwa kwenye programu ya simu ya LandPKS Soil ID umejumuishwa, isipokuwa taarifa binafsi zinazoweza kumtambulisha mtu (PII).",
-            "privacy_item3": "<bold>Tovuti ya kibinafsi</bold> isiyohusiana na mradi inaonekana tu kwa mtu aliyeiunda. Mtu huyo anaweza kubadilisha faragha wakati wowote.",
-            "privacy_item4": "<bold>Mpangilio wa faragha wa mradi huamua faragha ya tovuti zake zinazohusiana.</bold> Tovuti ambazo ni za mradi wa kibinafsi zinaonekana kwa wanachama wa timu ya mradi. Meneja wa mradi anaweza kubadilisha faragha wakati wowote.",
+            "privacy_item3": "<bold>Eneo la kibinafsi</bold> lisiohusiana na mradi linaonekana tu kwa mtu aliyeliunda. Mtu huyo anaweza kubadilisha faragha wakati wowote.",
+            "privacy_item4": "<bold>Mpangilio wa faragha wa mradi huamua faragha ya maeneo yake yanayohusiana.</bold> Maeneo ambayo ni ya mradi wa kibinafsi yanaonekana kwa wanachama wa timu ya mradi. Meneja wa mradi anaweza kubadilisha faragha wakati wowote.",
             "data_portal_link_url": "https://landpks.terraso.org/portal",
             "data_portal_link_text": "Lango la Data la LandPKS"
         },
         "character_limit": "Herufi {{current}} / {{limit}}",
         "open_settings": "Nenda kwenye mipangilio",
-        "dismiss": "Ondoa",
+        "dismiss": "Acha",
         "create": "Unda",
         "delete": "Futa",
         "close": "Funga",
@@ -478,7 +478,7 @@
         },
         "not_available_offine": "Haipatikani nje ya mtandao",
         "offline_sign_in_title": "Ingia haipatikani nje ya mtandao",
-        "offline_sign_in_body": "Ili kutumia LandPKS Udongo ID nje ya mtandao, lazima kwanza uingie ukiwa mtandaoni.",
+        "offline_sign_in_body": "Ili kutumia LandPKS Soil ID nje ya mtandao, lazima kwanza uingie ukiwa mtandaoni.",
         "not_available": "Haipatikani",
         "learn_more": "Pata maelezo zaidi",
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
@@ -501,14 +501,14 @@
         "PROJECT_VIEW": "Mradi #{{id}}",
         "CREATE_PROJECT": "Unda Mradi",
         "SITE_TRANSFER_PROJECT": "Mradi #{{id}}",
-        "CREATE_SITE": "Unda Tovuti",
+        "CREATE_SITE": "Unda Eneo",
         "COLOR_GUIDE": "Mwongozo wa Rangi ya Udongo",
         "COLOR_ANALYSIS_HOME": "Uchambuzi wa Picha",
         "DELETE_ACCOUNT": "Mipangilio",
-        "SITES": "Kitambulisho cha Udongo cha LandPKS"
+        "SITES": "LandPKS Soil ID"
     },
     "login": {
-        "title": "Kitambulisho cha Udongo cha LandPKS",
+        "title": "LandPKS Soil ID",
         "subtitle": "Ukweli wa msingi maamuzi yako ya udongo",
         "from": "kutoka"
     },
@@ -519,8 +519,8 @@
             "title": "Umma"
         },
         "private": {
-            "inline": "Privat",
-            "title": "Privat"
+            "inline": "binafsi",
+            "title": "Binafsi"
         }
     },
     "geo": {
@@ -561,7 +561,7 @@
             "apply_to_all_label": "Paka kwa kina chote",
             "start_label": "Kutoka ({{units}})",
             "end_label": "Kwa ({{units}})",
-            "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\") lazima iwe nambari",
+            "number_required": "$t(soil.depth.depth, {\"context\": \"{{item}}\"}) lazima iwe nambari",
             "depth_start": "mwanzo wa kina",
             "depth_end": "mwisho wa kina",
             "update_modal": {
@@ -631,36 +631,36 @@
                 "ribbon_details_3": "Utepe unapaswa kuwa sambamba na sakafu, usielekeze juu au chini.",
                 "ribbon_details_4": "Ikiwa udongo utabomoka badala ya kushikana unapobonyeza ili kuunda utepe, basi haufanyi utepe.",
                 "ribbon_details_5": "Acha utepe uangukie kiasili kutokana na uvutano. Pima urefu wa sehemu, ukipuuza kingo zilizochakaa.",
-                "grittyness_details_1": "<bold>Gritty</bold> inamaanisha unaweza kuhisi chembe za pekee kwenye udongo.",
+                "grittyness_details_1": "<bold>Mkali</bold> inamaanisha unaweza kuhisi chembe za pekee kwenye udongo.",
                 "grittyness_details_2": "<bold>Laini</bold> inamaanisha kwamba udongo uliolowa unateleza au una sabuni.",
                 "grittyness_details_3": "<bold>Kutokuwa na mchanga au laini</bold> kunamaanisha kuwa hakuna umbile lolote kati ya hayo mawili linalotawala. Bado unaweza kuhisi chembe za mchanga au sabuni, lakini hisia ya udongo si hasa moja au nyingine."
             },
             "fragment": {
                 "info": {
                     "title": "Kiasi cha Kipande cha Mwamba",
-                    "description": "Ujazo wa vipande vya mwamba ni kipimo cha kiasi cha ujazo wa udongo kinachochukuliwa na miamba, ambacho hufafanuliwa kama kitu chochote kikubwa kuliko kipenyo cha $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\").\n\nHii inaweza kukadiriwa kwa kuibua kwa kulinganisha ujazo wa udongo kabla na baada ya kuondoa miamba, na pia kwa kulinganisha ujazo wa miamba iliyoondolewa na ujazo wa udongo uliobaki.\n\nVinginevyo, kwa kipimo sahihi zaidi, unaweza kuweka miamba kutoka kwa sampuli kwenye ndoo yenye ujazo unaojulikana wa maji na kupima mabadiliko ya ujazo. Kisha gawanya ujazo huo kwa ujazo wa sampuli ya asili ya udongo ili kupata asilimia.",
+                    "description": "Ujazo wa vipande vya mwamba ni kipimo cha kiasi cha ujazo wa udongo kinachochukuliwa na miamba, ambacho hufafanuliwa kama kitu chochote kikubwa kuliko kipenyo cha $t(soil.texture.fragment.info.description_diameter,{\"context\":\"{{units}}\"}).\n\nHii inaweza kukadiriwa kwa kuibua kwa kulinganisha ujazo wa udongo kabla na baada ya kuondoa miamba, na pia kwa kulinganisha ujazo wa miamba iliyoondolewa na ujazo wa udongo uliobaki.\n\nVinginevyo, kwa kipimo sahihi zaidi, unaweza kuweka miamba kutoka kwa sampuli kwenye ndoo yenye ujazo unaojulikana wa maji na kupima mabadiliko ya ujazo. Kisha gawanya ujazo huo kwa ujazo wa sampuli ya asili ya udongo ili kupata asilimia.",
                     "description_diameter_METRIC": "2mm",
                     "description_diameter_ENGLISH": "1/16”"
                 }
             },
             "class": {
-                "CLAY": "Udongo",
+                "CLAY": "Mfinyanzi",
                 "LOAM": "Loamu",
                 "SAND": "Mchanga",
                 "SILT": "Tope",
-                "CLAY_LOAM": "Udongo wa Loam",
+                "CLAY_LOAM": "Loamu ya Mfinyanzi",
                 "LOAMY_SAND": "Mchanga wa Loamy",
-                "SANDY_CLAY": "Udongo wa Mchanga",
-                "SANDY_CLAY_LOAM": "Loam ya Udongo wa Mchanga",
-                "SANDY_LOAM": "Mchanga wa Loam",
-                "SILTY_CLAY": "Udongo wa Madoa",
-                "SILTY_CLAY_LOAM": "Loam ya Udongo wa Sili",
-                "SILT_LOAM": "Loam ya Silt"
+                "SANDY_CLAY": "Mfinyanzi wa Mchanga",
+                "SANDY_CLAY_LOAM": "Loamu ya Mfinyanzi wa Mchanga",
+                "SANDY_LOAM": "Mchanga wa Loamu",
+                "SILTY_CLAY": "Mfinyanzi wa Tope",
+                "SILTY_CLAY_LOAM": "Loamu ya Mfinyanzi wa Tope",
+                "SILT_LOAM": "Loamu ya Tope"
             },
             "guide_intro": "Hujui darasa la umbile? Tumia mwongozo wa hatua kwa hatua.",
             "use_guide_label": "Mwongozo wa Matumizi",
-            "clay_title": "Asilimia ya Udongo",
-            "clay_label": "Asilimia ya udongo",
+            "clay_title": "Asilimia ya Mfinyanzi",
+            "clay_label": "Asilimia ya mfinyanzi",
             "clay_help": "0–100%",
             "fragment_title": "Kiasi cha Kipande cha Mwamba",
             "rockfragment": {
@@ -682,7 +682,7 @@
                 "p2": "Rangi ya udongo inaweza kupimwa kwa kutumia kitabu cha Munsell au spectrometer.",
                 "p3": "Katika programu hii, unaweza pia kupiga picha ukitumia kadi ya marejeleo kama vile Post-it Note ili kubaini rangi ya udongo wako."
             },
-            "hue": "Rangi ya hudhurungi",
+            "hue": "Rangi kuu",
             "value": "Thamani",
             "chroma": "Kroma",
             "workflow": {
@@ -703,7 +703,7 @@
                 },
                 "step2": {
                     "title": "2. Tayarisha Sampuli ya Udongo.",
-                    "content": "Tumia udongo mkavu inapowezekana. Programu ina njia ya kuonyesha kama udongo wako una unyevunyevu, lakini makadirio ya rangi ya udongo mkavu ni sahihi zaidi.\n\nIkiwa safu yako ya udongo ina rangi nyingi (yaani madoadoa, vipengele vya redoksimofik, au kaboneti), tenga rangi ya matrix inayotawala kutoka kwenye rundo.\n\nChuja udongo kupitia chujio cha $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\") ili kuunda rundo la udongo wenye umbo moja, au tumia mikono yako kuchagua kitu chochote kikubwa kuliko $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\")).\n\nLainisha rundo la udongo ili kupunguza vivuli ndani ya sampuli ya udongo.",
+                    "content": "Tumia udongo mkavu inapowezekana. Programu ina njia ya kuonyesha kama udongo wako una unyevunyevu, lakini makadirio ya rangi ya udongo mkavu ni sahihi zaidi.\n\nIkiwa safu yako ya udongo ina rangi nyingi (yaani madoadoa, vipengele vya redoksimofik, au kaboneti), tenga rangi ya matrix inayotawala kutoka kwenye rundo.\n\nChuja udongo kupitia chujio cha $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}) ili kuunda rundo la udongo wenye umbo moja, au tumia mikono yako kuchagua kitu chochote kikubwa kuliko $t(soil.color.guide.step2.content_size,{\"context\":\"{{units}}\"}).\n\nLainisha rundo la udongo ili kupunguza vivuli ndani ya sampuli ya udongo.",
                     "content_size_METRIC": "2mm",
                     "content_size_ENGLISH": "1/16”"
                 },
@@ -742,8 +742,8 @@
                 "use_suggestion": "Tumia pendekezo"
             },
             "analysis_error": {
-                "headline": "TK Something went wrong",
-                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+                "headline": "Kuna kitu kimeenda vibaya",
+                "body": "Kulikuwa na tatizo la kutambua rangi ya udongo. Hakikisha unafuata maagizo ya uchambuzi wa picha, na ujaribu tena. Ikiwa bado una tatizo, wasiliana na usaidizi."
             },
             "crop_reference": "Kata picha ili kuonyesha tu Kidokezo cha 3M Canary Yellow Post-it. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
             "crop_soil": "Kata picha ili kuonyesha sampuli ya udongo pekee. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
@@ -794,7 +794,7 @@
             "soilTexture": "Inajumuisha darasa la umbile na ujazo wa vipande vya mwamba"
         },
         "vertical_cracking": {
-            "description": "Nyufa hukua katika udongo wenye udongo mwingi baada ya kukauka. Nyufa zinaweza kuwa za kudumu, au zinaweza kutoweka baada ya muda. <bold>Pima nyufa za udongo wakati udongo umekauka.</bold>",
+            "description": "Nyufa hukua katika udongo wenye mfinyanzi mwingi baada ya kukauka. Nyufa zinaweza kuwa za kudumu, au zinaweza kutoweka baada ya muda. <bold>Pima nyufa za udongo wakati udongo umekauka.</bold>",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "Sentimita 25",
@@ -805,8 +805,8 @@
                 "DEEP_VERTICAL_CRACKS": "Nyufa za wima zenye kina kirefu"
             },
             "no_cracks": "<bold>Hakuna Nyufa</bold>\nHakuna nyufa zinazoonekana kwenye uso wa udongo.",
-            "surface_cracks": "<bold>Mipasuko ya Uso</bold>\nMipasuko ya uso ni chini ya $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\") kina.",
-            "deep_vertical_cracks": "<bold>Mipasuko ya Wima ya Kina</bold>\nMipasuko ya wima ya kina kirefu ni angalau $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\") pana na $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\") kina kirefu. Unapaswa kuwa na uwezo wa kuweka penseli ndani ya mipasuko."
+            "surface_cracks": "<bold>Mipasuko ya Uso</bold>\nMipasuko ya uso ni chini ya $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) kina.",
+            "deep_vertical_cracks": "<bold>Mipasuko ya Wima ya Kina</bold>\nMipasuko ya wima ya kina kirefu ni angalau $t(soil.vertical_cracking.description_width, {\"context\": \"{{units}}\"}) pana na $t(soil.vertical_cracking.description_depth, {\"context\": \"{{units}}\"}) kina kirefu. Unapaswa kuwa na uwezo wa kuweka penseli ndani ya mipasuko."
         },
         "soil_preset": {
             "header": "Badilisha kina cha shimo la udongo",
@@ -1720,24 +1720,24 @@
             "degree": "{{value}}°",
             "info": {
                 "title": "Jinsi ya kutumia Kipima Mteremko",
-                "description": "Simama ukiangalia eneo kutoka angalau $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\") mbali.\n\nTambua mwelekeo wa mteremko mkuu kwenye eneo hilo.\n\nSimama ili uweze kuona ukingo au umbo la mteremko huo mkuu (ingawa unaweza kuhitaji kukaribia ardhi ili kuuona.)\n\nUelekeo unaoelekea unapaswa kuwa sawa na mwelekeo wa mteremko. Ukinyoosha mikono yako kwa pande zako, mstari wanaotengeneza unapaswa kuwa sambamba na mwelekeo wa mteremko.\n\nWeka simu yako ili mstari mweupe imara ulingane na mteremko wa nchi; jaribu kuweka mstari mweupe kando ya mteremko. Unaweza kuhitaji kuinama ikiwa umbo la mteremko si rahisi kuona ukiwa umesimama.\n\n<bold>Njia Mbadala</bold>: Ikiwa umbo la ardhi halijapinda sana au kuwa na matuta, unaweza kuweka kijiti cha yadi chini kwenye eneo la ujenzi na kisha upange simu yako kwenye kijiti ili kupata pembe ya mteremko.",
+                "description": "Simama ukiangalia eneo kutoka angalau $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) mbali.\n\nTambua mwelekeo wa mteremko mkuu kwenye eneo hilo.\n\nSimama ili uweze kuona ukingo au umbo la mteremko huo mkuu (ingawa unaweza kuhitaji kukaribia ardhi ili kuuona.)\n\nUelekeo unaoelekea unapaswa kuwa sawa na mwelekeo wa mteremko. Ukinyoosha mikono yako kwa pande zako, mstari wanaotengeneza unapaswa kuwa sambamba na mwelekeo wa mteremko.\n\nWeka simu yako ili mstari mweupe imara ulingane na mteremko wa nchi; jaribu kuweka mstari mweupe kando ya mteremko. Unaweza kuhitaji kuinama ikiwa umbo la mteremko si rahisi kuona ukiwa umesimama.\n\n<bold>Njia Mbadala</bold>: Ikiwa umbo la ardhi halijapinda sana au kuwa na matuta, unaweza kuweka kijiti cha yadi chini kwenye eneo la ujenzi na kisha upange simu yako kwenye kijiti ili kupata pembe ya mteremko.",
                 "description_distance_METRIC": "Mita 4",
                 "description_distance_ENGLISH": "Futi 15"
             },
             "short_title": "Mwinuko",
             "long_title": "Mteremko Mwinuko",
-            "manual_label": "Mwongozo",
-            "manual_help": "Ingiza Asilimia au Shahada ya Mwinuko",
+            "manual_label": "Kwa mkono",
+            "manual_help": "Ingiza Asilimia au Digrii ya Mwinamo",
             "confirm_title": "Badilisha mteremko?",
             "confirm_body": "Una uhakika unataka kupindua mwinuko wa mteremko?",
             "percentage_placeholder": "Asilimia",
             "percentage_help": "0%–999%",
             "degree_help": "0°–89°",
-            "degree_placeholder": "Shahada",
+            "degree_placeholder": "Digrii",
             "slope_meter": "Kipima Mteremko",
             "camera_grant": "Toa Ruhusa ya Kamera",
             "no_camera": "Hakuna Ufikiaji wa Kamera",
-            "no_camera_explanation": "Kwa matokeo bora zaidi, ruhusu LandPKS Udongo ID itumie kamera yako katika Mipangilio",
+            "no_camera_explanation": "Kwa matokeo bora zaidi, ruhusu LandPKS Soil ID itumie kamera yako katika Mipangilio",
             "select_labels": {
                 "FLAT": "Gorofa",
                 "FLAT_PERCENT": "0–2%",
@@ -1745,9 +1745,9 @@
                 "GENTLE_PERCENT": "2–5%",
                 "MODERATE": "Wastani",
                 "MODERATE_PERCENT": "5–10%",
-                "ROLLING": "Kuzungusha",
+                "ROLLING": "Vilima Laini",
                 "ROLLING_PERCENT": "10–15%",
-                "HILLY": "Hilly",
+                "HILLY": "Milimani",
                 "HILLY_PERCENT": "15–30%",
                 "STEEP": "Mwinuko",
                 "STEEP_PERCENT": "30–50%",
@@ -1764,8 +1764,8 @@
             "title": "Umbo",
             "info": {
                 "title": "Umbo la Mteremko",
-                "description": "Umbo la mteremko hurejelea jinsi ardhi inavyopinda katika eneo linalozunguka sehemu ya eneo lako.\n\nUmbo la mteremko huamuliwa katika pande mbili: <bold>downslope</bold> na <bold>cross-slope</bold>.\n\nKwanza, tambua mwelekeo mkuu wa mteremko kwenye eneo hilo. Puuza matuta madogo au mitaro; angalia kuhusu $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\") katika pande zote.\n\nIkiwa mvua ingenyesha, maji yangetiririka katika mwelekeo gani wa jumla kushuka? Hii inaitwa mwelekeo <bold>downslope</bold>.\n\nMwelekeo wa mteremko unaweza kupatikana kwa kuangalia pembe ya kulia (digrii 90) kutoka upande wa mteremko.\n\nUkitoka kwenye eneo hilo huku ukibaki kwenye mwinuko sawa, huu ndio mwelekeo <bold>cross-slope</bold>.\n\nPili, tambua umbo la mteremko kwa kila mwelekeo.\n\n<bold>Concave</bold> inamaanisha kwamba ardhi inapanda juu zaidi unapohama kutoka sehemu yako kando ya mteremko au mteremko wa chini. Kwa mfano, mteremko wa chini mara nyingi huwa na mkunjo chini ya kilima unapobadilika kutoka mteremko mkali hadi ule usio na kina kirefu.\n\n<bold>Convex</bold> inamaanisha kwamba ardhi inashuka zaidi unapohama kutoka sehemu yako kando ya mwelekeo fulani. Kwa mfano, mteremko wa chini mara nyingi huwa na mkunjo juu ya kilima unapobadilika kutoka sehemu isiyo na kina kirefu hadi ile yenye mwinuko zaidi.\n\n<bold>Linear</bold> inamaanisha mteremko unaendana katika mwelekeo mzima wa mwelekeo fulani. Haimaanishi kwamba ardhi ni tambarare; inamaanisha tu kwamba mteremko haubadiliki.",
-                "concave": "Mlango",
+                "description": "Umbo la mteremko hurejelea jinsi ardhi inavyopinda katika eneo linalozunguka sehemu ya eneo lako.\n\nUmbo la mteremko huamuliwa katika pande mbili: <bold>downslope</bold> na <bold>cross-slope</bold>.\n\nKwanza, tambua mwelekeo mkuu wa mteremko kwenye eneo hilo. Puuza matuta madogo au mitaro; angalia kuhusu $t(slope.shape.info.description_distance, {\"context\": \"{{units}}\"}) katika pande zote.\n\nIkiwa mvua ingenyesha, maji yangetiririka katika mwelekeo gani wa jumla kushuka? Hii inaitwa mwelekeo <bold>downslope</bold>.\n\nMwelekeo wa mteremko unaweza kupatikana kwa kuangalia pembe ya kulia (digrii 90) kutoka upande wa mteremko.\n\nUkitoka kwenye eneo hilo huku ukibaki kwenye mwinuko sawa, huu ndio mwelekeo <bold>cross-slope</bold>.\n\nPili, tambua umbo la mteremko kwa kila mwelekeo.\n\n<bold>Concave</bold> inamaanisha kwamba ardhi inapanda juu zaidi unapohama kutoka sehemu yako kando ya mteremko au mteremko wa chini. Kwa mfano, mteremko wa chini mara nyingi huwa na mkunjo chini ya kilima unapobadilika kutoka mteremko mkali hadi ule usio na kina kirefu.\n\n<bold>Convex</bold> inamaanisha kwamba ardhi inashuka zaidi unapohama kutoka sehemu yako kando ya mwelekeo fulani. Kwa mfano, mteremko wa chini mara nyingi huwa na mkunjo juu ya kilima unapobadilika kutoka sehemu isiyo na kina kirefu hadi ile yenye mwinuko zaidi.\n\n<bold>Linear</bold> inamaanisha mteremko unaendana katika mwelekeo mzima wa mwelekeo fulani. Haimaanishi kwamba ardhi ni tambarare; inamaanisha tu kwamba mteremko haubadiliki.",
+                "concave": "Konkevu",
                 "convex": "Mbonyeo",
                 "linear": "Mstari",
                 "description_distance_METRIC": "Mita 20–30",
@@ -1775,18 +1775,18 @@
             },
             "long_title": "Umbo la Mteremko",
             "select_labels": {
-                "CONCAVE": "Mlango",
+                "CONCAVE": "Konkevu",
                 "CONVEX": "Mbonyeo",
                 "LINEAR": "Mstari"
             }
         }
     },
     "permissions": {
-        "camera_title": "LandPKS Udongo ID inahitaji kufikia kamera yako",
+        "camera_title": "LandPKS Soil ID inahitaji kufikia kamera yako",
         "camera_body": "Ili kutumia {{feature}}, ruhusu LandPKS Soil ID kufikia kamera yako katika mipangilio ya kifaa.",
-        "gallery_title": "LandPKS Udongo ID inahitaji kufikia ghala lako la picha",
+        "gallery_title": "LandPKS Soil ID inahitaji kufikia ghala lako la picha",
         "gallery_body": "Ili kutumia {{feature}}, ruhusu LandPKS Soil ID kufikia ghala lako la picha katika mipangilio ya kifaa.",
-        "location_title": "LandPKS Udongo ID inahitaji kufikia eneo lako",
+        "location_title": "LandPKS Soil ID inahitaji kufikia eneo lako",
         "location_body": "Kwa matumizi bora ya ramani, ruhusu LandPKS Soil ID kufikia eneo lako katika mipangilio ya kifaa."
     },
     "delete_account": {
@@ -1795,8 +1795,8 @@
             "p0": "<bold>{{email}}</bold>",
             "p1": "Akaunti ya LandPKS inayohusiana na anwani hii ya barua pepe itafutwa. Hii huondoa:",
             "p2": {
-                "b0": "tovuti zako zisizohusiana",
-                "b1": "miradi ambayo wewe ndiye msimamizi pekee, na tovuti zao zinazohusiana nayo"
+                "b0": "maeneo yako yasiyohusiana",
+                "b1": "miradi ambayo wewe ndiye msimamizi pekee, na maeneo yao yanayohusiana nayo"
             },
             "p3": "Yafuatayo hayatafutwa:",
             "p4": {
@@ -1825,7 +1825,7 @@
         "microsoft_login": "Ingia ukitumia Microsoft"
     },
     "bottom_navigation": {
-        "sites": "Tovuti",
+        "sites": "Maeneo",
         "projects": "Miradi",
         "settings": "Mipangilio"
     },
@@ -1845,13 +1845,13 @@
         "description2": "<bold>Pata maelezo zaidi na miongozo</bold> katika:\n<icon />",
         "link_label": "landpks.terraso.org",
         "link_url": "https://landpks.terraso.org/",
-        "get_started": "<bold>Ili kuanza, tumia ramani kuunda tovuti:</bold>"
+        "get_started": "<bold>Ili kuanza, tumia ramani kuunda eneo:</bold>"
     },
     "export": {
         "menu_title": "Usafirishaji wa Data",
-        "title_user": "Hamisha tovuti zako zote",
+        "title_user": "Hamisha maeneo yako yote",
         "title_project": "Hamisha maeneo ya mradi",
-        "title_site": "Hamisha tovuti",
+        "title_site": "Hamisha eneo",
         "offline_message": "Unaweza kuhamisha tu ukiwa mtandaoni.",
         "save_or_share_file": "Shiriki au Hifadhi Faili",
         "file_description": "Shiriki au uhifadhi data ya sasa kama faili.",
@@ -1861,9 +1861,9 @@
         "link_description": "Shiriki URL ambayo hurejesha data ya hivi punde kila wakati.",
         "live_link": "Kiungo cha Moja kwa Moja",
         "reset_live_link": "Weka Kiungo cha Moja kwa Moja",
-        "site_export_title": "Tovuti ya Kusafirisha Nje",
-        "site_export_description": "Pakua au shiriki data ya tovuti hii.",
-        "site_export_button": "Hamisha Data ya Tovuti",
+        "site_export_title": "Eneo la Kusafirisha Nje",
+        "site_export_description": "Pakua au shiriki data ya eneo hili.",
+        "site_export_button": "Hamisha Data ya Eneo",
         "what_is_in_file": "Kuna nini kwenye faili?",
         "loading": "Inapakia mipangilio ya kuhamisha...",
         "downloading": "Inapakua...",
@@ -1872,12 +1872,12 @@
         "save_dialog_title": "Hifadhi Data ya LandPKS kwa {{name}}",
         "save_error_title": "Imeshindwa Kuhifadhi",
         "save_error_message": "Imeshindwa kuhifadhi faili: {{error}}",
-        "share_title": "Usafirishaji wa Data ya LandPKS kwa Tovuti za {{name}}",
-        "share_subject": "Kiungo cha Tovuti za LandPKS za {{name}}",
+        "share_title": "Usafirishaji wa Data ya LandPKS kwa Maeneo ya {{name}}",
+        "share_subject": "Kiungo cha Maeneo ya LandPKS ya {{name}}",
         "share_android_message": "Hamisha data ya {{resourceType}} kwa {{name}}:",
-        "share_message_user": "Kiungo hiki kitajumuisha data yote ya tovuti kwa {{name}} ikijumuisha tovuti kutoka kwa miradi ya wanachama.",
-        "share_message_project": "Kiungo hiki kitajumuisha data yote ya tovuti kutoka kwa mradi \"{{name}}\".",
-        "share_message_site": "Kiungo hiki kitajumuisha data yote ya tovuti \"{{name}}\".",
+        "share_message_user": "Kiungo hiki kitajumuisha data yote ya maeneo kwa {{name}} ikijumuisha maeneo kutoka kwa miradi ya wanachama.",
+        "share_message_project": "Kiungo hiki kitajumuisha data yote ya maeneo kutoka kwa mradi \"{{name}}\".",
+        "share_message_site": "Kiungo hiki kitajumuisha data yote ya eneo \"{{name}}\".",
         "reset_links_title": "Ungependa kuweka upya kiungo cha moja kwa moja?",
         "reset_links_body": "Hii itavunja kiungo cha sasa cha moja kwa moja. Mtu yeyote aliye na kiungo kilichovunjika hataweza kufikia faili hizo.",
         "create_token_error_title": "Imeshindwa Kuunda Kiungo",
@@ -1887,7 +1887,7 @@
         "help": {
             "title": "Chaguo za Hamisha",
             "section_file_vs_link": "Faili au Kiungo",
-            "save_file_description": "<bold>Shiriki au Hifadhi Faili</bold> hunasa data ya sasa ya tovuti kama faili ya CSV au JSON. Unaweza kutuma faili hiyo kwa kutumia barua pepe, ujumbe, au programu zingine, au kuihifadhi kwenye kifaa chako.",
+            "save_file_description": "<bold>Shiriki au Hifadhi Faili</bold> hunasa data ya sasa ya eneo kama faili ya CSV au JSON. Unaweza kutuma faili hiyo kwa kutumia barua pepe, ujumbe, au programu zingine, au kuihifadhi kwenye kifaa chako.",
             "live_link_description": "<bold>Shiriki Kiungo cha Data</bold> huunda URL ambayo hurejesha data ya hivi punde kila wakati. Tumia hii kwa kuunganisha na hati, mtiririko wa kazi otomatiki, au unapotaka wengine wawe na ufikiaji wa data yako ya sasa kila wakati. Weka upya kiungo ili kurudisha ufikiaji kutoka kwa viungo vya awali.",
             "section_format": "Umbizo la Faili",
             "csv_description": "Faili za <bold>CSV</bold> (Vipimo Vilivyotenganishwa na Koma) hufanya kazi na programu za lahajedwali kama vile Excel au Google Sheets. Bora kwa kutazama, kupanga, na kuchanganua data yako katika umbizo la jedwali linalojulikana.",

@@ -2568,9 +2568,8 @@ msgid "projects##search##lastModDesc"
 msgstr "ბოლოს შეცვლილი (ყველაზე ძველი)"
 
 #: 
-#, fuzzy
 msgid "screens##SITES"
-msgstr "LandPKS Soil ID"
+msgstr "LandPKS ნიადაგის ID"
 
 #: 
 msgid "soil##collection_method_summary##soilTexture"

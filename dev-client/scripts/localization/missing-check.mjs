@@ -68,6 +68,9 @@ const checkMissingKeys = () => {
       if (_.isEmpty(results)) {
         process.exit(0);
       } else {
+        console.log(
+          '\nTo add TK placeholders for all missing keys, run:\n  npm run localization-fill-missing\n',
+        );
         process.exit(1);
       }
     });

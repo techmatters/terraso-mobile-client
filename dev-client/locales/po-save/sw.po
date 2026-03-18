@@ -45,18 +45,18 @@ msgstr "{{lat}}, {{long}}"
 #: 
 #, fuzzy
 msgid "site##empty##info"
-msgstr "<bold>Njia tatu za kuunda eneo:</bold>\n"
+msgstr "<bold>Njia tatu za kuunda tovuti:</bold>\n"
 ""
 
 #: 
 #, fuzzy
 msgid "site##create##title"
-msgstr "Unda Eneo"
+msgstr "Unda Tovuti"
 
 #: 
 #, fuzzy
 msgid "site##create##description"
-msgstr "Unda eneo hapa ili kuhifadhi eneo hili, kuingiza uchunguzi, na kuona ripoti za kina zaidi."
+msgstr "Unda tovuti hapa ili kuhifadhi eneo hili, kuingiza uchunguzi, na kuona ripoti za kina zaidi."
 
 #: 
 #, fuzzy
@@ -91,17 +91,17 @@ msgstr "Faragha ya Data"
 #: 
 #, fuzzy
 msgid "site##notes##title"
-msgstr "Vidokezo vya Eneo"
+msgstr "Vidokezo vya Tovuti"
 
 #: 
 #, fuzzy
 msgid "site##search##placeholder"
-msgstr "Tafuta maeneo"
+msgstr "Tafuta tovuti"
 
 #: 
 #, fuzzy
 msgid "site##search##sort##label"
-msgstr "Panga maeneo kulingana na"
+msgstr "Panga tovuti kulingana na"
 
 #: 
 #, fuzzy
@@ -136,7 +136,7 @@ msgstr "Umbali (mbali zaidi)"
 #: 
 #, fuzzy
 msgid "site##tabs##SITE"
-msgstr "Eneo"
+msgstr "Tovuti"
 
 #: 
 #, fuzzy
@@ -176,7 +176,7 @@ msgstr "Huna miradi yoyote."
 #: 
 #, fuzzy
 msgid "projects##none##info"
-msgstr "Miradi hukuruhusu kupanga maeneo, kuweka mahitaji, na kusimamia wanachama wa timu."
+msgstr "Miradi hukuruhusu kupanga tovuti, kuweka mahitaji, na kusimamia wanachama wa timu."
 
 #: 
 #, fuzzy
@@ -201,7 +201,7 @@ msgstr "Timu"
 #: 
 #, fuzzy
 msgid "projects##tabs##sites"
-msgstr "Maeneo"
+msgstr "Tovuti"
 
 #: 
 #, fuzzy
@@ -236,7 +236,7 @@ msgstr "Dokezo Lililobandikwa"
 #: 
 #, fuzzy
 msgid "projects##inputs##instructions##description"
-msgstr "Maudhui haya yataonyeshwa juu ya sehemu ya Vidokezo ya kila eneo katika mradi huu."
+msgstr "Maudhui haya yataonyeshwa juu ya sehemu ya Vidokezo ya kila tovuti katika mradi huu."
 
 #: 
 #, fuzzy
@@ -296,17 +296,17 @@ msgstr "Futa mradi huu"
 #: 
 #, fuzzy
 msgid "projects##sites##add"
-msgstr "Ongeza maeneo"
+msgstr "Ongeza tovuti"
 
 #: 
 #, fuzzy
 msgid "projects##sites##transfer"
-msgstr "Hamisha Maeneo"
+msgstr "Hamisha Tovuti"
 
 #: 
 #, fuzzy
 msgid "projects##sites##create"
-msgstr "Unda Maeneo"
+msgstr "Unda Tovuti"
 
 #: 
 #, fuzzy
@@ -316,12 +316,12 @@ msgstr "Tafuta"
 #: 
 #, fuzzy
 msgid "projects##sites##sort##label"
-msgstr "Panga maeneo kulingana na:"
+msgstr "Panga tovuti kulingana na:"
 
 #: 
 #, fuzzy
 msgid "projects##sites##sort##nameAsc"
-msgstr "Jina la eneo (A hadi Z)"
+msgstr "Jina la tovuti (A hadi Z)"
 
 #: 
 #, fuzzy
@@ -361,7 +361,7 @@ msgstr "Mpya"
 #: 
 #, fuzzy
 msgid "general##sites"
-msgstr "maeneo"
+msgstr "tovuti"
 
 #: 
 #, fuzzy
@@ -984,7 +984,7 @@ msgstr "Toleo hili linajumuisha:"
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Kipengele cha usafirishaji data kwa miradi, maeneo ya kibinafsi, na maeneo yote yanayoonekana kwa mtumiaji"
+msgstr "Kipengele cha usafirishaji data kwa miradi, tovuti za kibinafsi, na tovuti zote zinazoonekana kwa mtumiaji"
 
 #: 
 #, fuzzy
@@ -999,7 +999,7 @@ msgstr "Tafsiri za majaribio za Kifaransa na Kijojia"
 #: 
 #, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "Unda maeneo nje ya mtandao"
+msgstr "Unda tovuti nje ya mtandao"
 
 #: 
 #, fuzzy
@@ -1029,7 +1029,7 @@ msgstr "Anza"
 #: 
 #, fuzzy
 msgid "site##list_title"
-msgstr "Orodha ya Maeneo"
+msgstr "Orodha ya Tovuti"
 
 #: 
 #, fuzzy
@@ -1054,7 +1054,7 @@ msgstr "Kitambulisho cha Udongo Kinacholingana Zaidi"
 #: 
 #, fuzzy
 msgid "site##ecological_site_prediction"
-msgstr "Ulinganisho Bora wa Eneo la Kiikolojia"
+msgstr "Ulinganisho Bora wa Tovuti ya Kiikolojia"
 
 #: 
 #, fuzzy
@@ -1079,17 +1079,17 @@ msgstr "haijulikani"
 #: 
 #, fuzzy
 msgid "site##create##button_label"
-msgstr "Unda Eneo Hapa"
+msgstr "Unda Tovuti Hapa"
 
 #: 
 #, fuzzy
 msgid "site##create##name_label"
-msgstr "Jina la Eneo"
+msgstr "Jina la Tovuti"
 
 #: 
 #, fuzzy
 msgid "site##create##location_label"
-msgstr "Mahali pa Eneo"
+msgstr "Mahali pa Tovuti"
 
 #: 
 #, fuzzy
@@ -1109,7 +1109,7 @@ msgstr "Mradi"
 #: 
 #, fuzzy
 msgid "site##create##add_to_project_tooltip"
-msgstr "Eneo hilo litarithi mipangilio ya mradi, ikiwa ni pamoja na mahitaji ya ukusanyaji wa data na wanachama wa timu. Unda miradi mipya kwa kutumia kichupo cha Miradi katika urambazaji wa chini."
+msgstr "Tovuti hiyo itarithi mipangilio ya mradi, ikiwa ni pamoja na mahitaji ya ukusanyaji wa data na wanachama wa timu. Unda miradi mipya kwa kutumia kichupo cha Miradi katika urambazaji wa chini."
 
 #: 
 #, fuzzy
@@ -1124,12 +1124,12 @@ msgstr "Pata maelezo zaidi"
 #: 
 #, fuzzy
 msgid "site##form##name_min_length_error"
-msgstr "Jina la eneo lazima liwe na angalau herufi {{min}}"
+msgstr "Jina la tovuti lazima liwe na angalau herufi {{min}}"
 
 #: 
 #, fuzzy
 msgid "site##form##name_max_length_error"
-msgstr "Jina la eneo lazima liwe na herufi zisizozidi {{max}}"
+msgstr "Jina la tovuti lazima liwe na herufi zisizozidi {{max}}"
 
 #: 
 #, fuzzy
@@ -1164,22 +1164,22 @@ msgstr "Uhamisho hadi Mradi"
 #: 
 #, fuzzy
 msgid "site##dashboard##copy_download_link_button"
-msgstr "Nakili kiungo cha kupakua eneo"
+msgstr "Nakili kiungo cha kupakua tovuti"
 
 #: 
 #, fuzzy
 msgid "site##dashboard##archive_button"
-msgstr "Hifadhi eneo hili"
+msgstr "Hifadhi tovuti hii"
 
 #: 
 #, fuzzy
 msgid "site##dashboard##archive_button_help_text"
-msgstr "Weka alama kwenye eneo hili kwa ajili ya kusoma pekee"
+msgstr "Weka alama kwenye tovuti hii kwa ajili ya kusoma pekee"
 
 #: 
 #, fuzzy
 msgid "site##dashboard##delete_button"
-msgstr "Futa eneo hili"
+msgstr "Futa tovuti hii"
 
 #: 
 #, fuzzy
@@ -1214,7 +1214,7 @@ msgstr "Kitambulisho cha Udongo"
 #: 
 #, fuzzy
 msgid "site##soil_id##description##temp_location"
-msgstr "LandPKS Soil ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda eneo katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo."
+msgstr "LandPKS Soil ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda tovuti katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo."
 
 #: 
 #, fuzzy
@@ -1238,7 +1238,7 @@ msgstr "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana kwenye eneo kul
 msgid "site##soil_id##matches##info##description##temp_location"
 msgstr "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana katika eneo hili kulingana na ramani za udongo za {{soilMapSource}}.\n"
 "\n"
-"Unda eneo hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi."
+"Unda tovuti hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi."
 
 #: 
 #, fuzzy
@@ -1268,12 +1268,12 @@ msgstr "Hakuna data ya ramani ya udongo inayopatikana kwa eneo hili, kwa hivyo L
 #: 
 #, fuzzy
 msgid "site##soil_id##site_data##title"
-msgstr "Uchunguzi wa Eneo"
+msgstr "Uchunguzi wa Tovuti"
 
 #: 
 #, fuzzy
 msgid "site##soil_id##site_data##description"
-msgstr "Boresha matokeo ya Utambulisho wa Udongo kwa kuingiza baadhi ya uchunguzi wa eneo hili kwa kutumia miongozo muhimu njiani."
+msgstr "Boresha matokeo ya Utambulisho wa Udongo kwa kuingiza baadhi ya uchunguzi wa tovuti hii kwa kutumia miongozo muhimu njiani."
 
 #: 
 #, fuzzy
@@ -1333,7 +1333,7 @@ msgstr "Maelezo Kamili ya Mfululizo wa Udongo"
 #: 
 #, fuzzy
 msgid "site##soil_id##soil_info##eco_descr_url"
-msgstr "Maelezo Kamili ya Eneo la Kiikolojia"
+msgstr "Maelezo Kamili ya Tovuti ya Kiikolojia"
 
 #: 
 #, fuzzy
@@ -1458,12 +1458,12 @@ msgstr "Ongeza Dokezo"
 #: 
 #, fuzzy
 msgid "site##notes##add_title"
-msgstr "Dokezo la Eneo"
+msgstr "Dokezo la Tovuti"
 
 #: 
 #, fuzzy
 msgid "site##notes##edit_title"
-msgstr "Dokezo la Eneo"
+msgstr "Dokezo la Tovuti"
 
 #: 
 #, fuzzy
@@ -1493,22 +1493,22 @@ msgstr "Anza kuandika dokezo lako…"
 #: 
 #, fuzzy
 msgid "site##search##accessibility_label"
-msgstr "Chuja maeneo kwa jina la eneo"
+msgstr "Chuja tovuti kwa jina la tovuti"
 
 #: 
 #, fuzzy
 msgid "site##search##filter_projects"
-msgstr "Chuja maeneo kwa mradi"
+msgstr "Chuja tovuti kwa mradi"
 
 #: 
 #, fuzzy
 msgid "site##search##filter_role"
-msgstr "Chuja maeneo kwa jukumu"
+msgstr "Chuja tovuti kwa jukumu"
 
 #: 
 #, fuzzy
 msgid "site##search##no_matches"
-msgstr "Hakuna maeneo yanayolingana na chaguo za utafutaji na vichujio vya sasa."
+msgstr "Hakuna tovuti zinazolingana na chaguo za utafutaji na vichujio vya sasa."
 
 #: 
 #, fuzzy
@@ -1633,7 +1633,7 @@ msgstr "Nakili kiungo cha kupakua mradi"
 #: 
 #, fuzzy
 msgid "projects##settings##download_link_description"
-msgstr "Faili iliyofungwa ya mali zote za mradi ikijumuisha faili ya .csv ya data ya maeneo, madokezo ya sehemu, kumbukumbu za ukaguzi, na picha. Mtu yeyote aliye na kiungo hiki anaweza kuona mali zote."
+msgstr "Faili iliyofungwa ya mali zote za mradi ikijumuisha faili ya .csv ya data ya tovuti, madokezo ya sehemu, kumbukumbu za ukaguzi, na picha. Mtu yeyote aliye na kiungo hiki anaweza kuona mali zote."
 
 #: 
 #, fuzzy
@@ -1663,24 +1663,24 @@ msgstr "Ungependa kufuta mradi?"
 #: 
 #, fuzzy
 msgid "projects##settings##delete_description"
-msgstr "Hii itafuta kabisa mradi {{projectName}} na uchunguzi wa maeneo yake. Hii haiwezi kutenduliwa.\n"
+msgstr "Hii itafuta kabisa mradi {{projectName}} na uchunguzi wa tovuti zake. Hii haiwezi kutenduliwa.\n"
 "\n"
-"Wasimamizi wa miradi wana chaguo la kuhamisha maeneo kutoka mradi huu ili kuweka uchunguzi wa maeneo."
+"Wasimamizi wa miradi wana chaguo la kuhamisha tovuti kutoka mradi huu ili kuweka uchunguzi wa tovuti."
 
 #: 
 #, fuzzy
 msgid "projects##sites##empty_viewer"
-msgstr "Mradi huu hauna maeneo bado."
+msgstr "Mradi huu hauna tovuti bado."
 
 #: 
 #, fuzzy
 msgid "projects##sites##empty_contributor"
-msgstr "Unaweza kuhamisha maeneo yaliyopo ya LandPKS Soil ID kwenye mradi huu. Unaweza pia kuunda maeneo mapya kwenye kichupo cha Sites na kuyaongeza kwenye mradi huu."
+msgstr "Unaweza kuhamisha tovuti zilizopo za LandPKS Soil ID kwenye mradi huu. Unaweza pia kuunda tovuti mpya kwenye kichupo cha Sites na kuziongeza kwenye mradi huu."
 
 #: 
 #, fuzzy
 msgid "projects##sites##go_to"
-msgstr "Nenda kwenye Eneo"
+msgstr "Nenda kwenye Tovuti"
 
 #: 
 #, fuzzy
@@ -1695,17 +1695,17 @@ msgstr "Ondoa kwenye Mradi"
 #: 
 #, fuzzy
 msgid "projects##sites##delete_site"
-msgstr "Futa Eneo"
+msgstr "Futa Tovuti"
 
 #: 
 #, fuzzy
 msgid "projects##sites##delete_site_modal##title"
-msgstr "Futa eneo?"
+msgstr "Futa tovuti?"
 
 #: 
 #, fuzzy
 msgid "projects##sites##delete_site_modal##body"
-msgstr "Hii itafuta kabisa eneo {{siteName}} na uchunguzi wake wote. Hii haiwezi kutenduliwa."
+msgstr "Hii itafuta kabisa tovuti {{siteName}} na uchunguzi wake wote. Hii haiwezi kutenduliwa."
 
 #: 
 #, fuzzy
@@ -1715,29 +1715,29 @@ msgstr "Futa"
 #: 
 #, fuzzy
 msgid "projects##sites##remove_site_modal##title"
-msgstr "Ungependa kuondoa eneo kutoka kwa mradi?"
+msgstr "Ungependa kuondoa tovuti kutoka kwa mradi?"
 
 #: 
 #, fuzzy
 msgid "projects##sites##remove_site_modal##body"
-msgstr "Ni wewe pekee utakayeweza kufikia eneo hili. Washiriki wengine wa timu ya mradi hawatakuwa na ufikiaji tena."
+msgstr "Ni wewe pekee utakayeweza kufikia tovuti hii. Washiriki wengine wa timu ya mradi hawatakuwa na ufikiaji tena."
 
 #: 
 #, fuzzy
 msgid "projects##sites##remove_site_modal##action_name"
-msgstr "Ondoa Eneo"
+msgstr "Ondoa Tovuti"
 
 #: 
 #, fuzzy
 msgid "projects##sites##transfer_site_modal##title"
-msgstr "Maeneo ya kuhamisha?"
+msgstr "Tovuti za kuhamisha?"
 
 #: 
 #, fuzzy
 msgid "projects##sites##transfer_site_modal##body"
-msgstr "Maeneo yaliyohamishwa yatatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu.\n"
+msgstr "Tovuti zilizohamishwa zitatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu.\n"
 "\n"
-"Ikiwa maeneo yana uchunguzi ulioingizwa kwa kina tofauti na kile kilichoainishwa katika mradi huu, uchunguzi huo utafutwa. Hili haliwezi kutenduliwa."
+"Ikiwa tovuti zina uchunguzi ulioingizwa kwa kina tofauti na kile kilichoainishwa katika mradi huu, uchunguzi huo utafutwa. Hili haliwezi kutenduliwa."
 
 #: 
 #, fuzzy
@@ -1747,7 +1747,7 @@ msgstr "Uhamisho"
 #: 
 #, fuzzy
 msgid "projects##sites##search##accessility_label"
-msgstr "Tafuta maeneo"
+msgstr "Tafuta tovuti"
 
 #: 
 #, fuzzy
@@ -1787,17 +1787,17 @@ msgstr "Jukumu la Mradi"
 #: 
 #, fuzzy
 msgid "projects##manage_member##manager_help"
-msgstr "Inaweza kutazama na kuhariri vipengele vyote vya mradi na maeneo yake yanayohusiana"
+msgstr "Inaweza kutazama na kuhariri vipengele vyote vya mradi na tovuti zake zinazohusiana"
 
 #: 
 #, fuzzy
 msgid "projects##manage_member##contributor_help"
-msgstr "Inaweza kutazama data ya eneo, na kuongeza na kuhariri uchunguzi"
+msgstr "Inaweza kutazama data ya tovuti, na kuongeza na kuhariri uchunguzi"
 
 #: 
 #, fuzzy
 msgid "projects##manage_member##viewer_help"
-msgstr "Inaweza kuona data na uchunguzi wa eneo"
+msgstr "Inaweza kuona data na uchunguzi wa tovuti"
 
 #: 
 #, fuzzy
@@ -1807,7 +1807,7 @@ msgstr "Ondoa kwenye mradi"
 #: 
 #, fuzzy
 msgid "projects##manage_member##remove_help"
-msgstr "Ondoa ufikiaji wa mshiriki wa timu kwenye mradi huu, ukihifadhi uchunguzi wowote uliochangia kwenye maeneo"
+msgstr "Ondoa ufikiaji wa mshiriki wa timu kwenye mradi huu, ukihifadhi uchunguzi wowote uliochangia kwenye tovuti"
 
 #: 
 #, fuzzy
@@ -1827,12 +1827,12 @@ msgstr "Ondoa"
 #: 
 #, fuzzy
 msgid "projects##transfer_sites##heading"
-msgstr "Hamisha Maeneo kwenye Mradi huu"
+msgstr "Hamisha Tovuti kwenye Mradi huu"
 
 #: 
 #, fuzzy
 msgid "projects##transfer_sites##description"
-msgstr "Hamisha maeneo ya LandPKS Soil ID unayosimamia kwenye mradi huu. Unapohamisha maeneo, yatatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu."
+msgstr "Hamisha tovuti za LandPKS Soil ID unazosimamia kwenye mradi huu. Unapohamisha tovuti, zitatumia ingizo, mipangilio na majukumu ya wanachama wa timu kutoka kwa mradi huu."
 
 #: 
 #, fuzzy
@@ -1967,7 +1967,7 @@ msgstr "Faragha ya Data ya LandPKS"
 #: 
 #, fuzzy
 msgid "general##info##privacy_item1"
-msgstr "<bold>Maeneo ya umma</bold> yanaonekana kwa mtu yeyote kwenye lango la data la LandPKS."
+msgstr "<bold>Tovuti za umma</bold> zinaonekana kwa mtu yeyote kwenye lango la data la LandPKS."
 
 #: 
 #, fuzzy
@@ -1977,12 +1977,12 @@ msgstr "Uchunguzi wote ulioingizwa kwenye programu ya simu ya LandPKS Soil ID um
 #: 
 #, fuzzy
 msgid "general##info##privacy_item3"
-msgstr "<bold>Eneo la kibinafsi</bold> lisiohusiana na mradi linaonekana tu kwa mtu aliyeliunda. Mtu huyo anaweza kubadilisha faragha wakati wowote."
+msgstr "<bold>Tovuti ya kibinafsi</bold> isiyohusiana na mradi inaonekana tu kwa mtu aliyeiunda. Mtu huyo anaweza kubadilisha faragha wakati wowote."
 
 #: 
 #, fuzzy
 msgid "general##info##privacy_item4"
-msgstr "<bold>Mpangilio wa faragha wa mradi huamua faragha ya maeneo yake yanayohusiana.</bold> Maeneo ambayo ni ya mradi wa kibinafsi yanaonekana kwa wanachama wa timu ya mradi. Meneja wa mradi anaweza kubadilisha faragha wakati wowote."
+msgstr "<bold>Mpangilio wa faragha wa mradi huamua faragha ya tovuti zake zinazohusiana.</bold> Tovuti ambazo ni za mradi wa kibinafsi zinaonekana kwa wanachama wa timu ya mradi. Meneja wa mradi anaweza kubadilisha faragha wakati wowote."
 
 #: 
 #, fuzzy
@@ -2057,7 +2057,7 @@ msgstr "Mradi #{{id}}"
 #: 
 #, fuzzy
 msgid "screens##CREATE_SITE"
-msgstr "Unda Eneo"
+msgstr "Unda Tovuti"
 
 #: 
 #, fuzzy
@@ -2092,12 +2092,12 @@ msgstr "Akaunti ya LandPKS inayohusiana na anwani hii ya barua pepe itafutwa. Hi
 #: 
 #, fuzzy
 msgid "delete_account##confirm##p2##b0"
-msgstr "maeneo yako yasiyohusiana"
+msgstr "tovuti zako zisizohusiana"
 
 #: 
 #, fuzzy
 msgid "delete_account##confirm##p2##b1"
-msgstr "miradi ambayo wewe ndiye msimamizi pekee, na maeneo yao yanayohusiana nayo"
+msgstr "miradi ambayo wewe ndiye msimamizi pekee, na tovuti zao zinazohusiana nayo"
 
 #: 
 #, fuzzy
@@ -2172,7 +2172,7 @@ msgstr "Ingia ukitumia Microsoft"
 #: 
 #, fuzzy
 msgid "bottom_navigation##sites"
-msgstr "Maeneo"
+msgstr "Tovuti"
 
 #: 
 #, fuzzy
@@ -3173,7 +3173,7 @@ msgstr "Kujua umbile la udongo hukusaidia kutambua udongo wako kwa usahihi zaidi
 msgid "projects##sites##delete_site_modal##project"
 msgstr "\n"
 "\n"
-"Wasimamizi wa miradi wanaweza kuondoa eneo kutoka kwa mradi huu ili kuhifadhi data yake."
+"Wasimamizi wa miradi wanaweza kuondoa tovuti kutoka kwa mradi huu ili kuhifadhi data yake."
 
 #: 
 #, fuzzy
@@ -3183,12 +3183,12 @@ msgstr "Kwa kutumia LandPKS unakubali sera yetu ya faragha na sheria na masharti
 #: 
 #, fuzzy
 msgid "info##get_started"
-msgstr "<bold>Ili kuanza, tumia ramani kuunda eneo:</bold>"
+msgstr "<bold>Ili kuanza, tumia ramani kuunda tovuti:</bold>"
 
 #: 
 #, fuzzy
 msgid "site##list_title_empty"
-msgstr "Unda Eneo"
+msgstr "Unda Tovuti"
 
 #: 
 #, fuzzy
@@ -3208,12 +3208,12 @@ msgstr "Ingiza viwianishi, anwani, au neno la utafutaji katika upau wa utafutaji
 #: 
 #, fuzzy
 msgid "site##empty##summary"
-msgstr "Eneo hukuruhusu kukusanya na kuhifadhi uchunguzi, kujifunza zaidi kuhusu ardhi na uwezo wake, na kushiriki na wengine."
+msgstr "Tovuti hukuruhusu kukusanya na kuhifadhi uchunguzi, kujifunza zaidi kuhusu ardhi na uwezo wake, na kushiriki na wengine."
 
 #: 
 #, fuzzy
 msgid "site##offline##alert_body"
-msgstr "Maeneo yanaweza kuundwa tu wakati wa mtandaoni."
+msgstr "Tovuti zinaweza kuundwa tu wakati wa mtandaoni."
 
 #: 
 #, fuzzy
@@ -3363,12 +3363,12 @@ msgstr "Uko nje ya mtandao. Miradi haiwezi kuhaririwa."
 #: 
 #, fuzzy
 msgid "site##soil_id##description##site_US"
-msgstr "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu eneo hili ili kukokotoa ulinganifu bora wa udongo wa eneo. Chagua ulinganifu bora wa udongo kwa eneo hili ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine."
+msgstr "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine."
 
 #: 
 #, fuzzy
 msgid "site##soil_id##description##site_global_or_unknown"
-msgstr "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu eneo hili ili kukokotoa ulinganifu bora wa udongo wa eneo. Chagua ulinganifu bora wa udongo kwa eneo hili ili kujifunza kuhusu sifa za udongo na maelezo mengine."
+msgstr "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu tovuti hii ili kukokotoa ulinganifu bora wa udongo wa tovuti. Chagua ulinganifu bora wa udongo kwa tovuti hii ili kujifunza kuhusu sifa za udongo na maelezo mengine."
 
 #: 
 #, fuzzy
@@ -3382,7 +3382,7 @@ msgstr "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana kwenye eneo kul
 msgid "site##soil_id##matches##info##description##temp_location_region_unknown"
 msgstr "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana katika eneo hili kulingana na ramani za udongo.\n"
 "\n"
-"Unda eneo hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi."
+"Unda tovuti hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi."
 
 #: 
 #, fuzzy
@@ -6176,7 +6176,7 @@ msgstr "Usafirishaji wa Data"
 #: 
 #, fuzzy
 msgid "export##title_user"
-msgstr "Hamisha maeneo yako yote"
+msgstr "Hamisha tovuti zako zote"
 
 #: 
 #, fuzzy
@@ -6186,7 +6186,7 @@ msgstr "Hamisha maeneo ya mradi"
 #: 
 #, fuzzy
 msgid "export##title_site"
-msgstr "Hamisha eneo"
+msgstr "Hamisha tovuti"
 
 #: 
 #, fuzzy
@@ -6236,17 +6236,17 @@ msgstr "Weka Kiungo cha Moja kwa Moja"
 #: 
 #, fuzzy
 msgid "export##site_export_title"
-msgstr "Eneo la Kusafirisha Nje"
+msgstr "Tovuti ya Kusafirisha Nje"
 
 #: 
 #, fuzzy
 msgid "export##site_export_description"
-msgstr "Pakua au shiriki data ya eneo hili."
+msgstr "Pakua au shiriki data ya tovuti hii."
 
 #: 
 #, fuzzy
 msgid "export##site_export_button"
-msgstr "Hamisha Data ya Eneo"
+msgstr "Hamisha Data ya Tovuti"
 
 #: 
 #, fuzzy
@@ -6290,12 +6290,12 @@ msgstr "Imeshindwa kuhifadhi faili: {{error}}"
 #: 
 #, fuzzy
 msgid "export##share_title"
-msgstr "Usafirishaji wa Data ya LandPKS kwa Maeneo ya {{name}}"
+msgstr "Usafirishaji wa Data ya LandPKS kwa Tovuti za {{name}}"
 
 #: 
 #, fuzzy
 msgid "export##share_subject"
-msgstr "Kiungo cha Maeneo ya LandPKS ya {{name}}"
+msgstr "Kiungo cha Tovuti za LandPKS za {{name}}"
 
 #: 
 #, fuzzy
@@ -6305,17 +6305,17 @@ msgstr "Hamisha data ya {{resourceType}} kwa {{name}}:"
 #: 
 #, fuzzy
 msgid "export##share_message_user"
-msgstr "Kiungo hiki kitajumuisha data yote ya maeneo kwa {{name}} ikijumuisha maeneo kutoka kwa miradi ya wanachama."
+msgstr "Kiungo hiki kitajumuisha data yote ya tovuti kwa {{name}} ikijumuisha tovuti kutoka kwa miradi ya wanachama."
 
 #: 
 #, fuzzy
 msgid "export##share_message_project"
-msgstr "Kiungo hiki kitajumuisha data yote ya maeneo kutoka kwa mradi \"{{name}}\"."
+msgstr "Kiungo hiki kitajumuisha data yote ya tovuti kutoka kwa mradi \"{{name}}\"."
 
 #: 
 #, fuzzy
 msgid "export##share_message_site"
-msgstr "Kiungo hiki kitajumuisha data yote ya eneo \"{{name}}\"."
+msgstr "Kiungo hiki kitajumuisha data yote ya tovuti \"{{name}}\"."
 
 #: 
 #, fuzzy
@@ -6360,7 +6360,7 @@ msgstr "Faili au Kiungo"
 #: 
 #, fuzzy
 msgid "export##help##save_file_description"
-msgstr "<bold>Shiriki au Hifadhi Faili</bold> hunasa data ya sasa ya eneo kama faili ya CSV au JSON. Unaweza kutuma faili hiyo kwa kutumia barua pepe, ujumbe, au programu zingine, au kuihifadhi kwenye kifaa chako."
+msgstr "<bold>Shiriki au Hifadhi Faili</bold> hunasa data ya sasa ya tovuti kama faili ya CSV au JSON. Unaweza kutuma faili hiyo kwa kutumia barua pepe, ujumbe, au programu zingine, au kuihifadhi kwenye kifaa chako."
 
 #: 
 msgid "export##help##live_link_description"
@@ -6449,7 +6449,7 @@ msgstr "Boresha mechi"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##improve_description"
-msgstr "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Eneo hapa chini.)"
+msgstr "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Tovuti hapa chini.)"
 
 #: 
 msgid "settings##copy_access_token"

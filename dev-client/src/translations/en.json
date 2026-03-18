@@ -106,9 +106,9 @@
                 "site_global_or_unknown": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about soil characteristics and other descriptions."
             },
             "matches": {
-                "title": "Top Soil Matches",
+                "title": "Soil Matches",
                 "info": {
-                    "title": "Top soil matches",
+                    "title": "Soil matches",
                     "description": {
                         "site": "The soils listed are the most likely to be found at the site based on {{soilMapSource}} soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
                         "site_region_unknown": "The soils listed are the most likely to be found at the site based on soil maps for this location.\n\nEnter the recommended slope and soil observations to improve accuracy of the match scores. When observations are entered, the list will automatically update.",
