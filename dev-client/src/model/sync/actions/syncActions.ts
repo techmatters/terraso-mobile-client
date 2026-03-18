@@ -93,7 +93,7 @@ const fetchMissingElevations = async (
   // Update Redux and build updated site data
   const updatedSiteData = {...siteData};
   for (const {siteId, elevation} of elevationResults) {
-    if (elevation !== null) {
+    if (elevation !== undefined) {
       dispatch(setSiteElevation({siteId, elevation}));
       updatedSiteData[siteId] = {...updatedSiteData[siteId], elevation};
     }

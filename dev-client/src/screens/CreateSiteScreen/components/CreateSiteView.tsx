@@ -25,6 +25,8 @@ import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {
@@ -54,19 +56,41 @@ export const CreateSiteView = ({
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
   const sitesScreen = useSitesScreenContext();
+  const isOffline = useIsOffline();
 
   const navigation = useNavigation();
 
   const onSave = useCallback(
     async ({...form}: FormState) => {
       const {...site} = validationSchema.cast(form);
-      const createdSite = await createSiteCallback({...site, elevation});
+      let finalElevation = elevation;
+
+      const latLongWasChanged =
+        site.latitude !== sitePin?.latitude ||
+        site.longitude !== sitePin?.longitude;
+      if (latLongWasChanged) {
+        finalElevation = isOffline
+          ? undefined
+          : await fetchElevationForCoords(site.latitude, site.longitude);
+      }
+      const createdSite = await createSiteCallback({
+        ...site,
+        elevation: finalElevation,
+      });
       if (createdSite !== undefined) {
         sitesScreen?.showSiteOnMap(createdSite);
         navigation.popTo('BOTTOM_TABS');
       }
     },
-    [createSiteCallback, navigation, validationSchema, sitesScreen, elevation],
+    [
+      createSiteCallback,
+      navigation,
+      validationSchema,
+      sitesScreen,
+      elevation,
+      sitePin,
+      isOffline,
+    ],
   );
 
   return (
