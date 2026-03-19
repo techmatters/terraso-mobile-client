@@ -31,9 +31,16 @@ beforeEach(() => {
 
 describe('resolveElevation', () => {
   describe('when coords are unchanged', () => {
-    it('returns original elevation without fetching', async () => {
+    it('returns original elevation without fetching (offline)', async () => {
       await expect(
         resolveElevation(SITE_PIN, SITE_PIN, 100, true),
+      ).resolves.toBe(100);
+      expect(mockFetchElevation).not.toHaveBeenCalled();
+    });
+
+    it('returns original elevation without fetching (online)', async () => {
+      await expect(
+        resolveElevation(SITE_PIN, SITE_PIN, 100, false),
       ).resolves.toBe(100);
       expect(mockFetchElevation).not.toHaveBeenCalled();
     });
