@@ -20,18 +20,23 @@ import type {
   SoilMetadataPushFailureReason,
   UserMatchRating,
 } from 'terraso-client-shared/graphqlSchema/graphql';
+import * as siteService from 'terraso-client-shared/site/siteService';
+import type {Site} from 'terraso-client-shared/site/siteTypes';
 import type {
   SoilData,
   SoilMetadata,
 } from 'terraso-client-shared/soilId/soilIdTypes';
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 
+import * as elevationService from 'terraso-mobile-client/model/elevation/elevationService';
 import {pushUserData} from 'terraso-mobile-client/model/sync/actions/syncActions';
 import type {SyncRecords} from 'terraso-mobile-client/model/sync/records';
 import type {AppState} from 'terraso-mobile-client/store';
 
+jest.mock('terraso-client-shared/site/siteService');
 jest.mock('terraso-client-shared/soilId/syncService');
 jest.mock('terraso-mobile-client/config', () => ({syncDebugEnabled: false}));
+jest.mock('terraso-mobile-client/model/elevation/elevationService');
 // siteSlice imports createAsyncThunk from terraso-client-shared which triggers
 // accountSlice initialization, so we mock it to prevent that chain.
 jest.mock('terraso-mobile-client/model/site/siteSlice', () => ({
@@ -907,5 +912,142 @@ describe('pushUserData', () => {
     // Should only send one entry despite duplicates
     const callArgs = mockPushUserData.mock.calls[0][0];
     expect(callArgs.soilDataEntries).toHaveLength(1);
+  });
+});
+
+describe('pushUserData - elevation fetch and push for sites', () => {
+  const mockFetchElevationForCoords =
+    elevationService.fetchElevationForCoords as jest.MockedFunction<
+      typeof elevationService.fetchElevationForCoords
+    >;
+  const mockUpdateSite = siteService.updateSite as jest.MockedFunction<
+    typeof siteService.updateSite
+  >;
+  const mockAddSite = siteService.addSite as jest.MockedFunction<
+    typeof siteService.addSite
+  >;
+  const mockFetchSite = siteService.fetchSite as jest.MockedFunction<
+    typeof siteService.fetchSite
+  >;
+
+  const mockGetState = jest.fn();
+  const mockDispatch = jest.fn();
+  const mockThunkAPI = {
+    getState: mockGetState,
+    dispatch: mockDispatch,
+  } as any;
+
+  const site: Site = {
+    id: 'site-1',
+    name: 'Site 1',
+    latitude: 10,
+    longitude: 20,
+    elevation: null,
+    privacy: 'PRIVATE',
+    archived: false,
+    updatedAt: '2024-01-01T00:00:00Z',
+    notes: {},
+  };
+
+  const baseState: Partial<AppState> = {
+    soilData: {
+      soilData: {},
+      soilSync: {},
+      projectSettings: {},
+      status: 'ready',
+    },
+    soilMetadata: {soilMetadata: {}, soilMetadataSync: {}},
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockFetchElevationForCoords.mockResolvedValue(42);
+    mockUpdateSite.mockResolvedValue(undefined as any);
+    mockAddSite.mockResolvedValue(undefined as any);
+    mockFetchSite.mockResolvedValue({...site, elevation: 42});
+  });
+
+  it('fetches elevation for a site with null elevation during push', async () => {
+    mockGetState.mockReturnValue({
+      ...baseState,
+      site: {
+        sites: {'site-1': site},
+        // lastSyncedData is set, so this is an existing (non-new) site
+        siteSync: {'site-1': {revisionId: 1, lastSyncedData: site}},
+      },
+    });
+
+    await pushUserData({siteSiteIds: ['site-1']}, null, mockThunkAPI);
+
+    expect(mockFetchElevationForCoords).toHaveBeenCalledWith(
+      site.latitude,
+      site.longitude,
+    );
+  });
+
+  it('dispatches setSiteElevation with the fetched elevation', async () => {
+    mockGetState.mockReturnValue({
+      ...baseState,
+      site: {
+        sites: {'site-1': site},
+        siteSync: {'site-1': {revisionId: 1, lastSyncedData: site}},
+      },
+    });
+
+    await pushUserData({siteSiteIds: ['site-1']}, null, mockThunkAPI);
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'site/setSiteElevation',
+      payload: {siteId: 'site-1', elevation: 42},
+    });
+  });
+
+  it('calls updateSite with the fetched elevation for an existing site', async () => {
+    // Scenario: site existed on server but had no elevation (e.g., old DB record)
+    mockGetState.mockReturnValue({
+      ...baseState,
+      site: {
+        sites: {'site-1': site},
+        siteSync: {'site-1': {revisionId: 1, lastSyncedData: site}},
+      },
+    });
+
+    await pushUserData({siteSiteIds: ['site-1']}, null, mockThunkAPI);
+
+    expect(mockUpdateSite).toHaveBeenCalledWith(
+      expect.objectContaining({elevation: 42}),
+    );
+  });
+
+  it('calls addSite with the fetched elevation for a new site', async () => {
+    // Scenario: site was created locally but never pushed (lastSyncedData === undefined)
+    mockGetState.mockReturnValue({
+      ...baseState,
+      site: {
+        sites: {'site-1': site},
+        siteSync: {'site-1': {revisionId: 1}}, // no lastSyncedData = new site
+      },
+    });
+
+    await pushUserData({siteSiteIds: ['site-1']}, null, mockThunkAPI);
+
+    expect(mockAddSite).toHaveBeenCalledWith(
+      expect.objectContaining({elevation: 42}),
+    );
+  });
+
+  it('does not fetch elevation when the site already has it', async () => {
+    const siteWithElevation = {...site, elevation: 100};
+    mockGetState.mockReturnValue({
+      ...baseState,
+      site: {
+        sites: {'site-1': siteWithElevation},
+        siteSync: {'site-1': {revisionId: 1, lastSyncedData: site}},
+      },
+    });
+
+    await pushUserData({siteSiteIds: ['site-1']}, null, mockThunkAPI);
+
+    expect(mockFetchElevationForCoords).not.toHaveBeenCalled();
   });
 });
