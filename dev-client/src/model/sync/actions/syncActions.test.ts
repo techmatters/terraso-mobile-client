@@ -31,6 +31,15 @@ import type {SyncRecords} from 'terraso-mobile-client/model/sync/records';
 import type {AppState} from 'terraso-mobile-client/store';
 
 jest.mock('terraso-client-shared/soilId/syncService');
+jest.mock('terraso-mobile-client/config', () => ({syncDebugEnabled: false}));
+// siteSlice imports createAsyncThunk from terraso-client-shared which triggers
+// accountSlice initialization, so we mock it to prevent that chain.
+jest.mock('terraso-mobile-client/model/site/siteSlice', () => ({
+  setSiteElevation: (payload: {siteId: string; elevation: number}) => ({
+    type: 'site/setSiteElevation',
+    payload,
+  }),
+}));
 
 const mockPushUserData = syncService.pushUserData as jest.MockedFunction<
   typeof syncService.pushUserData
