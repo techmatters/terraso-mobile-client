@@ -795,8 +795,18 @@ async function main() {
   // 1. Regenerate en.po from en.json
   runNpmScript('localization-to-po');
 
-  // 2. Download non-English PO files from POEditor (overwrites locally generated ones)
+  // 2. Download PO files from POEditor
   // --force skips the download script's uncommitted-changes check (merge has its own pre-flight)
+  // If POEditor has English changes, download en.po too (overwrites locally-generated one)
+  const hasPoeditorEnglishChanges =
+    langData['en'] && diffSize(langData['en'].poeditorDiff) > 0;
+  if (hasPoeditorEnglishChanges) {
+    verbose(
+      'Downloading en.po from POEditor (POEditor-side English changes detected)',
+    );
+    runScript('poeditor-download.mjs', '--force en');
+  }
+  // Download non-English PO files
   runScript('poeditor-download.mjs', '--force');
 
   // 3. Regenerate JSON from PO

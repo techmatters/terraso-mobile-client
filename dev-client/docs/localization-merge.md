@@ -92,14 +92,15 @@ For each non-English language that has local changes:
 ### Phase 3: Download, convert, commit, tag
 
 1. Run `localization-to-po` to regenerate `locales/po/en.po` from `en.json`.
-2. Run `poeditor-download` to download non-English PO files from POEditor.
-3. Run `localization-to-json` to regenerate all JSON files from PO.
-4. If no files actually changed (and no po-save files exist), print "Already in sync" and exit.
-5. If `--no-commit`: list modified files, print restore instructions, open the change report, and **stop** (no commit or tag).
-6. Stage only files with real translation changes (skip PO files where only metadata like timestamps changed). Also stage any `locales/po-save/` files.
-7. Commit with a detailed message showing per-language changes (added, changed, removed strings with before/after values).
-8. Create a timestamped tag `translations/<UTC timestamp>` (e.g. `translations/20260310T0109Z`).
-9. Move the `translations/latest` tag to this commit.
+2. If POEditor has English changes, download `en.po` from POEditor (overwrites the locally-generated one).
+3. Run `poeditor-download` to download non-English PO files from POEditor.
+4. Run `localization-to-json` to regenerate all JSON files from PO.
+5. If no files actually changed (and no po-save files exist), print "Already in sync" and exit.
+6. If `--no-commit`: list modified files, print restore instructions, open the change report, and **stop** (no commit or tag).
+7. Stage only files with real translation changes (skip PO files where only metadata like timestamps changed). Also stage any `locales/po-save/` files.
+8. Commit with a detailed message showing per-language changes (added, changed, removed strings with before/after values).
+9. Create a timestamped tag `translations/<UTC timestamp>` (e.g. `translations/20260310T0109Z`).
+10. Move the `translations/latest` tag to this commit.
 
 ## Workflow for local translation fixes
 
