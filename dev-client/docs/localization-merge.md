@@ -29,9 +29,11 @@ npm run poeditor-merge -- --help                 # show usage help
 ## Prerequisites
 
 - `POEDITOR_API_TOKEN` and `POEDITOR_PROJECT_ID` in `.env`
-- The git tag `translations/latest` must exist, pointing to the last sync commit. On first use, create it manually:
+- The file `locales/sync-tag` must contain the tag name of the last sync (e.g. `translations/20260310T0109Z`). That tag must exist in git. On first use, create both manually:
   ```bash
-  git tag translations/latest <commit>
+  git tag translations/<timestamp> <commit>
+  echo "translations/<timestamp>" > locales/sync-tag
+  git add locales/sync-tag && git commit -m "chore: initialize sync-tag"
   ```
 
 ## Assumptions
@@ -39,7 +41,7 @@ npm run poeditor-merge -- --help                 # show usage help
 - English (`en.json`) is the source language, edited locally.
 - Non-English translations are primarily edited in POEditor by translators, but may also have local fixes.
 - All local changes (including non-English) should be made to the `.json` files in `src/translations/`, not PO files. The merge script converts JSON to PO for diffing and upload.
-- Git tags mark sync points. `translations/latest` always points to the most recent sync, and each sync also gets a timestamped tag like `translations/20260309T1709Z`.
+- The file `locales/sync-tag` records which timestamped tag is the baseline for the current branch. Each sync creates a new timestamped tag (e.g. `translations/20260309T1709Z`) and updates `sync-tag`. Because `sync-tag` is a regular file, it travels through any merge strategy (squash, regular, cherry-pick), so the baseline is always correct for the current branch.
 - PO files are the interchange format (JSON <-> PO conversion via existing scripts).
 
 ## Algorithm
@@ -48,15 +50,15 @@ npm run poeditor-merge -- --help                 # show usage help
 
 Before any work (skipped in `--dry-run` mode):
 
-1. Verify `translations/latest` tag exists.
-2. Check that `locales/po/`, `src/translations/`, and `locales/po-save/` have no uncommitted changes (staged, unstaged, or untracked). This ensures you can always restore files after a `--no-commit` test run.
+1. Read the baseline tag name from `locales/sync-tag` and verify the tag exists in git.
+2. Check that `locales/po/`, `src/translations/`, `locales/po-save/`, and `locales/sync-tag` have no uncommitted changes (staged, unstaged, or untracked). This ensures you can always restore files after a `--no-commit` test run.
 
 ### Phase 0: Detect conflicts (read-only)
 
 For each language:
 
 1. Convert local `src/translations/{lang}.json` to PO in memory.
-2. Get the PO at the `translations/latest` tag via `git show` (the baseline).
+2. Get the PO at the baseline tag (from `locales/sync-tag`) via `git show`.
 3. Download the current PO from POEditor.
 4. Diff local PO vs baseline to get **local changes**.
 5. Diff POEditor PO vs baseline to get **POEditor changes**.
@@ -98,16 +100,16 @@ For each non-English language that has local changes:
 5. If no files actually changed (and no po-save files exist), print "Already in sync" and exit.
 6. If `--no-commit`: list modified files, print restore instructions, open the change report, and **stop** (no commit or tag).
 7. Stage only files with real translation changes (skip PO files where only metadata like timestamps changed). Also stage any `locales/po-save/` files.
-8. Commit with a detailed message showing per-language changes (added, changed, removed strings with before/after values).
-9. Create a timestamped tag `translations/<UTC timestamp>` (e.g. `translations/20260310T0109Z`).
-10. Move the `translations/latest` tag to this commit.
+8. Update `locales/sync-tag` with the new tag name and stage it.
+9. Commit with a detailed message showing per-language changes (added, changed, removed strings with before/after values).
+10. Create a timestamped tag `translations/<UTC timestamp>` (e.g. `translations/20260310T0109Z`).
 
 ## Workflow for local translation fixes
 
 1. Make fixes directly in `src/translations/{lang}.json`.
 2. Run `npm run poeditor-merge -- --dry-run` to preview changes and check for conflicts.
 3. Run `npm run poeditor-merge` to upload, download, and commit.
-4. Push the commit and tags: `git push && git push --tags`
+4. Push the commit and tag: `git push && git push origin translations/<timestamp>`
 
 ## Testing with a test project
 
@@ -121,7 +123,7 @@ To test the merge without affecting the real POEditor project or your git histor
 3. Review the HTML change report (opens automatically) and modified files.
 4. Restore local files:
    ```bash
-   git checkout -- locales/po/ src/translations/ locales/po-save/
+   git checkout -- locales/po/ src/translations/ locales/po-save/ locales/sync-tag
    ```
 5. Clean up: `npm run poeditor-create-test-project -- --cleanup <test-id>`
 
@@ -129,9 +131,9 @@ The pre-flight check requires clean working tree, so restore is always safe.
 
 ## Properties
 
-**Idempotent.** If the process crashes after some uploads but before moving the tag, re-running is safe. The next run will re-upload the same changes (no-op on POEditor) and see them as convergent non-conflicts on the POEditor side.
+**Idempotent.** If the process crashes after some uploads but before committing, re-running is safe. The `sync-tag` file hasn't been updated yet, so the next run uses the same baseline and re-uploads the same changes (no-op on POEditor).
 
-**Tag is the single source of truth.** The tag marks the last known sync point. Local commits between syncs don't affect the algorithm — Phase 0 always diffs against the tag, not HEAD.
+**sync-tag is the source of truth.** The `locales/sync-tag` file records the baseline tag name. Because it's a regular file (not a git tag pointer), it travels through any merge strategy — squash merge, regular merge, cherry-pick. This means the baseline is always correct for the current branch, even if the sync was done on a different branch that was later squash-merged.
 
 **English goes first.** Uploading English with `--fuzzy-trigger` modifies the fuzzy state of other languages on POEditor. By uploading English before other languages, we avoid downloading stale state for non-English languages.
 
