@@ -118,7 +118,6 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           <Column px="16px" py="22px">
             <TextInput
               maxLength={SITE_NAME_MAX_LENGTH}
-              disabled={isOffline}
               value={name}
               onChangeText={setName}
               label={t('site.create.name_label')}
@@ -129,7 +128,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                 size="lg"
                 label={t('general.save')}
                 onPress={onSave}
-                disabled={isOffline || !dirty}
+                disabled={!dirty}
               />
             </View>
             <View mt={6}>

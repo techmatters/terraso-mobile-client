@@ -41,9 +41,9 @@ npm run prebuild
 
 if [[ "$PLATFORM" == "ios" ]]; then
     if [[ -n "$IOS_DEVICE_ID" ]]; then
-        npm run ios -- --device "$IOS_DEVICE_ID"
+        npm run ios -- --device "$IOS_DEVICE_ID" 2>&1 | grep -v "CoreHaptics\|CHHapticPattern\|_UIKBFeedbackGenerator"
     else
-        npm run ios
+        npm run ios 2>&1 | grep -v "CoreHaptics\|CHHapticPattern\|_UIKBFeedbackGenerator"
     fi
 else
     npm run android

@@ -92,6 +92,7 @@ const CalloutChild = ({coords, sites, state, setState}: CalloutChildProps) => {
 
       return (
         <SiteCard
+          key={site.id}
           site={site}
           buttons={<CloseButton onPress={closeCallout} />}
           isPopover={true}

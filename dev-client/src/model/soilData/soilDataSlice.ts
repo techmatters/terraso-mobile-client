@@ -35,6 +35,10 @@ import {
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
 import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
+import {
+  logSyncChange,
+  logSyncSummary,
+} from 'terraso-mobile-client/model/sync/syncDebugLog';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilData/soilDataFunctions';
@@ -92,6 +96,12 @@ export const setSoilData = (
   );
   state.soilData = mergedData;
   state.soilSync = mergedRecords;
+  logSyncSummary(
+    'setSoilData (pull)',
+    'soilData',
+    mergedRecords,
+    mergedData as Record<string, unknown>,
+  );
 };
 
 export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {
@@ -124,23 +134,55 @@ const soilDataSlice = createSlice({
     });
 
     builder.addCase(updateSoilData.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload;
-      markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
+      const siteId = action.meta.arg.siteId;
+      state.soilData[siteId] = action.payload;
+      markEntityModified(state.soilSync, siteId, Date.now());
+      logSyncChange(
+        'updateSoilData',
+        'soilData',
+        siteId,
+        state.soilSync[siteId],
+        state.soilData[siteId],
+      );
     });
 
     builder.addCase(updateDepthDependentSoilData.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload;
-      markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
+      const siteId = action.meta.arg.siteId;
+      state.soilData[siteId] = action.payload;
+      markEntityModified(state.soilSync, siteId, Date.now());
+      logSyncChange(
+        'updateDepthDependent',
+        'soilData',
+        siteId,
+        state.soilSync[siteId],
+        state.soilData[siteId],
+      );
     });
 
     builder.addCase(updateSoilDataDepthInterval.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload;
-      markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
+      const siteId = action.meta.arg.siteId;
+      state.soilData[siteId] = action.payload;
+      markEntityModified(state.soilSync, siteId, Date.now());
+      logSyncChange(
+        'updateDepthInterval',
+        'soilData',
+        siteId,
+        state.soilSync[siteId],
+        state.soilData[siteId],
+      );
     });
 
     builder.addCase(deleteSoilDataDepthInterval.fulfilled, (state, action) => {
-      state.soilData[action.meta.arg.siteId] = action.payload;
-      markEntityModified(state.soilSync, action.meta.arg.siteId, Date.now());
+      const siteId = action.meta.arg.siteId;
+      state.soilData[siteId] = action.payload;
+      markEntityModified(state.soilSync, siteId, Date.now());
+      logSyncChange(
+        'deleteDepthInterval',
+        'soilData',
+        siteId,
+        state.soilSync[siteId],
+        state.soilData[siteId],
+      );
     });
 
     builder.addCase(updateProjectSoilSettings.fulfilled, (state, action) => {

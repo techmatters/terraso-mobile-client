@@ -67,6 +67,7 @@ export const testState: Partial<AppState> = {
         projectId: '1',
       },
     },
+    siteSync: {},
   },
   project: {
     projects: {

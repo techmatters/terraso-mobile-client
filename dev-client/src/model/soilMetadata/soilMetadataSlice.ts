@@ -28,6 +28,10 @@ import {
   mergeUnsyncedEntities,
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
+import {
+  logSyncChange,
+  logSyncSummary,
+} from 'terraso-mobile-client/model/sync/syncDebugLog';
 
 export * from 'terraso-client-shared/soilId/soilIdTypes';
 export * from 'terraso-mobile-client/model/soilData/soilDataFunctions';
@@ -54,6 +58,12 @@ export const setSoilMetadata = (
   );
   state.soilMetadata = mergedData;
   state.soilMetadataSync = mergedRecords;
+  logSyncSummary(
+    'setSoilMetadata (pull)',
+    'soilMetadata',
+    mergedRecords,
+    mergedData as Record<string, unknown>,
+  );
 };
 
 export const deleteSoilMetadata = (
@@ -74,11 +84,15 @@ const soilMetadataSlice = createSlice({
       state.soilMetadata[action.meta.arg.siteId] = action.payload;
     });
     builder.addCase(localUpdateUserRatings.fulfilled, (state, action) => {
-      state.soilMetadata[action.meta.arg.siteId] = action.payload;
-      markEntityModified(
-        state.soilMetadataSync,
-        action.meta.arg.siteId,
-        Date.now(),
+      const siteId = action.meta.arg.siteId;
+      state.soilMetadata[siteId] = action.payload;
+      markEntityModified(state.soilMetadataSync, siteId, Date.now());
+      logSyncChange(
+        'updateUserRatings',
+        'soilMetadata',
+        siteId,
+        state.soilMetadataSync[siteId],
+        state.soilMetadata[siteId],
       );
     });
   },

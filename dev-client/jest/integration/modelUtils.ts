@@ -249,6 +249,7 @@ export function initState(
       },
       site: {
         sites: keyBy(sites, 'id'),
+        siteSync: {},
       },
       soilData: {
         soilData,

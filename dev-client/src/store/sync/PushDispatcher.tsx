@@ -19,11 +19,13 @@ import {useCallback, useEffect} from 'react';
 
 import {PayloadAction} from '@reduxjs/toolkit';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import {
   useDebouncedIsOffline,
   useDebouncedUnsyncedMetadataSiteIds,
+  useDebouncedUnsyncedSiteSiteIds,
   useDebouncedUnsyncedSoilDataSiteIds,
   useIsLoggedIn,
   usePushDispatch,
@@ -56,11 +58,13 @@ export const PushDispatcher = () => {
     useDebouncedUnsyncedSoilDataSiteIds(PUSH_DEBOUNCE_MS);
   const unsyncedMetadataIds =
     useDebouncedUnsyncedMetadataSiteIds(PUSH_DEBOUNCE_MS);
+  const unsyncedSiteIds = useDebouncedUnsyncedSiteSiteIds(PUSH_DEBOUNCE_MS);
 
   /* Set up a callback for the dispatcher to use when it determines a push is needed. */
   const dispatchPushBase = usePushDispatch({
     soilDataSiteIds: unsyncedSoilDataIds,
     soilMetadataSiteIds: unsyncedMetadataIds,
+    siteSiteIds: unsyncedSiteIds,
   });
 
   /* Connect the push dispatch to sync error notifications */
@@ -68,12 +72,17 @@ export const PushDispatcher = () => {
     () =>
       dispatchPushBase().then(result => {
         const errorCounts = getSyncErrorCounts(result);
-        if (errorCounts.soilDataErrors > 0 || errorCounts.metadataErrors > 0) {
+        if (
+          errorCounts.soilDataErrors > 0 ||
+          errorCounts.metadataErrors > 0 ||
+          errorCounts.siteErrors > 0
+        ) {
           /* If the push yielded sync errors, notify the user */
           syncNotifications.showError({
             reason: 'push',
             soilDataErrors: errorCounts.soilDataErrors,
             metadataErrors: errorCounts.metadataErrors,
+            siteErrors: errorCounts.siteErrors,
           });
         }
         return result;
@@ -85,7 +94,9 @@ export const PushDispatcher = () => {
   const needsPush =
     isLoggedIn &&
     !isOffline &&
-    (unsyncedSoilDataIds.length > 0 || unsyncedMetadataIds.length > 0);
+    (unsyncedSoilDataIds.length > 0 ||
+      unsyncedMetadataIds.length > 0 ||
+      unsyncedSiteIds.length > 0);
 
   /* Set up retry mechanism which will dispatch the push action when it begins. */
   const {beginRetry, endRetry} = useRetryInterval(
@@ -96,27 +107,51 @@ export const PushDispatcher = () => {
   useEffect(() => {
     /* Dispatch a push if needed */
     if (needsPush) {
+      if (syncDebugEnabled) {
+        console.log(
+          '⬆️ PushDispatcher: pushing',
+          unsyncedSoilDataIds.length,
+          'soilData,',
+          unsyncedMetadataIds.length,
+          'metadata,',
+          unsyncedSiteIds.length,
+          'sites',
+        );
+      }
       dispatchPush()
         .then(result => {
           if (dispatchFailed(result)) {
-            /* If the initial push failed, begin a retry cycle */
+            if (syncDebugEnabled) {
+              console.log('⬆️ PushDispatcher: push failed, starting retry');
+            }
             beginRetry();
           }
         })
-        .catch(beginRetry);
+        .catch(err => {
+          console.error('⬆️ PushDispatcher: push error, starting retry', err);
+          beginRetry();
+        });
     }
 
     /* Cancel any pending retries when push input changes or component unmounts */
     return endRetry;
-  }, [needsPush, dispatchPush, beginRetry, endRetry]);
+  }, [
+    needsPush,
+    dispatchPush,
+    beginRetry,
+    endRetry,
+    unsyncedSoilDataIds,
+    unsyncedMetadataIds,
+    unsyncedSiteIds,
+  ]);
 
   return <></>;
 };
 
 const getSyncErrorCounts = (
   result: PayloadAction<undefined | object | SyncResults<unknown, unknown>>,
-): {soilDataErrors: number; metadataErrors: number} => {
-  const counts = {soilDataErrors: 0, metadataErrors: 0};
+): {soilDataErrors: number; metadataErrors: number; siteErrors: number} => {
+  const counts = {soilDataErrors: 0, metadataErrors: 0, siteErrors: 0};
 
   if (!result.payload) {
     return counts;
@@ -138,6 +173,15 @@ const getSyncErrorCounts = (
       | undefined;
     if (soilMetadataResults) {
       counts.metadataErrors = Object.keys(soilMetadataResults.errors).length;
+    }
+  }
+
+  if ('siteResults' in result.payload) {
+    const siteResults = result.payload.siteResults as
+      | SyncResults<unknown, unknown>
+      | undefined;
+    if (siteResults) {
+      counts.siteErrors = Object.keys(siteResults.errors).length;
     }
   }
 

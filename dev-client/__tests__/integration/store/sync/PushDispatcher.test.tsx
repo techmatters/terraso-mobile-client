@@ -118,6 +118,7 @@ describe('PushDispatcher', () => {
     expect(usePushDispatch).toHaveBeenCalledWith({
       soilDataSiteIds: ['abcd'],
       soilMetadataSiteIds: ['efgh'],
+      siteSiteIds: [],
     });
   });
 
