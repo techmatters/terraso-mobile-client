@@ -22,7 +22,8 @@
  * uploads local changes, downloads the merged result, and commits with a tag.
  *
  * Requires POEDITOR_API_TOKEN and POEDITOR_PROJECT_ID in the .env file.
- * Requires the git tag `translations/latest` to exist.
+ * Requires the file `locales/sync-tag` to contain the tag name of the last sync
+ * (e.g. `translations/20260310T0109Z`). This tag must exist in git.
  *
  * Usage:
  *   npm run poeditor-merge                          # full merge
@@ -54,6 +55,9 @@ const UPLOAD_DELAY_MS = 21000;
 
 // Directory to save POEditor PO files before uploading (safety backup)
 const PO_SAVE_DIR = 'locales/po-save';
+
+// File that records the tag name of the last merged sync
+const SYNC_TAG_FILE = 'locales/sync-tag';
 
 const API_TOKEN = process.env.POEDITOR_API_TOKEN;
 let PROJECT_ID = process.env.POEDITOR_PROJECT_ID;
@@ -89,21 +93,13 @@ const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 const NO_COMMIT = args.includes('--no-commit');
 const VERBOSE = args.includes('--verbose');
-const knownFlags = new Set([
-  '--dry-run',
-  '--no-commit',
-  '--verbose',
-  '--project',
-  '--help',
-]);
-
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--project' && i + 1 < args.length) {
     PROJECT_ID = args[++i];
   } else if (args[i] === '--help') {
     printUsage();
     process.exit(0);
-  } else if (args[i].startsWith('--') && !knownFlags.has(args[i])) {
+  } else if (args[i].startsWith('-')) {
     console.error(`Unknown option: ${args[i]}\n`);
     printUsage();
     process.exit(1);
@@ -156,9 +152,9 @@ async function jsonToPo(jsonPath, lang) {
   return Buffer.from(result);
 }
 
-/** Get the PO file at the translations/latest tag via git show. */
-function getTaggedPo(lang) {
-  const gitPath = `translations/latest:dev-client/locales/po/${lang}.po`;
+/** Get the PO file at a given tag via git show. */
+function getTaggedPo(lang, tag) {
+  const gitPath = `${tag}:dev-client/locales/po/${lang}.po`;
   verbose(`git show ${gitPath}`);
   try {
     const buf = execSync(`git show ${gitPath}`, {
@@ -491,20 +487,37 @@ async function main() {
   );
 
   // -------------------------------------------------------
-  // Verify tag exists
+  // Read baseline tag from sync-tag file
   // -------------------------------------------------------
-  verbose('Checking for translations/latest tag...');
+  verbose(`Reading baseline tag from ${SYNC_TAG_FILE}...`);
+  let baselineTag;
   try {
-    const tagRef = execSync('git rev-parse translations/latest', {
+    baselineTag = readFileSync(SYNC_TAG_FILE, 'utf-8').trim();
+  } catch {
+    console.error(
+      `${SYNC_TAG_FILE} not found.\n` +
+        'Create it with the tag name of the last sync:\n' +
+        `  echo "translations/<tag>" > ${SYNC_TAG_FILE}`,
+    );
+    process.exit(1);
+  }
+  if (!baselineTag) {
+    console.error(`${SYNC_TAG_FILE} is empty. It should contain a tag name.`);
+    process.exit(1);
+  }
+
+  // Verify the tag exists in git
+  try {
+    const tagRef = execSync(`git rev-parse ${baselineTag}`, {
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
     }).trim();
-    verbose(`Tag translations/latest -> ${tagRef}`);
+    verbose(`Baseline tag ${baselineTag} -> ${tagRef}`);
   } catch {
     console.error(
-      'Tag translations/latest not found.\n' +
-        'Create it at the commit representing the last known sync point:\n' +
-        '  git tag translations/latest <commit>',
+      `Tag ${baselineTag} (from ${SYNC_TAG_FILE}) not found in git.\n` +
+        'Make sure the tag exists:\n' +
+        `  git tag ${baselineTag} <commit>`,
     );
     process.exit(1);
   }
@@ -514,7 +527,12 @@ async function main() {
   // -------------------------------------------------------
   if (!DRY_RUN) {
     verbose('Checking for uncommitted changes...');
-    const dirtyCheck = ['locales/po/', 'src/translations/', PO_SAVE_DIR]
+    const dirtyCheck = [
+      'locales/po/',
+      'src/translations/',
+      PO_SAVE_DIR,
+      SYNC_TAG_FILE,
+    ]
       .map(dir => `"${dir}"`)
       .join(' ');
     let dirtyFiles = '';
@@ -539,7 +557,7 @@ async function main() {
         'This ensures you can restore files after a --no-commit test run with:',
       );
       console.error(
-        '  git checkout -- locales/po/ src/translations/ locales/po-save/',
+        '  git checkout -- locales/po/ src/translations/ locales/po-save/ locales/sync-tag',
       );
       process.exit(1);
     }
@@ -565,7 +583,7 @@ async function main() {
     verbose(`Converting src/translations/${lang}.json to PO...`);
     const localPo = await jsonToPo(`src/translations/${lang}.json`, lang);
     verbose(`  ${lang} local PO: ${localPo.length} bytes`);
-    const taggedPo = getTaggedPo(lang);
+    const taggedPo = getTaggedPo(lang, baselineTag);
     if (!taggedPo) {
       console.log(`SKIP (no PO at tag for ${lang})`);
       continue;
@@ -978,12 +996,22 @@ async function main() {
     }
     console.log('\nTo restore all files to their pre-merge state:');
     console.log(
-      '  git checkout -- locales/po/ src/translations/ locales/po-save/',
+      '  git checkout -- locales/po/ src/translations/ locales/po-save/ locales/sync-tag',
     );
     console.log(`\nChanges summarized: ${report.path}`);
     execSync(`open ${report.path}`);
     return;
   }
+
+  // 7. Create timestamped tag name and update sync-tag file
+  const now = new Date();
+  const timestamp = now
+    .toISOString()
+    .replace(/[-:]/g, '')
+    .replace(/\.\d+Z$/, 'Z');
+  const tagName = `translations/${timestamp}`;
+  writeFileSync(SYNC_TAG_FILE, tagName + '\n');
+  verbose(`Updated ${SYNC_TAG_FILE} -> ${tagName}`);
 
   // Stage files
   if (filesToStage.length > 0) {
@@ -994,6 +1022,7 @@ async function main() {
     verbose(`Staging po-save files from ${PO_SAVE_DIR}/`);
     execSync(`git add ${PO_SAVE_DIR}/`, {stdio: 'inherit'});
   }
+  execSync(`git add ${SYNC_TAG_FILE}`, {stdio: 'inherit'});
 
   // Commit
   console.log('Committing...\n');
@@ -1001,25 +1030,13 @@ async function main() {
   const escapedMessage = commitMessage.replace(/'/g, "'\\''");
   execSync(`git commit -m '${escapedMessage}'`, {stdio: 'inherit'});
 
-  // 7. Create timestamped tag
-  const now = new Date();
-  const timestamp = now
-    .toISOString()
-    .replace(/[-:]/g, '')
-    .replace(/\.\d+Z$/, 'Z');
-  const tagName = `translations/${timestamp}`;
+  // Create the tag (after commit, so it points to the sync commit)
   execSync(`git tag ${tagName}`, {stdio: 'inherit'});
   console.log(`\n  Created tag: ${tagName}`);
 
-  // 8. Move latest tag
-  execSync('git tag -f translations/latest', {stdio: 'inherit'});
-  console.log('  Updated tag: translations/latest');
-
   console.log('\nDone! Merge complete.');
-  console.log('Remember to push the commit and tags when ready:');
-  console.log(
-    '  git push && git push --force origin translations/latest && git push --tags',
-  );
+  console.log('Remember to push the commit and tag when ready:');
+  console.log(`  git push && git push origin ${tagName}`);
   console.log(`\nChanges summarized: open ${report.path}`);
   execSync(`open ${report.path}`);
 }
