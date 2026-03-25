@@ -93,13 +93,21 @@ const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 const NO_COMMIT = args.includes('--no-commit');
 const VERBOSE = args.includes('--verbose');
+const knownFlags = new Set([
+  '--dry-run',
+  '--no-commit',
+  '--verbose',
+  '--project',
+  '--help',
+]);
+
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--project' && i + 1 < args.length) {
     PROJECT_ID = args[++i];
   } else if (args[i] === '--help') {
     printUsage();
     process.exit(0);
-  } else if (args[i].startsWith('-')) {
+  } else if (args[i].startsWith('-') && !knownFlags.has(args[i])) {
     console.error(`Unknown option: ${args[i]}\n`);
     printUsage();
     process.exit(1);
