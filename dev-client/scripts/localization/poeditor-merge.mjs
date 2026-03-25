@@ -1018,7 +1018,7 @@ async function main() {
   console.log('\nDone! Merge complete.');
   console.log('Remember to push the commit and tags when ready:');
   console.log(
-    '  git push && git push --force origin translations/latest && git push --tags',
+    `  git push \\\n    && git push origin ${tagName} \\\n    && git push --force origin translations/latest`,
   );
   console.log(`\nChanges summarized: open ${report.path}`);
   execSync(`open ${report.path}`);
