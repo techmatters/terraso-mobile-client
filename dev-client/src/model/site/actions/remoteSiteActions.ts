@@ -15,14 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  SiteAddMutationInput,
-  SiteNoteAddMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-import * as siteService from 'terraso-client-shared/site/siteService';
+import {collapseSite} from 'terraso-client-shared/site/siteService';
 import {Site} from 'terraso-client-shared/site/siteTypes';
+import type {
+  SitePushEntry,
+  SitePushFailureReason,
+  SitePushInputEntry,
+} from 'terraso-client-shared/site/syncTypes.ts';
 
-import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {
   getChangedSiteFields,
   getDeletedNotes,
@@ -35,131 +35,89 @@ import {
 } from 'terraso-mobile-client/model/sync/records';
 import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 
-export type SitePushFailureReason = string;
+export type {SitePushFailureReason};
 
 /**
- * Pushes unsynced site changes to the server using individual mutations.
- *
- * For each unsynced site:
- * 1. Creates or updates the site (addSite with client UUID, or updateSite with changed fields)
- * 2. Adds new notes (addSiteNote with client UUID) and updates changed notes
- * 3. Fetches the canonical server state for the site
- *
- * Sites are pushed in parallel; failures for one site don't affect others.
+ * Converts unsynced site records to the input format expected by the SitePush
+ * mutation (sent via UserDataPush). Mirrors the pattern of unsyncedSoilDataToMutationInput.
  */
-export const pushSiteChanges = async (
+export const unsyncedSitesToMutationInput = (
   unsyncedChanges: SyncRecords<Site, SitePushFailureReason>,
   unsyncedData: Record<string, Site>,
-): Promise<SyncResults<Site, SitePushFailureReason>> => {
+): SitePushInputEntry[] => {
+  return Object.entries(unsyncedData).map(([siteId, site]) => {
+    const record = getEntityRecord(unsyncedChanges, siteId);
+    const isNew = record.lastSyncedData === undefined;
+
+    const newNotes = getNewNotes(site.notes, record.lastSyncedData?.notes).map(
+      n => ({id: n.id, content: n.content}),
+    );
+    const updatedNotes = getUpdatedNotes(
+      site.notes,
+      record.lastSyncedData?.notes,
+    ).map(n => ({id: n.id, content: n.content}));
+    const deletedNoteIds = getDeletedNotes(
+      site.notes,
+      record.lastSyncedData?.notes,
+    ).map(n => n.id);
+
+    if (isNew) {
+      return {
+        siteId,
+        isNew: true,
+        name: site.name,
+        latitude: site.latitude,
+        longitude: site.longitude,
+        elevation: site.elevation ?? undefined,
+        privacy: site.privacy,
+        projectId: site.projectId ?? undefined,
+        newNotes,
+        updatedNotes,
+        deletedNoteIds,
+      };
+    } else {
+      const changedFields = getChangedSiteFields(site, record.lastSyncedData);
+      return {
+        siteId,
+        isNew: false,
+        ...changedFields,
+        newNotes,
+        updatedNotes,
+        deletedNoteIds,
+      };
+    }
+  });
+};
+
+/**
+ * Converts SitePush mutation response entries to SyncResults.
+ * Mirrors the pattern of soilDataMutationResponseToResults.
+ */
+export const siteMutationResponseToResults = (
+  unsyncedChanges: SyncRecords<Site, SitePushFailureReason>,
+  siteResults: SitePushEntry[],
+): SyncResults<Site, SitePushFailureReason> => {
   const results: SyncResults<Site, SitePushFailureReason> = {
     data: {},
     errors: {},
   };
 
-  const sitePromises = Object.entries(unsyncedData).map(
-    async ([siteId, site]) => {
-      const record = getEntityRecord(unsyncedChanges, siteId);
-      const revisionId = record.revisionId;
-      const isNew = record.lastSyncedData === undefined;
+  for (const entry of siteResults) {
+    const record = getEntityRecord(unsyncedChanges, entry.siteId);
+    const revisionId = record.revisionId;
 
-      try {
-        // 1. Push site-level changes
-        if (isNew) {
-          // Backend accepts client-generated UUID via optional `id` field.
-          // The shared library types haven't been regenerated yet, so we cast.
-          if (syncDebugEnabled) {
-            console.log(
-              `📤 pushSiteChanges: addSite ${site.name} with elevation ${site.elevation}`,
-            );
-          }
-          await siteService.addSite({
-            id: siteId,
-            name: site.name,
-            latitude: site.latitude,
-            longitude: site.longitude,
-            elevation: site.elevation,
-            privacy: site.privacy,
-            projectId: site.projectId,
-          } as SiteAddMutationInput);
-        } else {
-          const changedFields = getChangedSiteFields(
-            site,
-            record.lastSyncedData,
-          );
-          if (Object.keys(changedFields).length > 0) {
-            if (syncDebugEnabled) {
-              console.log(
-                '📤 pushSiteChanges: updateSite',
-                siteId,
-                changedFields,
-              );
-            }
-            await siteService.updateSite({
-              id: siteId,
-              ...changedFields,
-            });
-          }
-        }
+    if (entry.result.__typename === 'SitePushEntrySuccess') {
+      results.data[entry.siteId] = {
+        revisionId,
+        value: collapseSite(entry.result.site),
+      };
+    } else {
+      results.errors[entry.siteId] = {
+        revisionId,
+        value: entry.result.reason,
+      };
+    }
+  }
 
-        // 2. Push note-level changes
-        const newNotes = getNewNotes(site.notes, record.lastSyncedData?.notes);
-        const updatedNotes = getUpdatedNotes(
-          site.notes,
-          record.lastSyncedData?.notes,
-        );
-
-        for (const note of newNotes) {
-          // Backend accepts client-generated UUID via optional `id` field.
-          if (syncDebugEnabled) {
-            console.log('📤 pushSiteChanges: addSiteNote', note.id);
-          }
-          await siteService.addSiteNote({
-            id: note.id,
-            siteId: siteId,
-            content: note.content,
-          } as SiteNoteAddMutationInput);
-        }
-
-        for (const note of updatedNotes) {
-          if (syncDebugEnabled) {
-            console.log('📤 pushSiteChanges: updateSiteNote', note.id);
-          }
-          await siteService.updateSiteNote({
-            id: note.id,
-            content: note.content,
-          });
-        }
-
-        const deletedNotes = getDeletedNotes(
-          site.notes,
-          record.lastSyncedData?.notes,
-        );
-        for (const note of deletedNotes) {
-          if (syncDebugEnabled) {
-            console.log('📤 pushSiteChanges: deleteSiteNote', note.id);
-          }
-          await siteService.deleteSiteNote(note);
-        }
-
-        // 3. Fetch canonical server state (includes all notes)
-        if (syncDebugEnabled) {
-          console.log('📤 pushSiteChanges: fetchSite', siteId);
-        }
-        const serverSite = await siteService.fetchSite(siteId);
-
-        results.data[siteId] = {
-          revisionId,
-          value: serverSite,
-        };
-      } catch (error) {
-        results.errors[siteId] = {
-          revisionId,
-          value: String(error),
-        };
-      }
-    },
-  );
-
-  await Promise.allSettled(sitePromises);
   return results;
 };

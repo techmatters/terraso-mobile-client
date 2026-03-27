@@ -16,7 +16,7 @@
  */
 
 import type {
-  SoilMetadataPushEntry,
+  SoilMetadataPushEntryResultFragment,
   SoilMetadataPushFailureReason,
   SoilMetadataPushInputEntry,
 } from 'terraso-client-shared/graphqlSchema/graphql';
@@ -46,7 +46,10 @@ export const unsyncedMetadataToMutationInput = (
 // Note: The SoilMetadataPushEntrySuccess type in the response is a bit weird because it doesn't include the Site in the SoilMetadataNode
 export const metadataMutationResponseToResults = (
   unsyncedChanges: SyncRecords<SoilMetadata, SoilMetadataPushFailureReason>,
-  response: SoilMetadataPushEntry[],
+  response: Array<{
+    siteId: string;
+    result: SoilMetadataPushEntryResultFragment;
+  }>,
 ): SyncResults<SoilMetadata, SoilMetadataPushFailureReason> => {
   const results: SyncResults<SoilMetadata, SoilMetadataPushFailureReason> = {
     data: {},

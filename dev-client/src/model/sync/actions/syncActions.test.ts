@@ -161,7 +161,7 @@ describe('pushUserData', () => {
         },
       ],
       soilMetadataResults: null,
-      clientMutationId: null,
+      siteResults: null,
     });
 
     await pushUserData({soilDataSiteIds: ['site-1']}, null, mockThunkAPI);
@@ -216,7 +216,7 @@ describe('pushUserData', () => {
           },
         },
       ],
-      clientMutationId: null,
+      siteResults: null,
     });
 
     await pushUserData({soilMetadataSiteIds: ['site-1']}, null, mockThunkAPI);
@@ -293,7 +293,7 @@ describe('pushUserData', () => {
           },
         },
       ],
-      clientMutationId: null,
+      siteResults: null,
     });
 
     await pushUserData(
@@ -370,7 +370,7 @@ describe('pushUserData', () => {
           },
         },
       ],
-      clientMutationId: null,
+      siteResults: null,
     });
 
     const results = await pushUserData(
@@ -446,7 +446,7 @@ describe('pushUserData', () => {
         },
       ],
       soilMetadataResults: null,
-      clientMutationId: null,
+      siteResults: null,
     });
 
     await pushUserData(
@@ -530,7 +530,7 @@ describe('pushUserData', () => {
         },
       ],
       soilMetadataResults: null,
-      clientMutationId: null,
+      siteResults: null,
     });
 
     await pushUserData(
@@ -658,7 +658,7 @@ describe('pushUserData', () => {
         },
       ],
       soilMetadataResults: null,
-      clientMutationId: null,
+      siteResults: null,
     });
 
     const results = await pushUserData(
@@ -719,7 +719,7 @@ describe('pushUserData', () => {
         },
       ],
       soilMetadataResults: null,
-      clientMutationId: null,
+      siteResults: null,
     });
 
     await pushUserData(
@@ -765,7 +765,7 @@ describe('pushUserData', () => {
     mockPushUserData.mockResolvedValue({
       soilDataResults: [],
       soilMetadataResults: null,
-      clientMutationId: null,
+      siteResults: null,
     });
 
     const results = await pushUserData(
@@ -900,7 +900,7 @@ describe('pushUserData', () => {
         },
       ],
       soilMetadataResults: null,
-      clientMutationId: null,
+      siteResults: null,
     });
 
     await pushUserData(

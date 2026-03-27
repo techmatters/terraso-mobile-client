@@ -89,6 +89,7 @@ if (persistedReduxState) {
 }
 const store = createStore(persistedReduxState);
 
+// TODO-cknipe: Comment this back out
 NetInfo.configure({
   reachabilityUrl: 'https://connectivitycheck.gstatic.com/generate_204',
   reachabilityTest: async response => response.status === 204,

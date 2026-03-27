@@ -17,7 +17,7 @@
 
 import {
   SoilDataNode,
-  SoilDataPushEntry,
+  SoilDataPushEntryResultFragment,
   SoilDataPushFailureReason,
 } from 'terraso-client-shared/graphqlSchema/graphql';
 
@@ -149,7 +149,10 @@ describe('unsyncedDataToMutationInputEntry', () => {
 
 describe('soilDataMutationResponseToResults', () => {
   let unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>;
-  let response: SoilDataPushEntry[];
+  let response: Array<{
+    siteId: string;
+    result: SoilDataPushEntryResultFragment;
+  }>;
 
   beforeEach(() => {
     unsyncedChanges = {};
@@ -162,6 +165,7 @@ describe('soilDataMutationResponseToResults', () => {
       {
         siteId: 'a',
         result: {
+          __typename: 'SoilDataPushEntrySuccess' as const,
           soilData: {
             crossSlope: 'CONCAVE',
           } as SoilDataNode,
@@ -188,6 +192,7 @@ describe('soilDataMutationResponseToResults', () => {
       {
         siteId: 'a',
         result: {
+          __typename: 'SoilDataPushEntryFailure' as const,
           reason: 'DOES_NOT_EXIST',
         },
       },
