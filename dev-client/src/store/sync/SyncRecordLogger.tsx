@@ -46,7 +46,6 @@ import {
 } from 'terraso-mobile-client/model/soilData/actions/soilDataDiff';
 import {depthIntervalKey} from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 import {selectSoilChanges} from 'terraso-mobile-client/model/soilData/soilDataSelectors';
-import {unsyncedMetadataToMutationInput} from 'terraso-mobile-client/model/soilMetadata/soilMetadataPushUtils';
 import {selectSoilMetadataChanges} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSelectors';
 import {
   isError,
@@ -189,13 +188,8 @@ const logSoilDataDiff = (curr: SoilData, prev: SoilData | undefined) => {
 
 // --- Soil metadata (shows what will be sent, not a diff) ---
 
-const logSoilMetaPayload = (siteId: string, curr: SoilMetadata) => {
-  const entries = unsyncedMetadataToMutationInput({[siteId]: curr});
-  if (entries.length === 0) {
-    console.log('              will send: (nothing)');
-    return;
-  }
-  const ratings = entries[0].userRatings;
+const logSoilMetaPayload = (_siteId: string, curr: SoilMetadata) => {
+  const ratings = curr.userRatings.filter(r => r.rating !== null);
   if (ratings.length === 0) {
     console.log('              will send: 0 ratings');
     return;

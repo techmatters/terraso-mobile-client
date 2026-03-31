@@ -21,7 +21,9 @@ import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
+  selectNoteSyncErrorNoteIds,
   selectSiteSyncErrorSiteIds,
+  selectUnsyncedNoteIds,
   selectUnsyncedSiteSiteIds,
 } from 'terraso-mobile-client/model/site/siteSelectors';
 import {
@@ -71,15 +73,25 @@ export const useDebouncedUnsyncedSiteSiteIds = (interval: number) => {
   return unsyncedSiteIds;
 };
 
+export const useDebouncedUnsyncedNoteIds = (interval: number) => {
+  const [unsyncedNoteIds] = useDebounce(
+    useSelector(selectUnsyncedNoteIds),
+    interval,
+  );
+  return unsyncedNoteIds;
+};
+
 type PushDispatchInputs = {
   soilDataSiteIds: string[];
   soilMetadataSiteIds: string[];
   siteSiteIds: string[];
+  noteIds: string[];
 };
 export const usePushDispatch = ({
   soilDataSiteIds,
   soilMetadataSiteIds,
   siteSiteIds,
+  noteIds,
 }: PushDispatchInputs) => {
   const dispatch = useDispatch();
   return useCallback(() => {
@@ -89,9 +101,10 @@ export const usePushDispatch = ({
         soilDataSiteIds,
         soilMetadataSiteIds,
         siteSiteIds,
+        noteIds,
       }),
     );
-  }, [dispatch, soilDataSiteIds, soilMetadataSiteIds, siteSiteIds]);
+  }, [dispatch, soilDataSiteIds, soilMetadataSiteIds, siteSiteIds, noteIds]);
 };
 
 export const useRetryInterval = (interval: number, action: () => void) => {
@@ -123,15 +136,24 @@ export const useUnsyncedSiteIds = () => {
   const unsyncedSoilDataSiteIds = useSelector(selectUnsyncedSoilDataSiteIds);
   const unsyncedMetadataSiteIds = useSelector(selectUnsyncedMetadataSiteIds);
   const unsyncedSiteSiteIds = useSelector(selectUnsyncedSiteSiteIds);
+  const unsyncedNoteIds = useSelector(selectUnsyncedNoteIds);
   const unsyncedCombinedSiteIds = useMemo(() => {
     return [
       ...new Set([
         ...unsyncedSoilDataSiteIds,
         ...unsyncedMetadataSiteIds,
         ...unsyncedSiteSiteIds,
+        // Note: noteIds are note IDs not site IDs, but including them
+        // ensures the "has unsynced data" indicator triggers
+        ...(unsyncedNoteIds.length > 0 ? unsyncedSiteSiteIds : []),
       ]),
     ];
-  }, [unsyncedSoilDataSiteIds, unsyncedMetadataSiteIds, unsyncedSiteSiteIds]);
+  }, [
+    unsyncedSoilDataSiteIds,
+    unsyncedMetadataSiteIds,
+    unsyncedSiteSiteIds,
+    unsyncedNoteIds,
+  ]);
   return unsyncedCombinedSiteIds;
 };
 
@@ -140,15 +162,24 @@ export const useSyncErrorSiteIds = () => {
   const soilDataErrorSiteIds = useSelector(selectSoilDataSyncErrorSiteIds);
   const metadataErrorSiteIds = useSelector(selectMetadataSyncErrorSiteIds);
   const siteErrorSiteIds = useSelector(selectSiteSyncErrorSiteIds);
+  const noteErrorNoteIds = useSelector(selectNoteSyncErrorNoteIds);
   const combinedErrorSiteIds = useMemo(() => {
     return [
       ...new Set([
         ...soilDataErrorSiteIds,
         ...metadataErrorSiteIds,
         ...siteErrorSiteIds,
+        // Note: noteErrorNoteIds are note IDs not site IDs, but including them
+        // ensures the error indicator triggers
+        ...(noteErrorNoteIds.length > 0 ? siteErrorSiteIds : []),
       ]),
     ];
-  }, [soilDataErrorSiteIds, metadataErrorSiteIds, siteErrorSiteIds]);
+  }, [
+    soilDataErrorSiteIds,
+    metadataErrorSiteIds,
+    siteErrorSiteIds,
+    noteErrorNoteIds,
+  ]);
   return combinedErrorSiteIds;
 };
 

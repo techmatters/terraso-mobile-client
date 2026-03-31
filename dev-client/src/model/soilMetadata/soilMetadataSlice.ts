@@ -17,7 +17,6 @@
 
 import {createSlice, Draft} from '@reduxjs/toolkit';
 
-import {SoilMetadataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 import * as soilMetadataService from 'terraso-client-shared/soilId/soilMetadataService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
@@ -39,7 +38,7 @@ export * from 'terraso-mobile-client/model/soilData/soilDataFunctions';
 export type SoilState = {
   /* Note that the keys for these records are the site IDs to which the soil metadata belongs */
   soilMetadata: Record<string, SoilMetadata>;
-  soilMetadataSync: SyncRecords<SoilMetadata, SoilMetadataPushFailureReason>;
+  soilMetadataSync: SyncRecords<SoilMetadata, string>;
 };
 
 export const initialState: SoilState = {

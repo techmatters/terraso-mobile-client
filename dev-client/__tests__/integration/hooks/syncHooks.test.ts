@@ -39,7 +39,7 @@ const createAppState = () => ({
   notifications: {messages: {}},
   preferences: {colorWorkflow: 'MANUAL' as ColorWorkflow},
   project: {projects: {}},
-  site: {sites: {}, siteSync: {}},
+  site: {sites: {}, siteSync: {}, noteSync: {}},
   soilData: {
     projectSettings: {},
     soilSync: {},

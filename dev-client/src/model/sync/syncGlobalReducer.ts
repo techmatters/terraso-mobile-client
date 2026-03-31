@@ -16,7 +16,7 @@
  */
 
 import {setUsers} from 'terraso-client-shared/account/accountSlice';
-import type {Site} from 'terraso-client-shared/site/siteTypes';
+import type {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
 import type {
   SoilData,
   SoilMetadata,
@@ -39,9 +39,14 @@ import * as syncActions from 'terraso-mobile-client/model/sync/actions/syncActio
 import {
   initialRecord,
   isUnsynced,
+  markEntitesSynced,
+  markEntitiesError,
   markEntitiesModified,
 } from 'terraso-mobile-client/model/sync/records';
-import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
+import {
+  applySyncResults,
+  getValuesForCurrentRevisions,
+} from 'terraso-mobile-client/model/sync/results';
 import {logSyncSummary} from 'terraso-mobile-client/model/sync/syncDebugLog';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
@@ -118,40 +123,24 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
   });
 
   builder.addCase(pushUserData.fulfilled, (state, action) => {
-    const {soilDataResults, soilMetadataResults, siteResults} = action.payload;
+    const {siteResults, noteResults, soilDataResults, soilMetadataResults} =
+      action.payload;
+    const now = Date.now();
     if (syncDebugEnabled) {
+      const fmt = (r?: {data: object; errors: object}) =>
+        r
+          ? `${Object.keys(r.data).length} ok, ${Object.keys(r.errors).length} err`
+          : 'none';
       console.log(
         '⬆️ push fulfilled:',
-        'soilData:',
-        soilDataResults
-          ? `${Object.keys(soilDataResults.data).length} ok, ${Object.keys(soilDataResults.errors).length} err`
-          : 'none',
-        'soilMetadata:',
-        soilMetadataResults
-          ? `${Object.keys(soilMetadataResults.data).length} ok, ${Object.keys(soilMetadataResults.errors).length} err`
-          : 'none',
         'sites:',
-        siteResults
-          ? `${Object.keys(siteResults.data).length} ok, ${Object.keys(siteResults.errors).length} err`
-          : 'none',
-      );
-    }
-
-    if (soilDataResults) {
-      applySyncResults(
-        state.soilData.soilData as Record<string, SoilData>,
-        state.soilData.soilSync,
-        soilDataResults,
-        Date.now(),
-      );
-    }
-
-    if (soilMetadataResults) {
-      applySyncResults(
-        state.soilMetadata.soilMetadata as Record<string, SoilMetadata>,
-        state.soilMetadata.soilMetadataSync,
-        soilMetadataResults,
-        Date.now(),
+        fmt(siteResults),
+        'notes:',
+        fmt(noteResults),
+        'soilData:',
+        fmt(soilDataResults),
+        'soilMetadata:',
+        fmt(soilMetadataResults),
       );
     }
 
@@ -160,10 +149,69 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
         state.site.sites as Record<string, Site>,
         state.site.siteSync,
         siteResults,
-        Date.now(),
+        now,
       );
     }
 
+    if (noteResults) {
+      // Notes live nested inside sites, so we handle sync results manually
+      const upToDateData = getValuesForCurrentRevisions(
+        state.site.noteSync,
+        noteResults.data,
+      );
+      const upToDateErrors = getValuesForCurrentRevisions(
+        state.site.noteSync,
+        noteResults.errors,
+      );
+
+      markEntitesSynced(state.site.noteSync, upToDateData, now);
+      for (const [noteId, synced] of Object.entries(upToDateData)) {
+        const note = synced.value as SiteNote;
+        if (
+          state.site.sites[note.siteId] &&
+          noteId in (state.site.sites[note.siteId] as Site).notes
+        ) {
+          // Note still exists locally — update with server data
+          (state.site.sites[note.siteId] as Site).notes[noteId] = note;
+        } else {
+          // Deleted note — remove sync record
+          delete state.site.noteSync[noteId];
+        }
+      }
+
+      markEntitiesError(state.site.noteSync, upToDateErrors, now);
+    }
+
+    if (soilDataResults) {
+      applySyncResults(
+        state.soilData.soilData as Record<string, SoilData>,
+        state.soilData.soilSync,
+        soilDataResults,
+        now,
+      );
+    }
+
+    if (soilMetadataResults) {
+      applySyncResults(
+        state.soilMetadata.soilMetadata as Record<string, SoilMetadata>,
+        state.soilMetadata.soilMetadataSync,
+        soilMetadataResults,
+        now,
+      );
+    }
+
+    logSyncSummary(
+      'pushResult',
+      'site',
+      state.site.siteSync,
+      state.site.sites as Record<string, unknown>,
+    );
+    logSyncSummary(
+      'pushResult',
+      'note',
+      state.site.noteSync,
+      {} as Record<string, unknown>,
+    );
     logSyncSummary(
       'pushResult',
       'soilData',
@@ -175,12 +223,6 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
       'soilMetadata',
       state.soilMetadata.soilMetadataSync,
       state.soilMetadata.soilMetadata as Record<string, unknown>,
-    );
-    logSyncSummary(
-      'pushResult',
-      'site',
-      state.site.siteSync,
-      state.site.sites as Record<string, unknown>,
     );
   });
 

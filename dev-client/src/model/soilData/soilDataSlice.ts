@@ -17,7 +17,6 @@
 
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit';
 
-import {SoilDataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import {
   CollectionMethod,
@@ -34,7 +33,6 @@ import {
   mergeUnsyncedEntities,
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
-import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
 import {
   logSyncChange,
   logSyncSummary,
@@ -50,7 +48,7 @@ export type MethodRequired<
 export type SoilState = {
   /* Note that the keys for these records are the site IDs to which the soil data belongs */
   soilData: Record<string, SoilData | undefined>;
-  soilSync: SyncRecords<SoilData, SoilDataPushFailureReason>;
+  soilSync: SyncRecords<SoilData, string>;
 
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
   status: LoadingState;
@@ -119,20 +117,6 @@ const soilDataSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(pushSoilData.fulfilled, (state, action) => {
-      applySyncResults(
-        /*
-         * type-cast here bc the soilData field is more permissive than the results object
-         * (it allows undefined values). this is safe since we aren't reading anything from
-         * the prior data.
-         */
-        state.soilData as Record<string, SoilData>,
-        state.soilSync,
-        action.payload,
-        Date.now(),
-      );
-    });
-
     builder.addCase(updateSoilData.fulfilled, (state, action) => {
       const siteId = action.meta.arg.siteId;
       state.soilData[siteId] = action.payload;
@@ -200,12 +184,6 @@ const soilDataSlice = createSlice({
 });
 
 export const {setSoilIdStatus} = soilDataSlice.actions;
-
-/** @deprecated Use pushUserData from syncGlobalReducer instead */
-export const pushSoilData = createAsyncThunk(
-  'soilId/pushSoilData',
-  soilDataActions.pushSoilDataThunk,
-);
 
 export const updateSoilData = createAsyncThunk(
   'soilId/updateSoilData',

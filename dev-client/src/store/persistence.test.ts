@@ -140,6 +140,18 @@ describe('patchPersistedReduxState', () => {
     expect(result.site!.siteSync).toEqual({a: {}});
   });
 
+  test('adds noteSync if absent', () => {
+    const state: any = {site: {sites: {}}};
+    const result = patchPersistedReduxState(state);
+    expect(result.site!.noteSync).toEqual({});
+  });
+
+  test('retains noteSync if present', () => {
+    const state: any = {site: {noteSync: {a: {}}}};
+    const result = patchPersistedReduxState(state);
+    expect(result.site!.noteSync).toEqual({a: {}});
+  });
+
   test('migrates selectedSoilId to userRatings and preserves sites without selectedSoilId', () => {
     const state: any = {
       soilMetadata: {

@@ -23,6 +23,7 @@ export type SyncConflictInfo =
       soilDataErrors: number;
       metadataErrors: number;
       siteErrors: number;
+      noteErrors: number;
     }
   | {
       reason: 'missing_data';
@@ -49,6 +50,7 @@ export function trackSyncError(info: SyncConflictInfo) {
     properties.soil_data_error_count = info.soilDataErrors;
     properties.metadata_error_count = info.metadataErrors;
     properties.site_error_count = info.siteErrors;
+    properties.note_error_count = info.noteErrors;
   } else if (info.reason === 'missing_data') {
     properties.missing_entity_type = info.missingEntityType;
   }

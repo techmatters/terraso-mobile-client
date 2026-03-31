@@ -18,13 +18,14 @@
 import {createSlice, Draft} from '@reduxjs/toolkit';
 
 import * as siteService from 'terraso-client-shared/site/siteService';
-import {Site} from 'terraso-client-shared/site/siteTypes';
+import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 import {syncDebugEnabled} from 'terraso-mobile-client/config';
-import {SitePushFailureReason} from 'terraso-mobile-client/model/site/actions/remoteSiteActions';
 import * as siteActions from 'terraso-mobile-client/model/site/actions/siteActions';
 import {
+  getUnsyncedRecords,
+  initialRecord,
   markEntityModified,
   mergeUnsyncedEntities,
   SyncRecords,
@@ -36,7 +37,8 @@ import {
 
 const initialState = {
   sites: {} as Record<string, Site>,
-  siteSync: {} as SyncRecords<Site, SitePushFailureReason>,
+  siteSync: {} as SyncRecords<Site, string>,
+  noteSync: {} as SyncRecords<SiteNote, string>,
 };
 
 type SiteState = typeof initialState;
@@ -85,11 +87,49 @@ export const setSites = (
     );
   }
 
+  // Save unsynced notes before site merge (which may overwrite synced sites)
+  const unsyncedNoteRecords = getUnsyncedRecords(state.noteSync);
+  const localNotes: Record<string, SiteNote> = {};
+  for (const site of Object.values(state.sites)) {
+    for (const [noteId, note] of Object.entries(site.notes)) {
+      if (noteId in unsyncedNoteRecords) {
+        localNotes[noteId] = note as SiteNote;
+      }
+    }
+  }
+
+  // Merge sites
   const {mergedRecords, mergedData} = mergeUnsyncedEntities(
     state.siteSync,
     state.sites,
     sites,
   );
+
+  // Build noteSync from merged sites (all notes start as synced)
+  const newNoteSync: SyncRecords<SiteNote, string> = {};
+  for (const site of Object.values(mergedData)) {
+    for (const [noteId, note] of Object.entries(site.notes)) {
+      newNoteSync[noteId] = initialRecord(note as SiteNote);
+    }
+  }
+
+  // Overlay unsynced note records and their data
+  for (const [noteId, record] of Object.entries(unsyncedNoteRecords)) {
+    newNoteSync[noteId] = record;
+    if (localNotes[noteId]) {
+      // New or updated note — restore in merged site
+      const siteId = localNotes[noteId].siteId;
+      if (mergedData[siteId]) {
+        (mergedData[siteId] as Site).notes[noteId] = localNotes[noteId];
+      }
+    } else if (record.lastSyncedData) {
+      // Deleted note — remove from merged site
+      const siteId = (record.lastSyncedData as SiteNote).siteId;
+      if (mergedData[siteId]) {
+        delete (mergedData[siteId] as Site).notes[noteId];
+      }
+    }
+  }
 
   const badMerged = Object.values(mergedData).filter(
     s => typeof s.latitude !== 'number' || typeof s.longitude !== 'number',
@@ -103,6 +143,7 @@ export const setSites = (
 
   state.sites = mergedData;
   state.siteSync = mergedRecords;
+  state.noteSync = newNoteSync;
   logSyncSummary('setSites (pull)', 'site', mergedRecords, mergedData);
 };
 
@@ -122,6 +163,12 @@ export const updateProjectOfSite = (
 
 export const deleteSites = (state: Draft<SiteState>, siteIds: string[]) => {
   for (const siteId of siteIds) {
+    // Clean up noteSync records for notes belonging to this site
+    if (state.sites[siteId]) {
+      for (const noteId of Object.keys(state.sites[siteId].notes)) {
+        delete state.noteSync[noteId];
+      }
+    }
     delete state.sites[siteId];
     delete state.siteSync[siteId];
   }
@@ -177,37 +224,37 @@ const siteSlice = createSlice({
 
     builder.addCase(addSiteNote.fulfilled, (state, {payload: siteNote}) => {
       state.sites[siteNote.siteId].notes[siteNote.id] = siteNote;
-      markEntityModified(state.siteSync, siteNote.siteId, Date.now());
+      markEntityModified(state.noteSync, siteNote.id, Date.now());
       logSyncChange(
         'addSiteNote',
-        'site',
-        siteNote.siteId,
-        state.siteSync[siteNote.siteId],
-        state.sites[siteNote.siteId],
+        'note',
+        siteNote.id,
+        state.noteSync[siteNote.id],
+        siteNote,
       );
     });
 
     builder.addCase(deleteSiteNote.fulfilled, (state, {payload: siteNote}) => {
       delete state.sites[siteNote.siteId].notes[siteNote.id];
-      markEntityModified(state.siteSync, siteNote.siteId, Date.now());
+      markEntityModified(state.noteSync, siteNote.id, Date.now());
       logSyncChange(
         'deleteSiteNote',
-        'site',
-        siteNote.siteId,
-        state.siteSync[siteNote.siteId],
-        state.sites[siteNote.siteId],
+        'note',
+        siteNote.id,
+        state.noteSync[siteNote.id],
+        siteNote,
       );
     });
 
     builder.addCase(updateSiteNote.fulfilled, (state, {payload: siteNote}) => {
       state.sites[siteNote.siteId].notes[siteNote.id] = siteNote;
-      markEntityModified(state.siteSync, siteNote.siteId, Date.now());
+      markEntityModified(state.noteSync, siteNote.id, Date.now());
       logSyncChange(
         'updateSiteNote',
-        'site',
-        siteNote.siteId,
-        state.siteSync[siteNote.siteId],
-        state.sites[siteNote.siteId],
+        'note',
+        siteNote.id,
+        state.noteSync[siteNote.id],
+        siteNote,
       );
     });
   },

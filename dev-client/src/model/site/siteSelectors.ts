@@ -46,3 +46,25 @@ export const selectSiteSyncErrorSiteIds = createSelector(
     },
   },
 );
+
+export const selectNoteChanges = (state: AppState) => state.site.noteSync;
+
+export const selectUnsyncedNoteIds = createSelector(
+  selectNoteChanges,
+  records => Object.keys(getUnsyncedRecords(records)).sort(),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
+);
+
+export const selectNoteSyncErrorNoteIds = createSelector(
+  selectNoteChanges,
+  records => Object.keys(getErrorRecords(records)).sort(),
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
+  },
+);

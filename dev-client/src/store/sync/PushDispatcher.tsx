@@ -25,6 +25,7 @@ import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import {
   useDebouncedIsOffline,
   useDebouncedUnsyncedMetadataSiteIds,
+  useDebouncedUnsyncedNoteIds,
   useDebouncedUnsyncedSiteSiteIds,
   useDebouncedUnsyncedSoilDataSiteIds,
   useIsLoggedIn,
@@ -59,12 +60,14 @@ export const PushDispatcher = () => {
   const unsyncedMetadataIds =
     useDebouncedUnsyncedMetadataSiteIds(PUSH_DEBOUNCE_MS);
   const unsyncedSiteIds = useDebouncedUnsyncedSiteSiteIds(PUSH_DEBOUNCE_MS);
+  const unsyncedNoteIds = useDebouncedUnsyncedNoteIds(PUSH_DEBOUNCE_MS);
 
   /* Set up a callback for the dispatcher to use when it determines a push is needed. */
   const dispatchPushBase = usePushDispatch({
     soilDataSiteIds: unsyncedSoilDataIds,
     soilMetadataSiteIds: unsyncedMetadataIds,
     siteSiteIds: unsyncedSiteIds,
+    noteIds: unsyncedNoteIds,
   });
 
   /* Connect the push dispatch to sync error notifications */
@@ -75,7 +78,8 @@ export const PushDispatcher = () => {
         if (
           errorCounts.soilDataErrors > 0 ||
           errorCounts.metadataErrors > 0 ||
-          errorCounts.siteErrors > 0
+          errorCounts.siteErrors > 0 ||
+          errorCounts.noteErrors > 0
         ) {
           /* If the push yielded sync errors, notify the user */
           syncNotifications.showError({
@@ -83,6 +87,7 @@ export const PushDispatcher = () => {
             soilDataErrors: errorCounts.soilDataErrors,
             metadataErrors: errorCounts.metadataErrors,
             siteErrors: errorCounts.siteErrors,
+            noteErrors: errorCounts.noteErrors,
           });
         }
         return result;
@@ -96,7 +101,8 @@ export const PushDispatcher = () => {
     !isOffline &&
     (unsyncedSoilDataIds.length > 0 ||
       unsyncedMetadataIds.length > 0 ||
-      unsyncedSiteIds.length > 0);
+      unsyncedSiteIds.length > 0 ||
+      unsyncedNoteIds.length > 0);
 
   /* Set up retry mechanism which will dispatch the push action when it begins. */
   const {beginRetry, endRetry} = useRetryInterval(
@@ -110,12 +116,14 @@ export const PushDispatcher = () => {
       if (syncDebugEnabled) {
         console.log(
           '⬆️ PushDispatcher: pushing',
+          unsyncedSiteIds.length,
+          'sites,',
+          unsyncedNoteIds.length,
+          'notes,',
           unsyncedSoilDataIds.length,
           'soilData,',
           unsyncedMetadataIds.length,
-          'metadata,',
-          unsyncedSiteIds.length,
-          'sites',
+          'metadata',
         );
       }
       dispatchPush()
@@ -143,6 +151,7 @@ export const PushDispatcher = () => {
     unsyncedSoilDataIds,
     unsyncedMetadataIds,
     unsyncedSiteIds,
+    unsyncedNoteIds,
   ]);
 
   return <></>;
@@ -150,40 +159,39 @@ export const PushDispatcher = () => {
 
 const getSyncErrorCounts = (
   result: PayloadAction<undefined | object | SyncResults<unknown, unknown>>,
-): {soilDataErrors: number; metadataErrors: number; siteErrors: number} => {
-  const counts = {soilDataErrors: 0, metadataErrors: 0, siteErrors: 0};
+): {
+  soilDataErrors: number;
+  metadataErrors: number;
+  siteErrors: number;
+  noteErrors: number;
+} => {
+  const counts = {
+    soilDataErrors: 0,
+    metadataErrors: 0,
+    siteErrors: 0,
+    noteErrors: 0,
+  };
 
   if (!result.payload) {
     return counts;
   }
 
-  // Handle entity-level sync errors
-  if ('soilDataResults' in result.payload) {
-    const soilDataResults = result.payload.soilDataResults as
-      | SyncResults<unknown, unknown>
-      | undefined;
-    if (soilDataResults) {
-      counts.soilDataErrors = Object.keys(soilDataResults.errors).length;
+  const getErrorCount = (key: string): number => {
+    if (key in (result.payload as object)) {
+      const results = (result.payload as Record<string, unknown>)[key] as
+        | SyncResults<unknown, unknown>
+        | undefined;
+      if (results) {
+        return Object.keys(results.errors).length;
+      }
     }
-  }
+    return 0;
+  };
 
-  if ('soilMetadataResults' in result.payload) {
-    const soilMetadataResults = result.payload.soilMetadataResults as
-      | SyncResults<unknown, unknown>
-      | undefined;
-    if (soilMetadataResults) {
-      counts.metadataErrors = Object.keys(soilMetadataResults.errors).length;
-    }
-  }
-
-  if ('siteResults' in result.payload) {
-    const siteResults = result.payload.siteResults as
-      | SyncResults<unknown, unknown>
-      | undefined;
-    if (siteResults) {
-      counts.siteErrors = Object.keys(siteResults.errors).length;
-    }
-  }
+  counts.soilDataErrors = getErrorCount('soilDataResults');
+  counts.metadataErrors = getErrorCount('soilMetadataResults');
+  counts.siteErrors = getErrorCount('siteResults');
+  counts.noteErrors = getErrorCount('noteResults');
 
   return counts;
 };

@@ -32,6 +32,8 @@ jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
     useDebouncedIsOffline: jest.fn(),
     useDebouncedUnsyncedSoilDataSiteIds: jest.fn(),
     useDebouncedUnsyncedMetadataSiteIds: jest.fn(),
+    useDebouncedUnsyncedSiteSiteIds: jest.fn(),
+    useDebouncedUnsyncedNoteIds: jest.fn(),
     useIsLoggedIn: jest.fn(),
     usePushDispatch: jest.fn(),
     useRetryInterval: jest.fn(),
@@ -55,6 +57,12 @@ describe('PushDispatcher', () => {
   let useDebouncedUnsyncedMetadataSiteIds = jest.mocked(
     syncHooks.useDebouncedUnsyncedMetadataSiteIds,
   );
+  let useDebouncedUnsyncedSiteSiteIds = jest.mocked(
+    syncHooks.useDebouncedUnsyncedSiteSiteIds,
+  );
+  let useDebouncedUnsyncedNoteIds = jest.mocked(
+    syncHooks.useDebouncedUnsyncedNoteIds,
+  );
 
   let dispatchPush = jest.fn();
   let usePushDispatch = jest.mocked(syncHooks.usePushDispatch);
@@ -73,10 +81,14 @@ describe('PushDispatcher', () => {
     useIsLoggedIn.mockReset();
     useDebouncedUnsyncedSoilDataSiteIds.mockReset();
     useDebouncedUnsyncedMetadataSiteIds.mockReset();
+    useDebouncedUnsyncedSiteSiteIds.mockReset();
+    useDebouncedUnsyncedNoteIds.mockReset();
 
     // Default to empty arrays
     useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue([]);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue([]);
+    useDebouncedUnsyncedSiteSiteIds.mockReturnValue([]);
+    useDebouncedUnsyncedNoteIds.mockReturnValue([]);
 
     dispatchPush.mockReset();
     usePushDispatch.mockReset();
@@ -119,6 +131,7 @@ describe('PushDispatcher', () => {
       soilDataSiteIds: ['abcd'],
       soilMetadataSiteIds: ['efgh'],
       siteSiteIds: [],
+      noteIds: [],
     });
   });
 

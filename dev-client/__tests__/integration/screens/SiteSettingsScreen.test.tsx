@@ -105,6 +105,7 @@ describe('SiteSettingsScreen', () => {
         site2: site2,
       },
       siteSync: {},
+      noteSync: {},
     },
   } as Partial<ReduxAppState>;
 

@@ -19,7 +19,6 @@ import {User} from 'terraso-client-shared/account/accountSlice';
 import {
   DepthDependentSoilDataUpdateMutationInput,
   SoilDataDeleteDepthIntervalMutationInput,
-  SoilDataPushFailureReason,
   SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
@@ -29,34 +28,7 @@ import {ThunkAPI} from 'terraso-client-shared/store/utils';
 
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import * as localSoilData from 'terraso-mobile-client/model/soilData/actions/localSoilDataActions';
-import * as remoteSoilData from 'terraso-mobile-client/model/soilData/actions/remoteSoilDataActions';
-import {
-  getDataForRecords,
-  getEntityRecords,
-  getUnsyncedRecords,
-} from 'terraso-mobile-client/model/sync/records';
-import {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import {AppState} from 'terraso-mobile-client/store';
-
-export const pushSoilDataThunk = async (
-  input: string[],
-  _: User | null,
-  thunkApi: ThunkAPI,
-) => pushSoilData(input, thunkApi.getState() as AppState);
-
-export const pushSoilData = async (
-  input: string[],
-  state: AppState,
-): Promise<SyncResults<SoilData, SoilDataPushFailureReason>> => {
-  const unsyncedChanges = getUnsyncedRecords(
-    getEntityRecords(state.soilData.soilSync, input),
-  );
-  const unsyncedData = getDataForRecords(
-    unsyncedChanges,
-    state.soilData.soilData,
-  );
-  return remoteSoilData.pushSoilData(unsyncedChanges, unsyncedData);
-};
 
 export const updateSoilDataThunk = async (
   input: SoilDataUpdateMutationInput,
