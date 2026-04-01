@@ -21,7 +21,7 @@ import type {
   SitePushEntry,
   SitePushFailureReason,
   SitePushInputEntry,
-} from 'terraso-client-shared/site/syncTypes.ts';
+} from 'terraso-client-shared/soilId/syncTypes.ts';
 
 import {
   getChangedSiteFields,
