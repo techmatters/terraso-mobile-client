@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useContext, useMemo} from 'react';
+import {useCallback, useContext} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -91,7 +91,6 @@ export const SyncContent = () => {
 };
 
 const OfflineToggle = () => {
-  const isOffline = useIsOffline();
   const {isOfflineOverride, setIsOfflineOverride} =
     useContext(ConnectivityContext);
 
@@ -102,17 +101,22 @@ const OfflineToggle = () => {
     [setIsOfflineOverride],
   );
 
-  const label = useMemo(() => {
-    const state = isOffline ? 'OFFLINE' : 'ONLINE';
-    const source = isOfflineOverride !== null ? '(forced)' : '(auto)';
-    return `${state} ${source}`;
-  }, [isOffline, isOfflineOverride]);
-
   return (
     <Row alignItems="center" space="8px">
       <Switch value={isOfflineOverride === true} onValueChange={onToggle} />
-      <Text>{label}</Text>
+      <Text>Force offline</Text>
     </Row>
+  );
+};
+
+const ConnectivityStatus = () => {
+  const isOffline = useIsOffline();
+  const color = isOffline ? '#CC0000' : '#00AA00';
+  const label = isOffline ? 'Offline' : 'Online';
+  return (
+    <Text style={[styles.connectivityStatus, {color}]}>
+      {'\u25CF'} {label}
+    </Text>
   );
 };
 
@@ -123,6 +127,7 @@ const SyncInfoExpanded = () => {
       <Box margin="8px">
         <Row alignItems="center" justifyContent="space-between">
           <OfflineToggle />
+          <ConnectivityStatus />
           <Row alignItems="center" space="8px">
             <PullButton />
             <PullPending />
@@ -247,6 +252,7 @@ const SoilIdInfo = () => {
 };
 
 const styles = StyleSheet.create({
+  connectivityStatus: {fontWeight: 'bold'},
   dividerTopMargin: {marginTop: 4},
   scrollViewContainer: {flexGrow: 0},
 });
