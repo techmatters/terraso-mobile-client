@@ -238,8 +238,8 @@ export const pushUserData = async (
         response.siteResults,
       );
       if (Object.keys(results.siteResults.errors).length > 0) {
-        console.log(
-          'pushUserData ERROR: site push failure reasons',
+        console.warn(
+          'pushUserData_error: site_push_failure_reasons',
           results.siteResults.errors,
         );
       }
@@ -251,8 +251,8 @@ export const pushUserData = async (
         response.soilDataResults,
       );
       if (Object.keys(results.soilDataResults.errors).length > 0) {
-        console.log(
-          'pushUserData ERROR: soil data push failure reasons',
+        console.warn(
+          'pushUserData_error: soil_data_push_failure_reasons',
           results.soilDataResults.errors,
         );
       }
@@ -264,8 +264,8 @@ export const pushUserData = async (
         response.soilMetadataResults,
       );
       if (Object.keys(results.soilMetadataResults.errors).length > 0) {
-        console.log(
-          'pushUserData ERROR: soil metadata push failure reasons',
+        console.warn(
+          'pushUserData_error: soil_metadata_push_failure_reasons',
           results.soilMetadataResults.errors,
         );
       }
@@ -275,9 +275,9 @@ export const pushUserData = async (
       Array.isArray(error) &&
       (error as unknown[]).includes('terraso_api.error_request_response')
     ) {
-      console.log('pushUserData ERROR: could not reach server', error);
+      console.warn('pushUserData_error: could_not_reach_server', error);
     } else {
-      console.log('pushUserData ERROR: mutation-level error', error);
+      console.warn('pushUserData_error: mutation_level_error', error);
     }
     throw error;
   }
