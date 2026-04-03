@@ -18,14 +18,16 @@
 import {createContext, useContext, useMemo, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {
-  SyncConflictInfo,
-  trackSyncError,
-} from 'terraso-mobile-client/analytics/syncErrorTracking';
+import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {ErrorDialog} from 'terraso-mobile-client/components/dialogs/ErrorDialog';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
+
+export type SyncConflictInfo =
+  | {reason: 'push'}
+  | {reason: 'missing_data'; missingEntityType: string}
+  | {reason: 'other'};
 
 export type SyncNotificationHandle = {
   showError: (info?: SyncConflictInfo) => void;
@@ -47,7 +49,11 @@ export const SyncNotificationContextProvider = ({
   const syncNotificationHandle = useMemo(() => {
     return {
       showError: (info?: SyncConflictInfo) => {
-        trackSyncError(info ?? {reason: 'other'});
+        if (info?.reason === 'missing_data') {
+          getPostHogInstance()?.capture('missing_data_sync_error', {
+            missing_entity_type: info.missingEntityType,
+          });
+        }
         errorDialogRef.current?.onOpen();
       },
     };

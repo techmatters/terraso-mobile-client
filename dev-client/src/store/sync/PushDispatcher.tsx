@@ -15,13 +15,17 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
+import {useSelector} from 'react-redux';
 
 import {PayloadAction} from '@reduxjs/toolkit';
 
+import {trackPushResults} from 'terraso-mobile-client/analytics/syncErrorTracking';
 import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
+import type {PushUserDataResults} from 'terraso-mobile-client/model/sync/actions/syncActions';
 import {SyncResults} from 'terraso-mobile-client/model/sync/results';
+import {AppState} from 'terraso-mobile-client/store';
 import {
   useDebouncedIsOffline,
   useDebouncedUnsyncedMetadataSiteIds,
@@ -46,6 +50,9 @@ export const PUSH_RETRY_INTERVAL_MS = 1000 * 60;
 export const PushDispatcher = () => {
   /* Determine whether the user is logged in before doing anything. */
   const isLoggedIn = useIsLoggedIn();
+  const sites = useSelector((state: AppState) => state.site.sites);
+  const sitesRef = useRef(sites);
+  sitesRef.current = sites;
 
   /* Use notifications to show errors to the user */
   const syncNotifications = useSyncNotificationContext();
@@ -71,19 +78,12 @@ export const PushDispatcher = () => {
   const dispatchPush = useCallback(
     () =>
       dispatchPushBase().then(result => {
-        const errorCounts = getSyncErrorCounts(result);
-        if (
-          errorCounts.soilDataErrors > 0 ||
-          errorCounts.metadataErrors > 0 ||
-          errorCounts.siteErrors > 0
-        ) {
-          /* If the push yielded sync errors, notify the user */
-          syncNotifications.showError({
-            reason: 'push',
-            soilDataErrors: errorCounts.soilDataErrors,
-            metadataErrors: errorCounts.metadataErrors,
-            siteErrors: errorCounts.siteErrors,
-          });
+        const hasErrors = trackPushResults(
+          result.payload as PushUserDataResults,
+          siteId => sitesRef.current[siteId]?.name ?? siteId,
+        );
+        if (hasErrors) {
+          syncNotifications.showError({reason: 'push'});
         }
         return result;
       }),
@@ -146,46 +146,6 @@ export const PushDispatcher = () => {
   ]);
 
   return <></>;
-};
-
-const getSyncErrorCounts = (
-  result: PayloadAction<undefined | object | SyncResults<unknown, unknown>>,
-): {soilDataErrors: number; metadataErrors: number; siteErrors: number} => {
-  const counts = {soilDataErrors: 0, metadataErrors: 0, siteErrors: 0};
-
-  if (!result.payload) {
-    return counts;
-  }
-
-  // Handle entity-level sync errors
-  if ('soilDataResults' in result.payload) {
-    const soilDataResults = result.payload.soilDataResults as
-      | SyncResults<unknown, unknown>
-      | undefined;
-    if (soilDataResults) {
-      counts.soilDataErrors = Object.keys(soilDataResults.errors).length;
-    }
-  }
-
-  if ('soilMetadataResults' in result.payload) {
-    const soilMetadataResults = result.payload.soilMetadataResults as
-      | SyncResults<unknown, unknown>
-      | undefined;
-    if (soilMetadataResults) {
-      counts.metadataErrors = Object.keys(soilMetadataResults.errors).length;
-    }
-  }
-
-  if ('siteResults' in result.payload) {
-    const siteResults = result.payload.siteResults as
-      | SyncResults<unknown, unknown>
-      | undefined;
-    if (siteResults) {
-      counts.siteErrors = Object.keys(siteResults.errors).length;
-    }
-  }
-
-  return counts;
 };
 
 const dispatchFailed = (
