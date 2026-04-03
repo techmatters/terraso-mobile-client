@@ -73,6 +73,9 @@ export const selectSite = (siteId: string) => (state: AppState) =>
 
 export const selectSites = (state: AppState) => state.site.sites;
 
+export const selectSiteDeletedByUser = (state: AppState) =>
+  state.site.siteDeletedByUser;
+
 const selectUserRole = (_state: AppState, userRole: ProjectRole) => userRole;
 
 const selectProjectsWithUserRole = createSelector(

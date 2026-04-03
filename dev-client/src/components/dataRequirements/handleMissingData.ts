@@ -20,15 +20,21 @@ import {useCallback} from 'react';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useSelector} from 'terraso-mobile-client/store';
+import {selectSiteDeletedByUser} from 'terraso-mobile-client/store/selectors';
 
 export const useNavToBottomTabsAndShowSyncError = (
   missingEntityType?: string,
 ) => {
   const navigation = useNavigation();
   const syncNotifications = useSyncNotificationContext();
+  const siteDeletedByUser = useSelector(selectSiteDeletedByUser);
 
   return useCallback(() => {
     navigation.popTo('BOTTOM_TABS');
+    if (missingEntityType === 'site' && siteDeletedByUser) {
+      return;
+    }
     if (isFlagEnabled('FF_offline')) {
       syncNotifications.showError(
         missingEntityType
@@ -36,7 +42,7 @@ export const useNavToBottomTabsAndShowSyncError = (
           : {reason: 'other'},
       );
     }
-  }, [navigation, syncNotifications, missingEntityType]);
+  }, [navigation, syncNotifications, missingEntityType, siteDeletedByUser]);
 };
 
 export const usePopNavigationAndShowSyncError = (
