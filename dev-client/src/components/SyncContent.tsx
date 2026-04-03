@@ -90,33 +90,38 @@ export const SyncContent = () => {
   );
 };
 
-const OfflineToggle = () => {
-  const {isOfflineOverride, setIsOfflineOverride} =
+const ConnectivityToggle = () => {
+  const isOffline = useIsOffline();
+  const {isOfflineOverride, setIsOfflineOverride, realIsOffline} =
     useContext(ConnectivityContext);
 
   const onToggle = useCallback(
     (value: boolean) => {
-      setIsOfflineOverride(value ? true : null);
+      setIsOfflineOverride(value ? null : true);
     },
     [setIsOfflineOverride],
   );
 
+  let label: string;
+  let color: string;
+  if (isOfflineOverride === true) {
+    label = 'Forced offline';
+    color = '#CC0000';
+  } else if (realIsOffline) {
+    label = 'No connection';
+    color = '#CC0000';
+  } else {
+    label = 'Online';
+    color = '#00AA00';
+  }
+
   return (
     <Row alignItems="center" space="8px">
-      <Switch value={isOfflineOverride === true} onValueChange={onToggle} />
-      <Text>Force offline</Text>
+      <Switch value={!isOffline} onValueChange={onToggle} />
+      <Text style={[styles.connectivityStatus, {color}]}>
+        {'\u25CF'} {label}
+      </Text>
     </Row>
-  );
-};
-
-const ConnectivityStatus = () => {
-  const isOffline = useIsOffline();
-  const color = isOffline ? '#CC0000' : '#00AA00';
-  const label = isOffline ? 'Offline' : 'Online';
-  return (
-    <Text style={[styles.connectivityStatus, {color}]}>
-      {'\u25CF'} {label}
-    </Text>
   );
 };
 
@@ -126,8 +131,7 @@ const SyncInfoExpanded = () => {
     <ScrollView style={[styles.scrollViewContainer, {maxHeight: height / 2}]}>
       <Box margin="8px">
         <Row alignItems="center" justifyContent="space-between">
-          <OfflineToggle />
-          <ConnectivityStatus />
+          <ConnectivityToggle />
           <Row alignItems="center" space="8px">
             <PullButton />
             <PullPending />
