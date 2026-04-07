@@ -48,6 +48,7 @@ import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictio
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {PROJECT_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {
   deleteSite,
@@ -190,6 +191,7 @@ export function ProjectSitesScreen({
   navigation,
 }: Props): React.JSX.Element {
   const {t} = useTranslation();
+  const isOffline = useIsOffline();
   const transferCallback = useCallback(
     () =>
       navigation.navigate('SITE_TRANSFER_PROJECT', {
@@ -268,6 +270,7 @@ export function ProjectSitesScreen({
                 <ContainedButton
                   onPress={transferCallback}
                   label={t('projects.sites.transfer')}
+                  disabled={isOffline}
                 />
               </Box>
             </RestrictByProjectRole>
@@ -308,6 +311,7 @@ export function ProjectSitesScreen({
             <ContainedButton
               onPress={transferCallback}
               label={t('projects.sites.transfer')}
+              disabled={isOffline}
             />
           </RestrictByProjectRole>
         </>

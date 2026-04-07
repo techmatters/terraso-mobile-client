@@ -19,6 +19,7 @@ import {useEffect} from 'react';
 
 import {Coords} from 'terraso-client-shared/types';
 
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {selectCachedElevation} from 'terraso-mobile-client/model/elevation/elevationSelectors';
 import {fetchElevation} from 'terraso-mobile-client/model/elevation/elevationSlice';
 import {ElevationRecord} from 'terraso-mobile-client/model/elevation/elevationTypes';
@@ -26,13 +27,14 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const useElevationData = (coords: Coords): ElevationRecord => {
   const dispatch = useDispatch();
+  const isOffline = useIsOffline();
   const cachedElevation = useSelector(selectCachedElevation(coords));
 
   useEffect(() => {
-    if (!cachedElevation) {
+    if (!cachedElevation && !isOffline) {
       dispatch(fetchElevation(coords));
     }
-  }, [dispatch, cachedElevation, coords]);
+  }, [dispatch, cachedElevation, isOffline, coords]);
 
   return cachedElevation ?? {fetching: true};
 };

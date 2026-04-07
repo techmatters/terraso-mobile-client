@@ -37,6 +37,17 @@ import {
 const initialState = {
   sites: {} as Record<string, Site>,
   siteSync: {} as SyncRecords<Site, SitePushFailureReason>,
+  // Set to true when the user deletes a site via the UI, cleared on the next
+  // pull. This suppresses the "sync conflict" error dialog that would otherwise
+  // fire when ScreenDataRequirements detects the site is missing — on a
+  // user-initiated delete, silently navigating back is the right behavior.
+  //
+  // We don't track which site was deleted, so in theory: if the user deletes
+  // site A, then navigates to site B, and a pull removes site B before the
+  // flag is cleared, the error dialog for site B would be incorrectly
+  // suppressed. This is near-impossible in practice because the pull itself
+  // clears the flag.
+  siteDeletedByUser: false,
 };
 
 type SiteState = typeof initialState;

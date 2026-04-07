@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useContext, useMemo} from 'react';
+import {useCallback, useContext} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -90,28 +90,37 @@ export const SyncContent = () => {
   );
 };
 
-const OfflineToggle = () => {
+const ConnectivityToggle = () => {
   const isOffline = useIsOffline();
-  const {isOfflineOverride, setIsOfflineOverride} =
+  const {isOfflineOverride, setIsOfflineOverride, realIsOffline} =
     useContext(ConnectivityContext);
 
   const onToggle = useCallback(
     (value: boolean) => {
-      setIsOfflineOverride(value ? true : null);
+      setIsOfflineOverride(value ? null : true);
     },
     [setIsOfflineOverride],
   );
 
-  const label = useMemo(() => {
-    const state = isOffline ? 'OFFLINE' : 'ONLINE';
-    const source = isOfflineOverride !== null ? '(forced)' : '(auto)';
-    return `${state} ${source}`;
-  }, [isOffline, isOfflineOverride]);
+  let label: string;
+  let color: string;
+  if (isOfflineOverride === true) {
+    label = 'Forced offline';
+    color = '#CC0000';
+  } else if (realIsOffline) {
+    label = 'No connection';
+    color = '#CC0000';
+  } else {
+    label = 'Online';
+    color = '#00AA00';
+  }
 
   return (
     <Row alignItems="center" space="8px">
-      <Switch value={isOfflineOverride === true} onValueChange={onToggle} />
-      <Text>{label}</Text>
+      <Switch value={!isOffline} onValueChange={onToggle} />
+      <Text style={[styles.connectivityStatus, {color}]}>
+        {'\u25CF'} {label}
+      </Text>
     </Row>
   );
 };
@@ -122,7 +131,7 @@ const SyncInfoExpanded = () => {
     <ScrollView style={[styles.scrollViewContainer, {maxHeight: height / 2}]}>
       <Box margin="8px">
         <Row alignItems="center" justifyContent="space-between">
-          <OfflineToggle />
+          <ConnectivityToggle />
           <Row alignItems="center" space="8px">
             <PullButton />
             <PullPending />
@@ -247,6 +256,7 @@ const SoilIdInfo = () => {
 };
 
 const styles = StyleSheet.create({
+  connectivityStatus: {fontWeight: 'bold'},
   dividerTopMargin: {marginTop: 4},
   scrollViewContainer: {flexGrow: 0},
 });

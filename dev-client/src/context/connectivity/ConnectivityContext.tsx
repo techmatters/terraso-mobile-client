@@ -27,6 +27,7 @@ import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 
 export type ConnectivityContextType = {
   isOffline: boolean | null;
+  realIsOffline: boolean | null;
   isOfflineOverride: boolean | null;
   setIsOfflineOverride: (value: boolean | null) => void;
 };
@@ -35,6 +36,7 @@ const noopSetOverride = () => {};
 
 export const ConnectivityContext = createContext<ConnectivityContextType>({
   isOffline: null,
+  realIsOffline: null,
   isOfflineOverride: null,
   setIsOfflineOverride: noopSetOverride,
 });
@@ -82,7 +84,12 @@ export const ConnectivityContextProvider = ({
 
   return (
     <ConnectivityContext.Provider
-      value={{isOffline, isOfflineOverride, setIsOfflineOverride}}>
+      value={{
+        isOffline,
+        realIsOffline,
+        isOfflineOverride,
+        setIsOfflineOverride,
+      }}>
       {children}
     </ConnectivityContext.Provider>
   );

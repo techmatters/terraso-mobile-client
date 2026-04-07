@@ -250,6 +250,7 @@ export function initState(
       site: {
         sites: keyBy(sites, 'id'),
         siteSync: {},
+        siteDeletedByUser: false,
       },
       soilData: {
         soilData,

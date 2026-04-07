@@ -68,6 +68,7 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
         'soilMetadata',
       );
     }
+    state.site.siteDeletedByUser = false;
     setProjects(state.project, payload.projects);
     setSites(state.site, payload.sites);
     setUsers(state.account, payload.users);

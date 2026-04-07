@@ -105,6 +105,7 @@ export const siteGlobalReducer = createGlobalReducer(builder => {
   });
 
   builder.addCase(deleteSite.fulfilled, (state, {payload}) => {
+    state.site.siteDeletedByUser = true;
     removeSiteFromAllProjects(state.project, payload);
     deleteSites(state.site, [payload]);
     deleteSoilData(state.soilData, [payload]);

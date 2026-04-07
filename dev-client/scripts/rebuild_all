@@ -57,6 +57,11 @@ IOS_LOG_NOISE=(
     "CoreHaptics"
     "CHHapticPattern"
     "_UIKBFeedbackGenerator"
+    "hapticpatternlibrary.plist"
+    "NSCocoaErrorDomain"
+    "NSPOSIXErrorDomain"
+    "No such file or directory"
+    "UIKeyboardLayoutStar"
     "\\[MapboxCommon\\]"
     "Could not find view with tag"
 )

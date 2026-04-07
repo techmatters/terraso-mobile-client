@@ -30,6 +30,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {useProjectRoleContext} from 'terraso-mobile-client/context/ProjectRoleContext';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {PROJECT_MANAGER_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {deleteUserFromProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {
@@ -47,6 +48,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isOffline = useIsOffline();
   const currentUser = useSelector(state => state.account.currentUser);
   const currentUserRole = useSelector(state => {
     const memberships = Object.values(
@@ -95,6 +97,7 @@ export const ProjectTeamScreen = ({route}: Props) => {
         <Box alignSelf="flex-start">
           <AddButton
             label={t('projects.team.add')}
+            disabled={isOffline}
             onPress={() =>
               navigation.navigate('ADD_USER_PROJECT', {
                 projectId: route.params.projectId,

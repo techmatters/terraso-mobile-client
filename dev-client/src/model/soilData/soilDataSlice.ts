@@ -107,6 +107,7 @@ export const setSoilData = (
 export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {
   for (const siteId of siteIds) {
     delete state.soilData[siteId];
+    delete state.soilSync[siteId];
   }
 };
 

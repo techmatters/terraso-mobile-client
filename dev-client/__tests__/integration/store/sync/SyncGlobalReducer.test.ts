@@ -89,6 +89,7 @@ describe('syncGlobalReducer: marking sites missing elevation as modified on pull
       site: {
         sites: {'site-1': makeSite('site-1', null)},
         siteSync: {'site-1': syncedRecord},
+        siteDeletedByUser: false,
       } as Partial<AppState>['site'],
     } as Partial<AppState>);
 
@@ -115,6 +116,7 @@ describe('syncGlobalReducer: marking sites missing elevation as modified on pull
       site: {
         sites: {'site-1': makeSite('site-1', null)},
         siteSync: {'site-1': unsyncedRecord},
+        siteDeletedByUser: false,
       } as Partial<AppState>['site'],
     } as Partial<AppState>);
 

@@ -53,7 +53,10 @@ const globalReducers = [
 export const createStore = (intialState?: Partial<AppState>) =>
   configureStore({
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware()
+      getDefaultMiddleware({
+        immutableCheck: {warnAfter: 64},
+        serializableCheck: {warnAfter: 64},
+      })
         .concat(handleAbortMiddleware as any)
         .concat(persistenceMiddleware as any),
     reducer: reduceReducers(rootReducer, ...globalReducers),

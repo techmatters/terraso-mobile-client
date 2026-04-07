@@ -72,6 +72,7 @@ export const deleteSoilMetadata = (
 ) => {
   for (const siteId of siteIds) {
     delete state.soilMetadata[siteId];
+    delete state.soilMetadataSync[siteId];
   }
 };
 
