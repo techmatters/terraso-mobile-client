@@ -313,6 +313,7 @@
         "sites": {
             "add": "Ongeza tovuti",
             "transfer": "Tovuti za Uhamisho",
+            "transfer_offline": "Uhamisho wa tovuti unapatikana tu ukiwa mtandaoni.",
             "create": "Unda Tovuti",
             "search": {
                 "placeholder": "Tafuta",

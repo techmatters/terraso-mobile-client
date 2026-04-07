@@ -59,6 +59,7 @@ import {
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
 import {RootStackScreenProps} from 'terraso-mobile-client/navigation/types';
+import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {theme} from 'terraso-mobile-client/theme';
 import {searchText} from 'terraso-mobile-client/util';
@@ -267,11 +268,16 @@ export function ProjectSitesScreen({
           <>
             <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
               <Box mb="12px">
-                <ContainedButton
-                  onPress={transferCallback}
-                  label={t('projects.sites.transfer')}
-                  disabled={isOffline}
-                />
+                {isOffline ? (
+                  <OfflineAlert
+                    message={t('projects.sites.transfer_offline')}
+                  />
+                ) : (
+                  <ContainedButton
+                    onPress={transferCallback}
+                    label={t('projects.sites.transfer')}
+                  />
+                )}
               </Box>
             </RestrictByProjectRole>
             <ListFilterModal
@@ -308,11 +314,14 @@ export function ProjectSitesScreen({
             <Text>{t('projects.sites.empty_contributor')}</Text>
           </RestrictByProjectRole>
           <RestrictByProjectRole role={PROJECT_EDITOR_ROLES}>
-            <ContainedButton
-              onPress={transferCallback}
-              label={t('projects.sites.transfer')}
-              disabled={isOffline}
-            />
+            {isOffline ? (
+              <OfflineAlert message={t('projects.sites.transfer_offline')} />
+            ) : (
+              <ContainedButton
+                onPress={transferCallback}
+                label={t('projects.sites.transfer')}
+              />
+            )}
           </RestrictByProjectRole>
         </>
       )}
