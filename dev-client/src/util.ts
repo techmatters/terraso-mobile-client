@@ -62,12 +62,24 @@ export const formatCoordinateInEnglish = (value: number) => {
   });
 };
 
-export const formatName = (firstName: string, lastName?: string) => {
-  return [lastName, firstName].filter(Boolean).join(', ');
+// Both functions accept an optional email fallback used when both first and
+// last name are empty (some user accounts have no name set on the backend).
+export const formatName = (
+  firstName: string,
+  lastName?: string,
+  emailFallback?: string,
+) => {
+  return (
+    [lastName, firstName].filter(Boolean).join(', ') || emailFallback || ''
+  );
 };
 
-export const formatFullName = (firstName: string, lastName?: string) => {
-  return [firstName, lastName].filter(Boolean).join(' ');
+export const formatFullName = (
+  firstName: string,
+  lastName?: string,
+  emailFallback?: string,
+) => {
+  return [firstName, lastName].filter(Boolean).join(' ') || emailFallback || '';
 };
 
 export const removeKeys = (a: any, b: any) => {
