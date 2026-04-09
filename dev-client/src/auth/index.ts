@@ -80,8 +80,8 @@ interface AuthTokens {
 }
 
 type AppleNameInfo = {
-  firstName?: string;
-  lastName?: string;
+  firstName: string | undefined;
+  lastName: string | undefined;
 };
 
 async function exchangeToken(
@@ -123,8 +123,8 @@ const apiConfig = getAPIConfig();
 
 type AppleSignInResult = {
   idToken: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string | undefined;
+  lastName: string | undefined;
 };
 
 async function getAppleSignInResult(): Promise<AppleSignInResult | undefined> {
