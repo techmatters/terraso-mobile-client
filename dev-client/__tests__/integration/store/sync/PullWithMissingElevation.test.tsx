@@ -18,8 +18,8 @@
 import {waitFor} from '@testing-library/react-native';
 import {render} from '@testing/integration/utils';
 
-import * as siteService from 'terraso-client-shared/site/siteService';
 import type {Site} from 'terraso-client-shared/site/siteTypes';
+import * as syncService from 'terraso-client-shared/soilId/syncService';
 
 import * as elevationService from 'terraso-mobile-client/model/elevation/elevationService';
 import {pullUserData} from 'terraso-mobile-client/model/sync/syncGlobalReducer';
@@ -30,8 +30,7 @@ const SITE_ID = 'site-1';
 const FETCHED_ELEVATION = 42;
 
 const mockFetchElevationForCoords = jest.fn();
-const mockUpdateSite = jest.fn();
-const mockFetchSite = jest.fn();
+const mockPushUserData = jest.fn();
 
 // Mock useIsOffline to return false (online) so that useDebouncedIsOffline starts with false on first render. In the Node.js test environment, use-debounce does not schedule timers (it checks for window), so the debounced value is stuck at the initial value. By making useIsOffline() return false from the start, the debounced value initializes to false and needsPush becomes true immediately.
 jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => ({
@@ -46,15 +45,13 @@ jest.mock('terraso-mobile-client/model/elevation/elevationService', () => ({
   getElevation: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('terraso-client-shared/site/siteService', () => ({
-  ...jest.requireActual('terraso-client-shared/site/siteService'),
-  updateSite: (...args: Parameters<typeof siteService.updateSite>) =>
-    mockUpdateSite(...args),
-  fetchSite: (...args: Parameters<typeof siteService.fetchSite>) =>
-    mockFetchSite(...args),
+jest.mock('terraso-client-shared/soilId/syncService', () => ({
+  ...jest.requireActual('terraso-client-shared/soilId/syncService'),
+  pushUserData: (...args: Parameters<typeof syncService.pushUserData>) =>
+    mockPushUserData(...args),
 }));
 
-const pulledSite: Site = {
+const pulledSiteWithMissingElevation: Site = {
   id: SITE_ID,
   name: 'Test Site',
   latitude: 10,
@@ -77,21 +74,20 @@ const makePullPayload = (sites: Record<string, Site>) =>
     exportTokens: [],
   }) as any;
 
-describe('PushDispatcher: elevation fetched and pushed after pull with missing elevation', () => {
+describe('PullWithMissingElevation', () => {
   beforeEach(() => {
     mockFetchElevationForCoords.mockReset();
-    mockUpdateSite.mockReset();
-    mockFetchSite.mockReset();
+    mockPushUserData.mockReset();
 
     mockFetchElevationForCoords.mockResolvedValue(FETCHED_ELEVATION);
-    mockUpdateSite.mockResolvedValue(undefined);
-    mockFetchSite.mockResolvedValue({
-      ...pulledSite,
-      elevation: FETCHED_ELEVATION,
+    mockPushUserData.mockResolvedValue({
+      siteResults: null,
+      soilDataResults: null,
+      soilMetadataResults: null,
     });
   });
 
-  test('fetches elevation and calls updateSite after pull with missing elevation', async () => {
+  test('if pull yields site with missing elevation, we will then fetch elevation for the site and push', async () => {
     // 1. Build post-pull state using a setup store
     const setupStore = createStore({
       account: {
@@ -112,7 +108,7 @@ describe('PushDispatcher: elevation fetched and pushed after pull with missing e
 
     setupStore.dispatch(
       pullUserData.fulfilled(
-        makePullPayload({[SITE_ID]: pulledSite}),
+        makePullPayload({[SITE_ID]: pulledSiteWithMissingElevation}),
         'requestId',
         'user-1',
       ),
@@ -124,17 +120,24 @@ describe('PushDispatcher: elevation fetched and pushed after pull with missing e
     // needsPush = true on the first render and the push dispatches right away.
     render(<PushDispatcher />, {initialState: setupStore.getState()});
 
-    // 3. Wait for both fetchElevationForCoords AND updateSite to have been called.
+    // 3. Wait for fetchElevationForCoords AND the bulk pushUserData to have been called.
     // waitFor advances fake timers internally (50ms per interval) to drive the
     // push thunk through its async steps.
     await waitFor(
       () => {
         expect(mockFetchElevationForCoords).toHaveBeenCalledWith(
-          pulledSite.latitude,
-          pulledSite.longitude,
+          pulledSiteWithMissingElevation.latitude,
+          pulledSiteWithMissingElevation.longitude,
         );
-        expect(mockUpdateSite).toHaveBeenCalledWith(
-          expect.objectContaining({id: SITE_ID, elevation: FETCHED_ELEVATION}),
+        expect(mockPushUserData).toHaveBeenCalledWith(
+          expect.objectContaining({
+            siteEntries: expect.arrayContaining([
+              expect.objectContaining({
+                siteId: SITE_ID,
+                elevation: FETCHED_ELEVATION,
+              }),
+            ]),
+          }),
         );
       },
       {timeout: 5000},
