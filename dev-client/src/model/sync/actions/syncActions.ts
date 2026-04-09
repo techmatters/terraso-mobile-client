@@ -29,6 +29,7 @@ import type {
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 import type {ThunkAPI} from 'terraso-client-shared/store/utils';
 
+import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
 import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
 import {
@@ -56,6 +57,73 @@ import {
 } from 'terraso-mobile-client/model/sync/records';
 import type {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import type {AppState} from 'terraso-mobile-client/store';
+
+const logPushInput = (mutationInput: UserDataPushInput): void => {
+  if (!syncDebugEnabled) {
+    return;
+  }
+  console.log(
+    '📤 pushUserData (bulk):',
+    mutationInput.siteEntries?.length ?? 0,
+    'sites,',
+    mutationInput.soilDataEntries?.length ?? 0,
+    'soilData,',
+    mutationInput.soilMetadataEntries?.length ?? 0,
+    'soilMetadata',
+  );
+};
+
+const logPushResults = (results: PushUserDataResults): void => {
+  if (!syncDebugEnabled) {
+    return;
+  }
+  if (
+    results.siteResults &&
+    Object.keys(results.siteResults.errors).length > 0
+  ) {
+    console.log(
+      'pushUserData: site_push_failure_reasons',
+      results.siteResults.errors,
+    );
+  }
+  if (
+    results.soilDataResults &&
+    Object.keys(results.soilDataResults.errors).length > 0
+  ) {
+    console.log(
+      'pushUserData: soil_data_push_failure_reasons',
+      results.soilDataResults.errors,
+    );
+  }
+  if (
+    results.soilMetadataResults &&
+    Object.keys(results.soilMetadataResults.errors).length > 0
+  ) {
+    console.log(
+      'pushUserData: soil_metadata_push_failure_reasons',
+      results.soilMetadataResults.errors,
+    );
+  }
+};
+
+const logPushError = (error: unknown): void => {
+  const isNetworkError =
+    Array.isArray(error) &&
+    (error as unknown[]).includes('terraso_api.error_request_response');
+
+  getPostHogInstance()?.capture('push_error', {
+    type: isNetworkError ? 'could_not_reach_server' : 'mutation_level_error',
+  });
+
+  if (syncDebugEnabled) {
+    console.log(
+      isNetworkError
+        ? 'pushUserData: could_not_reach_server'
+        : 'pushUserData: mutation_level_error',
+      error,
+    );
+  }
+};
 
 /**
  * Fetches elevation for all sites that are missing it.
@@ -215,17 +283,7 @@ export const pushUserData = async (
         : null,
   };
 
-  if (syncDebugEnabled) {
-    console.log(
-      '📤 pushUserData (bulk):',
-      mutationInput.siteEntries?.length ?? 0,
-      'sites,',
-      mutationInput.soilDataEntries?.length ?? 0,
-      'soilData,',
-      mutationInput.soilMetadataEntries?.length ?? 0,
-      'soilMetadata',
-    );
-  }
+  logPushInput(mutationInput);
 
   const results: PushUserDataResults = {};
 
@@ -237,12 +295,6 @@ export const pushUserData = async (
         siteUnsyncedChanges,
         response.siteResults,
       );
-      if (Object.keys(results.siteResults.errors).length > 0) {
-        console.warn(
-          'pushUserData_error: site_push_failure_reasons',
-          results.siteResults.errors,
-        );
-      }
     }
 
     if (soilDataUnsyncedChanges && response.soilDataResults) {
@@ -250,12 +302,6 @@ export const pushUserData = async (
         soilDataUnsyncedChanges,
         response.soilDataResults,
       );
-      if (Object.keys(results.soilDataResults.errors).length > 0) {
-        console.warn(
-          'pushUserData_error: soil_data_push_failure_reasons',
-          results.soilDataResults.errors,
-        );
-      }
     }
 
     if (soilMetadataUnsyncedChanges && response.soilMetadataResults) {
@@ -263,22 +309,11 @@ export const pushUserData = async (
         soilMetadataUnsyncedChanges,
         response.soilMetadataResults,
       );
-      if (Object.keys(results.soilMetadataResults.errors).length > 0) {
-        console.warn(
-          'pushUserData_error: soil_metadata_push_failure_reasons',
-          results.soilMetadataResults.errors,
-        );
-      }
     }
+
+    logPushResults(results);
   } catch (error) {
-    if (
-      Array.isArray(error) &&
-      (error as unknown[]).includes('terraso_api.error_request_response')
-    ) {
-      console.warn('pushUserData_error: could_not_reach_server', error);
-    } else {
-      console.warn('pushUserData_error: mutation_level_error', error);
-    }
+    logPushError(error);
     throw error;
   }
 
