@@ -118,7 +118,7 @@ export const useRetryInterval = (interval: number, action: () => void) => {
   return {beginRetry, endRetry};
 };
 
-// Site ids with either data or metadata that is unsynced (no duplicates)
+// Site ids with any type of unsynced changes (no duplicates)
 export const useUnsyncedSiteIds = () => {
   const unsyncedSoilDataSiteIds = useSelector(selectUnsyncedSoilDataSiteIds);
   const unsyncedMetadataSiteIds = useSelector(selectUnsyncedMetadataSiteIds);
@@ -135,7 +135,7 @@ export const useUnsyncedSiteIds = () => {
   return unsyncedCombinedSiteIds;
 };
 
-// Site ids with either data or metadata errors (no duplicates)
+// Site ids with any type of entity-level sync errors (no duplicates)
 export const useSyncErrorSiteIds = () => {
   const soilDataErrorSiteIds = useSelector(selectSoilDataSyncErrorSiteIds);
   const metadataErrorSiteIds = useSelector(selectMetadataSyncErrorSiteIds);
