@@ -143,3 +143,68 @@ test('useUnsyncedSiteIds returns only metadata unsynced sites when soil data is 
 
   expect(result).toEqual(['siteA', 'siteC']);
 });
+
+test('useUnsyncedSiteIds returns site IDs from siteSync', () => {
+  const state = createAppState();
+  const at = Date.now();
+  const siteSync = state.site.siteSync;
+
+  markEntityModified(siteSync, 'siteA', at);
+  markEntityModified(siteSync, 'siteB', at);
+
+  const result = renderSelectorHook(() => useUnsyncedSiteIds(), state);
+
+  expect(result).toEqual(['siteA', 'siteB']);
+});
+
+test('useUnsyncedSiteIds deduplicates siteSync with soilSync', () => {
+  const state = createAppState();
+  const at = Date.now();
+  const siteSync = state.site.siteSync;
+  const soilSync = state.soilData.soilSync;
+
+  markEntityModified(siteSync, 'siteA', at);
+  markEntityModified(soilSync, 'siteA', at); // same ID in both
+  markEntityModified(soilSync, 'siteB', at);
+
+  const result = renderSelectorHook(() => useUnsyncedSiteIds(), state);
+
+  expect(result).toEqual(['siteA', 'siteB']);
+});
+
+test('useSyncErrorSiteIds returns site IDs from siteSync', () => {
+  const state = createAppState();
+  const at = Date.now();
+  const siteSync = state.site.siteSync;
+
+  markEntityError(siteSync, 'siteA', {value: 'NOT_ALLOWED', revisionId: 1}, at);
+
+  const result = renderSelectorHook(() => useSyncErrorSiteIds(), state);
+
+  expect(result).toEqual(['siteA']);
+});
+
+test('useSyncErrorSiteIds deduplicates siteSync with soilSync errors', () => {
+  const state = createAppState();
+  const at = Date.now();
+  const siteSync = state.site.siteSync;
+  const soilSync = state.soilData.soilSync;
+
+  markEntityError(siteSync, 'siteA', {value: 'NOT_ALLOWED', revisionId: 1}, at);
+  markEntityError(
+    soilSync,
+    'siteA',
+    {value: 'DOES_NOT_EXIST', revisionId: 1},
+    at,
+  ); // same ID in both
+  markEntityError(
+    soilSync,
+    'siteB',
+    {value: 'DOES_NOT_EXIST', revisionId: 1},
+    at,
+  );
+
+  const result = renderSelectorHook(() => useSyncErrorSiteIds(), state);
+
+  expect(result).toEqual(['siteA', 'siteB']);
+});

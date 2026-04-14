@@ -163,6 +163,37 @@ describe('unsyncedSitesToMutationInput', () => {
     expect(result[0].deletedNoteIds).toEqual(['note-del']);
   });
 
+  test('new site — null elevation becomes undefined', () => {
+    const site = makeSite({id: 'site-1', elevation: null});
+    const unsyncedChanges = makeUnsyncedChanges({
+      'site-1': {revisionId: 1, lastSyncedData: undefined},
+    });
+
+    const result = unsyncedSitesToMutationInput(unsyncedChanges, {
+      'site-1': site,
+    });
+
+    expect(result[0].elevation).toBeUndefined();
+  });
+
+  test('existing site — no changed fields, empty note arrays', () => {
+    const site = makeSite();
+    const unsyncedChanges = makeUnsyncedChanges({
+      'site-1': {revisionId: 2, lastSyncedData: makeSite()},
+    });
+
+    const result = unsyncedSitesToMutationInput(unsyncedChanges, {
+      'site-1': site,
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].isNew).toBe(false);
+    expect(result[0].name).toBeUndefined();
+    expect(result[0].newNotes).toEqual([]);
+    expect(result[0].updatedNotes).toEqual([]);
+    expect(result[0].deletedNoteIds).toEqual([]);
+  });
+
   test('multiple sites — one new, one existing', () => {
     const site1 = makeSite({id: 'site-1'});
     const site2 = makeSite({id: 'site-2', name: 'Renamed'});
