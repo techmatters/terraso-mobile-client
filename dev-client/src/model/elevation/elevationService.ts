@@ -20,14 +20,13 @@ import {formatCoordinateInEnglish} from 'terraso-mobile-client/util';
 export const getElevation = async (
   lat: number,
   lng: number,
-): Promise<number | undefined> => {
+): Promise<number | null> => {
   // TypeScript requires values passed to URLSearchParams to be strings,
   // which is why we convert the floats to strings.
   const queryString = new URLSearchParams({
     longitude: formatCoordinateInEnglish(lng),
     latitude: formatCoordinateInEnglish(lat),
   });
-  let elevation;
 
   try {
     const response = await fetch(
@@ -35,12 +34,12 @@ export const getElevation = async (
     );
     if (response.status === 200) {
       const result = await response.json();
-      elevation = parseInt(result.elevation[0], 10);
+      return parseInt(result.elevation[0], 10);
     }
   } catch (error) {
     console.error(error);
   }
-  return elevation;
+  return null;
 };
 
 const ELEVATION_FETCH_TIMEOUT_MS = 10000; // 10 seconds
@@ -52,7 +51,7 @@ const ELEVATION_FETCH_TIMEOUT_MS = 10000; // 10 seconds
 export const fetchElevationForCoords = async (
   latitude: number,
   longitude: number,
-): Promise<number | undefined> => {
+): Promise<number | null> => {
   try {
     const elevationPromise = getElevation(latitude, longitude);
     const timeoutReturn = 'timeout';
@@ -63,11 +62,11 @@ export const fetchElevationForCoords = async (
     const result = await Promise.race([elevationPromise, timeoutPromise]);
     if (result === timeoutReturn) {
       console.warn(`Elevation timed out for (${latitude}, ${longitude})`);
-      return undefined;
+      return null;
     }
-    return result ?? undefined;
+    return result ?? null;
   } catch (error) {
     console.warn(`Elevation errored for (${latitude}, ${longitude}): `, error);
-    return undefined;
+    return null;
   }
 };

@@ -22,14 +22,14 @@ import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/ele
 export const resolveElevation = async (
   sitePin: Coords | undefined,
   submittedCoords: Coords,
-  sitePinElevation: number | undefined,
+  sitePinElevation: number | null,
   isOffline: boolean,
-): Promise<number | undefined> => {
+): Promise<number | null> => {
   const latLongWasChanged =
     submittedCoords.latitude !== sitePin?.latitude ||
     submittedCoords.longitude !== sitePin?.longitude;
   if (!latLongWasChanged) return sitePinElevation;
-  if (isOffline) return undefined;
+  if (isOffline) return null;
   return fetchElevationForCoords(
     submittedCoords.latitude,
     submittedCoords.longitude,

@@ -48,7 +48,7 @@ import {formatCoordinate} from 'terraso-mobile-client/util';
 
 type Props = {
   coords: Coords;
-  elevation: number | undefined;
+  elevation: number | null;
   site?: Site;
 };
 
@@ -104,7 +104,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
   const isOffline = useIsOffline();
 
   let displayElevation = renderElevation(t, elevation);
-  if (isOffline && elevation === undefined) {
+  if (isOffline && elevation === null) {
     displayElevation = t('general.not_available_offine');
   }
 

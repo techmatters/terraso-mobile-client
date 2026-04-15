@@ -38,7 +38,7 @@ import {useSelector} from 'terraso-mobile-client/store';
 type Props = {
   defaultProjectId?: string;
   sitePin?: Coords;
-  elevation?: number;
+  elevation: number | null;
   createSiteCallback: (
     input: SiteAddMutationInput,
   ) => Promise<Site | undefined>;

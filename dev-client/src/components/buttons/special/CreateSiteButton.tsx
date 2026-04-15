@@ -27,7 +27,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 export type CreateSiteButtonProps = {
   disabled?: boolean;
   coords: Coords;
-  elevation?: number;
+  elevation?: number | null;
   afterCreate?: () => void;
   creationMethod: 'map' | 'address';
   label?: string;

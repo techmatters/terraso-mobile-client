@@ -154,7 +154,7 @@ type ElevationDisplayProps = {
 
 const ElevationDisplay = ({elevation, t}: ElevationDisplayProps) => {
   const isOffline = useIsOffline();
-  if (isOffline && elevation.value === undefined) {
+  if (isOffline && elevation.value === null) {
     return <NotAvailableOffline />;
   } else if (elevation.fetching) {
     return <ActivityIndicator size="small" />;

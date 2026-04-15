@@ -36,5 +36,5 @@ export const useElevationData = (coords: Coords): ElevationRecord => {
     }
   }, [dispatch, cachedElevation, isOffline, coords]);
 
-  return cachedElevation ?? {fetching: true};
+  return cachedElevation ?? {value: null, fetching: true};
 };
