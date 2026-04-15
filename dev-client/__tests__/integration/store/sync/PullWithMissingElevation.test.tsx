@@ -29,7 +29,7 @@ import {PushDispatcher} from 'terraso-mobile-client/store/sync/PushDispatcher';
 const SITE_ID = 'site-1';
 const FETCHED_ELEVATION = 42;
 
-const mockFetchElevationForCoords = jest.fn();
+const mockGetElevation = jest.fn();
 const mockPushUserData = jest.fn();
 
 // Mock useIsOffline to return false (online) so that useDebouncedIsOffline starts with false on first render. In the Node.js test environment, use-debounce does not schedule timers (it checks for window), so the debounced value is stuck at the initial value. By making useIsOffline() return false from the start, the debounced value initializes to false and needsPush becomes true immediately.
@@ -39,10 +39,8 @@ jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => ({
 }));
 
 jest.mock('terraso-mobile-client/model/elevation/elevationService', () => ({
-  fetchElevationForCoords: (
-    ...args: Parameters<typeof elevationService.fetchElevationForCoords>
-  ) => mockFetchElevationForCoords(...args),
-  getElevation: jest.fn().mockResolvedValue(undefined),
+  getElevation: (...args: Parameters<typeof elevationService.getElevation>) =>
+    mockGetElevation(...args),
 }));
 
 jest.mock('terraso-client-shared/soilId/syncService', () => ({
@@ -76,10 +74,10 @@ const makePullPayload = (sites: Record<string, Site>) =>
 
 describe('PullWithMissingElevation', () => {
   beforeEach(() => {
-    mockFetchElevationForCoords.mockReset();
+    mockGetElevation.mockReset();
     mockPushUserData.mockReset();
 
-    mockFetchElevationForCoords.mockResolvedValue(FETCHED_ELEVATION);
+    mockGetElevation.mockResolvedValue(FETCHED_ELEVATION);
     mockPushUserData.mockResolvedValue({
       siteResults: null,
       soilDataResults: null,
@@ -120,12 +118,12 @@ describe('PullWithMissingElevation', () => {
     // needsPush = true on the first render and the push dispatches right away.
     render(<PushDispatcher />, {initialState: setupStore.getState()});
 
-    // 3. Wait for fetchElevationForCoords AND the bulk pushUserData to have been called.
+    // 3. Wait for getElevation AND the bulk pushUserData to have been called.
     // waitFor advances fake timers internally (50ms per interval) to drive the
     // push thunk through its async steps.
     await waitFor(
       () => {
-        expect(mockFetchElevationForCoords).toHaveBeenCalledWith(
+        expect(mockGetElevation).toHaveBeenCalledWith(
           pulledSiteWithMissingElevation.latitude,
           pulledSiteWithMissingElevation.longitude,
         );

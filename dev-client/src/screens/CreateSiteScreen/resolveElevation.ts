@@ -17,7 +17,7 @@
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
+import {getElevation} from 'terraso-mobile-client/model/elevation/elevationService';
 
 export const resolveElevation = async (
   sitePin: Coords | undefined,
@@ -30,8 +30,5 @@ export const resolveElevation = async (
     submittedCoords.longitude !== sitePin?.longitude;
   if (!latLongWasChanged) return sitePinElevation;
   if (isOffline) return undefined;
-  return fetchElevationForCoords(
-    submittedCoords.latitude,
-    submittedCoords.longitude,
-  );
+  return getElevation(submittedCoords.latitude, submittedCoords.longitude);
 };

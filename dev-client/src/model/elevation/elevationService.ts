@@ -17,50 +17,46 @@
 
 import {formatCoordinateInEnglish} from 'terraso-mobile-client/util';
 
-export const getElevation = async (
-  lat: number,
-  lng: number,
-): Promise<number | undefined> => {
-  // TypeScript requires values passed to URLSearchParams to be strings,
-  // which is why we convert the floats to strings.
-  const queryString = new URLSearchParams({
-    longitude: formatCoordinateInEnglish(lng),
-    latitude: formatCoordinateInEnglish(lat),
-  });
-  let elevation;
+const ELEVATION_FETCH_TIMEOUT_MS = 10000;
 
-  try {
-    const response = await fetch(
-      `https://api.open-meteo.com/v1/elevation/?${queryString}`,
-    );
-    if (response.status === 200) {
-      const result = await response.json();
-      elevation = parseInt(result.elevation[0], 10);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-  return elevation;
-};
-
-const ELEVATION_FETCH_TIMEOUT_MS = 10000; // 10 seconds
-
-/**
- * Fetch elevation for coordinates. For use outside React components.
- * Returns undefined if fetch fails or times out (non-blocking).
- */
-export const fetchElevationForCoords = async (
+// Raw HTTP call — may throw. Callers should use getElevation, which wraps
+// this with a timeout and swallows errors.
+const requestElevationApi = async (
   latitude: number,
   longitude: number,
 ): Promise<number | undefined> => {
-  try {
-    const elevationPromise = getElevation(latitude, longitude);
-    const timeoutReturn = 'timeout';
-    const timeoutPromise = new Promise<typeof timeoutReturn>(resolve =>
-      setTimeout(() => resolve(timeoutReturn), ELEVATION_FETCH_TIMEOUT_MS),
-    );
+  const queryString = new URLSearchParams({
+    longitude: formatCoordinateInEnglish(longitude),
+    latitude: formatCoordinateInEnglish(latitude),
+  });
+  const response = await fetch(
+    `https://api.open-meteo.com/v1/elevation/?${queryString}`,
+  );
+  if (response.status !== 200) {
+    return undefined;
+  }
+  const result = await response.json();
+  return parseInt(result.elevation[0], 10);
+};
 
-    const result = await Promise.race([elevationPromise, timeoutPromise]);
+/**
+ * Fetch elevation for coordinates.
+ * Returns undefined if the request fails or times out (never throws).
+ */
+export const getElevation = async (
+  latitude: number,
+  longitude: number,
+): Promise<number | undefined> => {
+  const timeoutReturn = 'timeout';
+  const timeoutPromise = new Promise<typeof timeoutReturn>(resolve =>
+    setTimeout(() => resolve(timeoutReturn), ELEVATION_FETCH_TIMEOUT_MS),
+  );
+
+  try {
+    const result = await Promise.race([
+      requestElevationApi(latitude, longitude),
+      timeoutPromise,
+    ]);
     if (result === timeoutReturn) {
       console.warn(`Elevation timed out for (${latitude}, ${longitude})`);
       return undefined;

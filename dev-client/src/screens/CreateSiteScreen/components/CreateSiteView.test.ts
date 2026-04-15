@@ -15,18 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
+import {getElevation} from 'terraso-mobile-client/model/elevation/elevationService';
 import {resolveElevation} from 'terraso-mobile-client/screens/CreateSiteScreen/resolveElevation';
 
 jest.mock('terraso-mobile-client/model/elevation/elevationService');
-const mockFetchElevation = fetchElevationForCoords as jest.MockedFunction<
-  typeof fetchElevationForCoords
+const mockGetElevation = getElevation as jest.MockedFunction<
+  typeof getElevation
 >;
 
 const SITE_PIN = {latitude: 45, longitude: -90};
 
 beforeEach(() => {
-  mockFetchElevation.mockReset();
+  mockGetElevation.mockReset();
 });
 
 describe('resolveElevation', () => {
@@ -35,21 +35,21 @@ describe('resolveElevation', () => {
       await expect(
         resolveElevation(SITE_PIN, SITE_PIN, 100, true),
       ).resolves.toBe(100);
-      expect(mockFetchElevation).not.toHaveBeenCalled();
+      expect(mockGetElevation).not.toHaveBeenCalled();
     });
 
     it('returns original elevation without fetching (online)', async () => {
       await expect(
         resolveElevation(SITE_PIN, SITE_PIN, 100, false),
       ).resolves.toBe(100);
-      expect(mockFetchElevation).not.toHaveBeenCalled();
+      expect(mockGetElevation).not.toHaveBeenCalled();
     });
 
     it('returns undefined elevation without fetching', async () => {
       await expect(
         resolveElevation(SITE_PIN, SITE_PIN, undefined, false),
       ).resolves.toBeUndefined();
-      expect(mockFetchElevation).not.toHaveBeenCalled();
+      expect(mockGetElevation).not.toHaveBeenCalled();
     });
   });
 
@@ -57,18 +57,18 @@ describe('resolveElevation', () => {
     const NEW_COORDS = {latitude: 46, longitude: -91};
 
     it('fetches elevation for new coords', async () => {
-      mockFetchElevation.mockResolvedValue(200);
+      mockGetElevation.mockResolvedValue(200);
       await expect(
         resolveElevation(SITE_PIN, NEW_COORDS, 100, false),
       ).resolves.toBe(200);
-      expect(mockFetchElevation).toHaveBeenCalledWith(
+      expect(mockGetElevation).toHaveBeenCalledWith(
         NEW_COORDS.latitude,
         NEW_COORDS.longitude,
       );
     });
 
     it('returns undefined when fetch returns undefined', async () => {
-      mockFetchElevation.mockResolvedValue(undefined);
+      mockGetElevation.mockResolvedValue(undefined);
       await expect(
         resolveElevation(SITE_PIN, NEW_COORDS, 100, false),
       ).resolves.toBeUndefined();
@@ -81,17 +81,17 @@ describe('resolveElevation', () => {
       await expect(
         resolveElevation(SITE_PIN, newCoords, 100, true),
       ).resolves.toBeUndefined();
-      expect(mockFetchElevation).not.toHaveBeenCalled();
+      expect(mockGetElevation).not.toHaveBeenCalled();
     });
   });
 
   describe('when no sitePin', () => {
     it('fetches elevation when online', async () => {
-      mockFetchElevation.mockResolvedValue(150);
+      mockGetElevation.mockResolvedValue(150);
       await expect(
         resolveElevation(undefined, SITE_PIN, undefined, false),
       ).resolves.toBe(150);
-      expect(mockFetchElevation).toHaveBeenCalledWith(
+      expect(mockGetElevation).toHaveBeenCalledWith(
         SITE_PIN.latitude,
         SITE_PIN.longitude,
       );
@@ -101,7 +101,7 @@ describe('resolveElevation', () => {
       await expect(
         resolveElevation(undefined, SITE_PIN, undefined, true),
       ).resolves.toBeUndefined();
-      expect(mockFetchElevation).not.toHaveBeenCalled();
+      expect(mockGetElevation).not.toHaveBeenCalled();
     });
   });
 });

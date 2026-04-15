@@ -919,10 +919,9 @@ describe('pushUserData', () => {
 });
 
 describe('pushUserData - elevation fetch and push for sites', () => {
-  const mockFetchElevationForCoords =
-    elevationService.fetchElevationForCoords as jest.MockedFunction<
-      typeof elevationService.fetchElevationForCoords
-    >;
+  const mockGetElevation = elevationService.getElevation as jest.MockedFunction<
+    typeof elevationService.getElevation
+  >;
   const mockGetState = jest.fn();
   const mockDispatch = jest.fn();
   const mockThunkAPI = {
@@ -954,7 +953,7 @@ describe('pushUserData - elevation fetch and push for sites', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockFetchElevationForCoords.mockResolvedValue(42);
+    mockGetElevation.mockResolvedValue(42);
   });
 
   it('fetches elevation for a site with null elevation during push', async () => {
@@ -969,7 +968,7 @@ describe('pushUserData - elevation fetch and push for sites', () => {
 
     await pushUserData({siteSiteIds: ['site-1']}, null, mockThunkAPI);
 
-    expect(mockFetchElevationForCoords).toHaveBeenCalledWith(
+    expect(mockGetElevation).toHaveBeenCalledWith(
       site.latitude,
       site.longitude,
     );
@@ -1056,6 +1055,6 @@ describe('pushUserData - elevation fetch and push for sites', () => {
 
     await pushUserData({siteSiteIds: ['site-1']}, null, mockThunkAPI);
 
-    expect(mockFetchElevationForCoords).not.toHaveBeenCalled();
+    expect(mockGetElevation).not.toHaveBeenCalled();
   });
 });

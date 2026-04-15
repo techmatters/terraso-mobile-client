@@ -31,7 +31,7 @@ import type {ThunkAPI} from 'terraso-client-shared/store/utils';
 
 import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
 import {syncDebugEnabled} from 'terraso-mobile-client/config';
-import {fetchElevationForCoords} from 'terraso-mobile-client/model/elevation/elevationService';
+import {getElevation} from 'terraso-mobile-client/model/elevation/elevationService';
 import {
   siteMutationResponseToResults,
   unsyncedSitesToMutationInput,
@@ -144,10 +144,7 @@ const fetchMissingElevations = async (
 
   const elevationResults = await Promise.all(
     sitesNeedingElevation.map(async ([siteId, site]) => {
-      const elevation = await fetchElevationForCoords(
-        site.latitude,
-        site.longitude,
-      );
+      const elevation = await getElevation(site.latitude, site.longitude);
 
       if (syncDebugEnabled) {
         console.log(`⛰️ Elevation for ${site.name} = ${elevation}`);
