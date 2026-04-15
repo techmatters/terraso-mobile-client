@@ -46,7 +46,10 @@ const initialState = {
   // site A, then navigates to site B, and a pull removes site B before the
   // flag is cleared, the error dialog for site B would be incorrectly
   // suppressed. This is near-impossible in practice because the pull itself
-  // clears the flag.
+  // clears the flag. However, this could be an issue if sites can be deleted
+  // offline: offline delete site A, edit site B, navigate to site C, return
+  // online. If someone has deleted site B, you don't get a sync conflict
+  // notification.
   siteDeletedByUser: false,
 };
 
