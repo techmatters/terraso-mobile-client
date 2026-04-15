@@ -78,6 +78,7 @@ export const PushDispatcher = () => {
   const dispatchPush = useCallback(
     () =>
       dispatchPushBase().then(result => {
+        /* Note: We use `siteRefs` instead of `sites` because we don't want it to be reactive here. Otherwise we'd re-create this function, which would re-run the useEffect that does the push */
         const hasErrors = trackPushResults(
           result.payload as PushUserDataResults,
           siteId => sitesRef.current[siteId]?.name ?? siteId,
