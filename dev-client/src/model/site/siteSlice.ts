@@ -89,32 +89,11 @@ export const setSites = (
   state: Draft<SiteState>,
   sites: Record<string, Site>,
 ) => {
-  const badIncoming = Object.values(sites).filter(
-    s => typeof s.latitude !== 'number' || typeof s.longitude !== 'number',
-  );
-  if (badIncoming.length > 0) {
-    console.error(
-      '🔄 setSites: incoming sites with bad coords:',
-      badIncoming.map(s => ({id: s.id, lat: s.latitude, lon: s.longitude})),
-    );
-  }
-
   const {mergedRecords, mergedData} = mergeUnsyncedEntities(
     state.siteSync,
     state.sites,
     sites,
   );
-
-  const badMerged = Object.values(mergedData).filter(
-    s => typeof s.latitude !== 'number' || typeof s.longitude !== 'number',
-  );
-  if (badMerged.length > 0) {
-    console.error(
-      '🔄 setSites: merged sites with bad coords:',
-      badMerged.map(s => ({id: s.id, lat: s.latitude, lon: s.longitude})),
-    );
-  }
-
   state.sites = mergedData;
   state.siteSync = mergedRecords;
   logSyncSummary('setSites (pull)', 'site', mergedRecords, mergedData);
