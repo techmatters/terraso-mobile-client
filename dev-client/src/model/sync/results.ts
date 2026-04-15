@@ -15,7 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {
   getEntityRecord,
   markEntitiesError,
@@ -27,6 +26,7 @@ import {
   SyncTimestamp,
 } from 'terraso-mobile-client/model/sync/records';
 import {revisionIdsMatch} from 'terraso-mobile-client/model/sync/revisions';
+import {logApplySyncResults} from 'terraso-mobile-client/model/sync/syncDebugLog';
 
 /**
  * The results of a sync operation, containing the resulting data and errors keyed by their associated entity IDs.
@@ -46,39 +46,12 @@ export const applySyncResults = <D, E>(
   const upToDateData = getValuesForCurrentRevisions(records, results.data);
   const upToDateErrors = getValuesForCurrentRevisions(records, results.errors);
 
-  const staleDataIds = Object.keys(results.data).filter(
-    id => !(id in upToDateData),
+  logApplySyncResults(
+    Object.keys(results.data),
+    Object.keys(results.errors),
+    upToDateData,
+    upToDateErrors,
   );
-  const staleErrorIds = Object.keys(results.errors).filter(
-    id => !(id in upToDateErrors),
-  );
-  if (staleDataIds.length > 0 && syncDebugEnabled) {
-    console.log(
-      '🔄 applySyncResults: discarding stale data for:',
-      staleDataIds,
-    );
-  }
-  if (staleErrorIds.length > 0 && syncDebugEnabled) {
-    console.log(
-      '🔄 applySyncResults: discarding stale errors for:',
-      staleErrorIds,
-    );
-  }
-  if (Object.keys(upToDateData).length > 0 && syncDebugEnabled) {
-    console.log(
-      '🔄 applySyncResults: marking synced:',
-      Object.keys(upToDateData),
-    );
-  }
-  if (Object.keys(upToDateErrors).length > 0 && syncDebugEnabled) {
-    console.log(
-      '🔄 applySyncResults: marking errors:',
-      Object.keys(upToDateErrors),
-      Object.fromEntries(
-        Object.entries(upToDateErrors).map(([id, v]) => [id, v.value]),
-      ),
-    );
-  }
 
   /* Mark the successes as synced, record their data */
   markEntitiesSynced(records, upToDateData, at);

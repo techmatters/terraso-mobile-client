@@ -42,7 +42,11 @@ import {
   markEntitiesModified,
 } from 'terraso-mobile-client/model/sync/records';
 import {applySyncResults} from 'terraso-mobile-client/model/sync/results';
-import {logSyncSummary} from 'terraso-mobile-client/model/sync/syncDebugLog';
+import {
+  logPushResultCounts,
+  logSitesNeedingElevation,
+  logSyncSummary,
+} from 'terraso-mobile-client/model/sync/syncDebugLog';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
 export const pullUserData = createAsyncThunk(
@@ -90,15 +94,7 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
         !isUnsynced(siteSync ?? initialRecord(undefined))
       );
     });
-    if (syncDebugEnabled) {
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(
-        `- ${sitesNeedingElevation.length} sites still need elevation after pull:`,
-      );
-      sitesNeedingElevation.forEach(siteToPrint => {
-        console.log(payload.sites[siteToPrint].name);
-      });
-    }
+    logSitesNeedingElevation(sitesNeedingElevation, payload.sites);
     if (sitesNeedingElevation.length > 0) {
       markEntitiesModified(
         state.site.siteSync,
@@ -120,23 +116,11 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
 
   builder.addCase(pushUserData.fulfilled, (state, action) => {
     const {soilDataResults, soilMetadataResults, siteResults} = action.payload;
-    if (syncDebugEnabled) {
-      console.log(
-        '⬆️ push fulfilled:',
-        'soilData:',
-        soilDataResults
-          ? `${Object.keys(soilDataResults.data).length} ok, ${Object.keys(soilDataResults.errors).length} err`
-          : 'none',
-        'soilMetadata:',
-        soilMetadataResults
-          ? `${Object.keys(soilMetadataResults.data).length} ok, ${Object.keys(soilMetadataResults.errors).length} err`
-          : 'none',
-        'sites:',
-        siteResults
-          ? `${Object.keys(siteResults.data).length} ok, ${Object.keys(siteResults.errors).length} err`
-          : 'none',
-      );
-    }
+    logPushResultCounts({
+      soilData: soilDataResults,
+      soilMetadata: soilMetadataResults,
+      sites: siteResults,
+    });
 
     if (soilDataResults) {
       applySyncResults(

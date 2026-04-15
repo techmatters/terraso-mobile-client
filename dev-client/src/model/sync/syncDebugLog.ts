@@ -25,6 +25,7 @@ import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {
   isError,
   isUnsynced,
+  SyncedValues,
   SyncRecord,
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
@@ -146,6 +147,93 @@ export const logSyncSummary = (
     }
     console.log(`   error: ${fmt(rec.lastSyncedError)}`);
   }
+};
+
+/**
+ * Log the results of applySyncResults: what was synced, what was stale, what errored.
+ */
+export const logApplySyncResults = (
+  resultDataIds: string[],
+  resultErrorIds: string[],
+  upToDateData: SyncedValues<unknown>,
+  upToDateErrors: SyncedValues<unknown>,
+) => {
+  if (!syncDebugEnabled) {
+    return;
+  }
+
+  const staleDataIds = resultDataIds.filter(id => !(id in upToDateData));
+  const staleErrorIds = resultErrorIds.filter(id => !(id in upToDateErrors));
+  const syncedIds = Object.keys(upToDateData);
+  const errorIds = Object.keys(upToDateErrors);
+
+  if (staleDataIds.length) {
+    console.log(
+      '🔄 applySyncResults: discarding stale data for:',
+      staleDataIds,
+    );
+  }
+  if (staleErrorIds.length) {
+    console.log(
+      '🔄 applySyncResults: discarding stale errors for:',
+      staleErrorIds,
+    );
+  }
+  if (syncedIds.length) {
+    console.log('🔄 applySyncResults: marking synced:', syncedIds);
+  }
+  if (errorIds.length) {
+    console.log(
+      '🔄 applySyncResults: marking errors:',
+      errorIds,
+      Object.fromEntries(
+        Object.entries(upToDateErrors).map(([id, v]) => [id, v.value]),
+      ),
+    );
+  }
+};
+
+/**
+ * Log sites that still need elevation after a pull.
+ */
+export const logSitesNeedingElevation = (
+  siteIds: string[],
+  sites: Record<string, {name: string}>,
+) => {
+  if (!syncDebugEnabled) {
+    return;
+  }
+  console.log(B);
+  console.log(`- ${siteIds.length} sites still need elevation after pull:`);
+  siteIds.forEach(id => console.log(sites[id].name));
+};
+
+/**
+ * Log ok/err counts for each entity type after a push.
+ */
+export const logPushResultCounts = (
+  results: Record<
+    string,
+    {data: Record<string, unknown>; errors: Record<string, unknown>} | undefined
+  >,
+) => {
+  if (!syncDebugEnabled) {
+    return;
+  }
+  const summarize = (
+    r:
+      | {data: Record<string, unknown>; errors: Record<string, unknown>}
+      | undefined,
+  ) =>
+    r
+      ? `${Object.keys(r.data).length} ok, ${Object.keys(r.errors).length} err`
+      : 'none';
+
+  const parts = Object.entries(results).flatMap(([type, r]) => [
+    `${type}:`,
+    summarize(r),
+  ]);
+  console.log('⬆️ push fulfilled:', ...parts);
 };
 
 const logDiff = (curr: unknown, prev: unknown) => {
