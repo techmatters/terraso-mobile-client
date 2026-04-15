@@ -916,6 +916,133 @@ describe('pushUserData', () => {
     const callArgs = mockPushUserData.mock.calls[0][0];
     expect(callArgs.soilDataEntries).toHaveLength(1);
   });
+
+  it('should populate results.siteResults.data on site push success', async () => {
+    const site: Site = {
+      id: 'site-1',
+      name: 'Site 1',
+      latitude: 10,
+      longitude: 20,
+      elevation: 100, // set so fetchMissingElevations short-circuits
+      privacy: 'PRIVATE',
+      archived: false,
+      updatedAt: '2024-01-01T00:00:00Z',
+      notes: {},
+    };
+    const mockState: Partial<AppState> = {
+      soilData: {
+        soilData: {},
+        soilSync: {},
+        projectSettings: {},
+        status: 'ready',
+      },
+      soilMetadata: {soilMetadata: {}, soilMetadataSync: {}},
+      site: {
+        sites: {'site-1': site},
+        siteSync: {'site-1': {revisionId: 1, lastSyncedData: site}},
+      } as any,
+    };
+    mockGetState.mockReturnValue(mockState);
+
+    mockPushUserData.mockResolvedValue({
+      siteResults: [
+        {
+          siteId: 'site-1',
+          result: {
+            __typename: 'SitePushEntrySuccess',
+            site: {
+              ...site,
+              owner: {id: 'user-1'},
+              project: null,
+              notes: {edges: []},
+            } as any,
+          },
+        },
+      ],
+      soilDataResults: null,
+      soilMetadataResults: null,
+    });
+
+    const results = await pushUserData(
+      {siteSiteIds: ['site-1']},
+      null,
+      mockThunkAPI,
+    );
+
+    expect(results.siteResults!.data['site-1']).toBeDefined();
+    expect(results.siteResults!.data['site-1'].revisionId).toBe(1);
+    expect(results.siteResults!.errors['site-1']).toBeUndefined();
+  });
+
+  it('should propagate mixed site success and failure to results.siteResults', async () => {
+    const site1: Site = {
+      id: 'site-1',
+      name: 'Site 1',
+      latitude: 10,
+      longitude: 20,
+      elevation: 100,
+      privacy: 'PRIVATE',
+      archived: false,
+      updatedAt: '2024-01-01T00:00:00Z',
+      notes: {},
+    };
+    const site2: Site = {...site1, id: 'site-2', name: 'Site 2'};
+    const mockState: Partial<AppState> = {
+      soilData: {
+        soilData: {},
+        soilSync: {},
+        projectSettings: {},
+        status: 'ready',
+      },
+      soilMetadata: {soilMetadata: {}, soilMetadataSync: {}},
+      site: {
+        sites: {'site-1': site1, 'site-2': site2},
+        siteSync: {
+          'site-1': {revisionId: 1, lastSyncedData: site1},
+          'site-2': {revisionId: 2, lastSyncedData: site2},
+        },
+      } as any,
+    };
+    mockGetState.mockReturnValue(mockState);
+
+    mockPushUserData.mockResolvedValue({
+      siteResults: [
+        {
+          siteId: 'site-1',
+          result: {
+            __typename: 'SitePushEntrySuccess',
+            site: {
+              ...site1,
+              owner: {id: 'user-1'},
+              project: null,
+              notes: {edges: []},
+            } as any,
+          },
+        },
+        {
+          siteId: 'site-2',
+          result: {
+            __typename: 'SitePushEntryFailure',
+            reason: 'NOT_ALLOWED',
+          },
+        },
+      ],
+      soilDataResults: null,
+      soilMetadataResults: null,
+    });
+
+    const results = await pushUserData(
+      {siteSiteIds: ['site-1', 'site-2']},
+      null,
+      mockThunkAPI,
+    );
+
+    expect(results.siteResults!.data['site-1']).toBeDefined();
+    expect(results.siteResults!.errors['site-1']).toBeUndefined();
+    expect(results.siteResults!.data['site-2']).toBeUndefined();
+    expect(results.siteResults!.errors['site-2']).toBeDefined();
+    expect(results.siteResults!.errors['site-2'].value).toBe('NOT_ALLOWED');
+  });
 });
 
 describe('pushUserData - elevation fetch and push for sites', () => {
