@@ -163,7 +163,7 @@ describe('unsyncedSitesToMutationInput', () => {
     expect(result[0].deletedNoteIds).toEqual(['note-del']);
   });
 
-  test('new site — null elevation becomes undefined', () => {
+  test('new site — null elevation remains null', () => {
     const site = makeSite({id: 'site-1', elevation: null});
     const unsyncedChanges = makeUnsyncedChanges({
       'site-1': {revisionId: 1, lastSyncedData: undefined},
@@ -173,7 +173,7 @@ describe('unsyncedSitesToMutationInput', () => {
       'site-1': site,
     });
 
-    expect(result[0].elevation).toBeUndefined();
+    expect(result[0].elevation).toBeNull();
   });
 
   test('existing site — no changed fields, empty note arrays', () => {
