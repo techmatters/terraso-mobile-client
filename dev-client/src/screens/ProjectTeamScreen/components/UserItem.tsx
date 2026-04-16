@@ -60,7 +60,7 @@ export const UserItem = ({
   const {t} = useTranslation();
 
   const userLabel = useMemo(() => {
-    let name = formatName(user.firstName, user.lastName);
+    let name = formatName(user.firstName, user.lastName, user.email);
     if (isForCurrentUser) {
       return t('general.you_name', {name: name});
     } else {

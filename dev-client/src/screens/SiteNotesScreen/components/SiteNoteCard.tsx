@@ -29,6 +29,7 @@ import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useUserCanEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useSelector} from 'terraso-mobile-client/store';
 import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 
 type Props = {
@@ -46,6 +47,9 @@ export const SiteNoteCard = ({note}: Props) => {
   });
   const canViewEditScreen =
     (!isOffline || isFlagEnabled('FF_offline')) && userCanEditNote;
+  const authorEmail = useSelector(
+    state => state.account.users[note.authorId]?.email,
+  );
 
   const onEditNote = useCallback(() => {
     if (canViewEditScreen) {
@@ -69,7 +73,11 @@ export const SiteNoteCard = ({note}: Props) => {
         <Text variant="body2" italic>
           {t('site.notes.note_attribution', {
             createdAt: formatDate(note.createdAt),
-            name: formatFullName(note.authorFirstName, note.authorLastName),
+            name: formatFullName(
+              note.authorFirstName,
+              note.authorLastName,
+              authorEmail,
+            ),
           })}
         </Text>
         <Spacer />

@@ -3137,7 +3137,7 @@ msgstr "Dernière modification (la moins récente)"
 #: 
 #, fuzzy
 msgid "screens##SITES"
-msgstr "LandPKS Soil ID"
+msgstr "Identification des sols LandPKS"
 
 #: 
 #, fuzzy

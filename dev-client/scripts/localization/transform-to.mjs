@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {readFileSync} from 'fs';
+import {existsSync, readFileSync} from 'fs';
 import {writeFile} from 'fs/promises';
 import path from 'path';
 
@@ -98,12 +98,47 @@ const toJsonOptions = {
   // Setting this to true will skip strings marked "fuzzy"
   skipUntranslated: false,
 };
+
+/**
+ * Reorder a nested object to match the key order of a reference object.
+ * Keys present in obj but not in ref are appended at the end.
+ */
+function reorder(obj, ref) {
+  if (typeof obj !== 'object' || obj === null) return obj;
+  if (typeof ref !== 'object' || ref === null) return obj;
+  const result = {};
+  // First, keys in ref order
+  for (const key of Object.keys(ref)) {
+    if (key in obj) {
+      result[key] = reorder(obj[key], ref[key]);
+    }
+  }
+  // Then, new keys not in ref
+  for (const key of Object.keys(obj)) {
+    if (!(key in ref)) {
+      result[key] = obj[key];
+    }
+  }
+  return result;
+}
+
 const toJson = () =>
-  transform('JSON', '../../locales/po/', (locale, filePath) =>
-    gettextToI18next(locale, readFileSync(filePath), toJsonOptions).then(
-      save(`src/translations/${locale}.json`),
-    ),
-  );
+  transform('JSON', '../../locales/po/', (locale, filePath) => {
+    const targetPath = `src/translations/${locale}.json`;
+    // Read existing key order before async conversion (so parallel writes don't interfere)
+    const existingOrder = existsSync(targetPath)
+      ? JSON.parse(readFileSync(targetPath, 'utf-8'))
+      : null;
+    return gettextToI18next(locale, readFileSync(filePath), toJsonOptions).then(
+      jsonStr => {
+        let parsed = JSON.parse(jsonStr);
+        if (existingOrder) {
+          parsed = reorder(parsed, existingOrder);
+        }
+        return writeFile(targetPath, JSON.stringify(parsed, null, 4) + '\n');
+      },
+    );
+  });
 
 // Scripts entry
 if (transformTo === 'po') {

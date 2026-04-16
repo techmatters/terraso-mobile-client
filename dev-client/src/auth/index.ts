@@ -79,9 +79,15 @@ interface AuthTokens {
   is_new_account?: boolean;
 }
 
+type AppleNameInfo = {
+  firstName: string | undefined;
+  lastName: string | undefined;
+};
+
 async function exchangeToken(
   identityJwt: string,
   provider: Omit<AuthProvider, 'google'> | `google-${'ios' | 'android'}`,
+  appleNames?: AppleNameInfo,
 ) {
   let body: any = {
     provider,
@@ -90,6 +96,16 @@ async function exchangeToken(
   if (provider === 'apple' && Platform.OS === 'ios') {
     body.client_id = configs.apple.clientId;
   }
+  // Apple's id_token does not contain name claims; if the iOS Sign in with
+  // Apple credential gave us the user's name (only happens on the very first
+  // authorization), forward it so the backend can persist/backfill it.
+  if (appleNames?.firstName) {
+    body.first_name = appleNames.firstName;
+  }
+  if (appleNames?.lastName) {
+    body.last_name = appleNames.lastName;
+  }
+
   const payload = await request<AuthTokens>({
     path: '/auth/token-exchange',
     body: body,
@@ -105,23 +121,32 @@ async function exchangeToken(
 
 const apiConfig = getAPIConfig();
 
-async function getAppleIdToken() {
-  try {
-    let idToken = (
-      await signInAsync({
-        requestedScopes: [
-          AppleAuthenticationScope.FULL_NAME,
-          AppleAuthenticationScope.EMAIL,
-        ],
-      })
-    ).identityToken;
+type AppleSignInResult = {
+  idToken: string;
+  firstName: string | undefined;
+  lastName: string | undefined;
+};
 
-    // The two auth methods have different types the return:
-    // - signInAsync can return string|null
-    // - AccessTokenRequest can return string|undefined
-    // To work around this, I confirm the Apple idToken is not null.
-    // before returning it.
-    return idToken !== null ? idToken : undefined;
+async function getAppleSignInResult(): Promise<AppleSignInResult | undefined> {
+  try {
+    const credential = await signInAsync({
+      requestedScopes: [
+        AppleAuthenticationScope.FULL_NAME,
+        AppleAuthenticationScope.EMAIL,
+      ],
+    });
+
+    if (credential.identityToken === null) {
+      return undefined;
+    }
+
+    // credential.fullName is populated only on the very first authorization
+    // for this Apple ID + Service ID; on subsequent sign-ins it's all nulls.
+    return {
+      idToken: credential.identityToken,
+      firstName: credential.fullName?.givenName ?? undefined,
+      lastName: credential.fullName?.familyName ?? undefined,
+    };
   } catch (e: any) {
     if (e.code === 'ERR_REQUEST_CANCELED') {
       console.log('Sign in with Apple canceled', e);
@@ -152,8 +177,17 @@ async function getGoogleMicrosoftIdToken(provider: AuthProvider) {
 
 export async function auth(provider: AuthProvider) {
   let idToken: string | undefined;
+  let appleNames: AppleNameInfo | undefined;
+
   if (provider === 'apple' && Platform.OS === 'ios') {
-    idToken = await getAppleIdToken();
+    const result = await getAppleSignInResult();
+    if (result) {
+      idToken = result.idToken;
+      appleNames = {
+        firstName: result.firstName,
+        lastName: result.lastName,
+      };
+    }
   } else {
     idToken = await getGoogleMicrosoftIdToken(provider);
   }
@@ -172,6 +206,7 @@ export async function auth(provider: AuthProvider) {
   let {atoken, rtoken, is_new_account} = await exchangeToken(
     idToken,
     platformProvider,
+    appleNames,
   );
 
   await Promise.all([

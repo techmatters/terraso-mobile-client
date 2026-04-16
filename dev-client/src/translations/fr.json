@@ -3,7 +3,7 @@
         "title": "Bienvenue sur LandPKS Soil ID",
         "next": {
             "title": "Quelle est la prochaine étape ?",
-            "subtitle": "Les versions futures incluront :",
+            "subtitle": "Les versions futures incluront:",
             "bullet_1": "Créer des sites hors ligne",
             "bullet_2": "Modifier les notes hors ligne"
         },
@@ -50,7 +50,7 @@
             "add_to_project_caption": "Projet",
             "add_to_project_tooltip": "Le site héritera des paramètres du projet, notamment des exigences de collecte de données et des membres de l'équipe. Créez de nouveaux projets via l'onglet « Projets » dans la barre de navigation inférieure.",
             "privacy_tooltip": "Les projets publics synchroniseront les données avec les portails de données publics. ",
-            "privacy_tooltip_link": "Apprendre encore plus"
+            "privacy_tooltip_link": "En savoir plus"
         },
         "dashboard": {
             "privacy": "Confidentialité des données",
@@ -61,11 +61,11 @@
             "archive_button_help_text": "Marquer ce site en lecture seule",
             "delete_button": "Supprimer ce site",
             "location_accuracy": "Précision de localisation",
-            "default_title": "Broche temporaire",
+            "default_title": "Marqueur temporaire",
             "speed_dial": {
                 "note_label": "NOTE",
                 "photo_label": "PHOTO",
-                "bedrock_label": "BASE"
+                "bedrock_label": "ROCHE MÈRE"
             }
         },
         "notes": {
@@ -106,10 +106,10 @@
         },
         "list_title": "Liste des sites",
         "last_updated": "Dernière modification : {{date}} par {{name}}",
-        "more_info": "Apprendre encore plus",
+        "more_info": "En savoir plus",
         "your_location": "Votre emplacement",
-        "soil_id_prediction": "Soil ID Top Match",
-        "ecological_site_prediction": "Site écologique Top Match",
+        "soil_id_prediction": "Meilleure correspondance Soil ID",
+        "ecological_site_prediction": "Meilleure correspondance du site écologique",
         "annual_precip_avg": "Précipitations annuelles moyennes",
         "elevation_label": "Élévation",
         "elevation_value": "{{value}} {{units}}",
@@ -126,13 +126,13 @@
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID utilise les données des cartes pédologiques pour calculer les prédictions concernant le sol à cet endroit. Créez un site à cet endroit pour saisir des observations et améliorer les résultats.",
-                "site_US": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance pédologique la plus adaptée à ce site pour en savoir plus sur son environnement et ses autres propriétés.",
+                "site_US": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance pédologique la plus adaptée à ce site pour en savoir plus sur son site écologique et ses autres propriétés.",
                 "site_global_or_unknown": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance la plus pertinente pour ce site afin d'en savoir plus sur ses caractéristiques et autres descriptions."
             },
             "matches": {
-                "title": "Allumettes de terre végétale",
+                "title": "Correspondance des Sols",
                 "info": {
-                    "title": "Allumettes de terre végétale",
+                    "title": "Correspondance des sols",
                     "description": {
                         "site": "Les sols répertoriés sont les plus susceptibles d'être trouvés sur le site d'après les cartes pédologiques de {{soilMapSource}} pour cet emplacement.\n\nSaisissez les observations recommandées concernant la pente et le sol afin d'améliorer la précision des scores de correspondance. La liste sera automatiquement mise à jour une fois les observations saisies.",
                         "temp_location": "Les sols répertoriés sont les plus susceptibles d'être trouvés à cet endroit d'après les cartes pédologiques de {{soilMapSource}} .\n\nCréez un site ici et saisissez les observations recommandées pour améliorer la précision des scores des matchs.",
@@ -142,19 +142,19 @@
                         "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
                     }
                 },
-                "match": "correspondre",
+                "match": "correspondance",
                 "error_generic_title": "Impossible de récupérer la carte des sols",
                 "error_generic_body": "LandPKS n'a pas pu récupérer la carte des sols pour cet emplacement. Essayez d'arrêter puis de redémarrer l'application. Si le problème persiste, réessayez ultérieurement ou envoyez une demande d'assistance via le site web landpks.terraso.org.",
                 "no_map_data_title": "Aucune donnée cartographique des sols",
                 "no_map_data_body": "Aucune carte des sols n'est disponible pour cet emplacement ; LandPKS ne peut donc pas générer de correspondances de sols. Il est toutefois possible de saisir des observations et, si des cartes des sols sont disponibles ultérieurement, les correspondances apparaîtront ici.",
                 "match_score": "{{score}}",
                 "offline": "Les correspondances de sol seront mises à jour lorsque vous serez en ligne.",
-                "improve_hint": "TK Improve the matches",
-                "improve_description": "TK These matches are based on soil maps only. To improve the results, enter observations at this site (see Site Observations below.)",
+                "improve_hint": "Améliorer les correspondances",
+                "improve_description": "Ces correspondances sont basées uniquement sur les cartes des sols. Pour améliorer les résultats, veuillez saisir vos observations sur ce site (voir la section « Observations sur le site » ci-dessous).",
                 "selector": "C'est le bon sol",
                 "selected": "Sol sélectionné",
                 "rate": {
-                    "fab": "Correspondance des taux",
+                    "fab": "Évaluer la correspondance",
                     "title": "Évaluez cette correspondance de sol",
                     "description": "<bold>Est-ce le bon sol ?</bold> Utilisez votre meilleur jugement en fonction de la description du sol et des comparaisons de propriétés.",
                     "yes": "Oui, sélectionnez le sol pour ce site",
@@ -166,7 +166,7 @@
                 "title": "Observations du site",
                 "description": "Améliorez les résultats d'identification du sol en saisissant certaines observations pour ce site à l'aide des guides utiles tout au long du processus.",
                 "slope": {
-                    "title": "Pente raide",
+                    "title": "Inclinaison de la pente",
                     "add_data": "Entrez la pente"
                 },
                 "soil_properties": {
@@ -181,15 +181,15 @@
                 },
                 "cracks": {
                     "title": "Fissures du sol",
-                    "add_data": "Entrez dans les fissures"
+                    "add_data": "Saisir les fissures"
                 }
             },
             "soil_info": {
                 "series_descr_url": "Description complète de la série sur les sols",
                 "eco_descr_url": "Description complète du site écologique",
-                "eco_name_label": "<bold>Nom du site écologique :</bold>  {{name}}",
+                "eco_name_label": "<bold>Nom du site écologique :</bold> {{name}}",
                 "eco_id_label": "<bold>ID du site écologique :</bold> {{id}}",
-                "land_class_label": "<bold>Classe de capacité foncière :</bold> {{land}}",
+                "land_class_label": "<bold>Classe de capacité des terres :</bold> {{land}}",
                 "data_source_label": "<bold>Source des données :</bold> {{source}}",
                 "location_url": "Afficher l'emplacement sur le Web du sol",
                 "inside_map_label": "Dans l'unité de cartographie des sols",
@@ -269,7 +269,7 @@
                 "preset": {
                     "NRCS": "NRCS/GSP",
                     "BLM": "Norme de surveillance BLM",
-                    "CUSTOM": "Coutume…",
+                    "CUSTOM": "Personnalisé…",
                     "NONE": "Aucun spécifié"
                 },
                 "label": "Étiquette",
@@ -277,13 +277,13 @@
                 "confirm_preset": {
                     "title": "Changer de profondeur ?",
                     "body": "Les observations de fosses pédologiques saisies seront supprimées. Cette action est irréversible.",
-                    "confirm": "Changement"
+                    "confirm": "Modifier"
                 }
             },
             "soil_source": {
                 "heading": "Source d'informations sur les sols par défaut",
                 "survey": "Enquête sur les sols du NRCS de l'USDA",
-                "grids": "Grilles de sol",
+                "grids": "SoilGrids",
                 "a11yLabel": "source d'informations sur les sols par défaut"
             }
         },
@@ -294,7 +294,7 @@
                 "trigger": "Quitter le projet",
                 "title": "Quitter le projet ?",
                 "body": "Cela supprimera votre accès au projet, mais les données que vous avez fournies resteront avec le projet.",
-                "action_name": "Partir"
+                "action_name": "Quitter"
             }
         },
         "settings": {
@@ -303,8 +303,8 @@
             "delete": "Supprimer ce projet",
             "copy_download_link": "Copier le lien de téléchargement du projet",
             "download_link_description": "Un fichier zippé contenant toutes les ressources du projet, incluant un fichier .csv contenant les données du site, les notes de terrain, les journaux d'audit et les photos. Toute personne disposant de ce lien peut consulter l'ensemble des ressources.",
-            "archive_button": "Archive",
-            "archive_button_prompt": "Projet d'archives ?",
+            "archive_button": "Archiver",
+            "archive_button_prompt": "Archiver le projet ?",
             "archive_description": "Le projet sera déplacé vers les projets archivés, le rendant ainsi accessible en lecture seule. Les membres de l'équipe pourront accéder aux données et les chefs de projet pourront les restaurer à tout moment. Les projets publics archivés resteront consultables sur les portails de données.",
             "delete_button": "Supprimer",
             "delete_button_prompt": "Supprimer le projet ?",
@@ -312,7 +312,7 @@
         },
         "sites": {
             "add": "Ajouter des sites",
-            "transfer": "Sites de transfert",
+            "transfer": "Transférer des sites",
             "transfer_offline": "Le transfert de sites n'est disponible qu'en ligne.",
             "create": "Créer des sites",
             "search": {
@@ -343,7 +343,7 @@
                 "action_name": "Supprimer le site"
             },
             "transfer_site_modal": {
-                "title": "Sites de transfert ?",
+                "title": "Transférer les sites ?",
                 "body": "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. \n\nSi des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible.",
                 "action_name": "Transfert"
             }
@@ -384,7 +384,7 @@
             "confirm_removal_action": "Retirer"
         },
         "transfer_sites": {
-            "heading": "Sites de transfert vers ce projet",
+            "heading": "Transférer des sites vers ce projet",
             "description": "Transférez les sites LandPKS Soil ID que vous gérez vers ce projet. Lors du transfert, les sites utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet.",
             "unaffiliated": "Non affilié"
         },
@@ -399,10 +399,10 @@
         "offline_cant_edit": "Vous êtes hors ligne. Les projets ne peuvent pas être modifiés."
     },
     "settings": {
-        "beta": "bêta",
+        "staging": "staging",
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "unknown_user": "Utilisateur inconnu",
-        "copy_access_token": "TK Copy JWT Access Token",
+        "copy_access_token": "Copie du jeton d'accès JWT",
         "sign_out": "se déconnecter",
         "delete_account": "Supprimer le compte",
         "delete_account_pending": "En attente",
@@ -420,15 +420,15 @@
         "details": "Détails",
         "apply": "Appliquer",
         "role": {
-            "MANAGER": "Directeur",
-            "CONTRIBUTOR": "Donateur",
-            "VIEWER": "Téléspectateur"
+            "MANAGER": "Gestionnaire",
+            "CONTRIBUTOR": "Contributeur",
+            "VIEWER": "Lecteur"
         },
         "cancel": "Annuler",
         "copied": "Copié !",
         "add": "Ajouter",
         "submit": "Soumettre",
-        "change": "Changement",
+        "change": "Modifier",
         "done": "Fait",
         "required": "Requis",
         "yes": "Oui",
@@ -456,7 +456,7 @@
             "privacy_title": "Confidentialité des données LandPKS",
             "privacy_item1": "<bold>Sites publics</bold> sont visibles par tous sur le portail de données LandPKS.",
             "privacy_item2": "Toutes les observations saisies dans l'application mobile LandPKS Soil ID sont incluses, à l'exception des informations personnelles identifiables (PII).",
-            "privacy_item3": "<bold>Un site privé</bold> Les informations non affiliées à un projet ne sont visibles que par leur créateur. Ce dernier peut modifier la confidentialité à tout moment.",
+            "privacy_item3": "<bold>Un site privé</bold> non affilié à un projet n'est visible que par la personne qui l'a créé. Cette personne peut modifier la confidentialité à tout moment.",
             "privacy_item4": "<bold>Les paramètres de confidentialité d'un projet déterminent la confidentialité de ses sites affiliés.</bold> Les sites appartenant à un projet privé sont visibles par les membres de l'équipe projet. Un chef de projet peut modifier la confidentialité à tout moment.",
             "data_portal_link_url": "https://landpks.terraso.org/portal",
             "data_portal_link_text": "Portail de données LandPKS"
@@ -468,7 +468,7 @@
         "delete": "Supprimer",
         "close": "Fermer",
         "offline_title": "Vous êtes hors ligne",
-        "support": "Soutien",
+        "support": "Assistance",
         "help": {
             "label": "Aide et support",
             "url": "https://landpks.terraso.org/help/"
@@ -481,7 +481,7 @@
         "offline_sign_in_title": "La connexion hors ligne n'est pas disponible",
         "offline_sign_in_body": "Pour utiliser LandPKS Soil ID hors ligne, vous devez d'abord vous connecter en ligne.",
         "not_available": "Pas disponible",
-        "learn_more": "Apprendre encore plus",
+        "learn_more": "En savoir plus",
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
         "privacy_policy_link_text": "politique de confidentialité",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
@@ -506,7 +506,7 @@
         "COLOR_GUIDE": "Guide des couleurs du sol",
         "COLOR_ANALYSIS_HOME": "Analyse photographique",
         "DELETE_ACCOUNT": "Paramètres",
-        "SITES": "Identification des sols LandPKS"
+        "SITES": "LandPKS Soil ID"
     },
     "login": {
         "title": "LandPKS Soil ID",
@@ -539,7 +539,7 @@
         }
     },
     "soil": {
-        "bedrock": "Base",
+        "bedrock": "Roche mère",
         "loading": "Chargement…",
         "error": "Erreur",
         "surface": "Surface du sol",
@@ -568,7 +568,7 @@
             "update_modal": {
                 "title": "Changer la profondeur ?",
                 "body": "Les observations de fosses pédologiques saisies à cette profondeur seront supprimées. Cette action est irréversible.",
-                "action": "Changement"
+                "action": "Modifier"
             },
             "delete_modal": {
                 "title": "Supprimer la profondeur ?",
@@ -646,20 +646,20 @@
             },
             "class": {
                 "CLAY": "Argile",
-                "LOAM": "Terreau",
+                "LOAM": "Loam",
                 "SAND": "Sable",
                 "SILT": "Limon",
-                "CLAY_LOAM": "loam argileux",
+                "CLAY_LOAM": "Loam argileux",
                 "LOAMY_SAND": "Sable limoneux",
                 "SANDY_CLAY": "Argile sableuse",
-                "SANDY_CLAY_LOAM": "loam argilo-sableux",
-                "SANDY_LOAM": "loam sableux",
+                "SANDY_CLAY_LOAM": "Loam argilo-sableux",
+                "SANDY_LOAM": "Loam sableux",
                 "SILTY_CLAY": "Argile limoneuse",
-                "SILTY_CLAY_LOAM": "loam argilo-limoneux",
-                "SILT_LOAM": "limon limoneux"
+                "SILTY_CLAY_LOAM": "Loam argilo-limoneux",
+                "SILT_LOAM": "Loam limoneux"
             },
             "guide_intro": "Vous ne connaissez pas la classe de texture ? Utilisez le guide étape par étape.",
-            "use_guide_label": "Guide d'utilisation",
+            "use_guide_label": "Utiliser le guide",
             "clay_title": "Pourcentage d'argile",
             "clay_label": "Pourcentage d'argile",
             "clay_help": "0–100 %",
@@ -740,11 +740,11 @@
                 "body": "Ce n'est pas une couleur de sol typique. Souhaitez-vous continuer quand même ou utiliser la couleur suggérée la plus proche ?",
                 "suggestion": "Suggestion",
                 "your_result": "Votre résultat",
-                "use_suggestion": "Suggestion d'utilisation"
+                "use_suggestion": "Utiliser la suggestion"
             },
             "analysis_error": {
-                "headline": "TK Something went wrong",
-                "body": "TK There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+                "headline": "Quelque chose s'est mal passé",
+                "body": "Un problème est survenu lors de l'identification de la couleur du sol. Veuillez suivre les instructions d'analyse photo et réessayer. Si le problème persiste, contactez l'assistance."
             },
             "crop_reference": "Recadrez l'image pour afficher uniquement le Post-it 3M Jaune Canari. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
             "crop_soil": "Recadrez l'image pour afficher uniquement l'échantillon de sol. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
@@ -752,7 +752,7 @@
             "lighting_condition": "La photo a un éclairage uniforme et aucune ombre :",
             "use_photo_instead": "Vous ne connaissez pas les valeurs de couleur du sol ? Utilisez plutôt une photo (guide inclus).",
             "photo_need_help": "Pour utiliser une photo afin de déterminer la couleur du sol, vous aurez besoin d'un Post-it 3M Jaune Canari comme référence de couleur et d'un échantillon de sol correctement préparé. Besoin d'aide ? Suivez le guide étape par étape.",
-            "use_guide_label": "Guide d'utilisation",
+            "use_guide_label": "Utiliser le guide",
             "color_photo_soil_condition": {
                 "MOIST": "Humide",
                 "DRY": "Sec"
@@ -795,7 +795,7 @@
             "soilTexture": "Inclut la classe de texture et le volume des fragments de roche"
         },
         "vertical_cracking": {
-            "description": "Des fissures se forment dans les sols argileux après leur assèchement. Elles peuvent être permanentes ou disparaître avec le temps.<bold> Mesurez les fissures du sol lorsque le sol est sec.</bold>",
+            "description": "Des fissures se forment dans les sols argileux après leur assèchement. Elles peuvent être permanentes ou disparaître avec le temps. <bold>Mesurez les fissures du sol lorsque le sol est sec.</bold>",
             "description_width_METRIC": "5 mm",
             "description_width_ENGLISH": "3/16”",
             "description_depth_METRIC": "25 cm",
@@ -815,7 +815,7 @@
             "label": "Profondeurs",
             "NRCS": "NRCS/GSP (par défaut)",
             "BLM": "Norme de surveillance BLM",
-            "CUSTOM": "Coutume"
+            "CUSTOM": "Personnalisé"
         },
         "collection_method_summary": {
             "soilTexture": "Classe de texture"
@@ -1072,7 +1072,7 @@
                 "management": "Ce sont, en général, d'excellents sols pour la production agricole. Leur porosité et leur capacité de rétention d'eau sont excellentes et ils conviennent à une grande variété de systèmes de production agricole. Leur capacité de rétention d'eau est modérée à élevée et pourrait donc convenir aux systèmes de production en zones arides. "
             },
             "glossic_chernozems": {
-                "name": "Chernozems brillants",
+                "name": "Chernozems glossiques",
                 "description": "Les chernozems brillants sont des sols très productifs dotés de bonnes propriétés physiques et chimiques. Ils présentent une excellente qualité de sol et des couches arables sombres et riches. Leur teneur en matière organique est élevée, et s'étend jusqu'aux horizons souterrains. ",
                 "management": "Ce sont, en général, d'excellents sols pour la production agricole. Ils présentent une excellente porosité et une excellente rétention d'eau, et conviennent à un large éventail de systèmes de production agricole."
             },
@@ -1720,13 +1720,13 @@
             "description": "Saisissez la pente manuellement, à l'aide du compteur de pente ou en sélectionnant parmi les images ci-dessous.",
             "degree": "{{value}}°",
             "info": {
-                "title": "Comment utiliser Slope Meter",
-                "description": "Tenez-vous face au site à une distance d'au moins $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) de distance.\n\nIdentifiez la direction de la pente prédominante sur le site.\n\nPlacez-vous de manière à pouvoir voir la crête ou la silhouette de cette pente dominante (vous devrez peut-être vous rapprocher du sol pour la voir).\n\nVotre direction de regard doit être perpendiculaire à la pente. Si vous tendez les bras sur les côtés, la ligne qu'ils forment doit être parallèle à la pente.\n\nPositionnez votre téléphone de façon à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente est difficile à distinguer en position debout.\n\n<bold> Autre méthode </bold>: Si le terrain n'est pas trop courbé ou accidenté, vous pouvez placer une règle d'un mètre sur le sol à l'endroit et ensuite aligner votre téléphone sur la règle pour obtenir l'angle de la pente.",
+                "title": "Comment utiliser l'Inclinomètre",
+                "description": "Tenez-vous face au site à une distance d'au moins $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) de distance.\n\nIdentifiez la direction de la pente prédominante sur le site.\n\nPlacez-vous de manière à pouvoir voir la crête ou la silhouette de cette pente dominante (vous devrez peut-être vous rapprocher du sol pour la voir).\n\nVotre direction de regard doit être perpendiculaire à la pente. Si vous tendez les bras sur les côtés, la ligne qu'ils forment doit être parallèle à la pente.\n\nPositionnez votre téléphone de façon à ce que la ligne blanche continue soit alignée avec la pente du terrain ; essayez de la placer le long du bord de la pente. Vous devrez peut-être vous accroupir si la silhouette de la pente est difficile à distinguer en position debout.\n\n<bold>Autre méthode</bold>: Si le terrain n'est pas trop courbé ou accidenté, vous pouvez placer une règle d'un mètre sur le sol à l'endroit et ensuite aligner votre téléphone sur la règle pour obtenir l'angle de la pente.",
                 "description_distance_METRIC": "4 mètres",
                 "description_distance_ENGLISH": "15 pieds"
             },
             "short_title": "Pente",
-            "long_title": "Pente raide",
+            "long_title": "Inclinaison de la pente",
             "manual_label": "Manuel",
             "manual_help": "Entrez le pourcentage ou le degré de pente",
             "confirm_title": "Changer de pente ?",
@@ -1746,9 +1746,9 @@
                 "GENTLE_PERCENT": "2 à 5 %",
                 "MODERATE": "Modéré",
                 "MODERATE_PERCENT": "5 à 10 %",
-                "ROLLING": "Roulement",
+                "ROLLING": "Vallonné",
                 "ROLLING_PERCENT": "10 à 15 %",
-                "HILLY": "Vallonné",
+                "HILLY": "Accidenté",
                 "HILLY_PERCENT": "15–30 %",
                 "STEEP": "Raide",
                 "STEEP_PERCENT": "30 à 50 %",
@@ -1765,7 +1765,7 @@
             "title": "Forme",
             "info": {
                 "title": "Forme de la pente",
-                "description": "La forme de la pente fait référence à la courbe du terrain dans la zone entourant votre point d'observation.\n\nLa forme de la pente est déterminée dans deux directions : <bold>pente descendante</bold> et <bold>pente transversale</bold>.\n\nTout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\": \"{{units}} \"}) dans toutes les directions.\n\nS'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente? C'est ce qu'on appelle la direction de la <bold>pente descendante</bold>.\n\nLa direction de la pente transversale peut être trouvée en regardant à angle droit (90 degrés) par rapport à la direction de la pente descendante.\n\nSi vous vous éloignez du site tout en restant à la même altitude, il s'agit de la direction de la <bold>pente transversale</bold>.\n\nDeuxièmement, déterminez la forme de la pente pour chaque direction.\n\n<bold>Concave</bold> signifie que le terrain présente une pente de plus en plus ascendante à mesure qu'on s'éloigne de son point d'observation le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline , là où elle passe d'une pente raide à une pente plus douce.\n\n<bold>Convexe</bold> signifie que le terrain est en pente descendante croissante lorsqu'on s'éloigne d'un point donné dans une direction particulière. Par exemple, la pente descendante est souvent convexe au sommet d'une colline , car elle passe d'une pente douce à une pente plus abrupte.\n\n<bold>Linéaire</bold> signifie que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente est continue.",
+                "description": "La forme de la pente fait référence à la courbe du terrain dans la zone entourant votre point d'observation.\n\nLa forme de la pente est déterminée dans deux directions : <bold>pente descendante</bold> et <bold>pente transversale</bold>.\n\nTout d'abord, déterminez la direction principale de la pente sur le site. Ignorez les petites bosses ou les fossés ; examinez environ $t(slope.shape.info.description_distance, {\"context\":\"{{units}}\"}) dans toutes les directions.\n\nS'il pleut, dans quelle direction générale l'eau s'écoulera-t-elle vers le bas de la pente? C'est ce qu'on appelle la direction de la <bold>pente descendante</bold>.\n\nLa direction de la pente transversale peut être trouvée en regardant à angle droit (90 degrés) par rapport à la direction de la pente descendante.\n\nSi vous vous éloignez du site tout en restant à la même altitude, il s'agit de la direction de la <bold>pente transversale</bold>.\n\nDeuxièmement, déterminez la forme de la pente pour chaque direction.\n\n<bold>Concave</bold> signifie que le terrain présente une pente de plus en plus ascendante à mesure qu'on s'éloigne de son point d'observation le long de la pente transversale ou descendante. Par exemple, la pente descendante est souvent concave au pied d'une colline , là où elle passe d'une pente raide à une pente plus douce.\n\n<bold>Convexe</bold> signifie que le terrain est en pente descendante croissante lorsqu'on s'éloigne d'un point donné dans une direction particulière. Par exemple, la pente descendante est souvent convexe au sommet d'une colline , car elle passe d'une pente douce à une pente plus abrupte.\n\n<bold>Linéaire</bold> signifie que la pente est constante sur toute la longueur d'une direction donnée. Cela ne signifie pas nécessairement que le terrain est plat ; cela signifie simplement que la pente est continue.",
                 "concave": "Concave",
                 "convex": "Convexe",
                 "linear": "Linéaire",
@@ -1851,8 +1851,8 @@
     "export": {
         "menu_title": "Exportation de données",
         "title_user": "Exportez tous vos sites",
-        "title_project": "Sites de projets d'exportation",
-        "title_site": "Site d'exportation",
+        "title_project": "Exporter les sites du projet",
+        "title_site": "Exporter le site",
         "offline_message": "Vous ne pouvez exporter que si vous êtes en ligne.",
         "save_or_share_file": "Partager ou enregistrer le fichier",
         "file_description": "Partagez ou enregistrez les données actuelles dans un fichier.",
@@ -1862,9 +1862,9 @@
         "link_description": "Partagez une URL qui renvoie toujours les données les plus récentes.",
         "live_link": "Lien direct",
         "reset_live_link": "Réinitialiser le lien en direct",
-        "site_export_title": "Site d'exportation",
+        "site_export_title": "Exporter le site",
         "site_export_description": "Téléchargez ou partagez les données de ce site.",
-        "site_export_button": "Données du site d'exportation",
+        "site_export_button": "Exporter les données du site",
         "what_is_in_file": "Que contient le fichier ?",
         "loading": "Chargement des paramètres d'exportation...",
         "downloading": "Téléchargement...",
@@ -1891,7 +1891,7 @@
             "save_file_description": "<bold>Partager ou enregistrer le fichier</bold> capture les données actuelles du site sous forme de fichier CSV ou JSON. Vous pouvez envoyer le fichier par e-mail, messagerie ou autres applications, ou l'enregistrer sur votre appareil.",
             "live_link_description": "<bold>Partager le lien vers les données</bold> crée une URL qui renvoie systématiquement les données les plus récentes. Utilisez-le pour l'intégration avec des scripts, des flux de travail automatisés ou lorsque vous souhaitez que d'autres personnes aient toujours accès à vos données les plus récentes. Réinitialisez le lien pour révoquer l'accès des liens précédents.",
             "section_format": "Format de fichier",
-            "csv_description": "Les fichiers <bold>CSV</bold> (valeurs séparées par des virgules) compatibles avec les tableurs comme Excel ou Google Sheets. Ils sont idéaux pour visualiser, trier et analyser vos données dans un format de tableau familier.",
+            "csv_description": "Les fichiers <bold>CSV</bold> (valeurs séparées par des virgules) sont compatibles avec les tableurs comme Excel ou Google Sheets. Ils sont idéaux pour visualiser, trier et analyser vos données dans un format de tableau familier.",
             "json_description": "<bold>JSON</bold> (notation d'objet JavaScript) est un format de données structurées. Idéal pour les développeurs ou l'importation dans d'autres systèmes logiciels."
         },
         "error_headline": "Échec de la sauvegarde",

@@ -62,12 +62,40 @@ export const formatCoordinateInEnglish = (value: number) => {
   });
 };
 
-export const formatName = (firstName: string, lastName?: string) => {
-  return [lastName, firstName].filter(Boolean).join(', ');
+// Obscures an email by keeping only the first and last character of the local
+// part, e.g. "johannes@schmidtparty.com" -> "j...s@schmidtparty.com". Used as
+// a fallback when a user has no name. Local parts shorter than 3 characters
+// are returned as-is (nothing to obscure meaningfully).
+export const obscureEmail = (email: string): string => {
+  const atIndex = email.lastIndexOf('@');
+  if (atIndex < 0) return email;
+  const local = email.slice(0, atIndex);
+  const domain = email.slice(atIndex);
+  if (local.length < 3) return email;
+  return `${local[0]}...${local[local.length - 1]}${domain}`;
 };
 
-export const formatFullName = (firstName: string, lastName?: string) => {
-  return [firstName, lastName].filter(Boolean).join(' ');
+// Both functions accept an optional email fallback used when both first and
+// last name are empty (some user accounts have no name set on the backend).
+// The email is obscured before display (see obscureEmail).
+export const formatName = (
+  firstName: string,
+  lastName?: string,
+  emailFallback?: string,
+) => {
+  const name = [lastName, firstName].filter(Boolean).join(', ');
+  if (name) return name;
+  return emailFallback ? obscureEmail(emailFallback) : '';
+};
+
+export const formatFullName = (
+  firstName: string,
+  lastName?: string,
+  emailFallback?: string,
+) => {
+  const name = [firstName, lastName].filter(Boolean).join(' ');
+  if (name) return name;
+  return emailFallback ? obscureEmail(emailFallback) : '';
 };
 
 export const removeKeys = (a: any, b: any) => {

@@ -37,7 +37,7 @@ export function VersionIndicator() {
   let environment;
 
   if (APP_CONFIG.environment === 'staging') {
-    environment = t('settings.beta');
+    environment = t('settings.staging');
   } else if (APP_CONFIG.environment !== 'production') {
     environment = APP_CONFIG.environment;
   }
