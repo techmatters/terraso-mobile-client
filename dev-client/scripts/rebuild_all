@@ -1,18 +1,22 @@
 #!/bin/bash
 
-# Usage: rebuild_all [--run-only] <ios|android>
+# Usage: rebuild_all [--run-only] [--debug-logs] <ios|android>
 
 RUN_ONLY=false
-if [[ "$1" == "--run-only" ]]; then
-    RUN_ONLY=true
-    shift
-fi
+DEBUG_LOGS=""
+while [[ "$1" == --* ]]; do
+    case "$1" in
+        --run-only) RUN_ONLY=true; shift ;;
+        --debug-logs) DEBUG_LOGS="--debug"; shift ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
+    esac
+done
 
 PLATFORM="$1"
 
 # Validate argument
 if [[ "$PLATFORM" != "ios" && "$PLATFORM" != "android" ]]; then
-    echo "Usage: rebuild_all [--run-only] <ios|android>"
+    echo "Usage: rebuild_all [--run-only] [--debug-logs] <ios|android>"
     exit 1
 fi
 
@@ -49,31 +53,17 @@ else
     echo "Running from $PWD for: $PLATFORM (skipping rebuild)"
 fi
 
-# Wrap commands in a pseudo-TTY so the log streamer doesn't split long lines when piped
-PTY="script -q /dev/null"
-
-# Patterns to filter from iOS log output (one per line, grep -E syntax)
-IOS_LOG_NOISE=(
-    "CoreHaptics"
-    "CHHapticPattern"
-    "_UIKBFeedbackGenerator"
-    "hapticpatternlibrary.plist"
-    "NSCocoaErrorDomain"
-    "NSPOSIXErrorDomain"
-    "No such file or directory"
-    "UIKeyboardLayoutStar"
-    "\\[MapboxCommon\\]"
-    "Could not find view with tag"
-)
-
-# Join patterns with | for grep -Ev
-IOS_LOG_FILTER=$(IFS='|'; echo "${IOS_LOG_NOISE[*]}")
+# Filter noisy iOS log messages (handles multi-line messages, see script for patterns).
+# No pseudo-TTY wrapper — the filter uses block suppression to catch continuation lines
+# from messages that the log streamer splits when piped.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+IOS_LOG_FILTER="node $SCRIPT_DIR/filter-ios-logs.js $DEBUG_LOGS"
 
 if [[ "$PLATFORM" == "ios" ]]; then
     if [[ -n "$IOS_DEVICE_ID" ]]; then
-        $PTY npm run ios -- --device "$IOS_DEVICE_ID" 2>&1 | grep -Ev "$IOS_LOG_FILTER"
+        npm run ios -- --device "$IOS_DEVICE_ID" 2>&1 | $IOS_LOG_FILTER
     else
-        $PTY npm run ios 2>&1 | grep -Ev "$IOS_LOG_FILTER"
+        npm run ios 2>&1 | $IOS_LOG_FILTER
     fi
 else
     npm run android

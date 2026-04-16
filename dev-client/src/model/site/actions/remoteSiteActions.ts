@@ -68,7 +68,7 @@ export const unsyncedSitesToMutationInput = (
         name: site.name,
         latitude: site.latitude,
         longitude: site.longitude,
-        elevation: site.elevation ?? undefined,
+        elevation: site.elevation,
         privacy: site.privacy,
         projectId: site.projectId ?? undefined,
         newNotes,

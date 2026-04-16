@@ -43,7 +43,7 @@ export const SiteDashboardScreen = ({siteId}: Props) => {
         <LocationDashboardContent
           site={site}
           coords={site as Coords}
-          elevation={site?.elevation ?? undefined}
+          elevation={site?.elevation ?? null}
         />
       )}
     </ScreenDataRequirements>

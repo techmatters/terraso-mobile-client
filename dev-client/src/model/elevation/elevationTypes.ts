@@ -17,6 +17,6 @@
 
 export type ElevationKey = `(${number}, ${number})`;
 export type ElevationRecord = {
-  value?: number;
+  value: number | null;
   fetching: boolean;
 };

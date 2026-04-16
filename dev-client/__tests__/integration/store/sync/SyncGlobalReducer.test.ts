@@ -25,7 +25,7 @@ import {pullUserData} from 'terraso-mobile-client/model/sync/syncGlobalReducer';
 import {createStore} from 'terraso-mobile-client/store';
 import type {AppState} from 'terraso-mobile-client/store';
 
-const makeSite = (id: string, elevation: number | null | undefined): Site => ({
+const makeSite = (id: string, elevation: number | null): Site => ({
   id,
   name: `Site ${id}`,
   latitude: 10,
@@ -55,21 +55,6 @@ describe('syncGlobalReducer: marking sites missing elevation as modified on pull
     store.dispatch(
       pullUserData.fulfilled(
         makePullPayload({'site-1': makeSite('site-1', null)}),
-        'requestId',
-        'userId',
-      ),
-    );
-
-    const {siteSync} = store.getState().site;
-    expect(isUnsynced(siteSync['site-1'])).toBe(true);
-  });
-
-  test('marks a newly-pulled site with undefined elevation as modified', () => {
-    const store = createStore();
-
-    store.dispatch(
-      pullUserData.fulfilled(
-        makePullPayload({'site-1': makeSite('site-1', undefined)}),
         'requestId',
         'userId',
       ),

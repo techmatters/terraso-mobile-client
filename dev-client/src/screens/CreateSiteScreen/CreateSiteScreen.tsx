@@ -31,7 +31,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   coords: Coords;
-  elevation?: number;
+  elevation?: number | null;
   creationMethod?: 'map' | 'address';
 };
 
@@ -84,7 +84,7 @@ export const CreateSiteScreen = (props: Props) => {
       <CreateSiteView
         createSiteCallback={createSiteCallback}
         sitePin={props.coords}
-        elevation={props.elevation}
+        elevation={props.elevation ?? null}
       />
     </ScreenScaffold>
   );

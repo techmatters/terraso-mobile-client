@@ -89,8 +89,7 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
     const sitesNeedingElevation = Object.keys(payload.sites).filter(id => {
       const siteSync = state.site.siteSync[id];
       return (
-        (payload.sites[id].elevation === null ||
-          payload.sites[id].elevation === undefined) &&
+        payload.sites[id].elevation === null &&
         !isUnsynced(siteSync ?? initialRecord(undefined))
       );
     });

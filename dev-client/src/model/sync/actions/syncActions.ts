@@ -135,7 +135,7 @@ const fetchMissingElevations = async (
   dispatch: ThunkAPI['dispatch'],
 ): Promise<Record<string, Site>> => {
   const sitesNeedingElevation = Object.entries(siteData).filter(
-    ([_, site]) => site.elevation === null || site.elevation === undefined,
+    ([_, site]) => site.elevation === null,
   );
 
   if (sitesNeedingElevation.length === 0) {
@@ -155,7 +155,7 @@ const fetchMissingElevations = async (
 
   const updatedSiteData = {...siteData};
   for (const {siteId, elevation} of elevationResults) {
-    if (elevation !== undefined) {
+    if (elevation !== null) {
       dispatch(setSiteElevation({siteId, elevation}));
       updatedSiteData[siteId] = {...updatedSiteData[siteId], elevation};
     }

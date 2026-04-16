@@ -24,7 +24,7 @@ const ELEVATION_FETCH_TIMEOUT_MS = 10000;
 const requestElevationApi = async (
   latitude: number,
   longitude: number,
-): Promise<number | undefined> => {
+): Promise<number | null> => {
   const queryString = new URLSearchParams({
     longitude: formatCoordinateInEnglish(longitude),
     latitude: formatCoordinateInEnglish(latitude),
@@ -33,7 +33,7 @@ const requestElevationApi = async (
     `https://api.open-meteo.com/v1/elevation/?${queryString}`,
   );
   if (response.status !== 200) {
-    return undefined;
+    return null;
   }
   const result = await response.json();
   return parseInt(result.elevation[0], 10);
@@ -46,7 +46,7 @@ const requestElevationApi = async (
 export const getElevation = async (
   latitude: number,
   longitude: number,
-): Promise<number | undefined> => {
+): Promise<number | null> => {
   const timeoutReturn = 'timeout';
   const timeoutPromise = new Promise<typeof timeoutReturn>(resolve =>
     setTimeout(() => resolve(timeoutReturn), ELEVATION_FETCH_TIMEOUT_MS),
@@ -59,11 +59,11 @@ export const getElevation = async (
     ]);
     if (result === timeoutReturn) {
       console.warn(`Elevation timed out for (${latitude}, ${longitude})`);
-      return undefined;
+      return null;
     }
-    return result ?? undefined;
+    return result;
   } catch (error) {
     console.warn(`Elevation errored for (${latitude}, ${longitude}): `, error);
-    return undefined;
+    return null;
   }
 };

@@ -23,12 +23,12 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {LocationDashboardContent} from 'terraso-mobile-client/screens/LocationScreens/LocationDashboardContent';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
-type Props = {coords: Coords; elevation?: number};
+type Props = {coords: Coords; elevation?: number | null};
 
 export const TemporaryLocationScreen = (props: Props) => {
   const {t} = useTranslation();
   const coords = props.coords;
-  const elevation = 'elevation' in props ? props.elevation : undefined;
+  const elevation = props.elevation ?? null;
 
   return (
     <ScreenScaffold

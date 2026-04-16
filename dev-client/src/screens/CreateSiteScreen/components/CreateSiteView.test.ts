@@ -45,10 +45,10 @@ describe('resolveElevation', () => {
       expect(mockGetElevation).not.toHaveBeenCalled();
     });
 
-    it('returns undefined elevation without fetching', async () => {
+    it('returns null elevation without fetching', async () => {
       await expect(
-        resolveElevation(SITE_PIN, SITE_PIN, undefined, false),
-      ).resolves.toBeUndefined();
+        resolveElevation(SITE_PIN, SITE_PIN, null, false),
+      ).resolves.toBeNull();
       expect(mockGetElevation).not.toHaveBeenCalled();
     });
   });
@@ -67,20 +67,20 @@ describe('resolveElevation', () => {
       );
     });
 
-    it('returns undefined when fetch returns undefined', async () => {
-      mockGetElevation.mockResolvedValue(undefined);
+    it('returns null when fetch returns null', async () => {
+      mockGetElevation.mockResolvedValue(null);
       await expect(
         resolveElevation(SITE_PIN, NEW_COORDS, 100, false),
-      ).resolves.toBeUndefined();
+      ).resolves.toBeNull();
     });
   });
 
   describe('when coords have changed and offline', () => {
-    it('returns undefined without fetching', async () => {
+    it('returns null without fetching', async () => {
       const newCoords = {latitude: 46, longitude: -91};
       await expect(
         resolveElevation(SITE_PIN, newCoords, 100, true),
-      ).resolves.toBeUndefined();
+      ).resolves.toBeNull();
       expect(mockGetElevation).not.toHaveBeenCalled();
     });
   });
@@ -89,7 +89,7 @@ describe('resolveElevation', () => {
     it('fetches elevation when online', async () => {
       mockGetElevation.mockResolvedValue(150);
       await expect(
-        resolveElevation(undefined, SITE_PIN, undefined, false),
+        resolveElevation(undefined, SITE_PIN, null, false),
       ).resolves.toBe(150);
       expect(mockGetElevation).toHaveBeenCalledWith(
         SITE_PIN.latitude,
@@ -97,10 +97,10 @@ describe('resolveElevation', () => {
       );
     });
 
-    it('returns undefined when offline', async () => {
+    it('returns null when offline', async () => {
       await expect(
-        resolveElevation(undefined, SITE_PIN, undefined, true),
-      ).resolves.toBeUndefined();
+        resolveElevation(undefined, SITE_PIN, null, true),
+      ).resolves.toBeNull();
       expect(mockGetElevation).not.toHaveBeenCalled();
     });
   });
