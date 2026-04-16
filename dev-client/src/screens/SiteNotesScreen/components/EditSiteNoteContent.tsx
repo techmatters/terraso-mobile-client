@@ -19,7 +19,6 @@ import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
-import {SiteNoteUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
@@ -29,6 +28,7 @@ import {
   Heading,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
+import {SiteNoteUpdateInput} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {
   deleteSiteNote,
   updateSiteNote,
@@ -61,7 +61,7 @@ export const EditSiteNoteContent = ({note}: Props) => {
     Keyboard.dismiss();
     setIsSubmitting(true);
     try {
-      const siteNoteInput: SiteNoteUpdateMutationInput = {
+      const siteNoteInput: SiteNoteUpdateInput = {
         id: note.id,
         content: content,
       };

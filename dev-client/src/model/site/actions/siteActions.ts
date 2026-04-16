@@ -16,23 +16,23 @@
  */
 
 import {User} from 'terraso-client-shared/account/accountSlice';
-import {
-  SiteAddMutationInput,
-  SiteNoteAddMutationInput,
-  SiteNoteUpdateMutationInput,
-  SiteUpdateMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
 import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
 import {ThunkAPI} from 'terraso-client-shared/store/utils';
 
 import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
+import {
+  SiteAddInput,
+  SiteNoteAddInput,
+  SiteNoteUpdateInput,
+  SiteUpdateInput,
+} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import * as localSite from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {AppState} from 'terraso-mobile-client/store';
 
 export const addSiteAction = async (
-  input: SiteAddMutationInput,
+  input: SiteAddInput,
   _: User | null,
   thunkApi: ThunkAPI,
 ): Promise<Site> => {
@@ -52,7 +52,7 @@ export const addSiteAction = async (
 };
 
 export const updateSiteAction = async (
-  input: SiteUpdateMutationInput,
+  input: SiteUpdateInput,
   _: User | null,
   thunkApi: ThunkAPI,
 ): Promise<Site> => {
@@ -73,7 +73,7 @@ export const updateSiteAction = async (
 };
 
 export const addSiteNoteAction = async (
-  input: SiteNoteAddMutationInput,
+  input: SiteNoteAddInput,
   _: User | null,
   thunkApi: ThunkAPI,
 ): Promise<SiteNote> => {
@@ -98,7 +98,7 @@ export const addSiteNoteAction = async (
 };
 
 export const updateSiteNoteAction = async (
-  input: SiteNoteUpdateMutationInput,
+  input: SiteNoteUpdateInput,
   _: User | null,
   thunkApi: ThunkAPI,
 ): Promise<SiteNote> => {

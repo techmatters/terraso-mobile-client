@@ -17,20 +17,31 @@
 
 import {v4 as uuidv4} from 'uuid';
 
-import {
-  SiteAddMutationInput,
-  SiteNoteAddMutationInput,
-  SiteNoteUpdateMutationInput,
-  SiteUpdateMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {AppState} from 'terraso-mobile-client/store';
 
-export const SITE_UPDATE_FIELDS: (keyof SiteUpdateMutationInput &
-  keyof Site)[] = ['name', 'latitude', 'longitude', 'elevation', 'privacy'];
+export type SiteAddInput = Pick<Site, 'name' | 'latitude' | 'longitude'> &
+  Partial<Pick<Site, 'elevation' | 'privacy' | 'projectId'>>;
 
-export const addSite = (input: SiteAddMutationInput, state: AppState): Site => {
+export type SiteUpdateInput = Pick<Site, 'id'> &
+  Partial<
+    Pick<Site, 'name' | 'latitude' | 'longitude' | 'elevation' | 'privacy'>
+  >;
+
+export type SiteNoteAddInput = Pick<SiteNote, 'siteId' | 'content'>;
+
+export type SiteNoteUpdateInput = Pick<SiteNote, 'id' | 'content'>;
+
+export const SITE_UPDATE_FIELDS: (keyof SiteUpdateInput & keyof Site)[] = [
+  'name',
+  'latitude',
+  'longitude',
+  'elevation',
+  'privacy',
+];
+
+export const addSite = (input: SiteAddInput, state: AppState): Site => {
   const currentUser = state.account.currentUser.data;
   return {
     id: uuidv4(),
@@ -47,10 +58,7 @@ export const addSite = (input: SiteAddMutationInput, state: AppState): Site => {
   };
 };
 
-export const updateSite = (
-  input: SiteUpdateMutationInput,
-  site: Site,
-): Site => {
+export const updateSite = (input: SiteUpdateInput, site: Site): Site => {
   const updates: Partial<Site> = {};
   for (const field of SITE_UPDATE_FIELDS) {
     const value = input[field];
@@ -66,7 +74,7 @@ export const updateSite = (
 };
 
 export const addSiteNote = (
-  input: SiteNoteAddMutationInput,
+  input: SiteNoteAddInput,
   state: AppState,
 ): SiteNote => {
   const currentUser = state.account.currentUser.data;
@@ -83,7 +91,7 @@ export const addSiteNote = (
 };
 
 export const updateSiteNote = (
-  input: SiteNoteUpdateMutationInput,
+  input: SiteNoteUpdateInput,
   note: SiteNote,
 ): SiteNote => {
   return {

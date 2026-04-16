@@ -20,12 +20,12 @@ import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
 
-import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {SiteAddInput} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {
@@ -39,9 +39,7 @@ type Props = {
   defaultProjectId?: string;
   sitePin?: Coords;
   elevation: number | null;
-  createSiteCallback: (
-    input: SiteAddMutationInput,
-  ) => Promise<Site | undefined>;
+  createSiteCallback: (input: SiteAddInput) => Promise<Site | undefined>;
 };
 
 export const CreateSiteView = ({
