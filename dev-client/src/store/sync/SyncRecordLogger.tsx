@@ -248,7 +248,7 @@ export const SyncRecordLogger = () => {
     console.log('📋 SYNC RECORDS (push order)');
     for (const {type, siteId, rec} of entries) {
       const name = sites[siteId]?.name ?? siteId.slice(0, 8);
-      const elevation = sites[siteId]?.elevation;
+      const elevation = sites[siteId]?.elevation ?? null;
       const rv = String(rec.revisionId ?? '-');
       const sr = String(rec.lastSyncedRevisionId ?? '-');
       console.log(
