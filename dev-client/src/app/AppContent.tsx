@@ -21,6 +21,7 @@ import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNav
 import {PullDispatcher} from 'terraso-mobile-client/store/sync/PullDispatcher';
 import {PullRequester} from 'terraso-mobile-client/store/sync/PullRequester';
 import {PushDispatcher} from 'terraso-mobile-client/store/sync/PushDispatcher';
+import {SyncRecordLogger} from 'terraso-mobile-client/store/sync/SyncRecordLogger';
 
 export const AppContent = () => {
   return (
@@ -30,6 +31,7 @@ export const AppContent = () => {
         <PushDispatcher />
         <PullRequester />
         <PullDispatcher />
+        <SyncRecordLogger />
       </RestrictByFlag>
       <RootNavigator />
     </>

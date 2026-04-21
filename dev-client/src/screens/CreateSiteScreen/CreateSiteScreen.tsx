@@ -19,10 +19,10 @@ import {useCallback} from 'react';
 
 import {usePostHog} from 'posthog-react-native';
 
-import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Coords} from 'terraso-client-shared/types';
 
 import {ScreenCloseButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenCloseButton';
+import {SiteAddInput} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {addSite} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {CreateSiteView} from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteView';
@@ -31,7 +31,7 @@ import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   coords: Coords;
-  elevation?: number;
+  elevation?: number | null;
   creationMethod?: 'map' | 'address';
 };
 
@@ -41,7 +41,7 @@ export const CreateSiteScreen = (props: Props) => {
   const projects = useSelector(state => state.project.projects);
 
   const createSiteCallback = useCallback(
-    async (input: SiteAddMutationInput) => {
+    async (input: SiteAddInput) => {
       let result = await dispatch(addSite(input));
       if (result.payload && 'error' in result.payload) {
         console.error(result.payload.error);
@@ -84,7 +84,7 @@ export const CreateSiteScreen = (props: Props) => {
       <CreateSiteView
         createSiteCallback={createSiteCallback}
         sitePin={props.coords}
-        elevation={props.elevation}
+        elevation={props.elevation ?? null}
       />
     </ScreenScaffold>
   );

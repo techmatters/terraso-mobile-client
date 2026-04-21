@@ -128,6 +128,18 @@ describe('patchPersistedReduxState', () => {
     expect(result.soilData!.soilSync).toEqual({a: {}});
   });
 
+  test('adds siteSync if absent', () => {
+    const state: any = {site: {sites: {}}};
+    const result = patchPersistedReduxState(state);
+    expect(result.site!.siteSync).toEqual({});
+  });
+
+  test('retains siteSync if present', () => {
+    const state: any = {site: {siteSync: {a: {}}}};
+    const result = patchPersistedReduxState(state);
+    expect(result.site!.siteSync).toEqual({a: {}});
+  });
+
   test('migrates selectedSoilId to userRatings and preserves sites without selectedSoilId', () => {
     const state: any = {
       soilMetadata: {

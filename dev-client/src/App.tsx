@@ -35,6 +35,8 @@ import 'terraso-mobile-client/config';
 
 import {enableFreeze} from 'react-native-screens';
 
+// import NetInfo from '@react-native-community/netinfo';
+
 import {AppContent} from 'terraso-mobile-client/app/AppContent';
 import {AppWrappers} from 'terraso-mobile-client/app/AppWrappers';
 import {wrapSentry} from 'terraso-mobile-client/app/Sentry';

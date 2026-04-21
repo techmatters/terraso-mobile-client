@@ -48,7 +48,7 @@ import {formatCoordinate} from 'terraso-mobile-client/util';
 
 type Props = {
   coords: Coords;
-  elevation: number | undefined;
+  elevation: number | null;
   site?: Site;
 };
 
@@ -103,6 +103,11 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
 
   const isOffline = useIsOffline();
 
+  let displayElevation = renderElevation(t, elevation);
+  if (isOffline && elevation === null) {
+    displayElevation = t('general.not_available_offine');
+  }
+
   return (
     <SafeScrollView backgroundColor="background.default">
       <SiteTabJump />
@@ -122,7 +127,7 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
         />
         <LocationDetail
           label={t('geo.elevation.title')}
-          value={renderElevation(t, elevation)}
+          value={displayElevation}
         />
         {!site && (
           <Box>
@@ -154,7 +159,6 @@ export const LocationDashboardContent = ({site, coords, elevation}: Props) => {
         {site && !project && (
           <Row>
             <RadioBlock
-              allDisabled={isOffline}
               label={
                 <Row alignItems="center">
                   <Text variant="body1" bold>

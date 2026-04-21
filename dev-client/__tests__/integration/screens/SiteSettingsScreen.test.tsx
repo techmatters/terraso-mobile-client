@@ -77,6 +77,7 @@ describe('SiteSettingsScreen', () => {
     name: 'Site 1',
     latitude: 0,
     longitude: 0,
+    elevation: null,
     privacy: 'PRIVATE',
     archived: false,
     updatedAt: '',
@@ -87,6 +88,7 @@ describe('SiteSettingsScreen', () => {
     name: 'Site 2',
     latitude: 1,
     longitude: 1,
+    elevation: null,
     privacy: 'PRIVATE',
     archived: false,
     updatedAt: '',
@@ -104,6 +106,8 @@ describe('SiteSettingsScreen', () => {
         site1: site1,
         site2: site2,
       },
+      siteSync: {},
+      siteDeletedByUser: false,
     },
   } as Partial<ReduxAppState>;
 

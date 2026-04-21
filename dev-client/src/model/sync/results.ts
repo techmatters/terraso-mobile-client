@@ -26,6 +26,7 @@ import {
   SyncTimestamp,
 } from 'terraso-mobile-client/model/sync/records';
 import {revisionIdsMatch} from 'terraso-mobile-client/model/sync/revisions';
+import {logApplySyncResults} from 'terraso-mobile-client/model/sync/syncDebugLog';
 
 /**
  * The results of a sync operation, containing the resulting data and errors keyed by their associated entity IDs.
@@ -44,6 +45,13 @@ export const applySyncResults = <D, E>(
   /* Get results for revisions which match the current change records */
   const upToDateData = getValuesForCurrentRevisions(records, results.data);
   const upToDateErrors = getValuesForCurrentRevisions(records, results.errors);
+
+  logApplySyncResults(
+    Object.keys(results.data),
+    Object.keys(results.errors),
+    upToDateData,
+    upToDateErrors,
+  );
 
   /* Mark the successes as synced, record their data */
   markEntitiesSynced(records, upToDateData, at);

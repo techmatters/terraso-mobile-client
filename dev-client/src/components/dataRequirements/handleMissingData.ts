@@ -20,15 +20,17 @@ import {useCallback} from 'react';
 import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {useSelector} from 'terraso-mobile-client/store';
+import {selectSiteDeletedByUser} from 'terraso-mobile-client/store/selectors';
 
-export const useNavToBottomTabsAndShowSyncError = (
-  missingEntityType?: string,
-) => {
-  const navigation = useNavigation();
+const useShowSyncErrorUnlessDeleted = (missingEntityType?: string) => {
   const syncNotifications = useSyncNotificationContext();
+  const siteDeletedByUser = useSelector(selectSiteDeletedByUser);
 
   return useCallback(() => {
-    navigation.popTo('BOTTOM_TABS');
+    if (missingEntityType === 'site' && siteDeletedByUser) {
+      return;
+    }
     if (isFlagEnabled('FF_offline')) {
       syncNotifications.showError(
         missingEntityType
@@ -36,25 +38,31 @@ export const useNavToBottomTabsAndShowSyncError = (
           : {reason: 'other'},
       );
     }
-  }, [navigation, syncNotifications, missingEntityType]);
+  }, [syncNotifications, missingEntityType, siteDeletedByUser]);
+};
+
+export const useNavToBottomTabsAndShowSyncError = (
+  missingEntityType?: string,
+) => {
+  const navigation = useNavigation();
+  const showSyncError = useShowSyncErrorUnlessDeleted(missingEntityType);
+
+  return useCallback(() => {
+    navigation.popTo('BOTTOM_TABS');
+    showSyncError();
+  }, [navigation, showSyncError]);
 };
 
 export const usePopNavigationAndShowSyncError = (
   missingEntityType?: string,
 ) => {
   const navigation = useNavigation();
-  const syncNotifications = useSyncNotificationContext();
+  const showSyncError = useShowSyncErrorUnlessDeleted(missingEntityType);
 
   return useCallback(() => {
     navigation.pop();
-    if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError(
-        missingEntityType
-          ? {reason: 'missing_data', missingEntityType}
-          : {reason: 'other'},
-      );
-    }
-  }, [navigation, syncNotifications, missingEntityType]);
+    showSyncError();
+  }, [navigation, showSyncError]);
 };
 
 export const useNavToSiteAndShowSyncError = (
@@ -62,16 +70,10 @@ export const useNavToSiteAndShowSyncError = (
   missingEntityType?: string,
 ) => {
   const navigation = useNavigation();
-  const syncNotifications = useSyncNotificationContext();
+  const showSyncError = useShowSyncErrorUnlessDeleted(missingEntityType);
 
   return useCallback(() => {
     navigation.popTo('SITE_TABS', {siteId: siteId});
-    if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError(
-        missingEntityType
-          ? {reason: 'missing_data', missingEntityType}
-          : {reason: 'other'},
-      );
-    }
-  }, [siteId, navigation, syncNotifications, missingEntityType]);
+    showSyncError();
+  }, [siteId, navigation, showSyncError]);
 };

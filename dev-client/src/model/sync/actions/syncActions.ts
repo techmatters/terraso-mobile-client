@@ -17,12 +17,11 @@
 
 import type {User} from 'terraso-client-shared/account/accountSlice';
 import type {
-  SoilDataPushEntry,
   SoilDataPushFailureReason,
-  SoilMetadataPushEntry,
   SoilMetadataPushFailureReason,
   UserDataPushInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
+import type {Site} from 'terraso-client-shared/site/siteTypes';
 import type {
   SoilData,
   SoilMetadata,
@@ -30,6 +29,16 @@ import type {
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 import type {ThunkAPI} from 'terraso-client-shared/store/utils';
 
+import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
+import {getElevation} from 'terraso-mobile-client/model/elevation/elevationService';
+import {
+  siteMutationResponseToResults,
+  unsyncedSitesToMutationInput,
+  type SitePushFailureReason,
+} from 'terraso-mobile-client/model/site/actions/remoteSiteActions';
+import {selectSiteChanges} from 'terraso-mobile-client/model/site/siteSelectors';
+import {setSiteElevation} from 'terraso-mobile-client/model/site/siteSlice';
 import {
   soilDataMutationResponseToResults,
   unsyncedSoilDataToMutationInput,
@@ -49,18 +58,126 @@ import {
 import type {SyncResults} from 'terraso-mobile-client/model/sync/results';
 import type {AppState} from 'terraso-mobile-client/store';
 
+const logPushInput = (mutationInput: UserDataPushInput): void => {
+  if (!syncDebugEnabled) {
+    return;
+  }
+  console.log(
+    '📤 pushUserData (bulk):',
+    mutationInput.siteEntries?.length ?? 0,
+    'sites,',
+    mutationInput.soilDataEntries?.length ?? 0,
+    'soilData,',
+    mutationInput.soilMetadataEntries?.length ?? 0,
+    'soilMetadata',
+  );
+};
+
+const logPushResults = (results: PushUserDataResults): void => {
+  if (!syncDebugEnabled) {
+    return;
+  }
+  if (
+    results.siteResults &&
+    Object.keys(results.siteResults.errors).length > 0
+  ) {
+    console.log(
+      'pushUserData: site_push_failure_reasons',
+      results.siteResults.errors,
+    );
+  }
+  if (
+    results.soilDataResults &&
+    Object.keys(results.soilDataResults.errors).length > 0
+  ) {
+    console.log(
+      'pushUserData: soil_data_push_failure_reasons',
+      results.soilDataResults.errors,
+    );
+  }
+  if (
+    results.soilMetadataResults &&
+    Object.keys(results.soilMetadataResults.errors).length > 0
+  ) {
+    console.log(
+      'pushUserData: soil_metadata_push_failure_reasons',
+      results.soilMetadataResults.errors,
+    );
+  }
+};
+
+const logPushError = (error: unknown): void => {
+  const isNetworkError =
+    Array.isArray(error) &&
+    (error as unknown[]).includes('terraso_api.error_request_response');
+
+  getPostHogInstance()?.capture('push_error', {
+    type: isNetworkError ? 'could_not_reach_server' : 'mutation_level_error',
+  });
+
+  if (syncDebugEnabled) {
+    console.log(
+      isNetworkError
+        ? 'pushUserData: could_not_reach_server'
+        : 'pushUserData: mutation_level_error',
+      error,
+    );
+  }
+};
+
+/**
+ * Fetches elevation for all sites that are missing it.
+ * Updates Redux state with fetched elevations and returns updated site data.
+ * Elevation fetch failures are non-blocking - sites continue without elevation.
+ */
+const fetchMissingElevations = async (
+  siteData: Record<string, Site>,
+  dispatch: ThunkAPI['dispatch'],
+): Promise<Record<string, Site>> => {
+  const sitesNeedingElevation = Object.entries(siteData).filter(
+    ([_, site]) => site.elevation === null,
+  );
+
+  if (sitesNeedingElevation.length === 0) {
+    return siteData;
+  }
+
+  const elevationResults = await Promise.all(
+    sitesNeedingElevation.map(async ([siteId, site]) => {
+      const elevation = await getElevation(site.latitude, site.longitude);
+
+      if (syncDebugEnabled) {
+        console.log(`⛰️ Elevation for ${site.name} = ${elevation}`);
+      }
+      return {siteId, elevation};
+    }),
+  );
+
+  const updatedSiteData = {...siteData};
+  for (const {siteId, elevation} of elevationResults) {
+    if (elevation !== null) {
+      dispatch(setSiteElevation({siteId, elevation}));
+      updatedSiteData[siteId] = {...updatedSiteData[siteId], elevation};
+    }
+  }
+
+  return updatedSiteData;
+};
+
 export type PushUserDataResults = {
   soilDataResults?: SyncResults<SoilData, SoilDataPushFailureReason>;
   soilMetadataResults?: SyncResults<
     SoilMetadata,
     SoilMetadataPushFailureReason
   >;
+  siteResults?: SyncResults<Site, SitePushFailureReason>;
 };
 
 export const pushUserData = async (
   input: {
     soilDataSiteIds?: string[];
     soilMetadataSiteIds?: string[];
+    siteSiteIds?: string[];
   },
   _: User | null,
   thunkApi: ThunkAPI,
@@ -110,13 +227,46 @@ export const pushUserData = async (
     }
   }
 
+  // Build records for sites (filter to only unsynced)
+  let siteUnsyncedChanges: SyncRecords<Site, SitePushFailureReason> | undefined;
+  let siteUnsyncedData: Record<string, Site> | undefined;
+
+  if (input.siteSiteIds && input.siteSiteIds.length > 0) {
+    const unsyncedChanges = getUnsyncedRecords(
+      getEntityRecords(selectSiteChanges(state), input.siteSiteIds),
+    );
+    if (Object.keys(unsyncedChanges).length > 0) {
+      siteUnsyncedChanges = unsyncedChanges;
+      siteUnsyncedData = getDataForRecords(
+        unsyncedChanges,
+        state.site.sites,
+      ) as Record<string, Site>;
+    }
+  }
+
   // If nothing to push, return empty results
-  if (!soilDataUnsyncedChanges && !soilMetadataUnsyncedChanges) {
+  if (
+    !soilDataUnsyncedChanges &&
+    !soilMetadataUnsyncedChanges &&
+    !siteUnsyncedChanges
+  ) {
     return {};
   }
 
-  // Build mutation input
+  // Fetch elevation for new/updated sites before building mutation input
+  if (siteUnsyncedChanges && siteUnsyncedData) {
+    siteUnsyncedData = await fetchMissingElevations(
+      siteUnsyncedData,
+      thunkApi.dispatch,
+    );
+  }
+
+  // Build the unified mutation input — sites, soil data, and metadata in one request
   const mutationInput: UserDataPushInput = {
+    siteEntries:
+      siteUnsyncedChanges && siteUnsyncedData
+        ? unsyncedSitesToMutationInput(siteUnsyncedChanges, siteUnsyncedData)
+        : null,
     soilDataEntries:
       soilDataUnsyncedChanges && soilDataUnsyncedData
         ? unsyncedSoilDataToMutationInput(
@@ -130,24 +280,38 @@ export const pushUserData = async (
         : null,
   };
 
-  // Call the service
-  const response = await syncService.pushUserData(mutationInput);
+  logPushInput(mutationInput);
 
-  // Transform response to results
   const results: PushUserDataResults = {};
 
-  if (soilDataUnsyncedChanges && response.soilDataResults) {
-    results.soilDataResults = soilDataMutationResponseToResults(
-      soilDataUnsyncedChanges,
-      response.soilDataResults as SoilDataPushEntry[],
-    );
-  }
+  try {
+    const response = await syncService.pushUserData(mutationInput);
 
-  if (soilMetadataUnsyncedChanges && response.soilMetadataResults) {
-    results.soilMetadataResults = metadataMutationResponseToResults(
-      soilMetadataUnsyncedChanges,
-      response.soilMetadataResults as SoilMetadataPushEntry[],
-    );
+    if (siteUnsyncedChanges && response.siteResults) {
+      results.siteResults = siteMutationResponseToResults(
+        siteUnsyncedChanges,
+        response.siteResults,
+      );
+    }
+
+    if (soilDataUnsyncedChanges && response.soilDataResults) {
+      results.soilDataResults = soilDataMutationResponseToResults(
+        soilDataUnsyncedChanges,
+        response.soilDataResults,
+      );
+    }
+
+    if (soilMetadataUnsyncedChanges && response.soilMetadataResults) {
+      results.soilMetadataResults = metadataMutationResponseToResults(
+        soilMetadataUnsyncedChanges,
+        response.soilMetadataResults,
+      );
+    }
+
+    logPushResults(results);
+  } catch (error) {
+    logPushError(error);
+    throw error;
   }
 
   return results;

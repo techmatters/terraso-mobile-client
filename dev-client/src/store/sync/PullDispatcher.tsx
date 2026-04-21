@@ -17,6 +17,7 @@
 
 import {useEffect} from 'react';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
@@ -57,11 +58,34 @@ export const PullDispatcher = () => {
   const dispatchPull = usePullDispatch();
 
   useEffect(() => {
+    if (syncDebugEnabled && pullRequested && !pullAllowed) {
+      console.log(
+        '⬇️ PullDispatcher: pull requested but blocked:',
+        !currentUserID ? 'no user' : '',
+        isOffline ? 'offline' : '',
+        unsyncedSiteIds.length > 0
+          ? `${unsyncedSiteIds.length} unsynced sites`
+          : '',
+        appState !== 'active' ? `appState=${appState}` : '',
+      );
+    }
     if (pullAllowed && pullRequested) {
+      if (syncDebugEnabled) {
+        console.log('⬇️ PullDispatcher: dispatching pull');
+      }
       dispatchPull(currentUserID);
       dispatch(setPullRequested(false));
     }
-  }, [pullRequested, pullAllowed, dispatchPull, currentUserID, dispatch]);
+  }, [
+    pullRequested,
+    pullAllowed,
+    dispatchPull,
+    currentUserID,
+    dispatch,
+    isOffline,
+    unsyncedSiteIds,
+    appState,
+  ]);
 
   return <></>;
 };

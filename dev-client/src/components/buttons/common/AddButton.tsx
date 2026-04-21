@@ -22,10 +22,17 @@ import {ContainedButton} from 'terraso-mobile-client/components/buttons/Containe
 type Props = {
   label: string;
   onPress?: PressableProps['onPress'];
+  disabled?: boolean;
 };
 
-export const AddButton = ({label, onPress}: Props) => {
+export const AddButton = ({label, onPress, disabled}: Props) => {
   return (
-    <ContainedButton label={label} leftIcon="add" size="md" onPress={onPress} />
+    <ContainedButton
+      label={label}
+      leftIcon="add"
+      size="md"
+      onPress={onPress}
+      disabled={disabled}
+    />
   );
 };

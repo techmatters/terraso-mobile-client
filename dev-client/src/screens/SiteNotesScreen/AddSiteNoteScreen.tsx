@@ -19,8 +19,6 @@ import {useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Keyboard} from 'react-native';
 
-import {SiteNoteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
-
 import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {
   useNavToBottomTabsAndShowSyncError,
@@ -37,6 +35,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {ScreenFormWrapper} from 'terraso-mobile-client/components/ScreenFormWrapper';
 import {useRoleCanEditSite} from 'terraso-mobile-client/hooks/permissionHooks';
+import {SiteNoteAddInput} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {addSiteNote} from 'terraso-mobile-client/model/site/siteSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SiteNoteForm} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteForm';
@@ -61,7 +60,7 @@ export const AddSiteNoteScreen = ({siteId}: Props) => {
     Keyboard.dismiss();
     setIsSubmitting(true);
     try {
-      const siteNoteInput: SiteNoteAddMutationInput = {
+      const siteNoteInput: SiteNoteAddInput = {
         siteId,
         content: content,
       };

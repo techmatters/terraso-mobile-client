@@ -42,11 +42,13 @@ const {reducer} = createSlice({
     builder
       .addCase(fetchElevation.pending, (state, action) => {
         state.elevationCache[elevationKey(action.meta.arg)] = {
+          value: null,
           fetching: true,
         };
       })
       .addCase(fetchElevation.rejected, (state, action) => {
         state.elevationCache[elevationKey(action.meta.arg)] = {
+          value: null,
           fetching: false,
         };
       })

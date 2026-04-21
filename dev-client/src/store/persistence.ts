@@ -55,7 +55,8 @@ export const patchPersistedReduxState = (
 ): Partial<AppState> => {
   const tempState = upgradeSoilMetadataOct2025(state);
   return merge(tempState, {
-    soilData: {soilSync: {}},
+    site: {siteSync: {}},
+    soilData: {soilSync: {}, status: 'ready' as const},
     soilMetadata: {soilMetadata: {}, soilMetadataSync: {}},
     soilIdMatch: {locationBasedMatches: {}, siteDataBasedMatches: {}},
     sync: {pullRequested: false},

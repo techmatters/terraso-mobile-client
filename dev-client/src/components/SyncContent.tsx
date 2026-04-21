@@ -15,8 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
-import {ScrollView, StyleSheet, useWindowDimensions} from 'react-native';
+import {useCallback, useContext} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Switch,
+  useWindowDimensions,
+} from 'react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Divider} from 'terraso-mobile-client/components/Divider';
@@ -27,11 +32,17 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
+import {ConnectivityContext} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
   selectLastPullTimestamp,
   selectSyncInfoOpen,
 } from 'terraso-mobile-client/model/devOnly/devOnlySelectors';
 import {setSyncInfoOpen} from 'terraso-mobile-client/model/devOnly/devOnlySlice';
+import {
+  selectSiteSyncErrorSiteIds,
+  selectUnsyncedSiteSiteIds,
+} from 'terraso-mobile-client/model/site/siteSelectors';
 import {
   selectSoilDataSyncErrorSiteIds,
   selectUnsyncedSoilDataSiteIds,
@@ -79,15 +90,53 @@ export const SyncContent = () => {
   );
 };
 
+const ConnectivityToggle = () => {
+  const isOffline = useIsOffline();
+  const {isOfflineOverride, setIsOfflineOverride, realIsOffline} =
+    useContext(ConnectivityContext);
+
+  const onToggle = useCallback(
+    (value: boolean) => {
+      setIsOfflineOverride(value ? null : true);
+    },
+    [setIsOfflineOverride],
+  );
+
+  let label: string;
+  let color: string;
+  if (isOfflineOverride === true) {
+    label = 'Forced offline';
+    color = '#CC0000';
+  } else if (realIsOffline) {
+    label = 'No connection';
+    color = '#CC0000';
+  } else {
+    label = 'Online';
+    color = '#00AA00';
+  }
+
+  return (
+    <Row alignItems="center" space="8px">
+      <Switch value={!isOffline} onValueChange={onToggle} />
+      <Text style={[styles.connectivityStatus, {color}]}>
+        {'\u25CF'} {label}
+      </Text>
+    </Row>
+  );
+};
+
 const SyncInfoExpanded = () => {
   const {height} = useWindowDimensions();
   return (
     <ScrollView style={[styles.scrollViewContainer, {maxHeight: height / 2}]}>
       <Box margin="8px">
         <Row alignItems="center" justifyContent="space-between">
-          <PullButton />
-          <PullInfo />
-          <LastPullTime />
+          <ConnectivityToggle />
+          <Row alignItems="center" space="8px">
+            <PullButton />
+            <PullPending />
+            <LastPullTime />
+          </Row>
         </Row>
         <Divider style={styles.dividerTopMargin} />
         <PushInfo />
@@ -97,14 +146,15 @@ const SyncInfoExpanded = () => {
   );
 };
 
-const PullInfo = () => {
+const PullPending = () => {
   const pullRequested = useSelector(selectPullRequested);
-
-  const requested = pullRequested ? '\nrequested!' : 'NOT\nrequested';
-  return <Text>{`Pull ${requested}`}</Text>;
+  if (!pullRequested) {
+    return null;
+  }
+  return <Text>pending...</Text>;
 };
 
-const PullButton = () => {
+const PullButton = ({disabled}: {disabled?: boolean}) => {
   const dispatch = useDispatch();
 
   const currentUserID = useSelector(selectCurrentUserID);
@@ -115,37 +165,33 @@ const PullButton = () => {
     }
   }, [currentUserID, dispatch]);
 
-  return (
-    // Note: This string could go in en.json, but for now I see no need to translate it
-    <ContainedButton onPress={onSync} label="Pull" />
-  );
+  return <ContainedButton onPress={onSync} label="Pull" disabled={disabled} />;
 };
 
 const LastPullTime = () => {
   const lastPullTimestamp = useSelector(selectLastPullTimestamp);
 
   if (lastPullTimestamp === null) {
-    return <Text>Last pull: Never</Text>;
+    return <Text>Never</Text>;
   }
 
   const date = new Date(lastPullTimestamp);
   const formatted = date.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
-    second: '2-digit',
     hour12: true,
   });
 
-  return <Text>{`Last pull:\n${formatted}`}</Text>;
+  return <Text>{formatted}</Text>;
 };
 
 const PushInfo = () => {
   const unsyncedSoilDataIds = useSelector(selectUnsyncedSoilDataSiteIds);
   const unsyncedSoilMetadataIds = useSelector(selectUnsyncedMetadataSiteIds);
+  const unsyncedSiteIds = useSelector(selectUnsyncedSiteSiteIds);
   const errorSoilDataIds = useSelector(selectSoilDataSyncErrorSiteIds);
   const errorSoilMetadataIds = useSelector(selectMetadataSyncErrorSiteIds);
+  const errorSiteIds = useSelector(selectSiteSyncErrorSiteIds);
   return (
     <>
       <Text bold>Unsynced</Text>
@@ -158,6 +204,10 @@ const PushInfo = () => {
           <Text underline>soilMetadata</Text>
           <SiteNameList siteIds={unsyncedSoilMetadataIds} />
         </Column>
+        <Column flex={1}>
+          <Text underline>site</Text>
+          <SiteNameList siteIds={unsyncedSiteIds} />
+        </Column>
       </Row>
       <Text bold>Sync errors</Text>
       <Row>
@@ -168,6 +218,10 @@ const PushInfo = () => {
         <Column flex={1}>
           <Text underline>soilMetadata</Text>
           <SiteNameList siteIds={errorSoilMetadataIds} />
+        </Column>
+        <Column flex={1}>
+          <Text underline>site</Text>
+          <SiteNameList siteIds={errorSiteIds} />
         </Column>
       </Row>
     </>
@@ -202,6 +256,7 @@ const SoilIdInfo = () => {
 };
 
 const styles = StyleSheet.create({
+  connectivityStatus: {fontWeight: 'bold'},
   dividerTopMargin: {marginTop: 4},
   scrollViewContainer: {flexGrow: 0},
 });

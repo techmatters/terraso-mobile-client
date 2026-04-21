@@ -333,6 +333,7 @@
             "empty_contributor": "You can transfer existing LandPKS Soil ID sites to this project. You can also create new sites on the Sites tab and add them to this project.",
             "add": "Add sites",
             "transfer": "Transfer Sites",
+            "transfer_offline": "Transferring sites is only available while online.",
             "create": "Create Sites",
             "go_to": "Go to Site",
             "audit_log": "Audit Log",

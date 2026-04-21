@@ -21,6 +21,10 @@ import {useDebounce} from 'use-debounce';
 
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {
+  selectSiteSyncErrorSiteIds,
+  selectUnsyncedSiteSiteIds,
+} from 'terraso-mobile-client/model/site/siteSelectors';
+import {
   selectSoilDataSyncErrorSiteIds,
   selectUnsyncedSoilDataSiteIds,
 } from 'terraso-mobile-client/model/soilData/soilDataSelectors';
@@ -59,13 +63,23 @@ export const useDebouncedUnsyncedMetadataSiteIds = (interval: number) => {
   return unsyncedMetadataSiteIds;
 };
 
+export const useDebouncedUnsyncedSiteSiteIds = (interval: number) => {
+  const [unsyncedSiteIds] = useDebounce(
+    useSelector(selectUnsyncedSiteSiteIds),
+    interval,
+  );
+  return unsyncedSiteIds;
+};
+
 type PushDispatchInputs = {
   soilDataSiteIds: string[];
   soilMetadataSiteIds: string[];
+  siteSiteIds: string[];
 };
 export const usePushDispatch = ({
   soilDataSiteIds,
   soilMetadataSiteIds,
+  siteSiteIds,
 }: PushDispatchInputs) => {
   const dispatch = useDispatch();
   return useCallback(() => {
@@ -74,9 +88,10 @@ export const usePushDispatch = ({
       pushUserData({
         soilDataSiteIds,
         soilMetadataSiteIds,
+        siteSiteIds,
       }),
     );
-  }, [dispatch, soilDataSiteIds, soilMetadataSiteIds]);
+  }, [dispatch, soilDataSiteIds, soilMetadataSiteIds, siteSiteIds]);
 };
 
 export const useRetryInterval = (interval: number, action: () => void) => {
@@ -103,25 +118,37 @@ export const useRetryInterval = (interval: number, action: () => void) => {
   return {beginRetry, endRetry};
 };
 
-// Site ids with either data or metadata that is unsynced (no duplicates)
+// Site ids with any type of unsynced changes (no duplicates)
 export const useUnsyncedSiteIds = () => {
   const unsyncedSoilDataSiteIds = useSelector(selectUnsyncedSoilDataSiteIds);
   const unsyncedMetadataSiteIds = useSelector(selectUnsyncedMetadataSiteIds);
+  const unsyncedSiteSiteIds = useSelector(selectUnsyncedSiteSiteIds);
   const unsyncedCombinedSiteIds = useMemo(() => {
     return [
-      ...new Set([...unsyncedSoilDataSiteIds, ...unsyncedMetadataSiteIds]),
+      ...new Set([
+        ...unsyncedSoilDataSiteIds,
+        ...unsyncedMetadataSiteIds,
+        ...unsyncedSiteSiteIds,
+      ]),
     ];
-  }, [unsyncedSoilDataSiteIds, unsyncedMetadataSiteIds]);
+  }, [unsyncedSoilDataSiteIds, unsyncedMetadataSiteIds, unsyncedSiteSiteIds]);
   return unsyncedCombinedSiteIds;
 };
 
-// Site ids with either data or metadata errors (no duplicates)
+// Site ids with any type of entity-level sync errors (no duplicates)
 export const useSyncErrorSiteIds = () => {
   const soilDataErrorSiteIds = useSelector(selectSoilDataSyncErrorSiteIds);
   const metadataErrorSiteIds = useSelector(selectMetadataSyncErrorSiteIds);
+  const siteErrorSiteIds = useSelector(selectSiteSyncErrorSiteIds);
   const combinedErrorSiteIds = useMemo(() => {
-    return [...new Set([...soilDataErrorSiteIds, ...metadataErrorSiteIds])];
-  }, [soilDataErrorSiteIds, metadataErrorSiteIds]);
+    return [
+      ...new Set([
+        ...soilDataErrorSiteIds,
+        ...metadataErrorSiteIds,
+        ...siteErrorSiteIds,
+      ]),
+    ];
+  }, [soilDataErrorSiteIds, metadataErrorSiteIds, siteErrorSiteIds]);
   return combinedErrorSiteIds;
 };
 

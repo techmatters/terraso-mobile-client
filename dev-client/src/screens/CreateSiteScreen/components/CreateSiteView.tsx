@@ -20,26 +20,26 @@ import {useTranslation} from 'react-i18next';
 
 import {Formik} from 'formik';
 
-import {SiteAddMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
 import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {SiteAddInput} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {
   CreateSiteForm,
   FormState,
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
+import {resolveElevation} from 'terraso-mobile-client/screens/CreateSiteScreen/resolveElevation';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   defaultProjectId?: string;
   sitePin?: Coords;
-  elevation?: number;
-  createSiteCallback: (
-    input: SiteAddMutationInput,
-  ) => Promise<Site | undefined>;
+  elevation: number | null;
+  createSiteCallback: (input: SiteAddInput) => Promise<Site | undefined>;
 };
 
 export const CreateSiteView = ({
@@ -54,19 +54,37 @@ export const CreateSiteView = ({
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
   const sitesScreen = useSitesScreenContext();
+  const isOffline = useIsOffline();
 
   const navigation = useNavigation();
 
   const onSave = useCallback(
     async ({...form}: FormState) => {
       const {...site} = validationSchema.cast(form);
-      const createdSite = await createSiteCallback({...site, elevation});
+      const finalElevation = await resolveElevation(
+        sitePin,
+        {latitude: site.latitude, longitude: site.longitude},
+        elevation,
+        isOffline,
+      );
+      const createdSite = await createSiteCallback({
+        ...site,
+        elevation: finalElevation,
+      });
       if (createdSite !== undefined) {
         sitesScreen?.showSiteOnMap(createdSite);
         navigation.popTo('BOTTOM_TABS');
       }
     },
-    [createSiteCallback, navigation, validationSchema, sitesScreen, elevation],
+    [
+      createSiteCallback,
+      navigation,
+      validationSchema,
+      sitesScreen,
+      elevation,
+      sitePin,
+      isOffline,
+    ],
   );
 
   return (

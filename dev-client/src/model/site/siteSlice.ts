@@ -21,8 +21,36 @@ import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
+import {SitePushFailureReason} from 'terraso-mobile-client/model/site/actions/remoteSiteActions';
+import * as siteActions from 'terraso-mobile-client/model/site/actions/siteActions';
+import {
+  markEntityModified,
+  mergeUnsyncedEntities,
+  SyncRecords,
+} from 'terraso-mobile-client/model/sync/records';
+import {
+  logSyncChange,
+  logSyncSummary,
+} from 'terraso-mobile-client/model/sync/syncDebugLog';
+
 const initialState = {
   sites: {} as Record<string, Site>,
+  siteSync: {} as SyncRecords<Site, SitePushFailureReason>,
+  // Set to true when the user deletes a site via the UI, cleared on the next
+  // pull. This suppresses the "sync conflict" error dialog that would otherwise
+  // fire when ScreenDataRequirements detects the site is missing — on a
+  // user-initiated delete, silently navigating back is the right behavior.
+  //
+  // We don't track which site was deleted, so in theory: if the user deletes
+  // site A, then navigates to site B, and a pull removes site B before the
+  // flag is cleared, the error dialog for site B would be incorrectly
+  // suppressed. This is near-impossible in practice because the pull itself
+  // clears the flag. However, this could be an issue if sites can be deleted
+  // offline: offline delete site A, edit site B, navigate to site C, return
+  // online. If someone has deleted site B, you don't get a sync conflict
+  // notification.
+  siteDeletedByUser: false,
 };
 
 type SiteState = typeof initialState;
@@ -44,24 +72,31 @@ export const fetchSitesForUser = createAsyncThunk(
 
 export const addSiteNote = createAsyncThunk(
   'site/addSiteNote',
-  siteService.addSiteNote,
+  siteActions.addSiteNoteAction,
 );
 
 export const deleteSiteNote = createAsyncThunk(
   'site/deleteSiteNote',
-  siteService.deleteSiteNote,
+  siteActions.deleteSiteNoteAction,
 );
 
 export const updateSiteNote = createAsyncThunk(
   'site/updateSiteNote',
-  siteService.updateSiteNote,
+  siteActions.updateSiteNoteAction,
 );
 
 export const setSites = (
   state: Draft<SiteState>,
   sites: Record<string, Site>,
 ) => {
-  state.sites = sites;
+  const {mergedRecords, mergedData} = mergeUnsyncedEntities(
+    state.siteSync,
+    state.sites,
+    sites,
+  );
+  state.sites = mergedData;
+  state.siteSync = mergedRecords;
+  logSyncSummary('setSites (pull)', 'site', mergedRecords, mergedData);
 };
 
 export const updateSites = (
@@ -81,13 +116,32 @@ export const updateProjectOfSite = (
 export const deleteSites = (state: Draft<SiteState>, siteIds: string[]) => {
   for (const siteId of siteIds) {
     delete state.sites[siteId];
+    delete state.siteSync[siteId];
   }
 };
 
 const siteSlice = createSlice({
   name: 'site',
   initialState,
-  reducers: {},
+  reducers: {
+    setSiteElevation: (
+      state,
+      action: {payload: {siteId: string; elevation: number}},
+    ) => {
+      const {siteId, elevation} = action.payload;
+      if (state.sites[siteId]) {
+        state.sites[siteId].elevation = elevation;
+        if (syncDebugEnabled) {
+          console.log(
+            `. Updated site elevation (${elevation}) for ${state.sites[siteId].name}`,
+          );
+        }
+        // Note: We intentionally do NOT mark the site as modified for sync here. If later you do want to change elevation and mark the site modified, make a separate action.
+        // The elevation is being fetched as part of sync, and the site
+        // is already marked as unsynced. The push will include the elevation.
+      }
+    },
+  },
   extraReducers: builder => {
     // TODO: add case to delete site if not found
     builder.addCase(fetchSite.fulfilled, (state, {payload: site}) => {
@@ -116,16 +170,41 @@ const siteSlice = createSlice({
 
     builder.addCase(addSiteNote.fulfilled, (state, {payload: siteNote}) => {
       state.sites[siteNote.siteId].notes[siteNote.id] = siteNote;
+      markEntityModified(state.siteSync, siteNote.siteId, Date.now());
+      logSyncChange(
+        'addSiteNote',
+        'site',
+        siteNote.siteId,
+        state.siteSync[siteNote.siteId],
+        state.sites[siteNote.siteId],
+      );
     });
 
     builder.addCase(deleteSiteNote.fulfilled, (state, {payload: siteNote}) => {
       delete state.sites[siteNote.siteId].notes[siteNote.id];
+      markEntityModified(state.siteSync, siteNote.siteId, Date.now());
+      logSyncChange(
+        'deleteSiteNote',
+        'site',
+        siteNote.siteId,
+        state.siteSync[siteNote.siteId],
+        state.sites[siteNote.siteId],
+      );
     });
 
     builder.addCase(updateSiteNote.fulfilled, (state, {payload: siteNote}) => {
       state.sites[siteNote.siteId].notes[siteNote.id] = siteNote;
+      markEntityModified(state.siteSync, siteNote.siteId, Date.now());
+      logSyncChange(
+        'updateSiteNote',
+        'site',
+        siteNote.siteId,
+        state.siteSync[siteNote.siteId],
+        state.sites[siteNote.siteId],
+      );
     });
   },
 });
 
+export const {setSiteElevation} = siteSlice.actions;
 export default siteSlice.reducer;

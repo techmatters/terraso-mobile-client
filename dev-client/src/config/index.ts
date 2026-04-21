@@ -115,3 +115,8 @@ export const debugEnabled =
     : APP_CONFIG.debugEnabled
       ? true
       : false;
+
+export const syncDebugEnabled =
+  process.env.NODE_ENV === 'test'
+    ? false
+    : ENV_CONFIG.SYNC_DEBUG_ENABLED === 'true';

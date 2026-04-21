@@ -16,7 +16,6 @@
  */
 
 import {
-  SoilMetadataPushEntry,
   SoilMetadataPushFailureReason,
   UserMatchRating,
 } from 'terraso-client-shared/graphqlSchema/graphql';
@@ -93,6 +92,7 @@ describe('soilMetadata push utilities', () => {
         {
           siteId: 'site-1',
           result: {
+            __typename: 'SoilMetadataPushEntrySuccess' as const,
             soilMetadata: {
               userRatings: [
                 {soilMatchId: 'match-1', rating: 'SELECTED' as UserMatchRating},
@@ -104,7 +104,7 @@ describe('soilMetadata push utilities', () => {
 
       const results = metadataMutationResponseToResults(
         unsyncedChanges,
-        response as SoilMetadataPushEntry[],
+        response,
       );
 
       expect(results.errors['site-1']).toBeUndefined();
@@ -122,6 +122,7 @@ describe('soilMetadata push utilities', () => {
         {
           siteId: 'site-1',
           result: {
+            __typename: 'SoilMetadataPushEntryFailure' as const,
             reason: 'NOT_ALLOWED' as SoilMetadataPushFailureReason,
           },
         },
@@ -146,11 +147,17 @@ describe('soilMetadata push utilities', () => {
       const response = [
         {
           siteId: 'site-1',
-          result: {soilMetadata: {userRatings: [], site: {} as any}},
+          result: {
+            __typename: 'SoilMetadataPushEntrySuccess' as const,
+            soilMetadata: {userRatings: []},
+          },
         },
         {
           siteId: 'site-2',
-          result: {reason: 'INVALID_DATA' as SoilMetadataPushFailureReason},
+          result: {
+            __typename: 'SoilMetadataPushEntryFailure' as const,
+            reason: 'INVALID_DATA' as SoilMetadataPushFailureReason,
+          },
         },
       ];
 

@@ -16,7 +16,7 @@
  */
 
 import {
-  SoilDataPushEntry,
+  SoilDataPushEntryResultFragment,
   SoilDataPushFailureReason,
   SoilDataPushInput,
   SoilDataPushInputEntry,
@@ -44,10 +44,7 @@ export const pushSoilData = async (
 ): Promise<SyncResults<SoilData, SoilDataPushFailureReason>> => {
   const input = unsyncedSoilDataToMutationInput(unsyncedChanges, unsyncedData);
   const response = await remoteSoilData.pushSoilData(input);
-  return soilDataMutationResponseToResults(
-    unsyncedChanges,
-    response as SoilDataPushEntry[],
-  );
+  return soilDataMutationResponseToResults(unsyncedChanges, response);
 };
 
 export const unsyncedSoilDataToMutationInput = (
@@ -98,7 +95,7 @@ export const unsyncedDataToMutationInputEntry = (
 
 export const soilDataMutationResponseToResults = (
   unsyncedChanges: SyncRecords<SoilData, unknown>,
-  response: SoilDataPushEntry[],
+  response: Array<{siteId: string; result: SoilDataPushEntryResultFragment}>,
 ): SyncResults<SoilData, SoilDataPushFailureReason> => {
   const results: SyncResults<SoilData, SoilDataPushFailureReason> = {
     data: {},

@@ -313,6 +313,7 @@
         "sites": {
             "add": "Ajouter des sites",
             "transfer": "Transférer des sites",
+            "transfer_offline": "Le transfert de sites n'est disponible qu'en ligne.",
             "create": "Créer des sites",
             "search": {
                 "placeholder": "Recherche",

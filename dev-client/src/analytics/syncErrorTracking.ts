@@ -16,40 +16,72 @@
  */
 
 import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
+import type {PushUserDataResults} from 'terraso-mobile-client/model/sync/actions/syncActions';
 
-export type SyncConflictInfo =
-  | {
-      reason: 'push';
-      soilDataErrors: number;
-      metadataErrors: number;
-    }
-  | {
-      reason: 'missing_data';
-      missingEntityType: string;
-    }
-  | {
-      reason: 'other';
-    };
+export type PushFailureEntry = {
+  siteName: string;
+  reason: string;
+};
 
 /**
- * Use posthog to track when a sync conflict error dialog is shown to the user.
+ * Use posthog to track individual push failure reasons by site.
  */
-export function trackSyncError(info: SyncConflictInfo) {
+export function trackPushFailures(
+  type: 'site' | 'soil_data' | 'soil_metadata',
+  failures: PushFailureEntry[],
+) {
   const posthog = getPostHogInstance();
   if (!posthog) {
     return;
   }
 
-  const properties: Record<string, string | number> = {
-    error_reason: info.reason,
-  };
+  posthog.capture(`${type}_push_failure`, {failures});
+}
 
-  if (info.reason === 'push') {
-    properties.soil_data_error_count = info.soilDataErrors;
-    properties.metadata_error_count = info.metadataErrors;
-  } else if (info.reason === 'missing_data') {
-    properties.missing_entity_type = info.missingEntityType;
+/**
+ * Extract push failure reasons from a push result and track them in PostHog.
+ * Returns true if any failures were tracked.
+ */
+export function trackPushResults(
+  results: PushUserDataResults | undefined,
+  getSiteName: (siteId: string) => string,
+): boolean {
+  if (!results) {
+    return false;
   }
 
-  posthog.capture('sync_conflict', properties);
+  const toFailures = (errors: Record<string, {value: string}>) =>
+    Object.entries(errors).map(([siteId, {value: reason}]) => ({
+      siteName: getSiteName(siteId),
+      reason,
+    }));
+
+  let hasErrors = false;
+
+  if (
+    results.siteResults &&
+    Object.keys(results.siteResults.errors).length > 0
+  ) {
+    trackPushFailures('site', toFailures(results.siteResults.errors));
+    hasErrors = true;
+  }
+  if (
+    results.soilDataResults &&
+    Object.keys(results.soilDataResults.errors).length > 0
+  ) {
+    trackPushFailures('soil_data', toFailures(results.soilDataResults.errors));
+    hasErrors = true;
+  }
+  if (
+    results.soilMetadataResults &&
+    Object.keys(results.soilMetadataResults.errors).length > 0
+  ) {
+    trackPushFailures(
+      'soil_metadata',
+      toFailures(results.soilMetadataResults.errors),
+    );
+    hasErrors = true;
+  }
+
+  return hasErrors;
 }

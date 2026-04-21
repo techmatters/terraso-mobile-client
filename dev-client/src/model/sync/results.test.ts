@@ -1,3 +1,16 @@
+import {
+  isUnsynced,
+  SyncRecords,
+  SyncTimestamp,
+} from 'terraso-mobile-client/model/sync/records';
+import {
+  applySyncedValuesToData,
+  applySyncResults,
+  getValuesForCurrentRevisions,
+  isValueForCurrentRevision,
+  SyncResults,
+} from 'terraso-mobile-client/model/sync/results';
+
 /*
  * Copyright © 2024 Technology Matters
  *
@@ -15,18 +28,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  isUnsynced,
-  SyncRecords,
-  SyncTimestamp,
-} from 'terraso-mobile-client/model/sync/records';
-import {
-  applySyncedValuesToData,
-  applySyncResults,
-  getValuesForCurrentRevisions,
-  isValueForCurrentRevision,
-  SyncResults,
-} from 'terraso-mobile-client/model/sync/results';
+jest.mock('terraso-mobile-client/config', () => ({syncDebugEnabled: false}));
 
 describe('results', () => {
   describe('applySyncResults', () => {

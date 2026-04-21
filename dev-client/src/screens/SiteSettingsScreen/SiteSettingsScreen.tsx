@@ -43,7 +43,6 @@ import {
   updateSite,
 } from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
@@ -71,7 +70,6 @@ const DeleteButtonWrapper = ({disabled, onPress}: DeleteButtonWrapperProps) => {
 export const SiteSettingsScreen = ({siteId}: Props) => {
   const dispatch = useDispatch();
   const {t} = useTranslation();
-  const navigation = useNavigation();
   const site = useSelector(state => state.site.sites[siteId]);
   const isOffline = useIsOffline();
 
@@ -82,26 +80,13 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
     dispatch(updateSite({id: site.id, name}));
   }, [dispatch, site, name]);
 
-  const [sitePurposelyDeleted, setSitePurposelyDeleted] = useState(false);
   const onDelete = useCallback(async () => {
-    setSitePurposelyDeleted(true);
     await dispatch(deleteSite(site));
-    // Navigation will happen as part of requirements system
   }, [dispatch, site]);
 
   const userCanEditSite = useRoleCanEditSite(siteId);
 
-  const navToBottomTabs = useCallback(() => {
-    navigation.popTo('BOTTOM_TABS');
-  }, [navigation]);
-  const navToBottomTabsAndShowSyncError = useNavToBottomTabsAndShowSyncError();
-  // On purposeful delete, this screen re-renders with null site (but before
-  // the dispatched delete ends). Avoid showing error on purposeful delete.
-  const handleMissingSite = useCallback(() => {
-    sitePurposelyDeleted
-      ? navToBottomTabs()
-      : navToBottomTabsAndShowSyncError();
-  }, [sitePurposelyDeleted, navToBottomTabs, navToBottomTabsAndShowSyncError]);
+  const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError();
 
   const requirements = useMemoizedRequirements([
@@ -118,7 +103,6 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           <Column px="16px" py="22px">
             <TextInput
               maxLength={SITE_NAME_MAX_LENGTH}
-              disabled={isOffline}
               value={name}
               onChangeText={setName}
               label={t('site.create.name_label')}
@@ -129,7 +113,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                 size="lg"
                 label={t('general.save')}
                 onPress={onSave}
-                disabled={isOffline || !dirty}
+                disabled={!dirty}
               />
             </View>
             <View mt={6}>

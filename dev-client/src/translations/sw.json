@@ -313,6 +313,7 @@
         "sites": {
             "add": "Ongeza maeneo",
             "transfer": "Hamisha Maeneo",
+            "transfer_offline": "Uhamisho wa tovuti unapatikana tu ukiwa mtandaoni.",
             "create": "Unda Maeneo",
             "search": {
                 "placeholder": "Tafuta",

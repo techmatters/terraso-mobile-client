@@ -17,28 +17,53 @@
 
 import {formatCoordinateInEnglish} from 'terraso-mobile-client/util';
 
-export const getElevation = async (
-  lat: number,
-  lng: number,
-): Promise<number | undefined> => {
-  // TypeScript requires values passed to URLSearchParams to be strings,
-  // which is why we convert the floats to strings.
+const ELEVATION_FETCH_TIMEOUT_MS = 10000;
+
+// Raw HTTP call — may throw. Callers should use getElevation, which wraps
+// this with a timeout and swallows errors.
+const requestElevationApi = async (
+  latitude: number,
+  longitude: number,
+): Promise<number | null> => {
   const queryString = new URLSearchParams({
-    longitude: formatCoordinateInEnglish(lng),
-    latitude: formatCoordinateInEnglish(lat),
+    longitude: formatCoordinateInEnglish(longitude),
+    latitude: formatCoordinateInEnglish(latitude),
   });
-  let elevation;
+  const response = await fetch(
+    `https://api.open-meteo.com/v1/elevation/?${queryString}`,
+  );
+  if (response.status !== 200) {
+    return null;
+  }
+  const result = await response.json();
+  return parseInt(result.elevation[0], 10);
+};
+
+/**
+ * Fetch elevation for coordinates.
+ * Returns undefined if the request fails or times out (never throws).
+ */
+export const getElevation = async (
+  latitude: number,
+  longitude: number,
+): Promise<number | null> => {
+  const timeoutReturn = 'timeout';
+  const timeoutPromise = new Promise<typeof timeoutReturn>(resolve =>
+    setTimeout(() => resolve(timeoutReturn), ELEVATION_FETCH_TIMEOUT_MS),
+  );
 
   try {
-    const response = await fetch(
-      `https://api.open-meteo.com/v1/elevation/?${queryString}`,
-    );
-    if (response.status === 200) {
-      const result = await response.json();
-      elevation = parseInt(result.elevation[0], 10);
+    const result = await Promise.race([
+      requestElevationApi(latitude, longitude),
+      timeoutPromise,
+    ]);
+    if (result === timeoutReturn) {
+      console.warn(`Elevation timed out for (${latitude}, ${longitude})`);
+      return null;
     }
+    return result;
   } catch (error) {
-    console.error(error);
+    console.warn(`Elevation errored for (${latitude}, ${longitude}): `, error);
+    return null;
   }
-  return elevation;
 };

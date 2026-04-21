@@ -25,6 +25,7 @@ import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 import {Card} from 'terraso-mobile-client/components/Card';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useUserCanEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -44,7 +45,8 @@ export const SiteNoteCard = ({note}: Props) => {
     siteId: note.siteId,
     noteId: note.id,
   });
-  const canViewEditScreen = !isOffline && userCanEditNote;
+  const canViewEditScreen =
+    (!isOffline || isFlagEnabled('FF_offline')) && userCanEditNote;
   const authorEmail = useSelector(
     state => state.account.users[note.authorId]?.email,
   );

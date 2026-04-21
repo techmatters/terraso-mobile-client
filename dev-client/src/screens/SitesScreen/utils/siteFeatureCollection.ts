@@ -19,16 +19,18 @@ import {Site} from 'terraso-client-shared/site/siteTypes';
 
 export const siteFeatureCollection = (
   sites: Pick<Site, 'id' | 'latitude' | 'longitude'>[],
-): GeoJSON.FeatureCollection<GeoJSON.Point> => ({
-  type: 'FeatureCollection',
-  // TODO: Filter sometimes returns undefined; figure out why and fix
-  features: sites.map(site => ({
-    type: 'Feature',
-    id: site.id,
-    properties: {},
-    geometry: {
-      type: 'Point',
-      coordinates: [site.longitude, site.latitude],
-    },
-  })),
-});
+): GeoJSON.FeatureCollection<GeoJSON.Point> => {
+  return {
+    type: 'FeatureCollection',
+    // TODO: Filter sometimes returns undefined; figure out why and fix
+    features: sites.map(site => ({
+      type: 'Feature' as const,
+      id: site.id,
+      properties: {},
+      geometry: {
+        type: 'Point' as const,
+        coordinates: [site.longitude, site.latitude],
+      },
+    })),
+  };
+};

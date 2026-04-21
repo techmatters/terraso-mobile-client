@@ -32,6 +32,7 @@ jest.mock('terraso-mobile-client/store/sync/hooks/syncHooks', () => {
     useDebouncedIsOffline: jest.fn(),
     useDebouncedUnsyncedSoilDataSiteIds: jest.fn(),
     useDebouncedUnsyncedMetadataSiteIds: jest.fn(),
+    useDebouncedUnsyncedSiteSiteIds: jest.fn(),
     useIsLoggedIn: jest.fn(),
     usePushDispatch: jest.fn(),
     useRetryInterval: jest.fn(),
@@ -55,6 +56,9 @@ describe('PushDispatcher', () => {
   let useDebouncedUnsyncedMetadataSiteIds = jest.mocked(
     syncHooks.useDebouncedUnsyncedMetadataSiteIds,
   );
+  let useDebouncedUnsyncedSiteSiteIds = jest.mocked(
+    syncHooks.useDebouncedUnsyncedSiteSiteIds,
+  );
 
   let dispatchPush = jest.fn();
   let usePushDispatch = jest.mocked(syncHooks.usePushDispatch);
@@ -73,10 +77,12 @@ describe('PushDispatcher', () => {
     useIsLoggedIn.mockReset();
     useDebouncedUnsyncedSoilDataSiteIds.mockReset();
     useDebouncedUnsyncedMetadataSiteIds.mockReset();
+    useDebouncedUnsyncedSiteSiteIds.mockReset();
 
     // Default to empty arrays
     useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue([]);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue([]);
+    useDebouncedUnsyncedSiteSiteIds.mockReturnValue([]);
 
     dispatchPush.mockReset();
     usePushDispatch.mockReset();
@@ -107,17 +113,22 @@ describe('PushDispatcher', () => {
     expect(useDebouncedUnsyncedMetadataSiteIds).toHaveBeenCalledWith(
       PUSH_DEBOUNCE_MS,
     );
+    expect(useDebouncedUnsyncedSiteSiteIds).toHaveBeenCalledWith(
+      PUSH_DEBOUNCE_MS,
+    );
   });
 
   test('uses correct site IDs for push dispatch', async () => {
     useDebouncedUnsyncedSoilDataSiteIds.mockReturnValue(['abcd']);
     useDebouncedUnsyncedMetadataSiteIds.mockReturnValue(['efgh']);
+    useDebouncedUnsyncedSiteSiteIds.mockReturnValue(['ijkl']);
 
     render(<PushDispatcher />);
 
     expect(usePushDispatch).toHaveBeenCalledWith({
       soilDataSiteIds: ['abcd'],
       soilMetadataSiteIds: ['efgh'],
+      siteSiteIds: ['ijkl'],
     });
   });
 
@@ -397,6 +408,53 @@ describe('PushDispatcher', () => {
           errors: {},
         },
         soilMetadataResults: {
+          data: {},
+          errors: {},
+        },
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(0));
+  });
+
+  test('dispatches an initial push when only site IDs are unsynced', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteSiteIds.mockReturnValue(['ijkl']);
+
+    dispatchPush.mockResolvedValue({payload: {}});
+    render(<PushDispatcher />);
+
+    expect(dispatchPush).toHaveBeenCalledTimes(1);
+  });
+
+  test('shows error notification when push has site sync error', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteSiteIds.mockReturnValue(['ijkl']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        siteResults: {
+          data: {},
+          errors: {a: {value: 'NOT_ALLOWED'}},
+        },
+      },
+    });
+    render(<PushDispatcher />);
+
+    await waitFor(() => expect(showError).toHaveBeenCalledTimes(1));
+  });
+
+  test('does not show error notification when site push has no sync errors', async () => {
+    useIsLoggedIn.mockReturnValue(true);
+    useDebouncedIsOffline.mockReturnValue(false);
+    useDebouncedUnsyncedSiteSiteIds.mockReturnValue(['ijkl']);
+
+    dispatchPush.mockResolvedValue({
+      payload: {
+        siteResults: {
           data: {},
           errors: {},
         },

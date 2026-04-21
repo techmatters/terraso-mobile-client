@@ -67,12 +67,14 @@ export const PullRequester = () => {
     }
   }, [sitesWithErrors, dispatch]);
 
-  // Request a pull at regular intervals
-  // FYI intervals just keep running even if app in background or if a pull errors, etc.
+  // Request a pull at regular intervals (skip when offline — a pull will be
+  // requested immediately when connectivity returns, see above)
   const intervalIdRef = useRef<number | undefined>(undefined);
   useEffect(() => {
     intervalIdRef.current = setInterval(() => {
-      dispatch(setPullRequested(true));
+      if (!isOffline) {
+        dispatch(setPullRequested(true));
+      }
     }, PULL_INTERVAL_MS);
     return () => {
       if (intervalIdRef.current !== undefined) {
@@ -80,7 +82,7 @@ export const PullRequester = () => {
         intervalIdRef.current = undefined;
       }
     };
-  }, [dispatch]);
+  }, [dispatch, isOffline]);
 
   return <></>;
 };
