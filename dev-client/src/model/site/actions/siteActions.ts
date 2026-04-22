@@ -16,12 +16,10 @@
  */
 
 import {User} from 'terraso-client-shared/account/accountSlice';
-import * as siteService from 'terraso-client-shared/site/siteService';
 import {Site, SiteNote} from 'terraso-client-shared/site/siteTypes';
 import {ThunkAPI} from 'terraso-client-shared/store/utils';
 
 import {syncDebugEnabled} from 'terraso-mobile-client/config';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {
   SiteAddInput,
   SiteNoteAddInput,
@@ -36,19 +34,12 @@ export const addSiteAction = async (
   _: User | null,
   thunkApi: ThunkAPI,
 ): Promise<Site> => {
-  if (isFlagEnabled('FF_offline')) {
-    const state = thunkApi.getState() as AppState;
-    const result = localSite.addSite(input, state);
-    if (syncDebugEnabled) {
-      console.log('🏗️ addSiteAction (local)', result.id, input.name);
-    }
-    return Promise.resolve(result);
-  } else {
-    if (syncDebugEnabled) {
-      console.log('🏗️ addSiteAction (remote)', input.name);
-    }
-    return siteService.addSite(input);
+  const state = thunkApi.getState() as AppState;
+  const result = localSite.addSite(input, state);
+  if (syncDebugEnabled) {
+    console.log('🏗️ addSiteAction (local)', result.id, input.name);
   }
+  return Promise.resolve(result);
 };
 
 export const updateSiteAction = async (
@@ -56,20 +47,13 @@ export const updateSiteAction = async (
   _: User | null,
   thunkApi: ThunkAPI,
 ): Promise<Site> => {
-  if (isFlagEnabled('FF_offline')) {
-    const state = thunkApi.getState() as AppState;
-    const site = state.site.sites[input.id];
-    const result = localSite.updateSite(input, site);
-    if (syncDebugEnabled) {
-      console.log('✏️ updateSiteAction (local)', input.id, input);
-    }
-    return Promise.resolve(result);
-  } else {
-    if (syncDebugEnabled) {
-      console.log('✏️ updateSiteAction (remote)', input.id, input);
-    }
-    return siteService.updateSite(input);
+  const state = thunkApi.getState() as AppState;
+  const site = state.site.sites[input.id];
+  const result = localSite.updateSite(input, site);
+  if (syncDebugEnabled) {
+    console.log('✏️ updateSiteAction (local)', input.id, input);
   }
+  return Promise.resolve(result);
 };
 
 export const addSiteNoteAction = async (
@@ -77,24 +61,17 @@ export const addSiteNoteAction = async (
   _: User | null,
   thunkApi: ThunkAPI,
 ): Promise<SiteNote> => {
-  if (isFlagEnabled('FF_offline')) {
-    const state = thunkApi.getState() as AppState;
-    const result = localSite.addSiteNote(input, state);
-    if (syncDebugEnabled) {
-      console.log(
-        '📝 addSiteNoteAction (local)',
-        result.id,
-        'for site',
-        input.siteId,
-      );
-    }
-    return Promise.resolve(result);
-  } else {
-    if (syncDebugEnabled) {
-      console.log('📝 addSiteNoteAction (remote)', 'for site', input.siteId);
-    }
-    return siteService.addSiteNote(input);
+  const state = thunkApi.getState() as AppState;
+  const result = localSite.addSiteNote(input, state);
+  if (syncDebugEnabled) {
+    console.log(
+      '📝 addSiteNoteAction (local)',
+      result.id,
+      'for site',
+      input.siteId,
+    );
   }
+  return Promise.resolve(result);
 };
 
 export const updateSiteNoteAction = async (
@@ -102,41 +79,27 @@ export const updateSiteNoteAction = async (
   _: User | null,
   thunkApi: ThunkAPI,
 ): Promise<SiteNote> => {
-  if (isFlagEnabled('FF_offline')) {
-    const state = thunkApi.getState() as AppState;
-    const note = findSiteNote(state, input.id);
-    if (syncDebugEnabled) {
-      console.log('📝 updateSiteNoteAction (local)', input.id);
-    }
-    return Promise.resolve(localSite.updateSiteNote(input, note));
-  } else {
-    if (syncDebugEnabled) {
-      console.log('📝 updateSiteNoteAction (remote)', input.id);
-    }
-    return siteService.updateSiteNote(input);
+  const state = thunkApi.getState() as AppState;
+  const note = findSiteNote(state, input.id);
+  if (syncDebugEnabled) {
+    console.log('📝 updateSiteNoteAction (local)', input.id);
   }
+  return Promise.resolve(localSite.updateSiteNote(input, note));
 };
 
 export const deleteSiteNoteAction = async (
   input: SiteNote,
   _: User | null,
 ): Promise<SiteNote> => {
-  if (isFlagEnabled('FF_offline')) {
-    if (syncDebugEnabled) {
-      console.log(
-        '🗑️ deleteSiteNoteAction (local)',
-        input.id,
-        'for site',
-        input.siteId,
-      );
-    }
-    return Promise.resolve(input);
-  } else {
-    if (syncDebugEnabled) {
-      console.log('🗑️ deleteSiteNoteAction (remote)', input.id);
-    }
-    return siteService.deleteSiteNote(input);
+  if (syncDebugEnabled) {
+    console.log(
+      '🗑️ deleteSiteNoteAction (local)',
+      input.id,
+      'for site',
+      input.siteId,
+    );
   }
+  return Promise.resolve(input);
 };
 
 const findSiteNote = (state: AppState, noteId: string): SiteNote => {

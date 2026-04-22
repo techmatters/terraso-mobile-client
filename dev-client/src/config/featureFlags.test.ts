@@ -22,57 +22,6 @@
 // functionality to control when the module initializes so we can test its
 // behavior in different states.
 
-test('feature flags can be enabled', () => {
-  jest.isolateModules(() => {
-    jest.mock('terraso-mobile-client/config/index', () => ({
-      APP_CONFIG: {
-        environment: 'production',
-      },
-    }));
-
-    const {kvStorage} = require('terraso-mobile-client/persistence/kvStorage');
-    kvStorage.setBool('FF_offline', false);
-
-    const {
-      isFlagEnabled,
-      willFlagBeEnabledOnReload,
-      setFlagWillBeEnabledOnReload,
-    } = require('terraso-mobile-client/config/featureFlags');
-
-    expect(isFlagEnabled('FF_offline')).toBe(false);
-    expect(willFlagBeEnabledOnReload('FF_offline')).toBe(false);
-
-    setFlagWillBeEnabledOnReload('FF_offline', true);
-
-    expect(isFlagEnabled('FF_offline')).toBe(false);
-    expect(willFlagBeEnabledOnReload('FF_offline')).toBe(true);
-  });
-});
-
-test('feature flags can be disabled', () => {
-  jest.isolateModules(() => {
-    jest.mock('terraso-mobile-client/config/index', () => ({
-      APP_CONFIG: {
-        environment: 'production',
-      },
-    }));
-
-    const {
-      isFlagEnabled,
-      willFlagBeEnabledOnReload,
-      setFlagWillBeEnabledOnReload,
-    } = require('terraso-mobile-client/config/featureFlags');
-
-    expect(isFlagEnabled('FF_offline')).toBe(true);
-    expect(willFlagBeEnabledOnReload('FF_offline')).toBe(true);
-
-    setFlagWillBeEnabledOnReload('FF_offline', false);
-
-    expect(isFlagEnabled('FF_offline')).toBe(true);
-    expect(willFlagBeEnabledOnReload('FF_offline')).toBe(false);
-  });
-});
-
 test('testing feature flag is default disabled in production', () => {
   jest.isolateModules(() => {
     jest.mock('terraso-mobile-client/config/index', () => ({

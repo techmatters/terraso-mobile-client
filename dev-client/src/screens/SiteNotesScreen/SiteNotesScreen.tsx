@@ -32,11 +32,8 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
-import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {PinnedNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/PinnedNoteCard';
 import {SiteNoteCard} from 'terraso-mobile-client/screens/SiteNotesScreen/components/SiteNoteCard';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -56,9 +53,6 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
     navigation.navigate('ADD_SITE_NOTE', {siteId: siteId});
   }, [navigation, siteId]);
 
-  const isOffline = useIsOffline();
-  const notesDisabledOffline = isOffline && !isFlagEnabled('FF_offline');
-
   const handleMissingSite = useNavToBottomTabsAndShowSyncError('site');
   const requirements = useMemoizedRequirements([
     {data: site, doIfMissing: handleMissingSite},
@@ -75,20 +69,12 @@ export const SiteNotesScreen = ({siteId}: {siteId: string}) => {
             <Box height="16px" />
             {project?.siteInstructions && <PinnedNoteCard project={project} />}
             <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-              <Box
-                pl={4}
-                pb={4}
-                pr={4}
-                alignItems={notesDisabledOffline ? undefined : 'flex-start'}>
-                {notesDisabledOffline ? (
-                  <OfflineAlert message={t('site.notes.offline')} />
-                ) : (
-                  <ContainedButton
-                    size="lg"
-                    onPress={onAddNote}
-                    label={t('site.notes.add_note_label')}
-                  />
-                )}
+              <Box pl={4} pb={4} pr={4} alignItems="flex-start">
+                <ContainedButton
+                  size="lg"
+                  onPress={onAddNote}
+                  label={t('site.notes.add_note_label')}
+                />
               </Box>
             </RestrictBySiteRole>
 

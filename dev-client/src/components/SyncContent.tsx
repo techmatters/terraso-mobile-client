@@ -71,22 +71,18 @@ export const SyncContent = () => {
   }, [dispatch, syncInfoOpen]);
 
   return (
-    <>
-      <RestrictByFlag flag="FF_offline">
-        <RestrictByFlag flag="FF_testing">
-          <ContainedButton
-            stretchToFit
-            onPress={toggleSyncInfo}
-            label={
-              syncInfoOpen
-                ? 'Close sync info (dev only)'
-                : 'Open sync info (dev only)'
-            }
-          />
-          {syncInfoOpen && <SyncInfoExpanded />}
-        </RestrictByFlag>
-      </RestrictByFlag>
-    </>
+    <RestrictByFlag flag="FF_testing">
+      <ContainedButton
+        stretchToFit
+        onPress={toggleSyncInfo}
+        label={
+          syncInfoOpen
+            ? 'Close sync info (dev only)'
+            : 'Open sync info (dev only)'
+        }
+      />
+      {syncInfoOpen && <SyncInfoExpanded />}
+    </RestrictByFlag>
   );
 };
 

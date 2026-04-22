@@ -17,7 +17,7 @@
 
 import {forwardRef, memo, useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -40,11 +40,8 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictByConnectivity} from 'terraso-mobile-client/components/restrictions/RestrictByConnectivity';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {OfflineAlert} from 'terraso-mobile-client/screens/LocationScreens/components/soilId/alertBoxes/OfflineAlert';
 import {EmptySiteMessage} from 'terraso-mobile-client/screens/SitesScreen/components/EmptySiteMessage';
 import {SiteFilterModal} from 'terraso-mobile-client/screens/SitesScreen/components/SiteFilterModal';
 import {getStartingSnapValue} from 'terraso-mobile-client/screens/SitesScreen/utils/getStartingSnapValue';
@@ -109,33 +106,24 @@ export const SiteListBottomSheet = memo(
 
       const ListHeaderComponent = useMemo(
         () => (
-          <>
-            <Column px="16px">
-              <Row justifyContent="flex-start" alignItems="center" pb="4">
-                {isEmpty ? (
-                  <>
-                    <MaterialCommunityIcons
-                      name="plus"
-                      size={24}
-                      color="black"
-                      style={styles.communityIcon}
-                    />
-                    <Heading variant="h6">{t('site.list_title_empty')}</Heading>
-                  </>
-                ) : (
-                  <Heading variant="h6">{t('site.list_title')}</Heading>
-                )}
-              </Row>
-              {!isEmpty && <SiteFilterModal useDistance={useDistance} />}
-            </Column>
-            {!isFlagEnabled('FF_offline') && (
-              <RestrictByConnectivity offline={true}>
-                <View style={styles.alertView}>
-                  <OfflineAlert message={t('site.offline.alert_body')} />
-                </View>
-              </RestrictByConnectivity>
-            )}
-          </>
+          <Column px="16px">
+            <Row justifyContent="flex-start" alignItems="center" pb="4">
+              {isEmpty ? (
+                <>
+                  <MaterialCommunityIcons
+                    name="plus"
+                    size={24}
+                    color="black"
+                    style={styles.communityIcon}
+                  />
+                  <Heading variant="h6">{t('site.list_title_empty')}</Heading>
+                </>
+              ) : (
+                <Heading variant="h6">{t('site.list_title')}</Heading>
+              )}
+            </Row>
+            {!isEmpty && <SiteFilterModal useDistance={useDistance} />}
+          </Column>
         ),
         [isEmpty, t, useDistance],
       );
@@ -181,5 +169,4 @@ const ListFooterComponent = <Box h="10px" />;
 
 const styles = StyleSheet.create({
   communityIcon: {marginRight: 10},
-  alertView: {margin: 16},
 });

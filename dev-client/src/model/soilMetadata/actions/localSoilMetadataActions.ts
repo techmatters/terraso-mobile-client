@@ -46,9 +46,9 @@ export const updateUserRatings = async (
   input: UpdateUserRatingsInput,
   state: AppState,
 ): Promise<SoilMetadata> => {
-  if (!isFlagEnabled('FF_offline') || !isFlagEnabled('FF_select_soil')) {
+  if (!isFlagEnabled('FF_select_soil')) {
     throw Error(
-      'This code path should only be available with FF_select_soil and FF_offline flags on',
+      'This code path should only be available with FF_select_soil flag on',
     );
   }
   const data: SoilMetadata | undefined =

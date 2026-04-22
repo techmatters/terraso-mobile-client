@@ -28,24 +28,11 @@ import {render} from '@testing/integration/utils';
 import * as projectService from 'terraso-client-shared/project/projectService';
 
 import {OfflineSnackbar} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
-import {FeatureFlagName} from 'terraso-mobile-client/config/featureFlags';
 import * as connectivityHooks from 'terraso-mobile-client/hooks/connectivityHooks';
 import {deleteProject} from 'terraso-mobile-client/model/project/projectSlice';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectViewScreen';
 import {AppState, useDispatch} from 'terraso-mobile-client/store';
-
-jest.mock('terraso-mobile-client/config/featureFlags', () => {
-  const actual = jest.requireActual(
-    'terraso-mobile-client/config/featureFlags',
-  );
-  return {
-    ...actual,
-    isFlagEnabled: (flag: FeatureFlagName) => {
-      if (flag === 'FF_offline') return true;
-    },
-  };
-});
 
 jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
   return {

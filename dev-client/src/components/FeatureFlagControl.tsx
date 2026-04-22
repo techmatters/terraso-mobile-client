@@ -52,8 +52,6 @@ export const FeatureFlagControlPanel = () => {
               <ScrollView>
                 <ScreenContentSection>
                   <Heading mb="10px">Feature Flags</Heading>
-                  <FeatureFlagControl flag="FF_offline" />
-                  <View style={styles.spacer} />
                   <FeatureFlagControl flag="FF_testing" />
                   <View style={styles.spacer} />
                   <FeatureFlagControl flag="FF_select_soil" />

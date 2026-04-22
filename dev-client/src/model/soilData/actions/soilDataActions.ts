@@ -23,11 +23,9 @@ import {
   SoilDataUpdateDepthIntervalMutationInput,
   SoilDataUpdateMutationInput,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import * as soilDataService from 'terraso-client-shared/soilId/soilDataService';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 import {ThunkAPI} from 'terraso-client-shared/store/utils';
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import * as localSoilData from 'terraso-mobile-client/model/soilData/actions/localSoilDataActions';
 import * as remoteSoilData from 'terraso-mobile-client/model/soilData/actions/remoteSoilDataActions';
 import {
@@ -68,12 +66,8 @@ export const updateSoilData = async (
   input: SoilDataUpdateMutationInput,
   state: AppState,
 ): Promise<SoilData> => {
-  if (isFlagEnabled('FF_offline')) {
-    const data = state.soilData.soilData[input.siteId];
-    return Promise.resolve(localSoilData.updateSoilData(input, data));
-  } else {
-    return soilDataService.updateSoilData(input);
-  }
+  const data = state.soilData.soilData[input.siteId];
+  return Promise.resolve(localSoilData.updateSoilData(input, data));
 };
 
 export const deleteSoilDataDepthIntervalThunk = async (
@@ -86,14 +80,10 @@ export const deleteSoilDataDepthInterval = async (
   input: SoilDataDeleteDepthIntervalMutationInput,
   state: AppState,
 ): Promise<SoilData> => {
-  if (isFlagEnabled('FF_offline')) {
-    const data = state.soilData.soilData[input.siteId];
-    return Promise.resolve(
-      localSoilData.deleteSoilDataDepthInterval(input, data),
-    );
-  } else {
-    return soilDataService.deleteSoilDataDepthInterval(input);
-  }
+  const data = state.soilData.soilData[input.siteId];
+  return Promise.resolve(
+    localSoilData.deleteSoilDataDepthInterval(input, data),
+  );
 };
 
 export const updateSoilDataDepthIntervalThunk = async (
@@ -106,14 +96,10 @@ export const updateSoilDataDepthInterval = async (
   input: SoilDataUpdateDepthIntervalMutationInput,
   state: AppState,
 ): Promise<SoilData> => {
-  if (isFlagEnabled('FF_offline')) {
-    const data = state.soilData.soilData[input.siteId];
-    return Promise.resolve(
-      localSoilData.updateSoilDataDepthInterval(input, data),
-    );
-  } else {
-    return soilDataService.updateSoilDataDepthInterval(input);
-  }
+  const data = state.soilData.soilData[input.siteId];
+  return Promise.resolve(
+    localSoilData.updateSoilDataDepthInterval(input, data),
+  );
 };
 
 export const updateDepthDependentSoilDataThunk = async (
@@ -126,12 +112,8 @@ export const updateDepthDependentSoilData = async (
   input: DepthDependentSoilDataUpdateMutationInput,
   state: AppState,
 ): Promise<SoilData> => {
-  if (isFlagEnabled('FF_offline')) {
-    const data = state.soilData.soilData[input.siteId];
-    return Promise.resolve(
-      localSoilData.updateDepthDependentSoilData(input, data),
-    );
-  } else {
-    return soilDataService.updateDepthDependentSoilData(input);
-  }
+  const data = state.soilData.soilData[input.siteId];
+  return Promise.resolve(
+    localSoilData.updateDepthDependentSoilData(input, data),
+  );
 };

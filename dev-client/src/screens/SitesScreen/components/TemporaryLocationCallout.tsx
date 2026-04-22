@@ -37,7 +37,6 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SoilIdStatusDisplay} from 'terraso-mobile-client/components/SoilIdStatusDisplay';
 import {renderElevation} from 'terraso-mobile-client/components/util/site';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {useElevationData} from 'terraso-mobile-client/model/elevation/elevationHooks';
@@ -68,7 +67,6 @@ export const TemporaryLocationCallout = ({
   const {t} = useTranslation();
   const navigation = useNavigation();
   const isOffline = useIsOffline();
-  const siteCreationDisabled = isOffline && !isFlagEnabled('FF_offline');
 
   const elevation = useElevationData(coords);
   const soilIdOutput = useSoilIdOutput({coords});
@@ -130,7 +128,6 @@ export const TemporaryLocationCallout = ({
             coords={coords}
             elevation={elevation.value}
             afterCreate={closeCallout}
-            disabled={siteCreationDisabled}
             size="sm"
             creationMethod={creationMethod}
           />

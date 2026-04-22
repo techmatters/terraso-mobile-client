@@ -70,9 +70,9 @@ describe('updateUserRatings', () => {
       typeof featureFlags.isFlagEnabled
     >;
 
-    // Default: flags enabled
+    // Default: flag enabled
     mockIsFlagEnabled.mockImplementation(
-      (flag: string) => flag === 'FF_offline' || flag === 'FF_select_soil',
+      (flag: string) => flag === 'FF_select_soil',
     );
   });
 
@@ -81,29 +81,14 @@ describe('updateUserRatings', () => {
   });
 
   describe('Feature Flag Tests', () => {
-    test('throws error when FF_offline is false', async () => {
-      mockIsFlagEnabled.mockImplementation(
-        (flag: string) => flag === 'FF_select_soil',
-      );
-
-      const state = createMockState('site-1');
-      const input = createRatingInput('site-1', 'soil-1', 'SELECTED');
-
-      await expect(updateUserRatings(input, state)).rejects.toThrow(
-        'This code path should only be available with FF_select_soil and FF_offline flags on',
-      );
-    });
-
     test('throws error when FF_select_soil is false', async () => {
-      mockIsFlagEnabled.mockImplementation(
-        (flag: string) => flag === 'FF_offline',
-      );
+      mockIsFlagEnabled.mockImplementation(() => false);
 
       const state = createMockState('site-1');
       const input = createRatingInput('site-1', 'soil-1', 'SELECTED');
 
       await expect(updateUserRatings(input, state)).rejects.toThrow(
-        'This code path should only be available with FF_select_soil and FF_offline flags on',
+        'This code path should only be available with FF_select_soil flag on',
       );
     });
   });
