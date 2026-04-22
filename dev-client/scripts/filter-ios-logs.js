@@ -30,14 +30,51 @@ const NOISE_PATTERNS = [
   /Could not find view with tag/,
   /hapticpatternlibrary\.plist/,
   /NSCocoaErrorDomain/,
+  /\bi18next:/,
+  /will be run during every build/,
+  /VP8LPredictor/,
+  // npm install chatter — transitive deprecations dragged in by RN/Expo/Jest/
+  // react-devtools that aren't actionable from this repo. Re-check when any
+  // of those ecosystems bump.
+  /npm warn skipping integrity check/,
+  /npm warn deprecated inflight@/,
+  /npm warn deprecated lodash\./,
+  /npm warn deprecated rimraf@/,
+  /npm warn deprecated glob@/,
+  /npm warn deprecated abab@/,
+  /npm warn deprecated domexception@/,
+  /npm warn deprecated boolean@/,
+  // iOS simulator app_launch_measurement telemetry that always fails to send
+  // from the simulator. Harmless Apple-internal chatter.
+  /Failed to send CA Event/,
 ];
 
 // A line matching this is the start of a new log entry, ending any suppressed
 // block. Covers iOS log prefixes ([Framework]), React Native prefixes
-// (LOG/WARN/ERROR), and Metro bundler output.
-const NEW_ENTRY_PATTERN = /^\[|^ (LOG|WARN|ERROR) |^>/;
+// (LOG/WARN/ERROR/INFO/DEBUG), Metro bundler output (>), xcbeautify step
+// prefix (› = U+203A), Metro bundle progress (iOS ./index.js ▓...),
+// npm CLI output (any npm line), and blank lines.
+const NEW_ENTRY_PATTERN = /^\[|^ (LOG|WARN|ERROR|INFO|DEBUG) |^[>›]|^iOS |^npm |^\s*$/;
+
+// Some Xcode warnings have a generic banner (⚠️ with xcodeproj path) whose
+// identifying detail only arrives a few lines later. Buffer these until we
+// can see whether the following lines match a noise pattern; if so, drop the
+// whole block (banner + contents). Otherwise flush.
+const PREAMBLE_PATTERN = /^⚠️\s+\(ios\/.*\.xcodeproj:\)/;
+const PREAMBLE_MAX_LINES = 6;
+
+// Rebuild timing: measured from when the filter starts (= when rebuild_all
+// starts, since it pipes through us from the top). Watch for the "iOS Bundled"
+// line (app launched) and the __REBUILD_EXIT__ sentinel (rebuild_all exiting
+// — means build failed before launch if we get the sentinel first). Ctrl+C
+// suppresses the sentinel, so interrupted runs stay silent.
+const FILTER_START_MS = Date.now();
+const LAUNCH_PATTERN = /^iOS Bundled/;
+const EXIT_SENTINEL = /^__REBUILD_EXIT__:(\d+)$/;
+let launched = false;
 
 let inBlock = false;
+let preambleBuffer = [];
 
 function emit(line) {
   process.stdout.write(line + '\n');
@@ -49,9 +86,62 @@ function suppress(line) {
   }
 }
 
+function flushPreamble() {
+  for (const l of preambleBuffer) emit(l);
+  preambleBuffer = [];
+}
+
+function dropPreamble() {
+  for (const l of preambleBuffer) suppress(l);
+  preambleBuffer = [];
+}
+
+function elapsedBanner(label) {
+  const secs = Math.floor((Date.now() - FILTER_START_MS) / 1000);
+  const mins = Math.floor(secs / 60);
+  const ss = String(secs % 60).padStart(2, '0');
+  emit('');
+  emit(`*** ${label} ${mins}m${ss}s ***`);
+  emit('');
+}
+
 const rl = readline.createInterface({input: process.stdin});
 
 rl.on('line', line => {
+  const exitMatch = line.match(EXIT_SENTINEL);
+  if (exitMatch) {
+    if (!launched) {
+      const code = Number(exitMatch[1]);
+      elapsedBanner(code === 0
+        ? 'Exited without launching after'
+        : 'Build failed after');
+    }
+    return;  // always swallow the sentinel
+  }
+  if (!launched && LAUNCH_PATTERN.test(line)) {
+    launched = true;
+    emit(line);
+    elapsedBanner('App launched in');
+    return;
+  }
+
+  if (preambleBuffer.length > 0) {
+    preambleBuffer.push(line);
+    if (NOISE_PATTERNS.some(p => p.test(line))) {
+      dropPreamble();
+      return;
+    }
+    if (preambleBuffer.length >= PREAMBLE_MAX_LINES) {
+      flushPreamble();
+    }
+    return;
+  }
+
+  if (PREAMBLE_PATTERN.test(line)) {
+    preambleBuffer.push(line);
+    return;
+  }
+
   if (NOISE_PATTERNS.some(p => p.test(line))) {
     inBlock = true;
     suppress(line);
@@ -75,3 +165,5 @@ rl.on('line', line => {
 
   emit(line);
 });
+
+rl.on('close', () => flushPreamble());

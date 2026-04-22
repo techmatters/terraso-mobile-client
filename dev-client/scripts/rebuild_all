@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# Usage: rebuild_all [--run-only] [--debug-logs] <ios|android>
+print_usage() {
+    echo "Usage:"
+    echo "  npm run rebuild-all-ios        # shortcut, no flags"
+    echo "  npm run rebuild-all-android    # shortcut, no flags"
+    echo "  npm run rebuild-all -- [--run-only] [--debug-logs] <ios|android>"
+    echo "  bash scripts/rebuild_all [--run-only] [--debug-logs] <ios|android>"
+}
 
 RUN_ONLY=false
 DEBUG_LOGS=""
@@ -8,7 +14,7 @@ while [[ "$1" == --* ]]; do
     case "$1" in
         --run-only) RUN_ONLY=true; shift ;;
         --debug-logs) DEBUG_LOGS="--debug"; shift ;;
-        *) echo "Unknown option: $1"; exit 1 ;;
+        *) echo "Unknown option: $1"; print_usage; exit 1 ;;
     esac
 done
 
@@ -16,9 +22,27 @@ PLATFORM="$1"
 
 # Validate argument
 if [[ "$PLATFORM" != "ios" && "$PLATFORM" != "android" ]]; then
-    echo "Usage: rebuild_all [--run-only] [--debug-logs] <ios|android>"
+    print_usage
     exit 1
 fi
+
+# Metro and xcodebuild are spawned as detached process groups by the RN CLI,
+# so Ctrl+C on the pipeline leaves them running. Clean them up on signal/exit.
+# (The log filter exits naturally on stdout EOF when the script ends.)
+cleanup() {
+    trap - INT TERM EXIT
+    echo ""
+    echo "Cleaning up Metro / xcodebuild..."
+    pids=$(lsof -ti :8081 2>/dev/null)
+    [ -n "$pids" ] && kill $pids 2>/dev/null
+    pkill -f xcodebuild 2>/dev/null
+    exit 130
+}
+trap cleanup INT TERM
+
+# Print a sentinel the filter recognizes to report "Build failed after Xs"
+# timing. Cleanup trap disables this on Ctrl+C so interrupted runs are silent.
+trap 'echo "__REBUILD_EXIT__:$?"' EXIT
 
 # Ensure we're in dev-client directory
 if [[ "$PWD" == */dev-client ]]; then
@@ -35,9 +59,22 @@ else
     fi
 fi
 
+# Filter noisy iOS log messages. Uses block suppression to handle multi-line
+# messages that the log streamer splits when piped. Set up and applied early
+# via `exec` so it covers npm ci deprecations, watchman chatter, xcbeautify
+# output, and everything else — not just `npm run ios`.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+IOS_LOG_FILTER="node $SCRIPT_DIR/filter-ios-logs.js $DEBUG_LOGS"
+if [[ "$PLATFORM" == "ios" ]]; then
+    exec > >($IOS_LOG_FILTER) 2>&1
+fi
+
 if [[ "$RUN_ONLY" == false ]]; then
     echo "Building from $PWD for: $PLATFORM"
 
+    # node_modules nuke is redundant with `npm ci` in the happy path (ci also
+    # wipes node_modules), but catches edge cases like aborted prior installs
+    # or locked files, and costs almost nothing.
     rm -rf node_modules ios android
 
     # Clear Gradle build cache (can cause stale artifact issues)
@@ -46,24 +83,33 @@ if [[ "$RUN_ONLY" == false ]]; then
         rm -rf ~/.gradle/caches/build-cache-1
     fi
 
-    npm install
+    # `npm ci` installs exactly what package-lock.json specifies and fails
+    # loudly if package.json has drifted from the lock — preferable for a
+    # clean-rebuild script, where we want reproducibility, not auto-reconcile.
+    # If you just edited package.json, run `npm install` yourself first to
+    # refresh the lock, then re-run rebuild_all.
+    npm ci
     npm run prepare
     npm run prebuild
+
+    # Metro caches per-file transforms and a haste map of the project layout,
+    # both under $TMPDIR. After a fresh `npm install` the cached resolutions
+    # don't match node_modules anymore, causing bundling to fail with
+    # "Unable to resolve module ..." for packages that actually exist.
+    # Clear so Metro re-indexes on next start. Skipped in --run-only mode
+    # because that mode exists specifically to reuse warm caches.
+    echo "Clearing Metro / haste / watchman caches..."
+    rm -rf "$TMPDIR"/metro-* "$TMPDIR"/haste-map-* 2>/dev/null
+    watchman watch-del-all >/dev/null 2>&1 || true
 else
     echo "Running from $PWD for: $PLATFORM (skipping rebuild)"
 fi
 
-# Filter noisy iOS log messages (handles multi-line messages, see script for patterns).
-# No pseudo-TTY wrapper — the filter uses block suppression to catch continuation lines
-# from messages that the log streamer splits when piped.
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-IOS_LOG_FILTER="node $SCRIPT_DIR/filter-ios-logs.js $DEBUG_LOGS"
-
 if [[ "$PLATFORM" == "ios" ]]; then
     if [[ -n "$IOS_DEVICE_ID" ]]; then
-        npm run ios -- --device "$IOS_DEVICE_ID" 2>&1 | $IOS_LOG_FILTER
+        npm run ios -- --device "$IOS_DEVICE_ID"
     else
-        npm run ios 2>&1 | $IOS_LOG_FILTER
+        npm run ios
     fi
 else
     npm run android
