@@ -108,7 +108,7 @@
     "react-redux": "^9.2.0",
     "reduce-reducers": "^1.0.4",
     "setimmediate": "^1.0.5",
-    "terraso-client-shared": "github:techmatters/terraso-client-shared#d5b56867fc5d0ae4c671e0d5f3957b438f223212",
+    "terraso-client-shared": "github:techmatters/terraso-client-shared#2026-04-21.0",
     "use-debounce": "^10.0.6",
     "uuid": "^11.1.0",
     "yup": "^1.7.1"

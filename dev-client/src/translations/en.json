@@ -506,8 +506,8 @@
     "errors": {
         "generic": "Error saving Soil ID information.",
         "sync_conflict": {
-            "headline": "Project conflict",
-            "body": "This project has changed. Learn more and get support at the LandPKS website.",
+            "headline": "Something has changed",
+            "body": "Some of your information could not be loaded or saved. This may be due to a connection issue or a change made by another user.",
             "support_url": "https://landpks.terraso.org/help/synchronization-conflict/"
         }
     },
