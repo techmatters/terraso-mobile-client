@@ -40,11 +40,6 @@ describe('persistence middleware', () => {
   test('persistence middleware saves state to disk', () => {
     jest.isolateModules(() => {
       const {
-        kvStorage,
-      } = require('terraso-mobile-client/persistence/kvStorage');
-      kvStorage.setBool('FF_offline', true);
-
-      const {
         persistenceMiddleware,
         loadPersistedReduxState,
       } = require('terraso-mobile-client/store/persistence');
@@ -67,7 +62,6 @@ describe('persistence middleware', () => {
       const {
         kvStorage,
       } = require('terraso-mobile-client/persistence/kvStorage');
-      kvStorage.setBool('FF_offline', true);
 
       const {
         persistenceMiddleware,
@@ -86,31 +80,6 @@ describe('persistence middleware', () => {
       store.dispatch(increment());
 
       expect(loadPersistedReduxState()).toEqual({counter: 2});
-    });
-  });
-
-  test('persistence middleware does nothing without feature flag', () => {
-    jest.isolateModules(() => {
-      const {
-        kvStorage,
-      } = require('terraso-mobile-client/persistence/kvStorage');
-      kvStorage.setBool('FF_offline', false);
-
-      const {
-        persistenceMiddleware,
-        loadPersistedReduxState,
-      } = require('terraso-mobile-client/store/persistence');
-
-      const store = configureStore({
-        middleware: () => [persistenceMiddleware] as any,
-        reducer,
-      });
-
-      expect(loadPersistedReduxState()).toBe(undefined);
-
-      store.dispatch(increment());
-
-      expect(loadPersistedReduxState()).toBe(undefined);
     });
   });
 });

@@ -20,22 +20,9 @@ import {render} from '@testing/integration/utils';
 
 import * as terrasoApi from 'terraso-client-shared/terrasoApi/api';
 
-import {FeatureFlagName} from 'terraso-mobile-client/config/featureFlags';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {SiteSettingsScreen} from 'terraso-mobile-client/screens/SiteSettingsScreen/SiteSettingsScreen';
 import {AppState as ReduxAppState} from 'terraso-mobile-client/store';
-
-jest.mock('terraso-mobile-client/config/featureFlags', () => {
-  const actual = jest.requireActual(
-    'terraso-mobile-client/config/featureFlags',
-  );
-  return {
-    ...actual,
-    isFlagEnabled: (flag: FeatureFlagName) => {
-      if (flag === 'FF_offline') return true;
-    },
-  };
-});
 
 jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => {
   return {

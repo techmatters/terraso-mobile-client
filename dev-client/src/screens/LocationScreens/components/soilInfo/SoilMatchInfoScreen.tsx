@@ -27,7 +27,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -98,7 +97,6 @@ export const SiteSoilMatchInfoScreen = ({
               />
               <SiteRoleContextProvider siteId={siteId}>
                 <SiteScoreInfoContent
-                  siteId={siteId}
                   coords={coords}
                   dataRegion={dataRegion}
                   siteMatch={soilMatch}
@@ -106,9 +104,7 @@ export const SiteSoilMatchInfoScreen = ({
               </SiteRoleContextProvider>
             </ScreenContentSection>
           </ScrollView>
-          <RestrictByFlag flag="FF_select_soil">
-            <RateSoilMatchFabWithSheet siteId={siteId} soilMatch={soilMatch} />
-          </RestrictByFlag>
+          <RateSoilMatchFabWithSheet siteId={siteId} soilMatch={soilMatch} />
         </ScreenScaffold>
       )}
     </ScreenDataRequirements>

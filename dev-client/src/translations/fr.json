@@ -78,8 +78,7 @@
             "confirm_removal_body": "Cette action ne peut pas être annulée.",
             "min_length_error": "Doit contenir au moins {{min}} caractères",
             "placeholder_text": "Commencez à taper votre note…",
-            "pinned_note": "Note épinglée",
-            "offline": "La création et la modification de notes sont uniquement disponibles en ligne."
+            "pinned_note": "Note épinglée"
         },
         "search": {
             "placeholder": "Rechercher des sites",
@@ -151,7 +150,6 @@
                 "offline": "Les correspondances de sol seront mises à jour lorsque vous serez en ligne.",
                 "improve_hint": "Améliorer les correspondances",
                 "improve_description": "Ces correspondances sont basées uniquement sur les cartes des sols. Pour améliorer les résultats, veuillez saisir vos observations sur ce site (voir la section « Observations sur le site » ci-dessous).",
-                "selector": "C'est le bon sol",
                 "selected": "Sol sélectionné",
                 "rate": {
                     "fab": "Évaluer la correspondance",
@@ -224,10 +222,7 @@
                 "offline": "Le score des propriétés du sol sera mis à jour lorsque vous serez en ligne."
             }
         },
-        "list_title_empty": "Créer un site",
-        "offline": {
-            "alert_body": "Les sites ne peuvent être créés qu'en ligne."
-        }
+        "list_title_empty": "Créer un site"
     },
     "projects": {
         "label": "Projet",

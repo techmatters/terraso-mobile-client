@@ -80,7 +80,6 @@ const whateverCoords = {latitude: 0, longitude: 0};
 test('renders expected components when US and has data + location match', () => {
   const screen = render(
     <SiteScoreInfoContent
-      siteId="site1"
       coords={whateverCoords}
       dataRegion="US"
       siteMatch={mockUSSiteDataMatch}
@@ -108,7 +107,6 @@ test('renders expected components when US and has data + location match', () => 
 test('renders expected components when Global and only has location match', () => {
   const screen = render(
     <SiteScoreInfoContent
-      siteId="site1"
       coords={whateverCoords}
       dataRegion="GLOBAL"
       siteMatch={mockGlobalSiteLocationMatch}

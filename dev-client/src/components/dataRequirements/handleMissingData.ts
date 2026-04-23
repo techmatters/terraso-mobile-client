@@ -17,7 +17,6 @@
 
 import {useCallback} from 'react';
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useSelector} from 'terraso-mobile-client/store';
@@ -31,13 +30,11 @@ const useShowSyncErrorUnlessDeleted = (missingEntityType?: string) => {
     if (missingEntityType === 'site' && siteDeletedByUser) {
       return;
     }
-    if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError(
-        missingEntityType
-          ? {reason: 'missing_data', missingEntityType}
-          : {reason: 'other'},
-      );
-    }
+    syncNotifications.showError(
+      missingEntityType
+        ? {reason: 'missing_data', missingEntityType}
+        : {reason: 'other'},
+    );
   }, [syncNotifications, missingEntityType, siteDeletedByUser]);
 };
 

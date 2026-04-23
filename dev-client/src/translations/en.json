@@ -53,9 +53,6 @@
             "coords": "Enter coordinates, address, or search term in the map search bar",
             "summary": "A site lets you collect and save observations, learn more about the land and its potential, and share with others."
         },
-        "offline": {
-            "alert_body": "Sites can only be created while online."
-        },
         "create": {
             "title": "Create Site",
             "description": "Create a site here to save this location, enter observations, and see more detailed reports.",
@@ -135,7 +132,6 @@
                     "no": "No, it's different",
                     "unsure": "Not sure yet"
                 },
-                "selector": "This is the correct soil",
                 "selected": "Selected Soil"
             },
             "site_data": {
@@ -210,8 +206,7 @@
             "confirm_removal_body": "This action can’t be undone.",
             "min_length_error": "Must be at least {{min}} characters",
             "placeholder_text": "Start typing your note…",
-            "pinned_note": "Pinned Note",
-            "offline": "Creating and editing notes is only available online."
+            "pinned_note": "Pinned Note"
         },
         "search": {
             "placeholder": "Search sites",

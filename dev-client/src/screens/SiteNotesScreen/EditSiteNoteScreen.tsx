@@ -25,7 +25,6 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSyncNotificationContext} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {useUserCanEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -52,12 +51,10 @@ export const EditSiteNoteScreen = ({noteId, siteId}: Props) => {
       siteId: siteId,
       initialTab: 'NOTES' as SiteTabName,
     });
-    if (isFlagEnabled('FF_offline')) {
-      syncNotifications.showError({
-        reason: 'missing_data',
-        missingEntityType: 'note',
-      });
-    }
+    syncNotifications.showError({
+      reason: 'missing_data',
+      missingEntityType: 'note',
+    });
   }, [navigation, siteId, syncNotifications]);
   const handleInsufficientPermissions = usePopNavigationAndShowSyncError(
     'note_edit_permission',

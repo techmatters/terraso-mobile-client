@@ -78,8 +78,7 @@
             "confirm_removal_body": "Kitendo hiki hakiwezi kutenduliwa.",
             "min_length_error": "Lazima iwe na angalau herufi {{min}}",
             "placeholder_text": "Anza kuandika dokezo lako…",
-            "pinned_note": "Dokezo Lililobandikwa",
-            "offline": "Kuandika na kuhariri madokezo kunapatikana mtandaoni pekee."
+            "pinned_note": "Dokezo Lililobandikwa"
         },
         "search": {
             "placeholder": "Tafuta maeneo",
@@ -151,7 +150,6 @@
                 "offline": "Vipimo vya udongo vitasasishwa ukiwa mtandaoni.",
                 "improve_hint": "Boresha mechi",
                 "improve_description": "Vilinganisho hivi vinategemea ramani za udongo pekee. Ili kuboresha matokeo, ingiza uchunguzi katika eneo hili (tazama Uchunguzi wa Eneo hapa chini.)",
-                "selector": "Huu ndio udongo sahihi",
                 "selected": "Udongo Uliochaguliwa",
                 "rate": {
                     "fab": "Kadiria ulinganifu",
@@ -224,10 +222,7 @@
                 "offline": "Alama ya sifa za udongo itasasishwa ukiwa mtandaoni."
             }
         },
-        "list_title_empty": "Unda Eneo",
-        "offline": {
-            "alert_body": "Maeneo yanaweza kuundwa tu wakati wa mtandaoni."
-        }
+        "list_title_empty": "Unda Eneo"
     },
     "projects": {
         "label": "Mradi",

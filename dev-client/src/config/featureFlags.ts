@@ -22,20 +22,10 @@ import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 // 1) Add it to featureFlags here
 // 2) Add a FeatureFlagControl for it
 export const featureFlags = {
-  FF_offline: {
-    defaultIsEnabled: true,
-    defaultIsEnabledInDevelopment: true,
-    description: 'Enables support for offline mode',
-  },
   FF_testing: {
     defaultIsEnabled: false,
     defaultIsEnabledInDevelopment: true,
     description: 'Enables testing-support controls',
-  },
-  FF_select_soil: {
-    defaultIsEnabled: false,
-    defaultIsEnabledInDevelopment: true,
-    description: 'Enhanced soil selection (terraso-product#658)',
   },
 };
 

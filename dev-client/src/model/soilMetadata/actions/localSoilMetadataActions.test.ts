@@ -18,7 +18,6 @@
 import type {UserRatingEntry} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 
-import * as featureFlags from 'terraso-mobile-client/config/featureFlags';
 import {
   updateUserRatings,
   UpdateUserRatingsInput,
@@ -34,9 +33,6 @@ jest.mock('terraso-mobile-client/config/index', () => ({
     environment: 'test',
   },
 }));
-
-// Mock feature flags
-jest.mock('terraso-mobile-client/config/featureFlags');
 
 // Helper to create minimal AppState
 const createMockState = (siteId: string, metadata?: SoilMetadata): AppState => {
@@ -62,52 +58,6 @@ const createRatingInput = (
 });
 
 describe('updateUserRatings', () => {
-  let mockIsFlagEnabled: jest.MockedFunction<typeof featureFlags.isFlagEnabled>;
-
-  beforeEach(() => {
-    // Get fresh reference to mocked function for each test
-    mockIsFlagEnabled = featureFlags.isFlagEnabled as jest.MockedFunction<
-      typeof featureFlags.isFlagEnabled
-    >;
-
-    // Default: flags enabled
-    mockIsFlagEnabled.mockImplementation(
-      (flag: string) => flag === 'FF_offline' || flag === 'FF_select_soil',
-    );
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  describe('Feature Flag Tests', () => {
-    test('throws error when FF_offline is false', async () => {
-      mockIsFlagEnabled.mockImplementation(
-        (flag: string) => flag === 'FF_select_soil',
-      );
-
-      const state = createMockState('site-1');
-      const input = createRatingInput('site-1', 'soil-1', 'SELECTED');
-
-      await expect(updateUserRatings(input, state)).rejects.toThrow(
-        'This code path should only be available with FF_select_soil and FF_offline flags on',
-      );
-    });
-
-    test('throws error when FF_select_soil is false', async () => {
-      mockIsFlagEnabled.mockImplementation(
-        (flag: string) => flag === 'FF_offline',
-      );
-
-      const state = createMockState('site-1');
-      const input = createRatingInput('site-1', 'soil-1', 'SELECTED');
-
-      await expect(updateUserRatings(input, state)).rejects.toThrow(
-        'This code path should only be available with FF_select_soil and FF_offline flags on',
-      );
-    });
-  });
-
   describe('Initialization Tests', () => {
     test('creates new metadata when site has no existing data', async () => {
       const state = createMockState('unrelated-site');

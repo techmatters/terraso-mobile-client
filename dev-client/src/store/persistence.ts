@@ -21,7 +21,6 @@ import {merge, omit} from 'lodash/fp';
 import type {UserRatingEntry} from 'terraso-client-shared/graphqlSchema/graphql';
 import type {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {AppState} from 'terraso-mobile-client/store';
 import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
@@ -30,24 +29,20 @@ const PERSISTED_STATE_KEY = 'persisted-redux-state';
 export const persistenceMiddleware: Middleware<{}, AppState> =
   store => next => action => {
     const result = next(action);
-    if (isFlagEnabled('FF_offline')) {
-      // Clear persisted state on logout so next user starts fresh
-      if (isAction(action) && userLoggedOut.match(action)) {
-        kvStorage.remove(PERSISTED_STATE_KEY);
-      } else {
-        const newState = store.getState();
-        kvStorage.setObject(PERSISTED_STATE_KEY, newState);
-      }
+    // Clear persisted state on logout so next user starts fresh
+    if (isAction(action) && userLoggedOut.match(action)) {
+      kvStorage.remove(PERSISTED_STATE_KEY);
+    } else {
+      const newState = store.getState();
+      kvStorage.setObject(PERSISTED_STATE_KEY, newState);
     }
     return result;
   };
 
 export const loadPersistedReduxState = () => {
-  if (isFlagEnabled('FF_offline')) {
-    return (
-      kvStorage.getObject<Partial<AppState>>(PERSISTED_STATE_KEY) ?? undefined
-    );
-  }
+  return (
+    kvStorage.getObject<Partial<AppState>>(PERSISTED_STATE_KEY) ?? undefined
+  );
 };
 
 export const patchPersistedReduxState = (
