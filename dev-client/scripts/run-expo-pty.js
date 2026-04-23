@@ -7,7 +7,7 @@
  *
  * Exists so expo's stdout.isTTY check passes — which it needs for keyboard
  * shortcuts (r, m, j, shift+m, etc.) to work — while still letting us pipe
- * the output through filter-ios-logs.js and report-launch-time.js downstream.
+ * the output through filter-build-logs.js and report-launch-time.js downstream.
  *
  * Usage: node run-expo-pty.js <cmd> [args...]
  *   e.g.: node run-expo-pty.js npm run ios

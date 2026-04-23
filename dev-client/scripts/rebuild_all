@@ -97,7 +97,7 @@ else
 fi
 
 # Pipeline stages for iOS output:
-#   command → report-launch-time.js (timing) → filter-ios-logs.js (suppress)
+#   command → report-launch-time.js (timing) → filter-build-logs.js (suppress)
 # Timing sits before filter so the launch banner and marker creation happen
 # on the raw stream, not on already-filtered output. The filter passes the
 # banner through (it doesn't match any noise pattern).
@@ -108,7 +108,7 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 EXPO_PTY_WRAPPER="node $SCRIPT_DIR/run-expo-pty.js"
 LAUNCH_TIMER="node $SCRIPT_DIR/report-launch-time.js"
-IOS_LOG_FILTER="node $SCRIPT_DIR/filter-ios-logs.js $DEBUG_LOGS"
+LOG_FILTER="node $SCRIPT_DIR/filter-build-logs.js $DEBUG_LOGS"
 
 if [[ "$RUN_ONLY" == false ]]; then
     # Install phase. Pipe through the same timing+filter stages for consistency;
@@ -151,17 +151,17 @@ if [[ "$RUN_ONLY" == false ]]; then
         echo "Clearing Metro / haste / watchman caches..."
         rm -rf "$TMPDIR"/metro-* "$TMPDIR"/haste-map-* 2>/dev/null
         watchman watch-del-all >/dev/null 2>&1 || true
-    } 2>&1 | $LAUNCH_TIMER | $IOS_LOG_FILTER
+    } 2>&1 | $LAUNCH_TIMER | $LOG_FILTER
 else
     echo "Running from $PWD for: $PLATFORM (skipping rebuild)"
 fi
 
 if [[ "$PLATFORM" == "ios" ]]; then
     if [[ -n "$IOS_DEVICE_ID" ]]; then
-        $EXPO_PTY_WRAPPER npm run ios -- --device "$IOS_DEVICE_ID" | $LAUNCH_TIMER | $IOS_LOG_FILTER
+        $EXPO_PTY_WRAPPER npm run ios -- --device "$IOS_DEVICE_ID" | $LAUNCH_TIMER | $LOG_FILTER
     else
-        $EXPO_PTY_WRAPPER npm run ios | $LAUNCH_TIMER | $IOS_LOG_FILTER
+        $EXPO_PTY_WRAPPER npm run ios | $LAUNCH_TIMER | $LOG_FILTER
     fi
 else
-    $EXPO_PTY_WRAPPER npm run android | $LAUNCH_TIMER | $IOS_LOG_FILTER
+    $EXPO_PTY_WRAPPER npm run android | $LAUNCH_TIMER | $LOG_FILTER
 fi

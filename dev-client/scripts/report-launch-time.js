@@ -6,8 +6,8 @@
  * right after it. Touches $REBUILD_LAUNCH_MARKER on detection so rebuild_all's
  * EXIT trap can tell "launched" vs "build failed before launch".
  *
- * Runs between the build command and filter-ios-logs.js in the pipeline:
- *   <command> | node report-launch-time.js | node filter-ios-logs.js
+ * Runs between the build command and filter-build-logs.js in the pipeline:
+ *   <command> | node report-launch-time.js | node filter-build-logs.js
  *
  * Reads from env (set by rebuild_all):
  *   REBUILD_START           unix seconds when rebuild_all started

@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Filters noisy iOS simulator log messages from stdin.
+ * Filters noisy lines from iOS / Android build + runtime output on stdin.
+ * Covers xcodebuild + Metro + iOS simulator logs on the iOS side, and Gradle
+ * + Kotlin/Java compiler + Metro + logcat-like output on the Android side.
  *
  * All patterns use block suppression: when a line matches, it and all
  * subsequent continuation lines are suppressed until '}}' (end of an NSError
@@ -12,7 +14,7 @@
  * To add a new pattern, just add a regex to NOISE_PATTERNS. No need to worry
  * about whether the message might be split — block suppression handles it.
  *
- * Usage: some_command 2>&1 | node scripts/filter-ios-logs.js [--debug]
+ * Usage: some_command 2>&1 | node scripts/filter-build-logs.js [--debug]
  *   --debug: show all lines, prefixing filtered ones with     [filtered]
  */
 
