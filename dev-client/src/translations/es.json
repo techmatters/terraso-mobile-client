@@ -78,8 +78,7 @@
             "confirm_removal_body": "Esta acción no se puede deshacer.",
             "min_length_error": "Debe tener al menos {{min}} caracteres",
             "placeholder_text": "Empieza a escribir tu nota…",
-            "pinned_note": "Nota destacada",
-            "offline": "Debes estar en línea para crear y editar notas."
+            "pinned_note": "Nota destacada"
         },
         "search": {
             "placeholder": "Buscar sitios",
@@ -151,7 +150,6 @@
                 "offline": "Debes estar en línea para actualizar coincidencias de suelo.",
                 "improve_hint": "Mejorar coincidencias",
                 "improve_description": "Estas coincidencias se basan únicamente en los mapas de suelo. Para mejorar los resultados, ingresa observaciones en este sitio (ver Observaciones del sitio más abajo).",
-                "selector": "Este es el suelo correcto",
                 "selected": "Suelo seleccionado",
                 "rate": {
                     "fab": "Califica coincidencia",
@@ -224,10 +222,7 @@
                 "offline": "Debes estar en línea para actualizar el puntaje de las propiedades del suelo."
             }
         },
-        "list_title_empty": "Crear sitio",
-        "offline": {
-            "alert_body": "Debes estar en línea para crear sitios."
-        }
+        "list_title_empty": "Crear sitio"
     },
     "projects": {
         "label": "Proyecto",
