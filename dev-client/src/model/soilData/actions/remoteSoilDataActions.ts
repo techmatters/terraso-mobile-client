@@ -21,7 +21,6 @@ import {
   SoilDataPushInput,
   SoilDataPushInputEntry,
 } from 'terraso-client-shared/graphqlSchema/graphql';
-import * as remoteSoilData from 'terraso-client-shared/soilId/soilDataService';
 import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
@@ -36,16 +35,6 @@ import {
   SyncRecords,
 } from 'terraso-mobile-client/model/sync/records';
 import {SyncResults} from 'terraso-mobile-client/model/sync/results';
-
-/** @deprecated use pushUserData instead */
-export const pushSoilData = async (
-  unsyncedChanges: SyncRecords<SoilData, SoilDataPushFailureReason>,
-  unsyncedData: Record<string, SoilData | undefined>,
-): Promise<SyncResults<SoilData, SoilDataPushFailureReason>> => {
-  const input = unsyncedSoilDataToMutationInput(unsyncedChanges, unsyncedData);
-  const response = await remoteSoilData.pushSoilData(input);
-  return soilDataMutationResponseToResults(unsyncedChanges, response);
-};
 
 export const unsyncedSoilDataToMutationInput = (
   unsyncedChanges: SyncRecords<SoilData, unknown>,
