@@ -47,20 +47,50 @@ const NOISE_PATTERNS = [
   // iOS simulator app_launch_measurement telemetry that always fails to send
   // from the simulator. Harmless Apple-internal chatter.
   /Failed to send CA Event/,
+  // Android: Kotlin compiler warnings from 3rd-party libraries (node_modules).
+  // All upstream issues — can't fix locally. Own-code Kotlin warnings still
+  // surface because they don't match this path.
+  /^w: file:\/\/.*\/node_modules\//,
+  // Android: react-native-mmkv's self-promo lines on every build.
+  /^\[react-native-mmkv\]/,
+  // Android: javac info about 3rd-party library deprecations / unchecked ops.
+  /uses or overrides a deprecated API\.$/,
+  /uses unchecked or unsafe operations\.$/,
+  /^Note: Recompile with -Xlint:/,
+  /^Note: Some input files use/,
+  // Android: React Native codegen "no components in this lib" info.
+  /^No modules to process in combine-js-to-schema-cli/,
+  // Android: 3rd-party library AndroidManifest namespace deprecation (4-line
+  // block; block suppression terminates on the next `> Task :` line).
+  /package=".*" found in source AndroidManifest\.xml/,
+  // Android: manifest merger warns on every `tools:node="remove"` or
+  // `tools:replace` that's a no-op this build. Our app.config.ts's
+  // blockedPermissions list intentionally leaves dormant entries as
+  // insurance against future library updates (see commit message on this
+  // filter entry for details). The warning is by-design behavior, not a
+  // real problem. Two-line block: a path preamble then this detail line —
+  // the preamble above handles the first line via AndroidManifest.xml
+  // Warning: pattern.
+  /was tagged at AndroidManifest\.xml:\d+ to (remove|replace) other declarations but no other declaration present/,
 ];
 
 // A line matching this is the start of a new log entry, ending any suppressed
 // block. Covers iOS log prefixes ([Framework]), React Native prefixes
 // (LOG/WARN/ERROR/INFO/DEBUG), Metro bundler output (>), xcbeautify step
 // prefix (› = U+203A), Metro bundle progress (iOS ./index.js ▓...),
-// npm CLI output (any npm line), and blank lines.
-const NEW_ENTRY_PATTERN = /^\[|^ (LOG|WARN|ERROR|INFO|DEBUG) |^[>›]|^iOS |^npm |^\s*$/;
+// npm CLI output (any npm line), Kotlin compiler warnings (w:), and blank
+// lines.
+const NEW_ENTRY_PATTERN = /^\[|^ (LOG|WARN|ERROR|INFO|DEBUG) |^[>›]|^iOS |^Android |^npm |^w: |^\s*$/;
 
-// Some Xcode warnings have a generic banner (⚠️ with xcodeproj path) whose
-// identifying detail only arrives a few lines later. Buffer these until we
-// can see whether the following lines match a noise pattern; if so, drop the
-// whole block (banner + contents). Otherwise flush.
-const PREAMBLE_PATTERN = /^⚠️\s+\(ios\/.*\.xcodeproj:\)/;
+// Some warnings have a generic banner whose identifying detail only arrives
+// a few lines later. Buffer these until we can see whether the following
+// lines match a noise pattern; if so, drop the whole block (banner +
+// contents). Otherwise flush.
+//
+// Covers:
+// - Xcode project warnings: "⚠️  (ios/*.xcodeproj:)" preamble
+// - Android manifest merger warnings: "<path>AndroidManifest.xml Warning:"
+const PREAMBLE_PATTERN = /^⚠️\s+\(ios\/.*\.xcodeproj:\)|AndroidManifest\.xml[^ ]* Warning:$/;
 const PREAMBLE_MAX_LINES = 6;
 
 let inBlock = false;

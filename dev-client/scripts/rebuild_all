@@ -135,7 +135,12 @@ if [[ "$RUN_ONLY" == false ]]; then
         # yourself first to refresh the lock, then re-run rebuild_all.
         npm ci
         npm run prepare
-        npm run prebuild
+        # Pass --platform so prebuild only regenerates the target platform's
+        # native directory. Default is "all", which regenerates both ios/ and
+        # android/ (and runs `pod install`), wasteful when building one side.
+        # We still `rm -rf ios android` above regardless — safer to rebuild
+        # both from scratch than to end up with drifted native code.
+        npm run prebuild -- --platform "$PLATFORM"
 
         # Metro caches per-file transforms and a haste map of the project
         # layout, both under $TMPDIR. After a fresh `npm install` the cached
@@ -158,5 +163,5 @@ if [[ "$PLATFORM" == "ios" ]]; then
         $EXPO_PTY_WRAPPER npm run ios | $LAUNCH_TIMER | $IOS_LOG_FILTER
     fi
 else
-    npm run android
+    $EXPO_PTY_WRAPPER npm run android | $LAUNCH_TIMER | $IOS_LOG_FILTER
 fi

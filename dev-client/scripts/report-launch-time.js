@@ -23,7 +23,7 @@ let launched = false;
 
 readline.createInterface({input: process.stdin}).on('line', line => {
   process.stdout.write(line + '\n');
-  if (!launched && /^iOS Bundled/.test(line)) {
+  if (!launched && /^(iOS|Android) Bundled/.test(line)) {
     launched = true;
     const e = Math.floor(Date.now() / 1000) - start;
     const mins = Math.floor(e / 60);
