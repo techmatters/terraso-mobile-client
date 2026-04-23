@@ -20,24 +20,20 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {Divider} from 'terraso-mobile-client/components/Divider';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {LocationScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/LocationScoreDisplay';
 import {PropertiesDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesDisplay';
 import {PropertiesScoreDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/PropertiesScoreDisplay';
 import {ScoreInfoContainer} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/ScoreInfoContainer';
-import {SoilIdMatchSelector} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilIdMatchSelector';
 import {SoilInfoDisplay} from 'terraso-mobile-client/screens/LocationScreens/components/soilInfo/SoilInfoDisplay';
 
 type SiteScoreInfoContentProps = {
-  siteId: string;
   coords: Coords;
   dataRegion: DataRegion;
   siteMatch: SoilMatch;
 };
 
 export function SiteScoreInfoContent({
-  siteId,
   coords,
   dataRegion,
   siteMatch,
@@ -66,11 +62,7 @@ export function SiteScoreInfoContent({
       ) : (
         <PropertiesDisplay match={siteMatch} />
       )}
-      {isFlagEnabled('FF_select_soil') ? (
-        <Box height="16px" />
-      ) : (
-        <SoilIdMatchSelector siteId={siteId} match={siteMatch} />
-      )}
+      <Box height="16px" />
     </ScoreInfoContainer>
   );
 }

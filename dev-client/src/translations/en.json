@@ -132,7 +132,6 @@
                     "no": "No, it's different",
                     "unsure": "Not sure yet"
                 },
-                "selector": "This is the correct soil",
                 "selected": "Selected Soil"
             },
             "site_data": {

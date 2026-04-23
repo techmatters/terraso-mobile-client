@@ -19,7 +19,6 @@ import {createSlice, Draft} from '@reduxjs/toolkit';
 
 import {SoilMetadataPushFailureReason} from 'terraso-client-shared/graphqlSchema/graphql';
 import {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
-import * as soilMetadataService from 'terraso-client-shared/soilId/soilMetadataService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
 import * as localSoilMetadata from 'terraso-mobile-client/model/soilMetadata/actions/localSoilMetadataActions';
@@ -81,9 +80,6 @@ const soilMetadataSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(updateSoilMetadata.fulfilled, (state, action) => {
-      state.soilMetadata[action.meta.arg.siteId] = action.payload;
-    });
     builder.addCase(localUpdateUserRatings.fulfilled, (state, action) => {
       const siteId = action.meta.arg.siteId;
       state.soilMetadata[siteId] = action.payload;
@@ -98,12 +94,6 @@ const soilMetadataSlice = createSlice({
     });
   },
 });
-
-/** @deprecated with FF_select_soil on, use local update followed by global push instead to support offline **/
-export const updateSoilMetadata = createAsyncThunk(
-  'soilId/updateSoilMetadata',
-  soilMetadataService.updateSoilMetadata,
-);
 
 export const localUpdateUserRatings = createAsyncThunk(
   'soilId/localUpdateUserRatings',

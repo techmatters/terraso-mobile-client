@@ -25,7 +25,6 @@ import type {
 import {SoilMetadata} from 'terraso-client-shared/soilId/soilIdTypes';
 import {ThunkAPI} from 'terraso-client-shared/store/utils';
 
-import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {AppState} from 'terraso-mobile-client/store';
 
 // Expects that only one userRating will be updated at a time
@@ -46,11 +45,6 @@ export const updateUserRatings = async (
   input: UpdateUserRatingsInput,
   state: AppState,
 ): Promise<SoilMetadata> => {
-  if (!isFlagEnabled('FF_select_soil')) {
-    throw Error(
-      'This code path should only be available with FF_select_soil flag on',
-    );
-  }
   const data: SoilMetadata | undefined =
     state.soilMetadata.soilMetadata[input.siteId];
   const result = initializeResult(data);
