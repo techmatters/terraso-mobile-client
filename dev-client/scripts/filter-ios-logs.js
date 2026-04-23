@@ -63,16 +63,6 @@ const NEW_ENTRY_PATTERN = /^\[|^ (LOG|WARN|ERROR|INFO|DEBUG) |^[>›]|^iOS |^npm
 const PREAMBLE_PATTERN = /^⚠️\s+\(ios\/.*\.xcodeproj:\)/;
 const PREAMBLE_MAX_LINES = 6;
 
-// Rebuild timing: measured from when the filter starts (= when rebuild_all
-// starts, since it pipes through us from the top). Watch for the "iOS Bundled"
-// line (app launched) and the __REBUILD_EXIT__ sentinel (rebuild_all exiting
-// — means build failed before launch if we get the sentinel first). Ctrl+C
-// suppresses the sentinel, so interrupted runs stay silent.
-const FILTER_START_MS = Date.now();
-const LAUNCH_PATTERN = /^iOS Bundled/;
-const EXIT_SENTINEL = /^__REBUILD_EXIT__:(\d+)$/;
-let launched = false;
-
 let inBlock = false;
 let preambleBuffer = [];
 
@@ -96,35 +86,9 @@ function dropPreamble() {
   preambleBuffer = [];
 }
 
-function elapsedBanner(label) {
-  const secs = Math.floor((Date.now() - FILTER_START_MS) / 1000);
-  const mins = Math.floor(secs / 60);
-  const ss = String(secs % 60).padStart(2, '0');
-  emit('');
-  emit(`*** ${label} ${mins}m${ss}s ***`);
-  emit('');
-}
-
 const rl = readline.createInterface({input: process.stdin});
 
 rl.on('line', line => {
-  const exitMatch = line.match(EXIT_SENTINEL);
-  if (exitMatch) {
-    if (!launched) {
-      const code = Number(exitMatch[1]);
-      elapsedBanner(code === 0
-        ? 'Exited without launching after'
-        : 'Build failed after');
-    }
-    return;  // always swallow the sentinel
-  }
-  if (!launched && LAUNCH_PATTERN.test(line)) {
-    launched = true;
-    emit(line);
-    elapsedBanner('App launched in');
-    return;
-  }
-
   if (preambleBuffer.length > 0) {
     preambleBuffer.push(line);
     if (NOISE_PATTERNS.some(p => p.test(line))) {
