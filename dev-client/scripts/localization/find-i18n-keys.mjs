@@ -70,6 +70,24 @@ function* walk(dir) {
   }
 }
 
+// ---------- Dynamic key allowlist ----------
+// When reporting "extra" keys (in the catalog but not referenced in code),
+// any catalog key starting with one of these prefixes is treated as used.
+// Needed for keys constructed via patterns the regex extractors below can't
+// see — e.g. variable-based lookups, helper-function key builders, or keys
+// pulled from a lookup table:
+//
+//   const KEYS = { DRY: 'soil.color.photo.DRY', WET: 'soil.color.photo.WET' };
+//   t(KEYS[condition]);
+//
+// Template-literal prefixes (`soil.match_info.${x}`-style) are already caught
+// automatically by RE_TEMPLATE_PREFIX below; you only need to add to this
+// list when the automatic extraction misses something. Each prefix must end
+// with a dot so it targets a complete catalog namespace boundary.
+const DYNAMIC_KEY_PREFIXES = [
+  // e.g. 'soil.color.photo.',
+];
+
 // ---------- Regex extractors ----------
 const RE_KEY = /i18nKey\s*=\s*(['"])([^'"]+?)\1/g;
 const RE_LABEL = /labelI18nKey\s*=\s*(['"])([^'"]+?)\1/g;
@@ -77,6 +95,21 @@ const RE_URLKEY = /urlI18nKey\s*=\s*(['"])([^'"]+?)\1/g;
 const RE_T_FIRST_ARG = /\bt\s*\(\s*(['"])([^'"]+?)\1/g;
 const RE_I18NKEYS_BLOCK = /i18nKeys\s*=\s*\{\s*\[\s*([\s\S]*?)\s*\]\s*\}/g;
 const RE_STRING_IN_BLOCK = /(['"])([^'"]+?)\1/g;
+// Template-literal prefix: captures the static part of any `prefix.${var}...`
+// template literal up to the first ${. Used to discover dynamic key prefixes
+// the codebase relies on (e.g. `soil.match_info.${soilType}` → "soil.match_info.").
+const RE_TEMPLATE_PREFIX = /`([^`$]*?)\${/g;
+// A captured prefix is usable only if it looks like a catalog-key namespace:
+// starts with a letter, contains at least one dot (so "soil" alone is rejected
+// as too broad), and can end in either a dot or word chars — the latter covers
+// underscore-joined stems like `soil.texture.guide.prepare_details_${i}`.
+const IS_DYNAMIC_PREFIX = /^[a-zA-Z][\w.]*\.[\w]*$/;
+// Catalog-internal cross-reference: translation strings can invoke other
+// catalog keys via i18next's `$t(key, ...)` interpolation. The optional second
+// arg carries options; if it contains a `context` key, i18next resolves to
+// `key_<contextValue>` at runtime (e.g. `..._ENGLISH` / `..._METRIC`), so we
+// capture that signal too to register `key_` as a dynamic prefix.
+const RE_CATALOG_T_REF = /\$t\(\s*([\w.]+)\s*(,\s*\{[^}]*"context"[^}]*\})?/g;
 
 function lineNumberFromIndex(text, index) {
   let line = 1;
@@ -116,11 +149,26 @@ function collectFromI18nKeysBlock(text, file, pushFn) {
 // ---------- Scan codebase ----------
 const scanKeys = new Set();
 const occurrences = new Map(); // key -> [{file,line}]
+const scanPrefixes = new Set(); // dynamic-key prefixes found via template literals
 
 function addOccurrence(key, file, line) {
   scanKeys.add(key);
   if (!occurrences.has(key)) occurrences.set(key, []);
   occurrences.get(key).push({file, line});
+}
+
+function collectTemplatePrefixes(text) {
+  RE_TEMPLATE_PREFIX.lastIndex = 0;
+  let m;
+  while ((m = RE_TEMPLATE_PREFIX.exec(text))) {
+    const prefix = m[1];
+    if (prefix && IS_DYNAMIC_PREFIX.test(prefix)) {
+      scanPrefixes.add(prefix);
+    }
+    if (RE_TEMPLATE_PREFIX.lastIndex === m.index) {
+      RE_TEMPLATE_PREFIX.lastIndex++;
+    }
+  }
 }
 
 function processFile(filePath) {
@@ -135,6 +183,7 @@ function processFile(filePath) {
   collectFromRegex(RE_URLKEY, text, filePath, addOccurrence);
   collectFromRegex(RE_T_FIRST_ARG, text, filePath, addOccurrence);
   collectFromI18nKeysBlock(text, filePath, addOccurrence);
+  collectTemplatePrefixes(text);
 }
 
 for (const root of roots) {
@@ -148,7 +197,26 @@ for (const root of roots) {
 }
 
 scanKeys.delete('projects.sites.sort.'); // special case; not really a key
-const sortedScanKeys = Array.from(scanKeys).sort((a, b) => a.localeCompare(b));
+
+// Walk parsed catalog JSON string values and harvest `$t(key, ...)` refs.
+// Plain `$t(key)` → add key to scanKeys (it's a direct ref).
+// `$t(key, {context: ...})` → add `key_` to scanPrefixes only; the bare key
+// is typically never present in the catalog (only the `_<ctx>` variants are),
+// so treating it as "referenced" would surface false missing-key warnings.
+function collectCatalogTRefs(value) {
+  if (typeof value === 'string') {
+    RE_CATALOG_T_REF.lastIndex = 0;
+    let m;
+    while ((m = RE_CATALOG_T_REF.exec(value))) {
+      const key = m[1];
+      if (m[2]) scanPrefixes.add(key + '_');
+      else scanKeys.add(key);
+      if (RE_CATALOG_T_REF.lastIndex === m.index) RE_CATALOG_T_REF.lastIndex++;
+    }
+  } else if (value && typeof value === 'object') {
+    for (const v of Object.values(value)) collectCatalogTRefs(v);
+  }
+}
 
 // ---------- Catalog JSON extraction ----------
 // Rule: collect LEAF keys that have at least one parent (depth >= 2), joined with dots.
@@ -181,6 +249,7 @@ if (catalogPath) {
     catalogKeys = new Set(
       collectCatalogKeysFromObject(parsed).sort((a, b) => a.localeCompare(b)),
     );
+    collectCatalogTRefs(parsed);
     console.log(`\n--- translation file ${catalogPath} ---\n`);
   } catch (e) {
     console.error(
@@ -198,10 +267,33 @@ function setDiff(a, b) {
   return out;
 }
 
-const inCatalogNotScan = setDiff(catalogKeys, scanKeys);
+// A catalog key is covered by a dynamic prefix if any of the prefixes auto-
+// discovered from template literals OR explicitly allowlisted in
+// DYNAMIC_KEY_PREFIXES is a prefix of the key.
+function isCoveredByDynamicPrefix(key) {
+  for (const p of scanPrefixes) if (key.startsWith(p)) return true;
+  for (const p of DYNAMIC_KEY_PREFIXES) if (key.startsWith(p)) return true;
+  return false;
+}
+
+// Raw diff (pre-filter) — useful to distinguish "truly orphaned" from
+// "covered by a dynamic prefix" in output/JSON.
+const inCatalogNotScanRaw = setDiff(catalogKeys, scanKeys);
+const inCatalogNotScan = inCatalogNotScanRaw.filter(
+  k => !isCoveredByDynamicPrefix(k),
+);
+const inCatalogCoveredByPrefix = inCatalogNotScanRaw.filter(
+  isCoveredByDynamicPrefix,
+);
 const inScanNotCatalog = setDiff(scanKeys, catalogKeys);
 
 // ---------- Output ----------
+// Sorted after catalog parsing so $t()-discovered refs are included.
+const sortedScanKeys = Array.from(scanKeys).sort((a, b) => a.localeCompare(b));
+const sortedScanPrefixes = Array.from(scanPrefixes).sort((a, b) =>
+  a.localeCompare(b),
+);
+
 if (jsonOutput) {
   const out = {
     scan: {
@@ -210,6 +302,10 @@ if (jsonOutput) {
       occurrences: Object.fromEntries(
         sortedScanKeys.map(k => [k, occurrences.get(k) ?? []]),
       ),
+      dynamicPrefixes: {
+        fromTemplates: sortedScanPrefixes,
+        allowlisted: [...DYNAMIC_KEY_PREFIXES],
+      },
     },
     catalog: catalogPath
       ? {
@@ -221,6 +317,7 @@ if (jsonOutput) {
     diff: catalogPath
       ? {
           inCatalogNotScan: inCatalogNotScan,
+          inCatalogCoveredByPrefix: inCatalogCoveredByPrefix,
           inScanNotCatalog: inScanNotCatalog,
         }
       : null,
@@ -228,15 +325,27 @@ if (jsonOutput) {
   console.log(JSON.stringify(out, null, 2));
 } else {
   console.log(`Found ${sortedScanKeys.length} keys in source.`);
+  console.log(
+    `Found ${sortedScanPrefixes.length} dynamic key prefixes (template literals)` +
+      (DYNAMIC_KEY_PREFIXES.length
+        ? ` + ${DYNAMIC_KEY_PREFIXES.length} allowlisted.`
+        : '.'),
+  );
   if (catalogPath) {
     console.log(`Found ${catalogKeys.size} keys in ${catalogPath}`);
 
     console.log(
-      `Found ${inCatalogNotScan.length} keys in ${catalogPath} not in source`,
+      `Found ${inCatalogNotScan.length} keys in ${catalogPath} not referenced (likely unused)`,
     );
     console.log('  to see the list: npm run check-i18n -- --extras ');
     if (showKeysInFileNotSource) {
       inCatalogNotScan.forEach(k => console.log(`  '${k}'`));
+    }
+
+    if (inCatalogCoveredByPrefix.length) {
+      console.log(
+        `(${inCatalogCoveredByPrefix.length} additional keys covered by dynamic prefixes — treated as used.)`,
+      );
     }
 
     console.log(
