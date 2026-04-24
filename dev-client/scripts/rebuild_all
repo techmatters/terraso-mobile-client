@@ -1,6 +1,17 @@
 #!/bin/bash
 
-# Usage: rebuild_all [--run-only] [--debug-logs] <ios|android>
+# pipefail: make piped commands' exit codes propagate, so `npm ci | timer |
+# filter` returns non-zero when npm ci fails. Needed for the EXIT trap's
+# "Build failed after Xs" detection to see the real exit code.
+set -o pipefail
+
+print_usage() {
+    echo "Usage:"
+    echo "  npm run rebuild-all-ios        # shortcut, no flags"
+    echo "  npm run rebuild-all-android    # shortcut, no flags"
+    echo "  npm run rebuild-all -- [--run-only] [--debug-logs] <ios|android>"
+    echo "  bash scripts/rebuild_all [--run-only] [--debug-logs] <ios|android>"
+}
 
 RUN_ONLY=false
 DEBUG_LOGS=""
@@ -8,7 +19,7 @@ while [[ "$1" == --* ]]; do
     case "$1" in
         --run-only) RUN_ONLY=true; shift ;;
         --debug-logs) DEBUG_LOGS="--debug"; shift ;;
-        *) echo "Unknown option: $1"; exit 1 ;;
+        *) echo "Unknown option: $1"; print_usage; exit 1 ;;
     esac
 done
 
@@ -16,9 +27,59 @@ PLATFORM="$1"
 
 # Validate argument
 if [[ "$PLATFORM" != "ios" && "$PLATFORM" != "android" ]]; then
-    echo "Usage: rebuild_all [--run-only] [--debug-logs] <ios|android>"
+    print_usage
     exit 1
 fi
+
+# Timing: report-launch-time.js (in the pipeline) prints "App launched in Xs"
+# when Metro bundles, and touches $REBUILD_LAUNCH_MARKER. On script exit, if
+# the marker wasn't created and we weren't Ctrl+C'd, print "Build failed
+# after Xs" from the EXIT trap. mktemp -u generates a unique path without
+# creating the file — "file exists" is the reliable launch signal.
+REBUILD_START=$(date +%s)
+REBUILD_LAUNCH_MARKER=$(mktemp -u -t rebuild-all.XXXX)
+export REBUILD_START REBUILD_LAUNCH_MARKER
+SIGINT_FIRED=0
+
+fmt_elapsed() {
+    local e=$(( $(date +%s) - REBUILD_START ))
+    printf '%dm%02ds' $((e / 60)) $((e % 60))
+}
+
+# Metro and xcodebuild are spawned as detached process groups by the RN CLI,
+# so Ctrl+C on the pipeline leaves them running. Clean them up on signal/exit.
+# (Pipeline scripts exit naturally on stdout EOF when the script ends.)
+cleanup() {
+    SIGINT_FIRED=1
+    trap - INT TERM EXIT
+    echo ""
+    echo "Cleaning up Metro / xcodebuild..."
+    pids=$(lsof -ti :8081 2>/dev/null)
+    [ -n "$pids" ] && kill $pids 2>/dev/null
+    pkill -f xcodebuild 2>/dev/null
+    rm -f "$REBUILD_LAUNCH_MARKER"
+    exit 130
+}
+trap cleanup INT TERM
+
+on_exit() {
+    local code=$?
+    if [[ "$SIGINT_FIRED" == 1 ]]; then
+        rm -f "$REBUILD_LAUNCH_MARKER"
+        return
+    fi
+    if [[ ! -f "$REBUILD_LAUNCH_MARKER" ]]; then
+        # Never saw "iOS Bundled" — build/bundle failed before launch.
+        echo ""
+        if [[ "$code" -ne 0 ]]; then
+            echo "*** Build failed after $(fmt_elapsed) ***"
+        else
+            echo "*** Exited without launching after $(fmt_elapsed) ***"
+        fi
+    fi
+    rm -f "$REBUILD_LAUNCH_MARKER"
+}
+trap on_exit EXIT
 
 # Ensure we're in dev-client directory
 if [[ "$PWD" == */dev-client ]]; then
@@ -35,36 +96,72 @@ else
     fi
 fi
 
+# Pipeline stages for iOS output:
+#   command → report-launch-time.js (timing) → filter-build-logs.js (suppress)
+# Timing sits before filter so the launch banner and marker creation happen
+# on the raw stream, not on already-filtered output. The filter passes the
+# banner through (it doesn't match any noise pattern).
+#
+# For `npm run ios` we additionally wrap in run-expo-pty.js so expo gets a
+# real TTY via node-pty — that keeps interactive keyboard shortcuts (r, m,
+# j, shift+m, etc.) working while still letting us filter the output.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+EXPO_PTY_WRAPPER="node $SCRIPT_DIR/run-expo-pty.js"
+LAUNCH_TIMER="node $SCRIPT_DIR/report-launch-time.js"
+LOG_FILTER="node $SCRIPT_DIR/filter-build-logs.js $DEBUG_LOGS"
+
 if [[ "$RUN_ONLY" == false ]]; then
-    echo "Building from $PWD for: $PLATFORM"
+    # Install phase. Pipe through the same timing+filter stages for consistency;
+    # timing stage never matches here (no "iOS Bundled" during install) but
+    # filter suppresses npm deprecation warnings etc.
+    {
+        echo "Building from $PWD for: $PLATFORM"
 
-    rm -rf node_modules ios android
+        # node_modules nuke is redundant with `npm ci` in the happy path (ci
+        # also wipes node_modules), but catches edge cases like aborted prior
+        # installs or locked files, and costs almost nothing.
+        rm -rf node_modules ios android
 
-    # Clear Gradle build cache (can cause stale artifact issues)
-    if [[ "$PLATFORM" == "android" ]]; then
-        echo "Clearing Gradle build cache..."
-        rm -rf ~/.gradle/caches/build-cache-1
-    fi
+        # Clear Gradle build cache (can cause stale artifact issues)
+        if [[ "$PLATFORM" == "android" ]]; then
+            echo "Clearing Gradle build cache..."
+            rm -rf ~/.gradle/caches/build-cache-1
+        fi
 
-    npm install
-    npm run prepare
-    npm run prebuild
+        # `npm ci` installs exactly what package-lock.json specifies and fails
+        # loudly if package.json has drifted from the lock — preferable for a
+        # clean-rebuild script, where we want reproducibility, not auto-
+        # reconcile. If you just edited package.json, run `npm install`
+        # yourself first to refresh the lock, then re-run rebuild_all.
+        npm ci
+        npm run prepare
+        # Pass --platform so prebuild only regenerates the target platform's
+        # native directory. Default is "all", which regenerates both ios/ and
+        # android/ (and runs `pod install`), wasteful when building one side.
+        # We still `rm -rf ios android` above regardless — safer to rebuild
+        # both from scratch than to end up with drifted native code.
+        npm run prebuild -- --platform "$PLATFORM"
+
+        # Metro caches per-file transforms and a haste map of the project
+        # layout, both under $TMPDIR. After a fresh `npm install` the cached
+        # resolutions don't match node_modules anymore, causing bundling to
+        # fail with "Unable to resolve module ..." for packages that actually
+        # exist. Clear so Metro re-indexes on next start. Skipped in --run-only
+        # mode because that mode exists specifically to reuse warm caches.
+        echo "Clearing Metro / haste / watchman caches..."
+        rm -rf "$TMPDIR"/metro-* "$TMPDIR"/haste-map-* 2>/dev/null
+        watchman watch-del-all >/dev/null 2>&1 || true
+    } 2>&1 | $LAUNCH_TIMER | $LOG_FILTER
 else
     echo "Running from $PWD for: $PLATFORM (skipping rebuild)"
 fi
 
-# Filter noisy iOS log messages (handles multi-line messages, see script for patterns).
-# No pseudo-TTY wrapper — the filter uses block suppression to catch continuation lines
-# from messages that the log streamer splits when piped.
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-IOS_LOG_FILTER="node $SCRIPT_DIR/filter-ios-logs.js $DEBUG_LOGS"
-
 if [[ "$PLATFORM" == "ios" ]]; then
     if [[ -n "$IOS_DEVICE_ID" ]]; then
-        npm run ios -- --device "$IOS_DEVICE_ID" 2>&1 | $IOS_LOG_FILTER
+        $EXPO_PTY_WRAPPER npm run ios -- --device "$IOS_DEVICE_ID" | $LAUNCH_TIMER | $LOG_FILTER
     else
-        npm run ios 2>&1 | $IOS_LOG_FILTER
+        $EXPO_PTY_WRAPPER npm run ios | $LAUNCH_TIMER | $LOG_FILTER
     fi
 else
-    npm run android
+    $EXPO_PTY_WRAPPER npm run android | $LAUNCH_TIMER | $LOG_FILTER
 fi
