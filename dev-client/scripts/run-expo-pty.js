@@ -64,9 +64,13 @@ const term = pty.spawn(cmd, cmdArgs, {
   env: process.env,
 });
 
-// Line-buffer PTY output. PTYs terminate lines with \r\n; strip the \r so
-// downstream pipeline stages (readline-based) see clean lines. Partial lines
-// (progress indicators with \r-only) stay in the buffer until \n arrives.
+// Line-buffer PTY output on \n only. Embedded \r characters (Metro's iOS
+// progress bars use bare \r to overwrite in place) are preserved inside the
+// line — the terminal at the end of the pipe interprets them as "cursor to
+// col 0" so progress bars render correctly as in-place overwrites.
+// Downstream scanners (report-launch-time.js) match substrings rather than
+// anchored line starts, so they still see "iOS Bundled" inside the line
+// even when it's preceded by accumulated progress frames.
 let buffer = '';
 term.onData(chunk => {
   buffer += chunk;

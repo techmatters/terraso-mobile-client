@@ -23,7 +23,10 @@ let launched = false;
 
 readline.createInterface({input: process.stdin}).on('line', line => {
   process.stdout.write(line + '\n');
-  if (!launched && /^(iOS|Android) Bundled/.test(line)) {
+  // Substring match (not anchored) so we still match when Metro's iOS
+  // progress bars have accumulated \r-overwrite frames before "iOS Bundled"
+  // within the same buffered line coming out of the PTY wrapper.
+  if (!launched && /(iOS|Android) Bundled/.test(line)) {
     launched = true;
     const e = Math.floor(Date.now() / 1000) - start;
     const mins = Math.floor(e / 60);
