@@ -20,6 +20,13 @@
 
 const readline = require('readline');
 
+// Defensive: force synchronous stdout in case this filter is ever invoked
+// as a non-terminal pipeline stage. When stdout is a TTY (the common case
+// in rebuild_all) Node already writes synchronously, so this is a no-op.
+if (process.stdout._handle && typeof process.stdout._handle.setBlocking === 'function') {
+  process.stdout._handle.setBlocking(true);
+}
+
 const debug = process.argv.includes('--debug');
 
 // Lines matching any of these start a suppressed block.
@@ -98,6 +105,16 @@ const PREAMBLE_MAX_LINES = 6;
 let inBlock = false;
 let preambleBuffer = [];
 
+// Metro (and some other tools) emit ANSI color codes when writing to a TTY,
+// which the PTY wrapper gives them. That means the raw line has codes like
+// "\x1b[1miOS\x1b[22m \x1b[32mBundled\x1b[39m ..." — anchored regexes like
+// ^\[ and substring matches like `[MapboxCommon]` still work sometimes by
+// coincidence, but ^iOS, ^ LOG, and similar miss. Strip CSI codes for all
+// pattern matching while still emitting the original (colored) line so the
+// terminal renders as intended.
+const ansiCsi = /\x1b\[[0-9;]*[a-zA-Z]/g;
+const stripAnsi = s => s.replace(ansiCsi, '');
+
 function emit(line) {
   process.stdout.write(line + '\n');
 }
@@ -121,9 +138,11 @@ function dropPreamble() {
 const rl = readline.createInterface({input: process.stdin});
 
 rl.on('line', line => {
+  const plain = stripAnsi(line);
+
   if (preambleBuffer.length > 0) {
     preambleBuffer.push(line);
-    if (NOISE_PATTERNS.some(p => p.test(line))) {
+    if (NOISE_PATTERNS.some(p => p.test(plain))) {
       dropPreamble();
       return;
     }
@@ -133,24 +152,24 @@ rl.on('line', line => {
     return;
   }
 
-  if (PREAMBLE_PATTERN.test(line)) {
+  if (PREAMBLE_PATTERN.test(plain)) {
     preambleBuffer.push(line);
     return;
   }
 
-  if (NOISE_PATTERNS.some(p => p.test(line))) {
+  if (NOISE_PATTERNS.some(p => p.test(plain))) {
     inBlock = true;
     suppress(line);
     return;
   }
 
   if (inBlock) {
-    if (line.includes('}}')) {
+    if (plain.includes('}}')) {
       inBlock = false;
       suppress(line);
       return;
     }
-    if (NEW_ENTRY_PATTERN.test(line)) {
+    if (NEW_ENTRY_PATTERN.test(plain)) {
       inBlock = false;
       // fall through to print
     } else {

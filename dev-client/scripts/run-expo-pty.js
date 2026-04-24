@@ -14,6 +14,16 @@
  *         node run-expo-pty.js npm run ios -- --device <id>
  */
 
+// Force synchronous writes to stdout so lines reach the downstream pipeline
+// stage (report-launch-time.js) in real time instead of queuing in Node's
+// async pipe buffer. Without this, low-volume build output can sit invisibly
+// in the buffer until something (a reload, another build step) generates
+// enough data to flush it. The _handle API isn't stable public API, so guard
+// defensively — if unavailable, we just fall back to async writes.
+if (process.stdout._handle && typeof process.stdout._handle.setBlocking === 'function') {
+  process.stdout._handle.setBlocking(true);
+}
+
 // node-pty ships prebuilt natives, but npm sometimes doesn't set the exec bit
 // on the bundled spawn-helper (seen on macOS arm64 + Node 25). Fix it up
 // before loading the module so we don't get a cryptic "posix_spawnp failed".

@@ -17,16 +17,32 @@
 const readline = require('readline');
 const fs = require('fs');
 
+// Force synchronous writes to stdout so lines reach the downstream filter
+// stage in real time instead of queuing in Node's async pipe buffer.
+// See the same guard in run-expo-pty.js for the full rationale.
+if (process.stdout._handle && typeof process.stdout._handle.setBlocking === 'function') {
+  process.stdout._handle.setBlocking(true);
+}
+
 const start = Number(process.env.REBUILD_START);
 const marker = process.env.REBUILD_LAUNCH_MARKER;
 let launched = false;
+
+// Metro colorizes its output when stdout is a TTY (which our PTY wrapper
+// provides). So "iOS Bundled ..." arrives with ANSI escape codes between
+// "iOS" and "Bundled" — the literal substring "iOS Bundled" doesn't exist
+// in the raw line even though it looks that way rendered. Strip CSI codes
+// for matching only; pass through the original line so the terminal still
+// renders colors.
+const ansiCsi = /\x1b\[[0-9;]*[a-zA-Z]/g;
+const stripAnsi = s => s.replace(ansiCsi, '');
 
 readline.createInterface({input: process.stdin}).on('line', line => {
   process.stdout.write(line + '\n');
   // Substring match (not anchored) so we still match when Metro's iOS
   // progress bars have accumulated \r-overwrite frames before "iOS Bundled"
   // within the same buffered line coming out of the PTY wrapper.
-  if (!launched && /(iOS|Android) Bundled/.test(line)) {
+  if (!launched && /(iOS|Android) Bundled/.test(stripAnsi(line))) {
     launched = true;
     const e = Math.floor(Date.now() / 1000) - start;
     const mins = Math.floor(e / 60);
