@@ -92,6 +92,10 @@ const DYNAMIC_KEY_PREFIXES = [
 const RE_KEY = /i18nKey\s*=\s*(['"])([^'"]+?)\1/g;
 const RE_LABEL = /labelI18nKey\s*=\s*(['"])([^'"]+?)\1/g;
 const RE_URLKEY = /urlI18nKey\s*=\s*(['"])([^'"]+?)\1/g;
+// Component-prop prefix: e.g. <TranslatedBulletList i18nKeyPrefix="welcome.next.bullet_" />.
+// The component resolves keys like `${prefix}1`, `${prefix}2`, … at runtime,
+// so register the captured string as a dynamic prefix.
+const RE_KEY_PREFIX = /i18nKeyPrefix\s*=\s*(['"])([^'"]+?)\1/g;
 const RE_T_FIRST_ARG = /\bt\s*\(\s*(['"])([^'"]+?)\1/g;
 const RE_I18NKEYS_BLOCK = /i18nKeys\s*=\s*\{\s*\[\s*([\s\S]*?)\s*\]\s*\}/g;
 const RE_STRING_IN_BLOCK = /(['"])([^'"]+?)\1/g;
@@ -149,7 +153,7 @@ function collectFromI18nKeysBlock(text, file, pushFn) {
 // ---------- Scan codebase ----------
 const scanKeys = new Set();
 const occurrences = new Map(); // key -> [{file,line}]
-const scanPrefixes = new Set(); // dynamic-key prefixes found via template literals
+const scanPrefixes = new Set(); // dynamic-key prefixes (template literals, i18nKeyPrefix props, catalog $t context refs)
 
 function addOccurrence(key, file, line) {
   scanKeys.add(key);
@@ -171,6 +175,16 @@ function collectTemplatePrefixes(text) {
   }
 }
 
+function collectKeyPrefixProps(text) {
+  RE_KEY_PREFIX.lastIndex = 0;
+  let m;
+  while ((m = RE_KEY_PREFIX.exec(text))) {
+    const prefix = m[2];
+    if (prefix) scanPrefixes.add(prefix);
+    if (RE_KEY_PREFIX.lastIndex === m.index) RE_KEY_PREFIX.lastIndex++;
+  }
+}
+
 function processFile(filePath) {
   let text;
   try {
@@ -184,6 +198,7 @@ function processFile(filePath) {
   collectFromRegex(RE_T_FIRST_ARG, text, filePath, addOccurrence);
   collectFromI18nKeysBlock(text, filePath, addOccurrence);
   collectTemplatePrefixes(text);
+  collectKeyPrefixProps(text);
 }
 
 for (const root of roots) {
@@ -326,7 +341,7 @@ if (jsonOutput) {
 } else {
   console.log(`Found ${sortedScanKeys.length} keys in source.`);
   console.log(
-    `Found ${sortedScanPrefixes.length} dynamic key prefixes (template literals)` +
+    `Found ${sortedScanPrefixes.length} dynamic key prefixes` +
       (DYNAMIC_KEY_PREFIXES.length
         ? ` + ${DYNAMIC_KEY_PREFIXES.length} allowlisted.`
         : '.'),
