@@ -108,6 +108,14 @@ const RE_TEMPLATE_PREFIX = /`([^`$]*?)\${/g;
 // as too broad), and can end in either a dot or word chars — the latter covers
 // underscore-joined stems like `soil.texture.guide.prepare_details_${i}`.
 const IS_DYNAMIC_PREFIX = /^[a-zA-Z][\w.]*\.[\w]*$/;
+// Bare key literal: any quoted string that *looks like* a dotted catalog key
+// (letter-start, at least one dot). Post-filtered against catalogKeys so only
+// real catalog keys get registered as referenced. Catches patterns the other
+// regexes miss — ternaries (`t(cond ? 'a.b' : 'c.d')`), lookup tables, custom
+// props like `label="slope.shape.info.concave"` where the component later
+// calls `t(label)`. Intentionally permissive: false matches against non-keys
+// are harmless because we intersect with catalogKeys.
+const RE_KEY_LIKE_LITERAL = /['"]([a-zA-Z][\w.]*\.[\w_]+)['"]/g;
 // Catalog-internal cross-reference: translation strings can invoke other
 // catalog keys via i18next's `$t(key, ...)` interpolation. The optional second
 // arg carries options; if it contains a `context` key, i18next resolves to
@@ -154,6 +162,7 @@ function collectFromI18nKeysBlock(text, file, pushFn) {
 const scanKeys = new Set();
 const occurrences = new Map(); // key -> [{file,line}]
 const scanPrefixes = new Set(); // dynamic-key prefixes (template literals, i18nKeyPrefix props, catalog $t context refs)
+const keyLikeLiterals = new Set(); // quoted dotted strings from source; intersected with catalogKeys post-walk
 
 function addOccurrence(key, file, line) {
   scanKeys.add(key);
@@ -185,6 +194,17 @@ function collectKeyPrefixProps(text) {
   }
 }
 
+function collectKeyLikeLiterals(text) {
+  RE_KEY_LIKE_LITERAL.lastIndex = 0;
+  let m;
+  while ((m = RE_KEY_LIKE_LITERAL.exec(text))) {
+    keyLikeLiterals.add(m[1]);
+    if (RE_KEY_LIKE_LITERAL.lastIndex === m.index) {
+      RE_KEY_LIKE_LITERAL.lastIndex++;
+    }
+  }
+}
+
 function processFile(filePath) {
   let text;
   try {
@@ -199,6 +219,7 @@ function processFile(filePath) {
   collectFromI18nKeysBlock(text, filePath, addOccurrence);
   collectTemplatePrefixes(text);
   collectKeyPrefixProps(text);
+  collectKeyLikeLiterals(text);
 }
 
 for (const root of roots) {
@@ -265,6 +286,10 @@ if (catalogPath) {
       collectCatalogKeysFromObject(parsed).sort((a, b) => a.localeCompare(b)),
     );
     collectCatalogTRefs(parsed);
+    // Promote source-file bare-key literals to scanKeys iff they're real keys.
+    for (const lit of keyLikeLiterals) {
+      if (catalogKeys.has(lit)) scanKeys.add(lit);
+    }
     console.log(`\n--- translation file ${catalogPath} ---\n`);
   } catch (e) {
     console.error(
