@@ -25,8 +25,6 @@
         "placeholder": "Tafuta ramani"
     },
     "site": {
-        "progress": "Maendeleo: {{progress}}",
-        "members": "{{members}} Wanachama",
         "coords": "{{lat}}, {{long}}",
         "empty": {
             "info": "<bold>Njia tatu za kuunda eneo:</bold>\n",
@@ -38,36 +36,20 @@
         "create": {
             "title": "Unda Eneo",
             "description": "Unda eneo hapa ili kuhifadhi eneo hili, kuingiza uchunguzi, na kuona ripoti za kina zaidi.",
-            "gps": "Tumia eneo langu la sasa (GPS)",
-            "pin": "Tumia pini ya ramani",
-            "manual": "Ingiza viwianishi",
             "latitude": "Latitudo",
             "longitude": "Longitudo",
-            "button_label": "Unda Eneo Hapa",
             "name_label": "Jina la Eneo",
             "location_label": "Mahali pa Eneo",
             "location_accuracy": "Usahihi wa GPS: {{accuracyM}} m",
             "add_to_project_label": "Ongeza kwenye Mradi",
             "add_to_project_caption": "Mradi",
-            "add_to_project_tooltip": "Eneo hilo litarithi mipangilio ya mradi, ikiwa ni pamoja na mahitaji ya ukusanyaji wa data na wanachama wa timu. Unda miradi mipya kwa kutumia kichupo cha Miradi katika urambazaji wa chini.",
-            "privacy_tooltip": "Miradi ya umma itasawazisha data na milango ya data ya umma. ",
-            "privacy_tooltip_link": "Pata maelezo zaidi"
+            "add_to_project_tooltip": "Eneo hilo litarithi mipangilio ya mradi, ikiwa ni pamoja na mahitaji ya ukusanyaji wa data na wanachama wa timu. Unda miradi mipya kwa kutumia kichupo cha Miradi katika urambazaji wa chini."
         },
         "dashboard": {
             "privacy": "Faragha ya Data",
-            "team_button": "Timu",
-            "transfer_label": "Uhamisho hadi Mradi",
-            "copy_download_link_button": "Nakili kiungo cha kupakua eneo",
-            "archive_button": "Hifadhi eneo hili",
-            "archive_button_help_text": "Weka alama kwenye eneo hili kwa ajili ya kusoma pekee",
             "delete_button": "Futa eneo hili",
-            "location_accuracy": "Usahihi wa Eneo",
             "default_title": "Pini ya Muda",
-            "speed_dial": {
-                "note_label": "DOKEZO",
-                "photo_label": "PICHA",
-                "bedrock_label": "MWAMBA"
-            }
+            "speed_dial": {}
         },
         "notes": {
             "title": "Vidokezo vya Eneo",
@@ -105,12 +87,10 @@
             "NOTES": "Vidokezo"
         },
         "list_title": "Orodha ya Maeneo",
-        "last_updated": "Ilibadilishwa Mara ya Mwisho: {{date}} na {{name}}",
         "more_info": "Pata maelezo zaidi",
         "your_location": "Eneo lako",
         "soil_id_prediction": "Kitambulisho cha Udongo Kinacholingana Zaidi",
         "ecological_site_prediction": "Ulinganisho Bora wa Eneo la Kiikolojia",
-        "annual_precip_avg": "Wastani wa mvua kwa mwaka",
         "elevation_label": "Mwinuko",
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "haijulikani",
@@ -227,8 +207,6 @@
     },
     "projects": {
         "label": "Mradi",
-        "title": "Miradi",
-        "header": "Miradi",
         "none": {
             "header": "Huna miradi yoyote.",
             "info": "Miradi hukuruhusu kupanga maeneo, kuweka mahitaji, na kusimamia wanachama wa timu."
@@ -248,12 +226,7 @@
             "export": "Hamisha"
         },
         "inputs": {
-            "units": {
-                "heading": "Vitengo vya Vipimo",
-                "a11yLabel": "vitengo vya vipimo",
-                "english": "Kiingereza (inchi, futi, pauni)",
-                "metric": "Kipimo (cm, m, kg)"
-            },
+            "units": {},
             "instructions": {
                 "title": "Dokezo Lililobandikwa",
                 "description": "Maudhui haya yataonyeshwa juu ya sehemu ya Vidokezo ya kila eneo katika mradi huu.",
@@ -276,12 +249,7 @@
                     "confirm": "Badilisha"
                 }
             },
-            "soil_source": {
-                "heading": "Chanzo Chaguo-Msingi cha Taarifa za Udongo",
-                "survey": "Utafiti wa Udongo wa USDA NRCS",
-                "grids": "SoilGrids",
-                "a11yLabel": "chanzo chaguo-msingi cha taarifa za udongo"
-            }
+            "soil_source": {}
         },
         "team": {
             "add": "Ongeza mwanachama wa timu",
@@ -294,27 +262,15 @@
             }
         },
         "settings": {
-            "cancel": "Ghairi",
-            "archive": "Hifadhi mradi huu kwenye kumbukumbu",
             "delete": "Futa mradi huu",
-            "copy_download_link": "Nakili kiungo cha kupakua mradi",
-            "download_link_description": "Faili iliyofungwa ya mali zote za mradi ikijumuisha faili ya .csv ya data ya maeneo, madokezo ya sehemu, kumbukumbu za ukaguzi, na picha. Mtu yeyote aliye na kiungo hiki anaweza kuona mali zote.",
-            "archive_button": "Kumbukumbu",
-            "archive_button_prompt": "Hifadhi Mradi?",
-            "archive_description": "Mradi utahamishiwa kwenye Miradi Iliyohifadhiwa, na kuifanya iwe ya kusoma pekee. Wajumbe wa timu wanaweza kufikia data, na wasimamizi wa miradi wanaweza kuirejesha wakati wowote. Miradi ya umma iliyohifadhiwa itabaki kuonekana kwenye milango ya data.",
             "delete_button": "Futa",
             "delete_button_prompt": "Ungependa kufuta mradi?",
             "delete_description": "Hii itafuta kabisa mradi {{projectName}} na uchunguzi wa maeneo yake. Hii haiwezi kutenduliwa.\n\nWasimamizi wa miradi wana chaguo la kuhamisha maeneo kutoka mradi huu ili kuweka uchunguzi wa maeneo."
         },
         "sites": {
-            "add": "Ongeza maeneo",
             "transfer": "Hamisha Maeneo",
             "transfer_offline": "Uhamisho wa tovuti unapatikana tu ukiwa mtandaoni.",
-            "create": "Unda Maeneo",
-            "search": {
-                "placeholder": "Tafuta",
-                "accessility_label": "Tafuta maeneo"
-            },
+            "search": {},
             "sort": {
                 "label": "Panga maeneo kulingana na:",
                 "nameAsc": "Jina la eneo (A hadi Z)",
@@ -323,8 +279,6 @@
             },
             "empty_viewer": "Mradi huu hauna maeneo bado.",
             "empty_contributor": "Unaweza kuhamisha maeneo yaliyopo ya LandPKS Soil ID kwenye mradi huu. Unaweza pia kuunda maeneo mapya kwenye kichupo cha Sites na kuyaongeza kwenye mradi huu.",
-            "go_to": "Nenda kwenye Eneo",
-            "audit_log": "Kumbukumbu ya Ukaguzi",
             "remove_site": "Ondoa kwenye Mradi",
             "delete_site": "Futa Eneo",
             "delete_site_modal": {
@@ -352,14 +306,10 @@
             "lastModAsc": "Ilibadilishwa Mara ya Mwisho (ya hivi karibuni)",
             "lastModDesc": "Ilibadilishwa Mara ya Mwisho (sio ya hivi karibuni)"
         },
-        "learn_more": "Pata maelezo zaidi kuhusu kutumia miradi",
         "create_button": "Unda mradi",
-        "go_to": "Nenda kwenye Mradi",
         "search_label": "Ingiza maandishi ili kuchuja miradi kwa majina",
         "role_filter_label": "Chuja miradi kwa majukumu",
-        "edit": {
-            "input_header": "Mipangilio ya Jumla ya Mradi"
-        },
+        "edit": {},
         "add_user": {
             "heading": "Ongeza Mwanachama wa Timu",
             "help_text": "Ingiza anwani ya barua pepe ya akaunti ya Terraso ya mtu huyo. Akaunti ya Terraso inaweza kuundwa kwa kusakinisha programu ya LandPKS Soil ID na kuingia.",
@@ -405,15 +355,10 @@
         "unknown_version": "Toleo la programu lisilo na lebo {{environment}}",
         "select_language": "Lugha: {{language}}"
     },
-    "badge": {
-        "new": "Mpya"
-    },
+    "badge": {},
     "general": {
-        "sites": "maeneo",
-        "users": "watumiaji",
         "save": "Hifadhi",
         "use": "Tumia",
-        "details": "Maelezo",
         "apply": "Tumia",
         "role": {
             "MANAGER": "Meneja",
@@ -423,7 +368,6 @@
         "cancel": "Ghairi",
         "copied": "Imenakiliwa!",
         "add": "Ongeza",
-        "submit": "Wasilisha",
         "change": "Badilisha",
         "done": "Imekamilika",
         "required": "Inahitajika",
@@ -431,19 +375,13 @@
         "no": "Hapana",
         "next": "Inayofuata",
         "proceed": "Endelea",
-        "last_modified": "Ilibadilishwa Mara ya Mwisho",
         "last_modified_by": "ilibadilishwa mara ya mwisho {{user}}, {{date}}",
         "select_all": "Chagua Zote",
         "you_name": "{{name}} (wewe)",
         "email_placeholder": "jina@domain.com",
         "email_label": "Anwani ya barua pepe",
-        "profile_image_alt": "Picha ya wasifu",
-        "measurement_units": {
-            "METRIC": "Kipimo",
-            "ENGLISH": "Kiingereza"
-        },
+        "measurement_units": {},
         "filter": {
-            "no_sort": "Hakuna",
             "no_role": "Hakuna",
             "no_project": "Hakuna"
         },
@@ -484,7 +422,6 @@
         "terms_of_service_link_text": "Sheria na Masharti"
     },
     "errors": {
-        "generic": "Hitilafu katika kuhifadhi taarifa za kitambulisho cha udongo.",
         "sync_conflict": {
             "headline": "Mgogoro wa mradi",
             "body": "Mradi huu umebadilika. Jifunze zaidi na upate usaidizi katika tovuti ya LandPKS.",
@@ -522,29 +459,21 @@
     },
     "geo": {
         "latitude": {
-            "inline": "latitudo",
             "title": "Latitudo"
         },
         "longitude": {
-            "inline": "longitudo",
             "title": "Longitudo"
         },
         "elevation": {
-            "inline": "mwinuko",
             "title": "Mwinuko"
         }
     },
     "soil": {
-        "bedrock": "Bedrock",
         "loading": "Inapakia…",
         "error": "Hitilafu",
         "surface": "Uso wa Udongo",
         "pit": "Shimo la Udongo",
-        "data": {
-            "rockFragmentVolume": "Kipande cha mwamba",
-            "texture": "Umbile",
-            "colorValue": "Rangi"
-        },
+        "data": {},
         "depth": {
             "error": {
                 "overlaps": "Viingiliano vilivyopo",
@@ -656,9 +585,6 @@
             },
             "guide_intro": "Hujui darasa la umbile? Tumia mwongozo wa hatua kwa hatua.",
             "use_guide_label": "Mwongozo wa Matumizi",
-            "clay_title": "Asilimia ya Mfinyanzi",
-            "clay_label": "Asilimia ya mfinyanzi",
-            "clay_help": "0–100%",
             "fragment_title": "Kiasi cha Kipande cha Mwamba",
             "rockfragment": {
                 "VOLUME_0_1": "0–1%",
@@ -765,7 +691,6 @@
         "soil_id": "Kitambulisho cha Udongo",
         "add_depth_label": "Ongeza Kina",
         "project_settings": {
-            "pit_required_label": "Shimo la udongo linahitajika",
             "required_data_title": "Mahitaji ya Uangalizi"
         },
         "required_method": "{{method}} (inahitajika)",
@@ -1733,8 +1658,6 @@
             "degree_placeholder": "Digrii",
             "slope_meter": "Kipima Mteremko",
             "camera_grant": "Toa Ruhusa ya Kamera",
-            "no_camera": "Hakuna Ufikiaji wa Kamera",
-            "no_camera_explanation": "Kwa matokeo bora zaidi, ruhusu LandPKS Soil ID itumie kamera yako katika Mipangilio",
             "select_labels": {
                 "FLAT": "Gorofa",
                 "FLAT_PERCENT": "0–2%",
@@ -1818,7 +1741,6 @@
     },
     "account": {
         "google_login": "Ingia ukitumia Google",
-        "apple_login": "Ingia ukitumia Apple",
         "microsoft_login": "Ingia ukitumia Microsoft"
     },
     "bottom_navigation": {
@@ -1828,9 +1750,7 @@
     },
     "listfilter": {
         "open_modal_label": "Sasisha vichujio vya orodha",
-        "num_filters_label": "Idadi ya vichujio vilivyotumika",
-        "clear_search_label": "Futa kichujio cha utafutaji",
-        "text_input_label": "Chuja orodha kwa ingizo la utafutaji"
+        "num_filters_label": "Idadi ya vichujio vilivyotumika"
     },
     "image": {
         "use_camera": "Tumia Kamera",
@@ -1859,28 +1779,16 @@
         "live_link": "Kiungo cha Moja kwa Moja",
         "reset_live_link": "Weka Kiungo cha Moja kwa Moja",
         "site_export_title": "Eneo la Kusafirisha Nje",
-        "site_export_description": "Pakua au shiriki data ya eneo hili.",
-        "site_export_button": "Hamisha Data ya Eneo",
-        "what_is_in_file": "Kuna nini kwenye faili?",
-        "loading": "Inapakia mipangilio ya kuhamisha...",
-        "downloading": "Inapakua...",
         "preparing_file": "Inaandaa faili ya {{resourceType}} kwa ajili ya {{name}}",
         "preparing_file_message": "Inaunda faili yako ya kuhamisha. Hii inaweza kuchukua muda...",
         "save_dialog_title": "Hifadhi Data ya LandPKS kwa {{name}}",
-        "save_error_title": "Imeshindwa Kuhifadhi",
-        "save_error_message": "Imeshindwa kuhifadhi faili: {{error}}",
         "share_title": "Usafirishaji wa Data ya LandPKS kwa Maeneo ya {{name}}",
         "share_subject": "Kiungo cha Maeneo ya LandPKS ya {{name}}",
-        "share_android_message": "Hamisha data ya {{resourceType}} kwa {{name}}:",
         "share_message_user": "Kiungo hiki kitajumuisha data yote ya maeneo kwa {{name}} ikijumuisha maeneo kutoka kwa miradi ya wanachama.",
         "share_message_project": "Kiungo hiki kitajumuisha data yote ya maeneo kutoka kwa mradi \"{{name}}\".",
         "share_message_site": "Kiungo hiki kitajumuisha data yote ya eneo \"{{name}}\".",
         "reset_links_title": "Ungependa kuweka upya kiungo cha moja kwa moja?",
         "reset_links_body": "Hii itavunja kiungo cha sasa cha moja kwa moja. Mtu yeyote aliye na kiungo kilichovunjika hataweza kufikia faili hizo.",
-        "create_token_error_title": "Imeshindwa Kuunda Kiungo",
-        "create_token_error_message": "Haikuweza kuunda kiungo cha kuhamisha. Tafadhali angalia muunganisho wako na ujaribu tena.",
-        "delete_token_error_title": "Imeshindwa Kuweka Kiungo Kipya",
-        "delete_token_error_message": "Haikuweza kuweka upya kiungo cha kuhamisha. Tafadhali angalia muunganisho wako na ujaribu tena.",
         "help": {
             "title": "Chaguo za Hamisha",
             "section_file_vs_link": "Faili au Kiungo",
@@ -1899,10 +1807,7 @@
     "file_download": {
         "error": {
             "unsupported_platform": "Kuhifadhi faili hakuhimiliwi kwenye mfumo huu.",
-            "no_storage_directory": "Hakuna saraka ya hifadhi inayopatikana.",
-            "sharing_unavailable": "Kushiriki hakupatikani kwenye kifaa hiki.",
             "save_canceled": "Hifadhi imeghairiwa.",
-            "no_directory_selected": "Hakuna saraka iliyochaguliwa.",
             "save_failed": "Haiwezi kuandika kwenye hifadhi.",
             "unknown": "Hitilafu isiyojulikana imetokea."
         }
