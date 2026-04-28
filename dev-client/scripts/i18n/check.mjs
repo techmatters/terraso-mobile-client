@@ -18,7 +18,7 @@
  */
 
 /*
- * The bundled i18n gate. Runs three checks in turn and aggregates results
+ * The bundled i18n gate. Runs four checks in turn and aggregates results
  * into ERRORS (block CI / pre-commit / poeditor-merge) and WARNINGS (printed
  * but non-blocking).
  *
@@ -26,17 +26,24 @@
  *                    — en.json has a key that no source file references       [WARNING]
  *   2. find-variables — non-en locale has different {{vars}} than en.json     [ERROR]
  *   3. missing-check  — non-en locale is missing a key present in en.json     [ERROR]
+ *   4. tk-placeholders — locale value still starts with "TK " (untranslated)  [WARNING]
  *
  * Usage:
  *   npm run i18n-check          # human-readable summary, exit 1 on any error
  *   npm run i18n-check -- --quiet   # only print on errors/warnings
  */
 
+import {readdirSync, readFileSync} from 'node:fs';
+import path from 'node:path';
+
+import {flatten} from 'flat';
+
 import {runScan} from './find-keys.mjs';
 import {runValidate} from './find-variables.mjs';
 import {runMissingCheck} from './missing-check.mjs';
 
-const CATALOG_PATH = 'src/translations/en.json';
+const TRANSLATIONS_DIR = 'src/translations';
+const CATALOG_PATH = path.join(TRANSLATIONS_DIR, 'en.json');
 const SOURCE_ROOT = '.';
 
 const args = process.argv.slice(2);
@@ -131,6 +138,59 @@ if (!QUIET) {
   console.log(
     `  checked ${lc} locale(s) for missing keys${allComplete ? ' — all complete' : ''}`,
   );
+}
+
+// ---------- 4. TK placeholders ----------
+// "TK <english>" is the placeholder convention used by i18n-fill-missing.
+// Normal during dev, but the app shouldn't ship with TK strings — translators
+// (or Claude review) replace them with real translations before release.
+header('TK placeholders');
+const tkPlaceholders = [];
+const tkByLocale = {};
+{
+  const files = readdirSync(TRANSLATIONS_DIR).filter(f => f.endsWith('.json'));
+  for (const f of files) {
+    const language = path.parse(f).name;
+    const flat = flatten(
+      JSON.parse(readFileSync(path.join(TRANSLATIONS_DIR, f), 'utf8')),
+    );
+    for (const [key, value] of Object.entries(flat)) {
+      if (typeof value === 'string' && value.startsWith('TK ')) {
+        tkPlaceholders.push({language, key, value});
+      }
+    }
+  }
+  for (const p of tkPlaceholders) {
+    tkByLocale[p.language] = (tkByLocale[p.language] || 0) + 1;
+  }
+}
+if (tkPlaceholders.length > 0) {
+  const breakdown = Object.entries(tkByLocale)
+    .sort()
+    .map(([l, n]) => `${l}: ${n}`)
+    .join(', ');
+  const sample = tkPlaceholders.slice(0, 10).map(p => {
+    const truncated =
+      p.value.length > 80 ? p.value.slice(0, 77) + '...' : p.value;
+    return `[${p.language}] '${p.key}': ${JSON.stringify(truncated)}`;
+  });
+  if (tkPlaceholders.length > sample.length) {
+    sample.push(`... and ${tkPlaceholders.length - sample.length} more`);
+  }
+  warnings.push({
+    title: `${tkPlaceholders.length} TK placeholder(s) awaiting real translation (${breakdown})`,
+    items: sample,
+    fix: [
+      'Normal during development; should not ship.',
+      'Run `npm run poeditor-merge` to upload TK values to POEditor (where',
+      'they appear marked fuzzy for translators), then merge again later',
+      'to pull real translations back. Or use Claude — see',
+      '  dev-client/docs/translation-review-prompt.md',
+    ].join('\n'),
+  });
+}
+if (!QUIET) {
+  console.log(`  found ${tkPlaceholders.length} TK placeholder(s)`);
 }
 
 // ---------- Output ----------
