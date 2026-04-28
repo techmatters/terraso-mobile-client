@@ -3,16 +3,17 @@
         "title": "კეთილი იყოს თქვენი მობრძანება LandPKS Soil ID-ში",
         "next": {
             "title": "რა არის შემდეგი?",
-            "subtitle": "მომავალი ვერსიები მოიცავს:",
-            "bullet_1": "შექმენით საიტები ოფლაინში",
-            "bullet_2": "შენიშვნების რედაქტირება ოფლაინში"
+            "bullet_1": "TK Soil pH"
         },
         "version_includes": {
             "title": "ეს ვერსია მოიცავს:",
-            "bullet_1": "მონაცემთა ექსპორტის ფუნქცია პროექტებისთვის, ინდივიდუალური საიტებისთვის და მომხმარებლისთვის ხილული ყველა საიტისთვის",
-            "bullet_2": "ენის ამომრჩევი",
-            "bullet_3": "ექსპერიმენტული თარგმანები ფრანგული და ქართული ენებისთვის",
-            "bullet_4": "ნიადაგის შეფასების ახალი გამოცდილება ნიადაგის უფრო მარტივი იდენტიფიცირებისთვის"
+            "bullet_1": "TK Offline: enabled site creation, edit site metadata and notes",
+            "bullet_2": "TK New language: Swahili",
+            "bullet_3": "TK Improved translations for Ukrainian, Georgian, and Spanish",
+            "bullet_4": "TK More descriptive error message for sync conflicts",
+            "bullet_5": "TK Improved experience of searching for coordinates on map",
+            "bullet_6": "TK Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data",
+            "bullet_7": "TK Fixed a bug where the color module would crash with overexposed photos"
         },
         "learn_more": "გაიგეთ მეტი და იყავით ინფორმირებული:",
         "link_text": "LandPKS ტერასოდან",

@@ -3,16 +3,17 @@
         "title": "Bienvenido a LandPKS Soil ID",
         "next": {
             "title": "¿Qué sigue?",
-            "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "Crear sitios sin conexión",
-            "bullet_2": "Editar notas sin conexión"
+            "bullet_1": "TK Soil pH"
         },
         "version_includes": {
             "title": "Esta versión incluye:",
-            "bullet_1": "Función de exportación de datos para proyectos, sitios individuales y todos los sitios visibles para el usuario",
-            "bullet_2": "Selector de idioma",
-            "bullet_3": "Traducciones experimentales para francés y georgiano",
-            "bullet_4": "Nueva experiencia de calificación de suelos para una identificación más sencilla"
+            "bullet_1": "TK Offline: enabled site creation, edit site metadata and notes",
+            "bullet_2": "TK New language: Swahili",
+            "bullet_3": "TK Improved translations for Ukrainian, Georgian, and Spanish",
+            "bullet_4": "TK More descriptive error message for sync conflicts",
+            "bullet_5": "TK Improved experience of searching for coordinates on map",
+            "bullet_6": "TK Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data",
+            "bullet_7": "TK Fixed a bug where the color module would crash with overexposed photos"
         },
         "learn_more": "Aprender más y mantenerte actualizado:",
         "link_text": "LandPKS de Terraso",
