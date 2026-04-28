@@ -36,6 +36,10 @@
  * Detects conflicts between local and POEditor changes since the last sync,
  * uploads local changes, downloads the merged result, and commits with a tag.
  *
+ * Runs `i18n-check` as a pre-flight: a real merge bails on any error,
+ * a `--dry-run` shows the findings and proceeds anyway so the user can
+ * still preview what would change.
+ *
  * Requires POEDITOR_API_TOKEN and POEDITOR_PROJECT_ID in the .env file.
  * Requires the file `locales/sync-tag` to contain the tag name of the last sync
  * (e.g. `translations/20260310T0109Z`). This tag must exist in git.
@@ -64,6 +68,8 @@ import path from 'path';
 import {diffWords} from 'diff';
 import gettextParser from 'gettext-parser';
 import {i18nextToPo} from 'i18next-conv';
+
+import {printChecks, runAllChecks} from './check.mjs';
 
 // POEditor rate-limits uploads to 1 per 20s (free) or 1 per 10s (paid).
 const UPLOAD_DELAY_MS = 21000;
@@ -620,6 +626,38 @@ async function main() {
       process.exit(1);
     }
     verbose('Working tree is clean.');
+  }
+
+  // -------------------------------------------------------
+  // Pre-flight: i18n-check
+  // -------------------------------------------------------
+  // Runs the same gate as `npm run i18n-check` / CI / pre-commit. Errors
+  // here mean the local state is broken in ways that would either fail CI
+  // immediately after this merge commits, or pollute POEditor with garbage.
+  // Better to bail before phases 1–2 do anything irreversible.
+  //
+  // Dry-run still runs the check but proceeds regardless — the user is
+  // exploring "what would happen", and a still-broken local state is part
+  // of that picture they want to see.
+  console.log('Pre-flight: running i18n-check...\n');
+  const checkResult = await runAllChecks();
+  printChecks(checkResult);
+  if (checkResult.errors.length > 0) {
+    if (DRY_RUN) {
+      console.log(
+        `\n(dry-run) i18n-check reported ${checkResult.errors.length} error group(s) — proceeding anyway so you can see what would change. A real merge would refuse to start.\n`,
+      );
+    } else {
+      console.error(
+        `\nRefusing to merge: i18n-check reported ${checkResult.errors.length} error group(s).`,
+      );
+      console.error(
+        'Fix the errors (or run `npm run i18n-check` for the full report) and re-run.',
+      );
+      process.exit(1);
+    }
+  } else {
+    console.log(`  i18n-check passed.\n`);
   }
 
   // -------------------------------------------------------
