@@ -94,7 +94,7 @@ async function deleteProject(id) {
 // --- Script runner ---
 
 function runScript(scriptName, scriptArgs) {
-  const cmd = `node --env-file=.env scripts/localization/${scriptName} ${scriptArgs}`;
+  const cmd = `node --env-file=.env scripts/i18n/${scriptName} ${scriptArgs}`;
   console.log(`  $ ${cmd}`);
   execSync(cmd, {stdio: 'inherit', cwd: process.cwd()});
 }

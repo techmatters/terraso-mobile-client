@@ -24,7 +24,7 @@ import {
   formatValidationResult,
   validateTranslation,
   variablesMatch,
-} from './find-i18n-variables.mjs';
+} from './find-variables.mjs';
 import {flatten} from 'flat';
 
 // Test extractVariables

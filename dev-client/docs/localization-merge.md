@@ -2,7 +2,7 @@
 
 Algorithm for syncing translations between local files (git) and POEditor.
 
-Implemented in `scripts/localization/poeditor-merge.mjs`.
+Implemented in `scripts/i18n/poeditor-merge.mjs`.
 
 ## Usage
 
@@ -93,10 +93,10 @@ For each non-English language that has local changes:
 
 ### Phase 3: Download, convert, commit, tag
 
-1. Run `localization-to-po` to regenerate `locales/po/en.po` from `en.json`.
+1. Run `i18n-to-po` to regenerate `locales/po/en.po` from `en.json`.
 2. If POEditor has English changes, download `en.po` from POEditor (overwrites the locally-generated one).
 3. Run `poeditor-download` to download non-English PO files from POEditor.
-4. Run `localization-to-json` to regenerate all JSON files from PO.
+4. Run `i18n-to-json` to regenerate all JSON files from PO.
 5. If no files actually changed (and no po-save files exist), print "Already in sync" and exit.
 6. If `--no-commit`: list modified files, print restore instructions, open the change report, and **stop** (no commit or tag).
 7. Stage only files with real translation changes (skip PO files where only metadata like timestamps changed). Also stage any `locales/po-save/` files.

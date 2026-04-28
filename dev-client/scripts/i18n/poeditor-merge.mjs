@@ -281,7 +281,7 @@ const projectArg =
 /** Run a localization script via execSync. Skips if DRY_RUN. */
 function runScript(scriptName, scriptArgs) {
   const cmd =
-    `node --env-file=.env scripts/localization/${scriptName} ${projectArg} ${scriptArgs}`.replace(
+    `node --env-file=.env scripts/i18n/${scriptName} ${projectArg} ${scriptArgs}`.replace(
       /  +/g,
       ' ',
     );
@@ -869,7 +869,7 @@ async function main() {
   console.log('Phase 3: Downloading merged translations...\n');
 
   // 1. Regenerate en.po from en.json
-  runNpmScript('localization-to-po');
+  runNpmScript('i18n-to-po');
 
   // 2. Download PO files from POEditor
   // --force skips the download script's uncommitted-changes check (merge has its own pre-flight)
@@ -886,7 +886,7 @@ async function main() {
   runScript('poeditor-download.mjs', '--force');
 
   // 3. Regenerate JSON from PO
-  runNpmScript('localization-to-json');
+  runNpmScript('i18n-to-json');
 
   console.log('');
 
