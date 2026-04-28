@@ -61,7 +61,11 @@ if (scan.inScanNotCatalog.length > 0) {
       const where = occ[0] ? ` (e.g. ${occ[0].file}:${occ[0].line})` : '';
       return `'${k}'${where}`;
     }),
-    fix: 'Add the key to en.json (and translate in other locales), or fix the source-side typo.',
+    fix: [
+      'Add the key to en.json, then backfill TK placeholders in other locales with:',
+      '  npm run i18n-fill-missing',
+      'Or fix the source-side typo.',
+    ].join('\n'),
   });
 }
 
@@ -69,7 +73,12 @@ if (scan.inCatalogNotScan.length > 0) {
   warnings.push({
     title: `${scan.inCatalogNotScan.length} key(s) in ${CATALOG_PATH} not referenced by any source file`,
     items: scan.inCatalogNotScan.map(k => `'${k}'`),
-    fix: 'These are likely safe to delete from the catalog. Cleanup is optional; the next `npm run poeditor-merge` will propagate any deletion.',
+    fix: [
+      'Eyeball the list, then run:',
+      '  npm run i18n-delete-unused           # dry-run',
+      '  npm run i18n-delete-unused -- --yes  # actually delete',
+      'The next `npm run poeditor-merge` will propagate the deletions to POEditor.',
+    ].join('\n'),
   });
 }
 
@@ -97,7 +106,7 @@ if (varMismatches.length > 0) {
           .map(v => `{{${v}}}`)
           .join(', ')}}`,
     ),
-    fix: 'Edit the locale JSON so the variable names match en.json exactly.',
+    fix: 'Edit the locale JSON so the variable names match en.json exactly. (Manual fix — no script.)',
   });
 }
 if (!QUIET) {
@@ -113,7 +122,7 @@ for (const {language, missing} of missingResult.results) {
   errors.push({
     title: `${language}.json is missing ${missing.length} key(s) present in en.json`,
     items: missing.map(k => `'${k}'`),
-    fix: 'npm run i18n-fill-missing',
+    fix: ['Run:', '  npm run i18n-fill-missing'].join('\n'),
   });
 }
 if (!QUIET) {
@@ -131,7 +140,11 @@ function printGroup(label, group) {
   for (const g of group) {
     console.log(`\n  ${g.title}`);
     for (const item of g.items) console.log(`    ${item}`);
-    if (g.fix) console.log(`    → ${g.fix}`);
+    if (g.fix) {
+      const lines = g.fix.split('\n');
+      console.log(`    Fix: ${lines[0]}`);
+      for (const line of lines.slice(1)) console.log(`    ${line}`);
+    }
   }
 }
 
