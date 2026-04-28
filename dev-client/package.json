@@ -26,6 +26,7 @@
     "clean-watchman": "watchman watch-del-all && watchman shutdown-server",
     "i18n-check": "node scripts/i18n/check.mjs",
     "i18n-fill-missing": "node scripts/i18n/fill-missing.mjs",
+    "i18n-delete-unused": "node scripts/i18n/delete-unused.mjs",
     "i18n-to-po": "node scripts/i18n/transform-to.mjs po",
     "i18n-to-json": "node scripts/i18n/transform-to.mjs json",
     "poeditor-download": "node --env-file=.env scripts/i18n/poeditor-download.mjs",

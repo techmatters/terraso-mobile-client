@@ -130,11 +130,7 @@ function printGroup(label, group) {
   console.log(`\n${label} (${group.length}):`);
   for (const g of group) {
     console.log(`\n  ${g.title}`);
-    const shown = g.items.slice(0, 20);
-    for (const item of shown) console.log(`    ${item}`);
-    if (g.items.length > shown.length) {
-      console.log(`    ... and ${g.items.length - shown.length} more`);
-    }
+    for (const item of g.items) console.log(`    ${item}`);
     if (g.fix) console.log(`    → ${g.fix}`);
   }
 }
