@@ -3,17 +3,17 @@
         "title": "Bienvenido a LandPKS Soil ID",
         "next": {
             "title": "¿Qué sigue?",
-            "bullet_1": "TK Soil pH"
+            "bullet_1": "pH del suelo"
         },
         "version_includes": {
             "title": "Esta versión incluye:",
-            "bullet_1": "TK Offline: enabled site creation, edit site metadata and notes",
-            "bullet_2": "TK New language: Swahili",
-            "bullet_3": "TK Improved translations for Ukrainian, Georgian, and Spanish",
-            "bullet_4": "TK More descriptive error message for sync conflicts",
-            "bullet_5": "TK Improved experience of searching for coordinates on map",
-            "bullet_6": "TK Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data",
-            "bullet_7": "TK Fixed a bug where the color module would crash with overexposed photos"
+            "bullet_1": "Sin conexión: creación de sitios y edición de metadatos y notas habilitadas",
+            "bullet_2": "Nuevo idioma: suajili",
+            "bullet_3": "Traducciones mejoradas para ucraniano, georgiano y español",
+            "bullet_4": "Mensaje de error más descriptivo para conflictos de sincronización",
+            "bullet_5": "Experiencia mejorada al buscar coordenadas en el mapa",
+            "bullet_6": "Se solucionó un problema por el cual los usuarios que cerraban sesión y volvían a iniciar sesión con una cuenta diferente veían temporalmente los datos de la primera cuenta",
+            "bullet_7": "Se solucionó un error por el cual el módulo de color fallaba con fotos sobreexpuestas"
         },
         "learn_more": "Aprender más y mantenerte actualizado:",
         "link_text": "LandPKS de Terraso",

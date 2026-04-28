@@ -3,17 +3,17 @@
         "title": "კეთილი იყოს თქვენი მობრძანება LandPKS Soil ID-ში",
         "next": {
             "title": "რა არის შემდეგი?",
-            "bullet_1": "TK Soil pH"
+            "bullet_1": "ნიადაგის pH"
         },
         "version_includes": {
             "title": "ეს ვერსია მოიცავს:",
-            "bullet_1": "TK Offline: enabled site creation, edit site metadata and notes",
-            "bullet_2": "TK New language: Swahili",
-            "bullet_3": "TK Improved translations for Ukrainian, Georgian, and Spanish",
-            "bullet_4": "TK More descriptive error message for sync conflicts",
-            "bullet_5": "TK Improved experience of searching for coordinates on map",
-            "bullet_6": "TK Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data",
-            "bullet_7": "TK Fixed a bug where the color module would crash with overexposed photos"
+            "bullet_1": "ხაზგარეშე რეჟიმში: საიტების შექმნა, საიტის მეტამონაცემებისა და შენიშვნების რედაქტირება ჩართულია",
+            "bullet_2": "ახალი ენა: სუაჰილი",
+            "bullet_3": "გაუმჯობესებული თარგმანები უკრაინული, ქართული და ესპანური ენებისთვის",
+            "bullet_4": "უფრო დეტალური შეცდომის შეტყობინება სინქრონიზაციის კონფლიქტებისთვის",
+            "bullet_5": "გაუმჯობესებული გამოცდილება რუკაზე კოორდინატების ძიებისას",
+            "bullet_6": "გასწორდა პრობლემა, რომლის გამოც სხვა ანგარიშზე გადასვლისას მომხმარებლები დროებით ხედავდნენ პირველი ანგარიშის მონაცემებს",
+            "bullet_7": "გასწორდა შეცდომა, რომლის გამოც ფერის მოდული იჭედებოდა ჭარბად დაექსპონირებულ ფოტოებზე"
         },
         "learn_more": "გაიგეთ მეტი და იყავით ინფორმირებული:",
         "link_text": "LandPKS ტერასოდან",

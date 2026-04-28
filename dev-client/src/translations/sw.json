@@ -3,17 +3,17 @@
         "title": "Karibu kwenye LandPKS Soil ID",
         "next": {
             "title": "Nini kitafuata?",
-            "bullet_1": "TK Soil pH"
+            "bullet_1": "pH ya udongo"
         },
         "version_includes": {
             "title": "Toleo hili linajumuisha:",
-            "bullet_1": "TK Offline: enabled site creation, edit site metadata and notes",
-            "bullet_2": "TK New language: Swahili",
-            "bullet_3": "TK Improved translations for Ukrainian, Georgian, and Spanish",
-            "bullet_4": "TK More descriptive error message for sync conflicts",
-            "bullet_5": "TK Improved experience of searching for coordinates on map",
-            "bullet_6": "TK Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data",
-            "bullet_7": "TK Fixed a bug where the color module would crash with overexposed photos"
+            "bullet_1": "Nje ya mtandao: kuwezesha kuunda maeneo na kuhariri metadata na vidokezo vya maeneo",
+            "bullet_2": "Lugha mpya: Kiswahili",
+            "bullet_3": "Tafsiri zilizoboreshwa kwa Kiukreni, Kijojia, na Kihispania",
+            "bullet_4": "Ujumbe wa kosa wa kina zaidi kwa migongano ya usawazishaji",
+            "bullet_5": "Uzoefu ulioboreshwa wa kutafuta viwianishi kwenye ramani",
+            "bullet_6": "Imerekebishwa hitilafu ambapo watumiaji walioondoka na kuingia tena kwa akaunti tofauti waliona data ya akaunti ya kwanza kwa muda",
+            "bullet_7": "Imerekebishwa hitilafu ambapo moduli ya rangi ilianguka kwa picha zilizopigwa kwa mwanga mwingi sana"
         },
         "learn_more": "Jifunze zaidi na uendelee kupata taarifa mpya:",
         "link_text": "LandPKS kutoka Terraso",
