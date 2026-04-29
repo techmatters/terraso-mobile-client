@@ -22,7 +22,7 @@
         "terms": "Kwa kutumia LandPKS unakubali sera yetu ya faragha na sheria na masharti ya huduma."
     },
     "search": {
-        "placeholder": "Tafuta ramani"
+        "placeholder": "Tafuta"
     },
     "site": {
         "coords": "{{lat}}, {{long}}",
@@ -518,7 +518,7 @@
                 "wet": "Lowesha udongo:",
                 "ball": "Unda mpira:",
                 "ribbon": "Unda utepe",
-                "grittyness": "Hisi udongo:",
+                "grittyness": "Gusa udongo:",
                 "ball_help": "Je, udongo huunda mpira?",
                 "ribbon_help": "Je, udongo huunda utepe?",
                 "ribbon_length_help": "Utepe una urefu gani?",
@@ -562,7 +562,7 @@
                 }
             },
             "class": {
-                "CLAY": "Mfinyanzi",
+                "CLAY": "Udongo wa mfinyanzi",
                 "LOAM": "Loamu",
                 "SAND": "Mchanga",
                 "SILT": "Tope",
@@ -1633,7 +1633,7 @@
             "description": "Ingiza mwinuko mwenyewe, kwa kutumia mita ya mteremko, au uchague kutoka kwenye picha zilizo hapa chini.",
             "degree": "{{value}}°",
             "info": {
-                "title": "Jinsi ya kutumia Kipima Mteremko",
+                "title": "Jinsi ya kutumia kipimo cha mteremko",
                 "description": "Simama ukiangalia eneo kutoka angalau $t(slope.steepness.info.description_distance, {\"context\": \"{{units}}\"}) mbali.\n\nTambua mwelekeo wa mteremko mkuu kwenye eneo hilo.\n\nSimama ili uweze kuona ukingo au umbo la mteremko huo mkuu (ingawa unaweza kuhitaji kukaribia ardhi ili kuuona.)\n\nUelekeo unaoelekea unapaswa kuwa sawa na mwelekeo wa mteremko. Ukinyoosha mikono yako kwa pande zako, mstari wanaotengeneza unapaswa kuwa sambamba na mwelekeo wa mteremko.\n\nWeka simu yako ili mstari mweupe imara ulingane na mteremko wa nchi; jaribu kuweka mstari mweupe kando ya mteremko. Unaweza kuhitaji kuinama ikiwa umbo la mteremko si rahisi kuona ukiwa umesimama.\n\n<bold>Njia Mbadala</bold>: Ikiwa umbo la ardhi halijapinda sana au kuwa na matuta, unaweza kuweka kijiti cha yadi chini kwenye eneo la ujenzi na kisha upange simu yako kwenye kijiti ili kupata pembe ya mteremko.",
                 "description_distance_METRIC": "Mita 4",
                 "description_distance_ENGLISH": "Futi 15"

@@ -12,24 +12,13 @@ msgid "welcome##title"
 msgstr "Bienvenido a LandPKS Soil ID"
 
 #: 
+#, fuzzy
 msgid "welcome##next##title"
 msgstr "¿Qué sigue?"
 
 #: 
-msgid "welcome##next##subtitle"
-msgstr "Versiones futuras incluirán:"
-
-#: 
 msgid "search##placeholder"
 msgstr "Buscar en mapa"
-
-#: 
-msgid "site##progress"
-msgstr "Progreso: {{progress}}"
-
-#: 
-msgid "site##members"
-msgstr "{{members}} Miembros"
 
 #: 
 msgid "site##coords"
@@ -46,19 +35,6 @@ msgstr "Crear sitio"
 #: 
 msgid "site##create##description"
 msgstr "Crea un sitio aquí para guardar esta ubicación, recopilar observaciones y ver informes más detallados."
-
-#: 
-msgid "site##create##gps"
-msgstr "Usar mi ubicación actual (GPS)"
-
-#: 
-#, fuzzy
-msgid "site##create##pin"
-msgstr "Usar marcador del mapa"
-
-#: 
-msgid "site##create##manual"
-msgstr "Ingresa coordenadas"
 
 #: 
 msgid "site##create##latitude"
@@ -129,14 +105,6 @@ msgid "projects##label"
 msgstr "Proyecto"
 
 #: 
-msgid "projects##title"
-msgstr "Proyectos"
-
-#: 
-msgid "projects##header"
-msgstr "Proyectos"
-
-#: 
 msgid "projects##none##header"
 msgstr "No tienes ningún proyecto."
 
@@ -168,22 +136,6 @@ msgstr "Sitios"
 #: 
 msgid "projects##tabs##settings"
 msgstr "Ajustes"
-
-#: 
-msgid "projects##inputs##units##heading"
-msgstr "Unidades de medida"
-
-#: 
-msgid "projects##inputs##units##a11yLabel"
-msgstr "unidades de medida"
-
-#: 
-msgid "projects##inputs##units##english"
-msgstr "Inglés (pulgadas, pies, libras)"
-
-#: 
-msgid "projects##inputs##units##metric"
-msgstr "Métrico (cm, m, kg)"
 
 #: 
 #, fuzzy
@@ -227,32 +179,12 @@ msgid "projects##team##add"
 msgstr "Añadir miembro de equipo"
 
 #: 
-msgid "projects##settings##cancel"
-msgstr "Cancelar"
-
-#: 
-msgid "projects##settings##archive"
-msgstr "Archivar este proyecto"
-
-#: 
 msgid "projects##settings##delete"
 msgstr "Eliminar este proyecto"
 
 #: 
-msgid "projects##sites##add"
-msgstr "Añadir sitios"
-
-#: 
 msgid "projects##sites##transfer"
 msgstr "Transferir sitios"
-
-#: 
-msgid "projects##sites##create"
-msgstr "Crear sitios"
-
-#: 
-msgid "projects##sites##search##placeholder"
-msgstr "Buscar"
 
 #: 
 msgid "projects##sites##sort##label"
@@ -287,28 +219,12 @@ msgid "settings##version"
 msgstr "Versión {{version}} ({{build}}) {{environment}}"
 
 #: 
-msgid "badge##new"
-msgstr "Nuevo"
-
-#: 
-msgid "general##sites"
-msgstr "sitios"
-
-#: 
-msgid "general##users"
-msgstr "usuarios"
-
-#: 
 msgid "general##save"
 msgstr "Guardar"
 
 #: 
 msgid "general##use"
 msgstr "Usar"
-
-#: 
-msgid "general##details"
-msgstr "Detalles"
 
 #: 
 msgid "general##apply"
@@ -333,10 +249,6 @@ msgstr "Cancelar"
 #: 
 msgid "general##add"
 msgstr "Añadir"
-
-#: 
-msgid "general##submit"
-msgstr "Enviar"
 
 #: 
 msgid "general##change"
@@ -365,11 +277,6 @@ msgstr "Siguiente"
 #: 
 msgid "general##proceed"
 msgstr "Continuar"
-
-#: 
-#, fuzzy
-msgid "errors##generic"
-msgstr "Error al guardar la información de la identificación del suelo."
 
 #: 
 msgid "screens##LOGIN"
@@ -413,33 +320,16 @@ msgid "privacy##private##title"
 msgstr "Privado"
 
 #: 
-msgid "geo##latitude##inline"
-msgstr "latitud"
-
-#: 
 msgid "geo##latitude##title"
 msgstr "Latitud"
-
-#: 
-#, fuzzy
-msgid "geo##longitude##inline"
-msgstr "longitud"
 
 #: 
 msgid "geo##longitude##title"
 msgstr "Longitud"
 
 #: 
-msgid "geo##elevation##inline"
-msgstr "elevación"
-
-#: 
 msgid "geo##elevation##title"
 msgstr "Elevación"
-
-#: 
-msgid "soil##bedrock"
-msgstr "Roca madre"
 
 #: 
 msgid "soil##loading"
@@ -456,18 +346,6 @@ msgstr "Superficie del suelo"
 #: 
 msgid "soil##pit"
 msgstr "Calicata"
-
-#: 
-msgid "soil##data##rockFragmentVolume"
-msgstr "Fragmento de roca"
-
-#: 
-msgid "soil##data##texture"
-msgstr "Textura"
-
-#: 
-msgid "soil##data##colorValue"
-msgstr "Color"
 
 #: 
 msgid "soil##depth##error##overlaps"
@@ -808,27 +686,22 @@ msgstr "Esta versión incluye:"
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Función de exportación de datos para proyectos, sitios individuales y todos los sitios visibles para el usuario"
+msgstr "Sin conexión: creación de sitios y edición de metadatos y notas habilitadas"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Selector de idioma"
+msgstr "Nuevo idioma: suajili"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Traducciones experimentales para francés y georgiano"
+msgstr "Traducciones mejoradas para ucraniano, georgiano y español"
 
 #: 
 #, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "Crear sitios sin conexión"
-
-#: 
-#, fuzzy
-msgid "welcome##next##bullet_2"
-msgstr "Editar notas sin conexión"
+msgstr "pH del suelo"
 
 #: 
 msgid "welcome##learn_more"
@@ -851,11 +724,6 @@ msgid "site##list_title"
 msgstr "Lista de sitios"
 
 #: 
-#, fuzzy
-msgid "site##last_updated"
-msgstr "Última modificación: {{date}} por {{name}}"
-
-#: 
 msgid "site##more_info"
 msgstr "Aprender más"
 
@@ -872,10 +740,6 @@ msgid "site##ecological_site_prediction"
 msgstr "Sitio ecológico de mejor coincidencia"
 
 #: 
-msgid "site##annual_precip_avg"
-msgstr "Precipitación anual promedio"
-
-#: 
 msgid "site##elevation_label"
 msgstr "Elevación"
 
@@ -886,10 +750,6 @@ msgstr "{{value}} {{units}}"
 #: 
 msgid "site##elevation_unknown"
 msgstr "desconocido"
-
-#: 
-msgid "site##create##button_label"
-msgstr "Crear sitio aquí"
 
 #: 
 msgid "site##create##name_label"
@@ -918,14 +778,6 @@ msgid "site##create##add_to_project_tooltip"
 msgstr "El sitio heredará la configuración del proyecto, incluidos los requisitos de recolección de datos y los miembros del equipo. Crea nuevos proyectos desde la pestaña Proyectos en la navegación inferior."
 
 #: 
-msgid "site##create##privacy_tooltip"
-msgstr "Los proyectos públicos sincronizarán los datos con portales de datos públicos."
-
-#: 
-msgid "site##create##privacy_tooltip_link"
-msgstr "Aprender más"
-
-#: 
 msgid "site##form##name_min_length_error"
 msgstr "Nombre del sitio, mínimo {{min}} caracteres"
 
@@ -950,48 +802,12 @@ msgid "site##form##max_longitude_error"
 msgstr "La longitud máxima es {{max}}"
 
 #: 
-msgid "site##dashboard##team_button"
-msgstr "Equipo"
-
-#: 
-msgid "site##dashboard##transfer_label"
-msgstr "Transferir al proyecto"
-
-#: 
-msgid "site##dashboard##copy_download_link_button"
-msgstr "Copiar enlace de descarga del sitio"
-
-#: 
-msgid "site##dashboard##archive_button"
-msgstr "Archivar este sitio"
-
-#: 
-msgid "site##dashboard##archive_button_help_text"
-msgstr "Marcar este sitio como sólo lectura"
-
-#: 
 msgid "site##dashboard##delete_button"
 msgstr "Eliminar este sitio"
 
 #: 
-msgid "site##dashboard##location_accuracy"
-msgstr "Precisión de ubicación"
-
-#: 
 msgid "site##dashboard##default_title"
 msgstr "Marcador temporario"
-
-#: 
-msgid "site##dashboard##speed_dial##note_label"
-msgstr "NOTA"
-
-#: 
-msgid "site##dashboard##speed_dial##photo_label"
-msgstr "FOTO"
-
-#: 
-msgid "site##dashboard##speed_dial##bedrock_label"
-msgstr "ROCA MADRE"
 
 #: 
 msgid "site##soil_id##title"
@@ -1243,16 +1059,8 @@ msgid "site##search##no_matches"
 msgstr "Ningún sitio coincide con las opciones de búsqueda y filtro actuales."
 
 #: 
-msgid "projects##learn_more"
-msgstr "Aprende más acerca del uso de proyectos"
-
-#: 
 msgid "projects##create_button"
 msgstr "Crear proyecto"
-
-#: 
-msgid "projects##go_to"
-msgstr "Ir al proyecto"
 
 #: 
 #, fuzzy
@@ -1275,22 +1083,6 @@ msgstr "Descripción del proyecto"
 #: 
 msgid "projects##create##privacy_label"
 msgstr "Privacidad de datos"
-
-#: 
-msgid "projects##inputs##soil_source##heading"
-msgstr "Fuente de información del suelo predeterminada"
-
-#: 
-msgid "projects##inputs##soil_source##survey"
-msgstr "USDA NRCS Estudio del suelo"
-
-#: 
-msgid "projects##inputs##soil_source##grids"
-msgstr "SoilGrids (cuadrículas del suelo)"
-
-#: 
-msgid "projects##inputs##soil_source##a11yLabel"
-msgstr "fuente de información del suelo predeterminada"
 
 #: 
 msgid "projects##inputs##instructions##screen_title"
@@ -1333,30 +1125,6 @@ msgid "projects##team##leave_project_modal##action_name"
 msgstr "Abandonar"
 
 #: 
-msgid "projects##edit##input_header"
-msgstr "Configuración general del proyecto"
-
-#: 
-msgid "projects##settings##copy_download_link"
-msgstr "Copiar enlace de descarga del proyecto"
-
-#: 
-msgid "projects##settings##download_link_description"
-msgstr "Un archivo comprimido que contiene todos los recursos del proyecto, incluyendo un archivo .csv con los datos del sitio, notas de campo, registros de auditoría y fotos. Cualquier persona con este enlace puede visualizar todos los recursos."
-
-#: 
-msgid "projects##settings##archive_button"
-msgstr "Archivar"
-
-#: 
-msgid "projects##settings##archive_button_prompt"
-msgstr "¿Archivar proyecto?"
-
-#: 
-msgid "projects##settings##archive_description"
-msgstr "El proyecto se moverá a Proyectos archivados, por lo que será de sólo lectura. Los miembros del equipo podrán acceder a los datos, y los administradores del proyecto podrán restaurarlo en cualquier momento. Los proyectos públicos archivados seguirán siendo visibles en los portales de datos."
-
-#: 
 msgid "projects##settings##delete_button"
 msgstr "Eliminar"
 
@@ -1379,14 +1147,6 @@ msgstr "El proyecto aún no tiene sitios."
 #, fuzzy
 msgid "projects##sites##empty_contributor"
 msgstr "Puedes transferir sitios LandPKS Soil ID existentes a este proyecto. También puedes crear nuevos sitios en la pestaña Sitios y añadirlos a este proyecto."
-
-#: 
-msgid "projects##sites##go_to"
-msgstr "Ir al sitio"
-
-#: 
-msgid "projects##sites##audit_log"
-msgstr "Registro de auditoría"
 
 #: 
 msgid "projects##sites##remove_site"
@@ -1436,10 +1196,6 @@ msgstr "Los sitios transferidos usarán las entradas, la configuración y los ro
 #: 
 msgid "projects##sites##transfer_site_modal##action_name"
 msgstr "Transferir"
-
-#: 
-msgid "projects##sites##search##accessility_label"
-msgstr "Buscar sitios"
 
 #: 
 msgid "projects##add_user##heading"
@@ -1561,10 +1317,6 @@ msgid "settings##unknown_version"
 msgstr "Versión de la aplicación sin etiquetar {{environment}}"
 
 #: 
-msgid "general##last_modified"
-msgstr "Última modificación"
-
-#: 
 msgid "general##last_modified_by"
 msgstr "última modificación {{user}}, {{date}}"
 
@@ -1583,22 +1335,6 @@ msgstr "nombre@dominio.com"
 #: 
 msgid "general##email_label"
 msgstr "Dirección de email"
-
-#: 
-msgid "general##profile_image_alt"
-msgstr "Imagen de perfil"
-
-#: 
-msgid "general##measurement_units##METRIC"
-msgstr "Métrico"
-
-#: 
-msgid "general##measurement_units##ENGLISH"
-msgstr "Inglés"
-
-#: 
-msgid "general##filter##no_sort"
-msgstr "Ninguno"
 
 #: 
 msgid "general##filter##no_role"
@@ -1781,10 +1517,6 @@ msgid "account##google_login"
 msgstr "Ingresar con Google"
 
 #: 
-msgid "account##apple_login"
-msgstr "Ingresar con Apple"
-
-#: 
 msgid "account##microsoft_login"
 msgstr "Ingresar con Microsoft"
 
@@ -1809,14 +1541,6 @@ msgid "listfilter##num_filters_label"
 msgstr "Número de filtros aplicados"
 
 #: 
-msgid "listfilter##clear_search_label"
-msgstr "Limpiar filtro de búsqueda"
-
-#: 
-msgid "listfilter##text_input_label"
-msgstr "Filtrar lista por entrada de búsqueda"
-
-#: 
 msgid "soil##top_match"
 msgstr "Mejor coincidencia"
 
@@ -1839,10 +1563,6 @@ msgstr "Soil ID"
 #: 
 msgid "soil##add_depth_label"
 msgstr "Añadir profundidad"
-
-#: 
-msgid "soil##project_settings##pit_required_label"
-msgstr "Se requiere calicata"
 
 #: 
 msgid "soil##project_settings##required_data_title"
@@ -2190,18 +1910,6 @@ msgid "soil##texture##use_guide_label"
 msgstr "Usar guía"
 
 #: 
-msgid "soil##texture##clay_title"
-msgstr "Porcentaje arcilla"
-
-#: 
-msgid "soil##texture##clay_label"
-msgstr "Porcentaje arcilla"
-
-#: 
-msgid "soil##texture##clay_help"
-msgstr "0–100%"
-
-#: 
 msgid "soil##texture##fragment_title"
 msgstr "Volumen de fragmentos de roca"
 
@@ -2405,15 +2113,6 @@ msgstr "Medidor de pendiente"
 #: 
 msgid "slope##steepness##camera_grant"
 msgstr "Permitir el uso de la cámara"
-
-#: 
-msgid "slope##steepness##no_camera"
-msgstr "Sin acceso a la cámara"
-
-#: 
-#, fuzzy
-msgid "slope##steepness##no_camera_explanation"
-msgstr "Para mejores resultados, concede a LandPKS Soil ID acceso a tu cámara desde Ajustes"
 
 #: 
 msgid "slope##steepness##info##description_distance_METRIC"
@@ -2638,20 +2337,12 @@ msgid "site##empty##summary"
 msgstr "Un sitio te permite recopilar y guardar observaciones, aprender más sobre el terreno y su potencial, y compartirlo con los demás."
 
 #: 
-msgid "site##offline##alert_body"
-msgstr "Debes estar en línea para crear sitios."
-
-#: 
 msgid "site##soil_id##matches##match_score"
 msgstr "{{score}}"
 
 #: 
 msgid "site##soil_id##matches##offline"
 msgstr "Debes estar en línea para actualizar coincidencias de suelo."
-
-#: 
-msgid "site##soil_id##matches##selector"
-msgstr "Este es el suelo correcto"
 
 #: 
 msgid "site##soil_id##matches##selected"
@@ -2672,10 +2363,6 @@ msgstr "Debes estar en línea para actualizar el puntaje de las propiedades del 
 #: 
 msgid "site##notes##pinned_note"
 msgstr "Nota destacada"
-
-#: 
-msgid "site##notes##offline"
-msgstr "Debes estar en línea para crear y editar notas."
 
 #: 
 msgid "site##search##offline"
@@ -2740,10 +2427,12 @@ msgid "general##not_available"
 msgstr "No disponible"
 
 #: 
+#, fuzzy
 msgid "errors##sync_conflict##headline"
 msgstr "Conflicto de proyectos"
 
 #: 
+#, fuzzy
 msgid "errors##sync_conflict##body"
 msgstr "Este proyecto ha cambiado. Más información y ayuda en el sitio web de LandPKS."
 
@@ -3116,6 +2805,7 @@ msgid "soil##match_info##urbic_anthrosols##description"
 msgstr "Los Antrósoles Úrbicos son un amplio grupo de suelos que han sido modificados sustancialmente por las actividades humanas. Se trata de suelos muy alterados formados a partir de material de relleno procedente de minas, urbanizaciones, eliminación de residuos y otras actividades de uso del suelo. Las propiedades varían y están relacionadas con el origen de los materiales."
 
 #: 
+#, fuzzy
 msgid "soil##match_info##urbic_anthrosols##management"
 msgstr "Debido a que estos suelos han tenido una alteración humana prolongada, presentan una alta variabilidad en sus características generales, por lo que es difícil establecer pautas generales de manejo. Los productores deben estudiar cuidadosamente sus campos y analizar la variabilidad dentro de sus parcelas para determinar diferentes necesidades de manejo. Dado que estos suelos pueden estar alterados en áreas muy pequeñas, será necesario realizar análisis de suelo para evaluar adecuadamente la variabilidad de sus propiedades dentro de un mismo campo. Si la productividad de las plantas es baja, puede ser necesario investigar más a fondo el origen del material de relleno; metales pesados, residuos afectados por sales u otros tipos de aportes antrópicos inusuales son posibles causas. "
 
@@ -5031,7 +4721,7 @@ msgstr "Tienes cambios sin sincronizar que deben cargarse antes de cerrar sesió
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "Nueva experiencia de calificación de suelos para una identificación más sencilla"
+msgstr "Mensaje de error más descriptivo para conflictos de sincronización"
 
 #: 
 #, fuzzy
@@ -5110,31 +4800,6 @@ msgstr "Exportar sitio"
 
 #: 
 #, fuzzy
-msgid "export##site_export_description"
-msgstr "Descargar o compartir los datos de este sitio."
-
-#: 
-#, fuzzy
-msgid "export##site_export_button"
-msgstr "Exportar datos del sitio"
-
-#: 
-#, fuzzy
-msgid "export##what_is_in_file"
-msgstr "¿Qué hay en el archivo?"
-
-#: 
-#, fuzzy
-msgid "export##loading"
-msgstr "Cargando configuración de exportación..."
-
-#: 
-#, fuzzy
-msgid "export##downloading"
-msgstr "Descargando..."
-
-#: 
-#, fuzzy
 msgid "export##preparing_file"
 msgstr "Preparando el archivo {{resourceType}} para {{name}}"
 
@@ -5150,16 +4815,6 @@ msgstr "Guardar datos de LandPKS para {{name}}"
 
 #: 
 #, fuzzy
-msgid "export##save_error_title"
-msgstr "Error al guardar"
-
-#: 
-#, fuzzy
-msgid "export##save_error_message"
-msgstr "No se pudo guardar el archivo: {{error}}"
-
-#: 
-#, fuzzy
 msgid "export##share_title"
 msgstr "Exportación de datos de LandPKS para los sitios de {{name}}"
 
@@ -5167,11 +4822,6 @@ msgstr "Exportación de datos de LandPKS para los sitios de {{name}}"
 #, fuzzy
 msgid "export##share_subject"
 msgstr "Enlace a los sitios de LandPKS de {{name}}"
-
-#: 
-#, fuzzy
-msgid "export##share_android_message"
-msgstr "Exportar datos de {{resourceType}} para {{name}}:"
 
 #: 
 #, fuzzy
@@ -5197,26 +4847,6 @@ msgstr "¿Restablecer enlaces para compartir?"
 #, fuzzy
 msgid "export##reset_links_body"
 msgstr "Esto romperá el enlace en vivo actual. Cualquier persona con un enlace roto no podrá acceder a los archivos."
-
-#: 
-#, fuzzy
-msgid "export##create_token_error_title"
-msgstr "No se pudo crear el enlace"
-
-#: 
-#, fuzzy
-msgid "export##create_token_error_message"
-msgstr "No se pudo crear enlace de exportación. Verifica tu conexión y vuelve a intentarlo."
-
-#: 
-#, fuzzy
-msgid "export##delete_token_error_title"
-msgstr "No se pudo restablecer el enlace"
-
-#: 
-#, fuzzy
-msgid "export##delete_token_error_message"
-msgstr "No se pudo restablecer el enlace de exportación. Verifica tu conexión y vuelve a intentarlo."
 
 #: 
 #, fuzzy
@@ -5260,23 +4890,8 @@ msgstr "Esta plataforma no admite guardar archivos."
 
 #: 
 #, fuzzy
-msgid "file_download##error##no_storage_directory"
-msgstr "No hay ningún directorio de almacenamiento disponible."
-
-#: 
-#, fuzzy
-msgid "file_download##error##sharing_unavailable"
-msgstr "La función de compartir no está disponible en este dispositivo."
-
-#: 
-#, fuzzy
 msgid "file_download##error##save_canceled"
 msgstr "Guardar cancelado."
-
-#: 
-#, fuzzy
-msgid "file_download##error##no_directory_selected"
-msgstr "No hay ningún directorio seleccionado"
 
 #: 
 #, fuzzy
@@ -5345,4 +4960,24 @@ msgstr "Algo salió mal"
 #, fuzzy
 msgid "soil##color##analysis_error##body"
 msgstr "Hubo un problema al identificar el color del suelo. Asegúrate de seguir las instrucciones del análisis fotográfico y vuelve a intentarlo. Si el problema persiste, contacta con el servicio de asistencia."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_5"
+msgstr "Experiencia mejorada al buscar coordenadas en el mapa"
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_6"
+msgstr "Se solucionó un problema por el cual los usuarios que cerraban sesión y volvían a iniciar sesión con una cuenta diferente veían temporalmente los datos de la primera cuenta"
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_7"
+msgstr "Se solucionó un error por el cual el módulo de color fallaba con fotos sobreexpuestas"
+
+#: 
+#, fuzzy
+msgid "projects##sites##transfer_offline"
+msgstr "La transferencia de sitios sólo está disponible mientras estás en línea."
 

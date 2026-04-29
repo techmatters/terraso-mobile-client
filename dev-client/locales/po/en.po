@@ -13,23 +13,11 @@ msgstr "Welcome to LandPKS Soil ID"
 
 #: 
 msgid "welcome##next##title"
-msgstr "What’s next?"
-
-#: 
-msgid "welcome##next##subtitle"
 msgstr "Future versions will include:"
 
 #: 
 msgid "search##placeholder"
 msgstr "Search map"
-
-#: 
-msgid "site##progress"
-msgstr "Progress: {{progress}}"
-
-#: 
-msgid "site##members"
-msgstr "{{members}} Members"
 
 #: 
 msgid "site##coords"
@@ -47,18 +35,6 @@ msgstr "Create Site"
 #: 
 msgid "site##create##description"
 msgstr "Create a site here to save this location, enter observations, and see more detailed reports."
-
-#: 
-msgid "site##create##gps"
-msgstr "Use my current location (GPS)"
-
-#: 
-msgid "site##create##pin"
-msgstr "Use map pin"
-
-#: 
-msgid "site##create##manual"
-msgstr "Enter coordinates"
 
 #: 
 msgid "site##create##latitude"
@@ -129,14 +105,6 @@ msgid "projects##label"
 msgstr "Project"
 
 #: 
-msgid "projects##title"
-msgstr "Projects"
-
-#: 
-msgid "projects##header"
-msgstr "Projects"
-
-#: 
 msgid "projects##none##header"
 msgstr "You don’t have any projects."
 
@@ -167,22 +135,6 @@ msgstr "Sites"
 #: 
 msgid "projects##tabs##settings"
 msgstr "Settings"
-
-#: 
-msgid "projects##inputs##units##heading"
-msgstr "Units of Measurement"
-
-#: 
-msgid "projects##inputs##units##a11yLabel"
-msgstr "measurement units"
-
-#: 
-msgid "projects##inputs##units##english"
-msgstr "English (in, ft, lb)"
-
-#: 
-msgid "projects##inputs##units##metric"
-msgstr "Metric (cm, m , kg)"
 
 #: 
 msgid "projects##inputs##instructions##title"
@@ -225,32 +177,12 @@ msgid "projects##team##add"
 msgstr "Add team member"
 
 #: 
-msgid "projects##settings##cancel"
-msgstr "Cancel"
-
-#: 
-msgid "projects##settings##archive"
-msgstr "Archive this project"
-
-#: 
 msgid "projects##settings##delete"
 msgstr "Delete this project"
 
 #: 
-msgid "projects##sites##add"
-msgstr "Add sites"
-
-#: 
 msgid "projects##sites##transfer"
 msgstr "Transfer Sites"
-
-#: 
-msgid "projects##sites##create"
-msgstr "Create Sites"
-
-#: 
-msgid "projects##sites##search##placeholder"
-msgstr "Search"
 
 #: 
 msgid "projects##sites##sort##label"
@@ -285,28 +217,12 @@ msgid "settings##version"
 msgstr "Version {{version}} ({{build}}) {{environment}}"
 
 #: 
-msgid "badge##new"
-msgstr "New"
-
-#: 
-msgid "general##sites"
-msgstr "sites"
-
-#: 
-msgid "general##users"
-msgstr "users"
-
-#: 
 msgid "general##save"
 msgstr "Save"
 
 #: 
 msgid "general##use"
 msgstr "Use"
-
-#: 
-msgid "general##details"
-msgstr "Details"
 
 #: 
 msgid "general##apply"
@@ -331,10 +247,6 @@ msgstr "Cancel"
 #: 
 msgid "general##add"
 msgstr "Add"
-
-#: 
-msgid "general##submit"
-msgstr "Submit"
 
 #: 
 msgid "general##change"
@@ -363,10 +275,6 @@ msgstr "Next"
 #: 
 msgid "general##proceed"
 msgstr "Proceed"
-
-#: 
-msgid "errors##generic"
-msgstr "Error saving Soil ID information."
 
 #: 
 msgid "screens##LOGIN"
@@ -409,32 +317,16 @@ msgid "privacy##private##title"
 msgstr "Private"
 
 #: 
-msgid "geo##latitude##inline"
-msgstr "latitude"
-
-#: 
 msgid "geo##latitude##title"
 msgstr "Latitude"
-
-#: 
-msgid "geo##longitude##inline"
-msgstr "longitude"
 
 #: 
 msgid "geo##longitude##title"
 msgstr "Longitude"
 
 #: 
-msgid "geo##elevation##inline"
-msgstr "elevation"
-
-#: 
 msgid "geo##elevation##title"
 msgstr "Elevation"
-
-#: 
-msgid "soil##bedrock"
-msgstr "Bedrock"
 
 #: 
 msgid "soil##loading"
@@ -451,18 +343,6 @@ msgstr "Soil Surface"
 #: 
 msgid "soil##pit"
 msgstr "Soil Pit"
-
-#: 
-msgid "soil##data##rockFragmentVolume"
-msgstr "Rock fragment"
-
-#: 
-msgid "soil##data##texture"
-msgstr "Texture"
-
-#: 
-msgid "soil##data##colorValue"
-msgstr "Color"
 
 #: 
 msgid "soil##depth##error##overlaps"
@@ -798,23 +678,19 @@ msgstr "This version includes:"
 
 #: 
 msgid "welcome##version_includes##bullet_1"
-msgstr "Data export feature for projects, individual sites, and all sites visible to user"
+msgstr "Offline: enabled site creation, edit site metadata and notes"
 
 #: 
 msgid "welcome##version_includes##bullet_2"
-msgstr "Language picker"
+msgstr "New language: Swahili"
 
 #: 
 msgid "welcome##version_includes##bullet_3"
-msgstr "Experimental translations for French and Georgian"
+msgstr "Improved translations for Ukrainian, Georgian, and Spanish"
 
 #: 
 msgid "welcome##next##bullet_1"
-msgstr "Create sites offline"
-
-#: 
-msgid "welcome##next##bullet_2"
-msgstr "Edit notes offline"
+msgstr "Soil pH"
 
 #: 
 msgid "welcome##learn_more"
@@ -837,10 +713,6 @@ msgid "site##list_title"
 msgstr "Site List"
 
 #: 
-msgid "site##last_updated"
-msgstr "Last Modified: {{date}} by {{name}}"
-
-#: 
 msgid "site##more_info"
 msgstr "Learn more"
 
@@ -857,10 +729,6 @@ msgid "site##ecological_site_prediction"
 msgstr "Ecological Site Top Match"
 
 #: 
-msgid "site##annual_precip_avg"
-msgstr "Annual precipitation avg"
-
-#: 
 msgid "site##elevation_label"
 msgstr "Elevation"
 
@@ -871,10 +739,6 @@ msgstr "{{value}} {{units}}"
 #: 
 msgid "site##elevation_unknown"
 msgstr "unknown"
-
-#: 
-msgid "site##create##button_label"
-msgstr "Create Site Here"
 
 #: 
 msgid "site##create##name_label"
@@ -901,14 +765,6 @@ msgid "site##create##add_to_project_tooltip"
 msgstr "The site will inherit the settings of the project, including data collection requirements and team members. Create new projects using the Projects tab in the bottom navigation."
 
 #: 
-msgid "site##create##privacy_tooltip"
-msgstr "Public projects will sync data to public data portals. "
-
-#: 
-msgid "site##create##privacy_tooltip_link"
-msgstr "Learn more"
-
-#: 
 msgid "site##form##name_min_length_error"
 msgstr "Site name must be at least {{min}} characters"
 
@@ -933,48 +789,12 @@ msgid "site##form##max_longitude_error"
 msgstr "Longitude must be at most {{max}}"
 
 #: 
-msgid "site##dashboard##team_button"
-msgstr "Team"
-
-#: 
-msgid "site##dashboard##transfer_label"
-msgstr "Transfer to Project"
-
-#: 
-msgid "site##dashboard##copy_download_link_button"
-msgstr "Copy site download link"
-
-#: 
-msgid "site##dashboard##archive_button"
-msgstr "Archive this site"
-
-#: 
-msgid "site##dashboard##archive_button_help_text"
-msgstr "Mark this site read-only"
-
-#: 
 msgid "site##dashboard##delete_button"
 msgstr "Delete this site"
 
 #: 
-msgid "site##dashboard##location_accuracy"
-msgstr "Location Accuracy"
-
-#: 
 msgid "site##dashboard##default_title"
 msgstr "Temporary Pin"
-
-#: 
-msgid "site##dashboard##speed_dial##note_label"
-msgstr "NOTE"
-
-#: 
-msgid "site##dashboard##speed_dial##photo_label"
-msgstr "PHOTO"
-
-#: 
-msgid "site##dashboard##speed_dial##bedrock_label"
-msgstr "BEDROCK"
 
 #: 
 msgid "site##soil_id##title"
@@ -1221,16 +1041,8 @@ msgid "site##search##no_matches"
 msgstr "No sites match the current search and filter options."
 
 #: 
-msgid "projects##learn_more"
-msgstr "Learn more about using projects"
-
-#: 
 msgid "projects##create_button"
 msgstr "Create project"
-
-#: 
-msgid "projects##go_to"
-msgstr "Go to Project"
 
 #: 
 msgid "projects##search_label"
@@ -1251,22 +1063,6 @@ msgstr "Project Description"
 #: 
 msgid "projects##create##privacy_label"
 msgstr "Data Privacy"
-
-#: 
-msgid "projects##inputs##soil_source##heading"
-msgstr "Default Soil Information Source"
-
-#: 
-msgid "projects##inputs##soil_source##survey"
-msgstr "USDA NRCS Soil Survey"
-
-#: 
-msgid "projects##inputs##soil_source##grids"
-msgstr "SoilGrids"
-
-#: 
-msgid "projects##inputs##soil_source##a11yLabel"
-msgstr "default soil information source"
 
 #: 
 msgid "projects##inputs##instructions##screen_title"
@@ -1309,30 +1105,6 @@ msgid "projects##team##leave_project_modal##action_name"
 msgstr "Leave"
 
 #: 
-msgid "projects##edit##input_header"
-msgstr "General Project Settings"
-
-#: 
-msgid "projects##settings##copy_download_link"
-msgstr "Copy project download link"
-
-#: 
-msgid "projects##settings##download_link_description"
-msgstr "A zipped file of all the project’s assets including a .csv file of site data, field notes, audit logs, and photos. Anyone with this link can view all the assets."
-
-#: 
-msgid "projects##settings##archive_button"
-msgstr "Archive"
-
-#: 
-msgid "projects##settings##archive_button_prompt"
-msgstr "Archive Project?"
-
-#: 
-msgid "projects##settings##archive_description"
-msgstr "The project will be moved to Archived Projects, making it read-only. Team members can access the data, and project managers can restore it at any time. Public projects that are archived will remain viewable on data portals."
-
-#: 
 msgid "projects##settings##delete_button"
 msgstr "Delete"
 
@@ -1353,14 +1125,6 @@ msgstr "This project has no sites yet."
 #: 
 msgid "projects##sites##empty_contributor"
 msgstr "You can transfer existing LandPKS Soil ID sites to this project. You can also create new sites on the Sites tab and add them to this project."
-
-#: 
-msgid "projects##sites##go_to"
-msgstr "Go to Site"
-
-#: 
-msgid "projects##sites##audit_log"
-msgstr "Audit Log"
 
 #: 
 msgid "projects##sites##remove_site"
@@ -1407,10 +1171,6 @@ msgstr "Transferred sites will use the inputs, settings and team member roles fr
 #: 
 msgid "projects##sites##transfer_site_modal##action_name"
 msgstr "Transfer"
-
-#: 
-msgid "projects##sites##search##accessility_label"
-msgstr "Search for sites"
 
 #: 
 msgid "projects##add_user##heading"
@@ -1529,10 +1289,6 @@ msgid "settings##unknown_version"
 msgstr "Untagged application version {{environment}}"
 
 #: 
-msgid "general##last_modified"
-msgstr "Last Modified"
-
-#: 
 msgid "general##last_modified_by"
 msgstr "last modified {{user}}, {{date}}"
 
@@ -1551,22 +1307,6 @@ msgstr "name@domain.com"
 #: 
 msgid "general##email_label"
 msgstr "Email address"
-
-#: 
-msgid "general##profile_image_alt"
-msgstr "Profile image"
-
-#: 
-msgid "general##measurement_units##METRIC"
-msgstr "Metric"
-
-#: 
-msgid "general##measurement_units##ENGLISH"
-msgstr "English"
-
-#: 
-msgid "general##filter##no_sort"
-msgstr "None"
 
 #: 
 msgid "general##filter##no_role"
@@ -1741,10 +1481,6 @@ msgid "account##google_login"
 msgstr "Sign in with Google"
 
 #: 
-msgid "account##apple_login"
-msgstr "Sign in with Apple"
-
-#: 
 msgid "account##microsoft_login"
 msgstr "Sign in with Microsoft"
 
@@ -1769,14 +1505,6 @@ msgid "listfilter##num_filters_label"
 msgstr "Number of filters applied"
 
 #: 
-msgid "listfilter##clear_search_label"
-msgstr "Clear search filter"
-
-#: 
-msgid "listfilter##text_input_label"
-msgstr "Filter list by search input"
-
-#: 
 msgid "soil##top_match"
 msgstr "Top Match"
 
@@ -1799,10 +1527,6 @@ msgstr "Soil ID"
 #: 
 msgid "soil##add_depth_label"
 msgstr "Add Depth"
-
-#: 
-msgid "soil##project_settings##pit_required_label"
-msgstr "Soil pit required"
 
 #: 
 msgid "soil##project_settings##required_data_title"
@@ -2145,18 +1869,6 @@ msgid "soil##texture##use_guide_label"
 msgstr "Use Guide"
 
 #: 
-msgid "soil##texture##clay_title"
-msgstr "Percent Clay"
-
-#: 
-msgid "soil##texture##clay_label"
-msgstr "Percent clay"
-
-#: 
-msgid "soil##texture##clay_help"
-msgstr "0–100%"
-
-#: 
 msgid "soil##texture##fragment_title"
 msgstr "Rock Fragment Volume"
 
@@ -2359,14 +2071,6 @@ msgstr "Slope Meter"
 #: 
 msgid "slope##steepness##camera_grant"
 msgstr "Grant Camera Permission"
-
-#: 
-msgid "slope##steepness##no_camera"
-msgstr "No Camera Access"
-
-#: 
-msgid "slope##steepness##no_camera_explanation"
-msgstr "For best results, allow LandPKS Soil ID to use your camera in Settings"
 
 #: 
 msgid "slope##steepness##info##description_distance_METRIC"
@@ -2583,20 +2287,12 @@ msgid "site##empty##summary"
 msgstr "A site lets you collect and save observations, learn more about the land and its potential, and share with others."
 
 #: 
-msgid "site##offline##alert_body"
-msgstr "Sites can only be created while online."
-
-#: 
 msgid "site##soil_id##matches##match_score"
 msgstr "{{score}}"
 
 #: 
 msgid "site##soil_id##matches##offline"
 msgstr "Soil matches will update when you are online."
-
-#: 
-msgid "site##soil_id##matches##selector"
-msgstr "This is the correct soil"
 
 #: 
 msgid "site##soil_id##matches##selected"
@@ -2617,10 +2313,6 @@ msgstr "Soil properties score will update when you are online."
 #: 
 msgid "site##notes##pinned_note"
 msgstr "Pinned Note"
-
-#: 
-msgid "site##notes##offline"
-msgstr "Creating and editing notes is only available online."
 
 #: 
 msgid "site##search##offline"
@@ -2684,11 +2376,11 @@ msgstr "Not available"
 
 #: 
 msgid "errors##sync_conflict##headline"
-msgstr "Project conflict"
+msgstr "Something has changed"
 
 #: 
 msgid "errors##sync_conflict##body"
-msgstr "This project has changed. Learn more and get support at the LandPKS website."
+msgstr "Some of your information could not be loaded or saved. This may be due to a connection issue or a change made by another user."
 
 #: 
 msgid "errors##sync_conflict##support_url"
@@ -4946,7 +4638,7 @@ msgstr "You have unsynced changes that need to be uploaded before signing out. P
 
 #: 
 msgid "welcome##version_includes##bullet_4"
-msgstr "New rate soil experience for easier soil identification"
+msgstr "More descriptive error message for sync conflicts"
 
 #: 
 msgid "projects##tabs##export"
@@ -5009,26 +4701,6 @@ msgid "export##site_export_title"
 msgstr "Export Site"
 
 #: 
-msgid "export##site_export_description"
-msgstr "Download or share this site's data."
-
-#: 
-msgid "export##site_export_button"
-msgstr "Export Site Data"
-
-#: 
-msgid "export##what_is_in_file"
-msgstr "What is in the file?"
-
-#: 
-msgid "export##loading"
-msgstr "Loading export settings..."
-
-#: 
-msgid "export##downloading"
-msgstr "Downloading..."
-
-#: 
 msgid "export##preparing_file"
 msgstr "Preparing {{resourceType}} file for {{name}}"
 
@@ -5041,24 +4713,12 @@ msgid "export##save_dialog_title"
 msgstr "Save LandPKS Data for {{name}}"
 
 #: 
-msgid "export##save_error_title"
-msgstr "Save Failed"
-
-#: 
-msgid "export##save_error_message"
-msgstr "Failed to save file: {{error}}"
-
-#: 
 msgid "export##share_title"
 msgstr "LandPKS Data Export for {{name}}'s Sites"
 
 #: 
 msgid "export##share_subject"
 msgstr "Link to {{name}}'s LandPKS Sites"
-
-#: 
-msgid "export##share_android_message"
-msgstr "Export {{resourceType}} data for {{name}}:"
 
 #: 
 msgid "export##share_message_user"
@@ -5079,22 +4739,6 @@ msgstr "Reset live link?"
 #: 
 msgid "export##reset_links_body"
 msgstr "This will break the current live link. Anyone with a broken link will not be able to access the files."
-
-#: 
-msgid "export##create_token_error_title"
-msgstr "Failed to Create Link"
-
-#: 
-msgid "export##create_token_error_message"
-msgstr "Could not create export link. Please check your connection and try again."
-
-#: 
-msgid "export##delete_token_error_title"
-msgstr "Failed to Reset Link"
-
-#: 
-msgid "export##delete_token_error_message"
-msgstr "Could not reset export link. Please check your connection and try again."
 
 #: 
 msgid "export##help##title"
@@ -5129,20 +4773,8 @@ msgid "file_download##error##unsupported_platform"
 msgstr "File saving is not supported on this platform."
 
 #: 
-msgid "file_download##error##no_storage_directory"
-msgstr "No storage directory available."
-
-#: 
-msgid "file_download##error##sharing_unavailable"
-msgstr "Sharing is not available on this device."
-
-#: 
 msgid "file_download##error##save_canceled"
 msgstr "Save canceled."
-
-#: 
-msgid "file_download##error##no_directory_selected"
-msgstr "No directory selected."
 
 #: 
 msgid "file_download##error##save_failed"
@@ -5199,4 +4831,20 @@ msgstr "Something went wrong"
 #: 
 msgid "soil##color##analysis_error##body"
 msgstr "There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
+
+#: 
+msgid "welcome##version_includes##bullet_5"
+msgstr "Improved experience of searching for coordinates on map"
+
+#: 
+msgid "welcome##version_includes##bullet_6"
+msgstr "Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data"
+
+#: 
+msgid "welcome##version_includes##bullet_7"
+msgstr "Fixed a bug where the color module would crash with overexposed photos"
+
+#: 
+msgid "projects##sites##transfer_offline"
+msgstr "Transferring sites is only available while online."
 
