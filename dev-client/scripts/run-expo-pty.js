@@ -14,6 +14,16 @@
  *         node run-expo-pty.js npm run ios -- --device <id>
  */
 
+// Force synchronous writes to stdout so lines reach the downstream pipeline
+// stage (report-launch-time.js) in real time instead of queuing in Node's
+// async pipe buffer. Without this, low-volume build output can sit invisibly
+// in the buffer until something (a reload, another build step) generates
+// enough data to flush it. The _handle API isn't stable public API, so guard
+// defensively — if unavailable, we just fall back to async writes.
+if (process.stdout._handle && typeof process.stdout._handle.setBlocking === 'function') {
+  process.stdout._handle.setBlocking(true);
+}
+
 // node-pty ships prebuilt natives, but npm sometimes doesn't set the exec bit
 // on the bundled spawn-helper (seen on macOS arm64 + Node 25). Fix it up
 // before loading the module so we don't get a cryptic "posix_spawnp failed".
@@ -64,9 +74,13 @@ const term = pty.spawn(cmd, cmdArgs, {
   env: process.env,
 });
 
-// Line-buffer PTY output. PTYs terminate lines with \r\n; strip the \r so
-// downstream pipeline stages (readline-based) see clean lines. Partial lines
-// (progress indicators with \r-only) stay in the buffer until \n arrives.
+// Line-buffer PTY output on \n only. Embedded \r characters (Metro's iOS
+// progress bars use bare \r to overwrite in place) are preserved inside the
+// line — the terminal at the end of the pipe interprets them as "cursor to
+// col 0" so progress bars render correctly as in-place overwrites.
+// Downstream scanners (report-launch-time.js) match substrings rather than
+// anchored line starts, so they still see "iOS Bundled" inside the line
+// even when it's preceded by accumulated progress frames.
 let buffer = '';
 term.onData(chunk => {
   buffer += chunk;
