@@ -18,19 +18,38 @@
 /**
  * Bidirectional merge between local JSON translations and POEditor.
  *
+ * ============================================================================
+ *  RUN ON A FEATURE BRANCH, NOT main.
+ *
+ *  This script makes irreversible changes to POEditor (phases 1–2) and then
+ *  commits + tags locally (phase 3). main is protected, so a push from main
+ *  would be rejected — and by then POEditor is already updated, leaving local
+ *  state and POEditor out of sync. Switch to a branch first:
+ *
+ *    git switch -c chore/sync-translations origin/main
+ *    npm run poeditor-merge
+ *
+ *  --dry-run is allowed on main (no uploads, no commits). Anything else is
+ *  blocked unless you're on a non-main branch.
+ * ============================================================================
+ *
  * Detects conflicts between local and POEditor changes since the last sync,
  * uploads local changes, downloads the merged result, and commits with a tag.
+ *
+ * Runs `i18n-check` as a pre-flight: a real merge bails on any error,
+ * a `--dry-run` shows the findings and proceeds anyway so the user can
+ * still preview what would change.
  *
  * Requires POEDITOR_API_TOKEN and POEDITOR_PROJECT_ID in the .env file.
  * Requires the file `locales/sync-tag` to contain the tag name of the last sync
  * (e.g. `translations/20260310T0109Z`). This tag must exist in git.
  *
  * Usage:
- *   npm run poeditor-merge                          # full merge
- *   npm run poeditor-merge -- --dry-run              # detect conflicts only, no changes
- *   npm run poeditor-merge -- --verbose              # full merge with detailed logging
- *   npm run poeditor-merge -- --project <id>         # use a different POEditor project
- *   npm run poeditor-merge -- --no-commit            # merge but skip commit/tag (for testing)
+ *   npm run poeditor-merge                          # full merge (must be on a branch)
+ *   npm run poeditor-merge -- --dry-run             # detect conflicts only, no changes
+ *   npm run poeditor-merge -- --verbose             # full merge with detailed logging
+ *   npm run poeditor-merge -- --project <id>        # use a different POEditor project
+ *   npm run poeditor-merge -- --no-commit           # upload + download but skip commit/tag
  */
 
 import {execSync} from 'child_process';
@@ -49,6 +68,8 @@ import path from 'path';
 import {diffWords} from 'diff';
 import gettextParser from 'gettext-parser';
 import {i18nextToPo} from 'i18next-conv';
+
+import {printChecks, runAllChecks} from './check.mjs';
 
 // POEditor rate-limits uploads to 1 per 20s (free) or 1 per 10s (paid).
 const UPLOAD_DELAY_MS = 21000;
@@ -72,6 +93,10 @@ const LANGUAGES = readdirSync('src/translations')
 
 function printUsage() {
   console.log('Usage: npm run poeditor-merge [-- <options>]');
+  console.log('');
+  console.log(
+    'Run on a feature branch, not main — full runs will refuse to start on main.',
+  );
   console.log('');
   console.log('Options:');
   console.log(
@@ -262,7 +287,7 @@ const projectArg =
 /** Run a localization script via execSync. Skips if DRY_RUN. */
 function runScript(scriptName, scriptArgs) {
   const cmd =
-    `node --env-file=.env scripts/localization/${scriptName} ${projectArg} ${scriptArgs}`.replace(
+    `node --env-file=.env scripts/i18n/${scriptName} ${projectArg} ${scriptArgs}`.replace(
       /  +/g,
       ' ',
     );
@@ -531,6 +556,37 @@ async function main() {
   }
 
   // -------------------------------------------------------
+  // Pre-flight: refuse to run on main (anything but --dry-run)
+  // -------------------------------------------------------
+  // Phases 1–2 push to POEditor and Phase 3 commits + tags. main is
+  // protected, so a push from main would be rejected after the upload
+  // already landed in POEditor — leaving local state and POEditor out of
+  // sync, which is hard to recover from. Force the user onto a branch.
+  if (!DRY_RUN) {
+    let currentBranch = '';
+    try {
+      currentBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+        encoding: 'utf-8',
+      }).trim();
+    } catch {
+      currentBranch = '';
+    }
+    if (currentBranch === 'main') {
+      console.error('Refusing to run on main.\n');
+      console.error(
+        'This script uploads to POEditor and then commits + tags. main is\n' +
+          'protected from direct pushes, and an aborted recovery leaves POEditor\n' +
+          'and local state out of sync.\n',
+      );
+      console.error('Switch to a feature branch first:');
+      console.error('  git switch -c chore/sync-translations origin/main\n');
+      console.error('Or run a dry-run, which is allowed on main:');
+      console.error('  npm run poeditor-merge -- --dry-run');
+      process.exit(1);
+    }
+  }
+
+  // -------------------------------------------------------
   // Pre-flight: require clean working tree for files we modify
   // -------------------------------------------------------
   if (!DRY_RUN) {
@@ -570,6 +626,38 @@ async function main() {
       process.exit(1);
     }
     verbose('Working tree is clean.');
+  }
+
+  // -------------------------------------------------------
+  // Pre-flight: i18n-check
+  // -------------------------------------------------------
+  // Runs the same gate as `npm run i18n-check` / CI / pre-commit. Errors
+  // here mean the local state is broken in ways that would either fail CI
+  // immediately after this merge commits, or pollute POEditor with garbage.
+  // Better to bail before phases 1–2 do anything irreversible.
+  //
+  // Dry-run still runs the check but proceeds regardless — the user is
+  // exploring "what would happen", and a still-broken local state is part
+  // of that picture they want to see.
+  console.log('Pre-flight: running i18n-check...\n');
+  const checkResult = await runAllChecks();
+  printChecks(checkResult);
+  if (checkResult.errors.length > 0) {
+    if (DRY_RUN) {
+      console.log(
+        `\n(dry-run) i18n-check reported ${checkResult.errors.length} error group(s) — proceeding anyway so you can see what would change. A real merge would refuse to start.\n`,
+      );
+    } else {
+      console.error(
+        `\nRefusing to merge: i18n-check reported ${checkResult.errors.length} error group(s).`,
+      );
+      console.error(
+        'Fix the errors (or run `npm run i18n-check` for the full report) and re-run.',
+      );
+      process.exit(1);
+    }
+  } else {
+    console.log(`  i18n-check passed.\n`);
   }
 
   // -------------------------------------------------------
@@ -819,7 +907,7 @@ async function main() {
   console.log('Phase 3: Downloading merged translations...\n');
 
   // 1. Regenerate en.po from en.json
-  runNpmScript('localization-to-po');
+  runNpmScript('i18n-to-po');
 
   // 2. Download PO files from POEditor
   // --force skips the download script's uncommitted-changes check (merge has its own pre-flight)
@@ -836,7 +924,7 @@ async function main() {
   runScript('poeditor-download.mjs', '--force');
 
   // 3. Regenerate JSON from PO
-  runNpmScript('localization-to-json');
+  runNpmScript('i18n-to-json');
 
   console.log('');
 

@@ -14,4 +14,4 @@ if git diff --cached --name-only | grep -qE "(^|/)\.env$|(^|/)\.env\.local$|(^|/
 fi
 
 cd dev-client
-npx lint-staged
+npx lint-staged && npm run i18n-check

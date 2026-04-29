@@ -7,8 +7,8 @@
  * adds any missing keys with the English value prefixed by "TK ".
  *
  * Usage:
- *   npm run localization-fill-missing           # fill all languages
- *   npm run localization-fill-missing -- es fr   # fill specific languages
+ *   npm run i18n-fill-missing           # fill all languages
+ *   npm run i18n-fill-missing -- es fr   # fill specific languages
  */
 import {readdirSync, readFileSync, writeFileSync} from 'fs';
 import path from 'path';

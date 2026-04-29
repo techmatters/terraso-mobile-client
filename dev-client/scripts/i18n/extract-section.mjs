@@ -4,14 +4,14 @@
  * Extract a section from two translation JSON files for side-by-side review.
  *
  * Usage:
- *   node scripts/localization/extract-section.mjs <lang> [section]
+ *   node scripts/i18n/extract-section.mjs <lang> [section]
  *
  * Examples:
- *   node scripts/localization/extract-section.mjs es              # list sections with sizes
- *   node scripts/localization/extract-section.mjs es site         # extract site section
- *   node scripts/localization/extract-section.mjs es soil.texture # extract soil.texture
- *   node scripts/localization/extract-section.mjs es soil.match_info --batch 1  # first 50 match_info entries
- *   node scripts/localization/extract-section.mjs es soil.match_info --batch 2  # next 50
+ *   node scripts/i18n/extract-section.mjs es              # list sections with sizes
+ *   node scripts/i18n/extract-section.mjs es site         # extract site section
+ *   node scripts/i18n/extract-section.mjs es soil.texture # extract soil.texture
+ *   node scripts/i18n/extract-section.mjs es soil.match_info --batch 1  # first 50 match_info entries
+ *   node scripts/i18n/extract-section.mjs es soil.match_info --batch 2  # next 50
  *
  * Output: JSON with { "en": { ... }, "<lang>": { ... } } for the requested section.
  * Large sections (>30k combined) print a warning to stderr.

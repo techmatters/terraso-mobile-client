@@ -123,61 +123,49 @@ export function formatValidationResult(result) {
 }
 
 /**
- * Main validation function
+ * Run variable-consistency check across all non-en locale files.
+ * Pure: returns the structured result without printing or exiting.
+ *
+ * @param {object} [opts]
+ * @param {URL} [opts.localesDir]
+ * @returns {Promise<{results: Array<{language: string, mismatches: Array}>}>}
  */
-const validateAllTranslations = async () => {
-  // Read English reference file
+export async function runValidate({localesDir = LOCALE_FILES_FOLDER} = {}) {
   const englishContent = await readFile(
-    new URL(`${SOURCE_LOCALE}.json`, LOCALE_FILES_FOLDER),
+    new URL(`${SOURCE_LOCALE}.json`, localesDir),
   );
-  const englishJson = JSON.parse(englishContent);
-  const englishFlat = flatten(englishJson);
+  const englishFlat = flatten(JSON.parse(englishContent));
 
-  // Get all locale files
-  const files = await filesInFolder(LOCALE_FILES_FOLDER);
-  const localeFiles = files.filter(file => file.toString().endsWith('.json'));
+  const files = await filesInFolder(localesDir);
+  const localeFiles = files.filter(f => f.toString().endsWith('.json'));
 
   const results = [];
-
-  // Process each locale file
   for (const filePath of localeFiles) {
     const languageCode = path.parse(filePath.pathname).name;
-
-    // Skip the source locale
-    if (languageCode === SOURCE_LOCALE) {
-      continue;
-    }
-
+    if (languageCode === SOURCE_LOCALE) continue;
     const translationContent = await readFile(filePath);
-    const translationJson = JSON.parse(translationContent);
-    const translationFlat = flatten(translationJson);
-
-    const result = validateTranslation(
-      englishFlat,
-      translationFlat,
-      languageCode,
+    const translationFlat = flatten(JSON.parse(translationContent));
+    results.push(
+      validateTranslation(englishFlat, translationFlat, languageCode),
     );
-    results.push(result);
   }
+  return {results};
+}
 
-  // Print results
-  let hasErrors = false;
-  for (const result of results) {
-    console.log(formatValidationResult(result));
-    if (result.mismatches.length > 0) {
-      hasErrors = true;
-    }
-    console.log(''); // Empty line between languages
-  }
-
-  // Exit with error code if mismatches found
-  process.exit(hasErrors ? 1 : 0);
-};
-
-// Run if this is the main module
+// ---------- CLI entry point ----------
 if (import.meta.url === `file://${process.argv[1]}`) {
-  validateAllTranslations().catch(err => {
-    console.error('Error validating translations:', err);
-    process.exit(1);
-  });
+  runValidate()
+    .then(({results}) => {
+      let hasErrors = false;
+      for (const result of results) {
+        console.log(formatValidationResult(result));
+        if (result.mismatches.length > 0) hasErrors = true;
+        console.log('');
+      }
+      process.exit(hasErrors ? 1 : 0);
+    })
+    .catch(err => {
+      console.error('Error validating translations:', err);
+      process.exit(1);
+    });
 }

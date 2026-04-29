@@ -24,7 +24,7 @@ import {
   formatValidationResult,
   validateTranslation,
   variablesMatch,
-} from './validateI18nVariables.mjs';
+} from './find-variables.mjs';
 import {flatten} from 'flat';
 
 // Test extractVariables
@@ -180,7 +180,7 @@ function testFormatValidationResult() {
   const formatted = formatValidationResult(resultWithMismatches);
   assert.equal(
     formatted,
-    `----- es -----
+    `--- es.json ---
 "general.measurements": {{measurement}}, {{units}}, {{units}} <--> {{medición}}, {{unidades}}, {{unidades}}`,
   );
 
@@ -191,7 +191,7 @@ function testFormatValidationResult() {
   };
 
   const formattedNoMismatches = formatValidationResult(resultNoMismatches);
-  assert.equal(formattedNoMismatches, `----- fr -----\nNo mismatches found.`);
+  assert.equal(formattedNoMismatches, `--- fr.json ---\nNo mismatches found.`);
 
   // Test with multiple mismatches
   const resultMultipleMismatches = {
@@ -213,7 +213,7 @@ function testFormatValidationResult() {
   const formattedMultiple = formatValidationResult(resultMultipleMismatches);
   assert.equal(
     formattedMultiple,
-    `----- uk -----
+    `--- uk.json ---
 "key1": {{var1}} <--> {{var1_uk}}
 "key2": {{var2}}, {{var3}} <--> {{var2}}`,
   );

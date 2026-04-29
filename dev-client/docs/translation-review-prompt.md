@@ -54,7 +54,7 @@ To skip an issue, either delete it from the review file or add `[SKIP]` to its h
 
 ### Bootstrapping translations for TK placeholders
 
-After adding TK placeholders (via `npm run localization-fill-missing`), you can use Claude to generate real translations. These will be marked fuzzy on the next POEditor sync so translators can review them.
+After adding TK placeholders (via `npm run i18n-fill-missing`), you can use Claude to generate real translations. These will be marked fuzzy on the next POEditor sync so translators can review them.
 
 ```
 Please translate all TK placeholder strings in
@@ -88,9 +88,9 @@ I need you to review the LANG translations for the LandPKS Soil ID mobile app. T
 Use the helper script to extract sections for review:
 
 ```bash
-node scripts/localization/extract-section.mjs LANG          # list sections
-node scripts/localization/extract-section.mjs LANG <section> # extract a section
-node scripts/localization/extract-section.mjs LANG soil.match_info --batch N  # batch large sections
+node scripts/i18n/extract-section.mjs LANG          # list sections
+node scripts/i18n/extract-section.mjs LANG <section> # extract a section
+node scripts/i18n/extract-section.mjs LANG soil.match_info --batch N  # batch large sections
 ```
 
 Work through **every section** of the translation file, comparing the English source against the LANG translation. For each section, run the extract script and review the output.
