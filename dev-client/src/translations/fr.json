@@ -48,8 +48,7 @@
         "dashboard": {
             "privacy": "Confidentialité des données",
             "delete_button": "Supprimer ce site",
-            "default_title": "Marqueur temporaire",
-            "speed_dial": {}
+            "default_title": "Marqueur temporaire"
         },
         "notes": {
             "title": "Notes du site",
@@ -226,7 +225,6 @@
             "export": "Exporter"
         },
         "inputs": {
-            "units": {},
             "instructions": {
                 "title": "Note épinglée",
                 "description": "Ce contenu s'affichera en haut de la section Notes de chaque site de ce projet.",
@@ -248,8 +246,7 @@
                     "body": "Les observations de fosses pédologiques saisies seront supprimées. Cette action est irréversible.",
                     "confirm": "Modifier"
                 }
-            },
-            "soil_source": {}
+            }
         },
         "team": {
             "add": "Ajouter un membre de l'équipe",
@@ -270,7 +267,6 @@
         "sites": {
             "transfer": "Transférer des sites",
             "transfer_offline": "Le transfert de sites n'est disponible qu'en ligne.",
-            "search": {},
             "sort": {
                 "label": "Trier les sites par :",
                 "nameAsc": "Nom du site (A à Z)",
@@ -309,7 +305,6 @@
         "create_button": "Créer un projet",
         "search_label": "Saisissez du texte pour filtrer les projets par nom",
         "role_filter_label": "Filtrer les projets par rôle",
-        "edit": {},
         "add_user": {
             "heading": "Ajouter un membre de l'équipe",
             "help_text": "Saisissez l'adresse e-mail du compte Terraso de la personne. Pour créer un compte Terraso, installez l'application LandPKS Soil ID et connectez-vous.",
@@ -355,7 +350,6 @@
         "unknown_version": "Version d'application non balisée {{environment}}",
         "select_language": "Langue: {{language}}"
     },
-    "badge": {},
     "general": {
         "save": "Sauvegarder",
         "use": "Utiliser",
@@ -380,7 +374,6 @@
         "you_name": "{{name}} (vous)",
         "email_placeholder": "nom@domaine.com",
         "email_label": "Adresse email",
-        "measurement_units": {},
         "filter": {
             "no_role": "Aucun",
             "no_project": "Aucun"
@@ -473,7 +466,6 @@
         "error": "Erreur",
         "surface": "Surface du sol",
         "pit": "Fosse de sol",
-        "data": {},
         "depth": {
             "error": {
                 "overlaps": "Chevauchements existants",

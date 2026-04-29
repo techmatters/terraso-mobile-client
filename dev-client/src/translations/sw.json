@@ -48,8 +48,7 @@
         "dashboard": {
             "privacy": "Faragha ya Data",
             "delete_button": "Futa eneo hili",
-            "default_title": "Pini ya Muda",
-            "speed_dial": {}
+            "default_title": "Pini ya Muda"
         },
         "notes": {
             "title": "Vidokezo vya Eneo",
@@ -226,7 +225,6 @@
             "export": "Hamisha"
         },
         "inputs": {
-            "units": {},
             "instructions": {
                 "title": "Dokezo Lililobandikwa",
                 "description": "Maudhui haya yataonyeshwa juu ya sehemu ya Vidokezo ya kila eneo katika mradi huu.",
@@ -248,8 +246,7 @@
                     "body": "Uchunguzi wa mashimo ya udongo ambao umeingizwa utafutwa. Kitendo hiki hakiwezi kutenduliwa.",
                     "confirm": "Badilisha"
                 }
-            },
-            "soil_source": {}
+            }
         },
         "team": {
             "add": "Ongeza mwanachama wa timu",
@@ -270,7 +267,6 @@
         "sites": {
             "transfer": "Hamisha Maeneo",
             "transfer_offline": "Uhamisho wa tovuti unapatikana tu ukiwa mtandaoni.",
-            "search": {},
             "sort": {
                 "label": "Panga maeneo kulingana na:",
                 "nameAsc": "Jina la eneo (A hadi Z)",
@@ -309,7 +305,6 @@
         "create_button": "Unda mradi",
         "search_label": "Ingiza maandishi ili kuchuja miradi kwa majina",
         "role_filter_label": "Chuja miradi kwa majukumu",
-        "edit": {},
         "add_user": {
             "heading": "Ongeza Mwanachama wa Timu",
             "help_text": "Ingiza anwani ya barua pepe ya akaunti ya Terraso ya mtu huyo. Akaunti ya Terraso inaweza kuundwa kwa kusakinisha programu ya LandPKS Soil ID na kuingia.",
@@ -355,7 +350,6 @@
         "unknown_version": "Toleo la programu lisilo na lebo {{environment}}",
         "select_language": "Lugha: {{language}}"
     },
-    "badge": {},
     "general": {
         "save": "Hifadhi",
         "use": "Tumia",
@@ -380,7 +374,6 @@
         "you_name": "{{name}} (wewe)",
         "email_placeholder": "jina@domain.com",
         "email_label": "Anwani ya barua pepe",
-        "measurement_units": {},
         "filter": {
             "no_role": "Hakuna",
             "no_project": "Hakuna"
@@ -473,7 +466,6 @@
         "error": "Hitilafu",
         "surface": "Uso wa Udongo",
         "pit": "Shimo la Udongo",
-        "data": {},
         "depth": {
             "error": {
                 "overlaps": "Viingiliano vilivyopo",

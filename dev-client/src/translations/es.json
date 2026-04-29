@@ -48,8 +48,7 @@
         "dashboard": {
             "privacy": "Privacidad de datos",
             "delete_button": "Eliminar este sitio",
-            "default_title": "Marcador temporario",
-            "speed_dial": {}
+            "default_title": "Marcador temporario"
         },
         "notes": {
             "title": "Notas del sitio",
@@ -226,7 +225,6 @@
             "export": "Exportar"
         },
         "inputs": {
-            "units": {},
             "instructions": {
                 "title": "Nota destacada",
                 "description": "Este contenido se mostrará en la parte superior de la sección Notas de cada sitio de este proyecto.",
@@ -248,8 +246,7 @@
                     "body": "Las observaciones de la calicata que se hayan ingresado se eliminarán. Esta acción no se puede deshacer.",
                     "confirm": "Cambiar"
                 }
-            },
-            "soil_source": {}
+            }
         },
         "team": {
             "add": "Añadir miembro de equipo",
@@ -270,7 +267,6 @@
         "sites": {
             "transfer": "Transferir sitios",
             "transfer_offline": "La transferencia de sitios sólo está disponible mientras estás en línea.",
-            "search": {},
             "sort": {
                 "label": "Ordenar sitios por:",
                 "nameAsc": "Nombre del sitio (A - Z)",
@@ -309,7 +305,6 @@
         "create_button": "Crear proyecto",
         "search_label": "Ingresa texto para filtrar proyectos por nombre",
         "role_filter_label": "Filtrar proyectos por rol",
-        "edit": {},
         "add_user": {
             "heading": "Añadir miembro de equipo",
             "help_text": "Ingresa la dirección de email de la cuenta Terraso de la persona. Puede crear una cuenta Terraso instalando la aplicación LandPKS Soil ID e iniciando sesión.",
@@ -355,7 +350,6 @@
         "unknown_version": "Versión de la aplicación sin etiquetar {{environment}}",
         "select_language": "Idioma: {{language}}"
     },
-    "badge": {},
     "general": {
         "save": "Guardar",
         "use": "Usar",
@@ -380,7 +374,6 @@
         "you_name": "{{name}} (tú)",
         "email_placeholder": "nombre@dominio.com",
         "email_label": "Dirección de email",
-        "measurement_units": {},
         "filter": {
             "no_role": "Ninguno",
             "no_project": "Ninguno"
@@ -473,7 +466,6 @@
         "error": "Error",
         "surface": "Superficie del suelo",
         "pit": "Calicata",
-        "data": {},
         "depth": {
             "error": {
                 "overlaps": "Superposiciones existentes",

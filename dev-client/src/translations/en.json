@@ -73,8 +73,7 @@
         "dashboard": {
             "privacy": "Data Privacy",
             "delete_button": "Delete this site",
-            "default_title": "Temporary Pin",
-            "speed_dial": {}
+            "default_title": "Temporary Pin"
         },
         "soil_id": {
             "title": "Soil ID",
@@ -239,8 +238,6 @@
             "settings": "Settings"
         },
         "inputs": {
-            "units": {},
-            "soil_source": {},
             "instructions": {
                 "title": "Pinned Note",
                 "screen_title": "Pinned Note",
@@ -274,7 +271,6 @@
                 "action_name": "Leave"
             }
         },
-        "edit": {},
         "settings": {
             "delete": "Delete this project",
             "delete_button": "Delete",
@@ -304,7 +300,6 @@
                 "body": "Transferred sites will use the inputs, settings and team member roles from this project.\n\nIf sites have observations entered at different depths than what is specified in this project, those observations will be deleted. This can’t be undone.",
                 "action_name": "Transfer"
             },
-            "search": {},
             "sort": {
                 "label": "Sort sites by:",
                 "nameAsc": "Site name (A to Z)",
@@ -363,7 +358,6 @@
         "version": "Version {{version}} ({{build}}) {{environment}}",
         "select_language": "Language: {{language}}"
     },
-    "badge": {},
     "general": {
         "save": "Save",
         "dismiss": "Dismiss",
@@ -379,7 +373,6 @@
             "CONTRIBUTOR": "Contributor",
             "VIEWER": "Viewer"
         },
-        "measurement_units": {},
         "cancel": "Cancel",
         "copied": "Copied!",
         "add": "Add",
@@ -581,7 +574,6 @@
                 "DEEP_VERTICAL_CRACKS": "Deep vertical cracks"
             }
         },
-        "data": {},
         "soil_preset": {
             "header": "Change soil pit depths",
             "info": "Observations already entered for a depth will be deleted when the depth is changed.",
