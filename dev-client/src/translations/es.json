@@ -25,8 +25,6 @@
         "placeholder": "Buscar en mapa"
     },
     "site": {
-        "progress": "Progreso: {{progress}}",
-        "members": "{{members}} Miembros",
         "coords": "{{lat}}, {{long}}",
         "empty": {
             "info": "<bold>Tres formas de crear un sitio:</bold>",
@@ -38,36 +36,19 @@
         "create": {
             "title": "Crear sitio",
             "description": "Crea un sitio aquí para guardar esta ubicación, recopilar observaciones y ver informes más detallados.",
-            "gps": "Usar mi ubicación actual (GPS)",
-            "pin": "Usar marcador del mapa",
-            "manual": "Ingresa coordenadas",
             "latitude": "Latitud",
             "longitude": "Longitud",
-            "button_label": "Crear sitio aquí",
             "name_label": "Nombre del sitio",
             "location_label": "Ubicación del sitio",
             "location_accuracy": "Precisión GPS: {{accuracyM}} m",
             "add_to_project_label": "Añadir al proyecto",
             "add_to_project_caption": "Proyecto",
-            "add_to_project_tooltip": "El sitio heredará la configuración del proyecto, incluidos los requisitos de recolección de datos y los miembros del equipo. Crea nuevos proyectos desde la pestaña Proyectos en la navegación inferior.",
-            "privacy_tooltip": "Los proyectos públicos sincronizarán los datos con portales de datos públicos.",
-            "privacy_tooltip_link": "Aprender más"
+            "add_to_project_tooltip": "El sitio heredará la configuración del proyecto, incluidos los requisitos de recolección de datos y los miembros del equipo. Crea nuevos proyectos desde la pestaña Proyectos en la navegación inferior."
         },
         "dashboard": {
             "privacy": "Privacidad de datos",
-            "team_button": "Equipo",
-            "transfer_label": "Transferir al proyecto",
-            "copy_download_link_button": "Copiar enlace de descarga del sitio",
-            "archive_button": "Archivar este sitio",
-            "archive_button_help_text": "Marcar este sitio como sólo lectura",
             "delete_button": "Eliminar este sitio",
-            "location_accuracy": "Precisión de ubicación",
-            "default_title": "Marcador temporario",
-            "speed_dial": {
-                "note_label": "NOTA",
-                "photo_label": "FOTO",
-                "bedrock_label": "ROCA MADRE"
-            }
+            "default_title": "Marcador temporario"
         },
         "notes": {
             "title": "Notas del sitio",
@@ -105,12 +86,10 @@
             "NOTES": "Notas"
         },
         "list_title": "Lista de sitios",
-        "last_updated": "Última modificación: {{date}} por {{name}}",
         "more_info": "Aprender más",
         "your_location": "Tu ubicación",
         "soil_id_prediction": "Mejor coincidencia de suelo",
         "ecological_site_prediction": "Sitio ecológico de mejor coincidencia",
-        "annual_precip_avg": "Precipitación anual promedio",
         "elevation_label": "Elevación",
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "desconocido",
@@ -227,8 +206,6 @@
     },
     "projects": {
         "label": "Proyecto",
-        "title": "Proyectos",
-        "header": "Proyectos",
         "none": {
             "header": "No tienes ningún proyecto.",
             "info": "Los proyectos te permiten agrupar sitios, establecer requisitos y administrar a los miembros del equipo."
@@ -248,12 +225,6 @@
             "export": "Exportar"
         },
         "inputs": {
-            "units": {
-                "heading": "Unidades de medida",
-                "a11yLabel": "unidades de medida",
-                "english": "Inglés (pulgadas, pies, libras)",
-                "metric": "Métrico (cm, m, kg)"
-            },
             "instructions": {
                 "title": "Nota destacada",
                 "description": "Este contenido se mostrará en la parte superior de la sección Notas de cada sitio de este proyecto.",
@@ -275,12 +246,6 @@
                     "body": "Las observaciones de la calicata que se hayan ingresado se eliminarán. Esta acción no se puede deshacer.",
                     "confirm": "Cambiar"
                 }
-            },
-            "soil_source": {
-                "heading": "Fuente de información del suelo predeterminada",
-                "survey": "USDA NRCS Estudio del suelo",
-                "grids": "SoilGrids (cuadrículas del suelo)",
-                "a11yLabel": "fuente de información del suelo predeterminada"
             }
         },
         "team": {
@@ -294,27 +259,14 @@
             }
         },
         "settings": {
-            "cancel": "Cancelar",
-            "archive": "Archivar este proyecto",
             "delete": "Eliminar este proyecto",
-            "copy_download_link": "Copiar enlace de descarga del proyecto",
-            "download_link_description": "Un archivo comprimido que contiene todos los recursos del proyecto, incluyendo un archivo .csv con los datos del sitio, notas de campo, registros de auditoría y fotos. Cualquier persona con este enlace puede visualizar todos los recursos.",
-            "archive_button": "Archivar",
-            "archive_button_prompt": "¿Archivar proyecto?",
-            "archive_description": "El proyecto se moverá a Proyectos archivados, por lo que será de sólo lectura. Los miembros del equipo podrán acceder a los datos, y los administradores del proyecto podrán restaurarlo en cualquier momento. Los proyectos públicos archivados seguirán siendo visibles en los portales de datos.",
             "delete_button": "Eliminar",
             "delete_button_prompt": "¿Eliminar proyecto?",
             "delete_description": "Esto eliminará permanentemente el proyecto {{projectName}} y las observaciones de sus sitios. Esta acción no se puede deshacer.\n\nLos administradores del proyecto tienen la opción de transferir los sitios a otro proyecto para conservar las observaciones."
         },
         "sites": {
-            "add": "Añadir sitios",
             "transfer": "Transferir sitios",
             "transfer_offline": "La transferencia de sitios sólo está disponible mientras estás en línea.",
-            "create": "Crear sitios",
-            "search": {
-                "placeholder": "Buscar",
-                "accessility_label": "Buscar sitios"
-            },
             "sort": {
                 "label": "Ordenar sitios por:",
                 "nameAsc": "Nombre del sitio (A - Z)",
@@ -323,8 +275,6 @@
             },
             "empty_viewer": "El proyecto aún no tiene sitios.",
             "empty_contributor": "Puedes transferir sitios LandPKS Soil ID existentes a este proyecto. También puedes crear nuevos sitios en la pestaña Sitios y añadirlos a este proyecto.",
-            "go_to": "Ir al sitio",
-            "audit_log": "Registro de auditoría",
             "remove_site": "Eliminar del proyecto",
             "delete_site": "Eliminar sitio",
             "delete_site_modal": {
@@ -352,14 +302,9 @@
             "lastModAsc": "Última modificación (más reciente)",
             "lastModDesc": "Última modificación (menos reciente)"
         },
-        "learn_more": "Aprende más acerca del uso de proyectos",
         "create_button": "Crear proyecto",
-        "go_to": "Ir al proyecto",
         "search_label": "Ingresa texto para filtrar proyectos por nombre",
         "role_filter_label": "Filtrar proyectos por rol",
-        "edit": {
-            "input_header": "Configuración general del proyecto"
-        },
         "add_user": {
             "heading": "Añadir miembro de equipo",
             "help_text": "Ingresa la dirección de email de la cuenta Terraso de la persona. Puede crear una cuenta Terraso instalando la aplicación LandPKS Soil ID e iniciando sesión.",
@@ -405,15 +350,9 @@
         "unknown_version": "Versión de la aplicación sin etiquetar {{environment}}",
         "select_language": "Idioma: {{language}}"
     },
-    "badge": {
-        "new": "Nuevo"
-    },
     "general": {
-        "sites": "sitios",
-        "users": "usuarios",
         "save": "Guardar",
         "use": "Usar",
-        "details": "Detalles",
         "apply": "Aplicar",
         "role": {
             "MANAGER": "Administrador",
@@ -423,7 +362,6 @@
         "cancel": "Cancelar",
         "copied": "¡Copiado!",
         "add": "Añadir",
-        "submit": "Enviar",
         "change": "Cambiar",
         "done": "Realizado",
         "required": "Obligatorio",
@@ -431,19 +369,12 @@
         "no": "No",
         "next": "Siguiente",
         "proceed": "Continuar",
-        "last_modified": "Última modificación",
         "last_modified_by": "última modificación {{user}}, {{date}}",
         "select_all": "Seleccionar todo",
         "you_name": "{{name}} (tú)",
         "email_placeholder": "nombre@dominio.com",
         "email_label": "Dirección de email",
-        "profile_image_alt": "Imagen de perfil",
-        "measurement_units": {
-            "METRIC": "Métrico",
-            "ENGLISH": "Inglés"
-        },
         "filter": {
-            "no_sort": "Ninguno",
             "no_role": "Ninguno",
             "no_project": "Ninguno"
         },
@@ -484,7 +415,6 @@
         "terms_of_service_link_text": "Condiciones de servicio"
     },
     "errors": {
-        "generic": "Error al guardar la información de la identificación del suelo.",
         "sync_conflict": {
             "headline": "Conflicto de proyectos",
             "body": "Este proyecto ha cambiado. Más información y ayuda en el sitio web de LandPKS.",
@@ -522,29 +452,20 @@
     },
     "geo": {
         "latitude": {
-            "inline": "latitud",
             "title": "Latitud"
         },
         "longitude": {
-            "inline": "longitud",
             "title": "Longitud"
         },
         "elevation": {
-            "inline": "elevación",
             "title": "Elevación"
         }
     },
     "soil": {
-        "bedrock": "Roca madre",
         "loading": "Cargando…",
         "error": "Error",
         "surface": "Superficie del suelo",
         "pit": "Calicata",
-        "data": {
-            "rockFragmentVolume": "Fragmento de roca",
-            "texture": "Textura",
-            "colorValue": "Color"
-        },
         "depth": {
             "error": {
                 "overlaps": "Superposiciones existentes",
@@ -656,9 +577,6 @@
             },
             "guide_intro": "¿No conoces la clase textural? Utiliza la guía paso a paso.",
             "use_guide_label": "Usar guía",
-            "clay_title": "Porcentaje arcilla",
-            "clay_label": "Porcentaje arcilla",
-            "clay_help": "0–100%",
             "fragment_title": "Volumen de fragmentos de roca",
             "rockfragment": {
                 "VOLUME_0_1": "0–1%",
@@ -765,7 +683,6 @@
         "soil_id": "Soil ID",
         "add_depth_label": "Añadir profundidad",
         "project_settings": {
-            "pit_required_label": "Se requiere calicata",
             "required_data_title": "Requisitos de observación"
         },
         "required_method": "{{method}} (obligatorio)",
@@ -1733,8 +1650,6 @@
             "degree_placeholder": "Grado",
             "slope_meter": "Medidor de pendiente",
             "camera_grant": "Permitir el uso de la cámara",
-            "no_camera": "Sin acceso a la cámara",
-            "no_camera_explanation": "Para mejores resultados, concede a LandPKS Soil ID acceso a tu cámara desde Ajustes",
             "select_labels": {
                 "FLAT": "Plana",
                 "FLAT_PERCENT": "0–2%",
@@ -1818,7 +1733,6 @@
     },
     "account": {
         "google_login": "Ingresar con Google",
-        "apple_login": "Ingresar con Apple",
         "microsoft_login": "Ingresar con Microsoft"
     },
     "bottom_navigation": {
@@ -1828,9 +1742,7 @@
     },
     "listfilter": {
         "open_modal_label": "Actualizar lista de filtros",
-        "num_filters_label": "Número de filtros aplicados",
-        "clear_search_label": "Limpiar filtro de búsqueda",
-        "text_input_label": "Filtrar lista por entrada de búsqueda"
+        "num_filters_label": "Número de filtros aplicados"
     },
     "image": {
         "use_camera": "Usar cámara",
@@ -1859,28 +1771,16 @@
         "live_link": "Enlace en vivo",
         "reset_live_link": "Restablecer enlace en vivo",
         "site_export_title": "Exportar sitio",
-        "site_export_description": "Descargar o compartir los datos de este sitio.",
-        "site_export_button": "Exportar datos del sitio",
-        "what_is_in_file": "¿Qué hay en el archivo?",
-        "loading": "Cargando configuración de exportación...",
-        "downloading": "Descargando...",
         "preparing_file": "Preparando el archivo {{resourceType}} para {{name}}",
         "preparing_file_message": "Creando tu archivo de exportación. Puede tardar un momento...",
         "save_dialog_title": "Guardar datos de LandPKS para {{name}}",
-        "save_error_title": "Error al guardar",
-        "save_error_message": "No se pudo guardar el archivo: {{error}}",
         "share_title": "Exportación de datos de LandPKS para los sitios de {{name}}",
         "share_subject": "Enlace a los sitios de LandPKS de {{name}}",
-        "share_android_message": "Exportar datos de {{resourceType}} para {{name}}:",
         "share_message_user": "Este enlace incluirá todos los datos del sitio {{name}}, incluidos los sitios de los proyectos de los miembros.",
         "share_message_project": "Este enlace incluirá todos los datos del sitio del proyecto \"{{name}}\".",
         "share_message_site": "Este enlace incluirá todos los datos del sitio \"{{name}}\".",
         "reset_links_title": "¿Restablecer enlaces para compartir?",
         "reset_links_body": "Esto romperá el enlace en vivo actual. Cualquier persona con un enlace roto no podrá acceder a los archivos.",
-        "create_token_error_title": "No se pudo crear el enlace",
-        "create_token_error_message": "No se pudo crear enlace de exportación. Verifica tu conexión y vuelve a intentarlo.",
-        "delete_token_error_title": "No se pudo restablecer el enlace",
-        "delete_token_error_message": "No se pudo restablecer el enlace de exportación. Verifica tu conexión y vuelve a intentarlo.",
         "help": {
             "title": "Opciones de exportación",
             "section_file_vs_link": "Archivo o enlace",
@@ -1899,10 +1799,7 @@
     "file_download": {
         "error": {
             "unsupported_platform": "Esta plataforma no admite guardar archivos.",
-            "no_storage_directory": "No hay ningún directorio de almacenamiento disponible.",
-            "sharing_unavailable": "La función de compartir no está disponible en este dispositivo.",
             "save_canceled": "Guardar cancelado.",
-            "no_directory_selected": "No hay ningún directorio seleccionado",
             "save_failed": "No se pudo guardar el archivo.",
             "unknown": "Se produjo un error desconocido."
         }

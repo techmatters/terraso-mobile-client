@@ -25,8 +25,6 @@
         "placeholder": "Rechercher sur la carte"
     },
     "site": {
-        "progress": "Progression : {{progress}}",
-        "members": "{{members}} Membres",
         "coords": "{{lat}}, {{long}}",
         "empty": {
             "info": "<bold>Trois façons de créer un site :</bold>\n",
@@ -38,36 +36,19 @@
         "create": {
             "title": "Créer un site",
             "description": "Créez un site ici pour enregistrer cet emplacement, saisir des observations et voir des rapports plus détaillés.",
-            "gps": "Utiliser ma position actuelle (GPS)",
-            "pin": "Utiliser l'épingle de la carte",
-            "manual": "Entrez les coordonnées",
             "latitude": "Latitude",
             "longitude": "Longitude",
-            "button_label": "Créer un site ici",
             "name_label": "Nom du site",
             "location_label": "Emplacement du site",
             "location_accuracy": "Précision GPS : {{accuracyM}} m",
             "add_to_project_label": "Ajouter au projet",
             "add_to_project_caption": "Projet",
-            "add_to_project_tooltip": "Le site héritera des paramètres du projet, notamment des exigences de collecte de données et des membres de l'équipe. Créez de nouveaux projets via l'onglet « Projets » dans la barre de navigation inférieure.",
-            "privacy_tooltip": "Les projets publics synchroniseront les données avec les portails de données publics. ",
-            "privacy_tooltip_link": "En savoir plus"
+            "add_to_project_tooltip": "Le site héritera des paramètres du projet, notamment des exigences de collecte de données et des membres de l'équipe. Créez de nouveaux projets via l'onglet « Projets » dans la barre de navigation inférieure."
         },
         "dashboard": {
             "privacy": "Confidentialité des données",
-            "team_button": "Équipe",
-            "transfer_label": "Transfert au projet",
-            "copy_download_link_button": "Copier le lien de téléchargement du site",
-            "archive_button": "Archiver ce site",
-            "archive_button_help_text": "Marquer ce site en lecture seule",
             "delete_button": "Supprimer ce site",
-            "location_accuracy": "Précision de localisation",
-            "default_title": "Marqueur temporaire",
-            "speed_dial": {
-                "note_label": "NOTE",
-                "photo_label": "PHOTO",
-                "bedrock_label": "ROCHE MÈRE"
-            }
+            "default_title": "Marqueur temporaire"
         },
         "notes": {
             "title": "Notes du site",
@@ -105,12 +86,10 @@
             "NOTES": "Notes"
         },
         "list_title": "Liste des sites",
-        "last_updated": "Dernière modification : {{date}} par {{name}}",
         "more_info": "En savoir plus",
         "your_location": "Votre emplacement",
         "soil_id_prediction": "Meilleure correspondance Soil ID",
         "ecological_site_prediction": "Meilleure correspondance du site écologique",
-        "annual_precip_avg": "Précipitations annuelles moyennes",
         "elevation_label": "Élévation",
         "elevation_value": "{{value}} {{units}}",
         "elevation_unknown": "inconnu",
@@ -227,8 +206,6 @@
     },
     "projects": {
         "label": "Projet",
-        "title": "Projets",
-        "header": "Projets",
         "none": {
             "header": "Vous n'avez aucun projet.",
             "info": "Les projets vous permettent de regrouper des sites, de définir des exigences et de gérer les membres de l'équipe."
@@ -248,12 +225,6 @@
             "export": "Exporter"
         },
         "inputs": {
-            "units": {
-                "heading": "Unités de mesure",
-                "a11yLabel": "unités de mesure",
-                "english": "Anglais (in, ft, lb)",
-                "metric": "Métrique (cm, m, kg)"
-            },
             "instructions": {
                 "title": "Note épinglée",
                 "description": "Ce contenu s'affichera en haut de la section Notes de chaque site de ce projet.",
@@ -275,12 +246,6 @@
                     "body": "Les observations de fosses pédologiques saisies seront supprimées. Cette action est irréversible.",
                     "confirm": "Modifier"
                 }
-            },
-            "soil_source": {
-                "heading": "Source d'informations sur les sols par défaut",
-                "survey": "Enquête sur les sols du NRCS de l'USDA",
-                "grids": "SoilGrids",
-                "a11yLabel": "source d'informations sur les sols par défaut"
             }
         },
         "team": {
@@ -294,27 +259,14 @@
             }
         },
         "settings": {
-            "cancel": "Annuler",
-            "archive": "Archiver ce projet",
             "delete": "Supprimer ce projet",
-            "copy_download_link": "Copier le lien de téléchargement du projet",
-            "download_link_description": "Un fichier zippé contenant toutes les ressources du projet, incluant un fichier .csv contenant les données du site, les notes de terrain, les journaux d'audit et les photos. Toute personne disposant de ce lien peut consulter l'ensemble des ressources.",
-            "archive_button": "Archiver",
-            "archive_button_prompt": "Archiver le projet ?",
-            "archive_description": "Le projet sera déplacé vers les projets archivés, le rendant ainsi accessible en lecture seule. Les membres de l'équipe pourront accéder aux données et les chefs de projet pourront les restaurer à tout moment. Les projets publics archivés resteront consultables sur les portails de données.",
             "delete_button": "Supprimer",
             "delete_button_prompt": "Supprimer le projet ?",
             "delete_description": "Cela supprimera définitivement le projet {{projectName}} et les observations de ses sites. Cette opération est irréversible.\n\nLes chefs de projet ont la possibilité de transférer les sites de ce projet pour conserver les observations."
         },
         "sites": {
-            "add": "Ajouter des sites",
             "transfer": "Transférer des sites",
             "transfer_offline": "Le transfert de sites n'est disponible qu'en ligne.",
-            "create": "Créer des sites",
-            "search": {
-                "placeholder": "Recherche",
-                "accessility_label": "Rechercher des sites"
-            },
             "sort": {
                 "label": "Trier les sites par :",
                 "nameAsc": "Nom du site (A à Z)",
@@ -323,8 +275,6 @@
             },
             "empty_viewer": "Ce projet n'a pas encore de sites.",
             "empty_contributor": "Vous pouvez transférer des sites d'identification de sols LandPKS existants vers ce projet. Vous pouvez également créer de nouveaux sites dans l'onglet Sites et les ajouter à ce projet.",
-            "go_to": "Accéder au site",
-            "audit_log": "Journal d'audit",
             "remove_site": "Supprimer du projet",
             "delete_site": "Supprimer le site",
             "delete_site_modal": {
@@ -352,14 +302,9 @@
             "lastModAsc": "Dernière modification (la plus récente)",
             "lastModDesc": "Dernière modification (la moins récente)"
         },
-        "learn_more": "En savoir plus sur l'utilisation des projets",
         "create_button": "Créer un projet",
-        "go_to": "Accéder au projet",
         "search_label": "Saisissez du texte pour filtrer les projets par nom",
         "role_filter_label": "Filtrer les projets par rôle",
-        "edit": {
-            "input_header": "Paramètres généraux du projet"
-        },
         "add_user": {
             "heading": "Ajouter un membre de l'équipe",
             "help_text": "Saisissez l'adresse e-mail du compte Terraso de la personne. Pour créer un compte Terraso, installez l'application LandPKS Soil ID et connectez-vous.",
@@ -405,15 +350,9 @@
         "unknown_version": "Version d'application non balisée {{environment}}",
         "select_language": "Langue: {{language}}"
     },
-    "badge": {
-        "new": "Nouveau"
-    },
     "general": {
-        "sites": "sites",
-        "users": "utilisateurs",
         "save": "Sauvegarder",
         "use": "Utiliser",
-        "details": "Détails",
         "apply": "Appliquer",
         "role": {
             "MANAGER": "Gestionnaire",
@@ -423,7 +362,6 @@
         "cancel": "Annuler",
         "copied": "Copié !",
         "add": "Ajouter",
-        "submit": "Soumettre",
         "change": "Modifier",
         "done": "Fait",
         "required": "Requis",
@@ -431,19 +369,12 @@
         "no": "Non",
         "next": "Suivant",
         "proceed": "Procéder",
-        "last_modified": "Dernière modification",
         "last_modified_by": "dernière modification {{user}}, {{date}}",
         "select_all": "Sélectionner tout",
         "you_name": "{{name}} (vous)",
         "email_placeholder": "nom@domaine.com",
         "email_label": "Adresse email",
-        "profile_image_alt": "Image de profil",
-        "measurement_units": {
-            "METRIC": "Métrique",
-            "ENGLISH": "Anglais"
-        },
         "filter": {
-            "no_sort": "Aucun",
             "no_role": "Aucun",
             "no_project": "Aucun"
         },
@@ -484,7 +415,6 @@
         "terms_of_service_link_text": "Conditions d'utilisation"
     },
     "errors": {
-        "generic": "Erreur lors de l'enregistrement des informations d'identification du sol.",
         "sync_conflict": {
             "headline": "Conflit de projet",
             "body": "Ce projet a évolué. Pour en savoir plus et obtenir de l'aide, consultez le site web de LandPKS.",
@@ -522,29 +452,20 @@
     },
     "geo": {
         "latitude": {
-            "inline": "latitude",
             "title": "Latitude"
         },
         "longitude": {
-            "inline": "longitude",
             "title": "Longitude"
         },
         "elevation": {
-            "inline": "élévation",
             "title": "Élévation"
         }
     },
     "soil": {
-        "bedrock": "Roche mère",
         "loading": "Chargement…",
         "error": "Erreur",
         "surface": "Surface du sol",
         "pit": "Fosse de sol",
-        "data": {
-            "rockFragmentVolume": "Fragment de roche",
-            "texture": "Texture",
-            "colorValue": "Couleur"
-        },
         "depth": {
             "error": {
                 "overlaps": "Chevauchements existants",
@@ -656,9 +577,6 @@
             },
             "guide_intro": "Vous ne connaissez pas la classe de texture ? Utilisez le guide étape par étape.",
             "use_guide_label": "Utiliser le guide",
-            "clay_title": "Pourcentage d'argile",
-            "clay_label": "Pourcentage d'argile",
-            "clay_help": "0–100 %",
             "fragment_title": "Volume du fragment de roche",
             "rockfragment": {
                 "VOLUME_0_1": "0–1%",
@@ -765,7 +683,6 @@
         "soil_id": "Soil ID",
         "add_depth_label": "Ajouter de la profondeur",
         "project_settings": {
-            "pit_required_label": "Fosse de sol requise",
             "required_data_title": "Exigences en matière d'observation"
         },
         "required_method": "{{method}} (obligatoire)",
@@ -1733,8 +1650,6 @@
             "degree_placeholder": "Degré",
             "slope_meter": "Inclinomètre",
             "camera_grant": "Accorder l'autorisation de la caméra",
-            "no_camera": "Pas d'accès à la caméra",
-            "no_camera_explanation": "Pour de meilleurs résultats, autorisez LandPKS Soil ID à utiliser votre caméra dans les paramètres",
             "select_labels": {
                 "FLAT": "Plat",
                 "FLAT_PERCENT": "0–2%",
@@ -1818,7 +1733,6 @@
     },
     "account": {
         "google_login": "Connectez-vous avec Google",
-        "apple_login": "Connectez-vous avec Apple",
         "microsoft_login": "Connectez-vous avec Microsoft"
     },
     "bottom_navigation": {
@@ -1828,9 +1742,7 @@
     },
     "listfilter": {
         "open_modal_label": "Mettre à jour les filtres de liste",
-        "num_filters_label": "Nombre de filtres appliqués",
-        "clear_search_label": "Effacer le filtre de recherche",
-        "text_input_label": "Filtrer la liste par entrée de recherche"
+        "num_filters_label": "Nombre de filtres appliqués"
     },
     "image": {
         "use_camera": "Utiliser l'appareil photo",
@@ -1859,28 +1771,16 @@
         "live_link": "Lien direct",
         "reset_live_link": "Réinitialiser le lien en direct",
         "site_export_title": "Exporter le site",
-        "site_export_description": "Téléchargez ou partagez les données de ce site.",
-        "site_export_button": "Exporter les données du site",
-        "what_is_in_file": "Que contient le fichier ?",
-        "loading": "Chargement des paramètres d'exportation...",
-        "downloading": "Téléchargement...",
         "preparing_file": "Préparation du fichier {{resourceType}} pour {{name}}",
         "preparing_file_message": "Création de votre fichier d'exportation. Cela peut prendre quelques instants...",
         "save_dialog_title": "Sauvegarder les données LandPKS pour {{name}}",
-        "save_error_title": "Sauvegarde échouée",
-        "save_error_message": "Échec de l'enregistrement du fichier : {{error}}",
         "share_title": "Exportation des données LandPKS pour les sites de {{name}}",
         "share_subject": "Lien vers les sites LandPKS de {{name}}",
-        "share_android_message": "Exporter les données {{resourceType}} pour {{name}}:",
         "share_message_user": "Ce lien inclura toutes les données du site {{name}}, y compris les sites des projets membres.",
         "share_message_project": "Ce lien inclura toutes les données du site du projet «{{name}}».",
         "share_message_site": "Ce lien inclura toutes les données du site «{{name}}».",
         "reset_links_title": "Réinitialiser les liens de partage ?",
         "reset_links_body": "Cette action désactivera vos liens de partage actuels. Les personnes disposant de vos anciens liens ne pourront plus accéder aux fichiers.",
-        "create_token_error_title": "Impossible de créer le lien",
-        "create_token_error_message": "Impossible de créer le lien d'exportation. Veuillez vérifier votre connexion et réessayer.",
-        "delete_token_error_title": "Échec de la réinitialisation du lien",
-        "delete_token_error_message": "Impossible de réinitialiser le lien d'exportation. Veuillez vérifier votre connexion et réessayer.",
         "help": {
             "title": "Options d'exportation",
             "section_file_vs_link": "Fichier ou lien",
@@ -1899,10 +1799,7 @@
     "file_download": {
         "error": {
             "unsupported_platform": "L'enregistrement de fichiers n'est pas pris en charge sur cette plateforme.",
-            "no_storage_directory": "Aucun répertoire de stockage disponible.",
-            "sharing_unavailable": "Le partage n'est pas disponible sur cet appareil.",
             "save_canceled": "Sauvegarde annulée.",
-            "no_directory_selected": "Aucun répertoire sélectionné.",
             "save_failed": "Impossible d'enregistrer le fichier.",
             "unknown": "Une erreur inconnue s'est produite."
         }
