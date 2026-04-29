@@ -18,10 +18,15 @@
  */
 
 /*
- * Delete keys that the scanner reports as unused (catalog has them, source
- * doesn't reference them). Removes from every locale file in src/translations/
- * so all stay in sync. Use after a manual review of the warning list from
- * `npm run i18n-check`.
+ * Catalog cleanup. Two passes per locale file in src/translations/:
+ *
+ *   1. Delete keys the scanner flags as unused (catalog has them, source
+ *      doesn't reference them).
+ *   2. Prune empty `"foo": {}` sections — both ones left over from the
+ *      delete pass, and pre-existing dead structure.
+ *
+ * Both passes always run; pass 2 is useful even when there are no unused
+ * keys to delete. Operates on every locale so all stay in sync.
  *
  * USE WITH CARE. The scanner has heuristics; if it doesn't yet recognize a
  * pattern your code uses (e.g. a custom-prop component or unusual lookup),
@@ -29,8 +34,8 @@
  * output before passing --yes.
  *
  * Usage:
- *   npm run i18n-delete-unused          # dry-run, prints the list
- *   npm run i18n-delete-unused -- --yes # actually delete
+ *   npm run i18n-delete-unused          # dry-run, shows what would change
+ *   npm run i18n-delete-unused -- --yes # actually apply
  */
 
 import {readdirSync, readFileSync, writeFileSync} from 'fs';
@@ -47,26 +52,8 @@ const SOURCE_ROOT = '.';
 
 const APPLY = process.argv.slice(2).includes('--yes');
 
-const scan = runScan({roots: [SOURCE_ROOT], catalogPath: CATALOG_PATH});
-const unused = scan.inCatalogNotScan;
-
-if (unused.length === 0) {
-  console.log('No unused keys found.');
-  process.exit(0);
-}
-
-console.log(`Found ${unused.length} unused key(s):`);
-for (const k of unused) console.log(`  ${k}`);
-
-if (!APPLY) {
-  console.log(
-    `\nDry run. Re-run with --yes to delete these keys from every locale file.`,
-  );
-  process.exit(0);
-}
-
 // Recursive in-place delete by dotted-path. Returns true iff the leaf existed
-// and was removed; doesn't prune now-empty parent objects (cheap to leave).
+// and was removed.
 function deleteAtPath(obj, parts) {
   if (parts.length === 0) return false;
   const [head, ...rest] = parts;
@@ -81,25 +68,87 @@ function deleteAtPath(obj, parts) {
   return false;
 }
 
+// Recursively prune empty plain-object children. Returns the dotted paths
+// that were removed (post-recursion order: deepest first).
+function pruneEmpty(obj, parentPath = []) {
+  const removed = [];
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return removed;
+  for (const k of Object.keys(obj)) {
+    const v = obj[k];
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      removed.push(...pruneEmpty(v, [...parentPath, k]));
+      if (Object.keys(v).length === 0) {
+        delete obj[k];
+        removed.push([...parentPath, k].join('.'));
+      }
+    }
+  }
+  return removed;
+}
+
+// ---------- compute changes per locale ----------
+const scan = runScan({roots: [SOURCE_ROOT], catalogPath: CATALOG_PATH});
+const unused = scan.inCatalogNotScan;
+
 const localeFiles = readdirSync(TRANSLATIONS_DIR)
   .filter(f => f.endsWith('.json'))
   .map(f => path.join(TRANSLATIONS_DIR, f));
 
-let totalRemoved = 0;
+const fileChanges = []; // {file, removed, prunedPaths, data, trailing}
 for (const f of localeFiles) {
   const raw = readFileSync(f, 'utf8');
   const trailing = raw.endsWith('\n') ? '\n' : '';
-  const parsed = JSON.parse(raw);
-  let hit = 0;
+  const data = JSON.parse(raw);
+
+  let removed = 0;
   for (const k of unused) {
-    if (deleteAtPath(parsed, k.split('.'))) hit++;
+    if (deleteAtPath(data, k.split('.'))) removed++;
   }
-  const out = JSON.stringify(parsed, null, 4) + trailing;
-  writeFileSync(f, out);
-  console.log(`${path.relative(process.cwd(), f)}: removed ${hit} key(s)`);
-  totalRemoved += hit;
+  const prunedPaths = pruneEmpty(data);
+
+  fileChanges.push({file: f, removed, prunedPaths, data, trailing});
+}
+
+const totalRemoved = fileChanges.reduce((s, c) => s + c.removed, 0);
+const totalPruned = fileChanges.reduce((s, c) => s + c.prunedPaths.length, 0);
+
+if (totalRemoved === 0 && totalPruned === 0) {
+  console.log('Nothing to do — no unused keys, no empty sections.');
+  process.exit(0);
+}
+
+// ---------- preview ----------
+if (unused.length > 0) {
+  console.log(`Found ${unused.length} unused key(s):`);
+  for (const k of unused) console.log(`  ${k}`);
+}
+
+if (totalPruned > 0) {
+  console.log(
+    `\n${unused.length > 0 ? 'After deletion, would prune' : 'Would prune'} ${totalPruned} empty section(s):`,
+  );
+  for (const c of fileChanges) {
+    if (c.prunedPaths.length === 0) continue;
+    console.log(`  ${path.basename(c.file)}:`);
+    for (const p of c.prunedPaths) console.log(`    ${p}`);
+  }
+}
+
+if (!APPLY) {
+  console.log(`\nDry run. Re-run with --yes to apply.`);
+  process.exit(0);
+}
+
+// ---------- apply ----------
+for (const c of fileChanges) {
+  if (c.removed === 0 && c.prunedPaths.length === 0) continue;
+  writeFileSync(c.file, JSON.stringify(c.data, null, 4) + c.trailing);
+  const rel = path.relative(process.cwd(), c.file);
+  console.log(
+    `${rel}: removed ${c.removed} key(s), pruned ${c.prunedPaths.length} empty section(s)`,
+  );
 }
 
 console.log(
-  `\nDone. ${totalRemoved} key removal(s) across ${localeFiles.length} file(s).`,
+  `\nDone. ${totalRemoved} key removal(s), ${totalPruned} empty section(s) pruned across ${localeFiles.length} file(s).`,
 );
