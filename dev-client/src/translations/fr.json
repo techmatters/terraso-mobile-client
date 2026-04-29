@@ -3,16 +3,17 @@
         "title": "Bienvenue sur LandPKS Soil ID",
         "next": {
             "title": "Quelle est la prochaine étape ?",
-            "subtitle": "Les versions futures incluront:",
-            "bullet_1": "Créer des sites hors ligne",
-            "bullet_2": "Modifier les notes hors ligne"
+            "bullet_1": "pH du sol"
         },
         "version_includes": {
             "title": "Cette version comprend :",
-            "bullet_1": "Fonctionnalité d'exportation de données pour les projets, les sites individuels et tous les sites visibles par l'utilisateur",
-            "bullet_2": "Sélecteur de langue",
-            "bullet_3": "Traductions expérimentales pour le français et le géorgien",
-            "bullet_4": "Nouvelle expérience de notation des sols pour une identification plus facile des sols"
+            "bullet_1": "Hors ligne : création de sites et modification des métadonnées et notes activées",
+            "bullet_2": "Nouvelle langue : swahili",
+            "bullet_3": "Traductions améliorées pour l'ukrainien, le géorgien et l'espagnol",
+            "bullet_4": "Message d'erreur plus détaillé pour les conflits de synchronisation",
+            "bullet_5": "Expérience améliorée pour la recherche de coordonnées sur la carte",
+            "bullet_6": "Correction d'un problème où les utilisateurs qui se déconnectaient puis se reconnectaient avec un autre compte voyaient temporairement les données du premier compte",
+            "bullet_7": "Correction d'un bug où le module de couleur plantait avec des photos surexposées"
         },
         "learn_more": "Apprenez-en plus et restez informé :",
         "link_text": "LandPKS de Terraso",

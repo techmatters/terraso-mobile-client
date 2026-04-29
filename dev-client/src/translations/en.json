@@ -3,16 +3,17 @@
         "title": "Welcome to LandPKS Soil ID",
         "version_includes": {
             "title": "This version includes:",
-            "bullet_1": "Data export feature for projects, individual sites, and all sites visible to user",
-            "bullet_2": "Language picker",
-            "bullet_3": "Experimental translations for French and Georgian",
-            "bullet_4": "New rate soil experience for easier soil identification"
+            "bullet_1": "Offline: enabled site creation, edit site metadata and notes",
+            "bullet_2": "New language: Swahili",
+            "bullet_3": "Improved translations for Ukrainian, Georgian, and Spanish",
+            "bullet_4": "More descriptive error message for sync conflicts",
+            "bullet_5": "Improved experience of searching for coordinates on map",
+            "bullet_6": "Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data",
+            "bullet_7": "Fixed a bug where the color module would crash with overexposed photos"
         },
         "next": {
-            "title": "What’s next?",
-            "subtitle": "Future versions will include:",
-            "bullet_1": "Create sites offline",
-            "bullet_2": "Edit notes offline"
+            "title": "Future versions will include:",
+            "bullet_1": "Soil pH"
         },
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",

@@ -3,16 +3,17 @@
         "title": "Bienvenido a LandPKS Soil ID",
         "next": {
             "title": "¿Qué sigue?",
-            "subtitle": "Versiones futuras incluirán:",
-            "bullet_1": "Crear sitios sin conexión",
-            "bullet_2": "Editar notas sin conexión"
+            "bullet_1": "pH del suelo"
         },
         "version_includes": {
             "title": "Esta versión incluye:",
-            "bullet_1": "Función de exportación de datos para proyectos, sitios individuales y todos los sitios visibles para el usuario",
-            "bullet_2": "Selector de idioma",
-            "bullet_3": "Traducciones experimentales para francés y georgiano",
-            "bullet_4": "Nueva experiencia de calificación de suelos para una identificación más sencilla"
+            "bullet_1": "Sin conexión: creación de sitios y edición de metadatos y notas habilitadas",
+            "bullet_2": "Nuevo idioma: suajili",
+            "bullet_3": "Traducciones mejoradas para ucraniano, georgiano y español",
+            "bullet_4": "Mensaje de error más descriptivo para conflictos de sincronización",
+            "bullet_5": "Experiencia mejorada al buscar coordenadas en el mapa",
+            "bullet_6": "Se solucionó un problema por el cual los usuarios que cerraban sesión y volvían a iniciar sesión con una cuenta diferente veían temporalmente los datos de la primera cuenta",
+            "bullet_7": "Se solucionó un error por el cual el módulo de color fallaba con fotos sobreexpuestas"
         },
         "learn_more": "Aprender más y mantenerte actualizado:",
         "link_text": "LandPKS de Terraso",

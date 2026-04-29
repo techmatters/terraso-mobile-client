@@ -3,16 +3,17 @@
         "title": "Karibu kwenye LandPKS Soil ID",
         "next": {
             "title": "Nini kitafuata?",
-            "subtitle": "Matoleo yajayo yatajumuisha:",
-            "bullet_1": "Unda maeneo nje ya mtandao",
-            "bullet_2": "Hariri madokezo nje ya mtandao"
+            "bullet_1": "pH ya udongo"
         },
         "version_includes": {
             "title": "Toleo hili linajumuisha:",
-            "bullet_1": "Kipengele cha usafirishaji data kwa miradi, maeneo ya kibinafsi, na maeneo yote yanayoonekana kwa mtumiaji",
-            "bullet_2": "Kiteuzi cha lugha",
-            "bullet_3": "Tafsiri za majaribio za Kifaransa na Kijojia",
-            "bullet_4": "Uzoefu mpya wa kiwango cha udongo kwa ajili ya utambuzi rahisi wa udongo"
+            "bullet_1": "Nje ya mtandao: kuwezesha kuunda maeneo na kuhariri metadata na vidokezo vya maeneo",
+            "bullet_2": "Lugha mpya: Kiswahili",
+            "bullet_3": "Tafsiri zilizoboreshwa kwa Kiukreni, Kijojia, na Kihispania",
+            "bullet_4": "Ujumbe wa kosa wa kina zaidi kwa migongano ya usawazishaji",
+            "bullet_5": "Uzoefu ulioboreshwa wa kutafuta viwianishi kwenye ramani",
+            "bullet_6": "Imerekebishwa hitilafu ambapo watumiaji walioondoka na kuingia tena kwa akaunti tofauti waliona data ya akaunti ya kwanza kwa muda",
+            "bullet_7": "Imerekebishwa hitilafu ambapo moduli ya rangi ilianguka kwa picha zilizopigwa kwa mwanga mwingi sana"
         },
         "learn_more": "Jifunze zaidi na uendelee kupata taarifa mpya:",
         "link_text": "LandPKS kutoka Terraso",

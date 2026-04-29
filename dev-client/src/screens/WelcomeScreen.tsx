@@ -66,9 +66,6 @@ export const WelcomeScreen = () => {
           <Text variant="body1-strong" mb="sm">
             {t('welcome.next.title')}
           </Text>
-          <Text variant="body1" mb="sm">
-            {t('welcome.next.subtitle')}
-          </Text>
           <TranslatedBulletList i18nKeyPrefix="welcome.next.bullet_" />
 
           <Text variant="body1-strong">{t('welcome.learn_more')}</Text>
