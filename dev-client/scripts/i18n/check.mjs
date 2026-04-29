@@ -18,12 +18,13 @@
  */
 
 /*
- * The bundled i18n gate. Runs four checks in turn and aggregates results
+ * The bundled i18n gate. Runs the checks in turn and aggregates results
  * into ERRORS (block CI / pre-commit / poeditor-merge) and WARNINGS (printed
  * but non-blocking).
  *
  *   1. find-keys     — code references a key that doesn't exist in en.json    [ERROR]
  *                    — en.json has a key that no source file references       [WARNING]
+ *                    — any locale catalog has an empty `"foo": {}` section    [WARNING]
  *   2. find-variables — non-en locale has different {{vars}} than en.json     [ERROR]
  *   3. missing-check  — non-en locale is missing a key present in en.json     [ERROR]
  *   4. tk-placeholders — locale value still starts with "TK " (untranslated)  [WARNING]
@@ -50,6 +51,23 @@ const DEFAULTS = {
   catalogPath: 'src/translations/en.json',
   translationsDir: 'src/translations',
 };
+
+/**
+ * Walk a parsed catalog and return dotted paths of every empty plain object
+ * (excluding the root). Skips arrays.
+ */
+export function findEmptySections(obj, parentPath = []) {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return [];
+  const out = [];
+  if (parentPath.length > 0 && Object.keys(obj).length === 0) {
+    out.push(parentPath.join('.'));
+    return out;
+  }
+  for (const [k, v] of Object.entries(obj)) {
+    out.push(...findEmptySections(v, [...parentPath, k]));
+  }
+  return out;
+}
 
 /**
  * Run all four checks and return aggregated findings.
@@ -94,6 +112,42 @@ export async function runAllChecks(opts = {}) {
         '  npm run i18n-delete-unused           # dry-run',
         '  npm run i18n-delete-unused -- --yes  # actually delete',
         'The next `npm run poeditor-merge` will propagate the deletions to POEditor.',
+      ].join('\n'),
+    });
+  }
+
+  // Empty sections — e.g. "speed_dial": {} left over after all child keys
+  // were deleted. Operationally a kind of "unused" content, so we surface
+  // it under the same warning umbrella.
+  const emptySections = []; // [{language, path}]
+  {
+    const files = readdirSync(translationsDir).filter(f => f.endsWith('.json'));
+    for (const f of files) {
+      const language = path.parse(f).name;
+      const data = JSON.parse(
+        readFileSync(path.join(translationsDir, f), 'utf8'),
+      );
+      for (const p of findEmptySections(data)) {
+        emptySections.push({language, path: p});
+      }
+    }
+  }
+  if (emptySections.length > 0) {
+    const byLocale = {};
+    for (const e of emptySections) {
+      byLocale[e.language] = (byLocale[e.language] || 0) + 1;
+    }
+    const breakdown = Object.entries(byLocale)
+      .sort()
+      .map(([l, n]) => `${l}: ${n}`)
+      .join(', ');
+    warnings.push({
+      title: `${emptySections.length} empty section(s) in catalogs (${breakdown})`,
+      items: emptySections.map(e => `[${e.language}] '${e.path}'`),
+      fix: [
+        'Run:',
+        '  npm run i18n-delete-unused           # dry-run',
+        '  npm run i18n-delete-unused -- --yes  # actually prune',
       ].join('\n'),
     });
   }
