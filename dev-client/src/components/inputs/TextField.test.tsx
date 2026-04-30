@@ -67,6 +67,35 @@ describe('TextField', () => {
     expect(getAllByText(/Email \*/).length).toBeGreaterThan(0);
   });
 
+  test('announces "required" to screen readers when required (the visual asterisk does not)', () => {
+    const {getByTestId} = render(
+      <TextField
+        value=""
+        onChangeText={() => {}}
+        label="Email"
+        required
+        testID="field"
+      />,
+    );
+
+    expect(getByTestId('field').props.accessibilityLabel).toBe(
+      'Email, required',
+    );
+  });
+
+  test('uses plain label as accessibility label when not required', () => {
+    const {getByTestId} = render(
+      <TextField
+        value=""
+        onChangeText={() => {}}
+        label="Email"
+        testID="field"
+      />,
+    );
+
+    expect(getByTestId('field').props.accessibilityLabel).toBe('Email');
+  });
+
   test('shows helper text below the input when no error', () => {
     const {queryByText} = render(
       <TextField

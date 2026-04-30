@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef, memo} from 'react';
+import {forwardRef} from 'react';
 import {TextInput as RNTextInput, StyleSheet, View} from 'react-native';
 import {
   HelperText,
@@ -58,16 +58,23 @@ export type CounterProps =
   | {showCounter?: false; maxLength?: number}
   | {showCounter: true; maxLength: number};
 
-export type TextFieldProps = SharedTextFieldProps &
-  CounterProps & {
-    value?: string;
-    onChangeText?: (value: string) => void;
-    onBlur?: () => void;
-    error?: string;
-  };
+/* State props specific to controlled-mode TextField. FormTextField composes
+ * SharedTextFieldProps & CounterProps separately and supplies its own
+ * Formik-driven equivalents. New display props belong in SharedTextFieldProps
+ * so both components inherit them; new controlled-state props go here. */
+export type ControlledStateProps = {
+  value?: string;
+  onChangeText?: (value: string) => void;
+  onBlur?: () => void;
+  error?: string;
+};
 
-export const TextField = memo(
-  forwardRef<RNTextInput, TextFieldProps>(function TextField(props, ref) {
+export type TextFieldProps = SharedTextFieldProps &
+  CounterProps &
+  ControlledStateProps;
+
+export const TextField = forwardRef<RNTextInput, TextFieldProps>(
+  function TextField(props, ref) {
     const value = props.value ?? '';
     const showError = Boolean(props.error);
     const preset = TYPE_PRESETS[props.type ?? 'text'];
@@ -77,6 +84,14 @@ export const TextField = memo(
      * filled (label sits above). */
     const displayLabel =
       props.label && props.required ? `${props.label} *` : props.label;
+
+    /* Visual asterisk doesn't translate to a screen reader; augment the
+     * accessibility label so required-ness is announced. */
+    const a11yLabel =
+      props.accessibilityLabel ??
+      (props.label && props.required
+        ? `${props.label}, required`
+        : props.label);
 
     const counterText =
       props.showCounter && props.maxLength !== undefined
@@ -100,7 +115,7 @@ export const TextField = memo(
           disabled={props.disabled}
           autoFocus={props.autoFocus}
           testID={props.testID}
-          accessibilityLabel={props.accessibilityLabel ?? props.label}
+          accessibilityLabel={a11yLabel}
           keyboardType={preset.keyboardType}
           autoCapitalize={preset.autoCapitalize}
           autoComplete={preset.autoComplete}
@@ -133,7 +148,7 @@ export const TextField = memo(
         )}
       </View>
     );
-  }),
+  },
 );
 
 const styles = StyleSheet.create({
