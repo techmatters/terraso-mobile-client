@@ -20,6 +20,12 @@ import {Formik} from 'formik';
 
 import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 
+/* The TValues generic on FormTextField forces callers to declare their form
+ * shape so `name` is statically checked. We define a couple of test shapes
+ * once and pass them as the explicit generic at each call site. */
+type EmailForm = {email: string};
+type NoteForm = {note: string};
+
 /* validateOnMount populates errors after the initial commit, so tests that
  * read errors after mount either await findBy* or fire an event to flush
  * the resulting re-render. */
@@ -42,7 +48,7 @@ describe('FormTextField', () => {
   test('reads initial value from Formik', () => {
     const {getByDisplayValue} = renderInFormik(
       {email: 'a@b.com'},
-      <FormTextField name="email" testID="field" />,
+      <FormTextField<EmailForm> name="email" testID="field" />,
     );
 
     expect(getByDisplayValue('a@b.com')).toBeTruthy();
@@ -51,7 +57,7 @@ describe('FormTextField', () => {
   test('does not show error before the field is touched (default onTouch)', () => {
     const {queryByText} = renderInFormik(
       {email: ''},
-      <FormTextField name="email" testID="field" />,
+      <FormTextField<EmailForm> name="email" testID="field" />,
       {validate: () => ({email: 'Required'})},
     );
 
@@ -61,7 +67,7 @@ describe('FormTextField', () => {
   test('shows error after the field is blurred', async () => {
     const {queryByText, getByTestId} = renderInFormik(
       {email: ''},
-      <FormTextField name="email" testID="field" />,
+      <FormTextField<EmailForm> name="email" testID="field" />,
       {validate: () => ({email: 'Required'})},
     );
 
@@ -75,7 +81,11 @@ describe('FormTextField', () => {
   test('errorVisibility="always" shows error once validate has run', async () => {
     const {findByText} = renderInFormik(
       {email: ''},
-      <FormTextField name="email" testID="field" errorVisibility="always" />,
+      <FormTextField<EmailForm>
+        name="email"
+        testID="field"
+        errorVisibility="always"
+      />,
       {validate: () => ({email: 'Required'})},
     );
 
@@ -85,12 +95,12 @@ describe('FormTextField', () => {
   test('updates Formik state on change', async () => {
     /* Capture the latest Formik bag via the render-prop child so the test
      * can read post-update state directly. */
-    let latestValues: Record<string, string> = {};
+    let latestValues: EmailForm = {email: ''};
     const {getByTestId} = render(
-      <Formik initialValues={{email: ''}} onSubmit={() => {}}>
+      <Formik<EmailForm> initialValues={{email: ''}} onSubmit={() => {}}>
         {formik => {
           latestValues = formik.values;
-          return <FormTextField name="email" testID="field" />;
+          return <FormTextField<EmailForm> name="email" testID="field" />;
         }}
       </Formik>,
     );
@@ -107,7 +117,7 @@ describe('FormTextField', () => {
 
     const {getByTestId} = renderInFormik(
       {email: ''},
-      <FormTextField
+      <FormTextField<EmailForm>
         name="email"
         testID="field"
         onChangeText={callerHandler}
@@ -126,7 +136,11 @@ describe('FormTextField', () => {
 
     const {getByTestId} = renderInFormik(
       {email: ''},
-      <FormTextField name="email" testID="field" onBlur={callerHandler} />,
+      <FormTextField<EmailForm>
+        name="email"
+        testID="field"
+        onBlur={callerHandler}
+      />,
     );
 
     await act(async () => {
@@ -139,7 +153,7 @@ describe('FormTextField', () => {
   test('forwards display props (label, helperText, required) to TextField', () => {
     const {getAllByText, queryByText} = renderInFormik(
       {email: ''},
-      <FormTextField
+      <FormTextField<EmailForm>
         name="email"
         label="Email"
         helperText="We never share it"
@@ -154,9 +168,20 @@ describe('FormTextField', () => {
   test('renders counter when showCounter and maxLength are set', () => {
     const {queryByText} = renderInFormik(
       {note: 'abcde'},
-      <FormTextField name="note" maxLength={20} showCounter />,
+      <FormTextField<NoteForm> name="note" maxLength={20} showCounter />,
     );
 
     expect(queryByText('5 / 20')).toBeTruthy();
+  });
+
+  test('throws a clear error when rendered outside a Formik provider', () => {
+    /* Suppress React's expected error log for this assertion. */
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    expect(() => render(<FormTextField<EmailForm> name="email" />)).toThrow(
+      /must be rendered inside a Formik provider/,
+    );
+
+    errSpy.mockRestore();
   });
 });
