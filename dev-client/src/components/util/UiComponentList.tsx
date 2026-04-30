@@ -26,7 +26,12 @@ import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconBut
 import {OutlinedButton} from 'terraso-mobile-client/components/buttons/OutlinedButton';
 import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special/SlopeMeterButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
-import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
+import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
+import {
+  Heading,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export const UiComponentList = () => {
@@ -104,6 +109,11 @@ export const UiComponentList = () => {
             <Heading variant="h6">FAB</Heading>
             <Fab label="default" leftIcon="info" />
           </ComponentList>
+          <ComponentList title="TextField">
+            <TextFieldExamples />
+            <Heading variant="h5">Old</Heading>
+            <TextInput label="Email" value="" onChangeText={() => {}} />
+          </ComponentList>
           <ComponentList title="IconButtons">
             <Heading variant="h5">IconButton</Heading>
             <View style={styles.darkBackground}>
@@ -122,6 +132,77 @@ export const UiComponentList = () => {
         </>
       )}
     </View>
+  );
+};
+
+const TextFieldExamples = () => {
+  const [name, setName] = useState('');
+  const [amount, setAmount] = useState('');
+  const [code, setCode] = useState('');
+  const [description, setDescription] = useState('');
+
+  /* Validation runs on every keystroke. Empty input is allowed (no error
+   * shown until the user types something out of range), so the field doesn't
+   * yell on mount. */
+  const amountNumber = Number(amount);
+  const amountError =
+    amount === ''
+      ? undefined
+      : Number.isNaN(amountNumber) || amountNumber < 0 || amountNumber > 10000
+        ? 'Must be a number between 0 and 10000'
+        : undefined;
+
+  return (
+    <>
+      <Heading variant="h5">Basic (controlled)</Heading>
+      <TextField label="Name" value={name} onChangeText={setName} />
+
+      <Heading variant="h5">Required + helper text</Heading>
+      <TextField
+        label="Email"
+        type="email"
+        required
+        helperText="We'll never share your email"
+        value=""
+        onChangeText={() => {}}
+      />
+
+      <Heading variant="h5">Numeric, 0–10000</Heading>
+      <TextField
+        label="Amount"
+        type="numeric"
+        value={amount}
+        onChangeText={setAmount}
+        error={amountError}
+      />
+      <Text>Current value: {amount === '' ? '(empty)' : amount}</Text>
+
+      <Heading variant="h5">Character limit + counter (max 4)</Heading>
+      <TextField
+        label="Code"
+        value={code}
+        onChangeText={setCode}
+        maxLength={4}
+        showCounter
+      />
+
+      <Heading variant="h5">Multiline</Heading>
+      <TextField
+        label="Description"
+        multiline
+        numberOfLines={3}
+        value={description}
+        onChangeText={setDescription}
+      />
+
+      <Heading variant="h5">Disabled</Heading>
+      <TextField
+        label="Read-only"
+        value="Can't edit me"
+        disabled
+        onChangeText={() => {}}
+      />
+    </>
   );
 };
 
