@@ -54,7 +54,7 @@ export type FormikSnapshot = Pick<
   | 'touched'
   | 'submitCount'
   | 'setFieldValue'
-  | 'handleBlur'
+  | 'setFieldTouched'
 >;
 
 export type StateResolverInput = {
@@ -93,9 +93,9 @@ export const resolveTextFieldState = (
         props.onChangeText?.(value);
       },
       onBlur: () => {
-        // Formik's handleBlur returns a function bound to the field name.
-        // The returned function expects a React.FocusEvent; calling without one is safe at runtime.
-        (formik.handleBlur(name) as unknown as () => void)();
+        // setFieldTouched is the direct API for marking a field touched —
+        // cleaner than handleBlur(name)(event), which expects a synthetic event.
+        formik.setFieldTouched(name, true);
         props.onBlur?.();
       },
       // Controlled `error` prop overrides Formik's auto-detected error when both are present.

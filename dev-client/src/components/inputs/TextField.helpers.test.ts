@@ -32,7 +32,7 @@ const buildFormik = (
   touched: {},
   submitCount: 0,
   setFieldValue: jest.fn(),
-  handleBlur: jest.fn(() => jest.fn()),
+  setFieldTouched: jest.fn(),
   ...overrides,
 });
 
@@ -110,11 +110,8 @@ describe('resolveTextFieldState', () => {
       expect(callOrder).toEqual(['formik', 'caller']);
     });
 
-    test('onBlur invokes formik.handleBlur(name) and layered caller handler', () => {
-      const blurFn = jest.fn();
-      const formik = buildFormik({
-        handleBlur: jest.fn(() => blurFn) as FormikSnapshot['handleBlur'],
-      });
+    test('onBlur calls setFieldTouched(name, true) and layered caller handler', () => {
+      const formik = buildFormik();
       const callerBlur = jest.fn();
 
       const state = resolveTextFieldState(
@@ -123,8 +120,7 @@ describe('resolveTextFieldState', () => {
       );
       state.onBlur();
 
-      expect(formik.handleBlur).toHaveBeenCalledWith('email');
-      expect(blurFn).toHaveBeenCalled();
+      expect(formik.setFieldTouched).toHaveBeenCalledWith('email', true);
       expect(callerBlur).toHaveBeenCalled();
     });
 
