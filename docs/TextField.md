@@ -90,21 +90,44 @@ A pure controlled component. No Formik, no context. The caller passes `value`, `
 ### `FormTextField` (Formik wrapper)
 
 ```ts
-type FormTextFieldProps = SharedTextFieldProps & {
-  name: string;                                  // required Formik field name
-  errorVisibility?: 'onTouch' | 'always';        // default 'onTouch'
-  onChangeText?: (value: string) => void;        // optional layered side-effect handler
-  onBlur?: () => void;                           // optional layered side-effect handler
-};
+type FormTextFieldProps<TValues extends Record<string, unknown>> =
+  SharedTextFieldProps & {
+    name: StringFieldKeys<TValues>;             // statically constrained
+    errorVisibility?: 'onTouch' | 'always';     // default 'onTouch'
+    onChangeText?: (value: string) => void;     // optional layered side-effect handler
+    onBlur?: () => void;                        // optional layered side-effect handler
+  };
+```
+
+`FormTextField` is **generic in the form's value shape** (`TValues`). The `name` prop is constrained at the type level to keys whose value is a string (after stripping `undefined`/`null`) — pointing it at a number, boolean, or array field is a compile-time error. The caller specifies the generic explicitly:
+
+```tsx
+type ProjectFormValues = {name: string; description: string; ownerId: number};
+
+<FormTextField<ProjectFormValues> name="name" />          // OK
+<FormTextField<ProjectFormValues> name="description" />   // OK
+<FormTextField<ProjectFormValues> name="ownerId" />       // TS error: 'ownerId' not assignable
+<FormTextField<ProjectFormValues> name="typo" />          // TS error: 'typo' not assignable
+```
+
+For a form that uses many `FormTextField`s, define a typed alias once and reuse it:
+
+```tsx
+const FormField = FormTextField<ProjectFormValues>;
+<FormField name="name" />
 ```
 
 `FormTextField` does **not** accept `value` or `error` — both come from Formik. To surface async backend errors, the caller pushes them via Formik's `setFieldError(name, message)` rather than passing an `error` prop.
 
 `onChangeText` and `onBlur` on `FormTextField` are *side-effect handlers*: they run **after** Formik has updated its state. The caller does not need to (and should not) call `setFieldValue` / `setFieldTouched` for the same field — `FormTextField` does that automatically. See "Layered handlers" below.
 
-### Refs and `forwardRef`
+`FormTextField` throws a clear error if rendered outside a `<Formik>` provider; React contexts can't be enforced at compile time.
 
-Both components are `forwardRef` to the underlying `react-native` `TextInput`. The full RN TextInput surface (`focus`, `blur`, `clear`, `measure`, …) is available. There is no `useImperativeHandle`. For "focus on mount", use `autoFocus` rather than holding a ref.
+### Refs
+
+`TextField` is `forwardRef` to the underlying `react-native` `TextInput`. The full RN TextInput surface (`focus`, `blur`, `clear`, `measure`, …) is available. There is no `useImperativeHandle`. For "focus on mount", use `autoFocus` rather than holding a ref.
+
+`FormTextField` does **not** forward refs. The combination of generics and `forwardRef` forces fragile type casts, and no current call site needs imperative access to a Formik-wired field. If imperative control is genuinely required, drop down to `TextField` and wire the controlled state manually.
 
 ### `type` presets
 
@@ -158,7 +181,9 @@ If multiple validation rules fail simultaneously, Yup picks one (typically the f
 
 ### Required indicator
 
-`required` prop renders an asterisk after the label text. The asterisk rides along with the floating label: it appears in the upper-left when the field has input, or in place of the placeholder when empty. Required fields announce "required" to screen readers via `accessibilityLabel` augmentation.
+`required` prop renders an asterisk after the label text. The asterisk rides along with the floating label: it appears in the upper-left when the field has input, or in place of the placeholder when empty.
+
+For accessibility, the visual asterisk does not translate to a screen reader, so when `required` is true the component augments the `accessibilityLabel` to read `"<label>, required"` (e.g., `"Email, required"`). Callers who pass an explicit `accessibilityLabel` are responsible for its content.
 
 Decoupled from the validation schema. Yup `.required()` is independent. The prop is purely a visual / a11y indication; the schema enforces validation.
 
@@ -193,18 +218,21 @@ Default width: 100%. Caller's parent (HStack, VStack, View) controls layout.
 
 ### Pure helpers
 
-Logic that doesn't require rendering should live in a separate file (`TextField.helpers.ts`) and be unit-tested in isolation. Suggested helpers:
+Logic that doesn't require rendering lives in `TextField.helpers.ts` and is unit-tested in isolation:
 
 - `shouldShowError(error, touched, submitCount, visibility) -> boolean` — the touch-gating rule above.
-- `formatRequiredLabel(label, required) -> string | undefined` — appends ` *` when required.
-- `formatCounter(currentLength, maxLength) -> string` — `"120 / 500"`.
 - `TYPE_PRESETS` — table for keyboard / autoCapitalize / autoComplete.
+- `TextFieldType`, `ErrorVisibility` — shared types.
 
-`FormTextField` uses `shouldShowError` to decide whether to forward an `error` to the underlying `TextField`. `TextField` uses the formatters and the type preset.
+The `required`-asterisk and counter formatting are inlined in `TextField` itself (one-line each; not worth separate helpers).
 
 ### Memoization
 
-Both components are wrapped in `React.memo`. Formik re-renders on every keystroke; without memoization every field in a form re-renders for every keystroke in any other field.
+`React.memo` is **not** used on either component. `FormTextField` subscribes to Formik context, so it re-renders on any form-level state change regardless of memo. `TextField` receives newly-created handler closures from `FormTextField` each render, which would invalidate memo's shallow check anyway. The runtime cost of re-render is negligible for a single text input; adding memo would be theatre.
+
+### Limitations
+
+- `name` is constrained to top-level string keys of `TValues`. Nested Formik paths (e.g., `"user.email"`, `"addresses[0].street"`) are not currently supported by the type constraint. If a form needs nested fields, either flatten the value shape or extend `StringFieldKeys` to a path-aware variant when the need arises.
 
 ---
 
