@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import * as Clipboard from 'expo-clipboard';
@@ -32,6 +32,11 @@ import {APP_CONFIG} from 'terraso-mobile-client/config';
 // before handing it to clipboard. Avoids handing over a token that's about
 // to die in the user's hand.
 const REFRESH_IF_LESS_THAN_SECONDS = 60;
+
+// "Tap twice within this window" = force a refresh, even if the existing
+// token is still well within its lifetime. Convenient when a dev needs a
+// fresh, near-full-lifetime token for an ad-hoc API call.
+const FORCE_REFRESH_DOUBLE_TAP_MS = 5000;
 
 // Compact validity-remaining label: "Xm" (<1h), "Xh" (<24h), "Xd" otherwise.
 function formatRemaining(seconds: number): string {
@@ -55,17 +60,26 @@ export const CopyAccessTokenItem = () => {
   const {t} = useTranslation();
   const [copied, setCopied] = useState(false);
   const [validity, setValidity] = useState('');
+  // Timestamp of the most recent copy. Used to detect a double-tap-within-
+  // FORCE_REFRESH_DOUBLE_TAP_MS gesture which forces a refresh.
+  const lastCopyAt = useRef<number | null>(null);
 
   const handleCopyToken = useCallback(async () => {
     const tokenStorage = getAPIConfig().tokenStorage;
     let token = await tokenStorage.getToken('atoken');
     if (!token) return;
 
-    // Refresh if expired or about to expire. Best-effort: on failure, fall
-    // through with the stale token rather than silently doing nothing — the
-    // label will say "expired" so the user sees what they got.
+    const tapAt = Date.now();
+    const isDoubleTap =
+      lastCopyAt.current !== null &&
+      tapAt - lastCopyAt.current < FORCE_REFRESH_DOUBLE_TAP_MS;
+
+    // Refresh on double-tap (explicit user request) OR if the existing token
+    // is expired / about to expire. Best-effort: on failure, fall through
+    // with the stale token — the label will say "expired" so the user sees
+    // what they got.
     let remaining = remainingSeconds(token);
-    if (remaining < REFRESH_IF_LESS_THAN_SECONDS) {
+    if (isDoubleTap || remaining < REFRESH_IF_LESS_THAN_SECONDS) {
       try {
         await refreshToken();
         const refreshed = await tokenStorage.getToken('atoken');
@@ -82,6 +96,7 @@ export const CopyAccessTokenItem = () => {
     setValidity(formatRemaining(remaining));
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+    lastCopyAt.current = tapAt;
   }, []);
 
   if (APP_CONFIG.environment === 'production') {
