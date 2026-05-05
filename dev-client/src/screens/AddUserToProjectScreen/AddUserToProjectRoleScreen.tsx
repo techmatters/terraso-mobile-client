@@ -61,7 +61,15 @@ export const AddUserToProjectRoleScreen = ({projectId, userId}: Props) => {
   const posthog = usePostHog();
 
   const project = useSelector(state => state.project.projects[projectId]);
-  const newUser = useSelector(state => state.account.users[userId]);
+  // Snapshot the searched user on first render. The user was just added to
+  // `state.account.users` by checkUserInProject in the previous screen, but
+  // a background pull (which uses replace-not-merge semantics for users) can
+  // drop them before we navigate away — they aren't on any of the current
+  // user's projects yet, so the pull payload doesn't include them. Without
+  // the snapshot, the missing-newUser data requirement fires and pops the
+  // screen out from under the in-progress add-team-member flow.
+  const newUserFromStore = useSelector(state => state.account.users[userId]);
+  const [newUser] = useState(newUserFromStore);
 
   const [selectedRole, setSelectedRole] = useState<ProjectRole>('VIEWER');
 
