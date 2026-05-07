@@ -22,19 +22,14 @@ import {
 
 describe('shouldShowError', () => {
   test('returns false when there is no error', () => {
-    expect(shouldShowError(undefined, true, 5, 'always')).toBe(false);
-    expect(shouldShowError('', true, 5, 'always')).toBe(false);
+    expect(shouldShowError(undefined, true, 5)).toBe(false);
+    expect(shouldShowError('', true, 5)).toBe(false);
   });
 
-  test('errorVisibility=always shows error whenever error is set', () => {
-    expect(shouldShowError('Required', false, 0, 'always')).toBe(true);
-    expect(shouldShowError('Required', true, 0, 'always')).toBe(true);
-  });
-
-  test('errorVisibility=onTouch hides error until touched or submit', () => {
-    expect(shouldShowError('Required', false, 0, 'onTouch')).toBe(false);
-    expect(shouldShowError('Required', true, 0, 'onTouch')).toBe(true);
-    expect(shouldShowError('Required', false, 1, 'onTouch')).toBe(true);
+  test('hides error until touched or submit', () => {
+    expect(shouldShowError('Required', false, 0)).toBe(false);
+    expect(shouldShowError('Required', true, 0)).toBe(true);
+    expect(shouldShowError('Required', false, 1)).toBe(true);
   });
 });
 

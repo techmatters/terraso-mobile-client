@@ -86,20 +86,6 @@ describe('FormTextField', () => {
     expect(queryByText('Required')).toBeTruthy();
   });
 
-  test('errorVisibility="always" shows error once validate has run', async () => {
-    const {findByText} = await renderInFormik(
-      {email: ''},
-      <FormTextField<EmailForm>
-        name="email"
-        testID="field"
-        errorVisibility="always"
-      />,
-      {validate: () => ({email: 'Required'})},
-    );
-
-    expect(await findByText('Required')).toBeTruthy();
-  });
-
   test('updates Formik state on change', async () => {
     /* Capture the latest Formik bag via the render-prop child so the test
      * can read post-update state directly. */

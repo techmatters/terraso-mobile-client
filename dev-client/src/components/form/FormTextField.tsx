@@ -48,11 +48,9 @@ type StringFieldKeys<TValues> = {
 }[keyof TValues];
 
 /* Composed from the same SharedTextFieldProps + CounterProps as TextField, so
- * every display prop (label, helperText, type, multiline, required, the
- * showCounter+maxLength constraint, errorVisibility, etc.) is inherited
- * automatically. New display props added to SharedTextFieldProps appear on
- * both components for free; controlled-state props on TextField stay
- * TextField-only by design. */
+ * every display prop is inherited automatically. New display props added to
+ * SharedTextFieldProps appear on both components for free; controlled-state
+ * props on TextField stay TextField-only by design. */
 export type FormTextFieldProps<TValues extends FormikValues> =
   SharedTextFieldProps &
     CounterProps & {
@@ -72,7 +70,6 @@ export type FormTextFieldProps<TValues extends FormikValues> =
  * controlled wiring. */
 export const FormTextField = <TValues extends FormikValues>({
   name,
-  errorVisibility,
   onChangeText,
   onBlur,
   ...rest
@@ -86,12 +83,7 @@ export const FormTextField = <TValues extends FormikValues>({
   const error = formik.errors[name] as string | undefined;
   const isTouched = Boolean(formik.touched[name]);
 
-  const showError = shouldShowError(
-    error,
-    isTouched,
-    formik.submitCount,
-    errorVisibility ?? 'onTouch',
-  );
+  const showError = shouldShowError(error, isTouched, formik.submitCount);
 
   const handleChangeText = (next: string) => {
     formik.setFieldValue(name, next);
@@ -103,10 +95,6 @@ export const FormTextField = <TValues extends FormikValues>({
     onBlur?.();
   };
 
-  /* FormTextField has already decided whether the error should be visible
-   * (using Formik's touched + submitCount). Pass errorVisibility="always"
-   * to TextField so its own onTouch gating doesn't run a second time —
-   * we either passed an error string (display it) or undefined (don't). */
   return (
     <TextField
       {...rest}
@@ -114,7 +102,6 @@ export const FormTextField = <TValues extends FormikValues>({
       onChangeText={handleChangeText}
       onBlur={handleBlur}
       error={showError ? error : undefined}
-      errorVisibility="always"
     />
   );
 };

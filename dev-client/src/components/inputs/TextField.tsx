@@ -25,7 +25,6 @@ import {
 } from 'react-native-paper';
 
 import {
-  ErrorVisibility,
   shouldShowError,
   TextFieldType,
   TYPE_PRESETS,
@@ -52,13 +51,6 @@ export type SharedTextFieldProps = {
 
   // Focuses this TextField on mount
   autoFocus?: boolean;
-
-  /* Controls when an `error` is displayed:
-   *   - 'onTouch' (default): only after the field has been blurred (TextField)
-   *     or the form is touched/submitted (FormTextField). Avoids yelling
-   *     mid-keystroke.
-   *   - 'always': displayed whenever an error is present. */
-  errorVisibility?: ErrorVisibility;
 
   style?: RNPTextInputProps['style'];
 };
@@ -96,7 +88,6 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
     const [isFocused, setIsFocused] = useState(false);
 
     /* hasBeenBlurred is the controlled-mode equivalent of Formik's `touched`.
-     * Once true, errors are eligible for display under errorVisibility='onTouch'.
      * Doesn't reset on subsequent focus — once touched, always touched. */
     const [hasBeenBlurred, setHasBeenBlurred] = useState(false);
 
@@ -110,12 +101,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
     /* Standalone TextField has no Formik submitCount concept — that's only
      * meaningful in the FormTextField wrapper. Pass 0 here so submitCount
      * never affects display in controlled mode. */
-    const showError = shouldShowError(
-      props.error,
-      hasBeenBlurred,
-      0,
-      props.errorVisibility ?? 'onTouch',
-    );
+    const showError = shouldShowError(props.error, hasBeenBlurred, 0);
 
     /* Asterisk rides along with the floating label so it's positioned
      * consistently whether the field is empty (label sits in the input) or

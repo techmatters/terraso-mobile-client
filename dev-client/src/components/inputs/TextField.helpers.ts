@@ -18,11 +18,9 @@
 import type {TextInputProps as RNTextInputProps} from 'react-native';
 
 /* Pure helpers and shared types for TextField / FormTextField. Kept here so
- * the rules (error visibility, keyboard preset table) can be unit-tested in
- * isolation without rendering or context. */
+ * the rules can be unit-tested in isolation without rendering or context. */
 
 export type TextFieldType = 'text' | 'email' | 'numeric';
-export type ErrorVisibility = 'onTouch' | 'always';
 
 export type TypePresetValues = {
   keyboardType: RNTextInputProps['keyboardType'];
@@ -49,16 +47,14 @@ export const TYPE_PRESETS: Record<TextFieldType, TypePresetValues> = {
 };
 
 /* Validation runs continuously through Formik (so `isValid` stays accurate for
- * the submit button); this rule gates *display* of the error. Default behavior
- * is to wait until the user has blurred the field once, or tried to submit —
- * avoids yelling at users mid-keystroke. Override with errorVisibility='always'. */
+ * the submit button); this rule gates *display* of the error. We wait until
+ * the user has blurred the field once, or tried to submit to avoid yelling at
+ * users mid-keystroke. */
 export const shouldShowError = (
   error: string | undefined,
   touched: boolean,
   submitCount: number,
-  visibility: ErrorVisibility,
 ): boolean => {
   if (!error) return false;
-  if (visibility === 'always') return true;
   return touched || submitCount > 0;
 };

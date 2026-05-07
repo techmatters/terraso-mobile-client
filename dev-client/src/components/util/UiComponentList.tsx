@@ -175,10 +175,9 @@ const TextFieldExamples = () => {
         value={email}
         onChangeText={setEmail}
         error={emailError}
-        errorVisibility="onTouch"
       />
 
-      <Heading variant="h5">Numeric + eval onTouch</Heading>
+      <Heading variant="h5">Numeric</Heading>
       <TextField
         label="Amount"
         type="numeric"
@@ -186,18 +185,6 @@ const TextFieldExamples = () => {
         onChangeText={setAmount}
         helperText="0-10000"
         error={amountError}
-        errorVisibility="onTouch"
-      />
-
-      <Heading variant="h5">Numeric + eval immediately</Heading>
-      <TextField
-        label="Amount"
-        type="numeric"
-        value={amount}
-        onChangeText={setAmount}
-        helperText="0-10000"
-        error={amountError}
-        errorVisibility="always"
       />
 
       <Heading variant="h5">Character limit + counter (max 4)</Heading>
