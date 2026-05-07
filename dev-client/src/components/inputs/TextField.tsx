@@ -46,7 +46,7 @@ export type SharedTextFieldProps = {
   type?: TextFieldType;
   multiline?: boolean;
   numberOfLines?: number;
-  disabled?: boolean;
+  readOnly?: boolean;
   required?: boolean;
   helperText?: string;
 
@@ -154,7 +154,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           multiline={props.multiline}
           numberOfLines={props.numberOfLines}
           maxLength={props.maxLength}
-          disabled={props.disabled}
+          disabled={props.readOnly}
           autoFocus={props.autoFocus}
           testID={props.testID}
           accessibilityLabel={a11yLabel}
@@ -168,26 +168,31 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
             styles.input,
             isFocused && styles.focusedInput,
             props.multiline && styles.multilineInput,
-            props.disabled && styles.disabledInput,
             props.style,
           ]}
         />
-
-        {/* Error replaces helper text; counter renders on its own row when set.
-         * padding="normal" left-aligns all of these with the input text. */}
-        {showError ? (
-          <HelperText type="error" visible padding="normal">
-            {props.error}
-          </HelperText>
-        ) : props.helperText ? (
+        {/* padding="normal" left-aligns all of these with the input text. */}
+        {props.readOnly ? (
           <HelperText type="info" visible padding="normal">
-            {props.helperText}
+            {t('general.read_only')}
           </HelperText>
-        ) : null}
-        {counterText !== undefined && (
-          <HelperText type="info" visible padding="normal">
-            {counterText}
-          </HelperText>
+        ) : (
+          <>
+            {showError ? (
+              <HelperText type="error" visible padding="normal">
+                {props.error}
+              </HelperText>
+            ) : props.helperText ? (
+              <HelperText type="info" visible padding="normal">
+                {props.helperText}
+              </HelperText>
+            ) : null}
+            {counterText !== undefined && (
+              <HelperText type="info" visible padding="normal">
+                {counterText}
+              </HelperText>
+            )}
+          </>
         )}
       </View>
     );
@@ -204,11 +209,6 @@ const styles = StyleSheet.create({
   },
   multilineInput: {
     minHeight: 100,
-  },
-  /* Disabled fill is lightened on top of Paper's built-in dimming of the
-   * label/underline/text. Final hex pending designer review. */
-  disabledInput: {
-    backgroundColor: '#F5F5F5',
   },
   viewContainer: {
     paddingTop: 8,

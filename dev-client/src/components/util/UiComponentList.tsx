@@ -186,7 +186,7 @@ const TextFieldExamples = () => {
         onChangeText={setAmount}
         helperText="0-10000"
         error={amountError}
-        errorVisibility="always"
+        errorVisibility="onTouch"
       />
 
       <Heading variant="h5">Numeric + eval immediately</Heading>
@@ -218,8 +218,8 @@ const TextFieldExamples = () => {
         onChangeText={setDescription}
       />
 
-      <Heading variant="h5">Disabled</Heading>
-      <TextField label="Read-only" value="Can't edit me" disabled />
+      <Heading variant="h5">Read-only</Heading>
+      <TextField label="Label" value="Can't edit the value" readOnly />
 
       <Heading variant="h5">Missing value/onChangeText</Heading>
       <TextField label="Email" type="email" value="asdf" required />

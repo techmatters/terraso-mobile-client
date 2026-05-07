@@ -412,7 +412,8 @@
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
         "privacy_policy_link_text": "კონფიდენციალურობის პოლიტიკა",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-        "terms_of_service_link_text": "მომსახურების პირობები"
+        "terms_of_service_link_text": "მომსახურების პირობები",
+        "read_only": "Read-only TK"
     },
     "errors": {
         "sync_conflict": {

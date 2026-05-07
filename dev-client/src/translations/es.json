@@ -412,7 +412,8 @@
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
         "privacy_policy_link_text": "Política de privacidad",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-        "terms_of_service_link_text": "Condiciones de servicio"
+        "terms_of_service_link_text": "Condiciones de servicio",
+        "read_only": "Read-only TK"
     },
     "errors": {
         "sync_conflict": {
