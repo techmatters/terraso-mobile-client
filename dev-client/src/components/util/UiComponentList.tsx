@@ -28,10 +28,7 @@ import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
-import {
-  Heading,
-  Text,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 export const UiComponentList = () => {
@@ -111,8 +108,8 @@ export const UiComponentList = () => {
           </ComponentList>
           <ComponentList title="TextField">
             <TextFieldExamples />
-            <Heading variant="h5">Old</Heading>
-            <TextInput label="Email" value="" onChangeText={() => {}} />
+            <Heading variant="h5">Old TextInput</Heading>
+            <TextInput label="Label" />
           </ComponentList>
           <ComponentList title="IconButtons">
             <Heading variant="h5">IconButton</Heading>
@@ -137,9 +134,16 @@ export const UiComponentList = () => {
 
 const TextFieldExamples = () => {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [amount, setAmount] = useState('');
   const [code, setCode] = useState('');
   const [description, setDescription] = useState('');
+
+  /* Validation
+
+*/
+  const emailError =
+    email === '' || email.includes('@') ? undefined : 'Email needs an @ sign';
 
   /* Validation runs on every keystroke. Empty input is allowed (no error
    * shown until the user types something out of range), so the field doesn't
@@ -157,25 +161,39 @@ const TextFieldExamples = () => {
       <Heading variant="h5">Basic (controlled)</Heading>
       <TextField label="Name" value={name} onChangeText={setName} />
 
-      <Heading variant="h5">Required + helper text</Heading>
+      <Heading variant="h5">Email</Heading>
       <TextField
         label="Email"
         type="email"
         required
-        helperText="We'll never share your email"
-        value=""
-        onChangeText={() => {}}
+        helperText="This is helperText"
+        value={email}
+        onChangeText={setEmail}
+        error={emailError}
+        errorVisibility="onTouch"
       />
 
-      <Heading variant="h5">Numeric, 0–10000</Heading>
+      <Heading variant="h5">Numeric + eval onTouch</Heading>
       <TextField
         label="Amount"
         type="numeric"
         value={amount}
         onChangeText={setAmount}
+        helperText="0-10000"
         error={amountError}
+        errorVisibility="always"
       />
-      <Text>Current value: {amount === '' ? '(empty)' : amount}</Text>
+
+      <Heading variant="h5">Numeric + eval immediately</Heading>
+      <TextField
+        label="Amount"
+        type="numeric"
+        value={amount}
+        onChangeText={setAmount}
+        helperText="0-10000"
+        error={amountError}
+        errorVisibility="always"
+      />
 
       <Heading variant="h5">Character limit + counter (max 4)</Heading>
       <TextField
@@ -196,12 +214,10 @@ const TextFieldExamples = () => {
       />
 
       <Heading variant="h5">Disabled</Heading>
-      <TextField
-        label="Read-only"
-        value="Can't edit me"
-        disabled
-        onChangeText={() => {}}
-      />
+      <TextField label="Read-only" value="Can't edit me" disabled />
+
+      <Heading variant="h5">Missing value/onChangeText</Heading>
+      <TextField label="Email" type="email" value="asdf" required />
     </>
   );
 };

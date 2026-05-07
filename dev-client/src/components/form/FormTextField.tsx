@@ -15,17 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useFormikContext} from 'formik';
+import {FormikValues, useFormikContext} from 'formik';
 
 import {
   CounterProps,
   SharedTextFieldProps,
   TextField,
 } from 'terraso-mobile-client/components/inputs/TextField';
-import {
-  ErrorVisibility,
-  shouldShowError,
-} from 'terraso-mobile-client/components/inputs/TextField.helpers';
+import {shouldShowError} from 'terraso-mobile-client/components/inputs/TextField.helpers';
 
 /* FormTextField — thin Formik wrapper around TextField.
  *
@@ -52,14 +49,14 @@ type StringFieldKeys<TValues> = {
 
 /* Composed from the same SharedTextFieldProps + CounterProps as TextField, so
  * every display prop (label, helperText, type, multiline, required, the
- * showCounter+maxLength constraint, etc.) is inherited automatically. New
- * display props added to SharedTextFieldProps appear on both components for
- * free; controlled-state props on TextField stay TextField-only by design. */
-export type FormTextFieldProps<TValues extends Record<string, unknown>> =
+ * showCounter+maxLength constraint, errorVisibility, etc.) is inherited
+ * automatically. New display props added to SharedTextFieldProps appear on
+ * both components for free; controlled-state props on TextField stay
+ * TextField-only by design. */
+export type FormTextFieldProps<TValues extends FormikValues> =
   SharedTextFieldProps &
     CounterProps & {
       name: StringFieldKeys<TValues>;
-      errorVisibility?: ErrorVisibility;
       onChangeText?: (value: string) => void;
       onBlur?: () => void;
     };
@@ -73,7 +70,7 @@ export type FormTextFieldProps<TValues extends Record<string, unknown>> =
  * the generic-plus-forwardRef combination requires fragile type casts. If
  * imperative control is genuinely required, use TextField directly with
  * controlled wiring. */
-export const FormTextField = <TValues extends Record<string, unknown>>({
+export const FormTextField = <TValues extends FormikValues>({
   name,
   errorVisibility,
   onChangeText,
@@ -106,6 +103,10 @@ export const FormTextField = <TValues extends Record<string, unknown>>({
     onBlur?.();
   };
 
+  /* FormTextField has already decided whether the error should be visible
+   * (using Formik's touched + submitCount). Pass errorVisibility="always"
+   * to TextField so its own onTouch gating doesn't run a second time —
+   * we either passed an error string (display it) or undefined (don't). */
   return (
     <TextField
       {...rest}
@@ -113,6 +114,7 @@ export const FormTextField = <TValues extends Record<string, unknown>>({
       onChangeText={handleChangeText}
       onBlur={handleBlur}
       error={showError ? error : undefined}
+      errorVisibility="always"
     />
   );
 };

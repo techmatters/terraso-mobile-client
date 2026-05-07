@@ -24,6 +24,8 @@ import {
 } from 'react-native-paper';
 
 import {
+  ErrorVisibility,
+  shouldShowError,
   TextFieldType,
   TYPE_PRESETS,
 } from 'terraso-mobile-client/components/inputs/TextField.helpers';
@@ -48,6 +50,13 @@ export type SharedTextFieldProps = {
   required?: boolean;
 
   helperText?: string;
+
+  /* Controls when an `error` is displayed:
+   *   - 'onTouch' (default): only after the field has been blurred (TextField)
+   *     or the form is touched/submitted (FormTextField). Avoids yelling
+   *     mid-keystroke.
+   *   - 'always': displayed whenever an error is present. */
+  errorVisibility?: ErrorVisibility;
 
   style?: RNPTextInputProps['style'];
 };
@@ -76,17 +85,33 @@ export type TextFieldProps = SharedTextFieldProps &
 export const TextField = forwardRef<RNTextInput, TextFieldProps>(
   function TextField(props, ref) {
     const value = props.value ?? '';
-    const showError = Boolean(props.error);
     const preset = TYPE_PRESETS[props.type ?? 'text'];
 
     /* Focus state tracked locally because Paper's TextInput doesn't expose a
      * focus signal to consumers. */
     const [isFocused, setIsFocused] = useState(false);
+
+    /* hasBeenBlurred is the controlled-mode equivalent of Formik's `touched`.
+     * Once true, errors are eligible for display under errorVisibility='onTouch'.
+     * Doesn't reset on subsequent focus — once touched, always touched. */
+    const [hasBeenBlurred, setHasBeenBlurred] = useState(false);
+
     const handleFocus = () => setIsFocused(true);
     const handleBlur = () => {
       setIsFocused(false);
+      setHasBeenBlurred(true);
       props.onBlur?.();
     };
+
+    /* Standalone TextField has no Formik submitCount concept — that's only
+     * meaningful in the FormTextField wrapper. Pass 0 here so submitCount
+     * never affects display in controlled mode. */
+    const showError = shouldShowError(
+      props.error,
+      hasBeenBlurred,
+      0,
+      props.errorVisibility ?? 'onTouch',
+    );
 
     /* Asterisk rides along with the floating label so it's positioned
      * consistently whether the field is empty (label sits in the input) or

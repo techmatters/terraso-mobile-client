@@ -108,18 +108,49 @@ describe('TextField', () => {
     expect(queryByText('We never share it')).toBeTruthy();
   });
 
-  test('shows error and hides helper text when error is set', () => {
+  test('shows error and hides helper text when error is set (errorVisibility=always)', () => {
     const {queryByText} = render(
       <TextField
         value=""
         onChangeText={() => {}}
         helperText="We never share it"
         error="Required"
+        errorVisibility="always"
       />,
     );
 
     expect(queryByText('Required')).toBeTruthy();
     expect(queryByText('We never share it')).toBeNull();
+  });
+
+  test('default errorVisibility hides error until the field has been blurred', () => {
+    const {queryByText, getByTestId} = render(
+      <TextField
+        value=""
+        onChangeText={() => {}}
+        error="Required"
+        testID="field"
+      />,
+    );
+
+    expect(queryByText('Required')).toBeNull();
+
+    fireEvent(getByTestId('field'), 'blur');
+
+    expect(queryByText('Required')).toBeTruthy();
+  });
+
+  test('errorVisibility=always shows error before any interaction', () => {
+    const {queryByText} = render(
+      <TextField
+        value=""
+        onChangeText={() => {}}
+        error="Required"
+        errorVisibility="always"
+      />,
+    );
+
+    expect(queryByText('Required')).toBeTruthy();
   });
 
   test('renders character counter when showCounter and maxLength are set', () => {
