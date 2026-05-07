@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {forwardRef} from 'react';
+import {forwardRef, useState} from 'react';
 import {TextInput as RNTextInput, StyleSheet, View} from 'react-native';
 import {
   HelperText,
@@ -79,6 +79,15 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
     const showError = Boolean(props.error);
     const preset = TYPE_PRESETS[props.type ?? 'text'];
 
+    /* Focus state tracked locally because Paper's TextInput doesn't expose a
+     * focus signal to consumers. */
+    const [isFocused, setIsFocused] = useState(false);
+    const handleFocus = () => setIsFocused(true);
+    const handleBlur = () => {
+      setIsFocused(false);
+      props.onBlur?.();
+    };
+
     /* Asterisk rides along with the floating label so it's positioned
      * consistently whether the field is empty (label sits in the input) or
      * filled (label sits above). */
@@ -99,7 +108,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
         : undefined;
 
     return (
-      <View>
+      <View style={styles.viewContainer}>
         <RNPTextInput
           ref={ref}
           mode="flat"
@@ -107,7 +116,8 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           placeholder={props.placeholder}
           value={value}
           onChangeText={props.onChangeText}
-          onBlur={props.onBlur}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           error={showError}
           multiline={props.multiline}
           numberOfLines={props.numberOfLines}
@@ -119,11 +129,12 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           keyboardType={preset.keyboardType}
           autoCapitalize={preset.autoCapitalize}
           autoComplete={preset.autoComplete}
-          activeUnderlineColor={theme.colors.input.standard.enabledBorder}
+          activeUnderlineColor={theme.colors.input.standard.hoverBorder}
           underlineColor={theme.colors.input.standard.enabledBorder}
           selectionColor={theme.colors.text.primary}
           style={[
             styles.input,
+            isFocused && styles.focusedInput,
             props.multiline && styles.multilineInput,
             props.disabled && styles.disabledInput,
             props.style,
@@ -156,6 +167,9 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: theme.colors.input.filled.enabledFill,
   },
+  focusedInput: {
+    backgroundColor: theme.colors.input.filled.hoverFill,
+  },
   multilineInput: {
     minHeight: 100,
   },
@@ -163,5 +177,9 @@ const styles = StyleSheet.create({
    * label/underline/text. Final hex pending designer review. */
   disabledInput: {
     backgroundColor: '#F5F5F5',
+  },
+  viewContainer: {
+    paddingTop: 8,
+    paddingBottom: 16,
   },
 });

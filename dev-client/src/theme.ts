@@ -100,9 +100,11 @@ export const theme = extendTheme({
     input: {
       standard: {
         enabledBorder: '#8B8B8B',
+        hoverBorder: '#000000',
       },
       filled: {
         enabledFill: '#EFEFEF',
+        hoverFill: '#E9E9E9',
       },
     },
     transparent: '#00000000',
