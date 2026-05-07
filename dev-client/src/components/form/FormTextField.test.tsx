@@ -20,21 +20,26 @@ import {Formik} from 'formik';
 
 import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 
+/* Side-effect import: initializes i18next so the counter test below can
+ * assert the rendered string. */
+import 'terraso-mobile-client/translations';
+
 /* The TValues generic on FormTextField forces callers to declare their form
  * shape so `name` is statically checked. We define a couple of test shapes
  * once and pass them as the explicit generic at each call site. */
 type EmailForm = {email: string};
 type NoteForm = {note: string};
 
-/* validateOnMount populates errors after the initial commit, so tests that
- * read errors after mount either await findBy* or fire an event to flush
- * the resulting re-render. */
-const renderInFormik = (
+/* validateOnMount runs Formik's validator in a post-mount useEffect, which
+ * dispatches state updates after render() returns. We flush those updates
+ * inside an act block here so React doesn't warn about updates not wrapped
+ * in act. Tests that consume this helper become `async` accordingly. */
+const renderInFormik = async (
   initialValues: Record<string, string>,
   children: React.ReactNode,
   options: {validate?: (v: any) => Record<string, string>} = {},
-) =>
-  render(
+) => {
+  const utils = render(
     <Formik
       initialValues={initialValues}
       onSubmit={() => {}}
@@ -43,10 +48,13 @@ const renderInFormik = (
       {() => <>{children}</>}
     </Formik>,
   );
+  await act(async () => {});
+  return utils;
+};
 
 describe('FormTextField', () => {
-  test('reads initial value from Formik', () => {
-    const {getByDisplayValue} = renderInFormik(
+  test('reads initial value from Formik', async () => {
+    const {getByDisplayValue} = await renderInFormik(
       {email: 'a@b.com'},
       <FormTextField<EmailForm> name="email" testID="field" />,
     );
@@ -54,8 +62,8 @@ describe('FormTextField', () => {
     expect(getByDisplayValue('a@b.com')).toBeTruthy();
   });
 
-  test('does not show error before the field is touched (default onTouch)', () => {
-    const {queryByText} = renderInFormik(
+  test('does not show error before the field is touched (default onTouch)', async () => {
+    const {queryByText} = await renderInFormik(
       {email: ''},
       <FormTextField<EmailForm> name="email" testID="field" />,
       {validate: () => ({email: 'Required'})},
@@ -65,7 +73,7 @@ describe('FormTextField', () => {
   });
 
   test('shows error after the field is blurred', async () => {
-    const {queryByText, getByTestId} = renderInFormik(
+    const {queryByText, getByTestId} = await renderInFormik(
       {email: ''},
       <FormTextField<EmailForm> name="email" testID="field" />,
       {validate: () => ({email: 'Required'})},
@@ -79,7 +87,7 @@ describe('FormTextField', () => {
   });
 
   test('errorVisibility="always" shows error once validate has run', async () => {
-    const {findByText} = renderInFormik(
+    const {findByText} = await renderInFormik(
       {email: ''},
       <FormTextField<EmailForm>
         name="email"
@@ -115,7 +123,7 @@ describe('FormTextField', () => {
   test('layered onChangeText runs after Formik update', async () => {
     const callerHandler = jest.fn();
 
-    const {getByTestId} = renderInFormik(
+    const {getByTestId} = await renderInFormik(
       {email: ''},
       <FormTextField<EmailForm>
         name="email"
@@ -134,7 +142,7 @@ describe('FormTextField', () => {
   test('layered onBlur runs after Formik setFieldTouched', async () => {
     const callerHandler = jest.fn();
 
-    const {getByTestId} = renderInFormik(
+    const {getByTestId} = await renderInFormik(
       {email: ''},
       <FormTextField<EmailForm>
         name="email"
@@ -150,8 +158,8 @@ describe('FormTextField', () => {
     expect(callerHandler).toHaveBeenCalled();
   });
 
-  test('forwards display props (label, helperText, required) to TextField', () => {
-    const {getAllByText, queryByText} = renderInFormik(
+  test('forwards display props (label, helperText, required) to TextField', async () => {
+    const {getAllByText, queryByText} = await renderInFormik(
       {email: ''},
       <FormTextField<EmailForm>
         name="email"
@@ -165,23 +173,28 @@ describe('FormTextField', () => {
     expect(queryByText('We never share it')).toBeTruthy();
   });
 
-  test('renders counter when showCounter and maxLength are set', () => {
-    const {queryByText} = renderInFormik(
+  test('renders counter when showCounter and maxLength are set', async () => {
+    const {queryByText} = await renderInFormik(
       {note: 'abcde'},
       <FormTextField<NoteForm> name="note" maxLength={20} showCounter />,
     );
 
-    expect(queryByText('5 / 20')).toBeTruthy();
+    expect(queryByText('5 / 20', {exact: false})).toBeTruthy();
   });
 
   test('throws a clear error when rendered outside a Formik provider', () => {
-    /* Suppress React's expected error log for this assertion. */
+    /* Suppress two expected logs for this assertion:
+     *   - Formik's "context is undefined" warning, which fires from
+     *     useFormikContext() before our throw runs.
+     *   - React's render-error logging triggered by the throw. */
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     expect(() => render(<FormTextField<EmailForm> name="email" />)).toThrow(
       /must be rendered inside a Formik provider/,
     );
 
+    warnSpy.mockRestore();
     errSpy.mockRestore();
   });
 });

@@ -16,6 +16,7 @@
  */
 
 import {forwardRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {TextInput as RNTextInput, StyleSheet, View} from 'react-native';
 import {
   HelperText,
@@ -46,10 +47,11 @@ export type SharedTextFieldProps = {
   multiline?: boolean;
   numberOfLines?: number;
   disabled?: boolean;
-  autoFocus?: boolean;
   required?: boolean;
-
   helperText?: string;
+
+  // Focuses this TextField on mount
+  autoFocus?: boolean;
 
   /* Controls when an `error` is displayed:
    *   - 'onTouch' (default): only after the field has been blurred (TextField)
@@ -75,6 +77,7 @@ export type ControlledStateProps = {
   value?: string;
   onChangeText?: (value: string) => void;
   onBlur?: () => void;
+  // Expect parent to handle logic for what error to show, and pass the relevant error  as a prop
   error?: string;
 };
 
@@ -84,6 +87,7 @@ export type TextFieldProps = SharedTextFieldProps &
 
 export const TextField = forwardRef<RNTextInput, TextFieldProps>(
   function TextField(props, ref) {
+    const {t} = useTranslation();
     const value = props.value ?? '';
     const preset = TYPE_PRESETS[props.type ?? 'text'];
 
@@ -129,7 +133,10 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
 
     const counterText =
       props.showCounter && props.maxLength !== undefined
-        ? `${value.length} / ${props.maxLength}`
+        ? t('general.character_limit', {
+            current: value.length,
+            limit: props.maxLength,
+          })
         : undefined;
 
     return (

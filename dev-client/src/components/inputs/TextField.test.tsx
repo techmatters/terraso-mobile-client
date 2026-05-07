@@ -19,6 +19,12 @@ import {fireEvent, render} from '@testing-library/react-native';
 
 import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 
+/* Side-effect import: initializes i18next with the project's translation
+ * bundles so t() inside TextField returns real strings (e.g., "5 / 20
+ * characters") instead of the bare key. Mirrors what the integration setup
+ * does for the integration suite. */
+import 'terraso-mobile-client/translations';
+
 /* TextField is the controlled component — no Formik anywhere in these tests. */
 
 describe('TextField', () => {
@@ -163,7 +169,10 @@ describe('TextField', () => {
       />,
     );
 
-    expect(queryByText('5 / 20')).toBeTruthy();
+    /* Substring match — tolerates the trailing "characters" / locale suffix
+     * in general.character_limit while still verifying the numeric counter
+     * is correct. */
+    expect(queryByText('5 / 20', {exact: false})).toBeTruthy();
   });
 
   test('does not render counter without showCounter', () => {
@@ -171,6 +180,6 @@ describe('TextField', () => {
       <TextField value="abcde" onChangeText={() => {}} maxLength={20} />,
     );
 
-    expect(queryByText('5 / 20')).toBeNull();
+    expect(queryByText('5 / 20', {exact: false})).toBeNull();
   });
 });
