@@ -49,9 +49,6 @@ export type SharedTextFieldProps = {
   required?: boolean;
   helperText?: string;
 
-  // Focuses this TextField on mount
-  autoFocus?: boolean;
-
   style?: RNPTextInputProps['style'];
 };
 
@@ -141,7 +138,6 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           numberOfLines={props.numberOfLines}
           maxLength={props.maxLength}
           editable={!props.readOnly}
-          autoFocus={props.autoFocus}
           testID={props.testID}
           accessibilityLabel={a11yLabel}
           keyboardType={preset.keyboardType}

@@ -159,12 +159,7 @@ const TextFieldExamples = () => {
   return (
     <>
       <Heading variant="h5">Basic (controlled)</Heading>
-      <TextField
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        autoFocus={true}
-      />
+      <TextField label="Name" value={name} onChangeText={setName} />
 
       <Heading variant="h5">Email</Heading>
       <TextField
