@@ -25,6 +25,8 @@ import {
   useRef,
   useState,
 } from 'react';
+import {LayoutChangeEvent} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import BottomSheet from '@gorhom/bottom-sheet';
 import Mapbox from '@rnmapbox/maps';
@@ -54,6 +56,7 @@ import {
   noneCallout,
   siteCallout,
 } from 'terraso-mobile-client/screens/SitesScreen/SitesScreenCallout';
+import {getStartingSnapValue} from 'terraso-mobile-client/screens/SitesScreen/utils/getStartingSnapValue';
 import {getSitesScreenFilters} from 'terraso-mobile-client/screens/SitesScreen/utils/sitesScreenFilters';
 import {useSelector} from 'terraso-mobile-client/store';
 import {
@@ -154,11 +157,39 @@ export const SitesScreen = memo(() => {
     [siteDistances, siteProjectRoles],
   );
 
+  const insets = useSafeAreaInsets();
+  const [snapIndex, setSnapIndex] = useState(1);
+  const [isSheetAnimating, setIsSheetAnimating] = useState(false);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  const snapPercents = useMemo(
+    () => [getStartingSnapValue(insets.bottom), 50, 75],
+    [insets.bottom],
+  );
+
+  const attributionBottom = useMemo(
+    () => (containerHeight * (snapPercents[snapIndex] ?? 50)) / 100 + 8,
+    [containerHeight, snapPercents, snapIndex],
+  );
+
+  const attributionVisible = !isSheetAnimating;
+
+  const onSheetAnimate = useCallback(() => {
+    setIsSheetAnimating(true);
+  }, []);
+  const onSheetChange = useCallback((index: number) => {
+    setSnapIndex(index);
+    setIsSheetAnimating(false);
+  }, []);
+  const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
+    setContainerHeight(e.nativeEvent.layout.height);
+  }, []);
+
   return (
     <ScreenScaffold
       AppBar={<AppBar LeftButton={null} RightButton={<LandPKSInfoButton />} />}>
       <ListFilterProvider items={siteList} filters={filters}>
-        <Box testID="sites-screen" flex={1}>
+        <Box testID="sites-screen" flex={1} onLayout={onContainerLayout}>
           <FeatureFlagPollingTrigger />
           <PosthogBanner />
           <Box flex={1}>
@@ -174,6 +205,8 @@ export const SitesScreen = memo(() => {
               setCalloutState={setCalloutState}
               styleURL={mapStyleURL}
               onMapFinishedLoading={onMapFinishedLoading}
+              attributionBottom={attributionBottom}
+              attributionVisible={attributionVisible}
             />
           </Box>
           <SiteListBottomSheet
@@ -181,6 +214,8 @@ export const SitesScreen = memo(() => {
             sites={siteList}
             showSiteOnMap={showSiteOnMap}
             snapIndex={1}
+            onChange={onSheetChange}
+            onAnimate={onSheetAnimate}
           />
         </Box>
       </ListFilterProvider>

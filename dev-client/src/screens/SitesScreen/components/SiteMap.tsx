@@ -67,6 +67,8 @@ type Props = {
   setCalloutState: (state: CalloutState) => void;
   styleURL?: string;
   onMapFinishedLoading?: () => void;
+  attributionBottom?: number;
+  attributionVisible?: boolean;
 };
 
 export type MapRef = {
@@ -76,7 +78,14 @@ export type MapRef = {
 export const SiteMap = memo(
   forwardRef<MapRef, Props>(
     (
-      {setCalloutState, calloutState, styleURL, onMapFinishedLoading},
+      {
+        setCalloutState,
+        calloutState,
+        styleURL,
+        onMapFinishedLoading,
+        attributionBottom = 8,
+        attributionVisible = true,
+      },
       forwardedRef,
     ): React.JSX.Element => {
       const mapRef = useRef<Mapbox.MapView>(null);
@@ -279,6 +288,10 @@ export const SiteMap = memo(
           ref={mapRef}
           style={styles.mapView}
           scaleBarEnabled={false}
+          attributionEnabled={attributionVisible}
+          logoEnabled={attributionVisible}
+          logoPosition={{bottom: attributionBottom, left: 8}}
+          attributionPosition={{bottom: attributionBottom, right: 8}}
           styleURL={styleURL}
           onPress={onPress}
           onDidFinishLoadingMap={onMapFinishedLoading}>
