@@ -90,3 +90,16 @@ cd dev-client
 - Git hooks enforce code style and commit message structure
 - Supports offline functionality with custom persistence layer
 - always run "npm run format" before committing.
+
+## Secrets handling
+
+The .env file is not in the repo. Real credentials live at ~/secrets/<project>/.env
+and are loaded at runtime by the npm scripts (via dotenv-cli) — they are not
+present in the interactive shell environment.
+
+When writing scripts that consume environment variables:
+- Never print, log, or echo values from process.env or os.environ
+- Never include env values in error messages or stack traces
+- If verifying a variable is set, print only its presence ("API_KEY: set"),
+  never the value
+- Don't write env values into files inside the project directory
