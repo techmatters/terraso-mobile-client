@@ -28,7 +28,7 @@ import {
   shouldShowError,
   TextFieldType,
   TYPE_PRESETS,
-} from 'terraso-mobile-client/components/inputs/TextField.helpers';
+} from 'terraso-mobile-client/components/inputs/TextFieldHelpers';
 import {theme} from 'terraso-mobile-client/theme';
 
 /* TextField — pure, controlled text input.
@@ -169,7 +169,6 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
             style,
           ]}
         />
-        {/* padding="normal" left-aligns all of these with the input text. */}
         {readOnly ? (
           <HelperText type="info" visible padding="normal">
             {t('general.read_only')}

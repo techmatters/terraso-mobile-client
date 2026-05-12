@@ -22,7 +22,7 @@ import {
   SharedTextFieldProps,
   TextField,
 } from 'terraso-mobile-client/components/inputs/TextField';
-import {shouldShowError} from 'terraso-mobile-client/components/inputs/TextField.helpers';
+import {shouldShowError} from 'terraso-mobile-client/components/inputs/TextFieldHelpers';
 
 /* FormTextField — thin Formik wrapper around TextField.
  *

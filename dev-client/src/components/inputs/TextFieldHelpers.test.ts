@@ -18,7 +18,7 @@
 import {
   shouldShowError,
   TYPE_PRESETS,
-} from 'terraso-mobile-client/components/inputs/TextField.helpers';
+} from 'terraso-mobile-client/components/inputs/TextFieldHelpers';
 
 describe('shouldShowError', () => {
   test('returns false when there is no error', () => {
