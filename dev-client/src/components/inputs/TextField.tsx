@@ -75,10 +75,30 @@ export type TextFieldProps = SharedTextFieldProps &
   ControlledStateProps;
 
 export const TextField = forwardRef<RNTextInput, TextFieldProps>(
-  function TextField(props, ref) {
+  (
+    {
+      label,
+      placeholder,
+      testID,
+      accessibilityLabel,
+      type,
+      multiline,
+      numberOfLines,
+      readOnly,
+      required,
+      helperText,
+      style,
+      showCounter,
+      maxLength,
+      value = '',
+      onChangeText,
+      onBlur,
+      error,
+    },
+    ref,
+  ) => {
     const {t} = useTranslation();
-    const value = props.value ?? '';
-    const preset = TYPE_PRESETS[props.type ?? 'text'];
+    const preset = TYPE_PRESETS[type ?? 'text'];
 
     /* Focus state tracked locally because Paper's TextInput doesn't expose a
      * focus signal to consumers. */
@@ -92,33 +112,29 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
     const handleBlur = () => {
       setIsFocused(false);
       setHasBeenBlurred(true);
-      props.onBlur?.();
+      onBlur?.();
     };
 
     /* Standalone TextField has no Formik submitCount concept — that's only
      * meaningful in the FormTextField wrapper. Pass 0 here so submitCount
      * never affects display in controlled mode. */
-    const showError = shouldShowError(props.error, hasBeenBlurred, 0);
+    const showError = shouldShowError(error, hasBeenBlurred, 0);
 
     /* Asterisk rides along with the floating label so it's positioned
      * consistently whether the field is empty (label sits in the input) or
      * filled (label sits above). */
-    const displayLabel =
-      props.label && props.required ? `${props.label} *` : props.label;
+    const displayLabel = label && required ? `${label} *` : label;
 
     /* Visual asterisk doesn't translate to a screen reader; augment the
      * accessibility label so required-ness is announced. */
     const a11yLabel =
-      props.accessibilityLabel ??
-      (props.label && props.required
-        ? `${props.label}, required`
-        : props.label);
+      accessibilityLabel ?? (label && required ? `${label}, required` : label);
 
     const counterText =
-      props.showCounter && props.maxLength !== undefined
+      showCounter && maxLength !== undefined
         ? t('general.character_limit', {
             current: value.length,
-            limit: props.maxLength,
+            limit: maxLength,
           })
         : undefined;
 
@@ -128,17 +144,17 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           ref={ref}
           mode="flat"
           label={displayLabel}
-          placeholder={props.placeholder}
+          placeholder={placeholder}
           value={value}
-          onChangeText={props.onChangeText}
+          onChangeText={onChangeText}
           onFocus={handleFocus}
           onBlur={handleBlur}
           error={showError}
-          multiline={props.multiline}
-          numberOfLines={props.numberOfLines}
-          maxLength={props.maxLength}
-          editable={!props.readOnly}
-          testID={props.testID}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
+          maxLength={maxLength}
+          editable={!readOnly}
+          testID={testID}
           accessibilityLabel={a11yLabel}
           keyboardType={preset.keyboardType}
           autoCapitalize={preset.autoCapitalize}
@@ -149,12 +165,12 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           style={[
             styles.input,
             isFocused && styles.focusedInput,
-            props.multiline && styles.multilineInput,
-            props.style,
+            multiline && styles.multilineInput,
+            style,
           ]}
         />
         {/* padding="normal" left-aligns all of these with the input text. */}
-        {props.readOnly ? (
+        {readOnly ? (
           <HelperText type="info" visible padding="normal">
             {t('general.read_only')}
           </HelperText>
@@ -162,11 +178,11 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           <>
             {showError ? (
               <HelperText type="error" visible padding="normal">
-                {props.error}
+                {error}
               </HelperText>
-            ) : props.helperText ? (
+            ) : helperText ? (
               <HelperText type="info" visible padding="normal">
-                {props.helperText}
+                {helperText}
               </HelperText>
             ) : null}
             {counterText !== undefined && (
