@@ -21,7 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {User} from 'terraso-client-shared/account/accountSlice';
 
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
-import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
+import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
@@ -46,13 +46,7 @@ export function DeleteAccountConfirmForm({
 
   return (
     <Column space="24px">
-      <TextInput
-        value={value}
-        onChangeText={setValue}
-        autoComplete="email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
+      <TextField value={value} onChangeText={setValue} type="email" />
       <Row space="8px" alignSelf="flex-end">
         <DialogButton
           onPress={goBack}
