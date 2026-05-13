@@ -17,7 +17,7 @@
 
 import {useCallback, useContext} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScrollView} from 'native-base';
@@ -25,7 +25,6 @@ import {ScrollView} from 'native-base';
 import {ProjectUpdateMutationInput} from 'terraso-client-shared/graphqlSchema/graphql';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
-import {Divider} from 'terraso-mobile-client/components/Divider';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByProjectRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
@@ -37,7 +36,7 @@ import {
   TabRoutes,
   TabStackParamList,
 } from 'terraso-mobile-client/navigation/constants';
-import {EditProjectForm} from 'terraso-mobile-client/screens/CreateProjectScreen/components/ProjectForm';
+import {EditProjectForm} from 'terraso-mobile-client/screens/ProjectSettingsScreen/components/EditProjectForm';
 import {ProjectDeletionContext} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectDeletionContext';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectProject} from 'terraso-mobile-client/store/selectors';
@@ -71,14 +70,14 @@ export function ProjectSettingsScreen({
     <ScrollView
       backgroundColor={theme.colors.primary.contrast}
       contentContainerStyle={styles.scrollview}>
-      <Column space={4} m={3} style={styles.column}>
+      <Column m={3} style={styles.column}>
         <EditProjectForm
           onSubmit={onSubmit}
           name={name}
           description={description}
           userRole={userRole}
         />
-        <Divider />
+        <View style={styles.spacer} />
         <RestrictByProjectRole role={PROJECT_MANAGER_ROLES}>
           <ConfirmModal
             title={t('projects.settings.delete_button_prompt')}
@@ -107,4 +106,5 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
   },
+  spacer: {paddingVertical: theme.space.sm},
 });

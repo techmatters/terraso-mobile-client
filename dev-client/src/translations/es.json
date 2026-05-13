@@ -332,7 +332,6 @@
         "form": {
             "name_min_length_error": "Nombre del proyecto, mínimo {{min}} caracteres",
             "name_max_length_error": "Nombre del proyecto, máximo {{max}} caracteres",
-            "description_min_length_error": "Descripción del proyecto, mínimo {{min}} caracteres",
             "description_max_length_error": "Descripción del proyecto, máximo {{max}} caracteres"
         },
         "sort_label": "Ordenar proyectos por:",

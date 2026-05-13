@@ -332,7 +332,6 @@
         "form": {
             "name_min_length_error": "Le nom du projet doit comporter au moins {{min}} caractères",
             "name_max_length_error": "Le nom du projet doit comporter au maximum {{max}} caractères",
-            "description_min_length_error": "La description du projet doit comporter au moins {{min}} caractères",
             "description_max_length_error": "La description du projet doit comporter au maximum {{max}} caractères"
         },
         "sort_label": "Trier les projets par",

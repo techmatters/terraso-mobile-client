@@ -332,7 +332,6 @@
         "form": {
             "name_min_length_error": "Jina la mradi lazima liwe na angalau herufi {{min}}",
             "name_max_length_error": "Jina la mradi lazima liwe na herufi zisizozidi {{max}}",
-            "description_min_length_error": "Maelezo ya mradi lazima yawe angalau herufi {{min}}",
             "description_max_length_error": "Maelezo ya mradi lazima yawe na herufi zisizozidi {{max}}"
         },
         "sort_label": "Panga miradi kulingana na",
