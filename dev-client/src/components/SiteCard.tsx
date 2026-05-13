@@ -75,6 +75,7 @@ export const SiteCard = ({
           coords={site}
           style={styles.mapView}
           pointerEvents="none"
+          showAttribution={false}
         />
         {project && (
           <PeopleChip count={Object.keys(project.memberships).length} />

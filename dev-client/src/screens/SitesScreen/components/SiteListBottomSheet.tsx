@@ -55,11 +55,13 @@ type Props = {
   sites: Site[];
   showSiteOnMap: (site: Site) => void;
   snapIndex?: number;
+  onChange?: (index: number) => void;
+  onAnimate?: (fromIndex: number, toIndex: number) => void;
 };
 
 export const SiteListBottomSheet = memo(
   forwardRef<BottomSheetMethods, Props>(
-    ({sites, showSiteOnMap, snapIndex}, ref) => {
+    ({sites, showSiteOnMap, snapIndex, onChange, onAnimate}, ref) => {
       const {t} = useTranslation();
       const isLoadingData = useSelector(
         state => state.soilData.status === 'loading',
@@ -134,6 +136,8 @@ export const SiteListBottomSheet = memo(
           snapPoints={snapPoints}
           enableDynamicSizing={false}
           index={snapIndex}
+          onChange={onChange}
+          onAnimate={onAnimate}
           backgroundStyle={backgroundStyle}
           handleIndicatorStyle={{backgroundColor: colors.grey[800]}}>
           {isLoadingData ? (

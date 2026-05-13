@@ -96,6 +96,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   displayCenterMarker?: boolean;
   pointerEvents?: 'none' | 'auto' | 'box-none' | 'box-only';
+  showAttribution?: boolean;
 };
 
 export const StaticMapView = ({
@@ -104,6 +105,7 @@ export const StaticMapView = ({
   style,
   displayCenterMarker,
   pointerEvents,
+  showAttribution = true,
 }: Props) => {
   const cameraSettings = useMemo(
     () =>
@@ -122,12 +124,12 @@ export const StaticMapView = ({
       style={style}
       styleURL={Mapbox.StyleURL.Satellite}
       scaleBarEnabled={false}
-      logoEnabled={false}
+      attributionEnabled={showAttribution}
+      logoEnabled={showAttribution}
       zoomEnabled={false}
       scrollEnabled={false}
       pitchEnabled={false}
       rotateEnabled={false}
-      attributionEnabled={false}
       pointerEvents={pointerEvents}
       // Use TextureView on Android to fix z-order issues with thumbnails
       // bleeding through onto the main map. TextureView respects normal
