@@ -67,19 +67,11 @@ export const CreateProjectForm = () => {
       initialTouched={{
         name: true,
       }}>
-      {({
-        isSubmitting,
-        handleSubmit,
-        handleChange,
-        handleBlur,
-        isValid,
-        values,
-      }) => (
+      {({isSubmitting, handleSubmit, handleChange, isValid, values}) => (
         <FormContainer
           isSubmitting={isSubmitting}
           handleSubmit={handleSubmit}
           handleChange={handleChange}
-          handleBlur={handleBlur}
           isValid={isValid}
           privacy={values.privacy}
         />
@@ -93,12 +85,11 @@ const FormContainer = React.memo(
     isSubmitting,
     handleSubmit,
     handleChange,
-    handleBlur,
     privacy,
     isValid,
   }: Pick<
     FormikProps<ProjectFormValues>,
-    'isSubmitting' | 'handleSubmit' | 'handleChange' | 'handleBlur' | 'isValid'
+    'isSubmitting' | 'handleSubmit' | 'handleChange' | 'isValid'
   > &
     Pick<ProjectFormValues, 'privacy'>) => {
     const {t} = useTranslation();
@@ -107,11 +98,7 @@ const FormContainer = React.memo(
       <KeyboardAvoidingView flex={1}>
         <SafeScrollView bg="background.default">
           <Box pt="16px" mx="20px">
-            <ProjectForm
-              handleChange={handleChange}
-              handleBlur={handleBlur}
-              privacy={privacy}
-            />
+            <ProjectForm handleChange={handleChange} privacy={privacy} />
           </Box>
           <View alignItems="flex-end" margin={5}>
             <ContainedButton

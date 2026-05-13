@@ -30,8 +30,7 @@ import {
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
+import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 import {
   Column,
   Heading,
@@ -123,11 +122,6 @@ export const EditProjectForm = ({
     [onSubmit],
   );
 
-  // We are using a special textInputLabel prop instead of label. This is passed
-  // from FormInput to TextInput.
-  //
-  // If label is present, Formik adds a label above the text field.
-  // If label is absent, then TextInput doesn't get a needed label.
   return (
     <Formik<FormValues>
       validationSchema={editProjectValidationSchema(t)}
@@ -136,23 +130,21 @@ export const EditProjectForm = ({
       onSubmit={onSubmitAndReset}>
       {({handleSubmit, isValid, isSubmitting, dirty}) => (
         <>
-          <FormInput
-            key="name"
+          <FormTextField<FormValues>
             name="name"
             maxLength={PROJECT_NAME_MAX_LENGTH}
             placeholder={t('projects.create.name_label')}
-            id="project-form-name"
-            textInputLabel={t('projects.create.name_label')}
+            label={t('projects.create.name_label')}
+            showCounter
           />
-          <FormInput
-            key="description"
+          <FormTextField<FormValues>
             name="description"
             maxLength={PROJECT_DESCRIPTION_MAX_LENGTH}
             placeholder={t('projects.create.description_label')}
+            label={t('projects.create.description_label')}
             numberOfLines={3}
-            multiline={true}
-            autoComplete="off"
-            textInputLabel={t('projects.create.description_label')}
+            multiline
+            showCounter
           />
           {userRole === 'MANAGER' && (
             <View flexDirection="row" justifyContent="flex-end">
@@ -172,38 +164,30 @@ export const EditProjectForm = ({
 
 export default function ProjectForm({
   handleChange,
-  handleBlur,
   privacy,
 }: Props &
-  Pick<FormikProps<ProjectFormValues>, 'handleChange' | 'handleBlur'> &
+  Pick<FormikProps<ProjectFormValues>, 'handleChange'> &
   Pick<ProjectFormValues, 'privacy'>) {
   const {t} = useTranslation();
 
-  const inputParams = (field: keyof ProjectFormValues) => ({
-    onChangeText: handleChange(field),
-    onBlur: handleBlur(field),
-  });
-
   return (
     <Column space={5}>
-      <TextInput
+      <FormTextField<ProjectFormValues>
+        name="name"
         maxLength={PROJECT_NAME_MAX_LENGTH}
         placeholder={t('projects.create.name_label')}
         label={t('projects.create.name_label')}
-        {...inputParams('name')}
+        showCounter
       />
-      <ErrorMessage fieldName="name" />
-
-      <TextInput
+      <FormTextField<ProjectFormValues>
+        name="description"
         maxLength={PROJECT_DESCRIPTION_MAX_LENGTH}
         placeholder={t('projects.create.description_label')}
         label={t('projects.create.description_label')}
         numberOfLines={3}
-        autoComplete="off"
-        multiline={true}
-        {...inputParams('description')}
+        multiline
+        showCounter
       />
-      <ErrorMessage fieldName="description" />
       <RadioBlock
         label={
           <Row alignItems="center">
