@@ -18,7 +18,7 @@
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Formik, FormikHelpers, FormikProps} from 'formik';
+import {Formik, FormikHelpers, useFormikContext} from 'formik';
 import {TFunction} from 'i18next';
 import * as yup from 'yup';
 
@@ -93,10 +93,6 @@ export type ProjectFormValues = {
   privacy: 'PUBLIC' | 'PRIVATE';
 };
 
-type Props = {
-  editForm?: boolean;
-};
-
 type FormValues = Omit<ProjectUpdateMutationInput, 'id'>;
 
 type FormProps = FormValues & {
@@ -162,13 +158,9 @@ export const EditProjectForm = ({
   );
 };
 
-export default function ProjectForm({
-  handleChange,
-  privacy,
-}: Props &
-  Pick<FormikProps<ProjectFormValues>, 'handleChange'> &
-  Pick<ProjectFormValues, 'privacy'>) {
+export default function ProjectForm() {
   const {t} = useTranslation();
+  const {values, handleChange} = useFormikContext<ProjectFormValues>();
 
   return (
     <Column space={5}>
@@ -203,7 +195,7 @@ export default function ProjectForm({
           PRIVATE: {text: t('projects.create.private')},
         }}
         groupProps={{
-          value: privacy,
+          value: values.privacy,
           variant: 'oneLine',
           onChange: handleChange('privacy'),
           name: 'data-privacy',
