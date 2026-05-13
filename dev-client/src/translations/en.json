@@ -226,8 +226,8 @@
         "create": {
             "public": "Public",
             "private": "Private",
-            "name_label": "Project Name",
-            "description_label": "Project Description",
+            "name_label": "Project name",
+            "description_label": "Project description",
             "privacy_label": "Data Privacy"
         },
         "tabs": {

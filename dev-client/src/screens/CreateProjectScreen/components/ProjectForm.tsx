@@ -82,6 +82,7 @@ export default function ProjectForm() {
         maxLength={PROJECT_NAME_MAX_LENGTH}
         placeholder={t('projects.create.name_label')}
         label={t('projects.create.name_label')}
+        required
         showCounter
       />
       <FormTextField<ProjectFormValues>
