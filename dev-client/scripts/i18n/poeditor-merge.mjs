@@ -539,21 +539,34 @@ async function main() {
     process.exit(1);
   }
 
-  // Verify the tag exists in git
-  try {
-    const tagRef = execSync(`git rev-parse ${baselineTag}`, {
+  // Verify the tag exists in git. The tag is created by the sync workflow
+  // and pushed to origin, but `git fetch` won't auto-follow it (it points to
+  // an orphan commit unreachable from any branch). Try a local lookup first;
+  // if missing, fetch tags from origin and retry once before giving up.
+  const resolveTag = () =>
+    execSync(`git rev-parse ${baselineTag}`, {
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
     }).trim();
-    verbose(`Baseline tag ${baselineTag} -> ${tagRef}`);
+  let tagRef;
+  try {
+    tagRef = resolveTag();
   } catch {
-    console.error(
-      `Tag ${baselineTag} (from ${SYNC_TAG_FILE}) not found in git.\n` +
-        'Make sure the tag exists:\n' +
-        `  git tag ${baselineTag} <commit>`,
-    );
-    process.exit(1);
+    verbose(`Tag ${baselineTag} not found locally; fetching tags from origin...`);
+    try {
+      execSync('git fetch --tags origin', {stdio: 'inherit'});
+      tagRef = resolveTag();
+    } catch {
+      console.error(
+        `Tag ${baselineTag} (from ${SYNC_TAG_FILE}) not found in git, ` +
+          'even after fetching tags from origin.\n' +
+          'Make sure the tag exists:\n' +
+          `  git tag ${baselineTag} <commit>`,
+      );
+      process.exit(1);
+    }
   }
+  verbose(`Baseline tag ${baselineTag} -> ${tagRef}`);
 
   // -------------------------------------------------------
   // Pre-flight: refuse to run on main (anything but --dry-run)
