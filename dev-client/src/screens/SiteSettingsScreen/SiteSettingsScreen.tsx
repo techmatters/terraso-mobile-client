@@ -107,6 +107,8 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
               onChangeText={setName}
               label={t('site.create.name_label')}
               placeholder={t('site.create.name_label')}
+              required
+              showCounter
             />
             <View mt={4} alignItems="flex-end">
               <ContainedButton
