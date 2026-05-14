@@ -184,7 +184,9 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
                 {helperText}
               </HelperText>
             ) : null}
-            {counterText !== undefined && (
+            {/* Counter is suppressed while an error is showing so the error
+             * occupies its slot, rather than the two stacking. */}
+            {counterText !== undefined && !showError && (
               <HelperText type="info" visible padding="normal">
                 {counterText}
               </HelperText>
