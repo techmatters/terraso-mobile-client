@@ -23,7 +23,7 @@ import {
 } from 'terraso-mobile-client/components/inputs/TextField';
 import {shouldShowError} from 'terraso-mobile-client/components/inputs/TextFieldHelpers';
 
-/* FormTextField — thin Formik wrapper around TextField.
+/* FormTextField — use instead of TextField when in a Formik form.
  *
  * Reads value / errors / touched / submitCount from the surrounding Formik
  * provider. Decides display via shouldShowError (validate continuously,

@@ -31,14 +31,12 @@ import {
 } from 'terraso-mobile-client/components/inputs/TextFieldHelpers';
 import {theme} from 'terraso-mobile-client/theme';
 
-/* TextField — pure, controlled text input.
+/* TextField — use this for standalone controlled text input.
  *
  * Knows nothing about Formik. Caller passes value/onChangeText/error directly.
  * For Formik-driven forms, use FormTextField (which wraps TextField). */
 
-/* Discriminated union: `showCounter` requires `maxLength`. The compiler will
- * reject `<TextField showCounter />` without a maxLength. Local helper —
- * folded into SharedTextFieldProps below so callers only need that one type. */
+/* Discriminated union: `showCounter` requires `maxLength` */
 type CounterProps =
   | {showCounter?: false; maxLength?: number}
   | {showCounter: true; maxLength: number};
