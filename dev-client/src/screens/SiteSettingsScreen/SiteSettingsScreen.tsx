@@ -29,7 +29,7 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
+import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Column,
@@ -101,7 +101,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
           BottomNavigation={null}
           AppBar={<AppBar title={site?.name} />}>
           <Column px="16px" py="22px">
-            <TextInput
+            <TextField
               maxLength={SITE_NAME_MAX_LENGTH}
               value={name}
               onChangeText={setName}
