@@ -195,7 +195,6 @@ const TextFieldExamples = () => {
       <TextField
         label="Description"
         multiline
-        numberOfLines={3}
         value={description}
         onChangeText={setDescription}
       />

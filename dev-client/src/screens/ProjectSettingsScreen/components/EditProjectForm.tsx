@@ -91,7 +91,6 @@ export const EditProjectForm = ({
             maxLength={PROJECT_DESCRIPTION_MAX_LENGTH}
             placeholder={t('projects.create.description_label')}
             label={t('projects.create.description_label')}
-            numberOfLines={3}
             multiline
             showCounter
           />

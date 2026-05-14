@@ -44,7 +44,6 @@ export type SharedTextFieldProps = {
 
   type?: TextFieldType;
   multiline?: boolean;
-  numberOfLines?: number;
   readOnly?: boolean;
   required?: boolean;
   helperText?: string;
@@ -83,7 +82,6 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
       accessibilityLabel,
       type,
       multiline,
-      numberOfLines,
       readOnly,
       required,
       helperText,
@@ -151,7 +149,6 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           onBlur={handleBlur}
           error={showError}
           multiline={multiline}
-          numberOfLines={numberOfLines}
           maxLength={maxLength}
           editable={!readOnly}
           testID={testID}
