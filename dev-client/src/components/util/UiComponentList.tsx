@@ -27,7 +27,6 @@ import {OutlinedButton} from 'terraso-mobile-client/components/buttons/OutlinedB
 import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special/SlopeMeterButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
 import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
-import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
@@ -108,8 +107,6 @@ export const UiComponentList = () => {
           </ComponentList>
           <ComponentList title="TextField">
             <TextFieldExamples />
-            <Heading variant="h5">Old TextInput</Heading>
-            <TextInput label="Label" />
           </ComponentList>
           <ComponentList title="IconButtons">
             <Heading variant="h5">IconButton</Heading>
