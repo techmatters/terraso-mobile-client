@@ -24,7 +24,7 @@ import {UserInProjectError} from 'terraso-client-shared/account/accountService';
 import {checkUserInProject} from 'terraso-client-shared/account/accountSlice';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
+import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {Box, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
@@ -118,12 +118,14 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
         return (
           <>
             <Box minHeight="84px">
-              <FormTextField<FormValues>
+              <FormInput
                 key="email"
                 name="email"
-                label={t('general.email_label')}
+                textInputLabel={t('general.email_label')}
                 placeholder={t('general.email_placeholder')}
-                type="email"
+                keyboardType="email-address"
+                autoComplete="email"
+                autoCapitalize="none"
               />
             </Box>
             <View mt="sm" alignSelf="flex-end">
