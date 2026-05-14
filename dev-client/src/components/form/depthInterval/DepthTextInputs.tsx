@@ -40,7 +40,6 @@ export const DepthTextForm = () => {
         maxLength={DEPTH_LABEL_MAX_LENGTH}
         showCounter
       />
-      <VerticalSpacer />
       <Box flex={1}>
         <FormTextField<DepthTextFormInput>
           name="start"
@@ -51,6 +50,7 @@ export const DepthTextForm = () => {
           label={t('soil.depth.start_label', {
             units: 'cm',
           })}
+          required
         />
       </Box>
       <VerticalSpacer />
@@ -64,6 +64,7 @@ export const DepthTextForm = () => {
           label={t('soil.depth.end_label', {
             units: 'cm',
           })}
+          required
         />
       </Box>
       <Box height="10px" />
