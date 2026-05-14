@@ -26,6 +26,7 @@ import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconBut
 import {OutlinedButton} from 'terraso-mobile-client/components/buttons/OutlinedButton';
 import {SlopeMeterButton} from 'terraso-mobile-client/components/buttons/special/SlopeMeterButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
+import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 import {Heading} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
@@ -104,6 +105,9 @@ export const UiComponentList = () => {
             <Heading variant="h6">FAB</Heading>
             <Fab label="default" leftIcon="info" />
           </ComponentList>
+          <ComponentList title="TextField">
+            <TextFieldExamples />
+          </ComponentList>
           <ComponentList title="IconButtons">
             <Heading variant="h5">IconButton</Heading>
             <View style={styles.darkBackground}>
@@ -122,6 +126,82 @@ export const UiComponentList = () => {
         </>
       )}
     </View>
+  );
+};
+
+const TextFieldExamples = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [amount, setAmount] = useState('');
+  const [code, setCode] = useState('');
+  const [description, setDescription] = useState('');
+
+  /* Validation
+
+*/
+  const emailError =
+    email === '' || email.includes('@') ? undefined : 'Email needs an @ sign';
+
+  /* Validation runs on every keystroke. Empty input is allowed (no error
+   * shown until the user types something out of range), so the field doesn't
+   * yell on mount. */
+  const amountNumber = Number(amount);
+  const amountError =
+    amount === ''
+      ? undefined
+      : Number.isNaN(amountNumber) || amountNumber < 0 || amountNumber > 10000
+        ? 'Must be a number between 0 and 10000'
+        : undefined;
+
+  return (
+    <>
+      <Heading variant="h5">Basic (controlled)</Heading>
+      <TextField label="Name" value={name} onChangeText={setName} />
+
+      <Heading variant="h5">Email</Heading>
+      <TextField
+        label="Email"
+        type="email"
+        required
+        helperText="This is helperText"
+        value={email}
+        onChangeText={setEmail}
+        error={emailError}
+      />
+
+      <Heading variant="h5">Numeric</Heading>
+      <TextField
+        label="Amount"
+        type="numeric"
+        value={amount}
+        onChangeText={setAmount}
+        helperText="0-10000"
+        error={amountError}
+      />
+
+      <Heading variant="h5">Character limit + counter (max 4)</Heading>
+      <TextField
+        label="Code"
+        value={code}
+        onChangeText={setCode}
+        maxLength={4}
+        showCounter
+      />
+
+      <Heading variant="h5">Multiline</Heading>
+      <TextField
+        label="Description"
+        multiline
+        value={description}
+        onChangeText={setDescription}
+      />
+
+      <Heading variant="h5">Read-only</Heading>
+      <TextField label="Label" value="Can't edit the value" readOnly />
+
+      <Heading variant="h5">Missing value/onChangeText</Heading>
+      <TextField label="Email" type="email" value="asdf" required />
+    </>
   );
 };
 

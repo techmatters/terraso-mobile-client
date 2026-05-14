@@ -332,7 +332,6 @@
         "form": {
             "name_min_length_error": "Jina la mradi lazima liwe na angalau herufi {{min}}",
             "name_max_length_error": "Jina la mradi lazima liwe na herufi zisizozidi {{max}}",
-            "description_min_length_error": "Maelezo ya mradi lazima yawe angalau herufi {{min}}",
             "description_max_length_error": "Maelezo ya mradi lazima yawe na herufi zisizozidi {{max}}"
         },
         "sort_label": "Panga miradi kulingana na",
@@ -412,7 +411,8 @@
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
         "privacy_policy_link_text": "Sera ya Faragha",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-        "terms_of_service_link_text": "Sheria na Masharti"
+        "terms_of_service_link_text": "Sheria na Masharti",
+        "read_only": "Read-only TK"
     },
     "errors": {
         "sync_conflict": {

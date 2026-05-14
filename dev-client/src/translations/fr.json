@@ -332,7 +332,6 @@
         "form": {
             "name_min_length_error": "Le nom du projet doit comporter au moins {{min}} caractères",
             "name_max_length_error": "Le nom du projet doit comporter au maximum {{max}} caractères",
-            "description_min_length_error": "La description du projet doit comporter au moins {{min}} caractères",
             "description_max_length_error": "La description du projet doit comporter au maximum {{max}} caractères"
         },
         "sort_label": "Trier les projets par",
@@ -412,7 +411,9 @@
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
         "privacy_policy_link_text": "politique de confidentialité",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-        "terms_of_service_link_text": "Conditions d'utilisation"
+        "terms_of_service_link_text": "Conditions d'utilisation",
+        "read_only": "Read-only TK"
+
     },
     "errors": {
         "sync_conflict": {

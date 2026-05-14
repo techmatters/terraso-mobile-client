@@ -15,33 +15,23 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {Formik, FormikHelpers, FormikProps} from 'formik';
+import {useFormikContext} from 'formik';
 import {TFunction} from 'i18next';
 import * as yup from 'yup';
 
-import {
-  ProjectMembershipProjectRoleChoices,
-  ProjectUpdateMutationInput,
-} from 'terraso-client-shared/graphqlSchema/graphql';
-
-import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {TextInput} from 'terraso-mobile-client/components/inputs/TextInput';
+import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 import {
   Column,
   Heading,
   Row,
-  View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {
   PROJECT_DESCRIPTION_MAX_LENGTH,
-  PROJECT_DESCRIPTION_MIN_LENGTH,
   PROJECT_NAME_MAX_LENGTH,
   PROJECT_NAME_MIN_LENGTH,
 } from 'terraso-mobile-client/constants';
@@ -63,30 +53,17 @@ export const projectValidationFields = (t: TFunction) => ({
       }),
     )
     .required(t('general.required')),
-  description: yup
-    .string()
-    .min(
-      PROJECT_DESCRIPTION_MIN_LENGTH,
-      t('projects.form.description_min_length_error', {
-        max: PROJECT_DESCRIPTION_MIN_LENGTH,
-      }),
-    )
-    .max(
-      PROJECT_DESCRIPTION_MAX_LENGTH,
-      t('projects.form.description_max_length_error', {
-        max: PROJECT_DESCRIPTION_MAX_LENGTH,
-      }),
-    ),
+  description: yup.string().max(
+    PROJECT_DESCRIPTION_MAX_LENGTH,
+    t('projects.form.description_max_length_error', {
+      max: PROJECT_DESCRIPTION_MAX_LENGTH,
+    }),
+  ),
   privacy: yup.string().oneOf(['PRIVATE', 'PUBLIC']).required(),
 });
 
 export const projectValidationSchema = (t: TFunction) =>
   yup.object().shape(projectValidationFields(t));
-
-export const editProjectValidationSchema = (t: TFunction) => {
-  const fullSchema = projectValidationSchema(t);
-  return fullSchema.pick(['name', 'description']);
-};
 
 export type ProjectFormValues = {
   name: string;
@@ -94,116 +71,28 @@ export type ProjectFormValues = {
   privacy: 'PUBLIC' | 'PRIVATE';
 };
 
-type Props = {
-  editForm?: boolean;
-};
-
-type FormValues = Omit<ProjectUpdateMutationInput, 'id'>;
-
-type FormProps = FormValues & {
-  onSubmit: (values: FormValues) => Promise<void>;
-  userRole: ProjectMembershipProjectRoleChoices | null;
-};
-
-export const EditProjectForm = ({
-  onSubmit,
-  name,
-  description,
-  userRole,
-}: Omit<FormProps, 'privacy'>) => {
+export default function ProjectForm() {
   const {t} = useTranslation();
-
-  /* We reset the form after a successful submit to clear the dirty flag */
-  const onSubmitAndReset = useCallback(
-    (values: FormValues, helpers: FormikHelpers<FormValues>) => {
-      onSubmit(values).then(() => {
-        helpers.resetForm({values});
-      });
-    },
-    [onSubmit],
-  );
-
-  // We are using a special textInputLabel prop instead of label. This is passed
-  // from FormInput to TextInput.
-  //
-  // If label is present, Formik adds a label above the text field.
-  // If label is absent, then TextInput doesn't get a needed label.
-  return (
-    <Formik<FormValues>
-      validationSchema={editProjectValidationSchema(t)}
-      initialValues={{name, description}}
-      validateOnMount={true}
-      onSubmit={onSubmitAndReset}>
-      {({handleSubmit, isValid, isSubmitting, dirty}) => (
-        <>
-          <FormInput
-            key="name"
-            name="name"
-            maxLength={PROJECT_NAME_MAX_LENGTH}
-            placeholder={t('projects.create.name_label')}
-            id="project-form-name"
-            textInputLabel={t('projects.create.name_label')}
-          />
-          <FormInput
-            key="description"
-            name="description"
-            maxLength={PROJECT_DESCRIPTION_MAX_LENGTH}
-            placeholder={t('projects.create.description_label')}
-            numberOfLines={3}
-            multiline={true}
-            autoComplete="off"
-            textInputLabel={t('projects.create.description_label')}
-          />
-          {userRole === 'MANAGER' && (
-            <View flexDirection="row" justifyContent="flex-end">
-              <ContainedButton
-                size="lg"
-                onPress={handleSubmit}
-                disabled={!dirty || isSubmitting || !isValid}
-                label={t('general.save')}
-              />
-            </View>
-          )}
-        </>
-      )}
-    </Formik>
-  );
-};
-
-export default function ProjectForm({
-  handleChange,
-  handleBlur,
-  privacy,
-}: Props &
-  Pick<FormikProps<ProjectFormValues>, 'handleChange' | 'handleBlur'> &
-  Pick<ProjectFormValues, 'privacy'>) {
-  const {t} = useTranslation();
-
-  const inputParams = (field: keyof ProjectFormValues) => ({
-    onChangeText: handleChange(field),
-    onBlur: handleBlur(field),
-  });
+  const {values, handleChange} = useFormikContext<ProjectFormValues>();
 
   return (
-    <Column space={5}>
-      <TextInput
+    <Column>
+      <FormTextField<ProjectFormValues>
+        name="name"
         maxLength={PROJECT_NAME_MAX_LENGTH}
         placeholder={t('projects.create.name_label')}
         label={t('projects.create.name_label')}
-        {...inputParams('name')}
+        required
+        showCounter
       />
-      <ErrorMessage fieldName="name" />
-
-      <TextInput
+      <FormTextField<ProjectFormValues>
+        name="description"
         maxLength={PROJECT_DESCRIPTION_MAX_LENGTH}
         placeholder={t('projects.create.description_label')}
         label={t('projects.create.description_label')}
-        numberOfLines={3}
-        autoComplete="off"
-        multiline={true}
-        {...inputParams('description')}
+        multiline
+        showCounter
       />
-      <ErrorMessage fieldName="description" />
       <RadioBlock
         label={
           <Row alignItems="center">
@@ -219,7 +108,7 @@ export default function ProjectForm({
           PRIVATE: {text: t('projects.create.private')},
         }}
         groupProps={{
-          value: privacy,
+          value: values.privacy,
           variant: 'oneLine',
           onChange: handleChange('privacy'),
           name: 'data-privacy',

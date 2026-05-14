@@ -226,8 +226,8 @@
         "create": {
             "public": "Public",
             "private": "Private",
-            "name_label": "Project Name",
-            "description_label": "Project Description",
+            "name_label": "Project name",
+            "description_label": "Project description",
             "privacy_label": "Data Privacy"
         },
         "tabs": {
@@ -334,7 +334,6 @@
         "form": {
             "name_min_length_error": "Project name must be at least {{min}} characters",
             "name_max_length_error": "Project name must be at most {{max}} characters",
-            "description_min_length_error": "Project description must be at least {{min}} characters",
             "description_max_length_error": "Project description must be at most {{max}} characters"
         },
         "sort_label": "Sort projects by",
@@ -420,7 +419,8 @@
         "offline_sign_in_title": "Sign in not available offline",
         "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online.",
         "not_available": "Not available",
-        "learn_more": "Learn more"
+        "learn_more": "Learn more",
+        "read_only": "Read-only"
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",

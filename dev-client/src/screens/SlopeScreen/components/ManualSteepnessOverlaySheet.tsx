@@ -24,7 +24,7 @@ import * as yup from 'yup';
 import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
+import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 import {
   ModalHandle,
   ModalTrigger,
@@ -151,15 +151,17 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
         {({handleSubmit, isValid, isSubmitting, handleChange}) => (
           <Column>
             <Box flex={1}>
-              <FormInput
-                keyboardType="numeric"
+              <FormTextField<FormInput>
+                type="numeric"
                 name="slopeSteepnessPercent"
-                helpText={t('slope.steepness.percentage_help')}
+                helperText={t('slope.steepness.percentage_help')}
                 placeholder={t('slope.steepness.percentage_placeholder')}
-                textInputLabel={t('slope.steepness.percentage_placeholder')}
+                label={t('slope.steepness.percentage_placeholder')}
                 maxLength={3}
                 onChangeText={text => {
-                  handleChange('slopeSteepnessPercent')(text);
+                  /* FormTextField has already updated slopeSteepnessPercent
+                   * before invoking this handler. We only need the cross-field
+                   * (degree) update here. */
                   setLastTouched('slopeSteepnessPercent');
                   if (text === '') {
                     handleChange('slopeSteepnessDegree')('');
@@ -180,15 +182,17 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
             </Box>
             <Box height="20px" />
             <Box flex={1}>
-              <FormInput
-                keyboardType="numeric"
+              <FormTextField<FormInput>
+                type="numeric"
                 name="slopeSteepnessDegree"
-                helpText={t('slope.steepness.degree_help')}
+                helperText={t('slope.steepness.degree_help')}
                 placeholder={t('slope.steepness.degree_placeholder')}
-                textInputLabel={t('slope.steepness.degree_placeholder')}
+                label={t('slope.steepness.degree_placeholder')}
                 maxLength={2}
                 onChangeText={text => {
-                  handleChange('slopeSteepnessDegree')(text);
+                  /* FormTextField has already updated slopeSteepnessDegree
+                   * before invoking this handler. We only need the cross-field
+                   * (percent) update here. */
                   setLastTouched('slopeSteepnessDegree');
                   if (text === '') {
                     handleChange('slopeSteepnessPercent')('');

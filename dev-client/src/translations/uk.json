@@ -332,7 +332,6 @@
         "form": {
             "name_min_length_error": "Назва проєкту має містити щонайменше {{min}} символів",
             "name_max_length_error": "Назва проєкту має містити щонайбільше {{max}} символів",
-            "description_min_length_error": "Опис проекту має містити щонайменше {{min}} символів",
             "description_max_length_error": "Опис проекту має містити щонайбільше {{max}} символів"
         },
         "sort_label": "Сортувати проекти за",
@@ -412,7 +411,8 @@
         "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
         "privacy_policy_link_text": "Політика конфіденційності",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
-        "terms_of_service_link_text": "Умови надання послуг"
+        "terms_of_service_link_text": "Умови надання послуг",
+        "read_only": "Read-only TK"
     },
     "errors": {
         "sync_conflict": {
