@@ -18,7 +18,6 @@
 import {FormikValues, useFormikContext} from 'formik';
 
 import {
-  CounterProps,
   SharedTextFieldProps,
   TextField,
 } from 'terraso-mobile-client/components/inputs/TextField';
@@ -47,17 +46,16 @@ type StringFieldKeys<TValues> = {
     : never;
 }[keyof TValues];
 
-/* Composed from the same SharedTextFieldProps + CounterProps as TextField, so
- * every display prop is inherited automatically. New display props added to
- * SharedTextFieldProps appear on both components for free; controlled-state
- * props on TextField stay TextField-only by design. */
+/* Composed from the same SharedTextFieldProps as TextField, so every display
+ * prop (including the showCounter/maxLength pair) is inherited automatically.
+ * New display props added to SharedTextFieldProps appear on both components
+ * for free; controlled-state props on TextField stay TextField-only by design. */
 export type FormTextFieldProps<TValues extends FormikValues> =
-  SharedTextFieldProps &
-    CounterProps & {
-      name: StringFieldKeys<TValues>;
-      onChangeText?: (value: string) => void;
-      onBlur?: () => void;
-    };
+  SharedTextFieldProps & {
+    name: StringFieldKeys<TValues>;
+    onChangeText?: (value: string) => void;
+    onBlur?: () => void;
+  };
 
 /* Generic over the surrounding Formik form's values shape. Callers must
  * specify TValues at the call site (or via a typed alias) so `name` can be

@@ -36,6 +36,13 @@ import {theme} from 'terraso-mobile-client/theme';
  * Knows nothing about Formik. Caller passes value/onChangeText/error directly.
  * For Formik-driven forms, use FormTextField (which wraps TextField). */
 
+/* Discriminated union: `showCounter` requires `maxLength`. The compiler will
+ * reject `<TextField showCounter />` without a maxLength. Local helper —
+ * folded into SharedTextFieldProps below so callers only need that one type. */
+type CounterProps =
+  | {showCounter?: false; maxLength?: number}
+  | {showCounter: true; maxLength: number};
+
 export type SharedTextFieldProps = {
   label?: string;
   placeholder?: string;
@@ -49,29 +56,21 @@ export type SharedTextFieldProps = {
   helperText?: string;
 
   style?: RNPTextInputProps['style'];
-};
-
-/* Discriminated union: showCounter requires maxLength. The compiler will
- * reject `<TextField showCounter />` without a maxLength. */
-export type CounterProps =
-  | {showCounter?: false; maxLength?: number}
-  | {showCounter: true; maxLength: number};
+} & CounterProps;
 
 /* State props specific to controlled-mode TextField. FormTextField composes
- * SharedTextFieldProps & CounterProps separately and supplies its own
- * Formik-driven equivalents. New display props belong in SharedTextFieldProps
- * so both components inherit them; new controlled-state props go here. */
+ * SharedTextFieldProps and supplies its own Formik-driven equivalents.
+ * New display props belong in SharedTextFieldProps so both components inherit
+ * them; new controlled-state props go here. */
 export type ControlledStateProps = {
   value?: string;
   onChangeText?: (value: string) => void;
   onBlur?: () => void;
-  // Expect parent to handle logic for what error to show, and pass the relevant error  as a prop
+  // Expect parent to handle logic for what error to show, and pass the relevant error as a prop
   error?: string;
 };
 
-export type TextFieldProps = SharedTextFieldProps &
-  CounterProps &
-  ControlledStateProps;
+export type TextFieldProps = SharedTextFieldProps & ControlledStateProps;
 
 export const TextField = forwardRef<RNTextInput, TextFieldProps>(
   (
