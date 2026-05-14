@@ -47,9 +47,8 @@ type StringFieldKeys<TValues> = {
 }[keyof TValues];
 
 /* Composed from the same SharedTextFieldProps as TextField, so every display
- * prop (including the showCounter/maxLength pair) is inherited automatically.
- * New display props added to SharedTextFieldProps appear on both components
- * for free; controlled-state props on TextField stay TextField-only by design. */
+ * prop is inherited automatically.
+ */
 export type FormTextFieldProps<TValues extends FormikValues> =
   SharedTextFieldProps & {
     name: StringFieldKeys<TValues>;
@@ -59,8 +58,7 @@ export type FormTextFieldProps<TValues extends FormikValues> =
 
 /* Generic over the surrounding Formik form's values shape. Callers must
  * specify TValues at the call site (or via a typed alias) so `name` can be
- * checked against their actual field types — see docs/TextField.md for the
- * recommended typed-alias pattern.
+ * checked against their actual field types.
  *
  * Note: refs are not forwarded. Imperative access to the input is rare and
  * the generic-plus-forwardRef combination requires fragile type casts. If

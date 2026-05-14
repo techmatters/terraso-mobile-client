@@ -63,7 +63,7 @@ export type SharedTextFieldProps = {
  * New display props belong in SharedTextFieldProps so both components inherit
  * them; new controlled-state props go here. */
 export type ControlledStateProps = {
-  value?: string;
+  value: string;
   onChangeText?: (value: string) => void;
   onBlur?: () => void;
   // Expect parent to handle logic for what error to show, and pass the relevant error as a prop
