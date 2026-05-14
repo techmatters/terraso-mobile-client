@@ -25,6 +25,7 @@ import {
 } from 'react-native-paper';
 
 import {
+  ErrorTiming,
   shouldShowError,
   TextFieldType,
   TYPE_PRESETS,
@@ -65,8 +66,12 @@ export type ControlledStateProps = {
   value?: string;
   onChangeText?: (value: string) => void;
   onBlur?: () => void;
-  // Expect parent to handle logic for what error to show, and pass the relevant error  as a prop
+  // Parent decides which error string to surface; TextField only decides timing.
   error?: string;
+  /* When to surface `error`. Defaults to 'afterBlur' (standalone UX).
+   * FormTextField passes 'immediate' once Formik's touched/submitCount opens
+   * the gate, so backend errors after submit-without-blur still display. */
+  errorTiming?: ErrorTiming;
 };
 
 export type TextFieldProps = SharedTextFieldProps &
@@ -92,6 +97,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
       onChangeText,
       onBlur,
       error,
+      errorTiming = 'afterBlur',
     },
     ref,
   ) => {
@@ -102,8 +108,8 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
      * focus signal to consumers. */
     const [isFocused, setIsFocused] = useState(false);
 
-    /* hasBeenBlurred is the controlled-mode equivalent of Formik's `touched`.
-     * Doesn't reset on subsequent focus — once touched, always touched. */
+    /* Tracked unconditionally; used only when errorTiming === 'afterBlur'.
+     * Doesn't reset on subsequent focus — once blurred, always blurred. */
     const [hasBeenBlurred, setHasBeenBlurred] = useState(false);
 
     const handleFocus = () => setIsFocused(true);
@@ -113,10 +119,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
       onBlur?.();
     };
 
-    /* Standalone TextField has no Formik submitCount concept — that's only
-     * meaningful in the FormTextField wrapper. Pass 0 here so submitCount
-     * never affects display in controlled mode. */
-    const showError = shouldShowError(error, hasBeenBlurred, 0);
+    const showError = shouldShowError(error, hasBeenBlurred, errorTiming);
 
     /* Asterisk rides along with the floating label so it's positioned
      * consistently whether the field is empty (label sits in the input) or

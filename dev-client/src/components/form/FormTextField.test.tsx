@@ -86,6 +86,33 @@ describe('FormTextField', () => {
     expect(queryByText('Required')).toBeTruthy();
   });
 
+  test('shows error after submit even when the field was never blurred', async () => {
+    /* Regression for the AddTeamMemberForm bug: user types and taps the
+     * submit button without ever blurring. setErrors / yup errors must
+     * surface because submitCount>0 satisfies the touched signal. */
+    let submitForm: (() => void) | undefined;
+    const {queryByText} = render(
+      <Formik<EmailForm>
+        initialValues={{email: ''}}
+        validate={() => ({email: 'Required'})}
+        onSubmit={() => {}}>
+        {formik => {
+          submitForm = formik.submitForm;
+          return <FormTextField<EmailForm> name="email" testID="field" />;
+        }}
+      </Formik>,
+    );
+
+    await act(async () => {});
+    expect(queryByText('Required')).toBeNull();
+
+    await act(async () => {
+      submitForm?.();
+    });
+
+    expect(queryByText('Required')).toBeTruthy();
+  });
+
   test('updates Formik state on change', async () => {
     /* Capture the latest Formik bag via the render-prop child so the test
      * can read post-update state directly. */
