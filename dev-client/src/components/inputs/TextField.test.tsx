@@ -187,6 +187,22 @@ describe('TextField', () => {
     expect(queryByText('5 / 20', {exact: false})).toBeNull();
   });
 
+  test('suppresses the counter while an error is showing', () => {
+    const {queryByText} = render(
+      <TextField
+        value="abcde"
+        onChangeText={() => {}}
+        maxLength={20}
+        showCounter
+        error="Required"
+        errorTiming="immediate"
+      />,
+    );
+
+    expect(queryByText('Required')).toBeTruthy();
+    expect(queryByText('5 / 20', {exact: false})).toBeNull();
+  });
+
   test('disables editing when readOnly', () => {
     const {getByTestId} = render(
       <TextField
