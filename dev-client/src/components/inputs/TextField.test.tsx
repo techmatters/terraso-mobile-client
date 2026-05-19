@@ -148,6 +148,21 @@ describe('TextField', () => {
     expect(queryByText('Required')).toBeTruthy();
   });
 
+  test('shows error without a blur when errorTiming="immediate"', () => {
+    /* Mirrors the FormTextField post-submit case: parent forces immediate
+     * display so a backend error surfaces even if the user never blurred. */
+    const {queryByText} = render(
+      <TextField
+        value=""
+        onChangeText={() => {}}
+        error="Required"
+        errorTiming="immediate"
+      />,
+    );
+
+    expect(queryByText('Required')).toBeTruthy();
+  });
+
   test('renders character counter when showCounter and maxLength are set', () => {
     const {queryByText} = render(
       <TextField

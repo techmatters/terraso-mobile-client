@@ -21,13 +21,13 @@ import {
   SharedTextFieldProps,
   TextField,
 } from 'terraso-mobile-client/components/inputs/TextField';
-import {shouldShowError} from 'terraso-mobile-client/components/inputs/TextFieldHelpers';
 
 /* FormTextField — use instead of TextField when in a Formik form.
  *
  * Reads value / errors / touched / submitCount from the surrounding Formik
- * provider. Decides display via shouldShowError (validate continuously,
- * display on touch by default).
+ * provider and forwards them to TextField. TextField owns the display rule;
+ * we just supply the "touched" signal as touched OR submitCount>0 so post-
+ * submit errors surface even when the user never blurred the field.
  *
  * onChangeText / onBlur are LAYERED — they run after Formik has updated
  * its own state for this field, and exist for side effects only (e.g.,
@@ -86,8 +86,6 @@ export const FormTextField = <TValues extends FormikValues>({
   const error = typeof rawError === 'string' ? rawError : undefined;
   const isTouched = Boolean(formik.touched[name]);
 
-  const showError = shouldShowError(error, isTouched, formik.submitCount);
-
   const handleChangeText = (next: string) => {
     formik.setFieldValue(name, next);
     onChangeText?.(next);
@@ -104,7 +102,12 @@ export const FormTextField = <TValues extends FormikValues>({
       value={(value ?? '') as string}
       onChangeText={handleChangeText}
       onBlur={handleBlur}
-      error={showError ? error : undefined}
+      error={error}
+      /* submitCount>0 reveals errors after a submit attempt even if the user
+       * never blurred — critical for backend errors set via setErrors. */
+      errorTiming={
+        isTouched || formik.submitCount > 0 ? 'immediate' : 'afterBlur'
+      }
     />
   );
 };

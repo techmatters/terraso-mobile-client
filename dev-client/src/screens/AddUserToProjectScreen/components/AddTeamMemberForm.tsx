@@ -24,7 +24,7 @@ import {UserInProjectError} from 'terraso-client-shared/account/accountService';
 import {checkUserInProject} from 'terraso-client-shared/account/accountSlice';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
+import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 import {Box, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {UserFields} from 'terraso-mobile-client/screens/AddUserToProjectScreen/components/MinimalUserDisplay';
@@ -66,8 +66,7 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
         );
         // Cannot add email to project
         if (validationResult !== undefined) {
-          const error = {email: validationResult};
-          formikHelpers.setErrors(error);
+          formikHelpers.setFieldError('email', validationResult);
         }
         // Success
         else {
@@ -110,22 +109,18 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
       initialValues={{email: ''}}
       validationSchema={validationSchema}
       validateOnMount={true}
-      initialTouched={{
-        email: true,
-      }}
       onSubmit={(values, formikHelpers) => onNext(values, formikHelpers)}>
       {({handleSubmit, isValid, isSubmitting}) => {
         return (
           <>
             <Box minHeight="84px">
-              <FormInput
+              <FormTextField<FormValues>
                 key="email"
                 name="email"
-                textInputLabel={t('general.email_label')}
+                label={t('general.email_label')}
                 placeholder={t('general.email_placeholder')}
-                keyboardType="email-address"
-                autoComplete="email"
-                autoCapitalize="none"
+                type="email"
+                required
               />
             </Box>
             <View mt="sm" alignSelf="flex-end">
