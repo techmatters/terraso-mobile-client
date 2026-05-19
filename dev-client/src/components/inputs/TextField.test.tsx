@@ -171,4 +171,46 @@ describe('TextField', () => {
 
     expect(queryByText('5 / 20', {exact: false})).toBeNull();
   });
+
+  test('disables editing when readOnly', () => {
+    const {getByTestId} = render(
+      <TextField
+        value="hello"
+        onChangeText={() => {}}
+        readOnly
+        testID="field"
+      />,
+    );
+
+    expect(getByTestId('field').props.editable).toBe(false);
+  });
+
+  test('shows the read-only helper text when readOnly', () => {
+    const {queryByText} = render(
+      <TextField value="hello" onChangeText={() => {}} readOnly />,
+    );
+
+    expect(queryByText('Read-only')).toBeTruthy();
+  });
+
+  test('suppresses error, helper text, and counter when readOnly', () => {
+    const {queryByText, getByTestId} = render(
+      <TextField
+        value="abcde"
+        onChangeText={() => {}}
+        helperText="We never share it"
+        error="Required"
+        maxLength={20}
+        showCounter
+        readOnly
+        testID="field"
+      />,
+    );
+
+    fireEvent(getByTestId('field'), 'blur');
+
+    expect(queryByText('Required')).toBeNull();
+    expect(queryByText('We never share it')).toBeNull();
+    expect(queryByText('5 / 20', {exact: false})).toBeNull();
+  });
 });
