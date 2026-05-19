@@ -52,7 +52,7 @@ cd dev-client
 - `src/navigation/` - React Navigation setup
 - `src/model/` - Redux slices and business logic
 - `src/services/` - External API integration
-- `src/translations/` - i18n files (en.json, es.json, uk.json)
+- `src/translations/` - i18n files (en.json, es.json, etc.)
 
 ### Testing Structure
 - Unit tests: `.test.ts/tsx` files alongside source code
