@@ -1,6 +1,8 @@
 # TextField & FormTextField
 
-Status: Implemented. Old `TextInput` / `FormInput` deprecated; deletion pending the last call-site migrations.
+Status: Implemented.
+Old `TextInput` / `FormInput` deprecated; deletion pending the last call-site migrations.
+Refer to [Figma](figma.com/design/KMJbhjVyrrLFHj6jGcX9lN/LandPKS-Design-Prototype-working-file?node-id=7992-21395&t=we6pyvEPcpv2dyLJ-0) for design and intended usage guidance.
 
 ## Motivation
 
