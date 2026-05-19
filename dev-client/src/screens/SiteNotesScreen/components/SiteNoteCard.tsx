@@ -69,11 +69,12 @@ export const SiteNoteCard = ({note}: Props) => {
         <Text variant="body2" italic>
           {t('site.notes.note_attribution', {
             createdAt: formatDate(note.createdAt),
-            name: formatFullName(
-              note.authorFirstName,
-              note.authorLastName,
-              authorEmail,
-            ),
+            name:
+              formatFullName(
+                note.authorFirstName,
+                note.authorLastName,
+                authorEmail,
+              ) || t('general.deleted_user'),
           })}
         </Text>
         <Spacer />
