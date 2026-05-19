@@ -412,7 +412,7 @@
         "privacy_policy_link_text": "კონფიდენციალურობის პოლიტიკა",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "მომსახურების პირობები",
-        "read_only": "Read-only TK"
+        "read_only": "მხოლოდ წასაკითხი"
     },
     "errors": {
         "sync_conflict": {

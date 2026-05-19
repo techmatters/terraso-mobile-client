@@ -412,7 +412,7 @@
         "privacy_policy_link_text": "Політика конфіденційності",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Умови надання послуг",
-        "read_only": "Read-only TK"
+        "read_only": "Лише для читання"
     },
     "errors": {
         "sync_conflict": {
