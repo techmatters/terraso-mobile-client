@@ -27,7 +27,7 @@ export type DepthTextFormInput = {
   end: string;
 };
 
-const VerticalSpacer = () => <Box marginTop="20px" />;
+const VerticalSpacer = () => <Box marginTop="sm" />;
 
 export const DepthTextForm = () => {
   const {t} = useTranslation();

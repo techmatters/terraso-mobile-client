@@ -180,7 +180,6 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
                 }}
               />
             </Box>
-            <Box height="20px" />
             <Box flex={1}>
               <FormTextField<FormInput>
                 type="numeric"
@@ -211,7 +210,7 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
                 }}
               />
             </Box>
-            <Box height="25px" />
+            <Box height="sm" />
             <Row justifyContent="flex-end" alignItems="center" space={5}>
               <ContainedButton
                 size="lg"

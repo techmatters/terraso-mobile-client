@@ -129,6 +129,7 @@ export const CreateSiteForm = ({
               />
             </FormField>
           )}
+          <View height="md" />
           <FormField name="privacy">
             <FormLabel>
               {t('privacy.label')}

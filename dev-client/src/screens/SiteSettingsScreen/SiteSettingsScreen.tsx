@@ -118,7 +118,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                 disabled={!dirty}
               />
             </View>
-            <View mt={6}>
+            <View mt="sm">
               {isOffline ? (
                 <DeleteButtonWrapper disabled={true} />
               ) : (

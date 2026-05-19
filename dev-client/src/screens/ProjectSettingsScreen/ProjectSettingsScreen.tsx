@@ -70,7 +70,7 @@ export function ProjectSettingsScreen({
     <ScrollView
       backgroundColor={theme.colors.primary.contrast}
       contentContainerStyle={styles.scrollview}>
-      <Column m={3} style={styles.column}>
+      <Column m="md" style={styles.column}>
         <EditProjectForm
           onSubmit={onSubmit}
           name={name}
