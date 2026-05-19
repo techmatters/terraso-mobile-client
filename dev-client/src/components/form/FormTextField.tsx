@@ -76,7 +76,14 @@ export const FormTextField = <TValues extends FormikValues>({
   }
 
   const value = formik.values[name];
-  const error = formik.errors[name] as string | undefined;
+  const rawError = formik.errors[name];
+  if (rawError !== undefined && typeof rawError !== 'string') {
+    console.error(
+      `Formik error for ${name} should be string | undefined, got:`,
+      rawError,
+    );
+  }
+  const error = typeof rawError === 'string' ? rawError : undefined;
   const isTouched = Boolean(formik.touched[name]);
 
   const showError = shouldShowError(error, isTouched, formik.submitCount);
