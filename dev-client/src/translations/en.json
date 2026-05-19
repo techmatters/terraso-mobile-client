@@ -381,6 +381,7 @@
         "delete": "Delete",
         "done": "Done",
         "close": "Close",
+        "deleted_user": "Deleted User",
         "filter": {
             "no_role": "None",
             "no_project": "None"

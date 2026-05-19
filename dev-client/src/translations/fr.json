@@ -394,6 +394,7 @@
         "create": "Créer",
         "delete": "Supprimer",
         "close": "Fermer",
+        "deleted_user": "Utilisateur supprimé",
         "offline_title": "Vous êtes hors ligne",
         "support": "Assistance",
         "help": {
