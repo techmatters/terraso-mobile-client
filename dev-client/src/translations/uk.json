@@ -99,7 +99,8 @@
             "min_latitude_error": "Широта має бути щонайменше {{min}}",
             "max_latitude_error": "Широта має бути не більше ніж {{max}}",
             "min_longitude_error": "Довгота має бути щонайменше {{min}}",
-            "max_longitude_error": "Довгота має бути не більше ніж {{max}}"
+            "max_longitude_error": "Довгота має бути не більше ніж {{max}}",
+            "number_error": "Дозволені лише цифри та крапка"
         },
         "soil_id": {
             "title": "Ідентифікатор ґрунту",

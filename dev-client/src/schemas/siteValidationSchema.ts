@@ -47,6 +47,7 @@ export const siteValidationSchema = (t: TFunction) =>
       .required(t('general.required')),
     latitude: yup
       .number()
+      .typeError(t('site.form.number_error'))
       .min(
         LATITUDE_MIN,
         t('site.form.min_latitude_error', {
@@ -62,6 +63,7 @@ export const siteValidationSchema = (t: TFunction) =>
       .required(t('general.required')),
     longitude: yup
       .number()
+      .typeError(t('site.form.number_error'))
       .min(
         LONGITUDE_MIN,
         t('site.form.min_longitude_error', {

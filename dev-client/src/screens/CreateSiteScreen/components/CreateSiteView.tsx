@@ -34,6 +34,7 @@ import {
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
 import {resolveElevation} from 'terraso-mobile-client/screens/CreateSiteScreen/resolveElevation';
 import {useSelector} from 'terraso-mobile-client/store';
+import {formatCoordinateInEnglish} from 'terraso-mobile-client/util';
 
 type Props = {
   defaultProjectId?: string;
@@ -93,15 +94,22 @@ export const CreateSiteView = ({
       validationSchema={validationSchema}
       initialValues={{
         name: '',
-        latitude: sitePin?.latitude !== undefined ? sitePin?.latitude : 0,
-        longitude: sitePin?.longitude !== undefined ? sitePin?.longitude : 0,
+        /* Stored as strings so they flow through text inputs unchanged.
+         * `formatCoordinateInEnglish` (not the locale-aware variant) keeps
+         * `.` as the decimal separator so yup's `.number()` can parse the
+         * value back regardless of the user's locale. */
+        latitude:
+          sitePin?.latitude !== undefined
+            ? formatCoordinateInEnglish(sitePin.latitude)
+            : '0',
+        longitude:
+          sitePin?.longitude !== undefined
+            ? formatCoordinateInEnglish(sitePin.longitude)
+            : '0',
         projectId: defaultProject?.id,
         privacy: defaultProject?.privacy ?? 'PUBLIC',
       }}
-      validateOnMount={true}
-      initialTouched={{
-        name: true,
-      }}>
+      validateOnMount={true}>
       {({isValid, ...props}) => (
         <CreateSiteForm {...props} sitePin={sitePin} isValid={isValid} />
       )}

@@ -99,7 +99,8 @@
             "min_latitude_error": "განედი უნდა იყოს მინიმუმ {{min}}",
             "max_latitude_error": "განედი უნდა იყოს მაქსიმუმ {{max}}",
             "min_longitude_error": "გრძედი უნდა იყოს მინიმუმ {{min}}",
-            "max_longitude_error": "გრძედი უნდა იყოს მაქსიმუმ {{max}}"
+            "max_longitude_error": "გრძედი უნდა იყოს მაქსიმუმ {{max}}",
+            "number_error": "დაშვებულია მხოლოდ ციფრები და წერტილი"
         },
         "soil_id": {
             "title": "Soil ID",

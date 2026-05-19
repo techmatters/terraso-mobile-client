@@ -99,7 +99,8 @@
             "min_latitude_error": "La latitud mínima es {{min}}",
             "max_latitude_error": "La latitud máxima es {{max}}",
             "min_longitude_error": "La longitud mínima es {{min}}",
-            "max_longitude_error": "La longitud máxima es {{max}}"
+            "max_longitude_error": "La longitud máxima es {{max}}",
+            "number_error": "Solo se permiten números y punto"
         },
         "soil_id": {
             "title": "Soil ID",

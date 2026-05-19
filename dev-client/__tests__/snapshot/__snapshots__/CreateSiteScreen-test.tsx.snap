@@ -350,17 +350,15 @@ exports[`renders correctly 1`] = `
                                     },
                                     {
                                       "padding": 16,
-                                      "paddingTop": 30,
-                                      "rowGap": 18,
                                     },
                                   ]
                                 }
                               >
                                 <View
-                                  dataSet={{}}
                                   style={
                                     {
-                                      "width": "100%",
+                                      "paddingBottom": 16,
+                                      "paddingTop": 8,
                                     }
                                   }
                                 >
@@ -374,7 +372,6 @@ exports[`renders correctly 1`] = `
                                         },
                                         {
                                           "backgroundColor": "#EFEFEF",
-                                          "minHeight": undefined,
                                           "width": "100%",
                                         },
                                       ]
@@ -384,7 +381,7 @@ exports[`renders correctly 1`] = `
                                       collapsable={false}
                                       style={
                                         {
-                                          "backgroundColor": "rgba(73, 69, 79, 1)",
+                                          "backgroundColor": "#8B8B8B",
                                           "bottom": 0,
                                           "height": 1,
                                           "left": 0,
@@ -470,7 +467,7 @@ exports[`renders correctly 1`] = `
                                               onTextLayout={[Function]}
                                               style={
                                                 {
-                                                  "color": "#8B8B8B",
+                                                  "color": "#000000",
                                                   "fontFamily": "System",
                                                   "fontSize": 16,
                                                   "fontWeight": undefined,
@@ -500,7 +497,7 @@ exports[`renders correctly 1`] = `
                                               }
                                               testID="text-input-flat-label-active"
                                             >
-                                              Site Name
+                                              Site Name *
                                             </Text>
                                             <Text
                                               collapsable={false}
@@ -538,14 +535,17 @@ exports[`renders correctly 1`] = `
                                               }
                                               testID="text-input-flat-label-inactive"
                                             >
-                                              Site Name
+                                              Site Name *
                                             </Text>
                                           </View>
                                         </View>
                                       </View>
                                       <TextInput
-                                        cursorColor="#1A202C"
+                                        accessibilityLabel="Site Name, required"
+                                        autoCapitalize="sentences"
+                                        cursorColor="#000000"
                                         editable={true}
+                                        keyboardType="default"
                                         maxFontSizeMultiplier={1.5}
                                         maxLength={50}
                                         multiline={false}
@@ -587,7 +587,6 @@ exports[`renders correctly 1`] = `
                                           ]
                                         }
                                         testID="text-input-flat"
-                                        textInputLabel="Site Name"
                                         underlineColorAndroid="transparent"
                                         value=""
                                       />
@@ -632,17 +631,16 @@ exports[`renders correctly 1`] = `
                                       "color": "#1A202C",
                                       "fontSize": 16,
                                       "fontWeight": "400",
-                                      "marginTop": -20,
                                     }
                                   }
                                 >
                                   GPS accuracy:  m
                                 </Text>
                                 <View
-                                  dataSet={{}}
                                   style={
                                     {
-                                      "width": "100%",
+                                      "paddingBottom": 16,
+                                      "paddingTop": 8,
                                     }
                                   }
                                 >
@@ -656,7 +654,6 @@ exports[`renders correctly 1`] = `
                                         },
                                         {
                                           "backgroundColor": "#EFEFEF",
-                                          "minHeight": undefined,
                                           "width": "100%",
                                         },
                                       ]
@@ -666,7 +663,7 @@ exports[`renders correctly 1`] = `
                                       collapsable={false}
                                       style={
                                         {
-                                          "backgroundColor": "rgba(73, 69, 79, 1)",
+                                          "backgroundColor": "#8B8B8B",
                                           "bottom": 0,
                                           "height": 1,
                                           "left": 0,
@@ -752,7 +749,7 @@ exports[`renders correctly 1`] = `
                                               onTextLayout={[Function]}
                                               style={
                                                 {
-                                                  "color": "#8B8B8B",
+                                                  "color": "#000000",
                                                   "fontFamily": "System",
                                                   "fontSize": 16,
                                                   "fontWeight": undefined,
@@ -782,7 +779,7 @@ exports[`renders correctly 1`] = `
                                               }
                                               testID="text-input-flat-label-active"
                                             >
-                                              Latitude
+                                              Latitude *
                                             </Text>
                                             <Text
                                               collapsable={false}
@@ -820,13 +817,15 @@ exports[`renders correctly 1`] = `
                                               }
                                               testID="text-input-flat-label-inactive"
                                             >
-                                              Latitude
+                                              Latitude *
                                             </Text>
                                           </View>
                                         </View>
                                       </View>
                                       <TextInput
-                                        cursorColor="#1A202C"
+                                        accessibilityLabel="Latitude, required"
+                                        autoCapitalize="none"
+                                        cursorColor="#000000"
                                         editable={true}
                                         keyboardType="numeric"
                                         maxFontSizeMultiplier={1.5}
@@ -868,7 +867,6 @@ exports[`renders correctly 1`] = `
                                           ]
                                         }
                                         testID="text-input-flat"
-                                        textInputLabel="Latitude"
                                         underlineColorAndroid="transparent"
                                         value="0"
                                       />
@@ -876,10 +874,10 @@ exports[`renders correctly 1`] = `
                                   </View>
                                 </View>
                                 <View
-                                  dataSet={{}}
                                   style={
                                     {
-                                      "width": "100%",
+                                      "paddingBottom": 16,
+                                      "paddingTop": 8,
                                     }
                                   }
                                 >
@@ -893,7 +891,6 @@ exports[`renders correctly 1`] = `
                                         },
                                         {
                                           "backgroundColor": "#EFEFEF",
-                                          "minHeight": undefined,
                                           "width": "100%",
                                         },
                                       ]
@@ -903,7 +900,7 @@ exports[`renders correctly 1`] = `
                                       collapsable={false}
                                       style={
                                         {
-                                          "backgroundColor": "rgba(73, 69, 79, 1)",
+                                          "backgroundColor": "#8B8B8B",
                                           "bottom": 0,
                                           "height": 1,
                                           "left": 0,
@@ -989,7 +986,7 @@ exports[`renders correctly 1`] = `
                                               onTextLayout={[Function]}
                                               style={
                                                 {
-                                                  "color": "#8B8B8B",
+                                                  "color": "#000000",
                                                   "fontFamily": "System",
                                                   "fontSize": 16,
                                                   "fontWeight": undefined,
@@ -1019,7 +1016,7 @@ exports[`renders correctly 1`] = `
                                               }
                                               testID="text-input-flat-label-active"
                                             >
-                                              Longitude
+                                              Longitude *
                                             </Text>
                                             <Text
                                               collapsable={false}
@@ -1057,13 +1054,15 @@ exports[`renders correctly 1`] = `
                                               }
                                               testID="text-input-flat-label-inactive"
                                             >
-                                              Longitude
+                                              Longitude *
                                             </Text>
                                           </View>
                                         </View>
                                       </View>
                                       <TextInput
-                                        cursorColor="#1A202C"
+                                        accessibilityLabel="Longitude, required"
+                                        autoCapitalize="none"
+                                        cursorColor="#000000"
                                         editable={true}
                                         keyboardType="numeric"
                                         maxFontSizeMultiplier={1.5}
@@ -1105,7 +1104,6 @@ exports[`renders correctly 1`] = `
                                           ]
                                         }
                                         testID="text-input-flat"
-                                        textInputLabel="Longitude"
                                         underlineColorAndroid="transparent"
                                         value="0"
                                       />
@@ -1122,16 +1120,16 @@ exports[`renders correctly 1`] = `
                                 >
                                   <View
                                     dataSet={{}}
-                                    feedbackId="field-8-feedback"
+                                    feedbackId="field-2-feedback"
                                     hasFeedbackText={false}
                                     hasHelpText={false}
-                                    helpTextId="field-8-helptext"
+                                    helpTextId="field-2-helptext"
                                     isDisabled={false}
                                     isInvalid={false}
                                     isReadOnly={false}
                                     isRequired={false}
-                                    labelId="field-8-label"
-                                    nativeID="field-8-label"
+                                    labelId="field-2-label"
+                                    nativeID="field-2-label"
                                     setHasFeedbackText={[Function]}
                                     setHasHelpText={[Function]}
                                     style={
@@ -1718,32 +1716,32 @@ exports[`renders correctly 1`] = `
                                       checked={true}
                                       collapsable={false}
                                       dataSet={{}}
-                                      feedbackId="field-4-feedback"
+                                      feedbackId="field-1-feedback"
                                       focusable={true}
                                       formControlContext={
                                         {
-                                          "feedbackId": "field-4-feedback",
+                                          "feedbackId": "field-1-feedback",
                                           "hasFeedbackText": false,
                                           "hasHelpText": false,
-                                          "helpTextId": "field-4-helptext",
+                                          "helpTextId": "field-1-helptext",
                                           "isDisabled": false,
                                           "isInvalid": false,
                                           "isReadOnly": false,
                                           "isRequired": false,
-                                          "labelId": "field-4-label",
-                                          "nativeID": "field-4",
+                                          "labelId": "field-1-label",
+                                          "nativeID": "field-1",
                                           "setHasFeedbackText": [Function],
                                           "setHasHelpText": [Function],
                                         }
                                       }
                                       hasFeedbackText={false}
                                       hasHelpText={false}
-                                      helpTextId="field-4-helptext"
+                                      helpTextId="field-1-helptext"
                                       isInvalid={false}
                                       isReadOnly={false}
                                       isRequired={false}
-                                      labelId="field-4-label"
-                                      nativeID="field-4"
+                                      labelId="field-1-label"
+                                      nativeID="field-1"
                                       onBlur={[Function]}
                                       onClick={[Function]}
                                       onFocus={[Function]}
@@ -1795,32 +1793,32 @@ exports[`renders correctly 1`] = `
                                             colorScheme="primary"
                                             dataSet={{}}
                                             defaultIsChecked={false}
-                                            feedbackId="field-8-feedback"
+                                            feedbackId="field-2-feedback"
                                             formControlContext={
                                               {
-                                                "feedbackId": "field-8-feedback",
+                                                "feedbackId": "field-2-feedback",
                                                 "hasFeedbackText": false,
                                                 "hasHelpText": false,
-                                                "helpTextId": "field-8-helptext",
+                                                "helpTextId": "field-2-helptext",
                                                 "isDisabled": false,
                                                 "isInvalid": false,
                                                 "isReadOnly": false,
                                                 "isRequired": false,
-                                                "labelId": "field-8-label",
-                                                "nativeID": "field-8",
+                                                "labelId": "field-2-label",
+                                                "nativeID": "field-2",
                                                 "setHasFeedbackText": [Function],
                                                 "setHasHelpText": [Function],
                                               }
                                             }
                                             hasFeedbackText={false}
                                             hasHelpText={false}
-                                            helpTextId="field-8-helptext"
+                                            helpTextId="field-2-helptext"
                                             isDisabled={false}
                                             isInvalid={false}
                                             isReadOnly={false}
                                             isRequired={false}
-                                            labelId="field-8-label"
-                                            nativeID="field-8"
+                                            labelId="field-2-label"
+                                            nativeID="field-2"
                                             setHasFeedbackText={[Function]}
                                             setHasHelpText={[Function]}
                                             state={
@@ -1993,32 +1991,32 @@ exports[`renders correctly 1`] = `
                                       checked={false}
                                       collapsable={false}
                                       dataSet={{}}
-                                      feedbackId="field-4-feedback"
+                                      feedbackId="field-1-feedback"
                                       focusable={true}
                                       formControlContext={
                                         {
-                                          "feedbackId": "field-4-feedback",
+                                          "feedbackId": "field-1-feedback",
                                           "hasFeedbackText": false,
                                           "hasHelpText": false,
-                                          "helpTextId": "field-4-helptext",
+                                          "helpTextId": "field-1-helptext",
                                           "isDisabled": false,
                                           "isInvalid": false,
                                           "isReadOnly": false,
                                           "isRequired": false,
-                                          "labelId": "field-4-label",
-                                          "nativeID": "field-4",
+                                          "labelId": "field-1-label",
+                                          "nativeID": "field-1",
                                           "setHasFeedbackText": [Function],
                                           "setHasHelpText": [Function],
                                         }
                                       }
                                       hasFeedbackText={false}
                                       hasHelpText={false}
-                                      helpTextId="field-4-helptext"
+                                      helpTextId="field-1-helptext"
                                       isInvalid={false}
                                       isReadOnly={false}
                                       isRequired={false}
-                                      labelId="field-4-label"
-                                      nativeID="field-4"
+                                      labelId="field-1-label"
+                                      nativeID="field-1"
                                       onBlur={[Function]}
                                       onClick={[Function]}
                                       onFocus={[Function]}
@@ -2070,32 +2068,32 @@ exports[`renders correctly 1`] = `
                                             colorScheme="primary"
                                             dataSet={{}}
                                             defaultIsChecked={false}
-                                            feedbackId="field-8-feedback"
+                                            feedbackId="field-2-feedback"
                                             formControlContext={
                                               {
-                                                "feedbackId": "field-8-feedback",
+                                                "feedbackId": "field-2-feedback",
                                                 "hasFeedbackText": false,
                                                 "hasHelpText": false,
-                                                "helpTextId": "field-8-helptext",
+                                                "helpTextId": "field-2-helptext",
                                                 "isDisabled": false,
                                                 "isInvalid": false,
                                                 "isReadOnly": false,
                                                 "isRequired": false,
-                                                "labelId": "field-8-label",
-                                                "nativeID": "field-8",
+                                                "labelId": "field-2-label",
+                                                "nativeID": "field-2",
                                                 "setHasFeedbackText": [Function],
                                                 "setHasHelpText": [Function],
                                               }
                                             }
                                             hasFeedbackText={false}
                                             hasHelpText={false}
-                                            helpTextId="field-8-helptext"
+                                            helpTextId="field-2-helptext"
                                             isDisabled={false}
                                             isInvalid={false}
                                             isReadOnly={false}
                                             isRequired={false}
-                                            labelId="field-8-label"
-                                            nativeID="field-8"
+                                            labelId="field-2-label"
+                                            nativeID="field-2"
                                             setHasFeedbackText={[Function]}
                                             setHasHelpText={[Function]}
                                             state={

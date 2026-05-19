@@ -99,7 +99,8 @@
             "min_latitude_error": "Latitudo lazima iwe angalau {{min}}",
             "max_latitude_error": "Latitudo lazima iwe isizidi {{max}}",
             "min_longitude_error": "Longitudo lazima iwe angalau {{min}}",
-            "max_longitude_error": "Longitudo lazima iwe isizidi {{max}}"
+            "max_longitude_error": "Longitudo lazima iwe isizidi {{max}}",
+            "number_error": "Nambari na nukta pekee ndizo zinazoruhusiwa"
         },
         "soil_id": {
             "title": "Kitambulisho cha Udongo",
