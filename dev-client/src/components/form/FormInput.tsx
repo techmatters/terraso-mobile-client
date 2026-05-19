@@ -34,6 +34,9 @@ type Props = FormFieldWrapperProps &
   FormInputProps &
   React.ComponentProps<typeof TextInput>;
 
+/**
+ * @deprecated Use FormTextField instead
+ */
 export const FormInput = memo(
   forwardRef((props: Props, ref) => {
     const {value, onChange, onBlur} = useFieldContext(props.name);

@@ -17,10 +17,7 @@
 
 import {useTranslation} from 'react-i18next';
 
-import {FormControl} from 'native-base';
-
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
-import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
+import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {DEPTH_LABEL_MAX_LENGTH} from 'terraso-mobile-client/constants';
 
@@ -34,47 +31,40 @@ const VerticalSpacer = () => <Box marginTop="20px" />;
 
 export const DepthTextForm = () => {
   const {t} = useTranslation();
-  const {value: label} = useFieldContext('label');
   return (
     <>
-      <FormControl>
-        <FormInput
-          name="label"
-          placeholder={t('soil.depth.label_placeholder')}
-          textInputLabel={t('soil.depth.label_placeholder')}
-          maxLength={DEPTH_LABEL_MAX_LENGTH}
-        />
-        <FormControl.HelperText>
-          {t('general.character_limit', {
-            current: label?.length ?? 0,
-            limit: DEPTH_LABEL_MAX_LENGTH,
-          })}
-        </FormControl.HelperText>
-      </FormControl>
-      <VerticalSpacer />
+      <FormTextField<DepthTextFormInput>
+        name="label"
+        placeholder={t('soil.depth.label_placeholder')}
+        label={t('soil.depth.label_placeholder')}
+        maxLength={DEPTH_LABEL_MAX_LENGTH}
+        showCounter
+      />
       <Box flex={1}>
-        <FormInput
+        <FormTextField<DepthTextFormInput>
           name="start"
-          keyboardType="numeric"
+          type="numeric"
           placeholder={t('soil.depth.start_label', {
             units: 'cm',
           })}
-          textInputLabel={t('soil.depth.start_label', {
+          label={t('soil.depth.start_label', {
             units: 'cm',
           })}
+          required
         />
       </Box>
       <VerticalSpacer />
       <Box flex={1}>
-        <FormInput
+        <FormTextField<DepthTextFormInput>
           name="end"
-          keyboardType="numeric"
+          type="numeric"
           placeholder={t('soil.depth.end_label', {
             units: 'cm',
           })}
-          textInputLabel={t('soil.depth.end_label', {
+          label={t('soil.depth.end_label', {
             units: 'cm',
           })}
+          required
         />
       </Box>
       <Box height="10px" />

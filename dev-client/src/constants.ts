@@ -30,7 +30,6 @@ export const SITE_NAME_MIN_LENGTH = 3;
 export const SITE_NAME_MAX_LENGTH = 50;
 export const PROJECT_NAME_MIN_LENGTH = 3;
 export const PROJECT_NAME_MAX_LENGTH = 50;
-export const PROJECT_DESCRIPTION_MIN_LENGTH = 3;
 export const PROJECT_DESCRIPTION_MAX_LENGTH = 72;
 export const DEPTH_LABEL_MAX_LENGTH = 10;
 export const SITE_NOTE_MIN_LENGTH = 3;

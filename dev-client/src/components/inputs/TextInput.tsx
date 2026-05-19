@@ -26,6 +26,9 @@ import {theme} from 'terraso-mobile-client/theme';
 
 export type TextInputProps = RNPTextInputProps;
 
+/**
+ * @deprecated Use TextField instead
+ */
 export const TextInput = forwardRef<RNTextInput, TextInputProps>(
   ({mode, multiline, disabled = false, style, ...props}, ref) => {
     const styles = StyleSheet.create({
