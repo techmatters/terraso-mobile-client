@@ -53,6 +53,11 @@ export type SharedTextFieldProps = {
   readOnly?: boolean;
   required?: boolean;
   helperText?: string;
+  /* When to surface `error`.
+   * Defaults to 'afterBlur'. Single-field forms often want 'immediate'.
+   * FormTextField passes 'immediate' once Formik's touched/submitCount opens
+   * the gate, so backend errors after submit-without-blur still display. */
+  errorTiming?: ErrorTiming;
 
   style?: RNPTextInputProps['style'];
 } & CounterProps;
@@ -67,10 +72,6 @@ export type ControlledStateProps = {
   onBlur?: () => void;
   // Parent decides which error string to surface; TextField only decides timing.
   error?: string;
-  /* When to surface `error`. Defaults to 'afterBlur' (standalone UX).
-   * FormTextField passes 'immediate' once Formik's touched/submitCount opens
-   * the gate, so backend errors after submit-without-blur still display. */
-  errorTiming?: ErrorTiming;
 };
 
 export type TextFieldProps = SharedTextFieldProps & ControlledStateProps;
@@ -105,7 +106,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
      * focus signal to consumers. */
     const [isFocused, setIsFocused] = useState(false);
 
-    /* Tracked unconditionally; used only when errorTiming === 'afterBlur'.
+    /* Used only when errorTiming === 'afterBlur'.
      * Doesn't reset on subsequent focus — once blurred, always blurred. */
     const [hasBeenBlurred, setHasBeenBlurred] = useState(false);
 

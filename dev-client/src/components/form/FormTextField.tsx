@@ -68,6 +68,7 @@ export const FormTextField = <TValues extends FormikValues>({
   name,
   onChangeText,
   onBlur,
+  errorTiming,
   ...rest
 }: FormTextFieldProps<TValues>) => {
   const formik = useFormikContext<TValues>();
@@ -103,10 +104,17 @@ export const FormTextField = <TValues extends FormikValues>({
       onChangeText={handleChangeText}
       onBlur={handleBlur}
       error={error}
-      /* submitCount>0 reveals errors after a submit attempt even if the user
-       * never blurred — critical for backend errors set via setErrors. */
+      /* Timing may be afterBlur or immediate.
+       * With 'afterBlur' (default), we also show errors after form is submitted.
+       * (This is critical for backend errors set via setErrors.)
+       * And 'immediate' is useful when the surrounding form has no blur path
+       * (e.g., single-field edit screens). */
       errorTiming={
-        isTouched || formik.submitCount > 0 ? 'immediate' : 'afterBlur'
+        errorTiming === 'immediate'
+          ? 'immediate'
+          : isTouched || formik.submitCount > 0
+            ? 'immediate'
+            : 'afterBlur'
       }
     />
   );
