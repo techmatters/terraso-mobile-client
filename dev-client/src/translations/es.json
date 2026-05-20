@@ -311,7 +311,7 @@
             "help_text": "Ingresa la dirección de email de la cuenta Terraso de la persona. Puede crear una cuenta Terraso instalando la aplicación LandPKS Soil ID e iniciando sesión.",
             "user_does_not_exist": "No se ha encontrado ninguna cuenta Terraso",
             "user_in_project": "Ya es miembro de equipo",
-            "invalid_email": "Ingresa una dirección de email válida"
+            "invalid_email": "Se requiere una dirección de email válida"
         },
         "manage_member": {
             "title": "Administrar miembro del equipo",

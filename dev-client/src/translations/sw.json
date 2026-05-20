@@ -311,7 +311,7 @@
             "help_text": "Ingiza anwani ya barua pepe ya akaunti ya Terraso ya mtu huyo. Akaunti ya Terraso inaweza kuundwa kwa kusakinisha programu ya LandPKS Soil ID na kuingia.",
             "user_does_not_exist": "Hakuna akaunti ya Terraso iliyopatikana",
             "user_in_project": "Tayari ni mwanachama wa timu",
-            "invalid_email": "Weka anwani sahihi ya barua pepe"
+            "invalid_email": "Anwani sahihi ya barua pepe inahitajika"
         },
         "manage_member": {
             "title": "Dhibiti Mwanachama wa Timu",
