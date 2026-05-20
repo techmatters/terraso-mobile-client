@@ -497,7 +497,7 @@ exports[`renders correctly 1`] = `
                                               }
                                               testID="text-input-flat-label-active"
                                             >
-                                              Site Name *
+                                              Site name *
                                             </Text>
                                             <Text
                                               collapsable={false}
@@ -535,13 +535,13 @@ exports[`renders correctly 1`] = `
                                               }
                                               testID="text-input-flat-label-inactive"
                                             >
-                                              Site Name *
+                                              Site name *
                                             </Text>
                                           </View>
                                         </View>
                                       </View>
                                       <TextInput
-                                        accessibilityLabel="Site Name, required"
+                                        accessibilityLabel="Site name, required"
                                         autoCapitalize="sentences"
                                         cursorColor="#000000"
                                         editable={true}
@@ -552,7 +552,7 @@ exports[`renders correctly 1`] = `
                                         onBlur={[Function]}
                                         onChangeText={[Function]}
                                         onFocus={[Function]}
-                                        placeholder="Site Name"
+                                        placeholder="Site name"
                                         placeholderTextColor="transparent"
                                         selectionColor="#1A202C"
                                         style={
@@ -634,7 +634,7 @@ exports[`renders correctly 1`] = `
                                     }
                                   }
                                 >
-                                  GPS accuracy:  m
+                                  GPS Location accuracy:  m
                                 </Text>
                                 <View
                                   style={
@@ -1110,6 +1110,13 @@ exports[`renders correctly 1`] = `
                                     </View>
                                   </View>
                                 </View>
+                                <View
+                                  style={
+                                    {
+                                      "height": 16,
+                                    }
+                                  }
+                                />
                                 <View
                                   dataSet={{}}
                                   style={
