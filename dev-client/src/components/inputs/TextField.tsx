@@ -117,7 +117,11 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
       onBlur?.();
     };
 
-    const showError = shouldShowError(error, hasBeenBlurred, errorTiming);
+    let errorToShow = error;
+    if (!error && required && !value) {
+      errorToShow = t('general.required');
+    }
+    const showError = shouldShowError(errorToShow, hasBeenBlurred, errorTiming);
 
     /* Asterisk rides along with the floating label so it's positioned
      * consistently whether the field is empty (label sits in the input) or
@@ -175,7 +179,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           <>
             {showError ? (
               <HelperText type="error" visible padding="normal">
-                {error}
+                {errorToShow}
               </HelperText>
             ) : helperText ? (
               <HelperText type="info" visible padding="normal">
