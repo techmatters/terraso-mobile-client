@@ -20,6 +20,7 @@ import {useTranslation} from 'react-i18next';
 
 import {Spacer} from 'native-base';
 
+import {isDeletedUser} from 'terraso-client-shared/account/authConstants';
 import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
 import {Card} from 'terraso-mobile-client/components/Card';
@@ -69,12 +70,17 @@ export const SiteNoteCard = ({note}: Props) => {
         <Text variant="body2" italic>
           {t('site.notes.note_attribution', {
             createdAt: formatDate(note.createdAt),
-            name:
-              formatFullName(
-                note.authorFirstName,
-                note.authorLastName,
-                authorEmail,
-              ) || t('general.deleted_user'),
+            // Backend returns the deleted-user stub (sentinel id) instead
+            // of null when the author has been soft-deleted. Substitute
+            // the localized label so non-English users don't see the
+            // stub's English "Deleted User" verbatim.
+            name: isDeletedUser({id: note.authorId})
+              ? t('general.deleted_user')
+              : formatFullName(
+                  note.authorFirstName,
+                  note.authorLastName,
+                  authorEmail,
+                ),
           })}
         </Text>
         <Spacer />
