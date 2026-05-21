@@ -592,6 +592,13 @@ exports[`renders correctly 1`] = `
                                       />
                                     </View>
                                   </View>
+                                  <View
+                                    style={
+                                      {
+                                        "paddingLeft": 4,
+                                      }
+                                    }
+                                  />
                                 </View>
                                 <View
                                   dataSet={{}}
@@ -872,6 +879,13 @@ exports[`renders correctly 1`] = `
                                       />
                                     </View>
                                   </View>
+                                  <View
+                                    style={
+                                      {
+                                        "paddingLeft": 4,
+                                      }
+                                    }
+                                  />
                                 </View>
                                 <View
                                   style={
@@ -1109,6 +1123,13 @@ exports[`renders correctly 1`] = `
                                       />
                                     </View>
                                   </View>
+                                  <View
+                                    style={
+                                      {
+                                        "paddingLeft": 4,
+                                      }
+                                    }
+                                  />
                                 </View>
                                 <View
                                   style={

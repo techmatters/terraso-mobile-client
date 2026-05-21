@@ -597,29 +597,37 @@ exports[`renders correctly 1`] = `
                                         />
                                       </View>
                                     </View>
-                                    <Text
-                                      collapsable={false}
-                                      maxFontSizeMultiplier={1.5}
-                                      onLayout={[Function]}
+                                    <View
                                       style={
                                         {
-                                          "color": "rgba(73, 69, 79, 1)",
-                                          "fontFamily": "System",
-                                          "fontSize": 12,
-                                          "fontWeight": "400",
-                                          "letterSpacing": 0.25,
-                                          "lineHeight": 20,
-                                          "opacity": 1,
-                                          "paddingHorizontal": 12,
-                                          "paddingVertical": 4,
-                                          "textAlign": "left",
-                                          "transform": [],
-                                          "writingDirection": "ltr",
+                                          "paddingLeft": 4,
                                         }
                                       }
                                     >
-                                      0 / 50 characters
-                                    </Text>
+                                      <Text
+                                        collapsable={false}
+                                        maxFontSizeMultiplier={1.5}
+                                        onLayout={[Function]}
+                                        style={
+                                          {
+                                            "color": "rgba(73, 69, 79, 1)",
+                                            "fontFamily": "System",
+                                            "fontSize": 12,
+                                            "fontWeight": "400",
+                                            "letterSpacing": 0.25,
+                                            "lineHeight": 20,
+                                            "opacity": 1,
+                                            "paddingHorizontal": 12,
+                                            "paddingVertical": 4,
+                                            "textAlign": "left",
+                                            "transform": [],
+                                            "writingDirection": "ltr",
+                                          }
+                                        }
+                                      >
+                                        0 / 50 characters
+                                      </Text>
+                                    </View>
                                   </View>
                                   <View
                                     style={
@@ -884,29 +892,37 @@ exports[`renders correctly 1`] = `
                                         />
                                       </View>
                                     </View>
-                                    <Text
-                                      collapsable={false}
-                                      maxFontSizeMultiplier={1.5}
-                                      onLayout={[Function]}
+                                    <View
                                       style={
                                         {
-                                          "color": "rgba(73, 69, 79, 1)",
-                                          "fontFamily": "System",
-                                          "fontSize": 12,
-                                          "fontWeight": "400",
-                                          "letterSpacing": 0.25,
-                                          "lineHeight": 20,
-                                          "opacity": 1,
-                                          "paddingHorizontal": 12,
-                                          "paddingVertical": 4,
-                                          "textAlign": "left",
-                                          "transform": [],
-                                          "writingDirection": "ltr",
+                                          "paddingLeft": 4,
                                         }
                                       }
                                     >
-                                      0 / 72 characters
-                                    </Text>
+                                      <Text
+                                        collapsable={false}
+                                        maxFontSizeMultiplier={1.5}
+                                        onLayout={[Function]}
+                                        style={
+                                          {
+                                            "color": "rgba(73, 69, 79, 1)",
+                                            "fontFamily": "System",
+                                            "fontSize": 12,
+                                            "fontWeight": "400",
+                                            "letterSpacing": 0.25,
+                                            "lineHeight": 20,
+                                            "opacity": 1,
+                                            "paddingHorizontal": 12,
+                                            "paddingVertical": 4,
+                                            "textAlign": "left",
+                                            "transform": [],
+                                            "writingDirection": "ltr",
+                                          }
+                                        }
+                                      >
+                                        0 / 72 characters
+                                      </Text>
+                                    </View>
                                   </View>
                                   <View
                                     dataSet={{}}
