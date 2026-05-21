@@ -136,9 +136,7 @@ const TextFieldExamples = () => {
   const [code, setCode] = useState('');
   const [description, setDescription] = useState('');
 
-  /* Validation
-
-*/
+  /* Validation */
   const emailError =
     email === '' || email.includes('@') ? undefined : 'Email needs an @ sign';
 
