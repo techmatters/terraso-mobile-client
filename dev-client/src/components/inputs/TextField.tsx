@@ -171,30 +171,32 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
             style,
           ]}
         />
-        {readOnly ? (
-          <HelperText type="info" visible padding="normal">
-            {t('general.read_only')}
-          </HelperText>
-        ) : (
-          <>
-            {showError ? (
-              <HelperText type="error" visible padding="normal">
-                {errorToShow}
-              </HelperText>
-            ) : helperText ? (
-              <HelperText type="info" visible padding="normal">
-                {helperText}
-              </HelperText>
-            ) : null}
-            {/* Counter is suppressed while an error is showing so the error
-             * occupies its slot, rather than the two stacking. */}
-            {counterText && !showError && (
-              <HelperText type="info" visible padding="normal">
-                {counterText}
-              </HelperText>
-            )}
-          </>
-        )}
+        <View style={styles.helperTextContainer}>
+          {readOnly ? (
+            <HelperText type="info" visible padding="normal">
+              {t('general.read_only')}
+            </HelperText>
+          ) : (
+            <>
+              {showError ? (
+                <HelperText type="error" visible padding="normal">
+                  {errorToShow}
+                </HelperText>
+              ) : helperText ? (
+                <HelperText type="info" visible padding="normal">
+                  {helperText}
+                </HelperText>
+              ) : null}
+              {/* Counter is suppressed while an error is showing so the error
+               * occupies its slot, rather than the two stacking. */}
+              {counterText && !showError && (
+                <HelperText type="info" visible padding="normal">
+                  {counterText}
+                </HelperText>
+              )}
+            </>
+          )}
+        </View>
       </View>
     );
   },
@@ -214,5 +216,8 @@ const styles = StyleSheet.create({
   viewContainer: {
     paddingTop: 8,
     paddingBottom: 16,
+  },
+  helperTextContainer: {
+    paddingLeft: 4,
   },
 });
