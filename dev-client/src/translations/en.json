@@ -53,9 +53,9 @@
         "create": {
             "title": "Create Site",
             "description": "Create a site here to save this location, enter observations, and see more detailed reports.",
-            "name_label": "Site Name",
+            "name_label": "Site name",
             "location_label": "Site Location",
-            "location_accuracy": "GPS accuracy: {{accuracyM}} m",
+            "location_accuracy": "GPS Location accuracy: {{accuracyM}} m",
             "latitude": "Latitude",
             "longitude": "Longitude",
             "add_to_project_label": "Add to Project",
@@ -68,7 +68,8 @@
             "min_latitude_error": "Latitude must be at least {{min}}",
             "max_latitude_error": "Latitude must be at most {{max}}",
             "min_longitude_error": "Longitude must be at least {{min}}",
-            "max_longitude_error": "Longitude must be at most {{max}}"
+            "max_longitude_error": "Longitude must be at most {{max}}",
+            "number_error": "Only numbers and period allowed"
         },
         "dashboard": {
             "privacy": "Data Privacy",
@@ -312,7 +313,7 @@
             "help_text": "Enter the email address of the person’s Terraso account. A Terraso account can be created by installing the LandPKS Soil ID app and signing in.",
             "user_does_not_exist": "No Terraso account found",
             "user_in_project": "Already a team member",
-            "invalid_email": "Enter a valid email address"
+            "invalid_email": "Valid email address required"
         },
         "manage_member": {
             "title": "Manage Team Member",
@@ -1697,9 +1698,9 @@
             "confirm_title": "Change slope?",
             "confirm_body": "Are you sure you want to override the slope steepness?",
             "percentage_placeholder": "Percentage",
-            "percentage_help": "0%–999%",
+            "percentage_help": "0–999",
             "degree": "{{value}}°",
-            "degree_help": "0°–89°",
+            "degree_help": "0–89",
             "degree_placeholder": "Degree",
             "slope_meter": "Slope Meter",
             "camera_grant": "Grant Camera Permission",

@@ -22,14 +22,18 @@ import {
 
 describe('shouldShowError', () => {
   test('returns false when there is no error', () => {
-    expect(shouldShowError(undefined, true, 5)).toBe(false);
-    expect(shouldShowError('', true, 5)).toBe(false);
+    expect(shouldShowError(undefined, true, 'immediate')).toBe(false);
+    expect(shouldShowError('', true, 'immediate')).toBe(false);
   });
 
-  test('hides error until touched or submit', () => {
-    expect(shouldShowError('Required', false, 0)).toBe(false);
-    expect(shouldShowError('Required', true, 0)).toBe(true);
-    expect(shouldShowError('Required', false, 1)).toBe(true);
+  test("'afterBlur' hides error until the field has been blurred", () => {
+    expect(shouldShowError('Required', false, 'afterBlur')).toBe(false);
+    expect(shouldShowError('Required', true, 'afterBlur')).toBe(true);
+  });
+
+  test("'immediate' shows the error regardless of blur state", () => {
+    expect(shouldShowError('Required', false, 'immediate')).toBe(true);
+    expect(shouldShowError('Required', true, 'immediate')).toBe(true);
   });
 });
 

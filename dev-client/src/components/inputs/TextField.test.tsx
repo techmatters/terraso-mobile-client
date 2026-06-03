@@ -120,14 +120,14 @@ describe('TextField', () => {
         value=""
         onChangeText={() => {}}
         helperText="We never share it"
-        error="Required"
+        error="An error!"
         testID="field"
       />,
     );
 
     fireEvent(getByTestId('field'), 'blur');
 
-    expect(queryByText('Required')).toBeTruthy();
+    expect(queryByText('An error!')).toBeTruthy();
     expect(queryByText('We never share it')).toBeNull();
   });
 
@@ -136,7 +136,25 @@ describe('TextField', () => {
       <TextField
         value=""
         onChangeText={() => {}}
-        error="Required"
+        error="An error!"
+        testID="field"
+      />,
+    );
+
+    expect(queryByText('An error!')).toBeNull();
+
+    fireEvent(getByTestId('field'), 'blur');
+
+    expect(queryByText('An error!')).toBeTruthy();
+  });
+
+  test('shows "Required" error for a required field with empty value once blurred', () => {
+    const {queryByText, getByTestId} = render(
+      <TextField
+        value=""
+        onChangeText={() => {}}
+        label="Email"
+        required
         testID="field"
       />,
     );
@@ -146,6 +164,21 @@ describe('TextField', () => {
     fireEvent(getByTestId('field'), 'blur');
 
     expect(queryByText('Required')).toBeTruthy();
+  });
+
+  test('shows error without a blur when errorTiming="immediate"', () => {
+    /* Mirrors the FormTextField post-submit case: parent forces immediate
+     * display so a backend error surfaces even if the user never blurred. */
+    const {queryByText} = render(
+      <TextField
+        value=""
+        onChangeText={() => {}}
+        error="An error!"
+        errorTiming="immediate"
+      />,
+    );
+
+    expect(queryByText('An error!')).toBeTruthy();
   });
 
   test('renders character counter when showCounter and maxLength are set', () => {
@@ -169,6 +202,22 @@ describe('TextField', () => {
       <TextField value="abcde" onChangeText={() => {}} maxLength={20} />,
     );
 
+    expect(queryByText('5 / 20', {exact: false})).toBeNull();
+  });
+
+  test('suppresses the counter while an error is showing', () => {
+    const {queryByText} = render(
+      <TextField
+        value="abcde"
+        onChangeText={() => {}}
+        maxLength={20}
+        showCounter
+        error="An error!"
+        errorTiming="immediate"
+      />,
+    );
+
+    expect(queryByText('An error!')).toBeTruthy();
     expect(queryByText('5 / 20', {exact: false})).toBeNull();
   });
 
@@ -199,7 +248,7 @@ describe('TextField', () => {
         value="abcde"
         onChangeText={() => {}}
         helperText="We never share it"
-        error="Required"
+        error="An error!"
         maxLength={20}
         showCounter
         readOnly
@@ -209,7 +258,7 @@ describe('TextField', () => {
 
     fireEvent(getByTestId('field'), 'blur');
 
-    expect(queryByText('Required')).toBeNull();
+    expect(queryByText('An error!')).toBeNull();
     expect(queryByText('We never share it')).toBeNull();
     expect(queryByText('5 / 20', {exact: false})).toBeNull();
   });

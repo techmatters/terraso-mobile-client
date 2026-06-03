@@ -20,7 +20,6 @@ import {Platform} from 'react-native';
 
 import {FormikProps} from 'formik';
 import {KeyboardAvoidingView, Spacer} from 'native-base';
-import {InferType} from 'yup';
 
 import {Coords} from 'terraso-client-shared/types';
 
@@ -29,10 +28,10 @@ import {HelpButton} from 'terraso-mobile-client/components/buttons/icons/common/
 import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
 import {DataPrivacyInfoButton} from 'terraso-mobile-client/components/content/info/privacy/DataPrivacyInfoButton';
 import {FormField} from 'terraso-mobile-client/components/form/FormField';
-import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormRadio} from 'terraso-mobile-client/components/form/FormRadio';
 import {FormRadioGroup} from 'terraso-mobile-client/components/form/FormRadioGroup';
+import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 import {
   Column,
   Text,
@@ -41,11 +40,18 @@ import {
 import {ProjectSelect} from 'terraso-mobile-client/components/ProjectSelect';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {SITE_NAME_MAX_LENGTH} from 'terraso-mobile-client/constants';
-import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {useSelector} from 'terraso-mobile-client/store';
-import {formatCoordinate} from 'terraso-mobile-client/util';
 
-export type FormState = InferType<ReturnType<typeof siteValidationSchema>>;
+/* Lat/lon are held as strings so they round-trip through text inputs cleanly.
+ * `siteValidationSchema`'s `yup.number()` coerces them at validation/cast time,
+ * so downstream code (`onSave` → `createSiteCallback`) still receives numbers. */
+export type FormState = {
+  name: string;
+  latitude: string;
+  longitude: string;
+  projectId?: string;
+  privacy?: 'PUBLIC' | 'PRIVATE';
+};
 
 export const CreateSiteForm = ({
   isSubmitting,
@@ -75,35 +81,33 @@ export const CreateSiteForm = ({
       flex={1}
       keyboardVerticalOffset={40}>
       <SafeScrollView>
-        <Column p="16px" pt="30px" space="18px">
-          <FormField name="name">
-            <FormInput
-              maxLength={SITE_NAME_MAX_LENGTH}
-              placeholder={t('site.create.name_label')}
-              textInputLabel={t('site.create.name_label')}
-            />
-          </FormField>
+        <Column p="md">
+          <FormTextField<FormState>
+            name="name"
+            maxLength={SITE_NAME_MAX_LENGTH}
+            placeholder={t('site.create.name_label')}
+            label={t('site.create.name_label')}
+            required
+          />
 
           <FormLabel>{t('site.create.location_label')}</FormLabel>
-          <Text mt="-20px">
+          <Text>
             {t('site.create.location_accuracy', {
               accuracyM: accuracyM?.toFixed(0),
             })}
           </Text>
-          <FormField name="latitude">
-            <FormInput
-              value={formatCoordinate(values.latitude)}
-              textInputLabel={t('site.create.latitude')}
-              keyboardType="numeric"
-            />
-          </FormField>
-          <FormField name="longitude">
-            <FormInput
-              value={formatCoordinate(values.longitude)}
-              textInputLabel={t('site.create.longitude')}
-              keyboardType="numeric"
-            />
-          </FormField>
+          <FormTextField<FormState>
+            name="latitude"
+            label={t('site.create.latitude')}
+            type="numeric"
+            required
+          />
+          <FormTextField<FormState>
+            name="longitude"
+            label={t('site.create.longitude')}
+            type="numeric"
+            required
+          />
           {hasProjects && (
             <FormField name="projectId">
               <FormLabel>
@@ -125,6 +129,7 @@ export const CreateSiteForm = ({
               />
             </FormField>
           )}
+          <View height="md" />
           <FormField name="privacy">
             <FormLabel>
               {t('privacy.label')}

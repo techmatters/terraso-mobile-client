@@ -63,10 +63,7 @@ export const CreateProjectForm = () => {
         description: '',
         privacy: 'PRIVATE',
       }}
-      validateOnMount={true}
-      initialTouched={{
-        name: true,
-      }}>
+      validateOnMount={true}>
       {({isSubmitting, handleSubmit, isValid}) => (
         <FormContainer
           isSubmitting={isSubmitting}

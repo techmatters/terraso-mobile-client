@@ -99,7 +99,8 @@
             "min_latitude_error": "La latitud mínima es {{min}}",
             "max_latitude_error": "La latitud máxima es {{max}}",
             "min_longitude_error": "La longitud mínima es {{min}}",
-            "max_longitude_error": "La longitud máxima es {{max}}"
+            "max_longitude_error": "La longitud máxima es {{max}}",
+            "number_error": "Solo se permiten números y punto"
         },
         "soil_id": {
             "title": "Soil ID",
@@ -310,7 +311,7 @@
             "help_text": "Ingresa la dirección de email de la cuenta Terraso de la persona. Puede crear una cuenta Terraso instalando la aplicación LandPKS Soil ID e iniciando sesión.",
             "user_does_not_exist": "No se ha encontrado ninguna cuenta Terraso",
             "user_in_project": "Ya es miembro de equipo",
-            "invalid_email": "Ingresa una dirección de email válida"
+            "invalid_email": "Se requiere una dirección de email válida"
         },
         "manage_member": {
             "title": "Administrar miembro del equipo",
@@ -1645,8 +1646,8 @@
             "confirm_title": "¿Cambiar pendiente?",
             "confirm_body": "¿Estás seguro de querer anular el nivel de inclinación de la pendiente?",
             "percentage_placeholder": "Porcentaje",
-            "percentage_help": "0%–999%",
-            "degree_help": "0°–89°\n",
+            "percentage_help": "0–999",
+            "degree_help": "0–89",
             "degree_placeholder": "Grado",
             "slope_meter": "Medidor de pendiente",
             "camera_grant": "Permitir el uso de la cámara",

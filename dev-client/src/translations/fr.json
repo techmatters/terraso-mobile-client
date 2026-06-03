@@ -99,7 +99,8 @@
             "min_latitude_error": "La latitude doit être d'au moins {{min}}",
             "max_latitude_error": "La latitude doit être au maximum de {{max}}",
             "min_longitude_error": "La longitude doit être d'au moins {{min}}",
-            "max_longitude_error": "La longitude doit être au plus {{max}}"
+            "max_longitude_error": "La longitude doit être au plus {{max}}",
+            "number_error": "Seuls les chiffres et le point sont autorisés"
         },
         "soil_id": {
             "title": "Soil ID",
@@ -310,7 +311,7 @@
             "help_text": "Saisissez l'adresse e-mail du compte Terraso de la personne. Pour créer un compte Terraso, installez l'application LandPKS Soil ID et connectez-vous.",
             "user_does_not_exist": "Aucun compte Terraso trouvé",
             "user_in_project": "Déjà membre de l'équipe",
-            "invalid_email": "Entrez une adresse e-mail valide"
+            "invalid_email": "Adresse e-mail valide requise"
         },
         "manage_member": {
             "title": "Gérer les membres de l'équipe",
@@ -1646,8 +1647,8 @@
             "confirm_title": "Changer de pente ?",
             "confirm_body": "Êtes-vous sûr de vouloir remplacer la pente ?",
             "percentage_placeholder": "Pourcentage",
-            "percentage_help": "0%–999%",
-            "degree_help": "0°–89°",
+            "percentage_help": "0–999",
+            "degree_help": "0–89",
             "degree_placeholder": "Degré",
             "slope_meter": "Inclinomètre",
             "camera_grant": "Accorder l'autorisation de la caméra",

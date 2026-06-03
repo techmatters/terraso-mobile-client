@@ -15,9 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PressableProps} from 'react-native';
+
+import {Formik, FormikHelpers} from 'formik';
 
 import {DeleteButton} from 'terraso-mobile-client/components/buttons/common/DeleteButton';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -29,7 +31,7 @@ import {
   ScreenDataRequirements,
   useMemoizedRequirements,
 } from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
-import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
+import {FormTextField} from 'terraso-mobile-client/components/form/FormTextField';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
 import {
   Column,
@@ -43,11 +45,16 @@ import {
   updateSite,
 } from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {siteValidationSchema} from 'terraso-mobile-client/schemas/siteValidationSchema';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
   siteId: string;
+};
+
+type FormState = {
+  name: string;
 };
 
 type DeleteButtonWrapperProps = {
@@ -73,12 +80,18 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
   const site = useSelector(state => state.site.sites[siteId]);
   const isOffline = useIsOffline();
 
-  const [name, setName] = useState(site?.name);
-  const dirty = name !== site?.name;
+  const nameValidationSchema = useMemo(
+    () => siteValidationSchema(t).pick(['name']),
+    [t],
+  );
 
-  const onSave = useCallback(() => {
-    dispatch(updateSite({id: site.id, name}));
-  }, [dispatch, site, name]);
+  const onSave = useCallback(
+    ({name}: FormState, {resetForm}: FormikHelpers<FormState>) => {
+      dispatch(updateSite({id: site.id, name}));
+      resetForm({values: {name}});
+    },
+    [dispatch, site],
+  );
 
   const onDelete = useCallback(async () => {
     await dispatch(deleteSite(site));
@@ -99,43 +112,54 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
       {() => (
         <ScreenScaffold
           BottomNavigation={null}
-          AppBar={<AppBar title={site?.name} />}>
-          <Column px="16px" py="22px">
-            <TextField
-              maxLength={SITE_NAME_MAX_LENGTH}
-              value={name}
-              onChangeText={setName}
-              label={t('site.create.name_label')}
-              placeholder={t('site.create.name_label')}
-              required
-              showCounter
-            />
-            <View mt={4} alignItems="flex-end">
-              <ContainedButton
-                size="lg"
-                label={t('general.save')}
-                onPress={onSave}
-                disabled={!dirty}
-              />
-            </View>
-            <View mt={6}>
-              {isOffline ? (
-                <DeleteButtonWrapper disabled={true} />
-              ) : (
-                <ConfirmModal
-                  trigger={onOpen => <DeleteButtonWrapper onPress={onOpen} />}
-                  title={t('projects.sites.delete_site_modal.title')}
-                  body={t('projects.sites.delete_site_modal.body', {
-                    siteName: site?.name,
-                  })}
-                  actionLabel={t(
-                    'projects.sites.delete_site_modal.action_name',
-                  )}
-                  handleConfirm={onDelete}
+          AppBar={<AppBar title={site.name} />}>
+          <Formik<FormState>
+            initialValues={{name: site.name}}
+            validationSchema={nameValidationSchema}
+            onSubmit={onSave}>
+            {({handleSubmit, dirty, isValid, isSubmitting}) => (
+              <Column px="16px" py="22px">
+                <FormTextField<FormState>
+                  name="name"
+                  maxLength={SITE_NAME_MAX_LENGTH}
+                  label={t('site.create.name_label')}
+                  placeholder={t('site.create.name_label')}
+                  required
+                  showCounter
+                  /* Screen has no blur path (single field, only buttons
+                   * elsewhere), so afterBlur would never escalate. */
+                  errorTiming="immediate"
                 />
-              )}
-            </View>
-          </Column>
+                <View mt={4} alignItems="flex-end">
+                  <ContainedButton
+                    size="lg"
+                    label={t('general.save')}
+                    onPress={handleSubmit}
+                    disabled={!dirty || !isValid || isSubmitting}
+                  />
+                </View>
+                <View mt="sm">
+                  {isOffline ? (
+                    <DeleteButtonWrapper disabled={true} />
+                  ) : (
+                    <ConfirmModal
+                      trigger={onOpen => (
+                        <DeleteButtonWrapper onPress={onOpen} />
+                      )}
+                      title={t('projects.sites.delete_site_modal.title')}
+                      body={t('projects.sites.delete_site_modal.body', {
+                        siteName: site.name,
+                      })}
+                      actionLabel={t(
+                        'projects.sites.delete_site_modal.action_name',
+                      )}
+                      handleConfirm={onDelete}
+                    />
+                  )}
+                </View>
+              </Column>
+            )}
+          </Formik>
         </ScreenScaffold>
       )}
     </ScreenDataRequirements>

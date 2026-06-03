@@ -25,6 +25,7 @@ import {
 } from 'react-native-paper';
 
 import {
+  ErrorTiming,
   shouldShowError,
   TextFieldType,
   TYPE_PRESETS,
@@ -52,6 +53,11 @@ export type SharedTextFieldProps = {
   readOnly?: boolean;
   required?: boolean;
   helperText?: string;
+  /* When to surface `error`.
+   * Defaults to 'afterBlur'. Single-field forms often want 'immediate'.
+   * FormTextField passes 'immediate' once Formik's touched/submitCount opens
+   * the gate, so backend errors after submit-without-blur still display. */
+  errorTiming?: ErrorTiming;
 
   style?: RNPTextInputProps['style'];
 } & CounterProps;
@@ -64,7 +70,7 @@ export type ControlledStateProps = {
   value: string;
   onChangeText?: (value: string) => void;
   onBlur?: () => void;
-  // Expect parent to handle logic for what error to show, and pass the relevant error as a prop
+  // Parent decides which error string to surface; TextField only decides timing.
   error?: string;
 };
 
@@ -89,6 +95,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
       onChangeText,
       onBlur,
       error,
+      errorTiming = 'afterBlur',
     },
     ref,
   ) => {
@@ -99,8 +106,8 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
      * focus signal to consumers. */
     const [isFocused, setIsFocused] = useState(false);
 
-    /* hasBeenBlurred is the controlled-mode equivalent of Formik's `touched`.
-     * Doesn't reset on subsequent focus — once touched, always touched. */
+    /* Used only when errorTiming === 'afterBlur'.
+     * Doesn't reset on subsequent focus — once blurred, always blurred. */
     const [hasBeenBlurred, setHasBeenBlurred] = useState(false);
 
     const handleFocus = () => setIsFocused(true);
@@ -110,10 +117,11 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
       onBlur?.();
     };
 
-    /* Standalone TextField has no Formik submitCount concept — that's only
-     * meaningful in the FormTextField wrapper. Pass 0 here so submitCount
-     * never affects display in controlled mode. */
-    const showError = shouldShowError(error, hasBeenBlurred, 0);
+    let errorToShow = error;
+    if (!error && required && !value) {
+      errorToShow = t('general.required');
+    }
+    const showError = shouldShowError(errorToShow, hasBeenBlurred, errorTiming);
 
     /* Asterisk rides along with the floating label so it's positioned
      * consistently whether the field is empty (label sits in the input) or
@@ -163,28 +171,32 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
             style,
           ]}
         />
-        {readOnly ? (
-          <HelperText type="info" visible padding="normal">
-            {t('general.read_only')}
-          </HelperText>
-        ) : (
-          <>
-            {showError ? (
-              <HelperText type="error" visible padding="normal">
-                {error}
-              </HelperText>
-            ) : helperText ? (
-              <HelperText type="info" visible padding="normal">
-                {helperText}
-              </HelperText>
-            ) : null}
-            {counterText !== undefined && (
-              <HelperText type="info" visible padding="normal">
-                {counterText}
-              </HelperText>
-            )}
-          </>
-        )}
+        <View style={styles.helperTextContainer}>
+          {readOnly ? (
+            <HelperText type="info" visible padding="normal">
+              {t('general.read_only')}
+            </HelperText>
+          ) : (
+            <>
+              {showError ? (
+                <HelperText type="error" visible padding="normal">
+                  {errorToShow}
+                </HelperText>
+              ) : helperText ? (
+                <HelperText type="info" visible padding="normal">
+                  {helperText}
+                </HelperText>
+              ) : null}
+              {/* Counter is suppressed while an error is showing so the error
+               * occupies its slot, rather than the two stacking. */}
+              {counterText && !showError && (
+                <HelperText type="info" visible padding="normal">
+                  {counterText}
+                </HelperText>
+              )}
+            </>
+          )}
+        </View>
       </View>
     );
   },
@@ -204,5 +216,8 @@ const styles = StyleSheet.create({
   viewContainer: {
     paddingTop: 8,
     paddingBottom: 16,
+  },
+  helperTextContainer: {
+    paddingLeft: 4,
   },
 });

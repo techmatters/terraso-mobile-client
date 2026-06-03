@@ -99,7 +99,8 @@
             "min_latitude_error": "Latitudo lazima iwe angalau {{min}}",
             "max_latitude_error": "Latitudo lazima iwe isizidi {{max}}",
             "min_longitude_error": "Longitudo lazima iwe angalau {{min}}",
-            "max_longitude_error": "Longitudo lazima iwe isizidi {{max}}"
+            "max_longitude_error": "Longitudo lazima iwe isizidi {{max}}",
+            "number_error": "Nambari na nukta pekee ndizo zinazoruhusiwa"
         },
         "soil_id": {
             "title": "Kitambulisho cha Udongo",
@@ -310,7 +311,7 @@
             "help_text": "Ingiza anwani ya barua pepe ya akaunti ya Terraso ya mtu huyo. Akaunti ya Terraso inaweza kuundwa kwa kusakinisha programu ya LandPKS Soil ID na kuingia.",
             "user_does_not_exist": "Hakuna akaunti ya Terraso iliyopatikana",
             "user_in_project": "Tayari ni mwanachama wa timu",
-            "invalid_email": "Weka anwani sahihi ya barua pepe"
+            "invalid_email": "Anwani sahihi ya barua pepe inahitajika"
         },
         "manage_member": {
             "title": "Dhibiti Mwanachama wa Timu",
@@ -1645,8 +1646,8 @@
             "confirm_title": "Badilisha mteremko?",
             "confirm_body": "Una uhakika unataka kupindua mwinuko wa mteremko?",
             "percentage_placeholder": "Asilimia",
-            "percentage_help": "0%–999%",
-            "degree_help": "0°–89°",
+            "percentage_help": "0–999",
+            "degree_help": "0–89",
             "degree_placeholder": "Digrii",
             "slope_meter": "Kipima Mteremko",
             "camera_grant": "Toa Ruhusa ya Kamera",

@@ -132,13 +132,11 @@ export const UiComponentList = () => {
 const TextFieldExamples = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState('0');
   const [code, setCode] = useState('');
   const [description, setDescription] = useState('');
 
-  /* Validation
-
-*/
+  /* Validation */
   const emailError =
     email === '' || email.includes('@') ? undefined : 'Email needs an @ sign';
 
@@ -149,16 +147,16 @@ const TextFieldExamples = () => {
   const amountError =
     amount === ''
       ? undefined
-      : Number.isNaN(amountNumber) || amountNumber < 0 || amountNumber > 10000
+      : Number.isNaN(amountNumber) || amountNumber < 100 || amountNumber > 10000
         ? 'Must be a number between 0 and 10000'
         : undefined;
 
   return (
     <>
       <Heading variant="h5">Basic (controlled)</Heading>
-      <TextField label="Name" value={name} onChangeText={setName} />
+      <TextField label="Name" value={name} onChangeText={setName} required />
 
-      <Heading variant="h5">Email</Heading>
+      <Heading variant="h5">Email, errorTiming immediate</Heading>
       <TextField
         label="Email"
         type="email"
@@ -167,21 +165,22 @@ const TextFieldExamples = () => {
         value={email}
         onChangeText={setEmail}
         error={emailError}
+        errorTiming="immediate"
       />
 
-      <Heading variant="h5">Numeric</Heading>
+      <Heading variant="h5">Numeric, starts invalid</Heading>
       <TextField
         label="Amount"
         type="numeric"
         value={amount}
         onChangeText={setAmount}
-        helperText="0-10000"
+        helperText="100-10000"
         error={amountError}
       />
 
       <Heading variant="h5">Character limit + counter (max 4)</Heading>
       <TextField
-        label="Code"
+        label="Counter"
         value={code}
         onChangeText={setCode}
         maxLength={4}

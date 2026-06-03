@@ -86,6 +86,133 @@ describe('FormTextField', () => {
     expect(queryByText('Required')).toBeTruthy();
   });
 
+  test('shows error immediately when errorTiming="immediate" overrides the default', async () => {
+    /* For screens with no blur path (e.g., single-field edit screens), the
+     * caller forces immediate display so the user sees the error as soon as
+     * the value goes invalid. */
+    const {queryByText} = await renderInFormik(
+      {email: 'not-an-email'},
+      <FormTextField<EmailForm>
+        name="email"
+        testID="field"
+        errorTiming="immediate"
+      />,
+      {validate: () => ({email: 'Invalid email'})},
+    );
+
+    expect(queryByText('Invalid email')).toBeTruthy();
+  });
+
+  test('errorTiming="immediate" tracks value changes dynamically', async () => {
+    /* The error must appear
+     * and disappear in sync with whether the value is currently valid. */
+    const {queryByText, getByTestId} = await renderInFormik(
+      {email: 'not-an-email'},
+      <FormTextField<EmailForm>
+        name="email"
+        testID="field"
+        errorTiming="immediate"
+      />,
+      {
+        validate: ({email}: EmailForm): Record<string, string> =>
+          email.includes('@') ? {} : {email: 'Invalid email'},
+      },
+    );
+
+    expect(queryByText('Invalid email')).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.changeText(getByTestId('field'), 'a@b.com');
+    });
+    expect(queryByText('Invalid email')).toBeNull();
+
+    await act(async () => {
+      fireEvent.changeText(getByTestId('field'), 'oops');
+    });
+    expect(queryByText('Invalid email')).toBeTruthy();
+  });
+
+  test('explicit errorTiming="afterBlur" defers to the derived rule (shows after blur)', async () => {
+    /* Within FormTextField only `'immediate'` is a real override; explicit
+     * `'afterBlur'` falls into the derived branch and behaves like omitting
+     * the prop. Pin that down so a refactor can't silently break the
+     * touched/submit escalation. */
+    const {queryByText, getByTestId} = await renderInFormik(
+      {email: ''},
+      <FormTextField<EmailForm>
+        name="email"
+        testID="field"
+        errorTiming="afterBlur"
+      />,
+      {validate: () => ({email: 'Required'})},
+    );
+
+    expect(queryByText('Required')).toBeNull();
+
+    await act(async () => {
+      fireEvent(getByTestId('field'), 'blur');
+    });
+
+    expect(queryByText('Required')).toBeTruthy();
+  });
+
+  test('explicit errorTiming="afterBlur" still escalates after submit', async () => {
+    let submitForm: (() => void) | undefined;
+    const {queryByText} = render(
+      <Formik<EmailForm>
+        initialValues={{email: ''}}
+        validate={() => ({email: 'Required'})}
+        onSubmit={() => {}}>
+        {formik => {
+          submitForm = formik.submitForm;
+          return (
+            <FormTextField<EmailForm>
+              name="email"
+              testID="field"
+              errorTiming="afterBlur"
+            />
+          );
+        }}
+      </Formik>,
+    );
+
+    await act(async () => {});
+    expect(queryByText('Required')).toBeNull();
+
+    await act(async () => {
+      submitForm?.();
+    });
+
+    expect(queryByText('Required')).toBeTruthy();
+  });
+
+  test('shows error after submit even when the field was never blurred', async () => {
+    /* Regression for the AddTeamMemberForm bug: user types and taps the
+     * submit button without ever blurring. setErrors / yup errors must
+     * surface because submitCount>0 satisfies the touched signal. */
+    let submitForm: (() => void) | undefined;
+    const {queryByText} = render(
+      <Formik<EmailForm>
+        initialValues={{email: ''}}
+        validate={() => ({email: 'Required'})}
+        onSubmit={() => {}}>
+        {formik => {
+          submitForm = formik.submitForm;
+          return <FormTextField<EmailForm> name="email" testID="field" />;
+        }}
+      </Formik>,
+    );
+
+    await act(async () => {});
+    expect(queryByText('Required')).toBeNull();
+
+    await act(async () => {
+      submitForm?.();
+    });
+
+    expect(queryByText('Required')).toBeTruthy();
+  });
+
   test('updates Formik state on change', async () => {
     /* Capture the latest Formik bag via the render-prop child so the test
      * can read post-update state directly. */

@@ -99,7 +99,8 @@
             "min_latitude_error": "Широта має бути щонайменше {{min}}",
             "max_latitude_error": "Широта має бути не більше ніж {{max}}",
             "min_longitude_error": "Довгота має бути щонайменше {{min}}",
-            "max_longitude_error": "Довгота має бути не більше ніж {{max}}"
+            "max_longitude_error": "Довгота має бути не більше ніж {{max}}",
+            "number_error": "Дозволені лише цифри та крапка"
         },
         "soil_id": {
             "title": "Ідентифікатор ґрунту",
@@ -310,7 +311,7 @@
             "help_text": "Введіть адресу електронної пошти облікового запису Terraso цієї особи. Обліковий запис Terraso можна створити, встановивши застосунок LandPKS Soil ID та увійшовши в систему.",
             "user_does_not_exist": "Обліковий запис Terraso не знайдено",
             "user_in_project": "Вже є членом команди",
-            "invalid_email": "Введіть дійсну адресу електронної пошти"
+            "invalid_email": "Потрібна дійсна адреса електронної пошти"
         },
         "manage_member": {
             "title": "Керування членом команди",
@@ -1645,8 +1646,8 @@
             "confirm_title": "Редагувати значення схилу?",
             "confirm_body": "Ви впевнені, що хочете змінити крутизну схилу?",
             "percentage_placeholder": "Відсоток",
-            "percentage_help": "0%–999%",
-            "degree_help": "0°–89°",
+            "percentage_help": "0–999",
+            "degree_help": "0–89",
             "degree_placeholder": "Градус",
             "slope_meter": "Схиломір",
             "camera_grant": "Надати дозвіл на камеру",

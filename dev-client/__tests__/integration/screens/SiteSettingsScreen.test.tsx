@@ -147,6 +147,56 @@ describe('SiteSettingsScreen', () => {
     expect(screen.queryByTestId('error-dialog')).toBeOnTheScreen();
   });
 
+  test('shows min-length error and disables Save when name is below minimum', async () => {
+    /* Regression: this screen has no blur path (single field + buttons), so
+     * the error must surface immediately on invalid edits. */
+    const screen = render(
+      <SyncNotificationContextProvider>
+        <SiteSettingsScreen siteId="site1" />
+      </SyncNotificationContextProvider>,
+      {
+        route: 'SITE_TABS',
+        initialState: stateWithTwoSites,
+      },
+    );
+
+    const nameInput = screen.getByDisplayValue('Site 1');
+    await userEvent.clear(nameInput);
+    await userEvent.type(nameInput, 'ab');
+
+    expect(
+      screen.getByText('Site name must be at least 3 characters'),
+    ).toBeOnTheScreen();
+
+    const saveButton = screen.getByText('Save');
+    expect(saveButton).toBeDisabled();
+  });
+
+  test('clears error and re-enables Save when name becomes valid', async () => {
+    const screen = render(
+      <SyncNotificationContextProvider>
+        <SiteSettingsScreen siteId="site1" />
+      </SyncNotificationContextProvider>,
+      {
+        route: 'SITE_TABS',
+        initialState: stateWithTwoSites,
+      },
+    );
+
+    const nameInput = screen.getByDisplayValue('Site 1');
+    await userEvent.clear(nameInput);
+    await userEvent.type(nameInput, 'ab');
+    expect(
+      screen.getByText('Site name must be at least 3 characters'),
+    ).toBeOnTheScreen();
+
+    await userEvent.type(nameInput, 'c');
+    expect(
+      screen.queryByText('Site name must be at least 3 characters'),
+    ).toBeNull();
+    expect(screen.getByText('Save')).not.toBeDisabled();
+  });
+
   test('displays content and no error if site was deleted from this screen', async () => {
     const screen = render(
       <SyncNotificationContextProvider>

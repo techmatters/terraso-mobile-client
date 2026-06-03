@@ -99,7 +99,8 @@
             "min_latitude_error": "განედი უნდა იყოს მინიმუმ {{min}}",
             "max_latitude_error": "განედი უნდა იყოს მაქსიმუმ {{max}}",
             "min_longitude_error": "გრძედი უნდა იყოს მინიმუმ {{min}}",
-            "max_longitude_error": "გრძედი უნდა იყოს მაქსიმუმ {{max}}"
+            "max_longitude_error": "გრძედი უნდა იყოს მაქსიმუმ {{max}}",
+            "number_error": "დაშვებულია მხოლოდ ციფრები და წერტილი"
         },
         "soil_id": {
             "title": "Soil ID",
@@ -310,7 +311,7 @@
             "help_text": "შეიყვანეთ პირის Terraso ანგარიშის ელექტრონული ფოსტის მისამართი. Terraso ანგარიშის შექმნა შესაძლებელია LandPKS Soil ID აპლიკაციის ინსტალაციით და სისტემაში შესვლით.",
             "user_does_not_exist": "Terraso-ს ანგარიში ვერ მოიძებნა",
             "user_in_project": "უკვე გუნდის წევრია",
-            "invalid_email": "შეიყვანეთ სწორი ელექტრონული ფოსტის მისამართი"
+            "invalid_email": "საჭიროა სწორი ელექტრონული ფოსტის მისამართი"
         },
         "manage_member": {
             "title": "გუნდის წევრის მართვა",
@@ -1645,8 +1646,8 @@
             "confirm_title": "დახრილობის შეცვლა?",
             "confirm_body": "დარწმუნებული ხართ, რომ გსურთ ფერდობის დახრილობის უგულებელყოფა?",
             "percentage_placeholder": "პროცენტი",
-            "percentage_help": "0%-999%",
-            "degree_help": "0°–89°",
+            "percentage_help": "0-999",
+            "degree_help": "0–89",
             "degree_placeholder": "გრადუსი",
             "slope_meter": "დახრილობის მრიცხველი",
             "camera_grant": "კამერის ნებართვის მინიჭება",
