@@ -15,15 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  DepthDependentSoilData,
-  SoilData,
-} from 'terraso-client-shared/soilId/soilIdTypes';
+import {SoilData} from 'terraso-client-shared/soilId/soilIdTypes';
 
 import {
   degreeToPercent,
   selectToPercent,
-  soilDataLabColorInput,
   soilDataSlopePercent,
   soilDataToIdInput,
 } from 'terraso-mobile-client/model/soilIdMatch/actions/soilIdMatchInputs';
@@ -77,42 +73,6 @@ describe('soilDataSlopePercent', () => {
   });
 });
 
-describe('soilDataLabColorInput', () => {
-  let data: DepthDependentSoilData;
-
-  beforeEach(() => {
-    data = {
-      colorHue: undefined,
-      colorValue: undefined,
-      colorChroma: undefined,
-    } as DepthDependentSoilData;
-  });
-
-  test('handles missing values', () => {
-    expect(soilDataLabColorInput(data)).toBeUndefined();
-
-    data.colorHue = 1;
-    expect(soilDataLabColorInput(data)).toBeUndefined();
-
-    data.colorValue = 1;
-    expect(soilDataLabColorInput(data)).toBeUndefined();
-
-    data.colorChroma = 1;
-    expect(soilDataLabColorInput(data)).toBeDefined();
-  });
-
-  test('applies the conversion math', () => {
-    data.colorHue = 0.5;
-    data.colorValue = 0.5;
-    data.colorChroma = 0.5;
-
-    const {L, A, B} = soilDataLabColorInput(data)!;
-    expect(L).toBeCloseTo(5.124);
-    expect(A).toBeCloseTo(3.437);
-    expect(B).toBeCloseTo(-0.784);
-  });
-});
-
 describe('soilDataToIdInput', () => {
   let data: SoilData;
 
@@ -124,14 +84,14 @@ describe('soilDataToIdInput', () => {
     } as SoilData;
   });
 
-  test('restructures data', () => {
+  test('forwards raw Munsell as colorMunsellNumeric', () => {
     data.slopeSteepnessDegree = 45;
     data.depthDependentData = [
       {
         depthInterval: {start: 1, end: 2},
-        colorHue: 0,
-        colorValue: 0,
-        colorChroma: 0,
+        colorHue: 17.5,
+        colorValue: 5,
+        colorChroma: 4,
         rockFragmentVolume: 'VOLUME_0_1',
         texture: 'CLAY',
       },
@@ -140,12 +100,28 @@ describe('soilDataToIdInput', () => {
       depthDependentData: [
         {
           depthInterval: {start: 1, end: 2},
-          colorLAB: {L: 0, A: 0, B: 0},
+          colorMunsellNumeric: {hue: 17.5, value: 5, chroma: 4},
           rockFragmentVolume: 'VOLUME_0_1',
           texture: 'CLAY',
         },
       ],
       slope: 100,
     });
+  });
+
+  test('omits colorMunsellNumeric when any Munsell coordinate is missing', () => {
+    data.slopeSteepnessDegree = 45;
+    data.depthDependentData = [
+      {
+        depthInterval: {start: 1, end: 2},
+        colorHue: 17.5,
+        colorValue: 5,
+        // colorChroma intentionally absent
+        rockFragmentVolume: 'VOLUME_0_1',
+        texture: 'CLAY',
+      },
+    ];
+    const result = soilDataToIdInput(data);
+    expect(result.depthDependentData[0].colorMunsellNumeric).toBeUndefined();
   });
 });
