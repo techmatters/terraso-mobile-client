@@ -110,7 +110,13 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
   });
 
   builder.addCase(pullUserData.rejected, (_state, action) => {
-    console.error('⬇️ pull rejected:', action.error);
+    // The shared createAsyncThunk wrapper (terraso-client-shared/src/store/
+    // utils.ts) catches and re-rejects via rejectWithValue({error,
+    // parsedErrors}) — that makes action.error a literal {message:
+    // "Rejected"} placeholder, while the real failure info lives in
+    // action.payload.error. Prefer it; fall back to action.error for
+    // rejections that bypassed the wrapper (condition / abort / etc.).
+    console.error('⬇️ pull rejected:', action.payload?.error ?? action.error);
   });
 
   builder.addCase(pushUserData.fulfilled, (state, action) => {
