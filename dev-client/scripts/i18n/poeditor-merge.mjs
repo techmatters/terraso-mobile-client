@@ -1088,6 +1088,31 @@ async function main() {
 
   const commitMessage = commitLines.join('\n');
 
+  // Heads-up if WRB soil description translations changed: the backend serves
+  // these from the soil-id `wrb_fao90_desc` table, not from these JSON files, so
+  // they need a separate re-sync to take effect.
+  const soilDescriptionsChanged = LANGUAGES.some(lang => {
+    const d = langData[lang];
+    if (!d) return false;
+    return [
+      ...d.localDiff.added.keys(),
+      ...d.poeditorDiff.added.keys(),
+      ...d.localDiff.removed,
+      ...d.poeditorDiff.removed,
+      ...d.localDiff.changed.keys(),
+      ...d.poeditorDiff.changed.keys(),
+    ].some(key => key.startsWith('soil.match_info.'));
+  });
+  const printSoilSyncReminder = () => {
+    if (!soilDescriptionsChanged) return;
+    console.log(
+      '\n⚠️  Soil description translations (soil.match_info.*) changed.\n' +
+        '   The backend serves these from the soil-id `wrb_fao90_desc` table, not these\n' +
+        '   JSON files. Re-sync it: run soil-id-algorithm/scripts/wrb_descriptions_sync.py\n' +
+        '   (review the diff, then --write), then regenerate/redistribute the soil-id-db dump.',
+    );
+  };
+
   if (NO_COMMIT) {
     // Skip commit/tag — just report what changed
     console.log('Skipping commit and tag (--no-commit).\n');
@@ -1108,6 +1133,7 @@ async function main() {
       '  git checkout -- locales/po/ src/translations/ locales/po-save/ locales/sync-tag',
     );
     console.log(`\nChanges summarized: ${report.path}`);
+    printSoilSyncReminder();
     execSync(`open ${report.path}`);
     return;
   }
@@ -1147,6 +1173,7 @@ async function main() {
   console.log('Remember to push the commit and tag when ready:');
   console.log(`  git push && git push origin ${tagName}`);
   console.log(`\nChanges summarized: open ${report.path}`);
+  printSoilSyncReminder();
   execSync(`open ${report.path}`);
 }
 
