@@ -15,10 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {mhvcToLab} from 'munsell';
-
 import {
-  LabColorInput,
   Maybe,
   SoilIdInputData,
   SoilIdInputDepthDependentData,
@@ -78,20 +75,6 @@ export const soilDataSlopePercent = (
   }
 };
 
-export const soilDataLabColorInput = (
-  data: DepthDependentSoilData,
-): LabColorInput | undefined => {
-  if (
-    typeof data.colorHue !== 'number' ||
-    typeof data.colorValue !== 'number' ||
-    typeof data.colorChroma !== 'number'
-  ) {
-    return undefined;
-  }
-  const [L, A, B] = mhvcToLab(data.colorHue, data.colorValue, data.colorChroma);
-  return {L, A, B};
-};
-
 export const soilDataToIdInput = (data: SoilData): SoilIdInputData => {
   return {
     depthDependentData: data.depthDependentData.map(
@@ -105,9 +88,18 @@ export const soilDataToIdInput = (data: SoilData): SoilIdInputData => {
 export const soilDepthDependentDataToIdInput = (
   data: DepthDependentSoilData,
 ): SoilIdInputDepthDependentData => {
+  const {colorHue, colorValue, colorChroma} = data;
+  // Send raw Munsell; the backend converts to LAB via its reference table.
+  // Keep the all-three-numbers guard — partial Munsell is meaningless here.
+  const colorMunsellNumeric =
+    typeof colorHue === 'number' &&
+    typeof colorValue === 'number' &&
+    typeof colorChroma === 'number'
+      ? {hue: colorHue, value: colorValue, chroma: colorChroma}
+      : undefined;
   return {
     depthInterval: data.depthInterval,
-    colorLAB: soilDataLabColorInput(data),
+    colorMunsellNumeric,
     rockFragmentVolume: data.rockFragmentVolume,
     texture: data.texture,
   };
