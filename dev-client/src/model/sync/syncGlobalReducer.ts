@@ -175,6 +175,8 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
   });
 
   builder.addCase(pushUserData.rejected, (_state, action) => {
-    console.error('⬆️ push rejected:', action.error);
+    // See pullUserData.rejected above for why action.payload.error is
+    // preferred over action.error.
+    console.error('⬆️ push rejected:', action.payload?.error ?? action.error);
   });
 });
