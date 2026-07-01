@@ -39,7 +39,6 @@ export function DeleteAccountPendingContent({
         i18nKey="delete_account.pending.p1"
         values={{email}}
       />
-      <TranslatedParagraph i18nKey="delete_account.pending.p2" />
     </Column>
   );
 }

@@ -477,8 +477,7 @@
         },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Your account deletion request has been sent.",
-            "p2": "You will receive an email confirmation when your account has been deleted."
+            "p1": "Your account deletion request has been sent."
         }
     },
     "account_deleted": {
