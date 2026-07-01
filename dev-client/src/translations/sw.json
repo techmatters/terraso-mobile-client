@@ -1723,8 +1723,7 @@
         },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Ombi lako la kufuta akaunti limetumwa.",
-            "p2": "Utapokea barua pepe ya uthibitisho akaunti yako itakapofutwa."
+            "p1": "Ombi lako la kufuta akaunti limetumwa."
         }
     },
     "account_deleted": {

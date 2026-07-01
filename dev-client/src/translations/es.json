@@ -1723,8 +1723,7 @@
         },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Tu solicitud de eliminación de cuenta ha sido enviada.",
-            "p2": "Recibirás una confirmación por email una vez que tu cuenta haya sido eliminada."
+            "p1": "Tu solicitud de eliminación de cuenta ha sido enviada."
         }
     },
     "account_deleted": {
