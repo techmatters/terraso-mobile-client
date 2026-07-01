@@ -44,15 +44,11 @@ export function DeleteAccountConfirmContent({
           i18nKeys={[
             'delete_account.confirm.p2.b0',
             'delete_account.confirm.p2.b1',
+            'delete_account.confirm.p2.b2',
           ]}
         />
         <TranslatedParagraph i18nKey="delete_account.confirm.p3" />
-        <TranslatedBulletList
-          i18nKeys={[
-            'delete_account.confirm.p4.b0',
-            'delete_account.confirm.p4.b1',
-          ]}
-        />
+        <TranslatedBulletList i18nKeys={['delete_account.confirm.p4.b0']} />
         <TranslatedParagraph i18nKey="delete_account.confirm.p5" />
       </View>
     </Column>
