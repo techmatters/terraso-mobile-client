@@ -1706,25 +1706,30 @@
         "title": "Eliminar cuenta",
         "confirm": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Se eliminará la cuenta de LandPKS asociada a esta dirección email. Esto elimina:",
+            "p1": "Se eliminarán la cuenta de Terraso y los datos de LandPKS asociados a esta dirección email. Esto incluye:",
             "p2": {
-                "b0": "tus sitios no asociados",
-                "b1": "proyectos de los cuales eres el único administrador, y sus sitios asociados"
+                "b0": "Tus sitios no asociados de LandPKS",
+                "b1": "Tus proyectos de LandPKS que no tienen otros administradores, y sus sitios asociados",
+                "b2": "Tu cuenta de Terraso (incluye grupos, paisajes y mapas de historias)"
             },
             "p3": "Lo siguiente no se borrará:",
             "p4": {
-                "b0": "observaciones que contribuiste a un proyecto del que no eres el único administrador",
-                "b1": "tu cuenta Terraso (incluye grupos, paisajes, y mapas de historias)"
+                "b0": "Observaciones de LandPKS que ingresaste en proyectos con otros administradores"
             },
-            "p5": "<bold>Confirma eliminación ingresando tu dirección de email:</bold>",
+            "p5": "<bold>Escribe la dirección de email de arriba para confirmar la eliminación:</bold>",
             "cancel": "Cancelar",
-            "delete": "Eliminar"
+            "delete": "Eliminar",
+            "error": "El email no coincide"
         },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Tu solicitud ha sido enviada. La cuenta de {{email}} se eliminará dentro de cinco días hábiles.",
+            "p1": "Tu solicitud de eliminación de cuenta ha sido enviada.",
             "p2": "Recibirás una confirmación por email una vez que tu cuenta haya sido eliminada."
         }
+    },
+    "account_deleted": {
+        "title": "Cuenta eliminada",
+        "body": "La cuenta asociada a {{email}} ha sido eliminada. Si esto se hizo por error, contacta a nuestro equipo de soporte."
     },
     "sign_out": {
         "confirm_body": "¿Estás seguro de querer cerrar sesión?",

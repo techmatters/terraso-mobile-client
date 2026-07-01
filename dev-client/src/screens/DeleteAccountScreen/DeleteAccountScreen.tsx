@@ -30,7 +30,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 export function DeleteAccountScreen() {
   const {t} = useTranslation();
-  const {user, isPending, isSaving, requestDeletion} =
+  const {user, isPending, isSaving, isOffline, requestDeletion} =
     useUserDeletionRequests();
 
   return (
@@ -46,6 +46,7 @@ export function DeleteAccountScreen() {
                 <DeleteAccountConfirmForm
                   user={user}
                   isSaving={isSaving}
+                  isOffline={isOffline}
                   onConfirm={requestDeletion}
                 />
               </Column>
