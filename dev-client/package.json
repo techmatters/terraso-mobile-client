@@ -1,6 +1,6 @@
 {
   "name": "terraso-mobile-client",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "private": true,
   "scripts": {
     "android": "npx dotenv -e ~/secrets/terraso-mobile-client/.env -- expo run:android",
