@@ -22,6 +22,7 @@ import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/Rest
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {SessionReplayDebugContent} from 'terraso-mobile-client/components/SessionReplayDebugContent';
 import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponentList';
+import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {CopyAccessTokenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CopyAccessTokenItem';
@@ -36,6 +37,8 @@ import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/co
 import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
 
 export function UserSettingsScreen() {
+  const {isPending} = useUserDeletionRequests();
+
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={null} RightButton={null} />}>
       <RestrictByFlag flag="FF_testing">
@@ -47,14 +50,18 @@ export function UserSettingsScreen() {
         <Column margin="12px">
           <UserIndicator />
           <MenuList>
-            <DataExportItem />
-            <HelpItem />
-            <PrivacyItem />
-            <TosItem />
-            <SelectLanguageItem />
-            <RestrictByFlag flag="FF_testing">
-              <CopyAccessTokenItem />
-            </RestrictByFlag>
+            {!isPending && (
+              <>
+                <DataExportItem />
+                <HelpItem />
+                <PrivacyItem />
+                <TosItem />
+                <SelectLanguageItem />
+                <RestrictByFlag flag="FF_testing">
+                  <CopyAccessTokenItem />
+                </RestrictByFlag>
+              </>
+            )}
             <SignOutItem />
             <DeleteAccountItem />
           </MenuList>
