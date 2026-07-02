@@ -1,0 +1,17 @@
+diff --git a/node_modules/@rnmapbox/maps/ios/RNMBX/RNMBXImageQueue.swift b/node_modules/@rnmapbox/maps/ios/RNMBX/RNMBXImageQueue.swift
+index 0560de2..ca2d772 100644
+--- a/node_modules/@rnmapbox/maps/ios/RNMBX/RNMBXImageQueue.swift
++++ b/node_modules/@rnmapbox/maps/ios/RNMBX/RNMBXImageQueue.swift
+@@ -127,6 +127,12 @@ class RNMBXImageQueue {
+   var imageQueue : OperationQueue = {
+     let result = OperationQueue()
+     result.name = "comp.mapbox.RNMBX.DownloadImageQueue"
++    // Serialize image loads. Each operation resolves a local asset off the main
++    // thread via +[UIImage imageNamed:inBundle:], which reaches into Apple's
++    // non-thread-safe CUICatalog cache. Concurrent operations race on that cache
++    // and corrupt the heap (SIGABRT: "pointer being freed was not allocated").
++    // maxConcurrentOperationCount = 1 removes the race between our own loads.
++    result.maxConcurrentOperationCount = 1
+     return result
+   }()
+   
