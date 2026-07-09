@@ -101,7 +101,7 @@ jobs:
           xcode-version: "26.2"
 
       - name: Build iOS App
-        uses: yukiarrr/ios-build-action@v1.12.0
+        uses: yukiarrr/ios-build-action@v1.13.0
         with:
           project-path: dev-client/ios/LandPKSSoilID.xcodeproj
           p12-base64: ${{ secrets.APPLE_P12_BASE64 }}
