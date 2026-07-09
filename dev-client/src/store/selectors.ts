@@ -189,11 +189,6 @@ export const selectUserRoleSite = createSelector(
       return null;
     }
     const project = projects[site.projectId];
-    // Bug workaround (https://github.com/techmatters/terraso-mobile-client/issues/3314): Project may briefly be undefined if the project row is removed from Redux slightly before its cascaded sites.
-    // TODO: make sure the client deletes the sites
-    if (project === undefined) {
-      return null;
-    }
     const membership = Object.values(project.memberships).find(
       ({userId: projectUserId}) => userId === projectUserId,
     );

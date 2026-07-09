@@ -110,6 +110,13 @@ export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {
   }
 };
 
+export const deleteProjectSettings = (
+  state: Draft<SoilState>,
+  projectId: string,
+) => {
+  delete state.projectSettings[projectId];
+};
+
 const soilDataSlice = createSlice({
   name: 'soilData',
   initialState,

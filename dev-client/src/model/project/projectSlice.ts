@@ -83,10 +83,6 @@ const projectSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(deleteProject.fulfilled, (state, {meta}) => {
-      delete state.projects[meta.arg.id];
-    });
-
     builder.addCase(
       archiveProject.fulfilled,
       (state, {meta, payload: archived}) => {
@@ -109,11 +105,6 @@ const projectSlice = createSlice({
     );
   },
 });
-
-export const deleteProject = createAsyncThunk(
-  'project/deleteProject',
-  projectService.deleteProject,
-);
 
 export const archiveProject = createAsyncThunk(
   'project/archiveProject',
