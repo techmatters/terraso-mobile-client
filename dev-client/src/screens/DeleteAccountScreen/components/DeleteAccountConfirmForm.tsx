@@ -58,7 +58,6 @@ export function DeleteAccountConfirmForm({
         type="email"
         required={true}
         error={isEmailConfirmed ? undefined : t('delete_account.confirm.error')}
-        errorTiming="afterBlur"
       />
       <Row space="8px" alignSelf="flex-end">
         <DialogButton

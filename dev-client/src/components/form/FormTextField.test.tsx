@@ -62,7 +62,7 @@ describe('FormTextField', () => {
     expect(getByDisplayValue('a@b.com')).toBeTruthy();
   });
 
-  test('does not show error before the field is touched (default onTouch)', async () => {
+  test('does not show error before the field is focused (default afterFirstFocus)', async () => {
     const {queryByText} = await renderInFormik(
       {email: ''},
       <FormTextField<EmailForm> name="email" testID="field" />,
@@ -72,7 +72,7 @@ describe('FormTextField', () => {
     expect(queryByText('Required')).toBeNull();
   });
 
-  test('shows error after the field is blurred', async () => {
+  test('shows error after the field is focused (default afterFirstFocus)', async () => {
     const {queryByText, getByTestId} = await renderInFormik(
       {email: ''},
       <FormTextField<EmailForm> name="email" testID="field" />,
@@ -80,7 +80,7 @@ describe('FormTextField', () => {
     );
 
     await act(async () => {
-      fireEvent(getByTestId('field'), 'blur');
+      fireEvent(getByTestId('field'), 'focus');
     });
 
     expect(queryByText('Required')).toBeTruthy();
@@ -132,31 +132,7 @@ describe('FormTextField', () => {
     expect(queryByText('Invalid email')).toBeTruthy();
   });
 
-  test('explicit errorTiming="afterBlur" defers to the derived rule (shows after blur)', async () => {
-    /* Within FormTextField only `'immediate'` is a real override; explicit
-     * `'afterBlur'` falls into the derived branch and behaves like omitting
-     * the prop. Pin that down so a refactor can't silently break the
-     * touched/submit escalation. */
-    const {queryByText, getByTestId} = await renderInFormik(
-      {email: ''},
-      <FormTextField<EmailForm>
-        name="email"
-        testID="field"
-        errorTiming="afterBlur"
-      />,
-      {validate: () => ({email: 'Required'})},
-    );
-
-    expect(queryByText('Required')).toBeNull();
-
-    await act(async () => {
-      fireEvent(getByTestId('field'), 'blur');
-    });
-
-    expect(queryByText('Required')).toBeTruthy();
-  });
-
-  test('explicit errorTiming="afterBlur" still escalates after submit', async () => {
+  test('explicit errorTiming="afterFirstFocus" still escalates after submit', async () => {
     let submitForm: (() => void) | undefined;
     const {queryByText} = render(
       <Formik<EmailForm>
@@ -169,7 +145,7 @@ describe('FormTextField', () => {
             <FormTextField<EmailForm>
               name="email"
               testID="field"
-              errorTiming="afterBlur"
+              errorTiming="afterFirstFocus"
             />
           );
         }}
@@ -186,10 +162,10 @@ describe('FormTextField', () => {
     expect(queryByText('Required')).toBeTruthy();
   });
 
-  test('shows error after submit even when the field was never blurred', async () => {
+  test('shows error after submit even when the field was never focused', async () => {
     /* Regression for the AddTeamMemberForm bug: user types and taps the
-     * submit button without ever blurring. setErrors / yup errors must
-     * surface because submitCount>0 satisfies the touched signal. */
+     * submit button without ever focusing away. setErrors / yup errors must
+     * surface because submitCount>0 forces 'immediate' timing. */
     let submitForm: (() => void) | undefined;
     const {queryByText} = render(
       <Formik<EmailForm>
@@ -250,25 +226,6 @@ describe('FormTextField', () => {
     });
 
     expect(callerHandler).toHaveBeenCalledWith('new');
-  });
-
-  test('layered onBlur runs after Formik setFieldTouched', async () => {
-    const callerHandler = jest.fn();
-
-    const {getByTestId} = await renderInFormik(
-      {email: ''},
-      <FormTextField<EmailForm>
-        name="email"
-        testID="field"
-        onBlur={callerHandler}
-      />,
-    );
-
-    await act(async () => {
-      fireEvent(getByTestId('field'), 'blur');
-    });
-
-    expect(callerHandler).toHaveBeenCalled();
   });
 
   test('forwards display props (label, helperText, required) to TextField', async () => {

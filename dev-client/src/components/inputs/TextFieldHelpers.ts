@@ -23,9 +23,9 @@ import type {TextInputProps as RNTextInputProps} from 'react-native';
 export type TextFieldType = 'text' | 'email' | 'numeric';
 
 /* When TextField surfaces an `error` string:
- *   - 'afterBlur': only after the field has been blurred once (default UX)
- *   - 'immediate': as soon as `error` is set */
-export type ErrorTiming = 'immediate' | 'afterBlur';
+ *   - 'afterFirstFocus': after the user first focuses the field (default UX)
+ *   - 'immediate': as soon as `error` is set (may be on fist viewing) */
+export type ErrorTiming = 'afterFirstFocus' | 'immediate';
 
 export type TypePresetValues = {
   keyboardType: RNTextInputProps['keyboardType'];
@@ -53,13 +53,13 @@ export const TYPE_PRESETS: Record<TextFieldType, TypePresetValues> = {
 
 /* Gate the *display* of an error. Validation runs continuously (so `isValid`
  * stays accurate for submit buttons); this just decides when to surface it.
- * `hasBeenBlurred` is TextField's internal blur tracker; FormTextField forces
+ * `hasBeenFocused` tracks if the field has been focused; FormTextField forces
  * 'immediate' once the form-level signal (touched OR submitCount>0) opens. */
 export const shouldShowError = (
   error: string | undefined,
-  hasBeenBlurred: boolean,
+  hasBeenFocused: boolean,
   errorTiming: ErrorTiming,
 ): boolean => {
   if (!error) return false;
-  return errorTiming === 'immediate' || hasBeenBlurred;
+  return errorTiming === 'immediate' || hasBeenFocused;
 };
