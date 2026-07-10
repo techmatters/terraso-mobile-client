@@ -148,7 +148,7 @@ const TextFieldExamples = () => {
     amount === ''
       ? undefined
       : Number.isNaN(amountNumber) || amountNumber < 100 || amountNumber > 10000
-        ? 'Must be a number between 0 and 10000'
+        ? 'Must be a number between 100 and 10000'
         : undefined;
 
   return (

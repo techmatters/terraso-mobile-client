@@ -34,7 +34,11 @@ export type TypePresetValues = {
 };
 
 /* `type` bundles the keyboard / capitalization / autoComplete trio so callers
- * don't have to set all three for common cases (and so they can't forget one). */
+ * don't have to set all three for common cases (and so they can't forget one).
+ *
+ * FYI: Some iOS devices may not display the same keyboard layout. For example,
+ * 'numeric' displayed a more extensive keyboard on Courtney's ipad
+ */
 export const TYPE_PRESETS: Record<TextFieldType, TypePresetValues> = {
   text: {
     keyboardType: 'default',

@@ -598,7 +598,31 @@ exports[`renders correctly 1`] = `
                                         "paddingLeft": 4,
                                       }
                                     }
-                                  />
+                                  >
+                                    <Text
+                                      collapsable={false}
+                                      maxFontSizeMultiplier={1.5}
+                                      onLayout={[Function]}
+                                      style={
+                                        {
+                                          "color": "rgba(73, 69, 79, 1)",
+                                          "fontFamily": "System",
+                                          "fontSize": 12,
+                                          "fontWeight": "400",
+                                          "letterSpacing": 0.25,
+                                          "lineHeight": 20,
+                                          "opacity": 1,
+                                          "paddingHorizontal": 12,
+                                          "paddingVertical": 4,
+                                          "textAlign": "left",
+                                          "transform": [],
+                                          "writingDirection": "ltr",
+                                        }
+                                      }
+                                    >
+                                      0 / 50 characters
+                                    </Text>
+                                  </View>
                                 </View>
                                 <View
                                   dataSet={{}}
