@@ -24,16 +24,6 @@ import {
 
 /* FormTextField — use instead of TextField when in a Formik form.
  *
- * Reads value / errors / touched / submitCount from the surrounding Formik
- * provider and forwards them to TextField. TextField owns the display rule;
- * we just supply the "touched" signal as touched OR submitCount>0 so post-
- * submit errors surface even when the user never blurred the field.
- *
- * onChangeText / onBlur are LAYERED — they run after Formik has updated
- * its own state for this field, and exist for side effects only (e.g.,
- * updating a linked field). Callers do NOT need to call setFieldValue or
- * handleChange for `name` themselves.
- *
  * For async / backend errors, push them into Formik via setFieldError(name,
  * message) so they flow through the same display channel as Yup errors. */
 
@@ -52,8 +42,9 @@ type StringFieldKeys<TValues> = {
 export type FormTextFieldProps<TValues extends FormikValues> =
   SharedTextFieldProps & {
     name: StringFieldKeys<TValues>;
+
+    // Optional onChangeText runs after FormTextField  has already updated  Formik state for `name` — callers should NOT call setFieldValue(name, ...) themselves.
     onChangeText?: (value: string) => void;
-    onBlur?: () => void;
   };
 
 /* Generic over the surrounding Formik form's values shape. Callers must
@@ -67,7 +58,6 @@ export type FormTextFieldProps<TValues extends FormikValues> =
 export const FormTextField = <TValues extends FormikValues>({
   name,
   onChangeText,
-  onBlur,
   errorTiming,
   ...rest
 }: FormTextFieldProps<TValues>) => {
@@ -85,16 +75,10 @@ export const FormTextField = <TValues extends FormikValues>({
     );
   }
   const error = typeof rawError === 'string' ? rawError : undefined;
-  const isTouched = Boolean(formik.touched[name]);
 
   const handleChangeText = (next: string) => {
     formik.setFieldValue(name, next);
     onChangeText?.(next);
-  };
-
-  const handleBlur = () => {
-    formik.setFieldTouched(name, true);
-    onBlur?.();
   };
 
   return (
@@ -102,20 +86,9 @@ export const FormTextField = <TValues extends FormikValues>({
       {...rest}
       value={(value ?? '') as string}
       onChangeText={handleChangeText}
-      onBlur={handleBlur}
       error={error}
-      /* Timing may be afterBlur or immediate.
-       * With 'afterBlur' (default), we also show errors after form is submitted.
-       * (This is critical for backend errors set via setErrors.)
-       * And 'immediate' is useful when the surrounding form has no blur path
-       * (e.g., single-field edit screens). */
-      errorTiming={
-        errorTiming === 'immediate'
-          ? 'immediate'
-          : isTouched || formik.submitCount > 0
-            ? 'immediate'
-            : 'afterBlur'
-      }
+      /* Generally forms will disable their submit buttons if there are errors. But just in case, mae sure we show errors after form submit. */
+      errorTiming={formik.submitCount > 0 ? 'immediate' : errorTiming}
     />
   );
 };

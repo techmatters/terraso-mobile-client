@@ -26,9 +26,9 @@ describe('shouldShowError', () => {
     expect(shouldShowError('', true, 'immediate')).toBe(false);
   });
 
-  test("'afterBlur' hides error until the field has been blurred", () => {
-    expect(shouldShowError('Required', false, 'afterBlur')).toBe(false);
-    expect(shouldShowError('Required', true, 'afterBlur')).toBe(true);
+  test("'afterFirstFocus' hides error until the field has been focused", () => {
+    expect(shouldShowError('Required', false, 'afterFirstFocus')).toBe(false);
+    expect(shouldShowError('Required', true, 'afterFirstFocus')).toBe(true);
   });
 
   test("'immediate' shows the error regardless of blur state", () => {
