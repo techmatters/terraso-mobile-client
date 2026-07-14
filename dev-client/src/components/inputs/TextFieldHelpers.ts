@@ -22,11 +22,12 @@ import type {TextInputProps as RNTextInputProps} from 'react-native';
 
 export type TextFieldType = 'text' | 'email' | 'numeric';
 
-/* When TextField surfaces an `error` string:
+/* When TextField starts showing `error`.
+ * After the first time, errors are then shown immediately.
  *   - 'afterFirstFocus': after the user first focuses the field (default UX)
  *   - 'immediate': as soon as `error` is set (may be on first viewing).
- *      FormTextField forces 'immediate' after submit so backend errors surface
- *      without focus. */
+ *      FormTextField forces 'immediate' once Formik marks the field touched
+ *      (on focus or on submit) so backend errors surface without focus. */
 export type ErrorTiming = 'afterFirstFocus' | 'immediate';
 
 export type TypePresetValues = {
@@ -59,8 +60,8 @@ export const TYPE_PRESETS: Record<TextFieldType, TypePresetValues> = {
 
 /* Gate the *display* of an error. Validation runs continuously (so `isValid`
  * stays accurate for submit buttons); this just decides when to surface it.
- * FormTextField forces 'immediate' once submitCount>0 so post-submit errors
- * (e.g., backend errors) surface even on fields the user never focused. */
+ * FormTextField forces 'immediate' once Formik marks the field touched so
+ * post-submit errors (e.g., backend errors) surface even without focus. */
 export const shouldShowError = (
   error: string | undefined,
   hasBeenFocused: boolean,
