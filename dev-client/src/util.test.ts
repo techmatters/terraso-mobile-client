@@ -15,7 +15,38 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {isValidCoordinates} from 'terraso-mobile-client/util';
+import {isValidCoordinates, isValidCoords} from 'terraso-mobile-client/util';
+
+describe('isValidCoords', () => {
+  it('accepts finite, in-range coordinates', () => {
+    expect(isValidCoords({latitude: 12.345, longitude: 67.89})).toBe(true);
+    expect(isValidCoords({latitude: 0, longitude: 0})).toBe(true);
+    expect(isValidCoords({latitude: -90, longitude: 180})).toBe(true);
+  });
+
+  it('rejects null', () => {
+    expect(isValidCoords(null)).toBe(false);
+  });
+
+  it('rejects NaN coordinates', () => {
+    expect(isValidCoords({latitude: NaN, longitude: 0})).toBe(false);
+    expect(isValidCoords({latitude: 0, longitude: NaN})).toBe(false);
+  });
+
+  it('rejects undefined coordinates', () => {
+    expect(isValidCoords({latitude: undefined, longitude: 0} as never)).toBe(
+      false,
+    );
+    expect(isValidCoords({latitude: 0, longitude: undefined} as never)).toBe(
+      false,
+    );
+  });
+
+  it('rejects out-of-range coordinates', () => {
+    expect(isValidCoords({latitude: 91, longitude: 0})).toBe(false);
+    expect(isValidCoords({latitude: 0, longitude: 181})).toBe(false);
+  });
+});
 
 describe('isValidCoordinates', () => {
   describe('valid coordinates', () => {

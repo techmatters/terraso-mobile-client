@@ -49,6 +49,7 @@ import {
 } from 'terraso-mobile-client/screens/SitesScreen/SitesScreenCallout';
 import {repositionCamera} from 'terraso-mobile-client/screens/SitesScreen/utils/repositionCamera';
 import {siteFeatureCollection} from 'terraso-mobile-client/screens/SitesScreen/utils/siteFeatureCollection';
+import {isValidCoords} from 'terraso-mobile-client/util';
 
 // Extract OnPressEvent type from ShapeSource's onPress prop
 type OnPressEvent =
@@ -94,6 +95,12 @@ export const SiteMap = memo(
 
       useImperativeHandle(forwardedRef, () => ({
         moveToPoint: (coords: Coords) => {
+          // Non-finite coordinates make Mapbox's native setCamera throw
+          // "coordinates must contain numbers", which crashes the app. Guard
+          // here so every caller (initial camera, search, site pins) is safe.
+          if (!isValidCoords(coords)) {
+            return;
+          }
           cameraRef.current?.setCamera({
             centerCoordinate: coordsToPosition(coords),
             zoomLevel: STARTING_ZOOM_LEVEL,

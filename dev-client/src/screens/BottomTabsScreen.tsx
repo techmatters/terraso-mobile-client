@@ -33,6 +33,7 @@ import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen
 import {SitesScreen} from 'terraso-mobile-client/screens/SitesScreen/SitesScreen';
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 import {useDispatch} from 'terraso-mobile-client/store';
+import {isValidCoords} from 'terraso-mobile-client/util';
 
 export const BottomTabsScreen = memo(() => {
   const dispatch = useDispatch();
@@ -56,7 +57,10 @@ export const BottomTabsScreen = memo(() => {
       locationManager
         .getLastKnownLocation()
         .then(initCoords => {
-          if (initCoords !== null) {
+          // Reject non-finite coordinates so invalid GPS never enters the
+          // store and reaches Mapbox's native setCamera (which crashes on
+          // non-numeric coordinates).
+          if (initCoords !== null && isValidCoords(initCoords.coords)) {
             dispatch(
               updateLocation({
                 coords: initCoords.coords,
@@ -71,6 +75,9 @@ export const BottomTabsScreen = memo(() => {
 
       // add listener to update location on user movement
       const listener = ({coords}: Location) => {
+        if (!isValidCoords(coords)) {
+          return;
+        }
         dispatch(
           updateLocation({
             coords: coords,
