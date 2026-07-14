@@ -107,10 +107,6 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
       setHasBeenFocused(true);
     };
 
-    const handleBlur = () => {
-      setIsFocused(false);
-    };
-
     let errorToShow = error;
     if (!error && required && !value) {
       errorToShow = t('general.required');
@@ -145,7 +141,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           value={value}
           onChangeText={onChangeText}
           onFocus={handleFocus}
-          onBlur={handleBlur}
+          onBlur={() => setIsFocused(false)}
           error={showError}
           multiline={multiline}
           maxLength={maxLength}

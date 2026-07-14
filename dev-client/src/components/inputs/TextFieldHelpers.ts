@@ -24,7 +24,9 @@ export type TextFieldType = 'text' | 'email' | 'numeric';
 
 /* When TextField surfaces an `error` string:
  *   - 'afterFirstFocus': after the user first focuses the field (default UX)
- *   - 'immediate': as soon as `error` is set (may be on fist viewing) */
+ *   - 'immediate': as soon as `error` is set (may be on first viewing).
+ *      FormTextField forces 'immediate' after submit so backend errors surface
+ *      without focus. */
 export type ErrorTiming = 'afterFirstFocus' | 'immediate';
 
 export type TypePresetValues = {
@@ -57,8 +59,8 @@ export const TYPE_PRESETS: Record<TextFieldType, TypePresetValues> = {
 
 /* Gate the *display* of an error. Validation runs continuously (so `isValid`
  * stays accurate for submit buttons); this just decides when to surface it.
- * `hasBeenFocused` tracks if the field has been focused; FormTextField forces
- * 'immediate' once the form-level signal (touched OR submitCount>0) opens. */
+ * FormTextField forces 'immediate' once submitCount>0 so post-submit errors
+ * (e.g., backend errors) surface even on fields the user never focused. */
 export const shouldShowError = (
   error: string | undefined,
   hasBeenFocused: boolean,

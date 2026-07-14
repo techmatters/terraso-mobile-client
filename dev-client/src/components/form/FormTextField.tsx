@@ -43,7 +43,7 @@ export type FormTextFieldProps<TValues extends FormikValues> =
   SharedTextFieldProps & {
     name: StringFieldKeys<TValues>;
 
-    // Optional onChangeText runs after FormTextField  has already updated  Formik state for `name` — callers should NOT call setFieldValue(name, ...) themselves.
+    // Optional onChangeText runs after FormTextField has already updated Formik state for `name` — callers should NOT call setFieldValue(name, ...) themselves.
     onChangeText?: (value: string) => void;
   };
 
@@ -87,7 +87,7 @@ export const FormTextField = <TValues extends FormikValues>({
       value={(value ?? '') as string}
       onChangeText={handleChangeText}
       error={error}
-      /* Generally forms will disable their submit buttons if there are errors. But just in case, mae sure we show errors after form submit. */
+      /* Forms usually disable submit while invalid, but if a submit does happen (e.g., backend error set via setFieldError), force errors visible regardless of focus state. */
       errorTiming={formik.submitCount > 0 ? 'immediate' : errorTiming}
     />
   );
