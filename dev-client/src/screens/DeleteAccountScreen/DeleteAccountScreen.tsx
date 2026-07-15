@@ -21,6 +21,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {ScreenBackButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenBackButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest.ts';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {DeleteAccountConfirmContent} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountConfirmContent';
@@ -30,8 +31,9 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 export function DeleteAccountScreen() {
   const {t} = useTranslation();
-  const {user, isPending, isSaving, isOffline, requestDeletion} =
+  const {user, isPending, isSaving, requestDeletion} =
     useUserDeletionRequests();
+  const isOffline = useIsOffline();
 
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenBackButton />} />}>

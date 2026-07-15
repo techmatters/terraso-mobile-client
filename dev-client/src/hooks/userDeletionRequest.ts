@@ -24,7 +24,6 @@ import {
   signOut,
 } from 'terraso-client-shared/account/accountSlice';
 
-import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
 
@@ -50,7 +49,6 @@ import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
 export const useUserDeletionRequests = () => {
   const dispatch = useDispatch();
   const {data: user} = useSelector(state => state.account.currentUser);
-  const isOffline = useIsOffline();
   const [isSaving, setIsSaving] = useState(false);
   const isPending = isAccountDeletionPending(user);
 
@@ -71,5 +69,5 @@ export const useUserDeletionRequests = () => {
     }
   }, [dispatch, user]);
 
-  return {user, isPending, requestDeletion, isSaving, isOffline};
+  return {user, isPending, requestDeletion, isSaving};
 };

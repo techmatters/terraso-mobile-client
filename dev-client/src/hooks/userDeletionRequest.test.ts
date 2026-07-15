@@ -23,7 +23,6 @@ import {
   signOut,
 } from 'terraso-client-shared/account/accountSlice';
 
-import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
@@ -33,12 +32,11 @@ jest.mock('terraso-mobile-client/store', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('terraso-mobile-client/hooks/connectivityHooks', () => ({
-  useIsOffline: jest.fn(() => false),
-}));
-
 jest.mock('terraso-client-shared/account/accountSlice', () => ({
   deleteUserAccount: jest.fn(),
+  isAccountDeletionPending: jest.fn(
+    user => user?.preferences?.account_deletion_request === 'true',
+  ),
   setAccountDeletedEmail: jest.fn(input => ({
     type: 'setEmail',
     payload: input,
@@ -52,7 +50,6 @@ jest.mock('terraso-mobile-client/store/logoutActions', () => ({
 
 const mockUseDispatch = useDispatch as jest.Mock;
 const mockUseSelector = useSelector as jest.Mock;
-const mockUseIsOffline = useIsOffline as jest.Mock;
 const mockDeleteUserAccount = deleteUserAccount as unknown as jest.Mock;
 
 const aUser = {
@@ -76,7 +73,6 @@ describe('useUserDeletionRequests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseDispatch.mockReturnValue(dispatch);
-    mockUseIsOffline.mockReturnValue(false);
   });
 
   it('exposes the current user and pending=false when the pref is unset', () => {
@@ -90,13 +86,6 @@ describe('useUserDeletionRequests', () => {
     mockState({...aUser, preferences: {account_deletion_request: 'true'}});
     const {result} = renderHook(() => useUserDeletionRequests());
     expect(result.current.isPending).toBe(true);
-  });
-
-  it('reflects connectivity state in isOffline', () => {
-    mockState(aUser);
-    mockUseIsOffline.mockReturnValue(true);
-    const {result} = renderHook(() => useUserDeletionRequests());
-    expect(result.current.isOffline).toBe(true);
   });
 
   it('on clean delete: dispatches userLoggedOut, signOut, setAccountDeletedEmail in order', async () => {
