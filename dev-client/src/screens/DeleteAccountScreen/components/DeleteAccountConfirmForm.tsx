@@ -46,9 +46,6 @@ export function DeleteAccountConfirmForm({
   const [value, setValue] = useState('');
   const isEmailConfirmed = email === value;
 
-  // Mutations aren't safe to queue offline (the request might double-fire
-  // when connectivity returns), so we disable Delete entirely when offline
-  // rather than letting the request fail later with a generic error toast.
   return (
     <Column space="24px">
       <TextField
@@ -58,7 +55,6 @@ export function DeleteAccountConfirmForm({
         type="email"
         required={true}
         error={isEmailConfirmed ? undefined : t('delete_account.confirm.error')}
-        errorTiming="afterBlur"
       />
       <Row space="8px" alignSelf="flex-end">
         <DialogButton
