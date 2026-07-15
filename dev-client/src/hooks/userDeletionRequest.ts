@@ -19,6 +19,7 @@ import {useCallback, useState} from 'react';
 
 import {
   deleteUserAccount,
+  isAccountDeletionPending,
   setAccountDeletedEmail,
   signOut,
 } from 'terraso-client-shared/account/accountSlice';
@@ -26,9 +27,6 @@ import {
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
-
-const PREFERENCES_KEY = 'account_deletion_request';
-const PREFERENCES_VALUE = 'true';
 
 /**
  * Hook backing the DeleteAccountScreen flow.
@@ -54,7 +52,7 @@ export const useUserDeletionRequests = () => {
   const {data: user} = useSelector(state => state.account.currentUser);
   const isOffline = useIsOffline();
   const [isSaving, setIsSaving] = useState(false);
-  const isPending = user?.preferences[PREFERENCES_KEY] === PREFERENCES_VALUE;
+  const isPending = isAccountDeletionPending(user);
 
   const requestDeletion = useCallback(async () => {
     if (!user) return;
