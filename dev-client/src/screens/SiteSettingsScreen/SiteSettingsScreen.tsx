@@ -126,9 +126,6 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                   placeholder={t('site.create.name_label')}
                   required
                   showCounter
-                  /* Screen has no blur path (single field, only buttons
-                   * elsewhere), so afterBlur would never escalate. */
-                  errorTiming="immediate"
                 />
                 <View mt={4} alignItems="flex-end">
                   <ContainedButton

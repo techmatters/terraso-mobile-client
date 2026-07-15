@@ -53,10 +53,7 @@ export type SharedTextFieldProps = {
   readOnly?: boolean;
   required?: boolean;
   helperText?: string;
-  /* When to surface `error`.
-   * Defaults to 'afterBlur'. Single-field forms often want 'immediate'.
-   * FormTextField passes 'immediate' once Formik's touched/submitCount opens
-   * the gate, so backend errors after submit-without-blur still display. */
+  // When to surface `error` to user
   errorTiming?: ErrorTiming;
 
   style?: RNPTextInputProps['style'];
@@ -69,7 +66,6 @@ export type SharedTextFieldProps = {
 export type ControlledStateProps = {
   value: string;
   onChangeText?: (value: string) => void;
-  onBlur?: () => void;
   // Parent decides which error string to surface; TextField only decides timing.
   error?: string;
 };
@@ -93,9 +89,8 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
       maxLength,
       value = '',
       onChangeText,
-      onBlur,
       error,
-      errorTiming = 'afterBlur',
+      errorTiming = 'afterFirstFocus',
     },
     ref,
   ) => {
@@ -105,23 +100,18 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
     /* Focus state tracked locally because Paper's TextInput doesn't expose a
      * focus signal to consumers. */
     const [isFocused, setIsFocused] = useState(false);
+    const [hasBeenFocused, setHasBeenFocused] = useState(false);
 
-    /* Used only when errorTiming === 'afterBlur'.
-     * Doesn't reset on subsequent focus — once blurred, always blurred. */
-    const [hasBeenBlurred, setHasBeenBlurred] = useState(false);
-
-    const handleFocus = () => setIsFocused(true);
-    const handleBlur = () => {
-      setIsFocused(false);
-      setHasBeenBlurred(true);
-      onBlur?.();
+    const handleFocus = () => {
+      setIsFocused(true);
+      setHasBeenFocused(true);
     };
 
     let errorToShow = error;
     if (!error && required && !value) {
       errorToShow = t('general.required');
     }
-    const showError = shouldShowError(errorToShow, hasBeenBlurred, errorTiming);
+    const showError = shouldShowError(errorToShow, hasBeenFocused, errorTiming);
 
     /* Asterisk rides along with the floating label so it's positioned
      * consistently whether the field is empty (label sits in the input) or
@@ -151,7 +141,7 @@ export const TextField = forwardRef<RNTextInput, TextFieldProps>(
           value={value}
           onChangeText={onChangeText}
           onFocus={handleFocus}
-          onBlur={handleBlur}
+          onBlur={() => setIsFocused(false)}
           error={showError}
           multiline={multiline}
           maxLength={maxLength}

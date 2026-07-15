@@ -22,10 +22,13 @@ import type {TextInputProps as RNTextInputProps} from 'react-native';
 
 export type TextFieldType = 'text' | 'email' | 'numeric';
 
-/* When TextField surfaces an `error` string:
- *   - 'afterBlur': only after the field has been blurred once (default UX)
- *   - 'immediate': as soon as `error` is set */
-export type ErrorTiming = 'immediate' | 'afterBlur';
+/* When TextField starts showing `error`.
+ * After the first time, errors are then shown immediately.
+ *   - 'afterFirstFocus': after the user first focuses the field (default UX)
+ *   - 'immediate': as soon as `error` is set (may be on first viewing).
+ *      FormTextField forces 'immediate' once Formik marks the field touched
+ *      (on focus or on submit) so backend errors surface without focus. */
+export type ErrorTiming = 'afterFirstFocus' | 'immediate';
 
 export type TypePresetValues = {
   keyboardType: RNTextInputProps['keyboardType'];
@@ -34,7 +37,11 @@ export type TypePresetValues = {
 };
 
 /* `type` bundles the keyboard / capitalization / autoComplete trio so callers
- * don't have to set all three for common cases (and so they can't forget one). */
+ * don't have to set all three for common cases (and so they can't forget one).
+ *
+ * FYI: Some iOS devices may not display the same keyboard layout. For example,
+ * 'numeric' displayed a more extensive keyboard on Courtney's ipad
+ */
 export const TYPE_PRESETS: Record<TextFieldType, TypePresetValues> = {
   text: {
     keyboardType: 'default',
@@ -53,13 +60,13 @@ export const TYPE_PRESETS: Record<TextFieldType, TypePresetValues> = {
 
 /* Gate the *display* of an error. Validation runs continuously (so `isValid`
  * stays accurate for submit buttons); this just decides when to surface it.
- * `hasBeenBlurred` is TextField's internal blur tracker; FormTextField forces
- * 'immediate' once the form-level signal (touched OR submitCount>0) opens. */
+ * FormTextField forces 'immediate' once Formik marks the field touched so
+ * post-submit errors (e.g., backend errors) surface even without focus. */
 export const shouldShowError = (
   error: string | undefined,
-  hasBeenBlurred: boolean,
+  hasBeenFocused: boolean,
   errorTiming: ErrorTiming,
 ): boolean => {
   if (!error) return false;
-  return errorTiming === 'immediate' || hasBeenBlurred;
+  return errorTiming === 'immediate' || hasBeenFocused;
 };

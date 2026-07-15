@@ -47,22 +47,6 @@ describe('TextField', () => {
     expect(onChangeText).toHaveBeenCalledWith('new text');
   });
 
-  test('calls onBlur when the input loses focus', () => {
-    const onBlur = jest.fn();
-
-    const {getByTestId} = render(
-      <TextField
-        value=""
-        onChangeText={() => {}}
-        onBlur={onBlur}
-        testID="field"
-      />,
-    );
-    fireEvent(getByTestId('field'), 'blur');
-
-    expect(onBlur).toHaveBeenCalled();
-  });
-
   test('appends asterisk to the label when required', () => {
     /* Paper renders the label in two animated nodes (active + inactive); we
      * tolerate either via getAllByText with a regex. */
@@ -114,7 +98,7 @@ describe('TextField', () => {
     expect(queryByText('We never share it')).toBeTruthy();
   });
 
-  test('shows error and hides helper text once the field has been blurred', () => {
+  test('shows error and hides helper text once the field has been focused', () => {
     const {queryByText, getByTestId} = render(
       <TextField
         value=""
@@ -125,13 +109,13 @@ describe('TextField', () => {
       />,
     );
 
-    fireEvent(getByTestId('field'), 'blur');
+    fireEvent(getByTestId('field'), 'focus');
 
     expect(queryByText('An error!')).toBeTruthy();
     expect(queryByText('We never share it')).toBeNull();
   });
 
-  test('hides error until the field has been blurred', () => {
+  test('hides error until the field has been focused', () => {
     const {queryByText, getByTestId} = render(
       <TextField
         value=""
@@ -143,12 +127,12 @@ describe('TextField', () => {
 
     expect(queryByText('An error!')).toBeNull();
 
-    fireEvent(getByTestId('field'), 'blur');
+    fireEvent(getByTestId('field'), 'focus');
 
     expect(queryByText('An error!')).toBeTruthy();
   });
 
-  test('shows "Required" error for a required field with empty value once blurred', () => {
+  test('shows "Required" error for a required field with empty value once focused', () => {
     const {queryByText, getByTestId} = render(
       <TextField
         value=""
@@ -161,14 +145,14 @@ describe('TextField', () => {
 
     expect(queryByText('Required')).toBeNull();
 
-    fireEvent(getByTestId('field'), 'blur');
+    fireEvent(getByTestId('field'), 'focus');
 
     expect(queryByText('Required')).toBeTruthy();
   });
 
-  test('shows error without a blur when errorTiming="immediate"', () => {
+  test('shows error without a focus when errorTiming="immediate"', () => {
     /* Mirrors the FormTextField post-submit case: parent forces immediate
-     * display so a backend error surfaces even if the user never blurred. */
+     * display so a backend error surfaces even if the user never focused. */
     const {queryByText} = render(
       <TextField
         value=""
@@ -256,7 +240,7 @@ describe('TextField', () => {
       />,
     );
 
-    fireEvent(getByTestId('field'), 'blur');
+    fireEvent(getByTestId('field'), 'focus');
 
     expect(queryByText('An error!')).toBeNull();
     expect(queryByText('We never share it')).toBeNull();

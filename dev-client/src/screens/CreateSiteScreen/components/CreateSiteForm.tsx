@@ -88,6 +88,7 @@ export const CreateSiteForm = ({
             placeholder={t('site.create.name_label')}
             label={t('site.create.name_label')}
             required
+            showCounter
           />
 
           <FormLabel>{t('site.create.location_label')}</FormLabel>

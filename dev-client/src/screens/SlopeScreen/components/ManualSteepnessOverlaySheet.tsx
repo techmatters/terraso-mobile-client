@@ -78,7 +78,7 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
           .number()
           .nullable()
           .optional()
-          .typeError(t('slope.steepness.percentage_help'))
+          .typeError(t('slope.steepness.degree_help'))
           .min(0, t('slope.steepness.degree_help'))
           .max(89, t('slope.steepness.degree_help')),
       }),
