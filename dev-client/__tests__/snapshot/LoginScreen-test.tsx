@@ -38,6 +38,7 @@ test('renders correctly', () => {
           data: null,
           fetching: false,
         },
+        accountDeletedEmail: null,
       } as any,
     },
   }).toJSON();

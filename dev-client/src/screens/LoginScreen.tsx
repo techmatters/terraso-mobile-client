@@ -154,10 +154,12 @@ export const LoginScreen = () => {
         styles.safeAreaContainer,
         {backgroundColor: theme.colors.primary.main},
       ]}>
-      <AccountDeletedDialog
-        email={accountDeletedEmail}
-        onDismiss={dismissAccountDeleted}
-      />
+      {accountDeletedEmail && (
+        <AccountDeletedDialog
+          email={accountDeletedEmail}
+          onDismiss={dismissAccountDeleted}
+        />
+      )}
       <Column
         testID="login-screen"
         height="full"

@@ -32,40 +32,45 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 
 type Props = {
-  /** Email of the just-deleted account; when non-null the dialog opens. */
-  email: string | null;
-  /** Called when the user dismisses; clears the email so the dialog stays
-   * dismissed even if LoginScreen re-renders. */
+  /** Email of the just-deleted account. Mount the dialog iff this is set;
+   * the dialog opens itself and calls `onDismiss` after the close animation. */
+  email: string;
+  /** Called after the modal's close animation finishes. Parent should clear
+   * the email so the dialog unmounts and doesn't re-appear on re-render. */
   onDismiss: () => void;
 };
 
 /**
  * Shown on the login screen right after a clean self-delete (no blockers).
- * Opens itself when `email` flips from null to a string.
+ * Only mounted while there's an email to show (parent gates on that), so
+ * it can just open on mount and dismiss via Modal's post-close hook.
  */
 export function AccountDeletedDialog({email, onDismiss}: Props) {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
+  // Modal fires `closeHook` on every `isOpen === false`, including the
+  // initial mount render before our onOpen runs. Guard so `onDismiss`
+  // only fires after the modal has actually opened.
+  const hasOpened = useRef(false);
 
   useEffect(() => {
-    if (email !== null) {
-      ref.current?.onOpen();
-    }
-  }, [email]);
+    ref.current?.onOpen();
+    hasOpened.current = true;
+  }, []);
 
-  const handleClose = useCallback(() => {
-    ref.current?.onClose();
-    onDismiss();
+  const handleAfterClose = useCallback(() => {
+    if (hasOpened.current) onDismiss();
   }, [onDismiss]);
 
   return (
     <Modal
       ref={ref}
+      closeHook={handleAfterClose}
       Header={<Heading variant="h5">{t('account_deleted.title')}</Heading>}
       Closer={null}>
       <Column space="24px">
         <Text variant="body1" alignSelf="flex-start">
-          {t('account_deleted.body', {email: email ?? ''})}
+          {t('account_deleted.body', {email})}
         </Text>
         <Row space="8px" alignSelf="flex-end" alignItems="center">
           <ExternalLink
@@ -75,7 +80,7 @@ export function AccountDeletedDialog({email, onDismiss}: Props) {
           <DialogButton
             label={t('general.dismiss')}
             type="outlined"
-            onPress={handleClose}
+            onPress={() => ref.current?.onClose()}
           />
         </Row>
       </Column>
