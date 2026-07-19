@@ -376,7 +376,8 @@
         "email_label": "Adresse email",
         "filter": {
             "no_role": "Aucun",
-            "no_project": "Aucun"
+            "no_project": "Aucun",
+            "unaffiliated": "Non affilié (sans projet)"
         },
         "nullable_option": "Aucun",
         "info": {

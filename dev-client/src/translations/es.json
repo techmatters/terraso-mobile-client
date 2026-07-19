@@ -376,7 +376,8 @@
         "email_label": "Dirección de email",
         "filter": {
             "no_role": "Ninguno",
-            "no_project": "Ninguno"
+            "no_project": "Ninguno",
+            "unaffiliated": "Sin afiliación (sin proyecto)"
         },
         "nullable_option": "Ninguno",
         "info": {
