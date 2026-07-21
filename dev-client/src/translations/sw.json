@@ -1706,25 +1706,29 @@
         "title": "Futa Akaunti",
         "confirm": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Akaunti ya LandPKS inayohusiana na anwani hii ya barua pepe itafutwa. Hii huondoa:",
+            "p1": "Akaunti ya Terraso na data ya LandPKS zinazohusiana na anwani hii ya barua pepe zitafutwa. Hii inajumuisha:",
             "p2": {
-                "b0": "maeneo yako yasiyohusiana",
-                "b1": "miradi ambayo wewe ndiye msimamizi pekee, na maeneo yao yanayohusiana nayo"
+                "b0": "Maeneo yako ya LandPKS yasiyohusiana",
+                "b1": "Miradi yako ya LandPKS isiyo na wasimamizi wengine, na maeneo yao yanayohusiana nayo",
+                "b2": "Akaunti yako ya Terraso (ikiwa ni pamoja na vikundi, mandhari, na ramani za hadithi)"
             },
             "p3": "Yafuatayo hayatafutwa:",
             "p4": {
-                "b0": "uchunguzi uliochangia katika mradi ambao wewe si meneja pekee",
-                "b1": "akaunti yako ya Terraso (ikiwa ni pamoja na vikundi, mandhari, na ramani za hadithi)"
+                "b0": "Uchunguzi wa LandPKS uliouingiza katika miradi yenye wasimamizi wengine"
             },
-            "p5": "<bold>Andika anwani yako ya barua pepe ili kuthibitisha kufutwa:</bold>",
+            "p5": "<bold>Andika anwani ya barua pepe iliyo hapo juu ili kuthibitisha kufutwa:</bold>",
             "cancel": "Ghairi",
-            "delete": "Futa"
+            "delete": "Futa",
+            "error": "Barua pepe hazilingani"
         },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Ombi lako la kufuta akaunti limetumwa. Akaunti ya {{email}} itafutwa ndani ya siku tano za kazi.",
-            "p2": "Utapokea barua pepe ya uthibitisho akaunti yako itakapofutwa."
+            "p1": "Ombi lako la kufuta akaunti limetumwa."
         }
+    },
+    "account_deleted": {
+        "title": "Akaunti imefutwa",
+        "body": "Akaunti inayohusiana na {{email}} imefutwa. Ikiwa hii ilifanywa kwa makosa, wasiliana na timu yetu ya usaidizi."
     },
     "sign_out": {
         "confirm_body": "Una uhakika unataka kutoka?",

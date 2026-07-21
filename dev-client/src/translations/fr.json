@@ -414,7 +414,6 @@
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Conditions d'utilisation",
         "read_only": "Lecture seule"
-
     },
     "errors": {
         "sync_conflict": {
@@ -1707,25 +1706,29 @@
         "title": "Supprimer le compte",
         "confirm": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Le compte LandPKS associé à cette adresse e-mail sera supprimé. Ceci supprime :",
+            "p1": "Le compte Terraso et les données LandPKS associés à cette adresse e-mail seront supprimés. Ceci inclut :",
             "p2": {
-                "b0": "vos sites non affiliés",
-                "b1": "projets dont vous êtes le seul gestionnaire, et leurs sites affiliés"
+                "b0": "Vos sites LandPKS non affiliés",
+                "b1": "Vos projets LandPKS sans autres gestionnaires, et leurs sites affiliés",
+                "b2": "Votre compte Terraso (y compris les groupes, les paysages et les cartes narratives)"
             },
             "p3": "Les éléments suivants ne seront pas supprimés :",
             "p4": {
-                "b0": "observations que vous avez apportées à un projet dont vous n'êtes pas le seul responsable",
-                "b1": "votre compte Terraso (y compris les groupes, les paysages et les cartes narratives)"
+                "b0": "Les observations LandPKS que vous avez saisies dans des projets avec d'autres gestionnaires"
             },
-            "p5": "<bold>Saisissez votre adresse e-mail pour confirmer la suppression :</bold>",
+            "p5": "<bold>Saisissez l'adresse e-mail ci-dessus pour confirmer la suppression :</bold>",
             "cancel": "Annuler",
-            "delete": "Supprimer"
+            "delete": "Supprimer",
+            "error": "L'e-mail ne correspond pas"
         },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
-            "p1": "Votre demande de suppression de compte a été envoyée. Le compte de {{email}} sera supprimé sous cinq jours ouvrés.",
-            "p2": "Vous recevrez un e-mail de confirmation lorsque votre compte aura été supprimé."
+            "p1": "Votre demande de suppression de compte a été envoyée."
         }
+    },
+    "account_deleted": {
+        "title": "Compte supprimé",
+        "body": "Le compte associé à {{email}} a été supprimé. Si cela a été fait par erreur, contactez notre équipe d'assistance."
     },
     "sign_out": {
         "confirm_body": "Êtes-vous sûr de vouloir vous déconnecter ?",

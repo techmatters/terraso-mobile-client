@@ -30,13 +30,17 @@ import {
 import {Button} from 'native-base';
 import {usePostHog} from 'posthog-react-native';
 
-import {setHasToken} from 'terraso-client-shared/account/accountSlice';
+import {
+  clearAccountDeletedEmail,
+  setHasToken,
+} from 'terraso-client-shared/account/accountSlice';
 import GoogleLogo from 'terraso-client-shared/assets/google.svg';
 import MicrosoftLogo from 'terraso-client-shared/assets/microsoft.svg';
 
 import LandPKSLogo from 'terraso-mobile-client/assets/landpks-logo.svg';
 import TerrasoLogo from 'terraso-mobile-client/assets/terraso-logo.svg';
 import {auth, AuthProvider} from 'terraso-mobile-client/auth';
+import {AccountDeletedDialog} from 'terraso-mobile-client/components/dialogs/AccountDeletedDialog';
 import {
   Box,
   Column,
@@ -98,6 +102,9 @@ export const LoginScreen = () => {
   const loggedIn = useSelector(
     state => state.account.currentUser.data !== null,
   );
+  const accountDeletedEmail = useSelector(
+    state => state.account.accountDeletedEmail,
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   // note: we intentionally run this on every render,
@@ -129,6 +136,11 @@ export const LoginScreen = () => {
 
   const isOffline = useIsOffline();
 
+  const dismissAccountDeleted = useCallback(
+    () => dispatch(clearAccountDeletedEmail()),
+    [dispatch],
+  );
+
   useEffect(() => {
     if (loggedIn) {
       navigation.replace('BOTTOM_TABS');
@@ -142,6 +154,12 @@ export const LoginScreen = () => {
         styles.safeAreaContainer,
         {backgroundColor: theme.colors.primary.main},
       ]}>
+      {accountDeletedEmail && (
+        <AccountDeletedDialog
+          email={accountDeletedEmail}
+          onDismiss={dismissAccountDeleted}
+        />
+      )}
       <Column
         testID="login-screen"
         height="full"
