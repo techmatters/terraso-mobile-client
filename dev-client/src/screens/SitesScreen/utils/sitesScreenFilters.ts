@@ -72,7 +72,7 @@ export const getSitesScreenFilters = (
       kind: 'filter',
       f: (val: string) => (comp: string | undefined) =>
         val === UNAFFILIATED_PROJECT_FILTER_VALUE
-          ? comp === undefined || comp === 'undefined'
+          ? comp === 'undefined'
           : val === comp,
       lookup: {
         key: 'projectId',
