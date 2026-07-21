@@ -376,7 +376,8 @@
         "email_label": "Anwani ya barua pepe",
         "filter": {
             "no_role": "Hakuna",
-            "no_project": "Hakuna"
+            "no_project": "Hakuna",
+            "unaffiliated": "Unaffiliated (no project)"
         },
         "nullable_option": "Hakuna",
         "info": {

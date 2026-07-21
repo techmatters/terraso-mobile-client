@@ -25,6 +25,7 @@ import {
   SelectFilter,
   TextInputFilter,
 } from 'terraso-mobile-client/components/ListFilter';
+import {UNAFFILIATED_PROJECT_FILTER_VALUE} from 'terraso-mobile-client/screens/SitesScreen/utils/sitesScreenFilters';
 import {useSelector} from 'terraso-mobile-client/store';
 
 type Props = {
@@ -62,10 +63,16 @@ export const SiteFilterModal = ({useDistance}: Props) => {
   );
 
   const projects = useSelector(state => state.project.projects);
-  const projectIds = useMemo(() => Object.keys(projects), [projects]);
-  const renderProject = useCallback(
-    (id: string) => projects[id].name,
+  const projectIds = useMemo(
+    () => [UNAFFILIATED_PROJECT_FILTER_VALUE, ...Object.keys(projects)],
     [projects],
+  );
+  const renderProject = useCallback(
+    (id: string) =>
+      id === UNAFFILIATED_PROJECT_FILTER_VALUE
+        ? t('general.filter.unaffiliated')
+        : projects[id].name,
+    [projects, t],
   );
   const projectKey = useCallback((id: string) => id, []);
 

@@ -376,7 +376,8 @@
         "email_label": "ელექტრონული ფოსტის მისამართი",
         "filter": {
             "no_role": "არცერთი",
-            "no_project": "არცერთი"
+            "no_project": "არცერთი",
+            "unaffiliated": "Unaffiliated (no project)"
         },
         "nullable_option": "არცერთი",
         "info": {

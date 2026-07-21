@@ -376,7 +376,8 @@
         "email_label": "Адреса електронної пошти",
         "filter": {
             "no_role": "Немає",
-            "no_project": "Немає"
+            "no_project": "Немає",
+            "unaffiliated": "Unaffiliated (no project)"
         },
         "nullable_option": "Немає",
         "info": {

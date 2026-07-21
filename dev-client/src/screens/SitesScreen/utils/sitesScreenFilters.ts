@@ -22,6 +22,12 @@ import {normalizeText} from 'terraso-client-shared/utils';
 import {SortingOption} from 'terraso-mobile-client/components/ListFilter';
 import {equals, searchText} from 'terraso-mobile-client/util';
 
+// Sentinel filter value for the "Unaffiliated (no project)" option in the
+// project filter. Sites without a project have `projectId === undefined`,
+// which ListFilter's default lookup stringifies to "undefined" — the custom
+// filter function below matches on that.
+export const UNAFFILIATED_PROJECT_FILTER_VALUE = '__unaffiliated__';
+
 export const getSitesScreenFilters = (
   siteDistances: Record<string, number> | null,
   siteProjectRoles: {
@@ -64,7 +70,10 @@ export const getSitesScreenFilters = (
     },
     project: {
       kind: 'filter',
-      f: equals,
+      f: (val: string) => (comp: string | undefined) =>
+        val === UNAFFILIATED_PROJECT_FILTER_VALUE
+          ? comp === 'undefined'
+          : val === comp,
       lookup: {
         key: 'projectId',
       },

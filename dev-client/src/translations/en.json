@@ -383,7 +383,8 @@
         "close": "Close",
         "filter": {
             "no_role": "None",
-            "no_project": "None"
+            "no_project": "None",
+            "unaffiliated": "Unaffiliated (no project)"
         },
         "nullable_option": "None",
         "info": {
