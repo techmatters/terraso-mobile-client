@@ -51,6 +51,7 @@ export type SoilState = {
   soilData: Record<string, SoilData | undefined>;
   soilSync: SyncRecords<SoilData, SoilDataPushFailureReason>;
 
+  // Indexed by project ID
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
   status: LoadingState;
 };

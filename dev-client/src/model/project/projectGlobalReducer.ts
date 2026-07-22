@@ -88,12 +88,14 @@ export const projectGlobalReducer = createGlobalReducer(builder => {
 
   // Mirrors the backend's cascade: the server deletes child sites (and their soil data) when a project is deleted, so we need to delete them locally too. Otherwise sites, soilData, etc. keep a projectId reference to a project that no longer exists in Redux, breaking selectors that look up the project by that id.
   builder.addCase(deleteProject.fulfilled, (state, {meta}) => {
-    const project = state.project.projects[meta.arg.id];
-    if (project === undefined) return;
-    for (const siteId of Object.keys(project.sites)) {
-      cascadeSiteDeletion(state, siteId);
+    const projectId = meta.arg.id;
+    const project = state.project.projects[projectId];
+    if (project !== undefined) {
+      for (const siteId of Object.keys(project.sites)) {
+        cascadeSiteDeletion(state, siteId);
+      }
+      delete state.project.projects[projectId];
     }
-    deleteProjectSettings(state.soilData, meta.arg.id);
-    delete state.project.projects[meta.arg.id];
+    deleteProjectSettings(state.soilData, projectId);
   });
 });
