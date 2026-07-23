@@ -23,8 +23,12 @@ import {
   updateMembership,
   updateProjects,
 } from 'terraso-mobile-client/model/project/projectSlice';
+import {cascadeSiteDeletion} from 'terraso-mobile-client/model/site/siteGlobalReducer';
 import {updateSites} from 'terraso-mobile-client/model/site/siteSlice';
-import {updateProjectSettings} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {
+  deleteProjectSettings,
+  updateProjectSettings,
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 
 export const fetchProject = createAsyncThunk(
@@ -45,6 +49,11 @@ export const updateProject = createAsyncThunk(
 export const addUserToProject = createAsyncThunk(
   'project/addUser',
   projectService.addUserToProject,
+);
+
+export const deleteProject = createAsyncThunk(
+  'project/deleteProject',
+  projectService.deleteProject,
 );
 
 export const projectGlobalReducer = createGlobalReducer(builder => {
@@ -75,5 +84,18 @@ export const projectGlobalReducer = createGlobalReducer(builder => {
     updateSites(state.site, payload.sites);
     updateUsers(state.account, payload.users);
     updateProjectSettings(state.soilData, payload.soilSettings);
+  });
+
+  // Mirrors the backend's cascade: the server deletes child sites (and their soil data) when a project is deleted, so we need to delete them locally too. Otherwise sites, soilData, etc. keep a projectId reference to a project that no longer exists in Redux, breaking selectors that look up the project by that id.
+  builder.addCase(deleteProject.fulfilled, (state, {meta}) => {
+    const projectId = meta.arg.id;
+    const project = state.project.projects[projectId];
+    if (project !== undefined) {
+      for (const siteId of Object.keys(project.sites)) {
+        cascadeSiteDeletion(state, siteId);
+      }
+      delete state.project.projects[projectId];
+    }
+    deleteProjectSettings(state.soilData, projectId);
   });
 });

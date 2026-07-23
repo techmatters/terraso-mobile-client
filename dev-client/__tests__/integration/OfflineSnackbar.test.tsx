@@ -29,7 +29,7 @@ import * as projectService from 'terraso-client-shared/project/projectService';
 
 import {OfflineSnackbar} from 'terraso-mobile-client/components/messages/OfflineSnackbar';
 import * as connectivityHooks from 'terraso-mobile-client/hooks/connectivityHooks';
-import {deleteProject} from 'terraso-mobile-client/model/project/projectSlice';
+import {deleteProject} from 'terraso-mobile-client/model/project/projectGlobalReducer';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectViewScreen';
 import {AppState, useDispatch} from 'terraso-mobile-client/store';

@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {Draft} from '@reduxjs/toolkit';
+
 import * as siteService from 'terraso-client-shared/site/siteService';
 import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 
@@ -34,7 +36,10 @@ import {deleteSiteMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdM
 import {deleteSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import {markEntityModified} from 'terraso-mobile-client/model/sync/records';
 import {logSyncChange} from 'terraso-mobile-client/model/sync/syncDebugLog';
-import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
+import {
+  AppState,
+  createGlobalReducer,
+} from 'terraso-mobile-client/store/reducers';
 
 export const addSite = createAsyncThunk(
   'site/addSite',
@@ -61,6 +66,15 @@ export const transferSites = createAsyncThunk(
   'site/transferSites',
   siteService.transferSitesToProject,
 );
+
+// Removes a site everywhere it can be referenced: the site record itself, its sync entry, its project's sites set, and all soil-related data keyed by siteId. Shared between deleteSite (user action) and deleteProject (cascade), so a site's disappearance from Redux is defined in one place.
+export const cascadeSiteDeletion = (state: Draft<AppState>, siteId: string) => {
+  removeSiteFromAllProjects(state.project, siteId);
+  deleteSites(state.site, [siteId]);
+  deleteSoilData(state.soilData, [siteId]);
+  deleteSoilMetadata(state.soilMetadata, [siteId]);
+  deleteSiteMatches(state.soilIdMatch, [siteId]);
+};
 
 export const siteGlobalReducer = createGlobalReducer(builder => {
   builder.addCase(addSite.fulfilled, (state, {payload}) => {
@@ -106,11 +120,7 @@ export const siteGlobalReducer = createGlobalReducer(builder => {
 
   builder.addCase(deleteSite.fulfilled, (state, {payload}) => {
     state.site.siteDeletedByUser = true;
-    removeSiteFromAllProjects(state.project, payload);
-    deleteSites(state.site, [payload]);
-    deleteSoilData(state.soilData, [payload]);
-    deleteSoilMetadata(state.soilMetadata, [payload]);
-    deleteSiteMatches(state.soilIdMatch, [payload]);
+    cascadeSiteDeletion(state, payload);
   });
 
   builder.addCase(transferSites.fulfilled, (state, {payload}) => {

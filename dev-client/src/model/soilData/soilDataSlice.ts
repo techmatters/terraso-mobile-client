@@ -51,6 +51,7 @@ export type SoilState = {
   soilData: Record<string, SoilData | undefined>;
   soilSync: SyncRecords<SoilData, SoilDataPushFailureReason>;
 
+  // Indexed by project ID
   projectSettings: Record<string, ProjectSoilSettings | undefined>;
   status: LoadingState;
 };
@@ -108,6 +109,13 @@ export const deleteSoilData = (state: Draft<SoilState>, siteIds: string[]) => {
     delete state.soilData[siteId];
     delete state.soilSync[siteId];
   }
+};
+
+export const deleteProjectSettings = (
+  state: Draft<SoilState>,
+  projectId: string,
+) => {
+  delete state.projectSettings[projectId];
 };
 
 const soilDataSlice = createSlice({
