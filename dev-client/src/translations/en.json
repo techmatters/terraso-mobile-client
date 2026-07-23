@@ -17,7 +17,7 @@
         },
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",
-        "link_url": "https://landpks.terraso.org/",
+        "link_url": "https://landpotential.org/",
         "terms": "By using LandPKS you accept our privacy policy and terms of service.",
         "get_started": "Get started"
     },
@@ -26,8 +26,8 @@
         "description": "<bold>Discover the potential use and value of your land.</bold> Accurately determine the soil type and other features of your land. Gain insights for grazing and farming options, carbon sequestration, and more.",
         "description2": "<bold>Find more information and guides</bold> at:\n<icon />",
         "get_started": "<bold>To get started, use the map to create a site:</bold>",
-        "link_label": "landpks.terraso.org",
-        "link_url": "https://landpks.terraso.org/"
+        "link_label": "landpotential.org",
+        "link_url": "https://landpotential.org/"
     },
     "search": {
         "placeholder": "Search map"
@@ -93,13 +93,13 @@
                         "temp_location": "The soils listed are the most likely to be found at this location based on {{soilMapSource}} soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
                         "temp_location_region_unknown": "The soils listed are the most likely to be found at this location based on soil maps.\n\nCreate a site here and enter the recommended observations to improve accuracy of the match scores.",
                         "need_help": "\n<bold>Need help?</bold>\nConsult a soil expert to help interpret the observations and determine a soil match. You can learn more about soil map predictions and Soil ID matches on the website:",
-                        "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+                        "learn_more_url": "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
                     }
                 },
                 "match_score": "{{score}}",
                 "match": "match",
                 "error_generic_title": "Can’t fetch soil map",
-                "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try stopping and restarting the app. If the issue continues, try again later or submit a support request through the website landpks.terraso.org.",
+                "error_generic_body": "LandPKS was unable to fetch the soil map for this location. Try stopping and restarting the app. If the issue continues, try again later or submit a support request through the website landpotential.org.",
                 "no_map_data_title": "No soil map data",
                 "no_map_data_body": "There is no soil map data available for this location, so LandPKS cannot generate soil matches. Observations can still be entered, and if soil map data becomes available in the future, soil matches will appear here.",
                 "offline": "Soil matches will update when you are online.",
@@ -393,7 +393,7 @@
             "privacy_item2": "All observations entered into the LandPKS Soil ID mobile app is included, except for personally identifiable information (PII).",
             "privacy_item3": "<bold>A private site</bold> not affiliated with a project is only visible to the person who created it. That person can change the privacy at any time. ",
             "privacy_item4": "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. ",
-            "data_portal_link_url": "https://landpks.terraso.org/portal",
+            "data_portal_link_url": "https://landpotential.org/data-portal",
             "data_portal_link_text": "LandPKS Data Portal"
         },
         "required": "Required",
@@ -407,13 +407,13 @@
         "support": "Support",
         "help": {
             "label": "Help and support",
-            "url": "https://landpks.terraso.org/help/"
+            "url": "https://landpotential.org/help/"
         },
         "tos": {
             "label": "Terms of service",
             "url": "https://terraso.org/terms-of-service/"
         },
-        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_url": "https://terraso.org/privacy-policy/",
         "privacy_policy_link_text": "Privacy Policy",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Terms of Service",
@@ -436,7 +436,7 @@
         "sync_conflict": {
             "headline": "Something has changed",
             "body": "Some of your information could not be loaded or saved. This may be due to a connection issue or a change made by another user.",
-            "support_url": "https://landpks.terraso.org/help/synchronization-conflict/"
+            "support_url": "https://landpotential.org/help/synchronization-conflict/"
         }
     },
     "screens": {
