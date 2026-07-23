@@ -17,7 +17,7 @@
         },
         "learn_more": "Apprenez-en plus et restez informé :",
         "link_text": "LandPKS de Terraso",
-        "link_url": "https://landpks.terraso.org/",
+        "link_url": "https://landpotential.org/",
         "get_started": "Commencer",
         "terms": "En utilisant LandPKS, vous acceptez notre politique de confidentialité et nos conditions de service."
     },
@@ -119,12 +119,12 @@
                         "site_region_unknown": "Les sols listés sont ceux les plus susceptibles d'être trouvés sur le site, d'après les cartes pédologiques de cet emplacement. \n\nSaisissez la pente recommandée et les observations pédologiques pour améliorer la précision des scores de correspondance. La liste se met automatiquement à jour une fois les observations saisies.",
                         "temp_location_region_unknown": "Les sols listés sont les plus susceptibles d'être trouvés à cet endroit, d'après les cartes pédologiques. \n\nCréez un site ici et saisissez les observations recommandées pour améliorer la précision des scores de correspondance.",
                         "need_help": "\n<bold>Besoin d'aide ?</bold>\nConsultez un pédologue pour interpréter les observations et déterminer la correspondance des sols. Pour en savoir plus sur les prédictions des cartes pédologiques et les correspondances d'identification des sols, consultez le site web :",
-                        "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+                        "learn_more_url": "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
                     }
                 },
                 "match": "correspondance",
                 "error_generic_title": "Impossible de récupérer la carte des sols",
-                "error_generic_body": "LandPKS n'a pas pu récupérer la carte des sols pour cet emplacement. Essayez d'arrêter puis de redémarrer l'application. Si le problème persiste, réessayez ultérieurement ou envoyez une demande d'assistance via le site web landpks.terraso.org.",
+                "error_generic_body": "LandPKS n'a pas pu récupérer la carte des sols pour cet emplacement. Essayez d'arrêter puis de redémarrer l'application. Si le problème persiste, réessayez ultérieurement ou envoyez une demande d'assistance via le site web landpotential.org.",
                 "no_map_data_title": "Aucune donnée cartographique des sols",
                 "no_map_data_body": "Aucune carte des sols n'est disponible pour cet emplacement ; LandPKS ne peut donc pas générer de correspondances de sols. Il est toutefois possible de saisir des observations et, si des cartes des sols sont disponibles ultérieurement, les correspondances apparaîtront ici.",
                 "match_score": "{{score}}",
@@ -386,7 +386,7 @@
             "privacy_item2": "Toutes les observations saisies dans l'application mobile LandPKS Soil ID sont incluses, à l'exception des informations personnelles identifiables (PII).",
             "privacy_item3": "<bold>Un site privé</bold> non affilié à un projet n'est visible que par la personne qui l'a créé. Cette personne peut modifier la confidentialité à tout moment.",
             "privacy_item4": "<bold>Les paramètres de confidentialité d'un projet déterminent la confidentialité de ses sites affiliés.</bold> Les sites appartenant à un projet privé sont visibles par les membres de l'équipe projet. Un chef de projet peut modifier la confidentialité à tout moment.",
-            "data_portal_link_url": "https://landpks.terraso.org/portal",
+            "data_portal_link_url": "https://landpotential.org/data-portal",
             "data_portal_link_text": "Portail de données LandPKS"
         },
         "character_limit": "{{current}} / {{limit}} caractères",
@@ -399,7 +399,7 @@
         "support": "Assistance",
         "help": {
             "label": "Aide et support",
-            "url": "https://landpks.terraso.org/help/"
+            "url": "https://landpotential.org/help/"
         },
         "tos": {
             "label": "Conditions d'utilisation",
@@ -410,7 +410,7 @@
         "offline_sign_in_body": "Pour utiliser LandPKS Soil ID hors ligne, vous devez d'abord vous connecter en ligne.",
         "not_available": "Pas disponible",
         "learn_more": "En savoir plus",
-        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_url": "https://terraso.org/privacy-policy/",
         "privacy_policy_link_text": "politique de confidentialité",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Conditions d'utilisation",
@@ -420,7 +420,7 @@
         "sync_conflict": {
             "headline": "Conflit de projet",
             "body": "Ce projet a évolué. Pour en savoir plus et obtenir de l'aide, consultez le site web de LandPKS.",
-            "support_url": "https://landpks.terraso.org/help/synchronization-conflict/"
+            "support_url": "https://landpotential.org/help/synchronization-conflict/"
         }
     },
     "screens": {
@@ -1758,8 +1758,8 @@
         "title": "Vérifiez sur le terrain vos décisions concernant le sol",
         "description": "<bold>Découvrez l’utilisation potentielle et la valeur de votre terrain.</bold> Déterminez précisément le type de sol et les autres caractéristiques de votre terrain. Obtenez des informations sur les options de pâturage et d'agriculture, la séquestration du carbone, et plus encore.",
         "description2": "<bold>Trouvez plus d'informations et de guides</bold> à:\n<icon />",
-        "link_label": "landpks.terraso.org",
-        "link_url": "https://landpks.terraso.org/",
+        "link_label": "landpotential.org",
+        "link_url": "https://landpotential.org/",
         "get_started": "<bold>Pour commencer, utilisez la carte pour créer un site :</bold>"
     },
     "export": {

@@ -218,7 +218,7 @@ export const ColorAnalysisHomeScreen = () => {
       <ErrorDialog
         ref={errorDialogRef}
         headline={t('soil.color.analysis_error.headline')}
-        supportUrl="https://landpks.terraso.org/support/">
+        supportUrl="https://landpotential.org/support/">
         {t('soil.color.analysis_error.body')}
       </ErrorDialog>
       <Fab

@@ -17,7 +17,7 @@
         },
         "learn_more": "Jifunze zaidi na uendelee kupata taarifa mpya:",
         "link_text": "LandPKS kutoka Terraso",
-        "link_url": "https://landpks.terraso.org/",
+        "link_url": "https://landpotential.org/",
         "get_started": "Anza",
         "terms": "Kwa kutumia LandPKS unakubali sera yetu ya faragha na sheria na masharti ya huduma."
     },
@@ -119,12 +119,12 @@
                         "site_region_unknown": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana kwenye eneo kulingana na ramani za udongo kwa eneo hili.\n\nIngiza mteremko uliopendekezwa na uchunguzi wa udongo ili kuboresha usahihi wa alama zinazolingana. Uchunguzi unapoingizwa, orodha itasasishwa kiotomatiki.",
                         "temp_location_region_unknown": "Udongo ulioorodheshwa ndio unaowezekana zaidi kupatikana katika eneo hili kulingana na ramani za udongo.\n\nUnda eneo hapa na uweke uchunguzi uliopendekezwa ili kuboresha usahihi wa alama za mechi.",
                         "need_help": "\n<bold>Unahitaji msaada?</bold>\nWasiliana na mtaalamu wa udongo ili akusaidie kutafsiri uchunguzi na kubaini ulinganifu wa udongo. Unaweza kujifunza zaidi kuhusu utabiri wa ramani ya udongo na ulinganifu wa vitambulisho vya udongo kwenye tovuti:",
-                        "learn_more_url": "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+                        "learn_more_url": "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
                     }
                 },
                 "match": "mechi",
                 "error_generic_title": "Haiwezi kupata ramani ya udongo",
-                "error_generic_body": "LandPKS haikuweza kupata ramani ya udongo kwa eneo hili. Jaribu kusimamisha na kuanzisha upya programu. Ikiwa tatizo litaendelea, jaribu tena baadaye au wasilisha ombi la usaidizi kupitia tovuti ya landpks.terraso.org.",
+                "error_generic_body": "LandPKS haikuweza kupata ramani ya udongo kwa eneo hili. Jaribu kusimamisha na kuanzisha upya programu. Ikiwa tatizo litaendelea, jaribu tena baadaye au wasilisha ombi la usaidizi kupitia tovuti ya landpotential.org.",
                 "no_map_data_title": "Hakuna data ya ramani ya udongo",
                 "no_map_data_body": "Hakuna data ya ramani ya udongo inayopatikana kwa eneo hili, kwa hivyo LandPKS haiwezi kutoa ulinganifu wa udongo. Uchunguzi bado unaweza kuingizwa, na ikiwa data ya ramani ya udongo itapatikana katika siku zijazo, ulinganifu wa udongo utaonekana hapa.",
                 "match_score": "{{score}}",
@@ -386,7 +386,7 @@
             "privacy_item2": "Uchunguzi wote ulioingizwa kwenye programu ya simu ya LandPKS Soil ID umejumuishwa, isipokuwa taarifa binafsi zinazoweza kumtambulisha mtu (PII).",
             "privacy_item3": "<bold>Eneo la kibinafsi</bold> lisiohusiana na mradi linaonekana tu kwa mtu aliyeliunda. Mtu huyo anaweza kubadilisha faragha wakati wowote.",
             "privacy_item4": "<bold>Mpangilio wa faragha wa mradi huamua faragha ya maeneo yake yanayohusiana.</bold> Maeneo ambayo ni ya mradi wa kibinafsi yanaonekana kwa wanachama wa timu ya mradi. Meneja wa mradi anaweza kubadilisha faragha wakati wowote.",
-            "data_portal_link_url": "https://landpks.terraso.org/portal",
+            "data_portal_link_url": "https://landpotential.org/data-portal",
             "data_portal_link_text": "Lango la Data la LandPKS"
         },
         "character_limit": "Herufi {{current}} / {{limit}}",
@@ -399,7 +399,7 @@
         "support": "Usaidizi",
         "help": {
             "label": "Msaada na usaidizi",
-            "url": "https://landpks.terraso.org/help/"
+            "url": "https://landpotential.org/help/"
         },
         "tos": {
             "label": "Sheria na Masharti",
@@ -410,7 +410,7 @@
         "offline_sign_in_body": "Ili kutumia LandPKS Soil ID nje ya mtandao, lazima kwanza uingie ukiwa mtandaoni.",
         "not_available": "Haipatikani",
         "learn_more": "Pata maelezo zaidi",
-        "privacy_policy_link_url": "https://techmatters.org/privacy-policy/",
+        "privacy_policy_link_url": "https://terraso.org/privacy-policy/",
         "privacy_policy_link_text": "Sera ya Faragha",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Sheria na Masharti",
@@ -420,7 +420,7 @@
         "sync_conflict": {
             "headline": "Mgogoro wa mradi",
             "body": "Mradi huu umebadilika. Jifunze zaidi na upate usaidizi katika tovuti ya LandPKS.",
-            "support_url": "https://landpks.terraso.org/help/synchronization-conflict/"
+            "support_url": "https://landpotential.org/help/synchronization-conflict/"
         }
     },
     "screens": {
@@ -1758,8 +1758,8 @@
         "title": "Ukweli wa msingi maamuzi yako ya udongo",
         "description": "<bold>Gundua matumizi na thamani inayowezekana ya ardhi yako.</bold> Tambua kwa usahihi aina ya udongo na vipengele vingine vya ardhi yako. Pata maarifa kuhusu chaguzi za malisho na kilimo, ufyonzaji wa kaboni, na zaidi.",
         "description2": "<bold>Pata maelezo zaidi na miongozo</bold> katika:\n<icon />",
-        "link_label": "landpks.terraso.org",
-        "link_url": "https://landpks.terraso.org/",
+        "link_label": "landpotential.org",
+        "link_url": "https://landpotential.org/",
         "get_started": "<bold>Ili kuanza, tumia ramani kuunda eneo:</bold>"
     },
     "export": {
