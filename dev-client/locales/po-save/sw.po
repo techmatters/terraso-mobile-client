@@ -12,25 +12,14 @@ msgid "welcome##title"
 msgstr "Karibu kwenye LandPKS Soil ID"
 
 #: 
+#, fuzzy
 msgid "welcome##next##title"
 msgstr "Nini kitafuata?"
-
-#: 
-msgid "welcome##next##subtitle"
-msgstr "Matoleo yajayo yatajumuisha:"
 
 #: 
 #, fuzzy
 msgid "search##placeholder"
 msgstr "Tafuta"
-
-#: 
-msgid "site##progress"
-msgstr "Maendeleo: {{progress}}"
-
-#: 
-msgid "site##members"
-msgstr "{{members}} Wanachama"
 
 #: 
 msgid "site##coords"
@@ -48,19 +37,6 @@ msgstr "Unda Eneo"
 #: 
 msgid "site##create##description"
 msgstr "Unda eneo hapa ili kuhifadhi eneo hili, kuingiza uchunguzi, na kuona ripoti za kina zaidi."
-
-#: 
-msgid "site##create##gps"
-msgstr "Tumia eneo langu la sasa (GPS)"
-
-#: 
-msgid "site##create##pin"
-msgstr "Tumia pini ya ramani"
-
-#: 
-#, fuzzy
-msgid "site##create##manual"
-msgstr "Ingiza viwianishi"
 
 #: 
 msgid "site##create##latitude"
@@ -132,14 +108,6 @@ msgid "projects##label"
 msgstr "Mradi"
 
 #: 
-msgid "projects##title"
-msgstr "Miradi"
-
-#: 
-msgid "projects##header"
-msgstr "Miradi"
-
-#: 
 msgid "projects##none##header"
 msgstr "Huna miradi yoyote."
 
@@ -171,22 +139,6 @@ msgstr "Maeneo"
 #, fuzzy
 msgid "projects##tabs##settings"
 msgstr "Mipangilio"
-
-#: 
-msgid "projects##inputs##units##heading"
-msgstr "Vitengo vya Vipimo"
-
-#: 
-msgid "projects##inputs##units##a11yLabel"
-msgstr "vitengo vya vipimo"
-
-#: 
-msgid "projects##inputs##units##english"
-msgstr "Kiingereza (inchi, futi, pauni)"
-
-#: 
-msgid "projects##inputs##units##metric"
-msgstr "Kipimo (cm, m, kg)"
 
 #: 
 msgid "projects##inputs##instructions##title"
@@ -229,32 +181,12 @@ msgid "projects##team##add"
 msgstr "Ongeza mwanachama wa timu"
 
 #: 
-msgid "projects##settings##cancel"
-msgstr "Ghairi"
-
-#: 
-msgid "projects##settings##archive"
-msgstr "Hifadhi mradi huu kwenye kumbukumbu"
-
-#: 
 msgid "projects##settings##delete"
 msgstr "Futa mradi huu"
 
 #: 
-msgid "projects##sites##add"
-msgstr "Ongeza maeneo"
-
-#: 
 msgid "projects##sites##transfer"
 msgstr "Hamisha Maeneo"
-
-#: 
-msgid "projects##sites##create"
-msgstr "Unda Maeneo"
-
-#: 
-msgid "projects##sites##search##placeholder"
-msgstr "Tafuta"
 
 #: 
 msgid "projects##sites##sort##label"
@@ -289,28 +221,12 @@ msgid "settings##version"
 msgstr "Toleo {{version}} ({{build}}) {{environment}}"
 
 #: 
-msgid "badge##new"
-msgstr "Mpya"
-
-#: 
-msgid "general##sites"
-msgstr "maeneo"
-
-#: 
-msgid "general##users"
-msgstr "watumiaji"
-
-#: 
 msgid "general##save"
 msgstr "Hifadhi"
 
 #: 
 msgid "general##use"
 msgstr "Tumia"
-
-#: 
-msgid "general##details"
-msgstr "Maelezo"
 
 #: 
 msgid "general##apply"
@@ -335,10 +251,6 @@ msgstr "Ghairi"
 #: 
 msgid "general##add"
 msgstr "Ongeza"
-
-#: 
-msgid "general##submit"
-msgstr "Wasilisha"
 
 #: 
 msgid "general##change"
@@ -367,10 +279,6 @@ msgstr "Inayofuata"
 #: 
 msgid "general##proceed"
 msgstr "Endelea"
-
-#: 
-msgid "errors##generic"
-msgstr "Hitilafu katika kuhifadhi taarifa za kitambulisho cha udongo."
 
 #: 
 msgid "screens##LOGIN"
@@ -413,32 +321,16 @@ msgid "privacy##private##title"
 msgstr "Binafsi"
 
 #: 
-msgid "geo##latitude##inline"
-msgstr "latitudo"
-
-#: 
 msgid "geo##latitude##title"
 msgstr "Latitudo"
-
-#: 
-msgid "geo##longitude##inline"
-msgstr "longitudo"
 
 #: 
 msgid "geo##longitude##title"
 msgstr "Longitudo"
 
 #: 
-msgid "geo##elevation##inline"
-msgstr "mwinuko"
-
-#: 
 msgid "geo##elevation##title"
 msgstr "Mwinuko"
-
-#: 
-msgid "soil##bedrock"
-msgstr "Bedrock"
 
 #: 
 msgid "soil##loading"
@@ -455,18 +347,6 @@ msgstr "Uso wa Udongo"
 #: 
 msgid "soil##pit"
 msgstr "Shimo la Udongo"
-
-#: 
-msgid "soil##data##rockFragmentVolume"
-msgstr "Kipande cha mwamba"
-
-#: 
-msgid "soil##data##texture"
-msgstr "Umbile"
-
-#: 
-msgid "soil##data##colorValue"
-msgstr "Rangi"
 
 #: 
 msgid "soil##depth##error##overlaps"
@@ -803,24 +683,24 @@ msgid "welcome##version_includes##title"
 msgstr "Toleo hili linajumuisha:"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Kipengele cha usafirishaji data kwa miradi, maeneo ya kibinafsi, na maeneo yote yanayoonekana kwa mtumiaji"
+msgstr "Nje ya mtandao: kuwezesha kuunda maeneo na kuhariri metadata na vidokezo vya maeneo"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Kiteuzi cha lugha"
+msgstr "Lugha mpya: Kiswahili"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Tafsiri za majaribio za Kifaransa na Kijojia"
+msgstr "Tafsiri zilizoboreshwa kwa Kiukreni, Kijojia, na Kihispania"
 
 #: 
+#, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "Unda maeneo nje ya mtandao"
-
-#: 
-msgid "welcome##next##bullet_2"
-msgstr "Hariri madokezo nje ya mtandao"
+msgstr "pH ya udongo"
 
 #: 
 msgid "welcome##learn_more"
@@ -843,10 +723,6 @@ msgid "site##list_title"
 msgstr "Orodha ya Maeneo"
 
 #: 
-msgid "site##last_updated"
-msgstr "Ilibadilishwa Mara ya Mwisho: {{date}} na {{name}}"
-
-#: 
 msgid "site##more_info"
 msgstr "Pata maelezo zaidi"
 
@@ -863,10 +739,6 @@ msgid "site##ecological_site_prediction"
 msgstr "Ulinganisho Bora wa Eneo la Kiikolojia"
 
 #: 
-msgid "site##annual_precip_avg"
-msgstr "Wastani wa mvua kwa mwaka"
-
-#: 
 msgid "site##elevation_label"
 msgstr "Mwinuko"
 
@@ -877,10 +749,6 @@ msgstr "{{value}} {{units}}"
 #: 
 msgid "site##elevation_unknown"
 msgstr "haijulikani"
-
-#: 
-msgid "site##create##button_label"
-msgstr "Unda Eneo Hapa"
 
 #: 
 msgid "site##create##name_label"
@@ -907,14 +775,6 @@ msgid "site##create##add_to_project_tooltip"
 msgstr "Eneo hilo litarithi mipangilio ya mradi, ikiwa ni pamoja na mahitaji ya ukusanyaji wa data na wanachama wa timu. Unda miradi mipya kwa kutumia kichupo cha Miradi katika urambazaji wa chini."
 
 #: 
-msgid "site##create##privacy_tooltip"
-msgstr "Miradi ya umma itasawazisha data na milango ya data ya umma. "
-
-#: 
-msgid "site##create##privacy_tooltip_link"
-msgstr "Pata maelezo zaidi"
-
-#: 
 msgid "site##form##name_min_length_error"
 msgstr "Jina la eneo lazima liwe na angalau herufi {{min}}"
 
@@ -939,48 +799,12 @@ msgid "site##form##max_longitude_error"
 msgstr "Longitudo lazima iwe isizidi {{max}}"
 
 #: 
-msgid "site##dashboard##team_button"
-msgstr "Timu"
-
-#: 
-msgid "site##dashboard##transfer_label"
-msgstr "Uhamisho hadi Mradi"
-
-#: 
-msgid "site##dashboard##copy_download_link_button"
-msgstr "Nakili kiungo cha kupakua eneo"
-
-#: 
-msgid "site##dashboard##archive_button"
-msgstr "Hifadhi eneo hili"
-
-#: 
-msgid "site##dashboard##archive_button_help_text"
-msgstr "Weka alama kwenye eneo hili kwa ajili ya kusoma pekee"
-
-#: 
 msgid "site##dashboard##delete_button"
 msgstr "Futa eneo hili"
 
 #: 
-msgid "site##dashboard##location_accuracy"
-msgstr "Usahihi wa Eneo"
-
-#: 
 msgid "site##dashboard##default_title"
 msgstr "Pini ya Muda"
-
-#: 
-msgid "site##dashboard##speed_dial##note_label"
-msgstr "DOKEZO"
-
-#: 
-msgid "site##dashboard##speed_dial##photo_label"
-msgstr "PICHA"
-
-#: 
-msgid "site##dashboard##speed_dial##bedrock_label"
-msgstr "MWAMBA"
 
 #: 
 msgid "site##soil_id##title"
@@ -1227,16 +1051,8 @@ msgid "site##search##no_matches"
 msgstr "Hakuna maeneo yanayolingana na chaguo za utafutaji na vichujio vya sasa."
 
 #: 
-msgid "projects##learn_more"
-msgstr "Pata maelezo zaidi kuhusu kutumia miradi"
-
-#: 
 msgid "projects##create_button"
 msgstr "Unda mradi"
-
-#: 
-msgid "projects##go_to"
-msgstr "Nenda kwenye Mradi"
 
 #: 
 msgid "projects##search_label"
@@ -1257,22 +1073,6 @@ msgstr "Maelezo ya Mradi"
 #: 
 msgid "projects##create##privacy_label"
 msgstr "Faragha ya Data"
-
-#: 
-msgid "projects##inputs##soil_source##heading"
-msgstr "Chanzo Chaguo-Msingi cha Taarifa za Udongo"
-
-#: 
-msgid "projects##inputs##soil_source##survey"
-msgstr "Utafiti wa Udongo wa USDA NRCS"
-
-#: 
-msgid "projects##inputs##soil_source##grids"
-msgstr "SoilGrids"
-
-#: 
-msgid "projects##inputs##soil_source##a11yLabel"
-msgstr "chanzo chaguo-msingi cha taarifa za udongo"
 
 #: 
 msgid "projects##inputs##instructions##screen_title"
@@ -1315,30 +1115,6 @@ msgid "projects##team##leave_project_modal##action_name"
 msgstr "Ondoka"
 
 #: 
-msgid "projects##edit##input_header"
-msgstr "Mipangilio ya Jumla ya Mradi"
-
-#: 
-msgid "projects##settings##copy_download_link"
-msgstr "Nakili kiungo cha kupakua mradi"
-
-#: 
-msgid "projects##settings##download_link_description"
-msgstr "Faili iliyofungwa ya mali zote za mradi ikijumuisha faili ya .csv ya data ya maeneo, madokezo ya sehemu, kumbukumbu za ukaguzi, na picha. Mtu yeyote aliye na kiungo hiki anaweza kuona mali zote."
-
-#: 
-msgid "projects##settings##archive_button"
-msgstr "Kumbukumbu"
-
-#: 
-msgid "projects##settings##archive_button_prompt"
-msgstr "Hifadhi Mradi?"
-
-#: 
-msgid "projects##settings##archive_description"
-msgstr "Mradi utahamishiwa kwenye Miradi Iliyohifadhiwa, na kuifanya iwe ya kusoma pekee. Wajumbe wa timu wanaweza kufikia data, na wasimamizi wa miradi wanaweza kuirejesha wakati wowote. Miradi ya umma iliyohifadhiwa itabaki kuonekana kwenye milango ya data."
-
-#: 
 msgid "projects##settings##delete_button"
 msgstr "Futa"
 
@@ -1359,14 +1135,6 @@ msgstr "Mradi huu hauna maeneo bado."
 #: 
 msgid "projects##sites##empty_contributor"
 msgstr "Unaweza kuhamisha maeneo yaliyopo ya LandPKS Soil ID kwenye mradi huu. Unaweza pia kuunda maeneo mapya kwenye kichupo cha Sites na kuyaongeza kwenye mradi huu."
-
-#: 
-msgid "projects##sites##go_to"
-msgstr "Nenda kwenye Eneo"
-
-#: 
-msgid "projects##sites##audit_log"
-msgstr "Kumbukumbu ya Ukaguzi"
 
 #: 
 msgid "projects##sites##remove_site"
@@ -1413,10 +1181,6 @@ msgstr "Maeneo yaliyohamishwa yatatumia ingizo, mipangilio na majukumu ya wanach
 #: 
 msgid "projects##sites##transfer_site_modal##action_name"
 msgstr "Uhamisho"
-
-#: 
-msgid "projects##sites##search##accessility_label"
-msgstr "Tafuta maeneo"
 
 #: 
 msgid "projects##add_user##heading"
@@ -1535,10 +1299,6 @@ msgid "settings##unknown_version"
 msgstr "Toleo la programu lisilo na lebo {{environment}}"
 
 #: 
-msgid "general##last_modified"
-msgstr "Ilibadilishwa Mara ya Mwisho"
-
-#: 
 msgid "general##last_modified_by"
 msgstr "ilibadilishwa mara ya mwisho {{user}}, {{date}}"
 
@@ -1557,22 +1317,6 @@ msgstr "jina@domain.com"
 #: 
 msgid "general##email_label"
 msgstr "Anwani ya barua pepe"
-
-#: 
-msgid "general##profile_image_alt"
-msgstr "Picha ya wasifu"
-
-#: 
-msgid "general##measurement_units##METRIC"
-msgstr "Kipimo"
-
-#: 
-msgid "general##measurement_units##ENGLISH"
-msgstr "Kiingereza"
-
-#: 
-msgid "general##filter##no_sort"
-msgstr "Hakuna"
 
 #: 
 msgid "general##filter##no_role"
@@ -1747,10 +1491,6 @@ msgid "account##google_login"
 msgstr "Ingia ukitumia Google"
 
 #: 
-msgid "account##apple_login"
-msgstr "Ingia ukitumia Apple"
-
-#: 
 msgid "account##microsoft_login"
 msgstr "Ingia ukitumia Microsoft"
 
@@ -1775,14 +1515,6 @@ msgid "listfilter##num_filters_label"
 msgstr "Idadi ya vichujio vilivyotumika"
 
 #: 
-msgid "listfilter##clear_search_label"
-msgstr "Futa kichujio cha utafutaji"
-
-#: 
-msgid "listfilter##text_input_label"
-msgstr "Chuja orodha kwa ingizo la utafutaji"
-
-#: 
 msgid "soil##top_match"
 msgstr "Mechi Bora"
 
@@ -1805,10 +1537,6 @@ msgstr "Kitambulisho cha Udongo"
 #: 
 msgid "soil##add_depth_label"
 msgstr "Ongeza Kina"
-
-#: 
-msgid "soil##project_settings##pit_required_label"
-msgstr "Shimo la udongo linahitajika"
 
 #: 
 msgid "soil##project_settings##required_data_title"
@@ -2151,18 +1879,6 @@ msgid "soil##texture##use_guide_label"
 msgstr "Mwongozo wa Matumizi"
 
 #: 
-msgid "soil##texture##clay_title"
-msgstr "Asilimia ya Mfinyanzi"
-
-#: 
-msgid "soil##texture##clay_label"
-msgstr "Asilimia ya mfinyanzi"
-
-#: 
-msgid "soil##texture##clay_help"
-msgstr "0–100%"
-
-#: 
 msgid "soil##texture##fragment_title"
 msgstr "Kiasi cha Kipande cha Mwamba"
 
@@ -2365,14 +2081,6 @@ msgstr "Kipima Mteremko"
 #: 
 msgid "slope##steepness##camera_grant"
 msgstr "Toa Ruhusa ya Kamera"
-
-#: 
-msgid "slope##steepness##no_camera"
-msgstr "Hakuna Ufikiaji wa Kamera"
-
-#: 
-msgid "slope##steepness##no_camera_explanation"
-msgstr "Kwa matokeo bora zaidi, ruhusu LandPKS Soil ID itumie kamera yako katika Mipangilio"
 
 #: 
 msgid "slope##steepness##info##description_distance_METRIC"
@@ -2589,20 +2297,12 @@ msgid "site##empty##summary"
 msgstr "Eneo hukuruhusu kukusanya na kuhifadhi uchunguzi, kujifunza zaidi kuhusu ardhi na uwezo wake, na kushiriki na wengine."
 
 #: 
-msgid "site##offline##alert_body"
-msgstr "Maeneo yanaweza kuundwa tu wakati wa mtandaoni."
-
-#: 
 msgid "site##soil_id##matches##match_score"
 msgstr "{{score}}"
 
 #: 
 msgid "site##soil_id##matches##offline"
 msgstr "Vipimo vya udongo vitasasishwa ukiwa mtandaoni."
-
-#: 
-msgid "site##soil_id##matches##selector"
-msgstr "Huu ndio udongo sahihi"
 
 #: 
 msgid "site##soil_id##matches##selected"
@@ -2623,10 +2323,6 @@ msgstr "Alama ya sifa za udongo itasasishwa ukiwa mtandaoni."
 #: 
 msgid "site##notes##pinned_note"
 msgstr "Dokezo Lililobandikwa"
-
-#: 
-msgid "site##notes##offline"
-msgstr "Kuandika na kuhariri madokezo kunapatikana mtandaoni pekee."
 
 #: 
 msgid "site##search##offline"
@@ -2689,10 +2385,12 @@ msgid "general##not_available"
 msgstr "Haipatikani"
 
 #: 
+#, fuzzy
 msgid "errors##sync_conflict##headline"
 msgstr "Mgogoro wa mradi"
 
 #: 
+#, fuzzy
 msgid "errors##sync_conflict##body"
 msgstr "Mradi huu umebadilika. Jifunze zaidi na upate usaidizi katika tovuti ya LandPKS."
 
@@ -3059,6 +2757,7 @@ msgid "soil##match_info##urbic_anthrosols##description"
 msgstr "Anthrosoli za Urbic ni kundi kubwa la udongo ambao umebadilishwa kwa kiasi kikubwa na shughuli za binadamu. Udongo huu ni udongo uliovurugwa sana unaoundwa kutokana na nyenzo zinazojazwa kutoka kwa migodi, maendeleo, utupaji taka na shughuli zingine za matumizi ya ardhi. Sifa hutofautiana na zinahusiana na chanzo cha nyenzo. "
 
 #: 
+#, fuzzy
 msgid "soil##match_info##urbic_anthrosols##management"
 msgstr "Kwa sababu udongo huu umekuwa na usumbufu wa muda mrefu kwa binadamu, hutofautiana sana katika sifa za jumla, na miongozo michache ya jumla ya usimamizi inaweza kutolewa. Wazalishaji wanapaswa kusoma kwa makini mashamba yao, na kuchunguza tofauti katika maeneo yao ili kubaini mahitaji tofauti ya usimamizi. Kwa sababu udongo huu unaweza kusumbuliwa katika maeneo madogo sana, upimaji wa udongo utahitajika ili kutathmini ipasavyo tofauti katika mali ndani ya shamba. Ikiwa uzalishaji wa mimea ni duni, uchunguzi zaidi kuhusu chanzo cha nyenzo za kujaza unaweza kuhitajika - metali nzito, taka zilizoathiriwa na chumvi, au aina nyingine za nyongeza zisizo za kawaida zilizotengenezwa na binadamu ni uwezekano. "
 
@@ -4952,8 +4651,9 @@ msgid "sign_out##blocked_body"
 msgstr "Una mabadiliko ambayo hayajasawazishwa ambayo yanahitaji kupakiwa kabla ya kutoka. Tafadhali unganisha kwenye intaneti na usubiri data yako isawazishwe."
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "Uzoefu mpya wa kiwango cha udongo kwa ajili ya utambuzi rahisi wa udongo"
+msgstr "Ujumbe wa kosa wa kina zaidi kwa migongano ya usawazishaji"
 
 #: 
 msgid "projects##tabs##export"
@@ -5016,26 +4716,6 @@ msgid "export##site_export_title"
 msgstr "Eneo la Kusafirisha Nje"
 
 #: 
-msgid "export##site_export_description"
-msgstr "Pakua au shiriki data ya eneo hili."
-
-#: 
-msgid "export##site_export_button"
-msgstr "Hamisha Data ya Eneo"
-
-#: 
-msgid "export##what_is_in_file"
-msgstr "Kuna nini kwenye faili?"
-
-#: 
-msgid "export##loading"
-msgstr "Inapakia mipangilio ya kuhamisha..."
-
-#: 
-msgid "export##downloading"
-msgstr "Inapakua..."
-
-#: 
 msgid "export##preparing_file"
 msgstr "Inaandaa faili ya {{resourceType}} kwa ajili ya {{name}}"
 
@@ -5048,24 +4728,12 @@ msgid "export##save_dialog_title"
 msgstr "Hifadhi Data ya LandPKS kwa {{name}}"
 
 #: 
-msgid "export##save_error_title"
-msgstr "Imeshindwa Kuhifadhi"
-
-#: 
-msgid "export##save_error_message"
-msgstr "Imeshindwa kuhifadhi faili: {{error}}"
-
-#: 
 msgid "export##share_title"
 msgstr "Usafirishaji wa Data ya LandPKS kwa Maeneo ya {{name}}"
 
 #: 
 msgid "export##share_subject"
 msgstr "Kiungo cha Maeneo ya LandPKS ya {{name}}"
-
-#: 
-msgid "export##share_android_message"
-msgstr "Hamisha data ya {{resourceType}} kwa {{name}}:"
 
 #: 
 msgid "export##share_message_user"
@@ -5086,22 +4754,6 @@ msgstr "Ungependa kuweka upya kiungo cha moja kwa moja?"
 #: 
 msgid "export##reset_links_body"
 msgstr "Hii itavunja kiungo cha sasa cha moja kwa moja. Mtu yeyote aliye na kiungo kilichovunjika hataweza kufikia faili hizo."
-
-#: 
-msgid "export##create_token_error_title"
-msgstr "Imeshindwa Kuunda Kiungo"
-
-#: 
-msgid "export##create_token_error_message"
-msgstr "Haikuweza kuunda kiungo cha kuhamisha. Tafadhali angalia muunganisho wako na ujaribu tena."
-
-#: 
-msgid "export##delete_token_error_title"
-msgstr "Imeshindwa Kuweka Kiungo Kipya"
-
-#: 
-msgid "export##delete_token_error_message"
-msgstr "Haikuweza kuweka upya kiungo cha kuhamisha. Tafadhali angalia muunganisho wako na ujaribu tena."
 
 #: 
 msgid "export##help##title"
@@ -5136,20 +4788,8 @@ msgid "file_download##error##unsupported_platform"
 msgstr "Kuhifadhi faili hakuhimiliwi kwenye mfumo huu."
 
 #: 
-msgid "file_download##error##no_storage_directory"
-msgstr "Hakuna saraka ya hifadhi inayopatikana."
-
-#: 
-msgid "file_download##error##sharing_unavailable"
-msgstr "Kushiriki hakupatikani kwenye kifaa hiki."
-
-#: 
 msgid "file_download##error##save_canceled"
 msgstr "Hifadhi imeghairiwa."
-
-#: 
-msgid "file_download##error##no_directory_selected"
-msgstr "Hakuna saraka iliyochaguliwa."
 
 #: 
 msgid "file_download##error##save_failed"
@@ -5206,4 +4846,24 @@ msgstr "Kuna kitu kimeenda vibaya"
 #: 
 msgid "soil##color##analysis_error##body"
 msgstr "Kulikuwa na tatizo la kutambua rangi ya udongo. Hakikisha unafuata maagizo ya uchambuzi wa picha, na ujaribu tena. Ikiwa bado una tatizo, wasiliana na usaidizi."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_5"
+msgstr "Uzoefu ulioboreshwa wa kutafuta viwianishi kwenye ramani"
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_6"
+msgstr "Imerekebishwa hitilafu ambapo watumiaji walioondoka na kuingia tena kwa akaunti tofauti waliona data ya akaunti ya kwanza kwa muda"
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_7"
+msgstr "Imerekebishwa hitilafu ambapo moduli ya rangi ilianguka kwa picha zilizopigwa kwa mwanga mwingi sana"
+
+#: 
+#, fuzzy
+msgid "projects##sites##transfer_offline"
+msgstr "Uhamisho wa tovuti unapatikana tu ukiwa mtandaoni."
 

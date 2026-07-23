@@ -752,6 +752,7 @@ msgid "site##elevation_unknown"
 msgstr "desconocido"
 
 #: 
+#, fuzzy
 msgid "site##create##name_label"
 msgstr "Nombre del sitio"
 
@@ -760,6 +761,7 @@ msgid "site##create##location_label"
 msgstr "Ubicación del sitio"
 
 #: 
+#, fuzzy
 msgid "site##create##location_accuracy"
 msgstr "Precisión GPS: {{accuracyM}} m"
 
@@ -1073,10 +1075,12 @@ msgid "projects##role_filter_label"
 msgstr "Filtrar proyectos por rol"
 
 #: 
+#, fuzzy
 msgid "projects##create##name_label"
 msgstr "Nombre del proyecto"
 
 #: 
+#, fuzzy
 msgid "projects##create##description_label"
 msgstr "Descripción del proyecto"
 
@@ -1214,8 +1218,9 @@ msgid "projects##add_user##user_in_project"
 msgstr "Ya es miembro de equipo"
 
 #: 
+#, fuzzy
 msgid "projects##add_user##invalid_email"
-msgstr "Ingresa una dirección de email válida"
+msgstr "Se requiere una dirección de email válida"
 
 #: 
 msgid "projects##manage_member##title"
@@ -1279,10 +1284,6 @@ msgstr "Nombre del proyecto, mínimo {{min}} caracteres"
 #: 
 msgid "projects##form##name_max_length_error"
 msgstr "Nombre del proyecto, máximo {{max}} caracteres"
-
-#: 
-msgid "projects##form##description_min_length_error"
-msgstr "Descripción del proyecto, mínimo {{min}} caracteres"
 
 #: 
 msgid "projects##form##description_max_length_error"
@@ -1454,34 +1455,33 @@ msgid "delete_account##confirm##p0"
 msgstr "<bold>{{email}}</bold>"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p1"
-msgstr "Se eliminará la cuenta de LandPKS asociada a esta dirección email. Esto elimina:"
+msgstr "Se eliminarán la cuenta de Terraso y los datos de LandPKS asociados a esta dirección email. Esto incluye:"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p2##b0"
-msgstr "tus sitios no asociados"
+msgstr "Tus sitios no asociados de LandPKS"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p2##b1"
-msgstr "proyectos de los cuales eres el único administrador, y sus sitios asociados"
+msgstr "Tus proyectos de LandPKS que no tienen otros administradores, y sus sitios asociados"
 
 #: 
 msgid "delete_account##confirm##p3"
 msgstr "Lo siguiente no se borrará:"
 
 #: 
-msgid "delete_account##confirm##p4##b0"
-msgstr "observaciones que contribuiste a un proyecto del que no eres el único administrador"
-
-#: 
 #, fuzzy
-msgid "delete_account##confirm##p4##b1"
-msgstr "tu cuenta Terraso (incluye grupos, paisajes, y mapas de historias)"
+msgid "delete_account##confirm##p4##b0"
+msgstr "Observaciones de LandPKS que ingresaste en proyectos con otros administradores"
 
 #: 
 #, fuzzy
 msgid "delete_account##confirm##p5"
-msgstr "<bold>Confirma eliminación ingresando tu dirección de email:</bold>"
+msgstr "<bold>Escribe la dirección de email de arriba para confirmar la eliminación:</bold>"
 
 #: 
 msgid "delete_account##confirm##cancel"
@@ -1496,12 +1496,9 @@ msgid "delete_account##pending##p0"
 msgstr "<bold>{{email}}</bold>"
 
 #: 
+#, fuzzy
 msgid "delete_account##pending##p1"
-msgstr "Tu solicitud ha sido enviada. La cuenta de {{email}} se eliminará dentro de cinco días hábiles."
-
-#: 
-msgid "delete_account##pending##p2"
-msgstr "Recibirás una confirmación por email una vez que tu cuenta haya sido eliminada."
+msgstr "Tu solicitud de eliminación de cuenta ha sido enviada."
 
 #: 
 msgid "sign_out##confirm_body"
@@ -2094,13 +2091,14 @@ msgid "slope##steepness##percentage_placeholder"
 msgstr "Porcentaje"
 
 #: 
+#, fuzzy
 msgid "slope##steepness##percentage_help"
-msgstr "0%–999%"
+msgstr "0–999"
 
 #: 
+#, fuzzy
 msgid "slope##steepness##degree_help"
-msgstr "0°–89°\n"
-""
+msgstr "0–89"
 
 #: 
 msgid "slope##steepness##degree_placeholder"
@@ -4980,4 +4978,39 @@ msgstr "Se solucionó un error por el cual el módulo de color fallaba con fotos
 #, fuzzy
 msgid "projects##sites##transfer_offline"
 msgstr "La transferencia de sitios sólo está disponible mientras estás en línea."
+
+#: 
+#, fuzzy
+msgid "site##form##number_error"
+msgstr "Solo se permiten números y punto"
+
+#: 
+#, fuzzy
+msgid "general##filter##unaffiliated"
+msgstr "Sin afiliación (sin proyecto)"
+
+#: 
+#, fuzzy
+msgid "general##read_only"
+msgstr "Solo lectura"
+
+#: 
+#, fuzzy
+msgid "delete_account##confirm##p2##b2"
+msgstr "Tu cuenta de Terraso (incluye grupos, paisajes y mapas de historias)"
+
+#: 
+#, fuzzy
+msgid "delete_account##confirm##error"
+msgstr "El email no coincide"
+
+#: 
+#, fuzzy
+msgid "account_deleted##title"
+msgstr "Cuenta eliminada"
+
+#: 
+#, fuzzy
+msgid "account_deleted##body"
+msgstr "La cuenta asociada a {{email}} ha sido eliminada. Si esto se hizo por error, contacta a nuestro equipo de soporte."
 

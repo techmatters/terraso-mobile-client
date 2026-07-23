@@ -19,23 +19,8 @@ msgstr "Quelle est la prochaine étape ?"
 
 #: 
 #, fuzzy
-msgid "welcome##next##subtitle"
-msgstr "Les versions futures incluront:"
-
-#: 
-#, fuzzy
 msgid "search##placeholder"
 msgstr "Rechercher sur la carte"
-
-#: 
-#, fuzzy
-msgid "site##progress"
-msgstr "Progression : {{progress}}"
-
-#: 
-#, fuzzy
-msgid "site##members"
-msgstr "{{members}} Membres"
 
 #: 
 #, fuzzy
@@ -57,21 +42,6 @@ msgstr "Créer un site"
 #, fuzzy
 msgid "site##create##description"
 msgstr "Créez un site ici pour enregistrer cet emplacement, saisir des observations et voir des rapports plus détaillés."
-
-#: 
-#, fuzzy
-msgid "site##create##gps"
-msgstr "Utiliser ma position actuelle (GPS)"
-
-#: 
-#, fuzzy
-msgid "site##create##pin"
-msgstr "Utiliser l'épingle de la carte"
-
-#: 
-#, fuzzy
-msgid "site##create##manual"
-msgstr "Entrez les coordonnées"
 
 #: 
 #, fuzzy
@@ -160,16 +130,6 @@ msgstr "Projet"
 
 #: 
 #, fuzzy
-msgid "projects##title"
-msgstr "Projets"
-
-#: 
-#, fuzzy
-msgid "projects##header"
-msgstr "Projets"
-
-#: 
-#, fuzzy
 msgid "projects##none##header"
 msgstr "Vous n'avez aucun projet."
 
@@ -207,26 +167,6 @@ msgstr "Sites"
 #, fuzzy
 msgid "projects##tabs##settings"
 msgstr "Paramètres"
-
-#: 
-#, fuzzy
-msgid "projects##inputs##units##heading"
-msgstr "Unités de mesure"
-
-#: 
-#, fuzzy
-msgid "projects##inputs##units##a11yLabel"
-msgstr "unités de mesure"
-
-#: 
-#, fuzzy
-msgid "projects##inputs##units##english"
-msgstr "Anglais (in, ft, lb)"
-
-#: 
-#, fuzzy
-msgid "projects##inputs##units##metric"
-msgstr "Métrique (cm, m, kg)"
 
 #: 
 #, fuzzy
@@ -280,38 +220,13 @@ msgstr "Ajouter un membre de l'équipe"
 
 #: 
 #, fuzzy
-msgid "projects##settings##cancel"
-msgstr "Annuler"
-
-#: 
-#, fuzzy
-msgid "projects##settings##archive"
-msgstr "Archiver ce projet"
-
-#: 
-#, fuzzy
 msgid "projects##settings##delete"
 msgstr "Supprimer ce projet"
 
 #: 
 #, fuzzy
-msgid "projects##sites##add"
-msgstr "Ajouter des sites"
-
-#: 
-#, fuzzy
 msgid "projects##sites##transfer"
 msgstr "Transférer des sites"
-
-#: 
-#, fuzzy
-msgid "projects##sites##create"
-msgstr "Créer des sites"
-
-#: 
-#, fuzzy
-msgid "projects##sites##search##placeholder"
-msgstr "Recherche"
 
 #: 
 #, fuzzy
@@ -355,21 +270,6 @@ msgstr "Version {{version}} ({{build}}) {{environment}}"
 
 #: 
 #, fuzzy
-msgid "badge##new"
-msgstr "Nouveau"
-
-#: 
-#, fuzzy
-msgid "general##sites"
-msgstr "sites"
-
-#: 
-#, fuzzy
-msgid "general##users"
-msgstr "utilisateurs"
-
-#: 
-#, fuzzy
 msgid "general##save"
 msgstr "Sauvegarder"
 
@@ -377,11 +277,6 @@ msgstr "Sauvegarder"
 #, fuzzy
 msgid "general##use"
 msgstr "Utiliser"
-
-#: 
-#, fuzzy
-msgid "general##details"
-msgstr "Détails"
 
 #: 
 #, fuzzy
@@ -412,11 +307,6 @@ msgstr "Annuler"
 #, fuzzy
 msgid "general##add"
 msgstr "Ajouter"
-
-#: 
-#, fuzzy
-msgid "general##submit"
-msgstr "Soumettre"
 
 #: 
 #, fuzzy
@@ -452,11 +342,6 @@ msgstr "Suivant"
 #, fuzzy
 msgid "general##proceed"
 msgstr "Procéder"
-
-#: 
-#, fuzzy
-msgid "errors##generic"
-msgstr "Erreur lors de l'enregistrement des informations d'identification du sol."
 
 #: 
 #, fuzzy
@@ -510,18 +395,8 @@ msgstr "Privé"
 
 #: 
 #, fuzzy
-msgid "geo##latitude##inline"
-msgstr "latitude"
-
-#: 
-#, fuzzy
 msgid "geo##latitude##title"
 msgstr "Latitude"
-
-#: 
-#, fuzzy
-msgid "geo##longitude##inline"
-msgstr "longitude"
 
 #: 
 #, fuzzy
@@ -530,18 +405,8 @@ msgstr "Longitude"
 
 #: 
 #, fuzzy
-msgid "geo##elevation##inline"
-msgstr "élévation"
-
-#: 
-#, fuzzy
 msgid "geo##elevation##title"
 msgstr "Élévation"
-
-#: 
-#, fuzzy
-msgid "soil##bedrock"
-msgstr "Roche mère"
 
 #: 
 #, fuzzy
@@ -562,21 +427,6 @@ msgstr "Surface du sol"
 #, fuzzy
 msgid "soil##pit"
 msgstr "Fosse de sol"
-
-#: 
-#, fuzzy
-msgid "soil##data##rockFragmentVolume"
-msgstr "Fragment de roche"
-
-#: 
-#, fuzzy
-msgid "soil##data##texture"
-msgstr "Texture"
-
-#: 
-#, fuzzy
-msgid "soil##data##colorValue"
-msgstr "Couleur"
 
 #: 
 #, fuzzy
@@ -984,27 +834,22 @@ msgstr "Cette version comprend :"
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Fonctionnalité d'exportation de données pour les projets, les sites individuels et tous les sites visibles par l'utilisateur"
+msgstr "Hors ligne : création de sites et modification des métadonnées et notes activées"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Sélecteur de langue"
+msgstr "Nouvelle langue : swahili"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Traductions expérimentales pour le français et le géorgien"
+msgstr "Traductions améliorées pour l'ukrainien, le géorgien et l'espagnol"
 
 #: 
 #, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "Créer des sites hors ligne"
-
-#: 
-#, fuzzy
-msgid "welcome##next##bullet_2"
-msgstr "Modifier les notes hors ligne"
+msgstr "pH du sol"
 
 #: 
 #, fuzzy
@@ -1033,11 +878,6 @@ msgstr "Liste des sites"
 
 #: 
 #, fuzzy
-msgid "site##last_updated"
-msgstr "Dernière modification : {{date}} par {{name}}"
-
-#: 
-#, fuzzy
 msgid "site##more_info"
 msgstr "En savoir plus"
 
@@ -1058,11 +898,6 @@ msgstr "Meilleure correspondance du site écologique"
 
 #: 
 #, fuzzy
-msgid "site##annual_precip_avg"
-msgstr "Précipitations annuelles moyennes"
-
-#: 
-#, fuzzy
 msgid "site##elevation_label"
 msgstr "Élévation"
 
@@ -1075,11 +910,6 @@ msgstr "{{value}} {{units}}"
 #, fuzzy
 msgid "site##elevation_unknown"
 msgstr "inconnu"
-
-#: 
-#, fuzzy
-msgid "site##create##button_label"
-msgstr "Créer un site ici"
 
 #: 
 #, fuzzy
@@ -1113,16 +943,6 @@ msgstr "Le site héritera des paramètres du projet, notamment des exigences de 
 
 #: 
 #, fuzzy
-msgid "site##create##privacy_tooltip"
-msgstr "Les projets publics synchroniseront les données avec les portails de données publics. "
-
-#: 
-#, fuzzy
-msgid "site##create##privacy_tooltip_link"
-msgstr "En savoir plus"
-
-#: 
-#, fuzzy
 msgid "site##form##name_min_length_error"
 msgstr "Le nom du site doit comporter au moins {{min}} caractères"
 
@@ -1153,58 +973,13 @@ msgstr "La longitude doit être au plus {{max}}"
 
 #: 
 #, fuzzy
-msgid "site##dashboard##team_button"
-msgstr "Équipe"
-
-#: 
-#, fuzzy
-msgid "site##dashboard##transfer_label"
-msgstr "Transfert au projet"
-
-#: 
-#, fuzzy
-msgid "site##dashboard##copy_download_link_button"
-msgstr "Copier le lien de téléchargement du site"
-
-#: 
-#, fuzzy
-msgid "site##dashboard##archive_button"
-msgstr "Archiver ce site"
-
-#: 
-#, fuzzy
-msgid "site##dashboard##archive_button_help_text"
-msgstr "Marquer ce site en lecture seule"
-
-#: 
-#, fuzzy
 msgid "site##dashboard##delete_button"
 msgstr "Supprimer ce site"
 
 #: 
 #, fuzzy
-msgid "site##dashboard##location_accuracy"
-msgstr "Précision de localisation"
-
-#: 
-#, fuzzy
 msgid "site##dashboard##default_title"
 msgstr "Marqueur temporaire"
-
-#: 
-#, fuzzy
-msgid "site##dashboard##speed_dial##note_label"
-msgstr "NOTE"
-
-#: 
-#, fuzzy
-msgid "site##dashboard##speed_dial##photo_label"
-msgstr "PHOTO"
-
-#: 
-#, fuzzy
-msgid "site##dashboard##speed_dial##bedrock_label"
-msgstr "ROCHE MÈRE"
 
 #: 
 #, fuzzy
@@ -1511,18 +1286,8 @@ msgstr "Aucun site ne correspond aux options de recherche et de filtrage actuell
 
 #: 
 #, fuzzy
-msgid "projects##learn_more"
-msgstr "En savoir plus sur l'utilisation des projets"
-
-#: 
-#, fuzzy
 msgid "projects##create_button"
 msgstr "Créer un projet"
-
-#: 
-#, fuzzy
-msgid "projects##go_to"
-msgstr "Accéder au projet"
 
 #: 
 #, fuzzy
@@ -1548,26 +1313,6 @@ msgstr "Description du projet"
 #, fuzzy
 msgid "projects##create##privacy_label"
 msgstr "Confidentialité des données"
-
-#: 
-#, fuzzy
-msgid "projects##inputs##soil_source##heading"
-msgstr "Source d'informations sur les sols par défaut"
-
-#: 
-#, fuzzy
-msgid "projects##inputs##soil_source##survey"
-msgstr "Enquête sur les sols du NRCS de l'USDA"
-
-#: 
-#, fuzzy
-msgid "projects##inputs##soil_source##grids"
-msgstr "SoilGrids"
-
-#: 
-#, fuzzy
-msgid "projects##inputs##soil_source##a11yLabel"
-msgstr "source d'informations sur les sols par défaut"
 
 #: 
 #, fuzzy
@@ -1621,36 +1366,6 @@ msgstr "Quitter"
 
 #: 
 #, fuzzy
-msgid "projects##edit##input_header"
-msgstr "Paramètres généraux du projet"
-
-#: 
-#, fuzzy
-msgid "projects##settings##copy_download_link"
-msgstr "Copier le lien de téléchargement du projet"
-
-#: 
-#, fuzzy
-msgid "projects##settings##download_link_description"
-msgstr "Un fichier zippé contenant toutes les ressources du projet, incluant un fichier .csv contenant les données du site, les notes de terrain, les journaux d'audit et les photos. Toute personne disposant de ce lien peut consulter l'ensemble des ressources."
-
-#: 
-#, fuzzy
-msgid "projects##settings##archive_button"
-msgstr "Archiver"
-
-#: 
-#, fuzzy
-msgid "projects##settings##archive_button_prompt"
-msgstr "Archiver le projet ?"
-
-#: 
-#, fuzzy
-msgid "projects##settings##archive_description"
-msgstr "Le projet sera déplacé vers les projets archivés, le rendant ainsi accessible en lecture seule. Les membres de l'équipe pourront accéder aux données et les chefs de projet pourront les restaurer à tout moment. Les projets publics archivés resteront consultables sur les portails de données."
-
-#: 
-#, fuzzy
 msgid "projects##settings##delete_button"
 msgstr "Supprimer"
 
@@ -1675,16 +1390,6 @@ msgstr "Ce projet n'a pas encore de sites."
 #, fuzzy
 msgid "projects##sites##empty_contributor"
 msgstr "Vous pouvez transférer des sites d'identification de sols LandPKS existants vers ce projet. Vous pouvez également créer de nouveaux sites dans l'onglet Sites et les ajouter à ce projet."
-
-#: 
-#, fuzzy
-msgid "projects##sites##go_to"
-msgstr "Accéder au site"
-
-#: 
-#, fuzzy
-msgid "projects##sites##audit_log"
-msgstr "Journal d'audit"
 
 #: 
 #, fuzzy
@@ -1742,11 +1447,6 @@ msgstr "Les sites transférés utiliseront les entrées, les paramètres et les 
 #, fuzzy
 msgid "projects##sites##transfer_site_modal##action_name"
 msgstr "Transfert"
-
-#: 
-#, fuzzy
-msgid "projects##sites##search##accessility_label"
-msgstr "Rechercher des sites"
 
 #: 
 #, fuzzy
@@ -1895,11 +1595,6 @@ msgstr "Version d'application non balisée {{environment}}"
 
 #: 
 #, fuzzy
-msgid "general##last_modified"
-msgstr "Dernière modification"
-
-#: 
-#, fuzzy
 msgid "general##last_modified_by"
 msgstr "dernière modification {{user}}, {{date}}"
 
@@ -1922,26 +1617,6 @@ msgstr "nom@domaine.com"
 #, fuzzy
 msgid "general##email_label"
 msgstr "Adresse email"
-
-#: 
-#, fuzzy
-msgid "general##profile_image_alt"
-msgstr "Image de profil"
-
-#: 
-#, fuzzy
-msgid "general##measurement_units##METRIC"
-msgstr "Métrique"
-
-#: 
-#, fuzzy
-msgid "general##measurement_units##ENGLISH"
-msgstr "Anglais"
-
-#: 
-#, fuzzy
-msgid "general##filter##no_sort"
-msgstr "Aucun"
 
 #: 
 #, fuzzy
@@ -2160,11 +1835,6 @@ msgstr "Connectez-vous avec Google"
 
 #: 
 #, fuzzy
-msgid "account##apple_login"
-msgstr "Connectez-vous avec Apple"
-
-#: 
-#, fuzzy
 msgid "account##microsoft_login"
 msgstr "Connectez-vous avec Microsoft"
 
@@ -2195,16 +1865,6 @@ msgstr "Nombre de filtres appliqués"
 
 #: 
 #, fuzzy
-msgid "listfilter##clear_search_label"
-msgstr "Effacer le filtre de recherche"
-
-#: 
-#, fuzzy
-msgid "listfilter##text_input_label"
-msgstr "Filtrer la liste par entrée de recherche"
-
-#: 
-#, fuzzy
 msgid "soil##top_match"
 msgstr "Match de haut niveau"
 
@@ -2232,11 +1892,6 @@ msgstr "Soil ID"
 #, fuzzy
 msgid "soil##add_depth_label"
 msgstr "Ajouter de la profondeur"
-
-#: 
-#, fuzzy
-msgid "soil##project_settings##pit_required_label"
-msgstr "Fosse de sol requise"
 
 #: 
 #, fuzzy
@@ -2665,21 +2320,6 @@ msgstr "Utiliser le guide"
 
 #: 
 #, fuzzy
-msgid "soil##texture##clay_title"
-msgstr "Pourcentage d'argile"
-
-#: 
-#, fuzzy
-msgid "soil##texture##clay_label"
-msgstr "Pourcentage d'argile"
-
-#: 
-#, fuzzy
-msgid "soil##texture##clay_help"
-msgstr "0–100 %"
-
-#: 
-#, fuzzy
 msgid "soil##texture##fragment_title"
 msgstr "Volume du fragment de roche"
 
@@ -2932,16 +2572,6 @@ msgstr "Inclinomètre"
 #, fuzzy
 msgid "slope##steepness##camera_grant"
 msgstr "Accorder l'autorisation de la caméra"
-
-#: 
-#, fuzzy
-msgid "slope##steepness##no_camera"
-msgstr "Pas d'accès à la caméra"
-
-#: 
-#, fuzzy
-msgid "slope##steepness##no_camera_explanation"
-msgstr "Pour de meilleurs résultats, autorisez LandPKS Soil ID à utiliser votre caméra dans les paramètres"
 
 #: 
 #, fuzzy
@@ -3211,11 +2841,6 @@ msgstr "Un site permet de collecter et de sauvegarder des observations, d’en a
 
 #: 
 #, fuzzy
-msgid "site##offline##alert_body"
-msgstr "Les sites ne peuvent être créés qu'en ligne."
-
-#: 
-#, fuzzy
 msgid "site##soil_id##matches##match_score"
 msgstr "{{score}}"
 
@@ -3223,11 +2848,6 @@ msgstr "{{score}}"
 #, fuzzy
 msgid "site##soil_id##matches##offline"
 msgstr "Les correspondances de sol seront mises à jour lorsque vous serez en ligne."
-
-#: 
-#, fuzzy
-msgid "site##soil_id##matches##selector"
-msgstr "C'est le bon sol"
 
 #: 
 #, fuzzy
@@ -3253,11 +2873,6 @@ msgstr "Le score des propriétés du sol sera mis à jour lorsque vous serez en 
 #, fuzzy
 msgid "site##notes##pinned_note"
 msgstr "Note épinglée"
-
-#: 
-#, fuzzy
-msgid "site##notes##offline"
-msgstr "La création et la modification de notes sont uniquement disponibles en ligne."
 
 #: 
 #, fuzzy
@@ -6163,7 +5778,7 @@ msgstr "Vous avez des modifications non synchronisées qui doivent être téléc
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "Nouvelle expérience de notation des sols pour une identification plus facile des sols"
+msgstr "Message d'erreur plus détaillé pour les conflits de synchronisation"
 
 #: 
 #, fuzzy
@@ -6242,31 +5857,6 @@ msgstr "Exporter le site"
 
 #: 
 #, fuzzy
-msgid "export##site_export_description"
-msgstr "Téléchargez ou partagez les données de ce site."
-
-#: 
-#, fuzzy
-msgid "export##site_export_button"
-msgstr "Exporter les données du site"
-
-#: 
-#, fuzzy
-msgid "export##what_is_in_file"
-msgstr "Que contient le fichier ?"
-
-#: 
-#, fuzzy
-msgid "export##loading"
-msgstr "Chargement des paramètres d'exportation..."
-
-#: 
-#, fuzzy
-msgid "export##downloading"
-msgstr "Téléchargement..."
-
-#: 
-#, fuzzy
 msgid "export##preparing_file"
 msgstr "Préparation du fichier {{resourceType}} pour {{name}}"
 
@@ -6282,16 +5872,6 @@ msgstr "Sauvegarder les données LandPKS pour {{name}}"
 
 #: 
 #, fuzzy
-msgid "export##save_error_title"
-msgstr "Sauvegarde échouée"
-
-#: 
-#, fuzzy
-msgid "export##save_error_message"
-msgstr "Échec de l'enregistrement du fichier : {{error}}"
-
-#: 
-#, fuzzy
 msgid "export##share_title"
 msgstr "Exportation des données LandPKS pour les sites de {{name}}"
 
@@ -6299,11 +5879,6 @@ msgstr "Exportation des données LandPKS pour les sites de {{name}}"
 #, fuzzy
 msgid "export##share_subject"
 msgstr "Lien vers les sites LandPKS de {{name}}"
-
-#: 
-#, fuzzy
-msgid "export##share_android_message"
-msgstr "Exporter les données {{resourceType}} pour {{name}}:"
 
 #: 
 #, fuzzy
@@ -6329,26 +5904,6 @@ msgstr "Réinitialiser les liens de partage ?"
 #, fuzzy
 msgid "export##reset_links_body"
 msgstr "Cette action désactivera vos liens de partage actuels. Les personnes disposant de vos anciens liens ne pourront plus accéder aux fichiers."
-
-#: 
-#, fuzzy
-msgid "export##create_token_error_title"
-msgstr "Impossible de créer le lien"
-
-#: 
-#, fuzzy
-msgid "export##create_token_error_message"
-msgstr "Impossible de créer le lien d'exportation. Veuillez vérifier votre connexion et réessayer."
-
-#: 
-#, fuzzy
-msgid "export##delete_token_error_title"
-msgstr "Échec de la réinitialisation du lien"
-
-#: 
-#, fuzzy
-msgid "export##delete_token_error_message"
-msgstr "Impossible de réinitialiser le lien d'exportation. Veuillez vérifier votre connexion et réessayer."
 
 #: 
 #, fuzzy
@@ -6392,23 +5947,8 @@ msgstr "L'enregistrement de fichiers n'est pas pris en charge sur cette platefor
 
 #: 
 #, fuzzy
-msgid "file_download##error##no_storage_directory"
-msgstr "Aucun répertoire de stockage disponible."
-
-#: 
-#, fuzzy
-msgid "file_download##error##sharing_unavailable"
-msgstr "Le partage n'est pas disponible sur cet appareil."
-
-#: 
-#, fuzzy
 msgid "file_download##error##save_canceled"
 msgstr "Sauvegarde annulée."
-
-#: 
-#, fuzzy
-msgid "file_download##error##no_directory_selected"
-msgstr "Aucun répertoire sélectionné."
 
 #: 
 #, fuzzy
@@ -6476,4 +6016,24 @@ msgstr "Quelque chose s'est mal passé"
 #, fuzzy
 msgid "soil##color##analysis_error##body"
 msgstr "Un problème est survenu lors de l'identification de la couleur du sol. Veuillez suivre les instructions d'analyse photo et réessayer. Si le problème persiste, contactez l'assistance."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_5"
+msgstr "Expérience améliorée pour la recherche de coordonnées sur la carte"
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_6"
+msgstr "Correction d'un problème où les utilisateurs qui se déconnectaient puis se reconnectaient avec un autre compte voyaient temporairement les données du premier compte"
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_7"
+msgstr "Correction d'un bug où le module de couleur plantait avec des photos surexposées"
+
+#: 
+#, fuzzy
+msgid "projects##sites##transfer_offline"
+msgstr "Le transfert de sites n'est disponible qu'en ligne."
 
