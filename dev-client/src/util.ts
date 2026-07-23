@@ -172,6 +172,17 @@ export const isValidCoordinates = (input: string) => {
   return isValidLatitude(latitude) && isValidLongitude(longitude);
 };
 
+// Guards against non-finite coordinates (NaN/undefined/Infinity) reaching
+// native map APIs. Mapbox's setCamera throws "coordinates must contain numbers"
+// on a non-numeric centerCoordinate, which crashes the app via Hermes. Some
+// devices (e.g. Wi-Fi-only iPads using a CoreLocation fallback) can surface a
+// non-null location whose latitude/longitude are not finite numbers.
+// isValidLatitude/isValidLongitude already reject these (NaN >= -90 is false).
+export const isValidCoords = (coords: Coords | null): coords is Coords =>
+  coords !== null &&
+  isValidLatitude(coords.latitude) &&
+  isValidLongitude(coords.longitude);
+
 export const getSoilWebUrl = (coords: Coords) => {
   return `https://casoilresource.lawr.ucdavis.edu/gmap/?loc=${coords.latitude},${coords.longitude}`;
 };
