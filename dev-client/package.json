@@ -8,6 +8,8 @@
     "rebuild-all": "bash scripts/rebuild_all",
     "rebuild-all-ios": "bash scripts/rebuild_all ios",
     "rebuild-all-android": "bash scripts/rebuild_all android",
+    "list-ios-devices": "bash scripts/list-ios-devices",
+    "pick-ios-device": "bash scripts/pick-ios-device",
     "eslint": "eslint ./ --ext .js --ext .ts --ext .tsx --max-warnings 0 --ignore-path ../.gitignore",
     "lint": "npm run eslint && npm run prettier",
     "lint-js": "npm run lint",
