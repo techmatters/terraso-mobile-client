@@ -145,14 +145,37 @@ export const predictColorFromReference = (
   );
 };
 
-const correctSampleRGB = (
+// Standard piecewise sRGB transfer function.
+export const srgbToLinear = (c: number): number => {
+  const x = c / 255;
+  return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+};
+
+// Inverse of srgbToLinear. Clamps to [0, 255].
+export const linearToSrgb = (x: number): number => {
+  const clamped = Math.max(0, Math.min(1, x));
+  const c =
+    clamped <= 0.0031308
+      ? 12.92 * clamped
+      : 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055;
+  return Math.max(0, Math.min(255, Math.round(c * 255)));
+};
+
+export const correctSampleRGB = (
   cardPixel: RGB,
   samplePixel: RGB,
   referenceRGB: RGB,
 ): RGB => {
-  return cardPixel.map(
-    (cardV, index) => (referenceRGB[index] / cardV) * samplePixel[index],
-  ) as RGB;
+  // Per-channel gain (von-Kries-style WB correction) is only physically correct
+  // in linear-light space. Doing it on sRGB-encoded values under/over-corrects
+  // depending on where each value sits on the gamma curve.
+  return cardPixel.map((cardV, index) => {
+    const cardLin = srgbToLinear(cardV);
+    if (cardLin === 0) return 0; // guard against a fully-black card
+    const sampleLin = srgbToLinear(samplePixel[index]);
+    const referenceLin = srgbToLinear(referenceRGB[index]);
+    return linearToSrgb((referenceLin / cardLin) * sampleLin);
+  }) as RGB;
 };
 
 export const dominantColor = (pixels: RGBA[]): RGB => {
