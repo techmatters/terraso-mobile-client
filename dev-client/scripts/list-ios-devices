@@ -1,24 +1,43 @@
 #!/bin/bash
-# List connected physical iOS devices (iPhone/iPad).
+# List connected physical iOS devices AND available simulators, grouped.
 #
-# Filters for lines with TWO paren groups — (iOS version) (UDID) — which
-# excludes the host Mac (single paren group, no version). Simulators are in
-# a separate "== Simulators ==" section and skipped automatically.
+# The `== Devices ==` and `== Simulators ==` sections of xctrace's output are
+# parsed separately. Both sections list the Mac host with only a single paren
+# group; iPhones/iPads/simulators have TWO paren groups — (iOS version) (UDID)
+# — so the regex filter naturally excludes the Mac. Apple Watch and Apple TV
+# simulators are filtered out to reduce noise (the app targets iPhone + iPad).
 
 set -e
 
-devices=$(xcrun xctrace list devices 2>&1 | awk '
+raw=$(xcrun xctrace list devices 2>&1)
+
+hardware=$(echo "$raw" | awk '
   /^== Devices ==/ { in_devices=1; next }
   /^== /           { in_devices=0 }
   in_devices && /\([0-9.]+\).*\([0-9A-Fa-f-]+\)$/ { print }
 ')
 
-if [[ -z "$devices" ]]; then
-  echo "No connected iOS devices."
-  echo "  - Plug in your iPhone via USB (or connect via network via Xcode)"
-  echo "  - Unlock the phone and tap 'Trust this computer' if prompted"
-  echo "  - Confirm the phone appears in Xcode: Window > Devices and Simulators"
+simulators=$(echo "$raw" | awk '
+  /^== Simulators ==/ { in_sims=1; next }
+  /^== /              { in_sims=0 }
+  in_sims && /\([0-9.]+\).*\([0-9A-Fa-f-]+\)$/ && !/Apple Watch/ && !/Apple TV/ { print }
+')
+
+if [[ -z "$hardware" && -z "$simulators" ]]; then
+  echo "No connected devices or simulators found."
+  echo "  - For a physical device: plug in your iPhone via USB, unlock it,"
+  echo "    and tap 'Trust this computer' if prompted"
+  echo "  - For a simulator: open Xcode > Window > Devices and Simulators"
   exit 1
 fi
 
-echo "$devices"
+if [[ -n "$hardware" ]]; then
+  echo "Physical devices:"
+  echo "$hardware" | sed 's/^/  /'
+  echo ""
+fi
+
+if [[ -n "$simulators" ]]; then
+  echo "Simulators:"
+  echo "$simulators" | sed 's/^/  /'
+fi
