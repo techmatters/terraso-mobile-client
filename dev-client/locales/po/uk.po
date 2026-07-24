@@ -781,6 +781,7 @@ msgid "site##create##location_label"
 msgstr "Розташування ділянки"
 
 #: 
+#, fuzzy
 msgid "site##create##location_accuracy"
 msgstr "Точність GPS: {{accuracyM}} м"
 
@@ -1091,10 +1092,12 @@ msgid "projects##role_filter_label"
 msgstr "Фільтрувати проекти за роллю"
 
 #: 
+#, fuzzy
 msgid "projects##create##name_label"
 msgstr "Назва проекту"
 
 #: 
+#, fuzzy
 msgid "projects##create##description_label"
 msgstr "Опис проекту"
 
@@ -1230,8 +1233,9 @@ msgid "projects##add_user##user_in_project"
 msgstr "Вже є членом команди"
 
 #: 
+#, fuzzy
 msgid "projects##add_user##invalid_email"
-msgstr "Введіть дійсну адресу електронної пошти"
+msgstr "Потрібна дійсна адреса електронної пошти"
 
 #: 
 msgid "projects##manage_member##title"
@@ -1292,10 +1296,6 @@ msgstr "Назва проєкту має містити щонайменше {{m
 #: 
 msgid "projects##form##name_max_length_error"
 msgstr "Назва проєкту має містити щонайбільше {{max}} символів"
-
-#: 
-msgid "projects##form##description_min_length_error"
-msgstr "Опис проекту має містити щонайменше {{min}} символів"
 
 #: 
 msgid "projects##form##description_max_length_error"
@@ -1467,33 +1467,33 @@ msgid "delete_account##confirm##p0"
 msgstr "<bold>{{email}}</bold>"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p1"
-msgstr "Обліковий запис LandPKS, пов’язаний із цією адресою електронної пошти, буде видалено. Це призведе до видалення:"
+msgstr "Обліковий запис Terraso та дані LandPKS, пов'язані з цією адресою електронної пошти, буде видалено. Це включає:"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p2##b0"
-msgstr "ваших неафілійованих ділянок"
+msgstr "Ваші неафілійовані ділянки LandPKS"
 
 #: 
 #, fuzzy
 msgid "delete_account##confirm##p2##b1"
-msgstr "проектів, єдиним керівником яких ви є, та пов'язаних з ними ділянок"
+msgstr "Ваші проєкти LandPKS без інших керівників та пов'язані з ними ділянки"
 
 #: 
 msgid "delete_account##confirm##p3"
 msgstr "Наступні дані не будуть видалені:"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p4##b0"
-msgstr "спостереження, які ви зробили для проєкту, в якому ви не єдиний керівником"
+msgstr "Спостереження LandPKS, які ви внесли в проєкти з іншими керівниками"
 
 #: 
-msgid "delete_account##confirm##p4##b1"
-msgstr "ваш обліковий запис Terraso (включно з групами, ландшафтами та сюжетними картами)"
-
-#: 
+#, fuzzy
 msgid "delete_account##confirm##p5"
-msgstr "<bold>Введіть свою адресу електронної пошти, щоб підтвердити видалення:</bold>"
+msgstr "<bold>Введіть вказану вище адресу електронної пошти, щоб підтвердити видалення:</bold>"
 
 #: 
 msgid "delete_account##confirm##cancel"
@@ -1508,12 +1508,9 @@ msgid "delete_account##pending##p0"
 msgstr "<bold>{{email}}</bold>"
 
 #: 
+#, fuzzy
 msgid "delete_account##pending##p1"
-msgstr "Ваш запит на видалення облікового запису надіслано. Обліковий запис для {{email}} буде видалено протягом п’яти робочих днів."
-
-#: 
-msgid "delete_account##pending##p2"
-msgstr "Ви отримаєте підтвердження електронною поштою, коли ваш обліковий запис буде видалено."
+msgstr "Ваш запит на видалення облікового запису надіслано."
 
 #: 
 msgid "sign_out##confirm_body"
@@ -2103,12 +2100,14 @@ msgid "slope##steepness##percentage_placeholder"
 msgstr "Відсоток"
 
 #: 
+#, fuzzy
 msgid "slope##steepness##percentage_help"
-msgstr "0%–999%"
+msgstr "0–999"
 
 #: 
+#, fuzzy
 msgid "slope##steepness##degree_help"
-msgstr "0°–89°"
+msgstr "0–89"
 
 #: 
 #, fuzzy
@@ -4968,4 +4967,39 @@ msgstr "Виправлено помилку, через яку модуль ко
 #, fuzzy
 msgid "projects##sites##transfer_offline"
 msgstr "Перенесення сайтів доступне лише в режимі онлайн."
+
+#: 
+#, fuzzy
+msgid "site##form##number_error"
+msgstr "Дозволені лише цифри та крапка"
+
+#: 
+#, fuzzy
+msgid "general##filter##unaffiliated"
+msgstr "Unaffiliated (no project)"
+
+#: 
+#, fuzzy
+msgid "general##read_only"
+msgstr "Лише для читання"
+
+#: 
+#, fuzzy
+msgid "delete_account##confirm##p2##b2"
+msgstr "Ваш обліковий запис Terraso (включно з групами, ландшафтами та сюжетними картами)"
+
+#: 
+#, fuzzy
+msgid "delete_account##confirm##error"
+msgstr "Електронна пошта не збігається"
+
+#: 
+#, fuzzy
+msgid "account_deleted##title"
+msgstr "Обліковий запис видалено"
+
+#: 
+#, fuzzy
+msgid "account_deleted##body"
+msgstr "Обліковий запис, пов'язаний із {{email}}, було видалено. Якщо це сталося помилково, зверніться до нашої служби підтримки."
 

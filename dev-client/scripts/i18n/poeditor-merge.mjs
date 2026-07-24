@@ -287,7 +287,7 @@ const projectArg =
 /** Run a localization script via execSync. Skips if DRY_RUN. */
 function runScript(scriptName, scriptArgs) {
   const cmd =
-    `node --env-file=.env scripts/i18n/${scriptName} ${projectArg} ${scriptArgs}`.replace(
+    `node scripts/i18n/${scriptName} ${projectArg} ${scriptArgs}`.replace(
       /  +/g,
       ' ',
     );
