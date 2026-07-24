@@ -19,8 +19,8 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {Photo} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
-import {PickImageButton} from 'terraso-mobile-client/components/inputs/image/PickImageButton';
+import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import {RawPickImageButton} from 'terraso-mobile-client/components/inputs/image/RawPickImageButton';
 import {
   Box,
   Column,
@@ -37,9 +37,14 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   const navigation = useNavigation();
 
   const onPickImage = useCallback(
-    (photo: Photo) => {
+    (result: CaptureResult) => {
+      // Phase 2: only the JPEG branch is ever populated. The RAW branch is
+      // wired up in phase 4 (see docs/raw-camera-plan.md); guarding here
+      // means a future partial rollout doesn't silently corrupt the sRGB
+      // pipeline downstream.
+      if (result.kind !== 'jpeg') return;
       navigation.navigate('COLOR_ANALYSIS', {
-        photo: photo,
+        photo: result.photo,
         pitProps: props,
       });
     },
@@ -56,7 +61,7 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
       <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Column>
           <Box alignItems="center" paddingVertical="lg">
-            <PickImageButton
+            <RawPickImageButton
               featureName={t('soil.color.featureName')}
               onPick={onPickImage}
             />
