@@ -1,0 +1,24 @@
+#!/bin/bash
+# List connected physical iOS devices (iPhone/iPad).
+#
+# Filters for lines with TWO paren groups — (iOS version) (UDID) — which
+# excludes the host Mac (single paren group, no version). Simulators are in
+# a separate "== Simulators ==" section and skipped automatically.
+
+set -e
+
+devices=$(xcrun xctrace list devices 2>&1 | awk '
+  /^== Devices ==/ { in_devices=1; next }
+  /^== /           { in_devices=0 }
+  in_devices && /\([0-9.]+\).*\([0-9A-Fa-f-]+\)$/ { print }
+')
+
+if [[ -z "$devices" ]]; then
+  echo "No connected iOS devices."
+  echo "  - Plug in your iPhone via USB (or connect via network via Xcode)"
+  echo "  - Unlock the phone and tap 'Trust this computer' if prompted"
+  echo "  - Confirm the phone appears in Xcode: Window > Devices and Simulators"
+  exit 1
+fi
+
+echo "$devices"
