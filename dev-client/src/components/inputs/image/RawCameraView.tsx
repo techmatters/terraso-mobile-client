@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Modal, Pressable, StatusBar, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -64,10 +64,20 @@ export const RawCameraView = ({
     }
   }, [visible, hasPermission, requestPermission]);
 
-  const photoOutput = usePhotoOutput({
-    targetResolution: {width: 4032, height: 3024},
-    containerFormat,
-  });
+  // usePhotoOutput must be called with stable options — vision-camera diffs
+  // by identity to decide whether to reconfigure the capture session, and a
+  // fresh object literal every render triggers reconfigure loops (which can
+  // crash the native camera stack right after init).
+  const photoOutputOptions = useMemo(
+    () => ({
+      targetResolution: {width: 4032, height: 3024},
+      containerFormat,
+    }),
+    [containerFormat],
+  );
+  const photoOutput = usePhotoOutput(photoOutputOptions);
+  // Same rationale for the outputs array passed to <Camera>.
+  const outputs = useMemo(() => [photoOutput], [photoOutput]);
 
   const cancel = useCallback(() => {
     setIsCapturing(false);
@@ -125,7 +135,7 @@ export const RawCameraView = ({
               style={StyleSheet.absoluteFill}
               device={device}
               isActive={visible}
-              outputs={[photoOutput]}
+              outputs={outputs}
             />
           ) : !hasPermission ? (
             <View style={styles.messageContainer}>
