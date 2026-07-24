@@ -185,7 +185,7 @@ const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
   slug: 'landpks',
   version: '1.4.8',
-  newArchEnabled: true,
+  // newArchEnabled removed as of SDK 55 — new arch is always on now.
   orientation: 'portrait',
   splash: {
     image: 'src/assets/splash.png',
@@ -252,6 +252,10 @@ const defaultConfig: ExpoConfig = {
     },
   },
   plugins: [
+    // Required as of Expo SDK 55 — previously auto-registered.
+    '@sentry/react-native',
+    'expo-asset',
+    'expo-font',
     ['expo-apple-authentication'],
     ['expo-localization'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],
