@@ -1,0 +1,17 @@
+diff --git a/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift b/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift
+index 5b82535..e0a8039 100644
+--- a/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift	
++++ b/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift	
+@@ -59,7 +59,11 @@ final class HybridCameraPhotoOutput: HybridCameraPhotoOutputSpec, NativeCameraOu
+ 
+     if options.containerFormat == .dng {
+       // If we capture RAW photos, try using Apple ProRAW. If not, Bayer14 RAW will be used.
+-      output.isAppleProRAWEnabled = output.isAppleProRAWSupported
++      //
++      // terraso-mobile-client patch: force plain Bayer DNG even on ProRAW-capable
++      // devices, so we have a single Bayer decode path across iOS and Android for
++      // soil-color analysis. See dev-client/docs/raw-camera-plan.md.
++      output.isAppleProRAWEnabled = false
+     }
+ 
+     if #available(iOS 26, *),
