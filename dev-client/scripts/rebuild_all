@@ -157,6 +157,13 @@ else
 fi
 
 if [[ "$PLATFORM" == "ios" ]]; then
+    # Device precedence:  IOS_DEVICE_ID env var  >  ~/.landpks-ios-device file
+    # >  simulator (Expo's default when no --device flag). The file is written
+    # by scripts/pick-ios-device; its first whitespace-separated token is the
+    # UDID (anything after # is a human-readable name for the reader).
+    if [[ -z "$IOS_DEVICE_ID" ]] && [[ -f "$HOME/.landpks-ios-device" ]]; then
+        IOS_DEVICE_ID=$(awk 'NF && $1!~/^#/ {print $1; exit}' "$HOME/.landpks-ios-device")
+    fi
     if [[ -n "$IOS_DEVICE_ID" ]]; then
         $EXPO_PTY_WRAPPER npm run ios -- --device "$IOS_DEVICE_ID" | $LAUNCH_TIMER | $LOG_FILTER
     else

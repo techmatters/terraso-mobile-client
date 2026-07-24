@@ -1,0 +1,67 @@
+#!/bin/bash
+# Interactive: list connected physical iOS devices, prompt to pick one,
+# save the UDID to ~/.landpks-ios-device so scripts/rebuild_all can pick
+# it up on subsequent runs.
+#
+# File format is one line: `<UDID>  # <display name>` — the # comment is
+# for the human; rebuild_all reads only the first whitespace-separated
+# token.
+
+set -e
+
+DEVICE_FILE="$HOME/.landpks-ios-device"
+
+devices=$(xcrun xctrace list devices 2>&1 | awk '
+  /^== Devices ==/ { in_devices=1; next }
+  /^== /           { in_devices=0 }
+  in_devices && /\([0-9.]+\).*\([0-9A-Fa-f-]+\)$/ { print }
+')
+
+if [[ -z "$devices" ]]; then
+  echo "No connected iOS devices."
+  echo "  - Plug in your iPhone via USB (or connect via network via Xcode)"
+  echo "  - Unlock the phone and tap 'Trust this computer' if prompted"
+  echo "  - Confirm the phone appears in Xcode: Window > Devices and Simulators"
+  exit 1
+fi
+
+echo "Connected devices:"
+i=1
+while IFS= read -r line; do
+  printf "  [%d] %s\n" "$i" "$line"
+  i=$((i + 1))
+done <<<"$devices"
+
+count=$((i - 1))
+echo ""
+if [[ "$count" -eq 1 ]]; then
+  choice=1
+  echo "Only one device — auto-selecting [1]."
+else
+  read -r -p "Pick device [1-$count]: " choice
+fi
+
+if ! [[ "$choice" =~ ^[0-9]+$ ]] || [[ "$choice" -lt 1 ]] || [[ "$choice" -gt "$count" ]]; then
+  echo "Invalid selection: $choice"
+  exit 1
+fi
+
+chosen=$(echo "$devices" | sed -n "${choice}p")
+# UDID is the final "(...)" group on the line — parens contents are hex + hyphens.
+udid=$(echo "$chosen" | grep -oE '\([0-9A-Fa-f-]+\)$' | tr -d '()')
+# Human-readable name is everything before " (<iOS version>)". Strip both paren groups.
+name=$(echo "$chosen" | sed -E 's/ \([0-9.]+\) \([0-9A-Fa-f-]+\)$//')
+
+if [[ -z "$udid" ]]; then
+  echo "Could not parse UDID from: $chosen"
+  exit 1
+fi
+
+echo "$udid  # $name" >"$DEVICE_FILE"
+
+echo ""
+echo "Saved to $DEVICE_FILE"
+echo "  UDID: $udid"
+echo "  Name: $name"
+echo ""
+echo "Now run:  npm run rebuild-all-ios"
