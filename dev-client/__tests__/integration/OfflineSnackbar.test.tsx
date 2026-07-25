@@ -220,7 +220,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     // Dismiss snackbar
     // FYI: run timers so snackbar's dismissal animation completes
     await act(async () => {
-      fireEvent(snackbar, 'onDismiss');
+      fireEvent(snackbar!, 'onDismiss');
     });
     await act(async () => {
       jest.runAllTimers();
@@ -231,7 +231,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     // Fire the test button event to make a server request. The request is mocked to fail,
     // which should add a message to the notificationsSlice and trigger the snackbar.
     await act(async () => {
-      fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
+      fireEvent.press(screen.queryByTestId('test-delete-project-btn')!);
     });
 
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
@@ -256,7 +256,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
     await act(async () => {
-      fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
+      fireEvent.press(screen.queryByTestId('test-delete-project-btn')!);
     });
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
@@ -284,7 +284,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     // Dismiss snackbar
     // FYI: run timers so snackbar's dismissal animation completes
     await act(async () => {
-      fireEvent(snackbar, 'onDismiss');
+      fireEvent(snackbar!, 'onDismiss');
     });
     await act(async () => {
       jest.runAllTimers();
@@ -293,7 +293,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
     await act(async () => {
-      fireEvent.press(screen.queryByTestId('test-delete-project-btn'));
+      fireEvent.press(screen.queryByTestId('test-delete-project-btn')!);
     });
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
