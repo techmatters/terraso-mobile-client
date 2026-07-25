@@ -73,6 +73,31 @@ export const RawCameraView = ({
   );
   const {hasPermission, requestPermission} = useCameraPermission();
 
+  // TEMPORARY DIAGNOSTIC — remove once RAW capture is verified working.
+  // Prints the selected device's identity so we can see whether the
+  // physicalDevices filter took effect (single-cam wide-angle vs a
+  // virtual multi-cam device).
+  useEffect(() => {
+    if (visible && device) {
+      console.log(
+        'RawCameraView device:',
+        JSON.stringify(
+          {
+            id: device.id,
+            name: device.name,
+            position: device.position,
+            type: device.type,
+            isVirtualDevice: device.isVirtualDevice,
+            physicalDeviceTypes: device.physicalDevices.map(d => d.type),
+            containerFormat,
+          },
+          null,
+          2,
+        ),
+      );
+    }
+  }, [visible, device, containerFormat]);
+
   const [isCapturing, setIsCapturing] = useState(false);
 
   useEffect(() => {
