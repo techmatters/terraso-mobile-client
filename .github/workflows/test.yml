@@ -7,9 +7,9 @@ on:
       - main
       - dependencies
   pull_request:
-    branches:
-      - main
-      - dependencies
+    # No `branches:` filter — fire on PRs targeting any branch so stacked
+    # PRs (PR-to-PR) get CI too. Without this, only PRs to main/dependencies
+    # would trigger, and stacked PRs sit silent.
     types:
       - opened
       - edited

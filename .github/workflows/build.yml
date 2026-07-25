@@ -8,9 +8,8 @@ on:
       - main
       - dependencies
   pull_request:
-    branches:
-      - main
-      - dependencies
+    # No `branches:` filter — fire on PRs targeting any branch so stacked
+    # PRs get iOS/Android builds too.
 
 jobs:
   ios-build-only:
