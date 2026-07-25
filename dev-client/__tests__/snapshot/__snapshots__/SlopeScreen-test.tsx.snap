@@ -76,6 +76,7 @@ exports[`renders correctly 1`] = `
               }
             />
             <RNSScreenStack
+              iosPreventReattachmentOfDismissedScreens={false}
               style={
                 {
                   "flex": 1,
@@ -84,8 +85,10 @@ exports[`renders correctly 1`] = `
             >
               <RNSScreen
                 activityState={2}
+                androidResetScreenShadowStateOnOrientationChangeEnabled={true}
                 aria-hidden={false}
                 collapsable={false}
+                fullScreenSwipeEnabled="undefined"
                 fullScreenSwipeShadowEnabled={true}
                 gestureResponseDistance={
                   {
@@ -116,6 +119,7 @@ exports[`renders correctly 1`] = `
                   ]
                 }
                 sheetCornerRadius={-1}
+                sheetDefaultResizeAnimationEnabled={true}
                 sheetElevation={24}
                 sheetExpandsWhenScrolledToEdge={true}
                 sheetGrabberVisible={false}
@@ -123,6 +127,7 @@ exports[`renders correctly 1`] = `
                 sheetInitialDetentIndex={0}
                 sheetLargestUndimmedDetent={-1}
                 sheetLargestUndimmedDetentIndex={-1}
+                sheetShouldOverflowTopInset={false}
                 stackPresentation="push"
                 style={
                   {
@@ -135,6 +140,7 @@ exports[`renders correctly 1`] = `
                   }
                 }
                 swipeDirection="horizontal"
+                synchronousShadowStateUpdatesEnabled={false}
               >
                 <RNSScreenContentWrapper
                   collapsable={false}
@@ -648,11 +654,12 @@ Slope characteristics help determine the soil’s erosion potential, ability to 
                       "width": "100%",
                     }
                   }
+                  synchronousShadowStateUpdatesEnabled={false}
                   title="SITE_TABS"
                   titleColor="rgb(28, 28, 30)"
                   titleFontFamily="System"
                   titleFontWeight="600"
-                  topInsetEnabled={true}
+                  topInsetEnabled={false}
                   translucent={false}
                 />
               </RNSScreen>
