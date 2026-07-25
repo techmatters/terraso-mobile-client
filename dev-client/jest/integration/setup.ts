@@ -73,6 +73,19 @@ jest.mock('expo-media-library', () => ({
   createAssetAsync: jest.fn(() => Promise.resolve()),
 }));
 
+// react-native-vision-camera (nitro-based) throws at import time trying to
+// resolve its native NitroModules turbo module. Stub the specific exports
+// RawCameraView.tsx uses so the app's require tree loads under jest.
+jest.mock('react-native-vision-camera', () => ({
+  Camera: 'Camera',
+  useCameraDevice: jest.fn(() => undefined),
+  useCameraPermission: jest.fn(() => ({
+    hasPermission: false,
+    requestPermission: jest.fn(() => Promise.resolve(false)),
+  })),
+  usePhotoOutput: jest.fn(() => undefined),
+}));
+
 jest.mock('react-native-share', () => ({
   default: {
     open: jest.fn(() => Promise.resolve()),
