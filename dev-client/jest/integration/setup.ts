@@ -65,6 +65,14 @@ jest.mock('@gorhom/bottom-sheet', () => ({
 
 jest.mock('expo-asset');
 
+// expo-media-library@56 exports classes that extend a native module
+// (`ExpoMediaLibraryNext`), which is undefined at import time in jest and
+// throws "Super expression must either be null or a function". Stub the one
+// API our code uses (createAssetAsync).
+jest.mock('expo-media-library', () => ({
+  createAssetAsync: jest.fn(() => Promise.resolve()),
+}));
+
 jest.mock('react-native-share', () => ({
   default: {
     open: jest.fn(() => Promise.resolve()),

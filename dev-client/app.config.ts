@@ -145,7 +145,7 @@ const defaultConfig: ExpoConfig = {
       'aps-environment': 'development',
     },
     infoPlist: {
-      LSMinimumSystemVersion: '12.0',
+      LSMinimumSystemVersion: '16.4',
       CFBundleAllowMixedLocalizations: true,
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription:
