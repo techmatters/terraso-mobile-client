@@ -5,8 +5,8 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - main
+    # No `branches:` filter — fire on PRs targeting any branch so stacked
+    # PRs get i18n-check too.
     types:
       - opened
       - edited
