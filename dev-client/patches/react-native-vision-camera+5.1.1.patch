@@ -67,21 +67,27 @@ index 5b82535..ff1f6ad 100644
  
      if #available(iOS 26, *),
 diff --git a/node_modules/react-native-vision-camera/ios/Public/NativeCameraOutput.swift b/node_modules/react-native-vision-camera/ios/Public/NativeCameraOutput.swift
-index d15d3eb..0057ae1 100644
+index d15d3eb..788b6c0 100644
 --- a/node_modules/react-native-vision-camera/ios/Public/NativeCameraOutput.swift
 +++ b/node_modules/react-native-vision-camera/ios/Public/NativeCameraOutput.swift
-@@ -57,3 +57,14 @@ public protocol NativeCameraOutput: AnyObject, ResolutionNegotiationParticipant
+@@ -56,4 +56,20 @@ public protocol NativeCameraOutput: AnyObject, ResolutionNegotiationParticipant
+    * such as orientation or mirroring settings in here.
     */
    func configure(config: OutputConfiguration)
- }
 +
-+// terraso-mobile-client patch:
-+// Whether this output requires a device format that supports plain
-+// Bayer RAW (as opposed to Apple ProRAW). Used as a hard filter in
-+// ConstraintResolver.filterFormats — on iPhone Pro devices, formats
-+// above 12 MP support only ProRAW in availableRawPhotoPixelFormatTypes,
-+// so a plain-Bayer request forces us onto a 12 MP-ish binned format.
-+// Default false; HybridCameraPhotoOutput overrides for containerFormat=.dng.
++  // terraso-mobile-client patch:
++  // Whether this output requires a device format that supports plain
++  // Bayer RAW (as opposed to Apple ProRAW). Used as a hard filter in
++  // ConstraintResolver.filterFormats — on iPhone Pro devices, formats
++  // above 12 MP support only ProRAW in availableRawPhotoPixelFormatTypes,
++  // so a plain-Bayer request forces us onto a 12 MP-ish binned format.
++  //
++  // Declared IN the protocol (not just via an extension default) so
++  // calls through `any NativeCameraOutput` dynamic-dispatch to the
++  // conforming class's override rather than the extension default.
++  var requiresPlainBayerRawFormat: Bool { get }
++}
++
 +public extension NativeCameraOutput {
 +  var requiresPlainBayerRawFormat: Bool { false }
-+}
+ }
