@@ -135,19 +135,15 @@ export const RawCameraView = ({
   // Same rationale for the outputs array passed to <Camera>.
   const outputs = useMemo(() => [photoOutput], [photoOutput]);
 
-  // For DNG capture we need to push vision-camera's constraint resolver
-  // to a specific kind of format: 12 MP binned, HDR off, biased toward
-  // the photoOutput's 4032×3024 target resolution. On iPhone Pro
-  // devices, HDR-enabled and full-res 48 MP formats support only Apple
-  // ProRAW, not plain Bayer — leaving availableRawPhotoPixelFormatTypes
-  // empty when isAppleProRAWEnabled=false. Three constraints together
-  // outweigh the internal preferHighestPhotoQuality that's otherwise
-  // picking the 48 MP HDR-required non-binned format.
+  // For DNG capture, bias the resolver toward the photoOutput's target
+  // resolution (4032×3024, ~12 MP). Format selection down to a plain-
+  // Bayer-capable format is actually enforced by our vision-camera patch
+  // (see patches/react-native-vision-camera+5.1.1.patch — hard filter
+  // in ConstraintResolver.filterFormats on requiresPlainBayerRawFormat);
+  // this constraint just helps pick among the remaining formats.
   const constraints = useMemo(
     () =>
-      containerFormat === 'dng'
-        ? [{binned: true}, {photoHDR: false}, {resolutionBias: photoOutput}]
-        : undefined,
+      containerFormat === 'dng' ? [{resolutionBias: photoOutput}] : undefined,
     [containerFormat, photoOutput],
   );
 
