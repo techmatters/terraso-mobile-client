@@ -22,6 +22,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Camera,
   useCameraDevice,
+  useCameraDevices,
   useCameraPermission,
   usePhotoOutput,
 } from 'react-native-vision-camera';
@@ -60,17 +61,28 @@ export const RawCameraView = ({
   onRawPhotoDevOnly,
 }: Props) => {
   const {t} = useTranslation();
-  // When capturing DNG on iOS, we must bind to a single physical camera
-  // (wide-angle) rather than the auto-selected virtual multi-cam device.
-  // Modern iPhone Pro devices back their 24/48 MP defaults with a virtual
-  // triple-camera that does not expose plain Bayer RAW at all — its only
-  // RAW option is Apple ProRAW (a demosaiced LinearRaw DNG with tone map
-  // and Deep Fusion baked in). Single-camera devices expose plain Bayer.
+  // When capturing DNG on iOS, we must bind to a truly single-camera
+  // device (isVirtualDevice=false) rather than any virtual multi-cam
+  // aggregation. Apple only exposes plain Bayer RAW on single-camera
+  // AVCaptureDevices; virtual devices (triple-camera, wide+LiDAR, etc.)
+  // support only Apple ProRAW — a demosaiced LinearRaw DNG with tone map
+  // and Deep Fusion baked in. `useCameraDevice(pos, {physicalDevices:
+  // ['wide-angle']})` will happily match wide+LiDAR virtual devices too,
+  // so we enumerate and hand-pick the wide-angle physical device.
   // See docs/raw-camera-plan.md phase 3.
-  const device = useCameraDevice(
-    'back',
-    containerFormat === 'dng' ? {physicalDevices: ['wide-angle']} : undefined,
+  const defaultDevice = useCameraDevice('back');
+  const allDevices = useCameraDevices();
+  const singleWideDevice = useMemo(
+    () =>
+      allDevices.find(
+        d =>
+          d.position === 'back' &&
+          d.type === 'wide-angle' &&
+          !d.isVirtualDevice,
+      ),
+    [allDevices],
   );
+  const device = containerFormat === 'dng' ? singleWideDevice : defaultDevice;
   const {hasPermission, requestPermission} = useCameraPermission();
 
   // TEMPORARY DIAGNOSTIC — remove once RAW capture is verified working.
