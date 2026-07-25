@@ -214,10 +214,20 @@ export const RawCameraView = ({
               onSessionConfigSelected={config => {
                 // TEMPORARY DIAGNOSTIC — remove with the device log above
                 // once RAW capture works end-to-end.
-                console.log(
-                  'RawCameraView session config:',
-                  JSON.stringify(config, null, 2),
-                );
+                // Nitro HybridObject fields are lazy — JSON.stringify sees
+                // an opaque wrapper, so read each field explicitly.
+                console.log('RawCameraView session config:', {
+                  selectedFPS: config.selectedFPS,
+                  selectedVideoStabilizationMode:
+                    config.selectedVideoStabilizationMode,
+                  selectedPreviewStabilizationMode:
+                    config.selectedPreviewStabilizationMode,
+                  selectedVideoDynamicRange: config.selectedVideoDynamicRange,
+                  isPhotoHDREnabled: config.isPhotoHDREnabled,
+                  nativePixelFormat: config.nativePixelFormat,
+                  autoFocusSystem: config.autoFocusSystem,
+                  isBinned: config.isBinned,
+                });
               }}
               // Tap anywhere on the viewfinder to refocus there.
               // Continuous autofocus is on by default; this lets the user
