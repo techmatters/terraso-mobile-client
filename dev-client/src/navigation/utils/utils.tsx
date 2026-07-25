@@ -17,14 +17,19 @@
 
 import {
   ParamListBase,
-  TypedNavigator,
   useNavigation as useNavigationNative,
 } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 import {ScreenDefinitions} from 'terraso-mobile-client/navigation/types';
 
-export const generateScreens = <T extends TypedNavigator<any, any>>(
+// react-navigation v7's TypedNavigator generic shape got tighter
+// (Bag extends NavigatorTypeBagBase) after the SDK 56 upgrade. This helper
+// only uses `.Screen`, so we duck-type on that instead of trying to satisfy
+// the full navigator-type-bag machinery.
+type NavigatorLike = {Screen: React.ComponentType<any>};
+
+export const generateScreens = <T extends NavigatorLike>(
   Navigator: T,
   definitions: ScreenDefinitions,
 ) =>
@@ -32,7 +37,9 @@ export const generateScreens = <T extends TypedNavigator<any, any>>(
     <Navigator.Screen
       name={name}
       key={name}
-      children={props => <Screen {...((props.route.params ?? {}) as any)} />}
+      children={(props: any) => (
+        <Screen {...((props.route.params ?? {}) as any)} />
+      )}
     />
   ));
 
