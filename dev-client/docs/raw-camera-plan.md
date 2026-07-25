@@ -65,15 +65,19 @@ Bayer DNG. Reasoning:
 
 Caveats to confirm in phase 0:
 
-- Can `react-native-vision-camera` force plain Bayer on a ProRAW-capable
-  device? Almost certainly yes — via disabling
-  `AVCapturePhotoOutput.isAppleProRAWEnabled`. Verify the config surface
-  we get from the JS side.
+- ~~Can `react-native-vision-camera` force plain Bayer on a ProRAW-capable
+  device?~~ **Resolved.** The JS-side `photoQualityBalance` / photo-output
+  config does not expose a ProRAW toggle; vision-camera v5 auto-enables
+  ProRAW when the device supports it. Confirmed by inspection of
+  `RCTCameraPhotoCapture.mm`. Fixed via `patches/react-native-vision-camera+5.1.1.patch`
+  which forces `isAppleProRAWEnabled = false` in the native photo-output
+  configuration.
 - Our demosaic must read the `CFAPattern` DNG tag rather than hardcoding
   RGGB — iPhone and Android sensors don't all use the same Bayer layout.
+  (Still open — phase 3.)
 - iPhone-generated plain Bayer DNGs must be well-formed enough for our
   decoder. DNG is standardized, but "should" doesn't count until we've
-  successfully decoded one.
+  successfully decoded one. (Still open — phase 3.)
 
 ## Library choice
 
@@ -179,25 +183,47 @@ in linear-light) and feeds triples to a new `getColorFromLinearRgb()`.
 
 ## Phased delivery
 
-| # | Scope | Est. |
-|---|---|---|
-| **0** | Compat spike: `react-native-vision-camera` v5 + RN 0.81.5 + Nitro peer-deps install cleanly; forcing plain Bayer on a ProRAW iPhone is possible from the JS side | 1–2h |
-| **1** | Fix sRGB → linear gamma bug in `correctSampleRGB` (independent easy win, ships even if RAW work stalls) | 0.5 day |
-| **2** | `RawCameraView` + `useRawOrJpegCapture` in `src/components/inputs/image/`. Vision-camera integration, custom shutter UI. Still requesting JPEG. Wire `ColorAnalysisScreen` through it | 1–1.5 days |
-| **3** | Nitro native module `decodeDngRois`: bilinear demosaic + color-matrix in C++, reads CFA pattern from DNG metadata. **One module, one algorithm, both platforms.** | 3–4 days |
-| **4** | Flip `RawCameraView` to request `containerFormat: 'dng'` when device supports it. Feed decoded linear RGB into new `getColorFromLinearRgb()`. Runtime-gate on RAW support (both platforms). JPEG fallback path unchanged | 0.5–1 day |
+| # | Scope | Est. | Status |
+|---|---|---|---|
+| **0** | Compat spike: `react-native-vision-camera` v5 + Nitro peer-deps install cleanly; forcing plain Bayer on a ProRAW iPhone is possible | 1–2h | ✅ done. Deps installed; ProRAW opt-out achieved via `patches/react-native-vision-camera+5.1.1.patch`. **Ballooned into a full Expo SDK 54 → 56 hop** (RN 0.81.5 → 0.85.3) because vision-camera v5 requires RN 0.85+. Shipped as PRs #3324 (54→55) and #3325 (55→56). |
+| **1** | Fix sRGB → linear gamma bug in `correctSampleRGB` | 0.5 day | ✅ done — PR #3327 (`fix/wb-correction-linear`). |
+| **2** | `RawCameraView` + `useRawOrJpegCapture` + `RawImagePicker` + `RawPickImageButton` in `src/components/inputs/image/`. Vision-camera integration, custom shutter UI. Still requesting JPEG. Wire `ColorScreen` through it | 1–1.5 days | ✅ done — PR #3328 (`feat/raw-camera`). `useRawOrJpegCapture` currently returns `isRawAvailable: false` unconditionally — real detection lands in phase 4. |
+| **3** | Nitro native module `decodeDngRois`: bilinear demosaic + color-matrix in C++, reads CFA pattern from DNG metadata. **One module, one algorithm, both platforms.** | 3–4 days | ⏳ next. |
+| **4** | Flip `RawCameraView` to request `containerFormat: 'dng'` when device supports it. Fill in real `isRawAvailable` detection in `useRawOrJpegCapture`. Feed decoded linear RGB into new `getColorFromLinearRgb()`. Runtime-gate on RAW support (both platforms). JPEG fallback path unchanged | 0.5–1 day | ⏳ after phase 3. |
 
 Each phase ships as an independent PR.
 
+**Phase 3 debugging aid (not a gate):** if the decoder's linear-RGB
+output looks wrong, capture a photo of a known reference (white sheet
+under measured light, or the reference card framed alone) and check the
+output is roughly the expected values. If it isn't, use LibRaw or
+`dcraw` on the same DNG on a laptop to get ground-truth per-stage values
+(post-black-level, post-demosaic, post-color-matrix) and isolate which
+stage of the decoder is wrong. Not needed if the end-to-end Munsell
+match is sane on the first real capture.
+
+## Deferred / low priority
+
+- **Load a RAW file from the photo library.** The current UX lets the
+  user pick a JPEG from the library via `expo-image-picker`, but that
+  code path likely won't return DNGs even where the library holds them
+  (iOS Photos does expose RAW via `PHAssetResource` but `expo-image-picker`
+  doesn't surface it). Post-phase-4, revisit whether to add a
+  "pick RAW from library" entry that routes through the same
+  `decodeDngRois` pipeline as fresh captures. Low priority — the
+  primary flow is capture, not library selection.
+
 ## Risks flagged
 
-- **Vision-camera v5 is a new Nitro-based rewrite.** Phase 0 mitigates.
-  If it doesn't play with our RN 0.81.5 + new-arch setup, we're back to
-  research.
+- ~~**Vision-camera v5 is a new Nitro-based rewrite.**~~ Resolved by
+  phase 0. Cost was higher than expected — vision-camera v5 requires
+  RN 0.85+, which forced the Expo SDK 54 → 55 → 56 upgrade sequence
+  (PRs #3324, #3325) before phase 2 could start. Once past that,
+  vision-camera itself installed cleanly.
 - **No `supportedPhotoContainerFormats` device-introspection API yet**
   in v5 (TODO in source). Runtime detection is uglier —
   `isSessionConfigSupported` or check `photo.isRawPhoto` after first
-  capture attempt.
+  capture attempt. Deferred to phase 4.
 - **Custom camera UI is real work.** Vision-camera gives us the
   camera surface, not the shutter button + focus reticle + orientation
   lock. Budget ~1 day inside phase 2.
