@@ -60,7 +60,17 @@ export const RawCameraView = ({
   onRawPhotoDevOnly,
 }: Props) => {
   const {t} = useTranslation();
-  const device = useCameraDevice('back');
+  // When capturing DNG on iOS, we must bind to a single physical camera
+  // (wide-angle) rather than the auto-selected virtual multi-cam device.
+  // Modern iPhone Pro devices back their 24/48 MP defaults with a virtual
+  // triple-camera that does not expose plain Bayer RAW at all — its only
+  // RAW option is Apple ProRAW (a demosaiced LinearRaw DNG with tone map
+  // and Deep Fusion baked in). Single-camera devices expose plain Bayer.
+  // See docs/raw-camera-plan.md phase 3.
+  const device = useCameraDevice(
+    'back',
+    containerFormat === 'dng' ? {physicalDevices: ['wide-angle']} : undefined,
+  );
   const {hasPermission, requestPermission} = useCameraPermission();
 
   const [isCapturing, setIsCapturing] = useState(false);
