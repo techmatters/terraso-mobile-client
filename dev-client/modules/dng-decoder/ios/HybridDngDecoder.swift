@@ -13,8 +13,9 @@ class HybridDngDecoder: HybridDngDecoderSpec {
   func readMetadata(dngPath: String) throws -> DngMetadata {
     var out = DngMetadataC()
     let ok = dngDecoderReadMetadata(dngPath, &out)
-    if !ok.parsed {
-      throw RuntimeError.error(withMessage: String(cString: ok.errorMessage!))
+    if !ok {
+      let msg = out.errorMessage.map { String(cString: $0) } ?? "DNG parse failed"
+      throw RuntimeError.error(withMessage: msg)
     }
     let cfaChars: [UInt8] = [out.cfa0, out.cfa1, out.cfa2, out.cfa3].map(UInt8.init)
     let cfaString =
