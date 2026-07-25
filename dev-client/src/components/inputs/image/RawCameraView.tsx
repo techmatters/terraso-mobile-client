@@ -136,6 +136,11 @@ export const RawCameraView = ({
               device={device}
               isActive={visible}
               outputs={outputs}
+              // Tap anywhere on the viewfinder to refocus there.
+              // Continuous autofocus is on by default; this lets the user
+              // pick a specific point (soil patch or reference card) when
+              // that matters.
+              enableNativeTapToFocusGesture={true}
             />
           ) : !hasPermission ? (
             <View style={styles.messageContainer}>
