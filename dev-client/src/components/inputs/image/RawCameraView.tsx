@@ -135,6 +135,17 @@ export const RawCameraView = ({
   // Same rationale for the outputs array passed to <Camera>.
   const outputs = useMemo(() => [photoOutput], [photoOutput]);
 
+  // For DNG, push the constraint resolver toward a binned RAW-capable
+  // format. Non-binned photo formats on the wide-angle sensor (full-res
+  // 48 MP variants, high-FPS variants, HDR-required formats) commonly
+  // omit RAW support even on single-camera devices — availableRaw-
+  // PhotoPixelFormatTypes ends up empty. Binned formats reliably support
+  // plain Bayer.
+  const constraints = useMemo(
+    () => (containerFormat === 'dng' ? [{binned: true}] : undefined),
+    [containerFormat],
+  );
+
   const cancel = useCallback(() => {
     setIsCapturing(false);
     onCancel();
@@ -199,6 +210,15 @@ export const RawCameraView = ({
               device={device}
               isActive={visible}
               outputs={outputs}
+              constraints={constraints}
+              onSessionConfigSelected={config => {
+                // TEMPORARY DIAGNOSTIC — remove with the device log above
+                // once RAW capture works end-to-end.
+                console.log(
+                  'RawCameraView session config:',
+                  JSON.stringify(config, null, 2),
+                );
+              }}
               // Tap anywhere on the viewfinder to refocus there.
               // Continuous autofocus is on by default; this lets the user
               // pick a specific point (soil patch or reference card) when
