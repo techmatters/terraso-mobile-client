@@ -79,11 +79,29 @@ jest.mock('expo-media-library', () => ({
 jest.mock('react-native-vision-camera', () => ({
   Camera: 'Camera',
   useCameraDevice: jest.fn(() => undefined),
+  useCameraDevices: jest.fn(() => []),
   useCameraPermission: jest.fn(() => ({
     hasPermission: false,
     requestPermission: jest.fn(() => Promise.resolve(false)),
   })),
   usePhotoOutput: jest.fn(() => undefined),
+}));
+
+// dng-decoder (Nitro hybrid module) calls NitroModules.createHybridObject at
+// module-load time; NitroModules native side is unavailable under jest.
+jest.mock('dng-decoder', () => ({
+  DngDecoderHybrid: {
+    readMetadata: jest.fn(() => ({
+      width: 0,
+      height: 0,
+      bitsPerSample: 0,
+      cfaPattern: '',
+      blackLevel: 0,
+      whiteLevel: 0,
+      isMonochrome: false,
+    })),
+    decodeDngRois: jest.fn(() => []),
+  },
 }));
 
 jest.mock('react-native-share', () => ({
