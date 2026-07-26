@@ -29,6 +29,7 @@ import {CaptureRawFixtureItem} from 'terraso-mobile-client/screens/UserSettingsS
 import {CopyAccessTokenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CopyAccessTokenItem';
 import {DataExportItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DataExportItem';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
+import {ExperimentalColorScreenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/ExperimentalColorScreenItem';
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
 import {SelectLanguageItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SelectLanguageItem';
@@ -61,6 +62,7 @@ export function UserSettingsScreen() {
                 <RestrictByFlag flag="FF_testing">
                   <CopyAccessTokenItem />
                   <CaptureRawFixtureItem />
+                  <ExperimentalColorScreenItem />
                 </RestrictByFlag>
               </>
             )}

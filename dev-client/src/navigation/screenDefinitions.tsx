@@ -54,7 +54,7 @@ import {SlopeShapeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeS
 import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
 import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/CarbonatesScreen';
 import {ColorGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorGuideScreen';
-import {ColorScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreen';
+import {ColorScreenRouter} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreenRouter';
 import {SoilSurfaceScreen} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceScreen';
 import {ConductivityScreen} from 'terraso-mobile-client/screens/SoilScreen/ConductivityScreen';
 import {PhScreen} from 'terraso-mobile-client/screens/SoilScreen/PhScreen';
@@ -98,7 +98,7 @@ export const screenDefinitions = {
   SLOPE_METER: SlopeMeterScreen,
   SOIL_SURFACE: SoilSurfaceScreen,
   SOIL_INPUT_soilTexture: TextureScreen,
-  SOIL_INPUT_soilColor: ColorScreen,
+  SOIL_INPUT_soilColor: ColorScreenRouter,
   SOIL_INPUT_sodiumAdsorptionRatio: SARScreen,
   SOIL_INPUT_soilOrganicCarbonMatter: SOCSOMScreen,
   SOIL_INPUT_soilStructure: StructureScreen,
