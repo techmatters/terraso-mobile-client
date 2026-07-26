@@ -2,10 +2,23 @@
 //  HybridDngDecoder.swift
 //  DngDecoder
 //
-//  Nitro-hybrid entry point that bridges JS calls into the C++ engine
-//  (DngParser + DngPipeline in ../cpp/). See docs/raw-camera-plan.md.
+//  Nitro-hybrid entry point for iOS. Split decode strategy:
+//    - decodeDngRois uses Apple's CIRAWFilter, which handles ProRAW's
+//      lossless-JPEG + tiled + LinearRaw layout that our custom C++
+//      parser doesn't (and can't reasonably grow to). See phase-3
+//      decisions in docs/raw-camera-plan.md.
+//    - readMetadata still calls the C++ parser via the pure-C bridge —
+//      it doesn't touch pixel data, so compression/tiling don't matter
+//      for the tags we extract. Will fail on ProRAW because the pixel
+//      loading code path is exercised at the end of parseDng; that's
+//      acceptable for phase 3 since nothing calls readMetadata yet.
+//
+//  Android's HybridDngDecoder.kt continues to call the C++ path for
+//  plain-Bayer DNGs from CameraX.
 //
 
+import CoreImage
+import CoreImage.CIFilterBuiltins
 import Foundation
 import NitroModules
 
@@ -32,44 +45,85 @@ class HybridDngDecoder: HybridDngDecoderSpec {
   }
 
   func decodeDngRois(dngPath: String, rois: [Roi]) throws -> [LinearRgb] {
-    // Flatten ROIs into a C-friendly int32 array [x,y,w,h, ...] then call
-    // into the shared C++ engine.
-    var flat: [Int32] = []
-    flat.reserveCapacity(rois.count * 4)
-    for r in rois {
-      flat.append(Int32(r.x))
-      flat.append(Int32(r.y))
-      flat.append(Int32(r.w))
-      flat.append(Int32(r.h))
-    }
-    var outR = [Double](repeating: 0, count: rois.count)
-    var outG = [Double](repeating: 0, count: rois.count)
-    var outB = [Double](repeating: 0, count: rois.count)
-    var err: UnsafePointer<CChar>? = nil
-    let ok = flat.withUnsafeBufferPointer { flatBuf in
-      outR.withUnsafeMutableBufferPointer { rBuf in
-        outG.withUnsafeMutableBufferPointer { gBuf in
-          outB.withUnsafeMutableBufferPointer { bBuf in
-            dngDecoderDecodeRois(
-              dngPath,
-              flatBuf.baseAddress, Int32(rois.count),
-              rBuf.baseAddress, gBuf.baseAddress, bBuf.baseAddress,
-              &err
-            )
-          }
-        }
-      }
-    }
-    if !ok {
+    let url = URL(fileURLWithPath: stripFileScheme(dngPath))
+
+    guard let rawFilter = CIRAWFilter(imageURL: url) else {
       throw RuntimeError.error(
-        withMessage: err.map { String(cString: $0) } ?? "DNG decode failed")
+        withMessage: "CIRAWFilter could not open DNG at \(url.path)")
     }
-    var out: [LinearRgb] = []
-    out.reserveCapacity(rois.count)
-    for i in 0..<rois.count {
-      out.append(LinearRgb(r: outR[i], g: outG[i], b: outB[i]))
+
+    // Ask CIRAWFilter to give us the least-processed output it can. Apple's
+    // ISP has already applied WB / demosaic / tone curve / noise reduction
+    // into the ProRAW pixel data itself; these knobs only affect additional
+    // adjustments the filter would otherwise layer on top.
+    rawFilter.boostAmount = 0.0
+    rawFilter.boostShadowAmount = 0.0
+    rawFilter.disableGamutMap = true
+    rawFilter.noiseReductionAmount = 0.0
+    rawFilter.detailAmount = 0.0
+    rawFilter.sharpnessAmount = 0.0
+    rawFilter.contrastAmount = 0.0
+
+    guard let ciImage = rawFilter.outputImage else {
+      throw RuntimeError.error(withMessage: "CIRAWFilter produced no outputImage")
     }
-    return out
+    let extent = ciImage.extent
+    NSLog(
+      "DngDecoder: CIRAWFilter output extent = %.0fx%.0f at (%.0f, %.0f)",
+      extent.width, extent.height, extent.origin.x, extent.origin.y)
+
+    // Render into a linear-sRGB working space. CIRAWFilter's internal
+    // color transform (via ColorMatrix1/2 in the DNG metadata) maps
+    // camera-native RGB to this space, so subsequent Munsell matching
+    // consumes the returned triples as ordinary linear sRGB.
+    guard let linearSpace = CGColorSpace(name: CGColorSpace.linearSRGB) else {
+      throw RuntimeError.error(withMessage: "linearSRGB color space unavailable")
+    }
+    let context = CIContext(options: [
+      .workingColorSpace: linearSpace,
+      .outputColorSpace: linearSpace,
+    ])
+
+    var results: [LinearRgb] = []
+    results.reserveCapacity(rois.count)
+    for roi in rois {
+      // ROI coordinates arrive in top-left origin. CoreImage uses a
+      // bottom-left origin with fractional Y increasing upward.
+      let cropRect = CGRect(
+        x: extent.minX + CGFloat(roi.x),
+        y: extent.maxY - CGFloat(roi.y + roi.h),
+        width: CGFloat(roi.w),
+        height: CGFloat(roi.h)
+      )
+      let cropped = ciImage.cropped(to: cropRect)
+
+      // Reduce the ROI to a single-pixel average via the built-in
+      // Metal-accelerated area-average filter.
+      let avg = CIFilter.areaAverage()
+      avg.inputImage = cropped
+      avg.extent = cropRect
+      guard let averaged = avg.outputImage else {
+        throw RuntimeError.error(
+          withMessage: "CIAreaAverage produced no output for ROI")
+      }
+
+      // Render the 1×1 output to a float RGBA bitmap in linear sRGB.
+      var bitmap: [Float] = [0, 0, 0, 0]
+      context.render(
+        averaged,
+        toBitmap: &bitmap,
+        rowBytes: MemoryLayout<Float>.size * 4,
+        bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+        format: .RGBAf,
+        colorSpace: linearSpace
+      )
+
+      let r = clamp01(Double(bitmap[0]))
+      let g = clamp01(Double(bitmap[1]))
+      let b = clamp01(Double(bitmap[2]))
+      results.append(LinearRgb(r: r, g: g, b: b))
+    }
+    return results
   }
 
   private func channelChar(_ c: UInt8) -> String {
@@ -79,5 +133,16 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     case 2: return "B"
     default: return "?"
     }
+  }
+
+  private func stripFileScheme(_ path: String) -> String {
+    if path.hasPrefix("file://") {
+      return String(path.dropFirst("file://".count))
+    }
+    return path
+  }
+
+  private func clamp01(_ v: Double) -> Double {
+    return max(0.0, min(1.0, v))
   }
 }

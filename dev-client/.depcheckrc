@@ -15,7 +15,6 @@
     "@types/jest",
     "@types/uuid",
     "babel-jest",
-    "dng-decoder",
     "eslint-plugin-prettier",
     "expo-asset",
     "expo-build-properties",

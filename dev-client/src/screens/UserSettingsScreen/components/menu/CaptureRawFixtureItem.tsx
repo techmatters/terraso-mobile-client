@@ -18,21 +18,39 @@
 import {useCallback, useState} from 'react';
 import Share from 'react-native-share';
 
+import {DngDecoderHybrid} from 'dng-decoder';
+
 import {RawCameraView} from 'terraso-mobile-client/components/inputs/image/RawCameraView';
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 
-// Dev-only menu row: opens the in-app RawCameraView requesting a plain
-// Bayer DNG, then pops the iOS/Android share sheet with the resulting
-// file URI so the tester can AirDrop it to their Mac. Feeds the phase-3
-// decoder's fixture set — see docs/raw-camera-plan.md.
+// Dev-only menu row: opens the in-app RawCameraView requesting a DNG,
+// then (a) runs the phase-3 decoder on a centered ROI and logs the
+// resulting linear-sRGB triple to Metro, and (b) pops the platform
+// share sheet so the tester can AirDrop the DNG off-device.
+// See docs/raw-camera-plan.md.
 export const CaptureRawFixtureItem = () => {
   const [visible, setVisible] = useState(false);
 
   const openCamera = useCallback(() => setVisible(true), []);
   const closeCamera = useCallback(() => setVisible(false), []);
 
-  const shareDng = useCallback(async (uri: string) => {
+  const handleDng = useCallback(async (uri: string) => {
+    // 1. Run the decoder on a large centered ROI so we validate the
+    // iOS CIRAWFilter path end-to-end without having to inspect the
+    // AirDropped file manually.
+    try {
+      const roi = {x: 1500, y: 1000, w: 1000, h: 1000};
+      const [rgb] = await DngDecoderHybrid.decodeDngRois(uri, [roi]);
+      console.log(
+        `DngDecoder: ROI ${roi.x},${roi.y} ${roi.w}x${roi.h} → linear sRGB (` +
+          `r=${rgb.r.toFixed(4)}, g=${rgb.g.toFixed(4)}, b=${rgb.b.toFixed(4)})`,
+      );
+    } catch (err) {
+      console.error('DngDecoder.decodeDngRois failed:', err);
+    }
+
+    // 2. Share so the tester can AirDrop to Mac for offline inspection.
     try {
       await Share.open({
         url: uri,
@@ -63,7 +81,7 @@ export const CaptureRawFixtureItem = () => {
         containerFormat="dng"
         onCancel={closeCamera}
         onCapture={closeCamera}
-        onRawPhotoDevOnly={shareDng}
+        onRawPhotoDevOnly={handleDng}
       />
     </>
   );
