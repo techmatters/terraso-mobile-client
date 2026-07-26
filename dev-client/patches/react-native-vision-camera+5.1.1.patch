@@ -1,17 +1,29 @@
 diff --git a/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift b/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift
-index 5b82535..e0a8039 100644
+index 5b82535..16cff32 100644
 --- a/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift	
 +++ b/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift	
-@@ -59,7 +59,11 @@ final class HybridCameraPhotoOutput: HybridCameraPhotoOutputSpec, NativeCameraOu
- 
-     if options.containerFormat == .dng {
-       // If we capture RAW photos, try using Apple ProRAW. If not, Bayer14 RAW will be used.
--      output.isAppleProRAWEnabled = output.isAppleProRAWSupported
-+      //
-+      // terraso-mobile-client patch: force plain Bayer DNG even on ProRAW-capable
-+      // devices, so we have a single Bayer decode path across iOS and Android for
-+      // soil-color analysis. See dev-client/docs/raw-camera-plan.md.
-+      output.isAppleProRAWEnabled = false
+@@ -97,6 +97,24 @@ final class HybridCameraPhotoOutput: HybridCameraPhotoOutputSpec, NativeCameraOu
+         }
+       }
      }
++
++    // terraso-mobile-client patch: enable ProRAW at configure time when the
++    // active session format supports it. AVCapturePhotoOutput.isAppleProRAW-
++    // Supported returns false before the session has an active input+format
++    // (which is what happens in the init() above on modern iPhones), so the
++    // init-time enablement is effectively a no-op and no RAW pixel formats
++    // populate availableRawPhotoPixelFormatTypes at capture time. Re-set here,
++    // once the active format is known. On iPhone Pro devices the resulting
++    // capture is a ProRAW LinearRaw DNG (PhotometricInterpretation=34892);
++    // the decoder handles it via the LinearRaw branch. On older devices
++    // where plain Bayer is available, this path still works — bestRawPixelFormat
++    // prefers ProRAW when enabled, which is our intent for now.
++    if options.containerFormat == .dng
++      && output.isAppleProRAWSupported
++      && !output.isAppleProRAWEnabled {
++      output.isAppleProRAWEnabled = true
++      try? prepareDefaultPhotoSettings()
++    }
+   }
  
-     if #available(iOS 26, *),
+   private func prepareDefaultPhotoSettings() throws {

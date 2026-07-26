@@ -22,6 +22,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Camera,
   useCameraDevice,
+  useCameraDevices,
   useCameraPermission,
   usePhotoOutput,
 } from 'react-native-vision-camera';
@@ -42,6 +43,14 @@ type Props = {
    * See docs/raw-camera-plan.md.
    */
   containerFormat?: 'jpeg' | 'dng';
+  /**
+   * Dev-only escape hatch. When set, RAW photos are handed off through
+   * this callback (with the saved DNG file URI) instead of triggering the
+   * phase-2 guard. Used by the fixture-capture menu item under
+   * UserSettingsScreen to AirDrop DNGs off-device for the phase-3
+   * decoder's test suite. Production camera flows leave this unset.
+   */
+  onRawPhotoDevOnly?: (uri: string) => void;
 };
 
 export const RawCameraView = ({
@@ -49,9 +58,28 @@ export const RawCameraView = ({
   onCapture,
   onCancel,
   containerFormat = 'jpeg',
+  onRawPhotoDevOnly,
 }: Props) => {
   const {t} = useTranslation();
-  const device = useCameraDevice('back');
+  // For DNG capture on iOS, bind to a truly single-camera device
+  // (isVirtualDevice=false) rather than a virtual multi-cam aggregation.
+  // Virtual devices (built-in triple-camera, wide+LiDAR, dual-wide) have
+  // spottier RAW support than pure single-cam physical devices. Bayer RAW
+  // is truly single-cam-only per Apple's WWDC21 talk; ProRAW works on
+  // both but is more reliable on single-cam.
+  const defaultDevice = useCameraDevice('back');
+  const allDevices = useCameraDevices();
+  const singleWideDevice = useMemo(
+    () =>
+      allDevices.find(
+        d =>
+          d.position === 'back' &&
+          d.type === 'wide-angle' &&
+          !d.isVirtualDevice,
+      ),
+    [allDevices],
+  );
+  const device = containerFormat === 'dng' ? singleWideDevice : defaultDevice;
   const {hasPermission, requestPermission} = useCameraPermission();
 
   const [isCapturing, setIsCapturing] = useState(false);
@@ -91,6 +119,13 @@ export const RawCameraView = ({
       const photo = await photoOutput.capturePhoto({}, {});
 
       if (photo.isRawPhoto) {
+        if (onRawPhotoDevOnly) {
+          const rawPath = await photo.saveToTemporaryFileAsync();
+          onRawPhotoDevOnly(
+            rawPath.startsWith('file://') ? rawPath : `file://${rawPath}`,
+          );
+          return;
+        }
         // Not wired up until phase 4. Guard so we don't silently produce a
         // JPEG-shaped result from a DNG file, which would corrupt the sRGB
         // pipeline downstream.
@@ -119,7 +154,7 @@ export const RawCameraView = ({
     } finally {
       setIsCapturing(false);
     }
-  }, [isCapturing, photoOutput, onCapture, cancel]);
+  }, [isCapturing, photoOutput, onCapture, cancel, onRawPhotoDevOnly]);
 
   return (
     <Modal

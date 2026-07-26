@@ -81,6 +81,17 @@ dev-client/vendor/bundle/
 android/
 ios/
 
+# Internal Nitro modules (dev-client/modules/*) ship their own android/
+# and ios/ subtrees alongside shared C++; unignore them.
+!dev-client/modules/*/android/
+!dev-client/modules/*/android/**
+!dev-client/modules/*/ios/
+!dev-client/modules/*/ios/**
+!dev-client/modules/*/nitrogen/generated/android/
+!dev-client/modules/*/nitrogen/generated/android/**
+!dev-client/modules/*/nitrogen/generated/ios/
+!dev-client/modules/*/nitrogen/generated/ios/**
+
 # Build
 .buildcache/
 buildcache/
