@@ -1,93 +1,29 @@
-diff --git a/node_modules/react-native-vision-camera/ios/Hybrid Objects/Constraints/ConstraintResolver.swift b/node_modules/react-native-vision-camera/ios/Hybrid Objects/Constraints/ConstraintResolver.swift
-index 22a5793..98af6f4 100644
---- a/node_modules/react-native-vision-camera/ios/Hybrid Objects/Constraints/ConstraintResolver.swift	
-+++ b/node_modules/react-native-vision-camera/ios/Hybrid Objects/Constraints/ConstraintResolver.swift	
-@@ -207,6 +207,28 @@ enum ConstraintResolver {
-           "The given `device` does not have any `formats` that support the attached Outputs!")
-     }
- 
-+    // 4. terraso-mobile-client patch: if any output needs plain-Bayer
-+    // RAW, hard-filter to formats whose max dimensions are ≤ 4032×3024.
-+    // On iPhone Pro devices, higher-res formats (24/48 MP) expose only
-+    // Apple ProRAW in availableRawPhotoPixelFormatTypes — plain Bayer is
-+    // available only on the 12 MP binned photo format. Without this
-+    // filter, preferHighestPhotoQuality picks the 48 MP HDR-required
-+    // non-binned format and the RAW capture attempt throws "This
-+    // PhotoOutput does not support raw capture" at the shutter.
-+    let needsPlainBayerRaw = outputs.contains { $0.requiresPlainBayerRawFormat }
-+    if needsPlainBayerRaw {
-+      formats = formats.filter { format in
-+        let dims = format.formatDescription.dimensions
-+        return dims.width <= 4032 && dims.height <= 3024
-+      }
-+      guard !formats.isEmpty else {
-+        throw RuntimeError.error(
-+          withMessage:
-+            "The given `device` does not have any `formats` at ≤ 4032×3024 for plain-Bayer RAW capture. On iPhone Pro devices, bind to a single-camera physical device (e.g. the built-in wide-angle) rather than a virtual multi-cam device."
-+        )
-+      }
-+    }
-+
-     return formats
-   }
- }
 diff --git a/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift b/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift
-index 5b82535..ff1f6ad 100644
+index 5b82535..16cff32 100644
 --- a/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift	
 +++ b/node_modules/react-native-vision-camera/ios/Hybrid Objects/Outputs/HybridCameraPhotoOutput.swift	
-@@ -17,6 +17,13 @@ final class HybridCameraPhotoOutput: HybridCameraPhotoOutputSpec, NativeCameraOu
-   let requiresDepthFormat: Bool = false
-   let output: AVCapturePhotoOutput
- 
-+  // terraso-mobile-client patch: signal to ConstraintResolver that plain
-+  // Bayer RAW is required, so it hard-filters device.formats to ones
-+  // that expose non-ProRAW formats via availableRawPhotoPixelFormatTypes.
-+  var requiresPlainBayerRawFormat: Bool {
-+    return options.containerFormat == .dng
-+  }
-+
-   var supportsDepthDataDelivery: Bool {
-     return output.isDepthDataDeliverySupported
-   }
-@@ -59,7 +66,15 @@ final class HybridCameraPhotoOutput: HybridCameraPhotoOutputSpec, NativeCameraOu
- 
-     if options.containerFormat == .dng {
-       // If we capture RAW photos, try using Apple ProRAW. If not, Bayer14 RAW will be used.
--      output.isAppleProRAWEnabled = output.isAppleProRAWSupported
-+      //
-+      // terraso-mobile-client patch: force plain Bayer even on ProRAW-capable
-+      // devices, so we have a single Bayer decode path across iOS and Android for
-+      // soil-color analysis. See dev-client/docs/raw-camera-plan.md. Callers
-+      // must also bind to a single-camera physical device (e.g. via
-+      // `useCameraDevice('back', { physicalDevices: ['wide-angle'] })`), since
-+      // virtual multi-cam devices (built-in dual/triple) do not expose plain
-+      // Bayer RAW formats at all — ProRAW is their only RAW option.
-+      output.isAppleProRAWEnabled = false
+@@ -97,6 +97,24 @@ final class HybridCameraPhotoOutput: HybridCameraPhotoOutputSpec, NativeCameraOu
+         }
+       }
      }
++
++    // terraso-mobile-client patch: enable ProRAW at configure time when the
++    // active session format supports it. AVCapturePhotoOutput.isAppleProRAW-
++    // Supported returns false before the session has an active input+format
++    // (which is what happens in the init() above on modern iPhones), so the
++    // init-time enablement is effectively a no-op and no RAW pixel formats
++    // populate availableRawPhotoPixelFormatTypes at capture time. Re-set here,
++    // once the active format is known. On iPhone Pro devices the resulting
++    // capture is a ProRAW LinearRaw DNG (PhotometricInterpretation=34892);
++    // the decoder handles it via the LinearRaw branch. On older devices
++    // where plain Bayer is available, this path still works — bestRawPixelFormat
++    // prefers ProRAW when enabled, which is our intent for now.
++    if options.containerFormat == .dng
++      && output.isAppleProRAWSupported
++      && !output.isAppleProRAWEnabled {
++      output.isAppleProRAWEnabled = true
++      try? prepareDefaultPhotoSettings()
++    }
+   }
  
-     if #available(iOS 26, *),
-diff --git a/node_modules/react-native-vision-camera/ios/Public/NativeCameraOutput.swift b/node_modules/react-native-vision-camera/ios/Public/NativeCameraOutput.swift
-index d15d3eb..788b6c0 100644
---- a/node_modules/react-native-vision-camera/ios/Public/NativeCameraOutput.swift
-+++ b/node_modules/react-native-vision-camera/ios/Public/NativeCameraOutput.swift
-@@ -56,4 +56,20 @@ public protocol NativeCameraOutput: AnyObject, ResolutionNegotiationParticipant
-    * such as orientation or mirroring settings in here.
-    */
-   func configure(config: OutputConfiguration)
-+
-+  // terraso-mobile-client patch:
-+  // Whether this output requires a device format that supports plain
-+  // Bayer RAW (as opposed to Apple ProRAW). Used as a hard filter in
-+  // ConstraintResolver.filterFormats — on iPhone Pro devices, formats
-+  // above 12 MP support only ProRAW in availableRawPhotoPixelFormatTypes,
-+  // so a plain-Bayer request forces us onto a 12 MP-ish binned format.
-+  //
-+  // Declared IN the protocol (not just via an extension default) so
-+  // calls through `any NativeCameraOutput` dynamic-dispatch to the
-+  // conforming class's override rather than the extension default.
-+  var requiresPlainBayerRawFormat: Bool { get }
-+}
-+
-+public extension NativeCameraOutput {
-+  var requiresPlainBayerRawFormat: Bool { false }
- }
+   private func prepareDefaultPhotoSettings() throws {

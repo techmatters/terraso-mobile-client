@@ -61,15 +61,12 @@ export const RawCameraView = ({
   onRawPhotoDevOnly,
 }: Props) => {
   const {t} = useTranslation();
-  // When capturing DNG on iOS, we must bind to a truly single-camera
-  // device (isVirtualDevice=false) rather than any virtual multi-cam
-  // aggregation. Apple only exposes plain Bayer RAW on single-camera
-  // AVCaptureDevices; virtual devices (triple-camera, wide+LiDAR, etc.)
-  // support only Apple ProRAW — a demosaiced LinearRaw DNG with tone map
-  // and Deep Fusion baked in. `useCameraDevice(pos, {physicalDevices:
-  // ['wide-angle']})` will happily match wide+LiDAR virtual devices too,
-  // so we enumerate and hand-pick the wide-angle physical device.
-  // See docs/raw-camera-plan.md phase 3.
+  // For DNG capture on iOS, bind to a truly single-camera device
+  // (isVirtualDevice=false) rather than a virtual multi-cam aggregation.
+  // Virtual devices (built-in triple-camera, wide+LiDAR, dual-wide) have
+  // spottier RAW support than pure single-cam physical devices. Bayer RAW
+  // is truly single-cam-only per Apple's WWDC21 talk; ProRAW works on
+  // both but is more reliable on single-cam.
   const defaultDevice = useCameraDevice('back');
   const allDevices = useCameraDevices();
   const singleWideDevice = useMemo(
@@ -84,31 +81,6 @@ export const RawCameraView = ({
   );
   const device = containerFormat === 'dng' ? singleWideDevice : defaultDevice;
   const {hasPermission, requestPermission} = useCameraPermission();
-
-  // TEMPORARY DIAGNOSTIC — remove once RAW capture is verified working.
-  // Prints the selected device's identity so we can see whether the
-  // physicalDevices filter took effect (single-cam wide-angle vs a
-  // virtual multi-cam device).
-  useEffect(() => {
-    if (visible && device) {
-      console.log(
-        'RawCameraView device:',
-        JSON.stringify(
-          {
-            id: device.id,
-            name: device.name,
-            position: device.position,
-            type: device.type,
-            isVirtualDevice: device.isVirtualDevice,
-            physicalDeviceTypes: device.physicalDevices.map(d => d.type),
-            containerFormat,
-          },
-          null,
-          2,
-        ),
-      );
-    }
-  }, [visible, device, containerFormat]);
 
   const [isCapturing, setIsCapturing] = useState(false);
 
@@ -134,18 +106,6 @@ export const RawCameraView = ({
   const photoOutput = usePhotoOutput(photoOutputOptions);
   // Same rationale for the outputs array passed to <Camera>.
   const outputs = useMemo(() => [photoOutput], [photoOutput]);
-
-  // For DNG capture, bias the resolver toward the photoOutput's target
-  // resolution (4032×3024, ~12 MP). Format selection down to a plain-
-  // Bayer-capable format is actually enforced by our vision-camera patch
-  // (see patches/react-native-vision-camera+5.1.1.patch — hard filter
-  // in ConstraintResolver.filterFormats on requiresPlainBayerRawFormat);
-  // this constraint just helps pick among the remaining formats.
-  const constraints = useMemo(
-    () =>
-      containerFormat === 'dng' ? [{resolutionBias: photoOutput}] : undefined,
-    [containerFormat, photoOutput],
-  );
 
   const cancel = useCallback(() => {
     setIsCapturing(false);
@@ -211,25 +171,6 @@ export const RawCameraView = ({
               device={device}
               isActive={visible}
               outputs={outputs}
-              constraints={constraints}
-              onSessionConfigSelected={config => {
-                // TEMPORARY DIAGNOSTIC — remove with the device log above
-                // once RAW capture works end-to-end.
-                // Nitro HybridObject fields are lazy — JSON.stringify sees
-                // an opaque wrapper, so read each field explicitly.
-                console.log('RawCameraView session config:', {
-                  selectedFPS: config.selectedFPS,
-                  selectedVideoStabilizationMode:
-                    config.selectedVideoStabilizationMode,
-                  selectedPreviewStabilizationMode:
-                    config.selectedPreviewStabilizationMode,
-                  selectedVideoDynamicRange: config.selectedVideoDynamicRange,
-                  isPhotoHDREnabled: config.isPhotoHDREnabled,
-                  nativePixelFormat: config.nativePixelFormat,
-                  autoFocusSystem: config.autoFocusSystem,
-                  isBinned: config.isBinned,
-                });
-              }}
               // Tap anywhere on the viewfinder to refocus there.
               // Continuous autofocus is on by default; this lets the user
               // pick a specific point (soil patch or reference card) when
