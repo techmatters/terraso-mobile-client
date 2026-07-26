@@ -270,8 +270,22 @@ const runAnalysis = async ({
   pitProps: SoilPitInputScreenProps;
   dispatch: ReturnType<typeof useDispatch>;
 }): Promise<string> => {
-  const scaleX = sensorWidth / preview.width;
-  const scaleY = sensorHeight / preview.height;
+  // Vision-camera reports photo.width/height in the DNG's *pre-orientation*
+  // dimensions — iPhone in portrait writes a landscape 4032×3024 DNG with
+  // Orientation=6 (rotate 90 CW). CIRAWFilter honors the orientation tag,
+  // so its outputImage — and our rendered preview PNG — comes back rotated
+  // to portrait 3024×4032. Detect the orientation mismatch from the aspect
+  // ratios and swap dims so preview→sensor scaling matches the coord
+  // space decodeDngRois actually uses (which is CIRAWFilter's extent, i.e.
+  // the same orientation as the preview).
+  const previewIsPortrait = preview.width < preview.height;
+  const rawSensorIsPortrait = sensorWidth < sensorHeight;
+  const effectiveSensorWidth =
+    previewIsPortrait === rawSensorIsPortrait ? sensorWidth : sensorHeight;
+  const effectiveSensorHeight =
+    previewIsPortrait === rawSensorIsPortrait ? sensorHeight : sensorWidth;
+  const scaleX = effectiveSensorWidth / preview.width;
+  const scaleY = effectiveSensorHeight / preview.height;
   const toSensor = (c: RawCrop) => ({
     x: Math.round(c.left * scaleX),
     y: Math.round(c.top * scaleY),
@@ -283,7 +297,7 @@ const runAnalysis = async ({
   // TEMPORARY debug — trace every coordinate transform in the RAW
   // analysis pipeline so we can see whether wrong ROIs are being sampled.
   console.log(
-    `RAW analyze coords: preview=${preview.width}x${preview.height} sensor=${sensorWidth}x${sensorHeight} scaleX=${scaleX.toFixed(3)} scaleY=${scaleY.toFixed(3)}`,
+    `RAW analyze coords: preview=${preview.width}x${preview.height} sensor(raw)=${sensorWidth}x${sensorHeight} sensor(effective)=${effectiveSensorWidth}x${effectiveSensorHeight} scaleX=${scaleX.toFixed(3)} scaleY=${scaleY.toFixed(3)}`,
   );
   console.log(
     `  refCrop(preview)=${JSON.stringify(refCrop)} → refROI(sensor)=${JSON.stringify(refSensor)}`,
