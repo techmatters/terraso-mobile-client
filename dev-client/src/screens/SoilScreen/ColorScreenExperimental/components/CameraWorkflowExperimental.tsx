@@ -19,6 +19,7 @@ import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Alert, Pressable} from 'react-native';
 
+import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RawPickImageButton} from 'terraso-mobile-client/components/inputs/image/RawPickImageButton';
@@ -34,6 +35,7 @@ import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleCon
 import {munsellToString} from 'terraso-mobile-client/model/color/colorConversions';
 import {getColorFromLinearRgb} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   ExperimentalCaptureMode,
@@ -41,6 +43,7 @@ import {
   useExperimentalCaptureMode,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/experimentalCaptureModeToggle';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useDispatch} from 'terraso-mobile-client/store';
 
 // Same JPEG capture path as production CameraWorkflow — hand a JPEG Photo
 // to the existing ColorAnalysisScreen stack. The RAW path takes a
@@ -51,6 +54,7 @@ import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/
 export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const captureMode = useExperimentalCaptureMode();
 
   const onPickImage = useCallback(
@@ -64,9 +68,7 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
       }
       // kind === 'raw'. MVP: decode two fixed ROIs — reference card in
       // top half of frame, soil sample in bottom half. User is expected
-      // to frame the shot accordingly. Run through getColorFromLinearRgb
-      // and display the Munsell result. Real per-ROI picker UI comes
-      // in a later phase.
+      // to frame the shot accordingly. Real per-ROI picker UI is 5.3b.
       const {refRoi, sampleRoi} = computeFixedRois(result.width, result.height);
       try {
         const [card, sample] = await Promise.all([
@@ -78,13 +80,42 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
           sample,
           'POST_IT_YELLOW',
         );
+        // Prefer the exact in-range match; fall back to the nearest soil
+        // color when the predicted color is out of range. Matches the
+        // JPEG-path default (dispatching nearestValidResult on the
+        // "close but not exact" case would need a confirmation dialog;
+        // for the experimental screen we pick the closest so the result
+        // always lands in state and Manual view refreshes).
+        const dispatched =
+          'result' in colorResult
+            ? colorResult.result
+            : colorResult.nearestValidResult;
+        if (dispatched) {
+          dispatch(
+            updateDepthDependentSoilData({
+              siteId: props.siteId,
+              depthInterval: props.depthInterval.depthInterval,
+              colorHue: dispatched.colorHue,
+              colorValue: dispatched.colorValue,
+              colorChroma: dispatched.colorChroma,
+              colorPhotoUsed: true,
+            }),
+          );
+          trackSoilObservation({
+            input_type: 'soil_color',
+            input_method: 'photo',
+            site_id: props.siteId,
+            depthInterval: props.depthInterval.depthInterval,
+          });
+        }
         const munsellText = describeMunsell(colorResult);
         Alert.alert(
           'RAW analysis (single shot)',
           `Card (top ROI): r=${card.r.toFixed(3)} g=${card.g.toFixed(3)} b=${card.b.toFixed(3)}\n` +
             `Sample (bottom ROI): r=${sample.r.toFixed(3)} g=${sample.g.toFixed(3)} b=${sample.b.toFixed(3)}\n\n` +
             `Reference target: POST_IT_YELLOW\n\n` +
-            `Munsell: ${munsellText}`,
+            `Munsell: ${munsellText}` +
+            (dispatched ? '\n\nSaved to soil color.' : ''),
         );
         console.log(
           `ColorScreenExperimental RAW analysis: card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
@@ -97,7 +128,7 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
         result.dispose();
       }
     },
-    [navigation, props],
+    [navigation, props, dispatch],
   );
 
   const onUseGuide = useCallback(
