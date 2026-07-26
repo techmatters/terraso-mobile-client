@@ -31,7 +31,12 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {munsellToString} from 'terraso-mobile-client/model/color/colorConversions';
-import {getColorFromLinearRgb} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
+import {
+  getColorFromLinearRgb,
+  LinearReferenceKey,
+  LinearRgb,
+  rankReferences,
+} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -109,28 +114,69 @@ export const RawColorAnalysisScreen = ({
   const onAnalyze = useCallback(async () => {
     if (!session.refCrop || !session.sampleCrop || !session.preview) return;
     setAnalyzing(true);
+    let decoded: {card: LinearRgb; sample: LinearRgb};
     try {
-      const munsell = await runAnalysis({
+      decoded = await decodeCrops({
         dngPath,
         sensorWidth,
         sensorHeight,
         preview: session.preview,
         refCrop: session.refCrop,
         sampleCrop: session.sampleCrop,
-        pitProps,
-        dispatch,
       });
-      Alert.alert(
-        'RAW analysis complete',
-        `Soil color saved: ${munsell}\n\nReturning to Color screen.`,
-        [{text: 'OK', onPress: () => navigation.pop()}],
-      );
     } catch (err) {
-      console.error('RAW analyze failed:', err);
+      console.error('RAW decode failed:', err);
       Alert.alert('Analyze failed', String(err));
-    } finally {
       setAnalyzing(false);
+      return;
     }
+
+    // Rank references against the measured card, then present a picker
+    // so the user confirms which physical card they framed. Auto-pick
+    // the top-ranked reference in the alert's default position.
+    const ranked = rankReferences(decoded.card);
+    const finalizeWith = async (referenceKey: LinearReferenceKey) => {
+      try {
+        const munsell = await finalizeAnalysis({
+          card: decoded.card,
+          sample: decoded.sample,
+          referenceKey,
+          pitProps,
+          dispatch,
+        });
+        Alert.alert(
+          'RAW analysis complete',
+          `Soil color saved: ${munsell}\n\nReturning to Color screen.`,
+          [{text: 'OK', onPress: () => navigation.pop()}],
+        );
+      } catch (err) {
+        console.error('RAW analyze failed:', err);
+        Alert.alert('Analyze failed', String(err));
+      } finally {
+        setAnalyzing(false);
+      }
+    };
+
+    Alert.alert(
+      'Choose reference card',
+      'Which reference did you frame? Ranked by closest color match to the measured card.',
+      [
+        ...ranked.map(r => ({
+          text: `${r.name}  (ΔE ${r.deltaE.toFixed(1)}, ${Math.round(
+            r.confidence * 100,
+          )}%)`,
+          onPress: () => {
+            finalizeWith(r.key);
+          },
+        })),
+        {
+          text: 'Cancel',
+          style: 'cancel' as const,
+          onPress: () => setAnalyzing(false),
+        },
+      ],
+      {cancelable: true, onDismiss: () => setAnalyzing(false)},
+    );
   }, [
     session.refCrop,
     session.sampleCrop,
@@ -249,17 +295,17 @@ const SelectButton = ({
   </Box>
 );
 
-// Decode both ROIs, run the RAW pipeline, dispatch to Redux, return a
-// display-ready Munsell string for the confirmation Alert.
-const runAnalysis = async ({
+// Scale preview-space crops up to sensor-space ROIs and call
+// decodeDngRois. Returns the two per-ROI linear-sRGB averages so the
+// caller can rank references before choosing which one to correct
+// against.
+const decodeCrops = async ({
   dngPath,
   sensorWidth,
   sensorHeight,
   preview,
   refCrop,
   sampleCrop,
-  pitProps,
-  dispatch,
 }: {
   dngPath: string;
   sensorWidth: number;
@@ -267,9 +313,7 @@ const runAnalysis = async ({
   preview: {width: number; height: number};
   refCrop: RawCrop;
   sampleCrop: RawCrop;
-  pitProps: SoilPitInputScreenProps;
-  dispatch: ReturnType<typeof useDispatch>;
-}): Promise<string> => {
+}): Promise<{card: LinearRgb; sample: LinearRgb}> => {
   // Vision-camera reports photo.width/height in the DNG's *pre-orientation*
   // dimensions — iPhone in portrait writes a landscape 4032×3024 DNG with
   // Orientation=6 (rotate 90 CW). CIRAWFilter honors the orientation tag,
@@ -313,7 +357,26 @@ const runAnalysis = async ({
     `  decoded card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
       `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)})`,
   );
-  const colorResult = getColorFromLinearRgb(card, sample, 'POST_IT_YELLOW');
+  return {card, sample};
+};
+
+// Apply the WB correction against the chosen reference, dispatch to
+// Redux, and return a display-ready Munsell string for the
+// confirmation Alert.
+const finalizeAnalysis = async ({
+  card,
+  sample,
+  referenceKey,
+  pitProps,
+  dispatch,
+}: {
+  card: LinearRgb;
+  sample: LinearRgb;
+  referenceKey: LinearReferenceKey;
+  pitProps: SoilPitInputScreenProps;
+  dispatch: ReturnType<typeof useDispatch>;
+}): Promise<string> => {
+  const colorResult = getColorFromLinearRgb(card, sample, referenceKey);
   const dispatched =
     'result' in colorResult
       ? colorResult.result
@@ -339,7 +402,7 @@ const runAnalysis = async ({
   });
   const munsellText = munsellToString(dispatched);
   console.log(
-    `RAW analysis dispatched: ${munsellText} ` +
+    `RAW finalize dispatched: ${munsellText} using reference=${referenceKey} ` +
       `card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
       `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)})`,
   );

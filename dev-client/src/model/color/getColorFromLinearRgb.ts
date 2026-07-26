@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {rgb255ToMhvc} from 'munsell';
+import {getDeltaE00} from 'delta-e';
+import {mhvcToLab, rgb255ToMhvc} from 'munsell';
 
 import {
   linearToSrgb,
@@ -48,6 +49,73 @@ export const LINEAR_REFERENCES = {
 } as const satisfies Record<string, LinearRgb>;
 
 export type LinearReferenceKey = keyof typeof LINEAR_REFERENCES;
+
+// Human-facing labels for each reference — shown in the picker UI when
+// the user is choosing which reference their captured card is.
+export const LINEAR_REFERENCE_NAMES: Record<LinearReferenceKey, string> = {
+  POST_IT_YELLOW: '3M Post-it Yellow',
+  GRAY_CARD_18PCT: '18% Neutral Gray Card',
+};
+
+// Ordered list version of LINEAR_REFERENCES for the confidence-picker
+// UI. Keep in sync with LINEAR_REFERENCES.
+export const LINEAR_REFERENCE_KEYS: LinearReferenceKey[] = [
+  'POST_IT_YELLOW',
+  'GRAY_CARD_18PCT',
+];
+
+export type RankedReference = {
+  key: LinearReferenceKey;
+  name: string;
+  /**
+   * CIE ΔE00 between the measured card and this reference's expected
+   * color, both converted through Munsell HVC into LAB. Lower = closer
+   * match. Reference implementations of ΔE00 give "just noticeable
+   * difference" around 1.0; anything under ~10 is a plausible match,
+   * over ~40 is clearly a different color.
+   */
+  deltaE: number;
+  /**
+   * `1 - deltaE/40` clamped to [0, 1]. Purely a display convenience —
+   * the ranking is by deltaE.
+   */
+  confidence: number;
+};
+
+// Convert a linear-sRGB triple to LAB via gamma-encoded sRGB255 →
+// Munsell HVC → LAB. Uses the two chained conversions the munsell
+// package exposes; not the most direct sRGB→LAB path but it lands on
+// the same coordinate system used everywhere else in this file.
+const linearRgbToLab = (rgb: LinearRgb): {L: number; A: number; B: number} => {
+  const hvc = rgb255ToMhvc(
+    linearToSrgb(rgb.r),
+    linearToSrgb(rgb.g),
+    linearToSrgb(rgb.b),
+  );
+  const [L, A, B] = mhvcToLab(...hvc);
+  return {L, A, B};
+};
+
+// Score every known reference against the measured card, sorted best-
+// first. Used by the picker UI: after the user selects the reference
+// ROI, we don't know which physical card they framed — so we present
+// them a ranked list with a top pick auto-selected.
+export const rankReferences = (measuredCard: LinearRgb): RankedReference[] => {
+  const measuredLab = linearRgbToLab(measuredCard);
+  const ranked = LINEAR_REFERENCE_KEYS.map(key => {
+    const expected = LINEAR_REFERENCES[key];
+    const expectedLab = linearRgbToLab(expected);
+    const deltaE = getDeltaE00(measuredLab, expectedLab);
+    return {
+      key,
+      name: LINEAR_REFERENCE_NAMES[key],
+      deltaE,
+      confidence: Math.max(0, Math.min(1, 1 - deltaE / 40)),
+    };
+  });
+  ranked.sort((a, b) => a.deltaE - b.deltaE);
+  return ranked;
+};
 
 // The RAW-path counterpart to getColorFromPixels. Same algorithmic shape,
 // just done end-to-end in linear-sRGB space:
