@@ -31,6 +31,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {getColorFromLinearRgb} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
@@ -60,27 +61,37 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
         });
         return;
       }
-      // kind === 'raw' — MVP: decode a fixed 1000×1000 centered ROI in
-      // sensor coordinates and show the result. Real ROI picking + a
-      // full RAW color-analysis flow is phase 5.2.
+      // kind === 'raw'. MVP: decode two fixed ROIs — reference card in
+      // top half of frame, soil sample in bottom half. User is expected
+      // to frame the shot accordingly. Run through getColorFromLinearRgb
+      // and display the Munsell result. Real per-ROI picker UI comes
+      // in a later phase.
+      const {refRoi, sampleRoi} = computeFixedRois(result.width, result.height);
       try {
-        const rgb = await result.decodeRoi({
-          x: Math.max(0, Math.floor(result.width / 2 - 500)),
-          y: Math.max(0, Math.floor(result.height / 2 - 500)),
-          w: Math.min(1000, result.width),
-          h: Math.min(1000, result.height),
-        });
+        const [card, sample] = await Promise.all([
+          result.decodeRoi(refRoi),
+          result.decodeRoi(sampleRoi),
+        ]);
+        const colorResult = getColorFromLinearRgb(
+          card,
+          sample,
+          'POST_IT_YELLOW',
+        );
+        const munsellText = describeMunsell(colorResult);
         Alert.alert(
-          'RAW decode result',
-          `Centered 1000×1000 ROI in sensor coords\n\n` +
-            `linear sRGB:\n  r = ${rgb.r.toFixed(4)}\n  g = ${rgb.g.toFixed(4)}\n  b = ${rgb.b.toFixed(4)}`,
+          'RAW analysis (single shot)',
+          `Card (top ROI): r=${card.r.toFixed(3)} g=${card.g.toFixed(3)} b=${card.b.toFixed(3)}\n` +
+            `Sample (bottom ROI): r=${sample.r.toFixed(3)} g=${sample.g.toFixed(3)} b=${sample.b.toFixed(3)}\n\n` +
+            `Reference target: POST_IT_YELLOW\n\n` +
+            `Munsell: ${munsellText}`,
         );
         console.log(
-          `ColorScreenExperimental RAW: linear sRGB r=${rgb.r.toFixed(4)} g=${rgb.g.toFixed(4)} b=${rgb.b.toFixed(4)} (${result.width}x${result.height})`,
+          `ColorScreenExperimental RAW analysis: card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
+            `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)}) → ${munsellText}`,
         );
       } catch (err) {
-        console.error('RAW decode failed:', err);
-        Alert.alert('RAW decode failed', String(err));
+        console.error('RAW analysis failed:', err);
+        Alert.alert('RAW analysis failed', String(err));
       } finally {
         result.dispose();
       }
@@ -145,6 +156,55 @@ const CaptureModeSelector = ({current}: {current: ExperimentalCaptureMode}) => (
     />
   </Row>
 );
+
+// Split the frame vertically: reference goes in the top quarter,
+// soil sample in the bottom quarter. ROI width is 60% of the shorter
+// image dimension; height is 20% of the longer dimension. Numbers
+// picked to leave visible margins so the user can frame confidently.
+const computeFixedRois = (
+  width: number,
+  height: number,
+): {refRoi: Roi; sampleRoi: Roi} => {
+  const shorter = Math.min(width, height);
+  const longer = Math.max(width, height);
+  const w = Math.floor(shorter * 0.6);
+  const h = Math.floor(longer * 0.2);
+  const x = Math.floor((width - w) / 2);
+  // Portrait: height > width. Top = small y. If landscape, this still
+  // produces two disjoint centered ROIs, just labeled "top"/"bottom"
+  // relative to whichever axis we chose.
+  return {
+    refRoi: {x, y: Math.floor(height * 0.15), w, h},
+    sampleRoi: {x, y: Math.floor(height * 0.65), w, h},
+  };
+};
+
+type Roi = {x: number; y: number; w: number; h: number};
+
+const describeMunsell = (result: {
+  result?: {colorHue: number; colorValue: number; colorChroma: number};
+  nearestValidResult?: {
+    colorHue: number;
+    colorValue: number;
+    colorChroma: number;
+  };
+  invalidResult?: {
+    colorHue: number;
+    colorValue: number;
+    colorChroma: number;
+  };
+}): string => {
+  const inRange = result.result;
+  if (inRange) {
+    return `${inRange.colorHue.toFixed(1)} ${inRange.colorValue.toFixed(1)}/${inRange.colorChroma.toFixed(1)} (matched soil color)`;
+  }
+  const nearest = result.nearestValidResult;
+  const invalid = result.invalidResult;
+  return (
+    `Predicted: ${invalid?.colorHue.toFixed(1)} ${invalid?.colorValue.toFixed(1)}/${invalid?.colorChroma.toFixed(1)} (no close soil match)\n` +
+    `Nearest soil color: ${nearest?.colorHue.toFixed(1)} ${nearest?.colorValue.toFixed(1)}/${nearest?.colorChroma.toFixed(1)}`
+  );
+};
 
 const ModeButton = ({
   label,
