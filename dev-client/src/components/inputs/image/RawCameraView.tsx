@@ -27,6 +27,8 @@ import {
   usePhotoOutput,
 } from 'react-native-vision-camera';
 
+import {DngDecoderHybrid} from 'dng-decoder';
+
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
@@ -119,18 +121,42 @@ export const RawCameraView = ({
       const photo = await photoOutput.capturePhoto({}, {});
 
       if (photo.isRawPhoto) {
+        const rawPath = await photo.saveToTemporaryFileAsync();
+        const rawUri = rawPath.startsWith('file://')
+          ? rawPath
+          : `file://${rawPath}`;
         if (onRawPhotoDevOnly) {
-          const rawPath = await photo.saveToTemporaryFileAsync();
-          onRawPhotoDevOnly(
-            rawPath.startsWith('file://') ? rawPath : `file://${rawPath}`,
-          );
+          onRawPhotoDevOnly(rawUri);
           return;
         }
-        // Not wired up until phase 4. Guard so we don't silently produce a
-        // JPEG-shaped result from a DNG file, which would corrupt the sRGB
-        // pipeline downstream.
+        if (containerFormat === 'dng') {
+          // Real RAW capture path. Emit a proper {kind: 'raw', ...} result
+          // whose decodeRoi calls the DngDecoder Nitro module (CIRAWFilter
+          // on iOS ProRAW; C++ engine on Android plain-Bayer).
+          onCapture({
+            kind: 'raw',
+            dngPath: rawUri,
+            width: photo.width,
+            height: photo.height,
+            decodeRoi: async roi => {
+              const [rgb] = await DngDecoderHybrid.decodeDngRois(rawUri, [roi]);
+              return rgb;
+            },
+            dispose: () => {
+              // TODO: unlink the temp file. saveToTemporaryFileAsync stashes
+              // in the app's tmp/, which iOS may reclaim on its own. Leaving
+              // for the OS to sweep for now — worth revisiting if we start
+              // holding many captures in memory.
+            },
+          });
+          return;
+        }
+        // We got a RAW photo but the caller didn't ask for one. Refuse to
+        // silently emit a JPEG-shaped result from DNG data — that would
+        // corrupt the downstream sRGB pipeline.
         console.error(
-          'RawCameraView: RAW capture returned unexpectedly; RAW path is phase 4.',
+          'RawCameraView: RAW capture returned unexpectedly for containerFormat=%s',
+          containerFormat,
         );
         cancel();
         return;
@@ -154,7 +180,14 @@ export const RawCameraView = ({
     } finally {
       setIsCapturing(false);
     }
-  }, [isCapturing, photoOutput, onCapture, cancel, onRawPhotoDevOnly]);
+  }, [
+    isCapturing,
+    photoOutput,
+    onCapture,
+    cancel,
+    onRawPhotoDevOnly,
+    containerFormat,
+  ]);
 
   return (
     <Modal

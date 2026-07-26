@@ -39,6 +39,8 @@ type Props = {
   onPick: (result: CaptureResult) => void;
   featureName: string;
   children: ModalTrigger;
+  /** Threaded through to {@link RawCameraView}. Default `'jpeg'`. */
+  containerFormat?: 'jpeg' | 'dng';
 };
 
 /**
@@ -50,7 +52,12 @@ type Props = {
  * The "Choose from gallery" branch continues to use expo-image-picker
  * unchanged.
  */
-export const RawImagePicker = ({onPick, children, featureName}: Props) => {
+export const RawImagePicker = ({
+  onPick,
+  children,
+  featureName,
+  containerFormat,
+}: Props) => {
   const {t} = useTranslation();
   const sheetRef = useRef<ModalHandle>(null);
   const [cameraVisible, setCameraVisible] = useState(false);
@@ -128,6 +135,7 @@ export const RawImagePicker = ({onPick, children, featureName}: Props) => {
         visible={cameraVisible}
         onCapture={onCameraCapture}
         onCancel={onCameraCancel}
+        containerFormat={containerFormat}
       />
     </>
   );
