@@ -56,13 +56,14 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     // ISP has already applied WB / demosaic / tone curve / noise reduction
     // into the ProRAW pixel data itself; these knobs only affect additional
     // adjustments the filter would otherwise layer on top.
+    //
+    // Only boostAmount and boostShadowAmount are exposed as typed
+    // properties on the modern CIRAWFilter class; other knobs like
+    // disableGamutMap and noiseReductionAmount are on the old ObjC
+    // key-value interface and don't surface here. The two we can set are
+    // the dominant contributors to Apple's post-decode tone shaping.
     rawFilter.boostAmount = 0.0
     rawFilter.boostShadowAmount = 0.0
-    rawFilter.disableGamutMap = true
-    rawFilter.noiseReductionAmount = 0.0
-    rawFilter.detailAmount = 0.0
-    rawFilter.sharpnessAmount = 0.0
-    rawFilter.contrastAmount = 0.0
 
     guard let ciImage = rawFilter.outputImage else {
       throw RuntimeError.error(withMessage: "CIRAWFilter produced no outputImage")
