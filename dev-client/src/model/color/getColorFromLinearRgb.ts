@@ -36,10 +36,15 @@ export const LINEAR_REFERENCES = {
   // rounded. The RAW pipeline uses this directly; the JPEG pipeline
   // linearizes REFERENCES.CANARY_POST_IT at correction time.
   POST_IT_YELLOW: {r: 0.9542, g: 0.887, b: 0.362},
-  // 18% gray card (Camera Trax equivalent). srgbToLinear of the JPEG
-  // pipeline's CAMERA_TRAX triple. Placeholder — not verified against a
-  // physical card.
-  GRAY_CARD_18PCT: {r: 0.653, g: 0.679, b: 0.708},
+  // Generic 18% neutral gray card — the classic photographic reference,
+  // ~18% reflectance across the visible spectrum, spectrally flat.
+  // In linear-sRGB that's r = g = b = 0.18. PLACEHOLDER: measure your
+  // actual card once you have one physically on hand; small deviations
+  // from neutral (both in luminance and in per-channel balance) matter
+  // for the WB correction. Common candidate cards to measure against:
+  // X-Rite ColorChecker gray patch (~0.18 nominal), Kodak Q-13 Gray
+  // Scale square M, or a Sekonic gray card.
+  GRAY_CARD_18PCT: {r: 0.18, g: 0.18, b: 0.18},
 } as const satisfies Record<string, LinearRgb>;
 
 export type LinearReferenceKey = keyof typeof LINEAR_REFERENCES;
