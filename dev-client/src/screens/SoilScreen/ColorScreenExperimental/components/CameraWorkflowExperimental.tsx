@@ -31,6 +31,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {munsellToString} from 'terraso-mobile-client/model/color/colorConversions';
 import {getColorFromLinearRgb} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -196,13 +197,14 @@ const describeMunsell = (result: {
 }): string => {
   const inRange = result.result;
   if (inRange) {
-    return `${inRange.colorHue.toFixed(1)} ${inRange.colorValue.toFixed(1)}/${inRange.colorChroma.toFixed(1)} (matched soil color)`;
+    return `${munsellToString(inRange)} (matched soil color)`;
   }
   const nearest = result.nearestValidResult;
   const invalid = result.invalidResult;
   return (
-    `Predicted: ${invalid?.colorHue.toFixed(1)} ${invalid?.colorValue.toFixed(1)}/${invalid?.colorChroma.toFixed(1)} (no close soil match)\n` +
-    `Nearest soil color: ${nearest?.colorHue.toFixed(1)} ${nearest?.colorValue.toFixed(1)}/${nearest?.colorChroma.toFixed(1)}`
+    (invalid
+      ? `Predicted: ${munsellToString(invalid)} (no close soil match)\n`
+      : '') + (nearest ? `Nearest soil color: ${munsellToString(nearest)}` : '')
   );
 };
 
