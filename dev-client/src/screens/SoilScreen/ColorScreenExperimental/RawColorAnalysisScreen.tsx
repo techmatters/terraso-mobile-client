@@ -278,10 +278,27 @@ const runAnalysis = async ({
     w: Math.round(c.size * scaleX),
     h: Math.round(c.size * scaleY),
   });
+  const refSensor = toSensor(refCrop);
+  const sampleSensor = toSensor(sampleCrop);
+  // TEMPORARY debug — trace every coordinate transform in the RAW
+  // analysis pipeline so we can see whether wrong ROIs are being sampled.
+  console.log(
+    `RAW analyze coords: preview=${preview.width}x${preview.height} sensor=${sensorWidth}x${sensorHeight} scaleX=${scaleX.toFixed(3)} scaleY=${scaleY.toFixed(3)}`,
+  );
+  console.log(
+    `  refCrop(preview)=${JSON.stringify(refCrop)} → refROI(sensor)=${JSON.stringify(refSensor)}`,
+  );
+  console.log(
+    `  sampleCrop(preview)=${JSON.stringify(sampleCrop)} → sampleROI(sensor)=${JSON.stringify(sampleSensor)}`,
+  );
   const [card, sample] = await DngDecoderHybrid.decodeDngRois(dngPath, [
-    toSensor(refCrop),
-    toSensor(sampleCrop),
+    refSensor,
+    sampleSensor,
   ]);
+  console.log(
+    `  decoded card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
+      `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)})`,
+  );
   const colorResult = getColorFromLinearRgb(card, sample, 'POST_IT_YELLOW');
   const dispatched =
     'result' in colorResult

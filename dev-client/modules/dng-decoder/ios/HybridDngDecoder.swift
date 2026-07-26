@@ -88,7 +88,7 @@ class HybridDngDecoder: HybridDngDecoderSpec {
 
     var results: [LinearRgb] = []
     results.reserveCapacity(rois.count)
-    for roi in rois {
+    for (idx, roi) in rois.enumerated() {
       // ROI coordinates arrive in top-left origin. CoreImage uses a
       // bottom-left origin with fractional Y increasing upward.
       let cropRect = CGRect(
@@ -97,7 +97,16 @@ class HybridDngDecoder: HybridDngDecoderSpec {
         width: CGFloat(roi.w),
         height: CGFloat(roi.h)
       )
+      NSLog(
+        "DngDecoder decodeDngRois[%d]: roi(top-left)=(%d,%d,%dx%d) → cropRect(CoreImage)=(%.0f,%.0f,%.0fx%.0f)",
+        idx, roi.x, roi.y, roi.w, roi.h,
+        cropRect.origin.x, cropRect.origin.y, cropRect.width, cropRect.height)
       let cropped = ciImage.cropped(to: cropRect)
+      NSLog(
+        "  cropped extent=(%.0f,%.0f,%.0fx%.0f) isEmpty=%@",
+        cropped.extent.origin.x, cropped.extent.origin.y,
+        cropped.extent.width, cropped.extent.height,
+        cropped.extent.isEmpty ? "true" : "false")
 
       // Reduce the ROI to a single-pixel average via the built-in
       // Metal-accelerated area-average filter.
@@ -123,6 +132,10 @@ class HybridDngDecoder: HybridDngDecoderSpec {
       let r = clamp01(Double(bitmap[0]))
       let g = clamp01(Double(bitmap[1]))
       let b = clamp01(Double(bitmap[2]))
+      NSLog(
+        "  raw bitmap=(%.4f, %.4f, %.4f, α=%.4f) → clamped(%.4f, %.4f, %.4f)",
+        Double(bitmap[0]), Double(bitmap[1]), Double(bitmap[2]),
+        Double(bitmap[3]), r, g, b)
       results.append(LinearRgb(r: r, g: g, b: b))
     }
     return results
