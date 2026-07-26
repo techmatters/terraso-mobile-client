@@ -55,6 +55,7 @@ import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/Sl
 import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/CarbonatesScreen';
 import {ColorGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorGuideScreen';
 import {ColorScreenRouter} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreenRouter';
+import {RawColorAnalysisScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/RawColorAnalysisScreen';
 import {SoilSurfaceScreen} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceScreen';
 import {ConductivityScreen} from 'terraso-mobile-client/screens/SoilScreen/ConductivityScreen';
 import {PhScreen} from 'terraso-mobile-client/screens/SoilScreen/PhScreen';
@@ -108,6 +109,7 @@ export const screenDefinitions = {
   TEXTURE_GUIDE: TextureGuideScreen,
   COLOR_GUIDE: ColorGuideScreen,
   COLOR_ANALYSIS: ColorAnalysisScreen,
+  RAW_COLOR_ANALYSIS_EXPERIMENTAL: RawColorAnalysisScreen,
   DATA_EXPORT: UserDataExportScreen,
   SITE_EXPORT: SiteExportScreen,
   DELETE_ACCOUNT: DeleteAccountScreen,

@@ -17,9 +17,8 @@
 
 import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Alert, Pressable} from 'react-native';
+import {Pressable} from 'react-native';
 
-import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RawPickImageButton} from 'terraso-mobile-client/components/inputs/image/RawPickImageButton';
@@ -32,10 +31,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
-import {munsellToString} from 'terraso-mobile-client/model/color/colorConversions';
-import {getColorFromLinearRgb} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
-import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   ExperimentalCaptureMode,
@@ -43,18 +39,13 @@ import {
   useExperimentalCaptureMode,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/experimentalCaptureModeToggle';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {useDispatch} from 'terraso-mobile-client/store';
 
-// Same JPEG capture path as production CameraWorkflow — hand a JPEG Photo
-// to the existing ColorAnalysisScreen stack. The RAW path takes a
-// captured DNG, decodes a centered ROI via DngDecoderHybrid, and
-// currently just shows the linear-sRGB triple in an Alert. Full RAW
-// integration into the color-analysis flow (ROI picking, reference-card
-// matching against decoded linear-RGB) lands in phase 5.2.
+// JPEG capture path routes through the existing ColorAnalysisScreen stack.
+// RAW capture path hands the DNG off to RawColorAnalysisScreen — the
+// experimental ROI-picker + analysis screen. See docs/raw-camera-plan.md.
 export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
-  const dispatch = useDispatch();
   const captureMode = useExperimentalCaptureMode();
 
   const onPickImage = useCallback(
@@ -66,69 +57,20 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
         });
         return;
       }
-      // kind === 'raw'. MVP: decode two fixed ROIs — reference card in
-      // top half of frame, soil sample in bottom half. User is expected
-      // to frame the shot accordingly. Real per-ROI picker UI is 5.3b.
-      const {refRoi, sampleRoi} = computeFixedRois(result.width, result.height);
-      try {
-        const [card, sample] = await Promise.all([
-          result.decodeRoi(refRoi),
-          result.decodeRoi(sampleRoi),
-        ]);
-        const colorResult = getColorFromLinearRgb(
-          card,
-          sample,
-          'POST_IT_YELLOW',
-        );
-        // Prefer the exact in-range match; fall back to the nearest soil
-        // color when the predicted color is out of range. Matches the
-        // JPEG-path default (dispatching nearestValidResult on the
-        // "close but not exact" case would need a confirmation dialog;
-        // for the experimental screen we pick the closest so the result
-        // always lands in state and Manual view refreshes).
-        const dispatched =
-          'result' in colorResult
-            ? colorResult.result
-            : colorResult.nearestValidResult;
-        if (dispatched) {
-          dispatch(
-            updateDepthDependentSoilData({
-              siteId: props.siteId,
-              depthInterval: props.depthInterval.depthInterval,
-              colorHue: dispatched.colorHue,
-              colorValue: dispatched.colorValue,
-              colorChroma: dispatched.colorChroma,
-              colorPhotoUsed: true,
-            }),
-          );
-          trackSoilObservation({
-            input_type: 'soil_color',
-            input_method: 'photo',
-            site_id: props.siteId,
-            depthInterval: props.depthInterval.depthInterval,
-          });
-        }
-        const munsellText = describeMunsell(colorResult);
-        Alert.alert(
-          'RAW analysis (single shot)',
-          `Card (top ROI): r=${card.r.toFixed(3)} g=${card.g.toFixed(3)} b=${card.b.toFixed(3)}\n` +
-            `Sample (bottom ROI): r=${sample.r.toFixed(3)} g=${sample.g.toFixed(3)} b=${sample.b.toFixed(3)}\n\n` +
-            `Reference target: POST_IT_YELLOW\n\n` +
-            `Munsell: ${munsellText}` +
-            (dispatched ? '\n\nSaved to soil color.' : ''),
-        );
-        console.log(
-          `ColorScreenExperimental RAW analysis: card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
-            `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)}) → ${munsellText}`,
-        );
-      } catch (err) {
-        console.error('RAW analysis failed:', err);
-        Alert.alert('RAW analysis failed', String(err));
-      } finally {
-        result.dispose();
-      }
+      // kind === 'raw'. Hand the DNG off to the experimental ROI-picker
+      // screen for manual reference/sample selection + analysis. The
+      // CaptureResult itself carries functions (decodeRoi, dispose)
+      // that can't be serialized through React Navigation params, so
+      // we pass just the sensor dimensions + path. The picker calls
+      // DngDecoderHybrid directly.
+      navigation.navigate('RAW_COLOR_ANALYSIS_EXPERIMENTAL', {
+        dngPath: result.dngPath,
+        sensorWidth: result.width,
+        sensorHeight: result.height,
+        pitProps: props,
+      });
     },
-    [navigation, props, dispatch],
+    [navigation, props],
   );
 
   const onUseGuide = useCallback(
@@ -188,56 +130,6 @@ const CaptureModeSelector = ({current}: {current: ExperimentalCaptureMode}) => (
     />
   </Row>
 );
-
-// Split the frame vertically: reference goes in the top quarter,
-// soil sample in the bottom quarter. ROI width is 60% of the shorter
-// image dimension; height is 20% of the longer dimension. Numbers
-// picked to leave visible margins so the user can frame confidently.
-const computeFixedRois = (
-  width: number,
-  height: number,
-): {refRoi: Roi; sampleRoi: Roi} => {
-  const shorter = Math.min(width, height);
-  const longer = Math.max(width, height);
-  const w = Math.floor(shorter * 0.6);
-  const h = Math.floor(longer * 0.2);
-  const x = Math.floor((width - w) / 2);
-  // Portrait: height > width. Top = small y. If landscape, this still
-  // produces two disjoint centered ROIs, just labeled "top"/"bottom"
-  // relative to whichever axis we chose.
-  return {
-    refRoi: {x, y: Math.floor(height * 0.15), w, h},
-    sampleRoi: {x, y: Math.floor(height * 0.65), w, h},
-  };
-};
-
-type Roi = {x: number; y: number; w: number; h: number};
-
-const describeMunsell = (result: {
-  result?: {colorHue: number; colorValue: number; colorChroma: number};
-  nearestValidResult?: {
-    colorHue: number;
-    colorValue: number;
-    colorChroma: number;
-  };
-  invalidResult?: {
-    colorHue: number;
-    colorValue: number;
-    colorChroma: number;
-  };
-}): string => {
-  const inRange = result.result;
-  if (inRange) {
-    return `${munsellToString(inRange)} (matched soil color)`;
-  }
-  const nearest = result.nearestValidResult;
-  const invalid = result.invalidResult;
-  return (
-    (invalid
-      ? `Predicted: ${munsellToString(invalid)} (no close soil match)\n`
-      : '') + (nearest ? `Nearest soil color: ${munsellToString(nearest)}` : '')
-  );
-};
 
 const ModeButton = ({
   label,
