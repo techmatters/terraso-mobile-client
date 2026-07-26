@@ -39,6 +39,7 @@ constexpr uint16_t TAG_AS_SHOT_NEUTRAL = 50728;
 constexpr uint16_t TAG_CFA_PATTERN_DNG = 50711;
 
 constexpr uint16_t PHOTOMETRIC_CFA = 32803;
+constexpr uint16_t PHOTOMETRIC_LINEAR_RAW = 34892;
 
 // Reads primitives with configurable endianness.
 struct Reader {
@@ -230,32 +231,48 @@ double readFirstScalar(const Reader& r, const IfdEntry& e, size_t entryOffset) {
   return v[0];
 }
 
-Ifd findRawIfd(const Reader& r, const Ifd& root) {
+struct RawIfdResult {
+  Ifd ifd;
+  uint16_t photometric;
+};
+
+// Find the IFD containing the raw pixel data. Prefer a CFA sub-IFD when
+// present (a ProRAW file *might* embed a plain-Bayer sub-IFD alongside its
+// main LinearRaw IFD; if so, we prefer the CFA one for higher fidelity).
+// Otherwise fall back to any LinearRaw IFD. Throws if neither is found.
+RawIfdResult findRawIfd(const Reader& r, const Ifd& root) {
+  auto photoOf = [&](const Ifd& ifd) -> uint16_t {
+    size_t off = 0;
+    if (auto* p = ifd.find(TAG_PHOTOMETRIC, &off)) {
+      return static_cast<uint16_t>(readFirstScalar(r, *p, off));
+    }
+    return 0;
+  };
+
+  // Collect all candidate IFDs: root + all sub-IFDs.
+  std::vector<Ifd> candidates;
   size_t subIfdsOffset = 0;
-  const IfdEntry* subIfds = root.find(TAG_SUB_IFDS, &subIfdsOffset);
-  if (!subIfds) {
-    size_t photOff = 0;
-    if (auto* p = root.find(TAG_PHOTOMETRIC, &photOff)) {
-      if (static_cast<uint16_t>(readFirstScalar(r, *p, photOff)) ==
-          PHOTOMETRIC_CFA) {
-        return root;
-      }
-    }
-    throw std::runtime_error("DNG parser: no SubIFDs and root is not CFA");
-  }
-  std::vector<double> offsets;
-  readScalars(r, *subIfds, subIfdsOffset, offsets);
-  for (double off : offsets) {
-    Ifd candidate = readIfd(r, static_cast<size_t>(off));
-    size_t photOff = 0;
-    if (auto* p = candidate.find(TAG_PHOTOMETRIC, &photOff)) {
-      if (static_cast<uint16_t>(readFirstScalar(r, *p, photOff)) ==
-          PHOTOMETRIC_CFA) {
-        return candidate;
-      }
+  if (const IfdEntry* subIfds = root.find(TAG_SUB_IFDS, &subIfdsOffset)) {
+    std::vector<double> offsets;
+    readScalars(r, *subIfds, subIfdsOffset, offsets);
+    for (double off : offsets) {
+      candidates.push_back(readIfd(r, static_cast<size_t>(off)));
     }
   }
-  throw std::runtime_error("DNG parser: no CFA sub-IFD found");
+  candidates.push_back(root);
+
+  // First pass: any CFA IFD wins.
+  for (const auto& ifd : candidates) {
+    if (photoOf(ifd) == PHOTOMETRIC_CFA) return {ifd, PHOTOMETRIC_CFA};
+  }
+  // Second pass: fall back to LinearRaw.
+  for (const auto& ifd : candidates) {
+    if (photoOf(ifd) == PHOTOMETRIC_LINEAR_RAW) {
+      return {ifd, PHOTOMETRIC_LINEAR_RAW};
+    }
+  }
+  throw std::runtime_error(
+      "DNG parser: no CFA (32803) or LinearRaw (34892) IFD found");
 }
 
 }  // namespace
@@ -288,9 +305,14 @@ ParsedDng parseDng(const std::string& path) {
 
   const uint32_t firstIfdOffset = r.u32(4);
   Ifd root = readIfd(r, firstIfdOffset);
-  Ifd raw = findRawIfd(r, root);
+  const RawIfdResult rawResult = findRawIfd(r, root);
+  const Ifd& raw = rawResult.ifd;
 
   ParsedDng out;
+  out.layout = (rawResult.photometric == PHOTOMETRIC_LINEAR_RAW)
+                   ? PixelLayout::LinearRaw
+                   : PixelLayout::Cfa;
+  const uint32_t samplesPerPixel = (out.layout == PixelLayout::LinearRaw) ? 3u : 1u;
 
   auto readOneScalar = [&](uint16_t tag, double fallback) -> double {
     size_t off = 0;
@@ -323,8 +345,9 @@ ParsedDng parseDng(const std::string& path) {
                              std::to_string(comp) + ")");
   }
 
-  // CFA pattern. Prefer TAG_CFA_PATTERN_2 (Exif form: 4 bytes, RGGB order).
-  {
+  // CFA pattern. Only meaningful for the CFA layout; LinearRaw has no
+  // Bayer mosaic (Apple's ISP already demosaiced) so we skip.
+  if (out.layout == PixelLayout::Cfa) {
     size_t off = 0;
     if (auto* e = raw.find(TAG_CFA_PATTERN_2, &off)) {
       std::vector<double> v;
@@ -346,7 +369,7 @@ ParsedDng parseDng(const std::string& path) {
     }
   }
 
-  // BlackLevel — may be scalar, RATIONAL, or per-channel 4 values.
+  // BlackLevel — scalar, per-channel triple, or 4-value CFA pattern.
   {
     size_t off = 0;
     if (auto* e = raw.find(TAG_BLACK_LEVEL, &off)) {
@@ -354,8 +377,11 @@ ParsedDng parseDng(const std::string& path) {
       readScalars(r, *e, off, v);
       if (v.size() == 1) {
         out.blackLevel = {v[0], v[0], v[0]};
-      } else if (v.size() >= 4) {
-        // Order matches CFA layout. Map via the CFA pattern to R/G/B levels.
+      } else if (v.size() == 3) {
+        // Common for LinearRaw: direct RGB triple.
+        out.blackLevel = {v[0], v[1], v[2]};
+      } else if (v.size() >= 4 && out.layout == PixelLayout::Cfa) {
+        // 4-value form on CFA: map by the 2×2 CFA pattern into R/G/B.
         std::array<double, 3> sums{0, 0, 0};
         std::array<int, 3> counts{0, 0, 0};
         for (int i = 0; i < 4; ++i) {
@@ -419,31 +445,34 @@ ParsedDng parseDng(const std::string& path) {
     throw std::runtime_error("DNG parser: strip offset/count mismatch");
   }
 
-  const size_t totalPixels = size_t(out.width) * out.height;
-  out.pixels.resize(totalPixels);
+  // Sample count: 1/pixel for CFA, 3/pixel (interleaved RGB) for LinearRaw.
+  const size_t samplesPerRow = size_t(out.width) * samplesPerPixel;
+  const size_t totalSamples = samplesPerRow * out.height;
+  out.pixels.resize(totalSamples);
 
   const uint32_t rowsPerStrip =
       static_cast<uint32_t>(readOneScalar(TAG_ROWS_PER_STRIP, out.height));
 
-  size_t pixelOff = 0;
+  size_t sampleOff = 0;
   for (size_t i = 0; i < so.size(); ++i) {
     const size_t off = static_cast<size_t>(so[i]);
     const size_t bytes = static_cast<size_t>(sb[i]);
     if (off + bytes > buf.size()) {
       throw std::runtime_error("DNG parser: strip range past EOF");
     }
-    const uint32_t rowsThisStrip = std::min<uint32_t>(
-        rowsPerStrip, static_cast<uint32_t>(out.height - (pixelOff / out.width)));
-    const size_t pixelsThisStrip = size_t(rowsThisStrip) * out.width;
-    if (pixelOff + pixelsThisStrip > totalPixels) {
+    const uint32_t rowsSoFar = static_cast<uint32_t>(sampleOff / samplesPerRow);
+    const uint32_t rowsThisStrip =
+        std::min<uint32_t>(rowsPerStrip, out.height - rowsSoFar);
+    const size_t samplesThisStrip = size_t(rowsThisStrip) * samplesPerRow;
+    if (sampleOff + samplesThisStrip > totalSamples) {
       throw std::runtime_error("DNG parser: strip overruns image");
     }
     unpackStrip(buf.data() + off, bytes, out.bitsPerSample,
-                out.pixels.data() + pixelOff, pixelsThisStrip);
-    pixelOff += pixelsThisStrip;
+                out.pixels.data() + sampleOff, samplesThisStrip);
+    sampleOff += samplesThisStrip;
   }
-  if (pixelOff != totalPixels) {
-    throw std::runtime_error("DNG parser: strip pixels shorter than image");
+  if (sampleOff != totalSamples) {
+    throw std::runtime_error("DNG parser: strip samples shorter than image");
   }
 
   return out;

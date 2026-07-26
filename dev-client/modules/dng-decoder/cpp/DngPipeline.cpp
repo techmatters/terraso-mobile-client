@@ -129,19 +129,46 @@ LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roi) {
     throw std::runtime_error("DNG pipeline: ROI out of image bounds");
   }
 
-  // Sum demosaiced sensor-RGB values across the ROI. Every-other-pixel
-  // sub-sampling would be faster and still statistically equivalent for
-  // 100×100 patches, but a full pass is straightforward and <5 ms.
   std::array<double, 3> sum{0, 0, 0};
   const uint64_t total = uint64_t(roi.w) * roi.h;
-  for (uint32_t j = 0; j < roi.h; ++j) {
-    for (uint32_t i = 0; i < roi.w; ++i) {
-      const auto p = demosaicOne(dng, roi.x + i, roi.y + j);
-      sum[0] += p[0];
-      sum[1] += p[1];
-      sum[2] += p[2];
+
+  if (dng.layout == PixelLayout::LinearRaw) {
+    // ProRAW / LinearRaw: 3 samples per pixel, interleaved RGB, already
+    // demosaiced. Just read + black-level-subtract + normalize + sum.
+    // Note: the "sensor RGB" here is Apple's ISP output — Deep Fusion,
+    // Smart HDR, and tone mapping are baked in. The subsequent
+    // AsShotNeutral divide + ColorMatrix1 transform still applies since
+    // Apple emits standard DNG color-transform metadata.
+    const size_t rowStride = size_t(dng.width) * 3;
+    for (uint32_t j = 0; j < roi.h; ++j) {
+      const size_t rowBase = size_t(roi.y + j) * rowStride;
+      for (uint32_t i = 0; i < roi.w; ++i) {
+        const size_t pxBase = rowBase + size_t(roi.x + i) * 3;
+        for (int c = 0; c < 3; ++c) {
+          const double v = dng.pixels[pxBase + size_t(c)];
+          const double bl = dng.blackLevel[c];
+          const double range = dng.whiteLevel - bl;
+          if (range <= 0.0) continue;
+          const double n = (v - bl) / range;
+          sum[c] += (n < 0.0 ? 0.0 : (n > 1.0 ? 1.0 : n));
+        }
+      }
+    }
+  } else {
+    // CFA/Bayer: demosaic each pixel, then average.
+    // Every-other-pixel sub-sampling would be faster and still statistically
+    // equivalent for 100×100 patches, but a full pass is straightforward
+    // and <5 ms.
+    for (uint32_t j = 0; j < roi.h; ++j) {
+      for (uint32_t i = 0; i < roi.w; ++i) {
+        const auto p = demosaicOne(dng, roi.x + i, roi.y + j);
+        sum[0] += p[0];
+        sum[1] += p[1];
+        sum[2] += p[2];
+      }
     }
   }
+
   std::array<double, 3> sensor{sum[0] / total, sum[1] / total, sum[2] / total};
 
   // White-balance: AsShotNeutral gives the sensor-RGB of a neutral gray
