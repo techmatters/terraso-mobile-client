@@ -21,6 +21,7 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 import Foundation
 import NitroModules
+import UIKit
 
 class HybridDngDecoder: HybridDngDecoderSpec {
   func readMetadata(dngPath: String) throws -> DngMetadata {
@@ -125,6 +126,78 @@ class HybridDngDecoder: HybridDngDecoderSpec {
       results.append(LinearRgb(r: r, g: g, b: b))
     }
     return results
+  }
+
+  func renderPreview(dngPath: String, maxDim: Double) throws -> PreviewImage {
+    let url = URL(fileURLWithPath: stripFileScheme(dngPath))
+    guard let rawFilter = CIRAWFilter(imageURL: url) else {
+      throw RuntimeError.error(
+        withMessage: "CIRAWFilter could not open DNG at \(url.path)")
+    }
+    // Same neutralization we do in decodeDngRois so the preview matches
+    // what the analysis is looking at.
+    rawFilter.boostAmount = 0.0
+    rawFilter.boostShadowAmount = 0.0
+
+    guard let ciImage = rawFilter.outputImage else {
+      throw RuntimeError.error(withMessage: "CIRAWFilter produced no outputImage")
+    }
+
+    // Compute scale to fit maxDim while preserving aspect ratio.
+    let srcW = ciImage.extent.width
+    let srcH = ciImage.extent.height
+    let maxDimCG = CGFloat(maxDim)
+    let scale = min(maxDimCG / srcW, maxDimCG / srcH, 1.0)
+    let scaledImage: CIImage
+    if scale < 1.0 {
+      scaledImage = ciImage.transformed(
+        by: CGAffineTransform(scaleX: scale, y: scale))
+    } else {
+      scaledImage = ciImage
+    }
+    let dstW = Int(scaledImage.extent.width.rounded())
+    let dstH = Int(scaledImage.extent.height.rounded())
+
+    // Render as sRGB (gamma-encoded, display-ready) for the preview —
+    // we're just handing pixels to an <Image> component, not doing
+    // further color math on them.
+    guard let displaySpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+      throw RuntimeError.error(withMessage: "sRGB color space unavailable")
+    }
+    let context = CIContext(options: [
+      .workingColorSpace: displaySpace,
+      .outputColorSpace: displaySpace,
+    ])
+    guard
+      let cgImage = context.createCGImage(
+        scaledImage, from: scaledImage.extent, format: .RGBA8,
+        colorSpace: displaySpace)
+    else {
+      throw RuntimeError.error(
+        withMessage: "CIContext.createCGImage returned nil")
+    }
+    let uiImage = UIImage(cgImage: cgImage)
+    guard let pngData = uiImage.pngData() else {
+      throw RuntimeError.error(withMessage: "UIImage.pngData returned nil")
+    }
+
+    // Write to a stable-name file in the tmp dir. Name derived from the
+    // source path so repeated calls don't churn the FS.
+    let fileName =
+      "dng-preview-\(url.deletingPathExtension().lastPathComponent).png"
+    let outUrl = FileManager.default.temporaryDirectory.appendingPathComponent(
+      fileName)
+    do {
+      try pngData.write(to: outUrl, options: .atomic)
+    } catch {
+      throw RuntimeError.error(
+        withMessage: "Failed to write preview PNG: \(error.localizedDescription)")
+    }
+    return PreviewImage(
+      uri: "file://\(outUrl.path)",
+      width: Double(dstW),
+      height: Double(dstH)
+    )
   }
 
   private func channelChar(_ c: UInt8) -> String {

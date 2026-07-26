@@ -153,4 +153,16 @@ open class HybridDngDecoderSpec_cxx {
       return bridge.create_Result_std__vector_LinearRgb__(__exceptionPtr)
     }
   }
+  
+  @inline(__always)
+  public final func renderPreview(dngPath: std.string, maxDim: Double) -> bridge.Result_PreviewImage_ {
+    do {
+      let __result = try self.__implementation.renderPreview(dngPath: String(dngPath), maxDim: maxDim)
+      let __resultCpp = __result
+      return bridge.create_Result_PreviewImage_(__resultCpp)
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_PreviewImage_(__exceptionPtr)
+    }
+  }
 }

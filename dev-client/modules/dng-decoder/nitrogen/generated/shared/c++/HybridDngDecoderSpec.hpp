@@ -19,12 +19,15 @@ namespace margelo::nitro::dngdecoder { struct DngMetadata; }
 namespace margelo::nitro::dngdecoder { struct LinearRgb; }
 // Forward declaration of `Roi` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct Roi; }
+// Forward declaration of `PreviewImage` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct PreviewImage; }
 
 #include "DngMetadata.hpp"
 #include <string>
 #include "LinearRgb.hpp"
 #include <vector>
 #include "Roi.hpp"
+#include "PreviewImage.hpp"
 
 namespace margelo::nitro::dngdecoder {
 
@@ -59,6 +62,7 @@ namespace margelo::nitro::dngdecoder {
       // Methods
       virtual DngMetadata readMetadata(const std::string& dngPath) = 0;
       virtual std::vector<LinearRgb> decodeDngRois(const std::string& dngPath, const std::vector<Roi>& rois) = 0;
+      virtual PreviewImage renderPreview(const std::string& dngPath, double maxDim) = 0;
 
     protected:
       // Hybrid Setup

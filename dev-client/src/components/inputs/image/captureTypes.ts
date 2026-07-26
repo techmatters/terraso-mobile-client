@@ -26,6 +26,7 @@ export type CaptureResult =
   | {
       kind: 'raw';
       dngPath: string;
+      /** Full-sensor dimensions the ROI coords passed to decodeRoi live in. */
       width: number;
       height: number;
       decodeRoi(roi: {
@@ -34,5 +35,13 @@ export type CaptureResult =
         w: number;
         h: number;
       }): Promise<{r: number; g: number; b: number}>;
+      /**
+       * Render the DNG to a display-ready PNG scaled to fit `maxDim` on
+       * the longer edge. Used by the ROI-picker UI. iOS-only for now;
+       * Android throws (see HybridDngDecoder.kt).
+       */
+      renderPreview(
+        maxDim: number,
+      ): Promise<{uri: string; width: number; height: number}>;
       dispose(): void;
     };

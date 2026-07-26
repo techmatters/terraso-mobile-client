@@ -142,6 +142,17 @@ export const RawCameraView = ({
               const [rgb] = await DngDecoderHybrid.decodeDngRois(rawUri, [roi]);
               return rgb;
             },
+            renderPreview: async maxDim => {
+              const preview = await DngDecoderHybrid.renderPreview(
+                rawUri,
+                maxDim,
+              );
+              return {
+                uri: preview.uri,
+                width: preview.width,
+                height: preview.height,
+              };
+            },
             dispose: () => {
               // TODO: unlink the temp file. saveToTemporaryFileAsync stashes
               // in the app's tmp/, which iOS may reclaim on its own. Leaving

@@ -26,6 +26,18 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         )
     }
 
+    override fun renderPreview(dngPath: String, maxDim: Double): PreviewImage {
+        // Not implemented on Android yet — the iOS path uses CIRAWFilter to
+        // render a display-ready preview PNG for the ROI picker UI. On
+        // Android the same job would need our C++ decoder to write out a
+        // full-frame demosaic + tone map, or a separate path via
+        // BitmapFactory (which doesn't understand DNG). Deferred.
+        throw RuntimeException(
+            "DngDecoder.renderPreview is not implemented on Android yet " +
+                "(iOS-only for now — see docs/raw-camera-plan.md)"
+        )
+    }
+
     override fun decodeDngRois(dngPath: String, rois: Array<Roi>): Array<LinearRgb> {
         val flat = IntArray(rois.size * 4)
         for (i in rois.indices) {
