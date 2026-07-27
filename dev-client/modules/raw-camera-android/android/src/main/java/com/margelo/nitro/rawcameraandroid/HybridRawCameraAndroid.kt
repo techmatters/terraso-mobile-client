@@ -21,6 +21,8 @@ import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.core.SurfaceRequest
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -186,6 +188,21 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
             )
 
         val imageCapture = builder.build()
+
+        // Bind a Preview use case alongside ImageCapture even when we have
+        // no view to render into. On many Android devices ImageCapture
+        // alone leaves the camera closed (Camera2 needs at least one
+        // repeating request to keep the session live for a still capture)
+        // — Pixel 6a hits this and takePicture throws "Not bound to a
+        // valid Camera". Signalling willNotProvideSurface() releases the
+        // request cleanly so no rendering happens; the repeating request
+        // still keeps the camera open. Phase 7.2 will replace this stub
+        // with a real view-supplied SurfaceProvider.
+        val preview = Preview.Builder().build()
+        preview.setSurfaceProvider { request: SurfaceRequest ->
+            request.willNotProvideSurface()
+        }
+
         val selector = CameraSelector.DEFAULT_BACK_CAMERA
 
         // CameraX bindToLifecycle must run on main thread. Same for later
@@ -193,7 +210,12 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
         // internally, but the bind step touches main-thread-only state.
         val camera =
             withContext(Dispatchers.Main) {
-                provider.bindToLifecycle(ProcessLifecycleOwner.get(), selector, imageCapture)
+                provider.bindToLifecycle(
+                    ProcessLifecycleOwner.get(),
+                    selector,
+                    preview,
+                    imageCapture,
+                )
             }
         val cameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
         val characteristics = fetchCharacteristics(cameraInfo)
