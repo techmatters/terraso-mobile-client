@@ -17,7 +17,14 @@
 
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Modal, Pressable, StatusBar, StyleSheet, View} from 'react-native';
+import {
+  Modal,
+  Platform,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Camera,
@@ -69,6 +76,11 @@ export const RawCameraView = ({
   // spottier RAW support than pure single-cam physical devices. Bayer RAW
   // is truly single-cam-only per Apple's WWDC21 talk; ProRAW works on
   // both but is more reliable on single-cam.
+  //
+  // Android uses CameraX under the hood — no "virtual device" concept in
+  // the iOS sense, and applying the same filter can leave `device`
+  // undefined on some Pixels (empty match → black screen). Fall back to
+  // the default back camera there.
   const defaultDevice = useCameraDevice('back');
   const allDevices = useCameraDevices();
   const singleWideDevice = useMemo(
@@ -81,7 +93,10 @@ export const RawCameraView = ({
       ),
     [allDevices],
   );
-  const device = containerFormat === 'dng' ? singleWideDevice : defaultDevice;
+  const device =
+    containerFormat === 'dng' && Platform.OS === 'ios'
+      ? singleWideDevice
+      : defaultDevice;
   const {hasPermission, requestPermission} = useCameraPermission();
 
   const [isCapturing, setIsCapturing] = useState(false);
