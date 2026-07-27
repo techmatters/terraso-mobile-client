@@ -26,6 +26,7 @@ import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionR
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {CalibrateReferenceItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CalibrateReferenceItem';
+import {CaptureAndroidRawItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CaptureAndroidRawItem';
 import {CaptureRawFixtureItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CaptureRawFixtureItem';
 import {CopyAccessTokenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CopyAccessTokenItem';
 import {DataExportItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DataExportItem';
@@ -64,6 +65,7 @@ export function UserSettingsScreen() {
                 <RestrictByFlag flag="FF_testing">
                   <CopyAccessTokenItem />
                   <CaptureRawFixtureItem />
+                  <CaptureAndroidRawItem />
                   <CalibrateReferenceItem />
                   <ManageCustomReferencesItem />
                   <ExperimentalColorScreenItem />
