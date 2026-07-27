@@ -101,6 +101,11 @@ dependencies {
   implementation "androidx.camera:camera-lifecycle:${cameraxVersion}"
   implementation "androidx.camera:camera-view:${cameraxVersion}"
 
+  // ProcessLifecycleOwner (used to give CameraX an app-scoped
+  // LifecycleOwner from a HybridObject that has no view of its own).
+  // Not a transitive dep of camera-lifecycle.
+  implementation "androidx.lifecycle:lifecycle-process:2.8.7"
+
   // Kotlin coroutines for async CameraX bindings + capture callbacks.
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 }
