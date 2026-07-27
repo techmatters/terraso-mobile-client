@@ -13,7 +13,7 @@
     "react-native.config.js"
   ],
   "scripts": {
-    "codegen": "nitrogen --path . --logLevel=info"
+    "codegen": "npx nitrogen . --log-level info"
   },
   "keywords": [
     "react-native",
@@ -27,8 +27,5 @@
     "react": "*",
     "react-native": "*",
     "react-native-nitro-modules": "*"
-  },
-  "devDependencies": {
-    "nitrogen": "0.36.1"
   }
 }
