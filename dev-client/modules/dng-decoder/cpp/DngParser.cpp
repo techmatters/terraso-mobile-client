@@ -278,10 +278,19 @@ RawIfdResult findRawIfd(const Reader& r, const Ifd& root) {
 }  // namespace
 
 ParsedDng parseDng(const std::string& path) {
+  // Callers hand us a URI or plain filesystem path indiscriminately —
+  // iOS Swift strips file:// itself, but Kotlin (and any new caller)
+  // doesn't. Handle both here so no bridge layer has to remember.
+  static constexpr const char kFileScheme[] = "file://";
+  const std::string fsPath =
+      (path.rfind(kFileScheme, 0) == 0)
+          ? path.substr(sizeof(kFileScheme) - 1)
+          : path;
+
   // Load the whole file. Vision-camera DNGs are 10–30 MB — manageable, and
   // parsing needs random access. Memory-mapping would be a nice-to-have.
-  std::unique_ptr<FILE, decltype(&fclose)> f(fopen(path.c_str(), "rb"), &fclose);
-  if (!f) throw std::runtime_error("DNG parser: cannot open " + path);
+  std::unique_ptr<FILE, decltype(&fclose)> f(fopen(fsPath.c_str(), "rb"), &fclose);
+  if (!f) throw std::runtime_error("DNG parser: cannot open " + fsPath);
 
   fseek(f.get(), 0, SEEK_END);
   const long fsz = ftell(f.get());
