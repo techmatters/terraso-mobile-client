@@ -1,0 +1,34 @@
+{
+  "name": "raw-camera-android",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Nitro module: Android-only Camera2/CameraX RAW (DNG) capture, bypassing react-native-vision-camera whose Android side can't yet write RAW_SENSOR Photos to a file. See ../../docs/raw-camera-plan.md phase 7.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src",
+    "android",
+    "nitrogen",
+    "nitro.json",
+    "react-native.config.js"
+  ],
+  "scripts": {
+    "codegen": "nitrogen --path . --logLevel=info"
+  },
+  "keywords": [
+    "react-native",
+    "nitro-module",
+    "android",
+    "dng",
+    "raw",
+    "camera"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-nitro-modules": "*"
+  },
+  "devDependencies": {
+    "nitrogen": "0.36.1"
+  }
+}

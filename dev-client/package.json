@@ -57,6 +57,7 @@
     "crypto-js": "^4.2.0",
     "delta-e": "^0.0.8",
     "dng-decoder": "file:./modules/dng-decoder",
+    "raw-camera-android": "file:./modules/raw-camera-android",
     "dotenv-cli": "^11.0.0",
     "expo": "~56.0.0",
     "expo-apple-authentication": "~56.0.4",

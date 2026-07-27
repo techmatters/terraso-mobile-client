@@ -1,0 +1,106 @@
+buildscript {
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:8.12.0"
+  }
+}
+
+def reactNativeArchitectures() {
+  def value = rootProject.getProperties().get("reactNativeArchitectures")
+  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+def isNewArchitectureEnabled() {
+  return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+}
+
+apply plugin: "com.android.library"
+apply plugin: "org.jetbrains.kotlin.android"
+apply from: "../nitrogen/generated/android/RawCameraAndroid+autolinking.gradle"
+
+if (isNewArchitectureEnabled()) {
+  apply plugin: "com.facebook.react"
+}
+
+def getExtOrDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["RawCameraAndroid_" + name]
+}
+
+def getExtOrIntegerDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["RawCameraAndroid_" + name]).toInteger()
+}
+
+android {
+  namespace "com.margelo.nitro.rawcameraandroid"
+
+  ndkVersion getExtOrDefault("ndkVersion")
+  compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
+
+  defaultConfig {
+    minSdkVersion getExtOrIntegerDefault("minSdkVersion")
+    targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+
+    externalNativeBuild {
+      cmake {
+        cppFlags "-frtti -fexceptions -Wall -Wextra -fstack-protector-all"
+        arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+        abiFilters(*reactNativeArchitectures())
+      }
+    }
+  }
+
+  externalNativeBuild {
+    cmake {
+      path "CMakeLists.txt"
+    }
+  }
+
+  buildFeatures {
+    buildConfig true
+    prefab true
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
+  lintOptions {
+    disable "GradleCompatible"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+repositories {
+  mavenCentral()
+  google()
+}
+
+// CameraX versions kept in one place. Bump the whole set together — the
+// modules pin to matching versions in their release notes.
+def cameraxVersion = "1.4.1"
+
+dependencies {
+  implementation "com.facebook.react:react-native:+"
+  implementation project(":react-native-nitro-modules")
+
+  // CameraX: core + Camera2 backend + lifecycle (for LifecycleOwner
+  // binding) + view (for PreviewView used by the phase 7.2 Fabric view).
+  implementation "androidx.camera:camera-core:${cameraxVersion}"
+  implementation "androidx.camera:camera-camera2:${cameraxVersion}"
+  implementation "androidx.camera:camera-lifecycle:${cameraxVersion}"
+  implementation "androidx.camera:camera-view:${cameraxVersion}"
+
+  // Kotlin coroutines for async CameraX bindings + capture callbacks.
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+}

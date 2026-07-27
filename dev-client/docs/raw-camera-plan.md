@@ -264,6 +264,7 @@ in linear-light) and feeds triples to a new `getColorFromLinearRgb()`.
 | ~~**4**~~ | ~~Flip `RawCameraView` to request `containerFormat: 'dng'` when device supports it. Fill in real `isRawAvailable` detection in `useRawOrJpegCapture`. Feed decoded linear RGB into new `getColorFromLinearRgb()`. Runtime-gate on RAW support (both platforms). JPEG fallback path unchanged~~ | ~~0.5–1 day~~ | ⤵ **absorbed into 5.1** — the same work, but scoped to the experimental screen only rather than modifying production `ColorScreen`. |
 | **5** | Duplicate ColorScreen into a **dev-only experimental copy**; add settings-level toggle to route between production and experimental; add in-screen capture-pipeline selector (RAW / JPEG); manual ROI picker + full RAW pipeline; multiple reference cards + confidence picker. See sections below. | ~3–4 days | 🔄 5.0 (duplicate), 5.1 (selector), 5.2 (getColorFromLinearRgb + fixed ROIs), 5.3a (dispatch to Redux), and 5.3b (manual ROI picker + iOS preview) shipped on `feat/color-analysis-experimental` (PR #3332). Still pending: 5.4 (Android preview), and the multi-reference confidence picker (originally 5.2, now bumped). |
 | **6** | Calibrate-a-new-reference dev flow. See section below. | ~1 day | ⏳ after phase 5. |
+| **7** | Bypass react-native-vision-camera on Android for RAW. New Nitro module `raw-camera-android` owns a CameraX session that writes DNG via `android.hardware.camera2.DngCreator`. See phase 7 section below. | ~3–5 days | 🔄 in progress on `feat/android-raw-camera`. |
 
 Each phase ships as an independent PR.
 
@@ -567,6 +568,84 @@ Guessing at `k` right now — right value once the calibration library
 grows past a couple entries, ideally validated by capturing the same
 scene under distinctly different illuminants and confirming the picker
 still ranks the framed card first.
+
+## Phase 7 — Android RAW via a bypass module
+
+**Why.** Vision-camera v5 on Android captures `ImageFormat.RAW_SENSOR`
+correctly but its `HybridPhoto.saveToFile` throws for any non-JPEG
+format, waiting on Google to add a CameraX `Photo` type that handles
+DNG file writing natively ([issue 482079661](https://issuetracker.google.com/u/3/issues/482079661)).
+Blocks all Android RAW work.
+
+We evaluated two workarounds:
+
+1. **Patch vision-camera** to hook a `Camera2Interop.Extender` +
+   `CameraCaptureCallback`, capture `TotalCaptureResult`, and add a
+   `DngCreator` branch in `saveToFile`. ~150 lines Kotlin as a
+   patch-package file. Small footprint but fragile across upstream
+   version bumps.
+2. **Bypass vision-camera** on Android for the RAW path only,
+   implementing our own CameraX session + `PreviewView` +
+   `DngCreator`. Larger footprint (~500-800 LOC), full control,
+   isolated from vision-camera evolution.
+
+**Chose #2.** We already carry a small iOS patch to vision-camera;
+adding a fatter Android one to a library that itself may still shift
+felt like it built up long-term maintenance debt in the wrong place.
+The bypass also gives us clean access to Camera2 metadata for a future
+`ImageAnalysis` use case (real-time frame-goodness checkmark).
+
+**Module.** `modules/raw-camera-android/`. Nitro-based, Android-only
+(iOS is `null` in `react-native.config.js`, iOS block in `nitro.json`
+only satisfies nitrogen's config validator). Two artifacts:
+
+- **`HybridRawCameraAndroid`** — Nitro HybridObject. Imperative API
+  (`capturePhoto(): Promise<CapturedPhoto>`). Owns the CameraX
+  `ProcessCameraProvider` binding.
+- **`RawCameraAndroidView`** *(phase 7.2)* — Fabric view manager
+  wrapping CameraX `PreviewView`. Ties preview surface to the session
+  bound by the Hybrid.
+
+**CameraX use cases bound together:**
+
+| Use case | Purpose | Phase |
+|---|---|---|
+| `Preview` | Live preview rendered to `PreviewView` in the Fabric view | 7.2 |
+| `ImageCapture` (`OUTPUT_FORMAT_RAW`) | Full-res RAW capture, DNG write via `DngCreator` | 7.1 |
+| `ImageAnalysis` (`YUV_420_888`, ~30fps) | Extension point for future frame analysis (green checkmark) | 7.4 stub |
+
+**Sub-phases:**
+
+- **7.0** — Module scaffolding (Nitro spec, gradle, Package.kt,
+  autolinking). No behavior yet.
+- **7.1** — CameraX session + `capturePhoto()` returns a DNG path.
+  Uses `Camera2Interop.Extender` to attach a `CameraCaptureSession
+  .CaptureCallback` that intercepts `TotalCaptureResult` at capture
+  time. Feeds `characteristics + result + image` into `DngCreator`,
+  writes to a temp file.
+- **7.2** — `RawCameraAndroidView` + view manager. RN wrapper
+  component. `isActive: boolean` prop that starts/stops binding.
+- **7.3** — Route `RawCameraView.tsx` on Android: render the new
+  native view + call the Hybrid's `capturePhoto()` on shutter, emit
+  the same `{kind:'raw', dngPath, width, height, decodeRoi,
+  renderPreview}` CaptureResult so the downstream ROI-picker + decode
+  pipeline is unchanged.
+- **7.4** — `ImageAnalysis` stub. Bind the use case, leave analyzer
+  unattached, document the extension point. Future native (Kotlin or
+  C++) analyzer will publish frame-goodness signals out-of-band from
+  the JS bridge (probably a shared atomic boolean readable via a Nitro
+  method, not a per-frame JS callback).
+
+**Why keep iOS on vision-camera.** iOS `AVCapturePhoto.fileDataRepresentation()`
+handles DNG file writing for free; vision-camera's iOS side works out
+of the box (with our ~18-line ProRAW-enable patch). No reason to
+reimplement on iOS.
+
+**Sequencing.** Each sub-phase is a commit; test between. Once 7.3
+lands and works end-to-end on a Pixel 6a, phase 5.4 (Android
+`renderPreview`) is unblocked — we can capture, but the picker still
+needs a preview thumbnail. Both are feature-complete before promoting
+Android RAW past experimental.
 
 ## Deferred / low priority
 
