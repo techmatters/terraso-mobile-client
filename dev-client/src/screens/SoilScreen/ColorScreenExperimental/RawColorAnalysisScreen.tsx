@@ -31,10 +31,11 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {munsellToString} from 'terraso-mobile-client/model/color/colorConversions';
+import {listCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
 import {
   getColorFromLinearRgb,
-  LinearReferenceKey,
   LinearRgb,
+  RankedReference,
   rankReferences,
 } from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
@@ -131,16 +132,17 @@ export const RawColorAnalysisScreen = ({
       return;
     }
 
-    // Rank references against the measured card, then present a picker
-    // so the user confirms which physical card they framed. Auto-pick
-    // the top-ranked reference in the alert's default position.
-    const ranked = rankReferences(decoded.card);
-    const finalizeWith = async (referenceKey: LinearReferenceKey) => {
+    // Rank predefined + user-calibrated references against the
+    // measured card, then present a picker so the user confirms which
+    // physical card they framed. Auto-pick the top-ranked reference in
+    // the alert's default position.
+    const ranked = rankReferences(decoded.card, listCustomReferences());
+    const finalizeWith = async (chosen: RankedReference) => {
       try {
         const munsell = await finalizeAnalysis({
           card: decoded.card,
           sample: decoded.sample,
-          referenceKey,
+          reference: chosen,
           pitProps,
           dispatch,
         });
@@ -166,7 +168,7 @@ export const RawColorAnalysisScreen = ({
             r.confidence * 100,
           )}%)`,
           onPress: () => {
-            finalizeWith(r.key);
+            finalizeWith(r);
           },
         })),
         {
@@ -366,17 +368,17 @@ const decodeCrops = async ({
 const finalizeAnalysis = async ({
   card,
   sample,
-  referenceKey,
+  reference,
   pitProps,
   dispatch,
 }: {
   card: LinearRgb;
   sample: LinearRgb;
-  referenceKey: LinearReferenceKey;
+  reference: RankedReference;
   pitProps: SoilPitInputScreenProps;
   dispatch: ReturnType<typeof useDispatch>;
 }): Promise<string> => {
-  const colorResult = getColorFromLinearRgb(card, sample, referenceKey);
+  const colorResult = getColorFromLinearRgb(card, sample, reference.linearRgb);
   const dispatched =
     'result' in colorResult
       ? colorResult.result
@@ -402,7 +404,7 @@ const finalizeAnalysis = async ({
   });
   const munsellText = munsellToString(dispatched);
   console.log(
-    `RAW finalize dispatched: ${munsellText} using reference=${referenceKey} ` +
+    `RAW finalize dispatched: ${munsellText} using reference=${reference.id} (${reference.name}) ` +
       `card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
       `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)})`,
   );

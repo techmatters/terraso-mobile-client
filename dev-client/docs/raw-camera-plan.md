@@ -488,34 +488,51 @@ platforms; ship as one small commit after Android renderPreview lands.
   the "true RAW" validation the original plan discussed — Apple's
   computationally-enhanced RAW vs. our from-scratch decoder.
 
-## Phase 6 — calibrate a new reference
+## Phase 6 — calibrate a new reference (with local save/delete)
 
-**Goal.** Given a scene with a known (already-in-`REFERENCES`)
-reference AND a new uncalibrated card, compute the new card's
-`expectedLinearSrgb` and print it for the user to paste into the
-array from phase 5.
+**Goal.** Given a scene with a known (already-in-`LINEAR_REFERENCES` or
+already-saved-custom) reference AND a new uncalibrated card, compute
+the new card's linear-sRGB `{r, g, b}`. Give the user Save (name +
+optional illuminant note) or Discard. Saved cards persist in MMKV and
+appear in the experimental Color screen's reference picker alongside
+the predefined ones. Delete supported for custom refs; predefined refs
+(source-code constants) cannot be deleted.
 
-**Flow.** Dev-only screen under Settings, alongside the fixture-capture
-entry:
+**Location.** Dev-only screen under Settings (`FF_testing` gate),
+alongside where the fixture-capture entry would live. Chosen over the
+experimental Color screen because calibration doesn't need a
+site/pit-props context and shouldn't dispatch soil data. Reuses the
+`RawPickImageButton` + `RawCropScreen` pieces already built for the
+experimental Color screen — the pan/pinch ROI UX is identical, we
+just relabel the two role names ("Known reference", "New reference").
 
-1. Camera captures DNG (single-cam wide-angle, as in phase 3).
-2. User selects two ROIs — known-reference and new-reference.
-3. Decode both via `decodeDngRois`.
-4. Per channel, `gain = expected_known / measured_known`.
-5. `expected_new = measured_new * gain`.
-6. Display `{r, g, b}` and a copy-pastable code snippet for
-   `REFERENCES`.
+**Storage.** MMKV, keyed `custom_ref:<uuid>` → JSON blob
+`{id, name, linearRgb: {r,g,b}, calibratedUnder?, createdAt}`. Merged
+into the picker's list at `rankReferences` call time so both the RAW
+analysis picker and the calibration screen's "which known reference are
+you framing?" dropdown see the same union. Backing store lives in a
+small helper (`src/model/color/customReferences.ts`) with
+`useCustomReferences` for React subscription (same MMKV pattern the
+experimental toggles use).
+
+**Flow.**
+1. Settings → `Calibrate reference card`.
+2. Screen 1 (home): dropdown of known references (predefined + saved
+   custom); `Capture` button.
+3. `RawPickImageButton` → captures DNG.
+4. Navigate to `RawCropScreen` twice (roles: known / new), same UX as
+   the Color screen.
+5. Result screen: shows computed `{r, g, b}` + optional name field +
+   optional illuminant note. Buttons: Save (writes MMKV) / Discard.
+6. From Settings there's also `Manage custom references` — a list
+   with delete-swipe.
 
 **Do we need multiple lighting conditions?** Sometimes yes. Dye-based
 targets (post-its, printer paper, most stickers) have narrow spectral
 peaks — their linear-sRGB after per-channel WB is not illuminant-
 invariant (metameric failure). Soil is broadband, so soil samples are
-less affected; the *references* are the worst offenders.
-
-**Phase 6 v1: single-illuminant calibration.** Store the illuminant
-used (freeform text from the user: "kitchen daylight ~4pm cloudy") in
-`calibratedUnder`. Phase 5 can later warn when using a reference under
-a very different illuminant than its calibration.
+less affected; the *references* are the worst offenders. `calibratedUnder`
+gets captured but the picker doesn't warn on illuminant mismatch yet.
 
 **Deferred (phase 6.1 / later):** multi-illuminant calibration —
 capture the same reference under 2–3 illuminants, store per-illuminant
@@ -524,9 +541,32 @@ closest to the current scene's (as inferred from the reference itself).
 Higher effort, higher accuracy. Only worth it if phase 5's ΔE numbers
 suggest illuminant drift is dominating error.
 
-**Later (backend, out of scope):** move `REFERENCES` server-side so
-users can share calibrations. Needs migration path from the source-
-edited array. Punt.
+**Later (backend, out of scope):** move references server-side so
+users can share calibrations. Open questions about sharing model
+(per-user? per-project? community?) — leave alone until we have real
+usage data. Needs migration path from the MMKV blobs and (eventually)
+the source-edited `LINEAR_REFERENCES` map.
+
+### TODO — chromaticity-weighted match in `rankReferences`
+
+Currently `rankReferences` uses raw ΔE00 (via `getDeltaE00` from the
+`delta-e` package) in CIELAB. LAB has L\* (lightness), a\* (green↔red),
+b\* (blue↔yellow); ΔE00 is the perceptually-uniform distance formula
+CIE published in 2000, weighting all three axes. Problem: scene
+illumination shifts L\* the most, so under different lighting the
+picker's ranking becomes fragile.
+
+Fix: switch the picker to weight chromaticity heavily and lightness
+lightly — `Δ = √(Δa² + Δb² + (k·ΔL)²)` with `k ≈ 0.2–0.3`. That
+distinguishes yellow-post-it from gray-card at any lighting (chroma
+dominates), and can still resolve two neutrals with different L (e.g.
+18% gray vs. white) via the small lightness term. Not a chromaticity-
+only pass because we want L to disambiguate when chromaticities cluster.
+
+Guessing at `k` right now — right value once the calibration library
+grows past a couple entries, ideally validated by capturing the same
+scene under distinctly different illuminants and confirming the picker
+still ranks the framed card first.
 
 ## Deferred / low priority
 

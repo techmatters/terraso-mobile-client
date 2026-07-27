@@ -68,9 +68,20 @@ const clampCrop = (crop: Crop, d: Dimensions): Crop => {
 
 export type RawCropProps = {
   role: RawAnalysisRole;
+  // Optional label overrides so this screen can be reused by flows
+  // other than RAW color analysis (e.g. calibrate-a-new-reference,
+  // where roles map to "known reference" / "new reference" rather
+  // than "reference card" / "soil sample"). Falls back to the RAW-
+  // analysis defaults when omitted.
+  titleOverride?: string;
+  descriptionOverride?: string;
 };
 
-export const RawCropScreen = ({role}: RawCropProps) => {
+export const RawCropScreen = ({
+  role,
+  titleOverride,
+  descriptionOverride,
+}: RawCropProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const session = useRawAnalysisSession();
@@ -147,11 +158,13 @@ export const RawCropScreen = ({role}: RawCropProps) => {
     navigation.pop();
   }, [session, role, crop, navigation]);
 
-  const title = role === 'reference' ? 'Reference card' : 'Soil sample';
-  const description =
+  const defaultTitle = role === 'reference' ? 'Reference card' : 'Soil sample';
+  const defaultDescription =
     role === 'reference'
       ? 'Frame the reference card inside the square. Pan to move, pinch to zoom.'
       : 'Frame the soil sample inside the square. Pan to move, pinch to zoom.';
+  const title = titleOverride ?? defaultTitle;
+  const description = descriptionOverride ?? defaultDescription;
 
   if (!preview) {
     return (
