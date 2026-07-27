@@ -25,6 +25,13 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 type Props = {
   featureName: string;
   onPick: (result: CaptureResult) => void;
+  /**
+   * When `'dng'`, the in-app camera captures a DNG (ProRAW on modern
+   * iPhone Pro, plain Bayer on Android + older iOS Pros) and `onPick`
+   * receives a `{kind: 'raw', ...}` CaptureResult. Default `'jpeg'`
+   * preserves the production behavior.
+   */
+  containerFormat?: 'jpeg' | 'dng';
 };
 
 /**
@@ -32,9 +39,16 @@ type Props = {
  * (in-app camera + gallery) instead of {@link ImagePicker} (OS camera intent).
  * See docs/raw-camera-plan.md.
  */
-export const RawPickImageButton = ({featureName, onPick}: Props) => {
+export const RawPickImageButton = ({
+  featureName,
+  onPick,
+  containerFormat,
+}: Props) => {
   return (
-    <RawImagePicker featureName={featureName} onPick={onPick}>
+    <RawImagePicker
+      featureName={featureName}
+      onPick={onPick}
+      containerFormat={containerFormat}>
       {onOpen => (
         <Pressable onPress={onOpen}>
           <Box

@@ -25,11 +25,14 @@ import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponent
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {CalibrateReferenceItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CalibrateReferenceItem';
 import {CaptureRawFixtureItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CaptureRawFixtureItem';
 import {CopyAccessTokenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CopyAccessTokenItem';
 import {DataExportItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DataExportItem';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
+import {ExperimentalColorScreenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/ExperimentalColorScreenItem';
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
+import {ManageCustomReferencesItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/ManageCustomReferencesItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
 import {SelectLanguageItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SelectLanguageItem';
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
@@ -61,6 +64,9 @@ export function UserSettingsScreen() {
                 <RestrictByFlag flag="FF_testing">
                   <CopyAccessTokenItem />
                   <CaptureRawFixtureItem />
+                  <CalibrateReferenceItem />
+                  <ManageCustomReferencesItem />
+                  <ExperimentalColorScreenItem />
                 </RestrictByFlag>
               </>
             )}

@@ -206,13 +206,17 @@ export const dominantColor = (pixels: RGBA[]): RGB => {
   return color;
 };
 
-const nearestSoilColor = (color: MunsellHVC) =>
+export const nearestSoilColor = (color: MunsellHVC) =>
   FLATTENED_SOIL_COLORS.reduce((a, b) =>
     munsellDistance(a, color) < munsellDistance(b, color) ? a : b,
   );
 
-const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
+export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
   getDeltaE00(munsellHVCToLAB(a), munsellHVCToLAB(b));
+
+// Same threshold used inside getColorFromPixels — exported for shared use
+// by getColorFromLinearRgb (the RAW-path equivalent).
+export const SOIL_COLOR_MATCH_THRESHOLD = SOIL_COLOR_SIMILARITY_THRESHOLD;
 
 const FLATTENED_SOIL_COLORS: MunsellHVC[] = entries(SOIL_COLORS).flatMap(
   ([hue, substepValueChromas]) =>

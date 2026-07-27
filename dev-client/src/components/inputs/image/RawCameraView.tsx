@@ -17,7 +17,14 @@
 
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Modal, Pressable, StatusBar, StyleSheet, View} from 'react-native';
+import {
+  Modal,
+  Platform,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Camera,
@@ -26,6 +33,8 @@ import {
   useCameraPermission,
   usePhotoOutput,
 } from 'react-native-vision-camera';
+
+import {DngDecoderHybrid} from 'dng-decoder';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
@@ -67,6 +76,11 @@ export const RawCameraView = ({
   // spottier RAW support than pure single-cam physical devices. Bayer RAW
   // is truly single-cam-only per Apple's WWDC21 talk; ProRAW works on
   // both but is more reliable on single-cam.
+  //
+  // Android uses CameraX under the hood — no "virtual device" concept in
+  // the iOS sense, and applying the same filter can leave `device`
+  // undefined on some Pixels (empty match → black screen). Fall back to
+  // the default back camera there.
   const defaultDevice = useCameraDevice('back');
   const allDevices = useCameraDevices();
   const singleWideDevice = useMemo(
@@ -79,7 +93,10 @@ export const RawCameraView = ({
       ),
     [allDevices],
   );
-  const device = containerFormat === 'dng' ? singleWideDevice : defaultDevice;
+  const device =
+    containerFormat === 'dng' && Platform.OS === 'ios'
+      ? singleWideDevice
+      : defaultDevice;
   const {hasPermission, requestPermission} = useCameraPermission();
 
   const [isCapturing, setIsCapturing] = useState(false);
@@ -119,18 +136,53 @@ export const RawCameraView = ({
       const photo = await photoOutput.capturePhoto({}, {});
 
       if (photo.isRawPhoto) {
+        const rawPath = await photo.saveToTemporaryFileAsync();
+        const rawUri = rawPath.startsWith('file://')
+          ? rawPath
+          : `file://${rawPath}`;
         if (onRawPhotoDevOnly) {
-          const rawPath = await photo.saveToTemporaryFileAsync();
-          onRawPhotoDevOnly(
-            rawPath.startsWith('file://') ? rawPath : `file://${rawPath}`,
-          );
+          onRawPhotoDevOnly(rawUri);
           return;
         }
-        // Not wired up until phase 4. Guard so we don't silently produce a
-        // JPEG-shaped result from a DNG file, which would corrupt the sRGB
-        // pipeline downstream.
+        if (containerFormat === 'dng') {
+          // Real RAW capture path. Emit a proper {kind: 'raw', ...} result
+          // whose decodeRoi calls the DngDecoder Nitro module (CIRAWFilter
+          // on iOS ProRAW; C++ engine on Android plain-Bayer).
+          onCapture({
+            kind: 'raw',
+            dngPath: rawUri,
+            width: photo.width,
+            height: photo.height,
+            decodeRoi: async roi => {
+              const [rgb] = await DngDecoderHybrid.decodeDngRois(rawUri, [roi]);
+              return rgb;
+            },
+            renderPreview: async maxDim => {
+              const preview = await DngDecoderHybrid.renderPreview(
+                rawUri,
+                maxDim,
+              );
+              return {
+                uri: preview.uri,
+                width: preview.width,
+                height: preview.height,
+              };
+            },
+            dispose: () => {
+              // TODO: unlink the temp file. saveToTemporaryFileAsync stashes
+              // in the app's tmp/, which iOS may reclaim on its own. Leaving
+              // for the OS to sweep for now — worth revisiting if we start
+              // holding many captures in memory.
+            },
+          });
+          return;
+        }
+        // We got a RAW photo but the caller didn't ask for one. Refuse to
+        // silently emit a JPEG-shaped result from DNG data — that would
+        // corrupt the downstream sRGB pipeline.
         console.error(
-          'RawCameraView: RAW capture returned unexpectedly; RAW path is phase 4.',
+          'RawCameraView: RAW capture returned unexpectedly for containerFormat=%s',
+          containerFormat,
         );
         cancel();
         return;
@@ -154,7 +206,14 @@ export const RawCameraView = ({
     } finally {
       setIsCapturing(false);
     }
-  }, [isCapturing, photoOutput, onCapture, cancel, onRawPhotoDevOnly]);
+  }, [
+    isCapturing,
+    photoOutput,
+    onCapture,
+    cancel,
+    onRawPhotoDevOnly,
+    containerFormat,
+  ]);
 
   return (
     <Modal

@@ -18,12 +18,15 @@ namespace margelo::nitro::dngdecoder { struct DngMetadata; }
 namespace margelo::nitro::dngdecoder { struct LinearRgb; }
 // Forward declaration of `Roi` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct Roi; }
+// Forward declaration of `PreviewImage` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct PreviewImage; }
 
 #include "DngMetadata.hpp"
 #include <string>
 #include "LinearRgb.hpp"
 #include <vector>
 #include "Roi.hpp"
+#include "PreviewImage.hpp"
 
 #include "DngDecoder-Swift-Cxx-Umbrella.hpp"
 
@@ -85,6 +88,14 @@ namespace margelo::nitro::dngdecoder {
     }
     inline std::vector<LinearRgb> decodeDngRois(const std::string& dngPath, const std::vector<Roi>& rois) override {
       auto __result = _swiftPart.decodeDngRois(dngPath, rois);
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
+    inline PreviewImage renderPreview(const std::string& dngPath, double maxDim) override {
+      auto __result = _swiftPart.renderPreview(dngPath, std::forward<decltype(maxDim)>(maxDim));
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }

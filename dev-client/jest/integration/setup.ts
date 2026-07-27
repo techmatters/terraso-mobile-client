@@ -101,6 +101,7 @@ jest.mock('dng-decoder', () => ({
       isMonochrome: false,
     })),
     decodeDngRois: jest.fn(() => []),
+    renderPreview: jest.fn(() => ({uri: '', width: 0, height: 0})),
   },
 }));
 

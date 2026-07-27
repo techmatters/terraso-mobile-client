@@ -11,6 +11,8 @@
 namespace margelo::nitro::dngdecoder { struct DngMetadata; }
 // Forward declaration of `LinearRgb` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct LinearRgb; }
+// Forward declaration of `PreviewImage` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct PreviewImage; }
 // Forward declaration of `Roi` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct Roi; }
 
@@ -20,6 +22,8 @@ namespace margelo::nitro::dngdecoder { struct Roi; }
 #include "LinearRgb.hpp"
 #include <vector>
 #include "JLinearRgb.hpp"
+#include "PreviewImage.hpp"
+#include "JPreviewImage.hpp"
 #include "Roi.hpp"
 #include "JRoi.hpp"
 
@@ -83,6 +87,11 @@ namespace margelo::nitro::dngdecoder {
       }
       return __vector;
     }(__result);
+  }
+  PreviewImage JHybridDngDecoderSpec::renderPreview(const std::string& dngPath, double maxDim) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPreviewImage>(jni::alias_ref<jni::JString> /* dngPath */, double /* maxDim */)>("renderPreview");
+    auto __result = method(_javaPart, jni::make_jstring(dngPath), maxDim);
+    return __result->toCpp();
   }
 
 } // namespace margelo::nitro::dngdecoder
