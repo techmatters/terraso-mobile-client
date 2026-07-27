@@ -199,17 +199,17 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
         // still keeps the camera open. Phase 7.2 will replace this stub
         // with a real view-supplied SurfaceProvider.
         val preview = Preview.Builder().build()
-        preview.setSurfaceProvider { request: SurfaceRequest ->
-            request.willNotProvideSurface()
-        }
-
         val selector = CameraSelector.DEFAULT_BACK_CAMERA
 
-        // CameraX bindToLifecycle must run on main thread. Same for later
-        // takePicture calls — they schedule on the CameraX executor
-        // internally, but the bind step touches main-thread-only state.
+        // CameraX bindToLifecycle AND Preview.setSurfaceProvider both
+        // require the main thread — they touch main-thread-only state.
+        // takePicture (later) schedules internally on the CameraX
+        // executor and doesn't need this jump.
         val camera =
             withContext(Dispatchers.Main) {
+                preview.setSurfaceProvider { request: SurfaceRequest ->
+                    request.willNotProvideSurface()
+                }
                 provider.bindToLifecycle(
                     ProcessLifecycleOwner.get(),
                     selector,
