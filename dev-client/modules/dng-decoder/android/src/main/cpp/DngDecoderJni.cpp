@@ -71,4 +71,54 @@ Java_com_margelo_nitro_dngdecoder_HybridDngDecoder_nativeDecodeRois(
   return JNI_TRUE;
 }
 
+// Kotlin signature (see HybridDngDecoder.kt):
+//   nativeRenderPreview(path: String, maxDim: Int, dims: IntArray[2], err)
+//     : IntArray?
+//
+// dims[0] = output width, dims[1] = output height.
+// Returns null on error and stashes the message in err[0]; otherwise
+// returns an IntArray of length width*height where each element is an
+// ARGB8888 pixel (0xFFRRGGBB), directly consumable by
+// Bitmap.createBitmap(int[], w, h, ARGB_8888).
+//
+// jint is 32-bit signed; the ARGB values (0xFFxxxxxx) cast to
+// negative signed ints, which Bitmap handles correctly (it reads the
+// int as unsigned bits).
+JNIEXPORT jintArray JNICALL
+Java_com_margelo_nitro_dngdecoder_HybridDngDecoder_nativeRenderPreview(
+    JNIEnv* env, jobject /*thiz*/, jstring jpath, jint jmaxDim,
+    jintArray jdims, jobjectArray jerr) {
+  const char* cpath = env->GetStringUTFChars(jpath, nullptr);
+  int32_t width = 0;
+  int32_t height = 0;
+  uint32_t* buf = nullptr;
+  int32_t byteCount = 0;
+  const char* errPtr = nullptr;
+  const bool ok = dngDecoderRenderPreviewRgba(
+      cpath, static_cast<int32_t>(jmaxDim), &width, &height, &buf, &byteCount,
+      &errPtr);
+  env->ReleaseStringUTFChars(jpath, cpath);
+  if (!ok) {
+    setErrorSlot(env, jerr, errPtr);
+    return nullptr;
+  }
+  jint dims[2]{width, height};
+  env->SetIntArrayRegion(jdims, 0, 2, dims);
+
+  const jsize pixels = width * height;
+  jintArray result = env->NewIntArray(pixels);
+  if (!result) {
+    dngDecoderFreePreview(buf);
+    setErrorSlot(env, jerr, "renderPreview: could not allocate IntArray");
+    return nullptr;
+  }
+  // Copy the uint32 ARGB buffer into the jintArray. Same 32-bit width,
+  // same byte layout — the reinterpret_cast is safe for the memcpy but
+  // signedness matters at the Kotlin API layer only.
+  env->SetIntArrayRegion(
+      result, 0, pixels, reinterpret_cast<const jint*>(buf));
+  dngDecoderFreePreview(buf);
+  return result;
+}
+
 }  // extern "C"

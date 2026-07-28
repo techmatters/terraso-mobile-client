@@ -82,4 +82,43 @@ bool dngDecoderDecodeRois(const char* path, const int32_t* rois, int32_t count,
   }
 }
 
+bool dngDecoderRenderPreviewRgba(const char* path, int32_t maxDim,
+                                 int32_t* outWidth, int32_t* outHeight,
+                                 uint32_t** outBytes, int32_t* outByteCount,
+                                 const char** errorOut) {
+  if (!path || !outWidth || !outHeight || !outBytes || !outByteCount ||
+      maxDim < 16) {
+    if (errorOut) *errorOut = stashError("null argument or maxDim too small");
+    return false;
+  }
+  try {
+    dngdecoder::ParsedDng parsed = dngdecoder::parseDng(path);
+    dngdecoder::PreviewRgba preview =
+        dngdecoder::renderPreviewRgba(parsed, static_cast<uint32_t>(maxDim));
+    const size_t pixelCount = size_t(preview.width) * preview.height;
+    // Heap-allocate the buffer that the caller will free via
+    // dngDecoderFreePreview. `new[]` matches the delete[] in that free
+    // function.
+    uint32_t* buf = new uint32_t[pixelCount];
+    std::memcpy(buf, preview.argb.data(), pixelCount * sizeof(uint32_t));
+    *outWidth = static_cast<int32_t>(preview.width);
+    *outHeight = static_cast<int32_t>(preview.height);
+    *outBytes = buf;
+    *outByteCount = static_cast<int32_t>(pixelCount * sizeof(uint32_t));
+    if (errorOut) *errorOut = nullptr;
+    return true;
+  } catch (const std::exception& e) {
+    if (errorOut) *errorOut = stashError(e.what());
+    return false;
+  } catch (...) {
+    if (errorOut)
+      *errorOut = stashError("unknown exception in dngDecoderRenderPreviewRgba");
+    return false;
+  }
+}
+
+void dngDecoderFreePreview(uint32_t* bytes) {
+  delete[] bytes;
+}
+
 }  // extern "C"

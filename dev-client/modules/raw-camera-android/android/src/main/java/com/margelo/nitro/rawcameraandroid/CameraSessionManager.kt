@@ -28,6 +28,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.margelo.nitro.NitroModules
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.CompletableDeferred
@@ -60,6 +61,11 @@ import kotlinx.coroutines.withTimeout
 object CameraSessionManager {
     private const val TAG = "RawCameraAndroid.Session"
     private const val CAPTURE_RESULT_TIMEOUT_MS = 5_000L
+    // takePicture can hang forever on some hosts (RN Modal inside a
+    // Dialog window seems to be one — Camera2's still-capture request
+    // never fires the OnImageCapturedCallback). Bail out and surface
+    // the failure so the mutex releases and the JS side sees an error.
+    private const val TAKE_PICTURE_TIMEOUT_MS = 8_000L
 
     private val context: Context
         get() =
@@ -74,6 +80,14 @@ object CameraSessionManager {
         Log.i(TAG, "provider: got ProcessCameraProvider")
         p
     }
+
+    // Dedicated background executor for the ImageAnalysis keep-alive
+    // analyzer. Using the main-thread executor stalls the repeating
+    // request when the JS thread / RN UI is busy (which is enough to
+    // hang takePicture — Camera2 needs the repeating stream to be
+    // running before still capture completes). Single thread is fine:
+    // the analyzer just closes each frame.
+    private val analysisExecutor = Executors.newSingleThreadExecutor()
 
     private val mutex = Mutex()
 
@@ -133,10 +147,16 @@ object CameraSessionManager {
 
             val image: ImageProxy =
                 try {
-                    takePictureSuspending(imageCapture)
+                    withTimeout(TAKE_PICTURE_TIMEOUT_MS) {
+                        takePictureSuspending(imageCapture)
+                    }
                 } catch (e: Throwable) {
                     pendingResult = null
-                    throw e
+                    Log.e(TAG, "capture: takePicture failed", e)
+                    throw RuntimeException(
+                        "takePicture failed (or timed out after ${TAKE_PICTURE_TIMEOUT_MS}ms)",
+                        e,
+                    )
                 }
             Log.i(
                 TAG,
@@ -214,15 +234,19 @@ object CameraSessionManager {
             )
         val imageCapture = builder.build()
 
-        // Keep-alive selection: with a surface provider, use Preview
-        // (rendered); without, use an ImageAnalysis with a discard-only
-        // analyzer. Either provides the repeating request Camera2 needs
-        // for still capture.
+        // Pick keep-alive: Preview when a view is attached, ImageAnalysis
+        // otherwise. Camera2 needs one repeating request for still
+        // capture to fire; Preview (rendering to an attached surface)
+        // suffices when we have a view. When we don't, ImageAnalysis
+        // with a discard-only analyzer takes its place (phase 7.4 will
+        // swap the discard for a real frame-goodness analyzer).
+        //
+        // Binding BOTH Preview + ImageAnalysis was tried and empirically
+        // breaks takePicture (times out at 8s). Pick exactly one.
         val surface = currentSurfaceProvider
         val preview: Preview? =
             if (surface != null) {
                 Preview.Builder().build().also { p ->
-                    // Preview.setSurfaceProvider must run on main thread.
                     withContext(Dispatchers.Main) { p.setSurfaceProvider(surface) }
                 }
             } else {
@@ -233,11 +257,7 @@ object CameraSessionManager {
                 ImageAnalysis.Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
-                    .also { a ->
-                        a.setAnalyzer(ContextCompat.getMainExecutor(context)) {
-                            it.close()
-                        }
-                    }
+                    .also { a -> a.setAnalyzer(analysisExecutor) { it.close() } }
             } else {
                 null
             }

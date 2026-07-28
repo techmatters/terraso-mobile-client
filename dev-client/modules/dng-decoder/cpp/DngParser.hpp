@@ -47,6 +47,13 @@ struct ParsedDng {
   uint16_t bitsPerSample{16};
   PixelLayout layout{PixelLayout::Cfa};
 
+  // TIFF Orientation tag (274). 1 = as-stored (top-left origin);
+  // 3 = 180°, 6 = rotate 90° CW to display, 8 = rotate 90° CCW.
+  // Android CameraX writes this based on device rotation at capture
+  // time; iOS handles it internally in CIRAWFilter. Applied by
+  // renderPreviewRgba so the preview shows upright to the user.
+  uint16_t orientation{1};
+
   // Only meaningful when layout == Cfa.
   CfaPattern cfa{{{0, 1}, {1, 2}}};  // default RGGB
 

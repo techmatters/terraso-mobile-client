@@ -1,7 +1,11 @@
 package com.margelo.nitro.dngdecoder
 
+import android.graphics.Bitmap
 import androidx.annotation.Keep
 import com.facebook.common.internal.DoNotStrip
+import com.margelo.nitro.NitroModules
+import java.io.File
+import java.io.FileOutputStream
 
 @DoNotStrip
 @Keep
@@ -27,14 +31,35 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
     }
 
     override fun renderPreview(dngPath: String, maxDim: Double): PreviewImage {
-        // Not implemented on Android yet — the iOS path uses CIRAWFilter to
-        // render a display-ready preview PNG for the ROI picker UI. On
-        // Android the same job would need our C++ decoder to write out a
-        // full-frame demosaic + tone map, or a separate path via
-        // BitmapFactory (which doesn't understand DNG). Deferred.
-        throw RuntimeException(
-            "DngDecoder.renderPreview is not implemented on Android yet " +
-                "(iOS-only for now — see docs/raw-camera-plan.md)"
+        // Phase 5.4: sub-sampled demosaic in our C++ engine, materialized
+        // as an ARGB8888 IntArray and packed into a Bitmap → PNG file.
+        // Applies the same color pipeline as decodeRoi (WB via
+        // AsShotNeutral, ColorMatrix1 inversion → sRGB, gamma-encoded).
+        // Preview matches the RAW analysis's color space — no HDR+ tone
+        // baked in (contrast with the earlier thumbnail-extraction
+        // approach which used DngCreator's Google-flavored preview).
+        val dims = IntArray(2)
+        val err = arrayOfNulls<String>(1)
+        val argb =
+            nativeRenderPreview(dngPath, maxDim.toInt(), dims, err)
+                ?: throw RuntimeException(err[0] ?: "renderPreview failed")
+        val width = dims[0]
+        val height = dims[1]
+
+        val bitmap = Bitmap.createBitmap(argb, width, height, Bitmap.Config.ARGB_8888)
+        val cacheDir =
+            NitroModules.applicationContext?.cacheDir
+                ?: throw RuntimeException("No ReactApplicationContext for cache dir")
+        val outFile = File.createTempFile("dng-preview-", ".png", cacheDir)
+        FileOutputStream(outFile).use { fos ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
+        }
+        bitmap.recycle()
+
+        return PreviewImage(
+            uri = "file://${outFile.absolutePath}",
+            width = width.toDouble(),
+            height = height.toDouble(),
         )
     }
 
@@ -78,6 +103,13 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         outB: DoubleArray,
         errorOut: Array<String?>,
     ): Boolean
+
+    private external fun nativeRenderPreview(
+        path: String,
+        maxDim: Int,
+        dims: IntArray,      // out: [width, height]
+        errorOut: Array<String?>,
+    ): IntArray?
 
     companion object {
         init {

@@ -41,6 +41,20 @@ bool dngDecoderDecodeRois(const char* path, const int32_t* rois, int32_t count,
                           double* outR, double* outG, double* outB,
                           const char** errorOut);
 
+// Render a sub-sampled preview from the DNG at path. On success, sets
+// *outWidth, *outHeight, and allocates *outBytes (caller must free
+// with dngDecoderFreePreview). *outByteCount = *outWidth * *outHeight * 4.
+// Pixel format is ARGB8888 (0xFFRRGGBB per uint32_t), matching Android's
+// Bitmap.Config.ARGB_8888 int layout.
+bool dngDecoderRenderPreviewRgba(const char* path, int32_t maxDim,
+                                 int32_t* outWidth, int32_t* outHeight,
+                                 uint32_t** outBytes, int32_t* outByteCount,
+                                 const char** errorOut);
+
+// Free a buffer previously returned by dngDecoderRenderPreviewRgba.
+// No-op on null. Must be paired 1:1 with the render call.
+void dngDecoderFreePreview(uint32_t* bytes);
+
 #ifdef __cplusplus
 }
 #endif

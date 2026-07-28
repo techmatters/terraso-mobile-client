@@ -22,6 +22,7 @@ import {
 import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
 import {AddUserToProjectRoleScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectRoleScreen';
 import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
+import {AndroidRawCaptureScreen} from 'terraso-mobile-client/screens/AndroidRawCaptureScreen';
 import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
 import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
 import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
@@ -67,7 +68,6 @@ import {SOCSOMScreen} from 'terraso-mobile-client/screens/SoilScreen/SOCSOMScree
 import {StructureScreen} from 'terraso-mobile-client/screens/SoilScreen/StructureScreen';
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
 import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
-import {RawCameraAndroidTestScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/RawCameraAndroidTestScreen';
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 import {WelcomeScreen} from 'terraso-mobile-client/screens/WelcomeScreen';
 
@@ -117,7 +117,7 @@ export const screenDefinitions = {
   RAW_COLOR_CROP_EXPERIMENTAL: RawCropScreen,
   CALIBRATE_REFERENCE_EXPERIMENTAL: CalibrateReferenceScreen,
   MANAGE_CUSTOM_REFERENCES_EXPERIMENTAL: ManageCustomReferencesScreen,
-  RAW_CAMERA_ANDROID_TEST: RawCameraAndroidTestScreen,
+  ANDROID_RAW_CAPTURE: AndroidRawCaptureScreen,
   DATA_EXPORT: UserDataExportScreen,
   SITE_EXPORT: SiteExportScreen,
   DELETE_ACCOUNT: DeleteAccountScreen,

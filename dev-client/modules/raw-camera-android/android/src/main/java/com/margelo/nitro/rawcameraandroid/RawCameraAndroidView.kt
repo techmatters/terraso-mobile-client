@@ -33,6 +33,18 @@ constructor(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                 )
             scaleType = PreviewView.ScaleType.FILL_CENTER
+            // Use TextureView (COMPATIBLE) instead of the default
+            // SurfaceView (PERFORMANCE). SurfaceView needs the primary
+            // Window's compositor, which isn't available when we render
+            // inside an RN Modal (Modal uses a separate Android Dialog
+            // window) — the surface is requested by CameraX but never
+            // actually renders pixels, the camera stream never starts,
+            // and takePicture hangs waiting on AF/AE.
+            //
+            // The trade-off is minor: TextureView is a bit heavier per
+            // frame (composited by the GPU as a texture instead of via
+            // a dedicated surface plane) but is Dialog/Modal-safe.
+            implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -44,12 +56,18 @@ constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        Log.i(TAG, "onAttachedToWindow: view size=${width}x${height}")
         currentJob?.cancel()
         currentJob =
             scope.launch {
                 Log.i(TAG, "onAttachedToWindow: attaching surface provider")
                 CameraSessionManager.attachSurfaceProvider(previewView.surfaceProvider)
             }
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        Log.i(TAG, "onSizeChanged: ${w}x${h} (from ${oldw}x${oldh})")
     }
 
     override fun onDetachedFromWindow() {

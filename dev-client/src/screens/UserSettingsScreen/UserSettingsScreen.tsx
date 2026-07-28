@@ -25,6 +25,7 @@ import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponent
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {AndroidRawCaptureTestItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/AndroidRawCaptureTestItem';
 import {CalibrateReferenceItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CalibrateReferenceItem';
 import {CaptureAndroidRawItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CaptureAndroidRawItem';
 import {CaptureRawFixtureItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CaptureRawFixtureItem';
@@ -35,7 +36,6 @@ import {ExperimentalColorScreenItem} from 'terraso-mobile-client/screens/UserSet
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
 import {ManageCustomReferencesItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/ManageCustomReferencesItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
-import {RawCameraAndroidTestItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/RawCameraAndroidTestItem';
 import {SelectLanguageItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SelectLanguageItem';
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
 import {TosItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/TosItem';
@@ -67,7 +67,7 @@ export function UserSettingsScreen() {
                   <CopyAccessTokenItem />
                   <CaptureRawFixtureItem />
                   <CaptureAndroidRawItem />
-                  <RawCameraAndroidTestItem />
+                  <AndroidRawCaptureTestItem />
                   <CalibrateReferenceItem />
                   <ManageCustomReferencesItem />
                   <ExperimentalColorScreenItem />

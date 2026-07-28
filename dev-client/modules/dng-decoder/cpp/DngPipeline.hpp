@@ -30,4 +30,27 @@ struct LinearRgbF {
 // color pipeline once per ROI (rather than per pixel).
 LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roi);
 
+// Sub-sampled preview render. Produces an ARGB8888 buffer (each
+// uint32_t = 0xFF__RRGGBB) suitable for direct Bitmap.ARGB_8888
+// consumption on Android. Aspect ratio preserved; larger sensor
+// dimension is scaled to at most `maxDim` output pixels.
+//
+// Sub-sampling by block-averaging keeps memory + CPU bounded on a
+// 12-24MP sensor. For each output pixel we average all covered CFA
+// samples per channel (naturally handling demosaic — R and B each
+// come from ~scale²/4 samples, G from ~scale²/2). LinearRaw is
+// simpler: 3-per-pixel means we average all 3 channels together
+// over the block.
+//
+// The color pipeline (black-level, AsShotNeutral WB, ColorMatrix1
+// inversion → XYZ → sRGB linear + gamma encoding) matches
+// decodeRoi. Output is display-sRGB byte range, ready for PNG
+// encoding without further processing.
+struct PreviewRgba {
+  uint32_t width;
+  uint32_t height;
+  std::vector<uint32_t> argb;  // width * height, 0xFFRRGGBB per pixel
+};
+PreviewRgba renderPreviewRgba(const ParsedDng& dng, uint32_t maxDim);
+
 }  // namespace dngdecoder

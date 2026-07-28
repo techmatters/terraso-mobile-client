@@ -121,10 +121,38 @@ std::array<double, 3> demosaicOne(const ParsedDng& dng, uint32_t x, uint32_t y) 
 
 }  // namespace
 
-LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roi) {
-  if (roi.w == 0 || roi.h == 0) {
+namespace {
+
+// Convert an ROI expressed in the DNG's display-orientation coord
+// space (matching what renderPreviewRgba emits) back to sensor-native
+// coords for reading pixels. Mirror of the write-side rotation in
+// renderPreviewRgba. The caller (JS side) picks ROIs on the preview,
+// which is post-rotation; the decoder reads the sensor RAW, which is
+// pre-rotation. Without this, ROIs land in the wrong sensor pixels
+// whenever orientation != 1.
+RoiPx rotateRoiToSensor(const RoiPx& roi, uint16_t orientation,
+                        uint32_t srcW, uint32_t srcH) {
+  switch (orientation) {
+    case 3:  // 180°
+      return {srcW - roi.x - roi.w, srcH - roi.y - roi.h, roi.w, roi.h};
+    case 6:  // 90° CW: display(w,h)=(srcH,srcW); dims swap; x/y rearranged
+      return {srcW - roi.y - roi.h, roi.x, roi.h, roi.w};
+    case 8:  // 90° CCW
+      return {roi.y, srcH - roi.x - roi.w, roi.h, roi.w};
+    case 1:
+    default:
+      return roi;
+  }
+}
+
+}  // namespace
+
+LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roiIn) {
+  if (roiIn.w == 0 || roiIn.h == 0) {
     throw std::runtime_error("DNG pipeline: empty ROI");
   }
+  const RoiPx roi =
+      rotateRoiToSensor(roiIn, dng.orientation, dng.width, dng.height);
   if (roi.x + roi.w > dng.width || roi.y + roi.h > dng.height) {
     throw std::runtime_error("DNG pipeline: ROI out of image bounds");
   }
@@ -194,6 +222,185 @@ LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roi) {
       std::clamp(srgb[1], 0.0, 1.0),
       std::clamp(srgb[2], 0.0, 1.0),
   };
+  return out;
+}
+
+namespace {
+
+// sRGB linear -> sRGB gamma-encoded, 0..1 to 0..255. Piecewise curve
+// from IEC 61966-2-1; standard formulation used by everything from
+// libpng to Photoshop.
+inline uint32_t linearToSrgb255(double v) {
+  if (v <= 0.0) return 0;
+  if (v >= 1.0) return 255;
+  const double enc = v <= 0.0031308
+                         ? 12.92 * v
+                         : 1.055 * std::pow(v, 1.0 / 2.4) - 0.055;
+  int32_t i = static_cast<int32_t>(enc * 255.0 + 0.5);
+  if (i < 0) i = 0;
+  if (i > 255) i = 255;
+  return static_cast<uint32_t>(i);
+}
+
+// Apply the shared color pipeline (WB + XYZ→sRGB) to a sensor triple
+// and return a gamma-encoded ARGB pixel (0xFFRRGGBB). Factored out so
+// both decodeRoi's ROI-average path and renderPreviewRgba's per-tile
+// path share the exact same color math.
+inline uint32_t sensorToArgb(
+    const std::array<double, 3>& sensorIn,
+    const std::array<double, 3>& asShotNeutral,
+    const std::array<double, 9>& sensorToXyz) {
+  std::array<double, 3> sensor = sensorIn;
+  for (int c = 0; c < 3; ++c) {
+    const double n = asShotNeutral[c];
+    if (n > 0) sensor[c] /= n;
+  }
+  const std::array<double, 3> xyz = matVec(sensorToXyz, sensor);
+  const std::array<double, 3> srgb = matVec(XYZ_D65_TO_SRGB_LINEAR, xyz);
+  const uint32_t r = linearToSrgb255(srgb[0]);
+  const uint32_t g = linearToSrgb255(srgb[1]);
+  const uint32_t b = linearToSrgb255(srgb[2]);
+  return 0xFF000000u | (r << 16) | (g << 8) | b;
+}
+
+}  // namespace
+
+PreviewRgba renderPreviewRgba(const ParsedDng& dng, uint32_t maxDim) {
+  if (dng.width == 0 || dng.height == 0) {
+    throw std::runtime_error("renderPreviewRgba: empty image");
+  }
+  if (maxDim < 16) {
+    throw std::runtime_error("renderPreviewRgba: maxDim too small");
+  }
+
+  // Intermediate (sensor-oriented) output dimensions. Scale the larger
+  // side to maxDim, preserve aspect. Integer scale factor rounded to at
+  // least 1; scale=1 falls through as a per-pixel render (rare for
+  // 12MP+ sensors).
+  const uint32_t largerSide = std::max(dng.width, dng.height);
+  const double scaleD = static_cast<double>(largerSide) / static_cast<double>(maxDim);
+  const uint32_t scale = std::max(1u, static_cast<uint32_t>(scaleD));
+  const uint32_t midW = std::max(1u, dng.width / scale);
+  const uint32_t midH = std::max(1u, dng.height / scale);
+
+  // Post-rotation output dims. Orientations 5–8 all swap axes; 1–4 keep
+  // them. Only 1, 3, 6, 8 are seen in practice from phone cameras; 2/4/5/7
+  // are the mirrored variants and phones don't emit them.
+  const bool swapAxes =
+      dng.orientation == 5 || dng.orientation == 6 || dng.orientation == 7 ||
+      dng.orientation == 8;
+  const uint32_t outW = swapAxes ? midH : midW;
+  const uint32_t outH = swapAxes ? midW : midH;
+
+  PreviewRgba out;
+  out.width = outW;
+  out.height = outH;
+  out.argb.assign(size_t(outW) * outH, 0xFF000000u);
+
+  const auto sensorToXyz = invert3x3(dng.colorMatrix1);
+
+  // Sub-sample within each sensor block when the block is large.
+  // For a 4032×3024 sensor scaled to a 1200-max preview, scale=3, so
+  // each block is 3×3 = 9 samples; iterate all. For a 4032×3024 scaled
+  // to a 500-max preview, scale=8 → 64 samples/block; stride=2 cuts
+  // that to 16, still smooth enough for a preview thumbnail. For CFA
+  // we always keep stride=1: the Bayer pattern needs a stride that
+  // preserves both parities of both axes, otherwise we'd miss a whole
+  // color channel.
+  const uint32_t subsampleStride =
+      (dng.layout == PixelLayout::LinearRaw && scale >= 4) ? 2u : 1u;
+
+  // Iterate sensor-space blocks (mx, my) and write each computed ARGB
+  // pixel to its rotated position in the output buffer. Single pass,
+  // no double-buffer.
+  for (uint32_t my = 0; my < midH; ++my) {
+    const uint32_t y0 = my * scale;
+    const uint32_t y1 = std::min(dng.height, y0 + scale);
+    for (uint32_t mx = 0; mx < midW; ++mx) {
+      const uint32_t x0 = mx * scale;
+      const uint32_t x1 = std::min(dng.width, x0 + scale);
+
+      std::array<double, 3> chSum{0, 0, 0};
+      std::array<uint32_t, 3> chCount{0, 0, 0};
+
+      if (dng.layout == PixelLayout::LinearRaw) {
+        // 3 samples per pixel already; average each channel over the
+        // block.
+        const size_t rowStride = size_t(dng.width) * 3;
+        for (uint32_t y = y0; y < y1; y += subsampleStride) {
+          const size_t rowBase = size_t(y) * rowStride;
+          for (uint32_t x = x0; x < x1; x += subsampleStride) {
+            const size_t pxBase = rowBase + size_t(x) * 3;
+            for (int c = 0; c < 3; ++c) {
+              const double v = dng.pixels[pxBase + size_t(c)];
+              const double bl = dng.blackLevel[c];
+              const double range = dng.whiteLevel - bl;
+              if (range <= 0.0) continue;
+              double n = (v - bl) / range;
+              if (n < 0.0) n = 0.0;
+              else if (n > 1.0) n = 1.0;
+              chSum[c] += n;
+              chCount[c] += 1;
+            }
+          }
+        }
+      } else {
+        // CFA: each sensor sample belongs to one channel based on its
+        // CFA position. Averaging separately handles demosaic:
+        // R and B each get ~scale²/4 samples, G ~scale²/2.
+        for (uint32_t y = y0; y < y1; ++y) {
+          for (uint32_t x = x0; x < x1; ++x) {
+            const uint8_t c = channelAt(dng.cfa, x, y);
+            const double v = dng.pixels[size_t(y) * dng.width + x];
+            const double bl = dng.blackLevel[c];
+            const double range = dng.whiteLevel - bl;
+            if (range <= 0.0) continue;
+            double n = (v - bl) / range;
+            if (n < 0.0) n = 0.0;
+            else if (n > 1.0) n = 1.0;
+            chSum[c] += n;
+            chCount[c] += 1;
+          }
+        }
+      }
+
+      const std::array<double, 3> sensor{
+          chCount[0] > 0 ? chSum[0] / chCount[0] : 0.0,
+          chCount[1] > 0 ? chSum[1] / chCount[1] : 0.0,
+          chCount[2] > 0 ? chSum[2] / chCount[2] : 0.0,
+      };
+      const uint32_t argb =
+          sensorToArgb(sensor, dng.asShotNeutral, sensorToXyz);
+
+      // Rotate (mx, my) → (ox, oy) per TIFF Orientation. See the
+      // "TIFF/EP orientations" quick-reference: 1 = no rotation,
+      // 3 = 180°, 6 = rotate 90° CW to display (source top-right →
+      // display top-left), 8 = rotate 90° CCW. The mirrored variants
+      // (2, 4, 5, 7) aren't emitted by phone cameras; fall through as
+      // identity.
+      uint32_t ox, oy;
+      switch (dng.orientation) {
+        case 3:
+          ox = midW - 1 - mx;
+          oy = midH - 1 - my;
+          break;
+        case 6:
+          ox = midH - 1 - my;
+          oy = mx;
+          break;
+        case 8:
+          ox = my;
+          oy = midW - 1 - mx;
+          break;
+        case 1:
+        default:
+          ox = mx;
+          oy = my;
+          break;
+      }
+      out.argb[size_t(oy) * outW + ox] = argb;
+    }
+  }
   return out;
 }
 

@@ -18,17 +18,33 @@
 import {useCallback} from 'react';
 import {Platform} from 'react-native';
 
+import {setAndroidRawCaptureCallbacks} from 'terraso-mobile-client/components/inputs/image/androidRawCaptureRequest';
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-// Phase-7.2 test entry: opens a screen with the native
-// RawCameraAndroidView preview + shutter. Android-only, dev-only.
-export const RawCameraAndroidTestItem = () => {
+// Phase-7.3 diagnostic: opens ANDROID_RAW_CAPTURE with dummy callbacks,
+// bypassing the color-analysis flow entirely. If this works but the
+// color-flow entry fails, something in the color-flow parent tree is
+// putting the camera pipeline in a bad state. If both fail, the screen
+// or session manager themselves are broken.
+export const AndroidRawCaptureTestItem = () => {
   const navigation = useNavigation();
 
   const onPress = useCallback(() => {
-    navigation.navigate('RAW_CAMERA_ANDROID_TEST');
+    setAndroidRawCaptureCallbacks({
+      onCapture: result => {
+        console.log(
+          'AndroidRawCaptureTestItem: got result',
+          result.kind,
+          result.kind === 'raw' ? result.dngPath : '',
+        );
+      },
+      onCancel: () => {
+        console.log('AndroidRawCaptureTestItem: cancelled');
+      },
+    });
+    navigation.navigate('ANDROID_RAW_CAPTURE');
   }, [navigation]);
 
   if (APP_CONFIG.environment === 'production') {
@@ -42,7 +58,7 @@ export const RawCameraAndroidTestItem = () => {
     <MenuItem
       variant="default"
       icon="camera"
-      label="Android RAW test (with preview)"
+      label="Android RAW capture screen (dev direct)"
       onPress={onPress}
     />
   );

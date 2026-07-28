@@ -27,6 +27,7 @@ constexpr uint16_t TAG_IMAGE_LENGTH = 257;
 constexpr uint16_t TAG_BITS_PER_SAMPLE = 258;
 constexpr uint16_t TAG_COMPRESSION = 259;
 constexpr uint16_t TAG_PHOTOMETRIC = 262;
+constexpr uint16_t TAG_ORIENTATION = 274;
 constexpr uint16_t TAG_STRIP_OFFSETS = 273;
 constexpr uint16_t TAG_ROWS_PER_STRIP = 278;
 constexpr uint16_t TAG_STRIP_BYTE_COUNTS = 279;
@@ -342,6 +343,11 @@ ParsedDng parseDng(const std::string& path) {
   out.height = static_cast<uint32_t>(readOneScalar(TAG_IMAGE_LENGTH, 0));
   out.bitsPerSample =
       static_cast<uint16_t>(readOneScalar(TAG_BITS_PER_SAMPLE, 16));
+  // TIFF Orientation tag. On DNGs it typically lives in the root IFD
+  // (IFD-0), which readOneScalar checks after the raw IFD. Default 1 =
+  // as-stored / no rotation.
+  out.orientation =
+      static_cast<uint16_t>(readOneScalar(TAG_ORIENTATION, 1));
   if (out.width == 0 || out.height == 0) {
     throw std::runtime_error("DNG parser: missing image dimensions");
   }

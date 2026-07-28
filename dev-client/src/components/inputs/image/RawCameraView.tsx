@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   Modal,
@@ -37,8 +37,10 @@ import {
 import {DngDecoderHybrid} from 'dng-decoder';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {setAndroidRawCaptureCallbacks} from 'terraso-mobile-client/components/inputs/image/androidRawCaptureRequest';
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {theme} from 'terraso-mobile-client/theme';
 
 type Props = {
@@ -47,40 +49,56 @@ type Props = {
   onCancel: () => void;
   /**
    * `'jpeg'` (default) mirrors the current expo-image-picker output.
-   * `'dng'` is what phase 4 will request — the vision-camera patch in
-   * phase 0 ensures this is plain Bayer even on ProRAW iPhones.
-   * See docs/raw-camera-plan.md.
+   * `'dng'` captures RAW: on iOS via vision-camera + our ProRAW patch,
+   * on Android via the raw-camera-android Nitro module (bypassing
+   * vision-camera whose Android side can't save RAW_SENSOR photos yet
+   * — see docs/raw-camera-plan.md phase 7).
    */
   containerFormat?: 'jpeg' | 'dng';
   /**
    * Dev-only escape hatch. When set, RAW photos are handed off through
-   * this callback (with the saved DNG file URI) instead of triggering the
-   * phase-2 guard. Used by the fixture-capture menu item under
-   * UserSettingsScreen to AirDrop DNGs off-device for the phase-3
-   * decoder's test suite. Production camera flows leave this unset.
+   * this callback (with the saved DNG file URI) instead of the normal
+   * CaptureResult. Used by the fixture-capture menu item under
+   * UserSettingsScreen to AirDrop DNGs off-device. Production camera
+   * flows leave this unset. Not honored on the Android RAW path (the
+   * `raw-camera-android` module is what would have to know about it).
    */
   onRawPhotoDevOnly?: (uri: string) => void;
 };
 
-export const RawCameraView = ({
+// Top-level router. Android + DNG uses the raw-camera-android Nitro
+// module directly (bypassing vision-camera's broken saveToFile for
+// RAW_SENSOR); everything else uses vision-camera. iOS RAW still goes
+// through vision-camera because AVCapturePhoto.fileDataRepresentation()
+// handles DNG file writing natively over there.
+export const RawCameraView = (props: Props) => {
+  const useAndroidRaw =
+    Platform.OS === 'android' && props.containerFormat === 'dng';
+  return useAndroidRaw ? (
+    <AndroidRawViewImpl {...props} />
+  ) : (
+    <VisionCameraViewImpl {...props} />
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Vision-camera path — iOS RAW (ProRAW) + all JPEG. Same code that shipped
+// pre-phase-7 for both platforms; unchanged except for extraction into
+// a private component.
+
+const VisionCameraViewImpl = ({
   visible,
   onCapture,
   onCancel,
   containerFormat = 'jpeg',
   onRawPhotoDevOnly,
 }: Props) => {
-  const {t} = useTranslation();
   // For DNG capture on iOS, bind to a truly single-camera device
   // (isVirtualDevice=false) rather than a virtual multi-cam aggregation.
   // Virtual devices (built-in triple-camera, wide+LiDAR, dual-wide) have
   // spottier RAW support than pure single-cam physical devices. Bayer RAW
   // is truly single-cam-only per Apple's WWDC21 talk; ProRAW works on
   // both but is more reliable on single-cam.
-  //
-  // Android uses CameraX under the hood — no "virtual device" concept in
-  // the iOS sense, and applying the same filter can leave `device`
-  // undefined on some Pixels (empty match → black screen). Fall back to
-  // the default back camera there.
   const defaultDevice = useCameraDevice('back');
   const allDevices = useCameraDevices();
   const singleWideDevice = useMemo(
@@ -145,36 +163,7 @@ export const RawCameraView = ({
           return;
         }
         if (containerFormat === 'dng') {
-          // Real RAW capture path. Emit a proper {kind: 'raw', ...} result
-          // whose decodeRoi calls the DngDecoder Nitro module (CIRAWFilter
-          // on iOS ProRAW; C++ engine on Android plain-Bayer).
-          onCapture({
-            kind: 'raw',
-            dngPath: rawUri,
-            width: photo.width,
-            height: photo.height,
-            decodeRoi: async roi => {
-              const [rgb] = await DngDecoderHybrid.decodeDngRois(rawUri, [roi]);
-              return rgb;
-            },
-            renderPreview: async maxDim => {
-              const preview = await DngDecoderHybrid.renderPreview(
-                rawUri,
-                maxDim,
-              );
-              return {
-                uri: preview.uri,
-                width: preview.width,
-                height: preview.height,
-              };
-            },
-            dispose: () => {
-              // TODO: unlink the temp file. saveToTemporaryFileAsync stashes
-              // in the app's tmp/, which iOS may reclaim on its own. Leaving
-              // for the OS to sweep for now — worth revisiting if we start
-              // holding many captures in memory.
-            },
-          });
+          onCapture(makeRawCaptureResult(rawUri, photo.width, photo.height));
           return;
         }
         // We got a RAW photo but the caller didn't ask for one. Refuse to
@@ -189,9 +178,6 @@ export const RawCameraView = ({
       }
 
       const filePath = await photo.saveToTemporaryFileAsync();
-      // Match the existing Photo shape (uri, width, height) that the JPEG
-      // pipeline already consumes. saveToTemporaryFileAsync returns a
-      // filesystem path; expo-image-picker convention is a `file://` URL.
       onCapture({
         kind: 'jpeg',
         photo: {
@@ -215,6 +201,116 @@ export const RawCameraView = ({
     containerFormat,
   ]);
 
+  const preview =
+    device && hasPermission ? (
+      <Camera
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={visible}
+        outputs={outputs}
+        // Tap anywhere on the viewfinder to refocus there.
+        // Continuous autofocus is on by default; this lets the user
+        // pick a specific point (soil patch or reference card) when
+        // that matters.
+        enableNativeTapToFocusGesture={true}
+      />
+    ) : null;
+
+  return (
+    <CameraChrome
+      visible={visible}
+      cancel={cancel}
+      shutter={shutter}
+      shutterDisabled={!device || !hasPermission || isCapturing}
+      isCapturing={isCapturing}
+      hasPermission={hasPermission}>
+      {preview}
+    </CameraChrome>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Android RAW path — new for phase 7. Delegates the camera UI to a
+// full-screen React Navigation route (AndroidRawCaptureScreen) that
+// owns the CameraX pipeline via raw-camera-android. This wrapper
+// component renders nothing on-screen; it just navigates when the
+// `visible` prop flips true. Callbacks are threaded through a
+// module-scope bridge (androidRawCaptureRequest) because RN nav params
+// need to be JSON-serializable.
+//
+// Rationale for a nav screen vs. an inline overlay: CameraX doesn't
+// play with RN Modal (Dialog window) or with an absolute overlay
+// trapped inside a bottom-sheet parent (parent bounds constrain the
+// preview surface, camera pipeline stalls). A dedicated screen route
+// gives us a full-screen primary-Window container which is the only
+// env the CameraX pipeline is happy in.
+
+const AndroidRawViewImpl = ({
+  visible,
+  onCapture,
+  onCancel,
+  onRawPhotoDevOnly,
+}: Props) => {
+  const navigation = useNavigation();
+  const {hasPermission, requestPermission} = useCameraPermission();
+
+  useEffect(() => {
+    if (visible && !hasPermission) {
+      requestPermission().catch(err => {
+        console.error('camera permission request failed:', err);
+      });
+    }
+  }, [visible, hasPermission, requestPermission]);
+
+  // On visible flipping true, stash callbacks + navigate. Cancel path
+  // just calls onCancel (parent controls `visible`, so it'll set it
+  // back to false on its own).
+  useEffect(() => {
+    if (!visible) return;
+    if (!hasPermission) return;
+    setAndroidRawCaptureCallbacks({
+      onCapture: result => {
+        if (result.kind === 'raw' && onRawPhotoDevOnly) {
+          onRawPhotoDevOnly(result.dngPath);
+          return;
+        }
+        onCapture(result);
+      },
+      onCancel,
+    });
+    navigation.navigate('ANDROID_RAW_CAPTURE');
+    // Only trigger on the visible→true transition. Re-firing on
+    // callback identity changes would re-navigate and re-open the
+    // screen mid-flow.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, hasPermission]);
+
+  return null;
+};
+
+// ---------------------------------------------------------------------------
+// Shared modal chrome: cancel button, shutter button, no-permission
+// fallback, black backdrop. Doesn't care what preview surface goes in
+// the children slot.
+
+const CameraChrome = ({
+  visible,
+  cancel,
+  shutter,
+  shutterDisabled,
+  isCapturing,
+  hasPermission,
+  children,
+}: {
+  visible: boolean;
+  cancel: () => void;
+  shutter: () => void;
+  shutterDisabled: boolean;
+  isCapturing: boolean;
+  hasPermission: boolean;
+  children: ReactNode;
+}) => {
+  const {t} = useTranslation();
   return (
     <Modal
       visible={visible}
@@ -223,28 +319,14 @@ export const RawCameraView = ({
       onRequestClose={cancel}>
       <StatusBar hidden />
       <View style={styles.container}>
-        {
-          device && hasPermission ? (
-            <Camera
-              style={StyleSheet.absoluteFill}
-              device={device}
-              isActive={visible}
-              outputs={outputs}
-              // Tap anywhere on the viewfinder to refocus there.
-              // Continuous autofocus is on by default; this lets the user
-              // pick a specific point (soil patch or reference card) when
-              // that matters.
-              enableNativeTapToFocusGesture={true}
-            />
-          ) : !hasPermission ? (
-            <View style={styles.messageContainer}>
-              <Text color="white" variant="body1">
-                {t('permissions.camera_title')}
-              </Text>
-            </View>
-          ) : null /* device is enumerating — brief, keep the black backdrop */
-        }
-
+        {children}
+        {!hasPermission && (
+          <View style={styles.messageContainer}>
+            <Text color="white" variant="body1">
+              {t('permissions.camera_title')}
+            </Text>
+          </View>
+        )}
         <SafeAreaView style={styles.overlay} pointerEvents="box-none">
           <View style={styles.topBar}>
             <Pressable
@@ -259,7 +341,7 @@ export const RawCameraView = ({
           <View style={styles.bottomBar}>
             <Pressable
               onPress={shutter}
-              disabled={!device || !hasPermission || isCapturing}
+              disabled={shutterDisabled}
               accessibilityRole="button"
               accessibilityLabel={t('soil.color.guide.take_photo')}
               style={({pressed}) => [
@@ -274,6 +356,40 @@ export const RawCameraView = ({
     </Modal>
   );
 };
+
+// ---------------------------------------------------------------------------
+// Shared CaptureResult factory. Both platforms end up here — the
+// downstream ROI-picker + decode pipeline doesn't care where the DNG
+// came from.
+
+const makeRawCaptureResult = (
+  dngPath: string,
+  width: number,
+  height: number,
+): CaptureResult => ({
+  kind: 'raw',
+  dngPath,
+  width,
+  height,
+  decodeRoi: async roi => {
+    const [rgb] = await DngDecoderHybrid.decodeDngRois(dngPath, [roi]);
+    return rgb;
+  },
+  renderPreview: async maxDim => {
+    const preview = await DngDecoderHybrid.renderPreview(dngPath, maxDim);
+    return {
+      uri: preview.uri,
+      width: preview.width,
+      height: preview.height,
+    };
+  },
+  dispose: () => {
+    // TODO: unlink the temp file. Both saveToTemporaryFileAsync (iOS)
+    // and File.createTempFile in cacheDir (Android) stash in a location
+    // the OS may reclaim on its own. Leaving for the OS to sweep for
+    // now — worth revisiting if we start holding many captures.
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
