@@ -35,6 +35,7 @@ import {ExperimentalColorScreenItem} from 'terraso-mobile-client/screens/UserSet
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
 import {ManageCustomReferencesItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/ManageCustomReferencesItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
+import {RawCameraAndroidTestItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/RawCameraAndroidTestItem';
 import {SelectLanguageItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SelectLanguageItem';
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
 import {TosItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/TosItem';
@@ -66,6 +67,7 @@ export function UserSettingsScreen() {
                   <CopyAccessTokenItem />
                   <CaptureRawFixtureItem />
                   <CaptureAndroidRawItem />
+                  <RawCameraAndroidTestItem />
                   <CalibrateReferenceItem />
                   <ManageCustomReferencesItem />
                   <ExperimentalColorScreenItem />

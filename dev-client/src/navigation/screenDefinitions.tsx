@@ -67,6 +67,7 @@ import {SOCSOMScreen} from 'terraso-mobile-client/screens/SoilScreen/SOCSOMScree
 import {StructureScreen} from 'terraso-mobile-client/screens/SoilScreen/StructureScreen';
 import {TextureGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureGuideScreen';
 import {TextureScreen} from 'terraso-mobile-client/screens/SoilScreen/TextureScreen';
+import {RawCameraAndroidTestScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/RawCameraAndroidTestScreen';
 import {UserSettingsScreen} from 'terraso-mobile-client/screens/UserSettingsScreen/UserSettingsScreen';
 import {WelcomeScreen} from 'terraso-mobile-client/screens/WelcomeScreen';
 
@@ -116,6 +117,7 @@ export const screenDefinitions = {
   RAW_COLOR_CROP_EXPERIMENTAL: RawCropScreen,
   CALIBRATE_REFERENCE_EXPERIMENTAL: CalibrateReferenceScreen,
   MANAGE_CUSTOM_REFERENCES_EXPERIMENTAL: ManageCustomReferencesScreen,
+  RAW_CAMERA_ANDROID_TEST: RawCameraAndroidTestScreen,
   DATA_EXPORT: UserDataExportScreen,
   SITE_EXPORT: SiteExportScreen,
   DELETE_ACCOUNT: DeleteAccountScreen,
