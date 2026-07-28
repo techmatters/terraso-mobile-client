@@ -37,6 +37,12 @@ export const LINEAR_REFERENCES = {
   // rounded. The RAW pipeline uses this directly; the JPEG pipeline
   // linearizes REFERENCES.CANARY_POST_IT at correction time.
   POST_IT_YELLOW: {r: 0.9542, g: 0.887, b: 0.362},
+  // 3M Pastel-yellow Post-it (Pastel Collection). Nominal sRGB #FFF9BF
+  // = (255, 249, 191), linearized via the standard sRGB EOTF. Much
+  // paler and less saturated than the canary yellow. Small chroma
+  // difference matters — a canary-calibrated WB applied to a pastel
+  // sample pushes results warm/orange.
+  POST_IT_PASTEL_YELLOW: {r: 1.0, g: 0.947, b: 0.521},
   // Generic 18% neutral gray card — the classic photographic reference,
   // ~18% reflectance across the visible spectrum, spectrally flat.
   // In linear-sRGB that's r = g = b = 0.18. PLACEHOLDER: measure your
@@ -53,7 +59,8 @@ export type LinearReferenceKey = keyof typeof LINEAR_REFERENCES;
 // Human-facing labels for each reference — shown in the picker UI when
 // the user is choosing which reference their captured card is.
 export const LINEAR_REFERENCE_NAMES: Record<LinearReferenceKey, string> = {
-  POST_IT_YELLOW: '3M Post-it Yellow',
+  POST_IT_YELLOW: '3M Post-it Yellow (canary)',
+  POST_IT_PASTEL_YELLOW: '3M Post-it Yellow (pastel)',
   GRAY_CARD_18PCT: '18% Neutral Gray Card',
 };
 
@@ -61,6 +68,7 @@ export const LINEAR_REFERENCE_NAMES: Record<LinearReferenceKey, string> = {
 // UI. Keep in sync with LINEAR_REFERENCES.
 export const LINEAR_REFERENCE_KEYS: LinearReferenceKey[] = [
   'POST_IT_YELLOW',
+  'POST_IT_PASTEL_YELLOW',
   'GRAY_CARD_18PCT',
 ];
 

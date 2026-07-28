@@ -35,6 +35,15 @@ constexpr std::array<double, 9> XYZ_D65_TO_SRGB_LINEAR{
     -0.9692660, 1.8760108, 0.0415560,   //
     0.0556434, -0.2040259, 1.0572252};
 
+// Bradford chromatic adaptation XYZ_D50 → XYZ_D65. Applied only when
+// the ForwardMatrix path is used (which produces XYZ_D50 per DNG spec).
+// The ColorMatrix-inversion path already produces XYZ_D65-adjacent
+// values since the illuminants match (CM2 = XYZ_D65 → sensor).
+constexpr std::array<double, 9> BRADFORD_D50_TO_D65{
+    0.9555766, -0.0230393, 0.0631636,  //
+    -0.0282895, 1.0099416, 0.0210077,  //
+    0.0122982, -0.0204830, 1.3299098};
+
 // Invert a 3x3 double-precision matrix; throws on singular.
 std::array<double, 9> invert3x3(const std::array<double, 9>& m) {
   const double a = m[0], b = m[1], c = m[2];
@@ -133,12 +142,18 @@ namespace {
 RoiPx rotateRoiToSensor(const RoiPx& roi, uint16_t orientation,
                         uint32_t srcW, uint32_t srcH) {
   switch (orientation) {
-    case 3:  // 180°
+    case 3:  // 180°: display(x, y) = landscape(srcW-1-x, srcH-1-y)
       return {srcW - roi.x - roi.w, srcH - roi.y - roi.h, roi.w, roi.h};
-    case 6:  // 90° CW: display(w,h)=(srcH,srcW); dims swap; x/y rearranged
-      return {srcW - roi.y - roi.h, roi.x, roi.h, roi.w};
-    case 8:  // 90° CCW
+    case 6:  // 90° CW to display: landscape(x, y) → display(srcH-1-y, x)
+      // Inverse pixel mapping: display(px, py) reads landscape(py, srcH-1-px)
+      // For a display-space ROI (rx, ry, rw, rh), the covered landscape
+      // rectangle is landscape.x = ry, landscape.y = srcH-rx-rw, and
+      // widths swap.
       return {roi.y, srcH - roi.x - roi.w, roi.h, roi.w};
+    case 8:  // 90° CCW to display: landscape(x, y) → display(y, srcW-1-x)
+      // Inverse: display(px, py) reads landscape(srcW-1-py, px). ROI covers
+      // landscape.x = srcW-ry-rh, landscape.y = rx.
+      return {srcW - roi.y - roi.h, roi.x, roi.h, roi.w};
     case 1:
     default:
       return roi;
@@ -206,13 +221,31 @@ LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roiIn) {
     if (n > 0) sensor[c] /= n;
   }
 
-  // ColorMatrix1 is XYZ_D50 (per DNG spec) → sensor RGB. Invert to go
-  // sensor → XYZ_D50, then XYZ_D50 → sRGB_linear. For phase 3 we skip the
-  // D50→D65 chromatic adaptation and use the D65 XYZ→sRGB matrix directly;
-  // for a scene-adaptive AsShotNeutral WB the residual chromatic-adaptation
-  // error is small compared to sensor + demosaic noise on a 100×100 patch.
-  const auto sensorToXyz = invert3x3(dng.colorMatrix1);
-  const std::array<double, 3> xyz = matVec(sensorToXyz, sensor);
+  // Sensor → XYZ. When ForwardMatrix2 is present (universal on modern
+  // phone DNGs) that IS the canonical sensor→XYZ_D50 transform per
+  // DNG spec; use it directly rather than inverting ColorMatrix
+  // (which is XYZ→sensor, only invertible-to-sensor→XYZ when the
+  // illuminants line up perfectly, which they don't).
+  //
+  // For Google Pixel DNGs specifically, ColorMatrix2 is authored as
+  // the standard XYZ_D65→sRGB matrix — inverting it and re-multiplying
+  // by XYZ_D65→sRGB collapses to identity, treating sensor RGB as
+  // sRGB-linear directly. That's demonstrably wrong (matches our
+  // earlier symptom: near-neutral output on saturated post-its where
+  // rawpy produces proper hues).
+  std::array<double, 3> xyz;
+  if (dng.hasForwardMatrix2) {
+    // FM2 outputs XYZ_D50; adapt to D65 before the standard sRGB matrix.
+    const std::array<double, 3> xyz_d50 =
+        matVec(dng.forwardMatrix2, sensor);
+    xyz = matVec(BRADFORD_D50_TO_D65, xyz_d50);
+  } else {
+    // Fallback: invert ColorMatrix (prefer CM2 over CM1 to match D65).
+    const auto& cmatrix =
+        dng.hasColorMatrix2 ? dng.colorMatrix2 : dng.colorMatrix1;
+    const auto sensorToXyz = invert3x3(cmatrix);
+    xyz = matVec(sensorToXyz, sensor);
+  }
   const std::array<double, 3> srgb = matVec(XYZ_D65_TO_SRGB_LINEAR, xyz);
 
   // Clamp to [0, 1]. Well-lit soil samples land comfortably inside; blown
@@ -242,20 +275,47 @@ inline uint32_t linearToSrgb255(double v) {
   return static_cast<uint32_t>(i);
 }
 
-// Apply the shared color pipeline (WB + XYZ→sRGB) to a sensor triple
-// and return a gamma-encoded ARGB pixel (0xFFRRGGBB). Factored out so
-// both decodeRoi's ROI-average path and renderPreviewRgba's per-tile
-// path share the exact same color math.
+// Precomputed color-transform state so decodeRoi and renderPreviewRgba
+// share the exact same math without recomputing per-ROI/per-tile. The
+// matrix is EITHER ForwardMatrix2 (post-adapted D50→D65) or, if FM2 is
+// absent, inv(ColorMatrix) — see decodeRoi comments for rationale.
+struct ColorTransform {
+  std::array<double, 9> sensorToXyzD65;
+};
+ColorTransform makeColorTransform(const ParsedDng& dng) {
+  ColorTransform t;
+  if (dng.hasForwardMatrix2) {
+    // combined = BRADFORD_D50_TO_D65 * forwardMatrix2
+    for (int row = 0; row < 3; ++row) {
+      for (int col = 0; col < 3; ++col) {
+        double sum = 0;
+        for (int k = 0; k < 3; ++k) {
+          sum += BRADFORD_D50_TO_D65[row * 3 + k] *
+                 dng.forwardMatrix2[k * 3 + col];
+        }
+        t.sensorToXyzD65[row * 3 + col] = sum;
+      }
+    }
+  } else {
+    const auto& cmatrix =
+        dng.hasColorMatrix2 ? dng.colorMatrix2 : dng.colorMatrix1;
+    t.sensorToXyzD65 = invert3x3(cmatrix);
+  }
+  return t;
+}
+
+// Apply the shared color pipeline (WB + sensor→XYZ→sRGB) to a sensor
+// triple and return a gamma-encoded ARGB pixel (0xFFRRGGBB).
 inline uint32_t sensorToArgb(
     const std::array<double, 3>& sensorIn,
     const std::array<double, 3>& asShotNeutral,
-    const std::array<double, 9>& sensorToXyz) {
+    const ColorTransform& ct) {
   std::array<double, 3> sensor = sensorIn;
   for (int c = 0; c < 3; ++c) {
     const double n = asShotNeutral[c];
     if (n > 0) sensor[c] /= n;
   }
-  const std::array<double, 3> xyz = matVec(sensorToXyz, sensor);
+  const std::array<double, 3> xyz = matVec(ct.sensorToXyzD65, sensor);
   const std::array<double, 3> srgb = matVec(XYZ_D65_TO_SRGB_LINEAR, xyz);
   const uint32_t r = linearToSrgb255(srgb[0]);
   const uint32_t g = linearToSrgb255(srgb[1]);
@@ -297,7 +357,7 @@ PreviewRgba renderPreviewRgba(const ParsedDng& dng, uint32_t maxDim) {
   out.height = outH;
   out.argb.assign(size_t(outW) * outH, 0xFF000000u);
 
-  const auto sensorToXyz = invert3x3(dng.colorMatrix1);
+  const ColorTransform ct = makeColorTransform(dng);
 
   // Sub-sample within each sensor block when the block is large.
   // For a 4032×3024 sensor scaled to a 1200-max preview, scale=3, so
@@ -369,8 +429,7 @@ PreviewRgba renderPreviewRgba(const ParsedDng& dng, uint32_t maxDim) {
           chCount[1] > 0 ? chSum[1] / chCount[1] : 0.0,
           chCount[2] > 0 ? chSum[2] / chCount[2] : 0.0,
       };
-      const uint32_t argb =
-          sensorToArgb(sensor, dng.asShotNeutral, sensorToXyz);
+      const uint32_t argb = sensorToArgb(sensor, dng.asShotNeutral, ct);
 
       // Rotate (mx, my) → (ox, oy) per TIFF Orientation. See the
       // "TIFF/EP orientations" quick-reference: 1 = no rotation,

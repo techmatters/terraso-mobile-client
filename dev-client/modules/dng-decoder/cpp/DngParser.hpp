@@ -66,12 +66,39 @@ struct ParsedDng {
   // triple is close to (1,1,1) but not exactly). Kept for completeness.
   std::array<double, 3> asShotNeutral{1.0, 1.0, 1.0};
 
-  // Row-major 3x3, XYZ (D50) -> sensor RGB per DNG spec. On LinearRaw
-  // files the "sensor RGB" is Apple's already-demosaiced linear-ish RGB.
+  // Row-major 3x3, XYZ -> sensor RGB per DNG spec.
+  // ColorMatrix1 is calibrated for CalibrationIlluminant1 (typically
+  // Standard Light A / tungsten); ColorMatrix2 for CalibrationIlluminant2
+  // (typically D65 / daylight). Modern phones (Pixel, iPhone) always
+  // emit both; on Android CameraX-written DNGs the D65 matrix tends to
+  // be very close to a standard XYZ_D65 → sRGB_linear identity (i.e.
+  // the sensor is calibrated as sRGB-native under D65). Using
+  // ColorMatrix1 (tungsten) unconditionally on a daylight/LED scene
+  // produces a warm colour bias — the classic wrong-CCT symptom.
+  // Pipeline picks CM2 when present; a proper interpolation between
+  // the two by AsShotNeutral is deferred future work.
   std::array<double, 9> colorMatrix1{
       1, 0, 0,  //
       0, 1, 0,  //
       0, 0, 1};
+  std::array<double, 9> colorMatrix2{
+      1, 0, 0,  //
+      0, 1, 0,  //
+      0, 0, 1};
+  bool hasColorMatrix2{false};
+
+  // ForwardMatrix — sensor RGB → XYZ_D50 (per DNG spec). This is the
+  // CANONICAL sensor-to-XYZ transform when present; using it beats
+  // inverting ColorMatrix because ColorMatrix is calibrated for a
+  // specific illuminant white point (D50 or D65) whose inverse gives
+  // a subtly wrong sensor→XYZ (the illuminant white-point shift is
+  // baked in). Google Pixel DNGs always emit both FM1 (Illum A) and
+  // FM2 (D65). Pipeline prefers FM2.
+  std::array<double, 9> forwardMatrix2{
+      1, 0, 0,  //
+      0, 1, 0,  //
+      0, 0, 1};
+  bool hasForwardMatrix2{false};
 
   // Pixel data, row-major. Widened to uint16 regardless of bitsPerSample.
   //

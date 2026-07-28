@@ -36,7 +36,10 @@ constexpr uint16_t TAG_CFA_PATTERN_2 = 33422;     // CFAPattern (Exif)
 constexpr uint16_t TAG_BLACK_LEVEL = 50714;
 constexpr uint16_t TAG_WHITE_LEVEL = 50717;
 constexpr uint16_t TAG_COLOR_MATRIX_1 = 50721;
+constexpr uint16_t TAG_COLOR_MATRIX_2 = 50722;
 constexpr uint16_t TAG_AS_SHOT_NEUTRAL = 50728;
+constexpr uint16_t TAG_FORWARD_MATRIX_1 = 50964;
+constexpr uint16_t TAG_FORWARD_MATRIX_2 = 50965;
 constexpr uint16_t TAG_CFA_PATTERN_DNG = 50711;
 
 constexpr uint16_t PHOTOMETRIC_CFA = 32803;
@@ -442,6 +445,39 @@ ParsedDng parseDng(const std::string& path) {
       readScalars(r, *e2, off, v);
       if (v.size() >= 9) {
         for (int i = 0; i < 9; ++i) out.colorMatrix1[i] = v[i];
+      }
+    }
+  }
+
+  // ColorMatrix2 (D65 / daylight calibration). Optional per DNG spec
+  // but universally present on modern phone camera DNGs. Pipeline
+  // prefers this over ColorMatrix1 for typical scenes.
+  {
+    size_t off = 0;
+    const IfdEntry* e = raw.find(TAG_COLOR_MATRIX_2, &off);
+    if (!e) e = root.find(TAG_COLOR_MATRIX_2, &off);
+    if (e) {
+      std::vector<double> v;
+      readScalars(r, *e, off, v);
+      if (v.size() >= 9) {
+        for (int i = 0; i < 9; ++i) out.colorMatrix2[i] = v[i];
+        out.hasColorMatrix2 = true;
+      }
+    }
+  }
+
+  // ForwardMatrix2 (sensor → XYZ_D50 for the D65 calibration illuminant).
+  // Preferred over inverted ColorMatrix when present — see hpp.
+  {
+    size_t off = 0;
+    const IfdEntry* e = raw.find(TAG_FORWARD_MATRIX_2, &off);
+    if (!e) e = root.find(TAG_FORWARD_MATRIX_2, &off);
+    if (e) {
+      std::vector<double> v;
+      readScalars(r, *e, off, v);
+      if (v.size() >= 9) {
+        for (int i = 0; i < 9; ++i) out.forwardMatrix2[i] = v[i];
+        out.hasForwardMatrix2 = true;
       }
     }
   }
