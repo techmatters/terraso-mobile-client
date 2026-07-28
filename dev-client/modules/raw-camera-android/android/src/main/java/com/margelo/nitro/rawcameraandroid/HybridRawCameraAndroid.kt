@@ -26,7 +26,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.facebook.common.internal.DoNotStrip
-import com.facebook.react.bridge.UiThreadUtil
 import com.margelo.nitro.NitroModules
 import com.margelo.nitro.core.Promise
 import java.io.File
@@ -152,7 +151,29 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
                 pendingResult = null
             }
 
-        return writeDngFile(image, characteristics, totalResult).also { image.close() }
+        val result = writeDngFile(image, characteristics, totalResult)
+        image.close()
+
+        // Release the CameraX session after each capture. With no view
+        // bound in phase 7.1 the camera has no valid preview dimensions
+        // and Google's libgcam floods logcat with zero-crop metering
+        // complaints on every frame the ImageAnalysis keep-alive
+        // produces. Cheaper to pay the rebind on the next shutter
+        // (~200-500ms) than to leave the camera running headlessly.
+        // Phase 7.2's view lifecycle will do the bind/unbind naturally.
+        releaseSession()
+
+        return result
+    }
+
+    private suspend fun releaseSession() {
+        withContext(Dispatchers.Main) {
+            Log.i(TAG, "releaseSession: unbindAll")
+            provider.unbindAll()
+        }
+        boundCamera = null
+        boundImageCapture = null
+        boundCharacteristics = null
     }
 
     private suspend fun ensureBound(): Pair<ImageCapture, CameraCharacteristics> {
@@ -338,17 +359,4 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
             else -> android.media.ExifInterface.ORIENTATION_NORMAL
         }
 
-    // Not part of the Nitro spec — internal for future teardown if we
-    // ever want to release the camera explicitly. Currently the session
-    // outlives the app process.
-    @Suppress("unused")
-    private fun release() {
-        val ic = boundImageCapture
-        if (ic != null) {
-            UiThreadUtil.runOnUiThread { provider.unbind(ic) }
-        }
-        boundCamera = null
-        boundImageCapture = null
-        boundCharacteristics = null
-    }
 }
