@@ -18,11 +18,10 @@ import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.Preview
-import androidx.camera.core.SurfaceRequest
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -81,7 +80,10 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
         // ProcessCameraProvider.getInstance returns a ListenableFuture;
         // .get() blocks the calling thread. Safe to lazy-init inside a
         // capture coroutine (which runs off the main thread).
-        ProcessCameraProvider.getInstance(context).get()
+        Log.i(TAG, "provider: acquiring ProcessCameraProvider…")
+        val p = ProcessCameraProvider.getInstance(context).get()
+        Log.i(TAG, "provider: got ProcessCameraProvider")
+        p
     }
 
     // Serialize capturePhoto calls — CameraX ImageCapture is not
@@ -108,6 +110,7 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
     }
 
     private suspend fun capturePhotoLocked(): CapturedPhoto {
+        Log.i(TAG, "capturePhotoLocked: entered")
         if (
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED
@@ -116,6 +119,7 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
                 "Camera permission not granted — request it via the JS side first"
             )
         }
+        Log.i(TAG, "capturePhotoLocked: permission ok, ensuring bind…")
 
         val (imageCapture, characteristics) = ensureBound()
 
@@ -124,6 +128,7 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
         // deliver into.
         val resultDeferred = CompletableDeferred<TotalCaptureResult>()
         pendingResult = resultDeferred
+        Log.i(TAG, "capturePhotoLocked: triggering takePicture…")
 
         val image: ImageProxy =
             try {
@@ -132,6 +137,7 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
                 pendingResult = null
                 throw e
             }
+        Log.i(TAG, "capturePhotoLocked: takePicture returned image ${image.width}x${image.height}")
 
         val totalResult: TotalCaptureResult =
             try {
@@ -153,6 +159,7 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
         boundImageCapture?.let { ic ->
             boundCharacteristics?.let { chars -> return ic to chars }
         }
+        Log.i(TAG, "ensureBound: not yet bound, initializing session…")
 
         // Configure ImageCapture with RAW_SENSOR + a Camera2Interop
         // capture callback for TotalCaptureResult. Both have to be on
@@ -189,34 +196,42 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
 
         val imageCapture = builder.build()
 
-        // Bind a Preview use case alongside ImageCapture even when we have
-        // no view to render into. On many Android devices ImageCapture
-        // alone leaves the camera closed (Camera2 needs at least one
-        // repeating request to keep the session live for a still capture)
-        // — Pixel 6a hits this and takePicture throws "Not bound to a
-        // valid Camera". Signalling willNotProvideSurface() releases the
-        // request cleanly so no rendering happens; the repeating request
-        // still keeps the camera open. Phase 7.2 will replace this stub
-        // with a real view-supplied SurfaceProvider.
-        val preview = Preview.Builder().build()
+        // Bind an ImageAnalysis use case alongside ImageCapture as a
+        // keep-alive. On many Android devices (Pixel 6a included) an
+        // ImageCapture bound alone leaves Camera2 without a repeating
+        // request and takePicture throws "Not bound to a valid Camera".
+        // ImageAnalysis definitively feeds a repeating stream (frames
+        // arrive at the analyzer at ~30fps). We discard every frame with
+        // image.close() — no work done — but the camera stays live.
+        // Phase 7.2 will replace this with the view-supplied Preview
+        // surface + a real analyzer for the green-checkmark work.
+        val analyzer =
+            ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+        analyzer.setAnalyzer(ContextCompat.getMainExecutor(context)) { proxy ->
+            proxy.close()
+        }
+
         val selector = CameraSelector.DEFAULT_BACK_CAMERA
 
-        // CameraX bindToLifecycle AND Preview.setSurfaceProvider both
-        // require the main thread — they touch main-thread-only state.
-        // takePicture (later) schedules internally on the CameraX
-        // executor and doesn't need this jump.
+        // CameraX bindToLifecycle requires the main thread. takePicture
+        // (later) schedules internally on the CameraX executor and
+        // doesn't need this jump.
+        Log.i(TAG, "ensureBound: acquiring provider + binding on main thread…")
         val camera =
             withContext(Dispatchers.Main) {
-                preview.setSurfaceProvider { request: SurfaceRequest ->
-                    request.willNotProvideSurface()
-                }
-                provider.bindToLifecycle(
+                Log.i(TAG, "ensureBound: entered main thread")
+                val p = provider // triggers lazy .get()
+                Log.i(TAG, "ensureBound: calling bindToLifecycle")
+                p.bindToLifecycle(
                     ProcessLifecycleOwner.get(),
                     selector,
-                    preview,
+                    analyzer,
                     imageCapture,
                 )
             }
+        Log.i(TAG, "ensureBound: bindToLifecycle returned")
         val cameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
         val characteristics = fetchCharacteristics(cameraInfo)
 
