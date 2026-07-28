@@ -15,24 +15,36 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {TFunction} from 'i18next';
+
 import {isDeletedUser} from 'terraso-client-shared/account/authConstants';
 import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
-import {formatFullName} from 'terraso-mobile-client/util';
+import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 
 /**
- * Display name for a note's author.
+ * Attribution line for a site note, e.g. "7/28/2026 12:37 by Alice Smith".
  *
- * The backend substitutes a stub user (sentinel id, English name "Deleted
- * User") when the author's account has been deleted, so the localized label
- * has to win over the stub's name. Takes the label rather than `t` to stay
- * pure and unit-testable.
+ * A deleted author gets its own complete sentence rather than a label
+ * interpolated into the normal template. Two reasons: the backend's stub name
+ * is English, and a substituted noun phrase can't inflect to agree with the
+ * surrounding sentence in case-marking languages (uk instrumental, ka
+ * genitive).
  */
-export const siteNoteAuthorDisplayName = (
+export const siteNoteAttribution = (
   note: SiteNote,
   authorEmail: string | undefined,
-  deletedUserLabel: string,
-) =>
-  isDeletedUser(note.authorId)
-    ? deletedUserLabel
-    : formatFullName(note.authorFirstName, note.authorLastName, authorEmail);
+  t: TFunction,
+) => {
+  const createdAt = formatDate(note.createdAt);
+  return isDeletedUser(note.authorId)
+    ? t('site.notes.note_attribution_deleted_author', {createdAt})
+    : t('site.notes.note_attribution', {
+        createdAt,
+        name: formatFullName(
+          note.authorFirstName,
+          note.authorLastName,
+          authorEmail,
+        ),
+      });
+};

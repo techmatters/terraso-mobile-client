@@ -56,6 +56,7 @@
             "add_title": "Note du site",
             "edit_title": "Note du site",
             "note_attribution": "{{createdAt}} par {{name}}",
+            "note_attribution_deleted_author": "{{createdAt}} par un utilisateur supprimé",
             "confirm_removal_title": "Supprimer la note ?",
             "confirm_removal_body": "Cette action ne peut pas être annulée.",
             "min_length_error": "Doit contenir au moins {{min}} caractères",
@@ -395,7 +396,6 @@
         "create": "Créer",
         "delete": "Supprimer",
         "close": "Fermer",
-        "deleted_user": "Utilisateur supprimé",
         "offline_title": "Vous êtes hors ligne",
         "support": "Assistance",
         "help": {

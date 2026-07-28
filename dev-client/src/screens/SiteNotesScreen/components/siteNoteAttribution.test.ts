@@ -15,12 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {TFunction} from 'i18next';
+
 import {DELETED_USER_ID} from 'terraso-client-shared/account/authConstants';
 import {SiteNote} from 'terraso-client-shared/site/siteTypes';
 
-import {siteNoteAuthorDisplayName} from 'terraso-mobile-client/screens/SiteNotesScreen/components/siteNoteAuthorName';
+import {siteNoteAttribution} from 'terraso-mobile-client/screens/SiteNotesScreen/components/siteNoteAttribution';
 
-const DELETED_LABEL = 'Usuario eliminado';
+// Asserting on key + params rather than rendered text: formatDate goes through
+// Intl with the system locale and timezone, so the interpolated date is not
+// stable across machines.
+const t = jest.fn((key: string) => key);
+const mockT = t as unknown as TFunction;
 
 const note = (overrides: Partial<SiteNote> = {}): SiteNote => ({
   id: 'note-1',
@@ -34,29 +40,35 @@ const note = (overrides: Partial<SiteNote> = {}): SiteNote => ({
   ...overrides,
 });
 
-test('uses the localized label for the deleted-user stub', () => {
-  // The stub arrives with the English name attached; the label must win.
+test('uses the dedicated sentence for a deleted author', () => {
+  // The stub carries an English name; asserting exact params proves it never
+  // reaches the template.
   const stub = note({
     authorId: DELETED_USER_ID,
     authorFirstName: 'Deleted',
     authorLastName: 'User',
   });
-  expect(siteNoteAuthorDisplayName(stub, undefined, DELETED_LABEL)).toBe(
-    DELETED_LABEL,
-  );
+  siteNoteAttribution(stub, undefined, mockT);
+  expect(t).toHaveBeenCalledWith('site.notes.note_attribution_deleted_author', {
+    createdAt: expect.any(String),
+  });
 });
 
-test('uses the real name for a live author', () => {
-  expect(siteNoteAuthorDisplayName(note(), undefined, DELETED_LABEL)).toBe(
-    'Alice Smith',
-  );
+test('interpolates the real name for a live author', () => {
+  siteNoteAttribution(note(), undefined, mockT);
+  expect(t).toHaveBeenCalledWith('site.notes.note_attribution', {
+    createdAt: expect.any(String),
+    name: 'Alice Smith',
+  });
 });
 
 test('falls back to the obscured email when the author has no name', () => {
   const nameless = note({authorFirstName: '', authorLastName: ''});
-  expect(
-    siteNoteAuthorDisplayName(nameless, 'alice@example.com', DELETED_LABEL),
-  ).toBe('a...e@example.com');
+  siteNoteAttribution(nameless, 'alice@example.com', mockT);
+  expect(t).toHaveBeenCalledWith('site.notes.note_attribution', {
+    createdAt: expect.any(String),
+    name: 'a...e@example.com',
+  });
 });
 
 // Locally-created notes use '' when no current user is resolved
@@ -67,7 +79,9 @@ test('does not treat an empty author id as deleted', () => {
     authorFirstName: 'Bob',
     authorLastName: 'Jones',
   });
-  expect(siteNoteAuthorDisplayName(local, undefined, DELETED_LABEL)).toBe(
-    'Bob Jones',
-  );
+  siteNoteAttribution(local, undefined, mockT);
+  expect(t).toHaveBeenCalledWith('site.notes.note_attribution', {
+    createdAt: expect.any(String),
+    name: 'Bob Jones',
+  });
 });
