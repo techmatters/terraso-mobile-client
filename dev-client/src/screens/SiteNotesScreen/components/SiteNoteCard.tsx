@@ -27,8 +27,8 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useUserCanEditSiteNote} from 'terraso-mobile-client/hooks/permissionHooks';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {siteNoteAttribution} from 'terraso-mobile-client/screens/SiteNotesScreen/components/siteNoteAttribution';
 import {useSelector} from 'terraso-mobile-client/store';
-import {formatDate, formatFullName} from 'terraso-mobile-client/util';
 
 type Props = {
   note: SiteNote;
@@ -67,14 +67,7 @@ export const SiteNoteCard = ({note}: Props) => {
       onPress={onEditNote}>
       <Row>
         <Text variant="body2" italic>
-          {t('site.notes.note_attribution', {
-            createdAt: formatDate(note.createdAt),
-            name: formatFullName(
-              note.authorFirstName,
-              note.authorLastName,
-              authorEmail,
-            ),
-          })}
+          {siteNoteAttribution(note, authorEmail, t)}
         </Text>
         <Spacer />
         {canViewEditScreen && <Icon name="edit" color="primary.dark" />}

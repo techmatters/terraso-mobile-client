@@ -56,6 +56,7 @@
             "add_title": "Примітка до ділянки",
             "edit_title": "Примітка до ділянки",
             "note_attribution": "{{createdAt}} створено користувачем {{name}}",
+            "note_attribution_deleted_author": "{{createdAt}} створено видаленим користувачем",
             "confirm_removal_title": "Видалити нотатку?",
             "confirm_removal_body": "Цю дію не можна скасувати.",
             "min_length_error": "Має бути щонайменше {{min}} символів",

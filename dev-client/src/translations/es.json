@@ -56,6 +56,7 @@
             "add_title": "Nota acerca del sitio",
             "edit_title": "Nota acerca del sitio",
             "note_attribution": "{{createdAt}} por {{name}}",
+            "note_attribution_deleted_author": "{{createdAt}} por un usuario eliminado",
             "confirm_removal_title": "¿Eliminar nota?",
             "confirm_removal_body": "Esta acción no se puede deshacer.",
             "min_length_error": "Debe tener al menos {{min}} caracteres",

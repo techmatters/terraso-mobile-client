@@ -56,6 +56,7 @@
             "add_title": "Dokezo la Eneo",
             "edit_title": "Dokezo la Eneo",
             "note_attribution": "{{createdAt}} na {{name}}",
+            "note_attribution_deleted_author": "{{createdAt}} na mtumiaji aliyefutwa",
             "confirm_removal_title": "Futa dokezo?",
             "confirm_removal_body": "Kitendo hiki hakiwezi kutenduliwa.",
             "min_length_error": "Lazima iwe na angalau herufi {{min}}",

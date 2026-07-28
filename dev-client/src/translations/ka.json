@@ -56,6 +56,7 @@
             "add_title": "საიტის შენიშვნა",
             "edit_title": "საიტის შენიშვნა",
             "note_attribution": "{{createdAt}} {{name}}-ის მიერ",
+            "note_attribution_deleted_author": "{{createdAt}} წაშლილი მომხმარებლის მიერ",
             "confirm_removal_title": "წაიშალოს შენიშვნა?",
             "confirm_removal_body": "ამ მოქმედების გაუქმება შეუძლებელია.",
             "min_length_error": "უნდა იყოს მინიმუმ {{min}} სიმბოლო",

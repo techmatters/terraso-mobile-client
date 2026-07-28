@@ -183,6 +183,7 @@
             "add_title": "Site Note",
             "edit_title": "Site Note",
             "note_attribution": "{{createdAt}} by {{name}}",
+            "note_attribution_deleted_author": "{{createdAt}} by deleted user",
             "confirm_removal_title": "Delete note?",
             "confirm_removal_body": "This action can’t be undone.",
             "min_length_error": "Must be at least {{min}} characters",
