@@ -37,12 +37,6 @@ export const LINEAR_REFERENCES = {
   // rounded. The RAW pipeline uses this directly; the JPEG pipeline
   // linearizes REFERENCES.CANARY_POST_IT at correction time.
   POST_IT_YELLOW: {r: 0.9542, g: 0.887, b: 0.362},
-  // 3M Pastel-yellow Post-it (Pastel Collection). Nominal sRGB #FFF9BF
-  // = (255, 249, 191), linearized via the standard sRGB EOTF. Much
-  // paler and less saturated than the canary yellow. Small chroma
-  // difference matters — a canary-calibrated WB applied to a pastel
-  // sample pushes results warm/orange.
-  POST_IT_PASTEL_YELLOW: {r: 1.0, g: 0.947, b: 0.521},
   // Generic 18% neutral gray card — the classic photographic reference,
   // ~18% reflectance across the visible spectrum, spectrally flat.
   // In linear-sRGB that's r = g = b = 0.18. PLACEHOLDER: measure your
@@ -52,6 +46,13 @@ export const LINEAR_REFERENCES = {
   // X-Rite ColorChecker gray patch (~0.18 nominal), Kodak Q-13 Gray
   // Scale square M, or a Sekonic gray card.
   GRAY_CARD_18PCT: {r: 0.18, g: 0.18, b: 0.18},
+  // WhiBal G7 Certified Neutral (Michael Tapes / RawWorkflow). A widely
+  // used spectrally-neutral WB reference. Michael Tapes has publicly
+  // cited ~40% reflectance, so linear-sRGB r = g = b = 0.40. Treat this
+  // as a published-datasheet estimate — if you have a physical card,
+  // run it through the phase-6 calibration flow to get a per-card
+  // measurement and use that entry instead of this builtin.
+  WHIBAL_G7: {r: 0.4, g: 0.4, b: 0.4},
 } as const satisfies Record<string, LinearRgb>;
 
 export type LinearReferenceKey = keyof typeof LINEAR_REFERENCES;
@@ -60,16 +61,16 @@ export type LinearReferenceKey = keyof typeof LINEAR_REFERENCES;
 // the user is choosing which reference their captured card is.
 export const LINEAR_REFERENCE_NAMES: Record<LinearReferenceKey, string> = {
   POST_IT_YELLOW: '3M Post-it Yellow (canary)',
-  POST_IT_PASTEL_YELLOW: '3M Post-it Yellow (pastel)',
   GRAY_CARD_18PCT: '18% Neutral Gray Card',
+  WHIBAL_G7: 'WhiBal G7 (Certified Neutral)',
 };
 
 // Ordered list version of LINEAR_REFERENCES for the confidence-picker
 // UI. Keep in sync with LINEAR_REFERENCES.
 export const LINEAR_REFERENCE_KEYS: LinearReferenceKey[] = [
   'POST_IT_YELLOW',
-  'POST_IT_PASTEL_YELLOW',
   'GRAY_CARD_18PCT',
+  'WHIBAL_G7',
 ];
 
 // Common shape for anything that acts as a reference in the picker —
