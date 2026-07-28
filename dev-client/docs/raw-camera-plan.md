@@ -265,6 +265,7 @@ in linear-light) and feeds triples to a new `getColorFromLinearRgb()`.
 | **5** | Duplicate ColorScreen into a **dev-only experimental copy**; add settings-level toggle to route between production and experimental; add in-screen capture-pipeline selector (RAW / JPEG); manual ROI picker + full RAW pipeline; multiple reference cards + confidence picker. See sections below. | ~3–4 days | 🔄 5.0 (duplicate), 5.1 (selector), 5.2 (getColorFromLinearRgb + fixed ROIs), 5.3a (dispatch to Redux), and 5.3b (manual ROI picker + iOS preview) shipped on `feat/color-analysis-experimental` (PR #3332). Still pending: 5.4 (Android preview), and the multi-reference confidence picker (originally 5.2, now bumped). |
 | **6** | Calibrate-a-new-reference dev flow. See section below. | ~1 day | ⏳ after phase 5. |
 | **7** | Bypass react-native-vision-camera on Android for RAW. New Nitro module `raw-camera-android` owns a CameraX session that writes DNG via `android.hardware.camera2.DngCreator`. See phase 7 section below. | ~3–5 days | 🔄 in progress on `feat/android-raw-camera`. |
+| **8** | Real-time frame-goodness overlay: two ROI rectangles + dim outer mask + per-ROI red/green colouring driven by an ImageAnalysis analyzer (Y-plane variance for a first cut, NEON SIMD on CPU). See phase 8 section below. | ~2–3 days Android, +1 day iOS | ⏳ after phase 7 lands. |
 
 Each phase ships as an independent PR.
 
@@ -635,6 +636,66 @@ only satisfies nitrogen's config validator). Two artifacts:
   C++) analyzer will publish frame-goodness signals out-of-band from
   the JS bridge (probably a shared atomic boolean readable via a Nitro
   method, not a per-frame JS callback).
+
+## Phase 8 — real-time frame-goodness overlay
+
+**Goal.** In the RAW viewfinder, overlay two ROI rectangles (reference
++ sample). Dim the area outside the rectangles. Colour each rectangle
+red/green (extensible to more) based on a real-time per-ROI analysis
+running at preview frame rate. First-cut test: **colour consistency
+inside the rectangle** — if the pixels inside vary widely, red; if
+uniform, green. Lets the user aim + confirm before pressing shutter.
+
+**Platform order.** Android first. ImageAnalysis is already bound as
+a keep-alive (discard-only analyzer) — swap that for real work. iOS
+would need a new AVCaptureVideoDataOutput or vision-camera frame
+processor plugin — additional scaffolding, deferred.
+
+**Analysis units + performance.**
+
+- ImageAnalysis on Android delivers `YUV_420_888` at ~30fps. Y plane
+  is 8-bit int per pixel, contiguous — perfect for fast stats. First
+  cut: Y-only (grayscale) variance. If insufficient (e.g. can't
+  distinguish uniform grey from a red+cyan patch of matching
+  luminance), add U/V chroma checks.
+- Integer arithmetic throughout: `uint32_t` accumulators for sum +
+  sum-of-squares → mean + variance in one pass. No floats until final
+  threshold. NEON SIMD (ARM64, both platforms) processes 16 uint8s per
+  instruction — a 100×100 patch subsampled 4× = 625 samples = ~40
+  NEON iters = well under a millisecond per rectangle.
+- Subsample every 4th pixel in each direction — 16× fewer ops, no
+  meaningful accuracy loss for uniform-vs-noisy discrimination.
+- GPU compute (Metal / Vulkan) is overkill for this simple statistic
+  — setup dwarfs the compute. NEON on CPU is the sweet spot.
+
+**Signal flow, no per-frame JS bridge crossing.**
+
+- Analyzer runs on a dedicated executor thread. Computes per-ROI
+  colour code (0=red, 1=green, extensible). Writes to a shared
+  `std::atomic<uint8_t>` per ROI in the CameraSessionManager.
+- Native overlay `View` (Kotlin) sits on top of `PreviewView` in the
+  same `FrameLayout`. Its `onDraw` reads the atomics + draws the two
+  rectangles with a dim mask outside. Invalidates itself on a fixed
+  ~15Hz timer (below preview framerate, above human perception).
+- Zero React Native bridge crossings during preview streaming. Only
+  the shutter action + captured-photo hand-off cross the bridge.
+
+**Sub-phases:**
+
+- **8.0** — Overlay View: two rectangle outlines + dim outer mask.
+  Static colours + hardcoded rectangle positions. Verifies layering
+  on top of PreviewView works, alpha dimming looks right.
+- **8.1** — C++ NEON per-ROI Y-plane variance analyzer. Reads Y plane
+  + ROI coords → returns colour code. Testable in isolation.
+- **8.2** — Wire analyzer into ImageAnalysis, atomic result plumbing,
+  overlay reads atomics. End-to-end.
+- **8.3** — Tunable ROI positions from JS (props on the view).
+- **8.4** — iOS port. AVCaptureVideoDataOutput frame processor (or
+  vision-camera plugin), same C++ analyzer, same overlay pattern.
+
+**Deferred:** more analysis colours (focus quality, brightness in
+range, motion blur) — natural extensions to the same signal path
+once the plumbing is proven.
 
 **Why keep iOS on vision-camera.** iOS `AVCapturePhoto.fileDataRepresentation()`
 handles DNG file writing for free; vision-camera's iOS side works out
