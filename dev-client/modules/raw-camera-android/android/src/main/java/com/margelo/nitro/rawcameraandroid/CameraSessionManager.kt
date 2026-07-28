@@ -103,6 +103,29 @@ object CameraSessionManager {
     // discard-only ImageAnalysis.
     @Volatile private var currentSurfaceProvider: Preview.SurfaceProvider? = null
 
+    // Phase-8 real-time overlay callback. Called on the
+    // analysisExecutor thread (background). The view is responsible
+    // for hopping to main + invalidate. Null when no view is
+    // subscribed. Colour codes match RoiOverlayView's constants:
+    // 0=red (bad), 1=green (good), -1=unknown.
+    @Volatile private var frameColorListener: ((refCode: Int, sampleCode: Int) -> Unit)? =
+        null
+
+    // Reusable per-frame output buffer for the analyzer. Only touched
+    // from the single-threaded analysisExecutor, so no synchronization
+    // needed. Allocation-free steady state.
+    private val statsBuf = DoubleArray(3)
+
+    // Variance threshold below which a ROI is considered "consistent"
+    // (green). Tuned to well-lit reference cards on Pixel 6a; a real
+    // implementation may want per-illumination tuning, but this gives
+    // a usable red/green flip for phase-8.2 validation.
+    private const val VARIANCE_GREEN_THRESHOLD = 200.0
+
+    fun setFrameColorListener(cb: ((refCode: Int, sampleCode: Int) -> Unit)?) {
+        frameColorListener = cb
+    }
+
     // Slot for the next TotalCaptureResult. See per-capture protocol
     // below; each capture assigns its own deferred before triggering
     // takePicture.
@@ -234,15 +257,19 @@ object CameraSessionManager {
             )
         val imageCapture = builder.build()
 
-        // Pick keep-alive: Preview when a view is attached, ImageAnalysis
-        // otherwise. Camera2 needs one repeating request for still
-        // capture to fire; Preview (rendering to an attached surface)
-        // suffices when we have a view. When we don't, ImageAnalysis
-        // with a discard-only analyzer takes its place (phase 7.4 will
-        // swap the discard for a real frame-goodness analyzer).
+        // Keep-alive stream + phase-8 analyzer.
+        //   - Blind mode (no surface): ImageAnalysis with a discard-only
+        //     analyzer. Preview isn't rendered anywhere so we skip it.
+        //   - View attached: Preview (rendered) + ImageAnalysis (feeds
+        //     the phase-8 overlay analyzer). Camera2 needs one repeating
+        //     request for still capture to fire; Preview provides that.
         //
-        // Binding BOTH Preview + ImageAnalysis was tried and empirically
-        // breaks takePicture (times out at 8s). Pick exactly one.
+        // A previous attempt to bind Preview + ImageAnalysis + ImageCapture
+        // together on Pixel 6a hung takePicture indefinitely, but that
+        // was inside a RN Modal (Dialog window) where the preview surface
+        // never actually rendered. Now that we use a full-screen
+        // navigation route, the triple bind seems to work — worth
+        // watching if takePicture ever regresses.
         val surface = currentSurfaceProvider
         val preview: Preview? =
             if (surface != null) {
@@ -252,21 +279,25 @@ object CameraSessionManager {
             } else {
                 null
             }
-        val analysis: ImageAnalysis? =
-            if (surface == null) {
-                ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
-                    .also { a -> a.setAnalyzer(analysisExecutor) { it.close() } }
-            } else {
-                null
-            }
+        val analysis: ImageAnalysis =
+            ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also { a ->
+                    a.setAnalyzer(analysisExecutor) { proxy ->
+                        try {
+                            analyzeFrame(proxy)
+                        } finally {
+                            proxy.close()
+                        }
+                    }
+                }
 
         val useCases = listOfNotNull(preview, analysis, imageCapture).toTypedArray()
 
         Log.i(
             TAG,
-            "ensureBound: binding ${useCases.size} use cases (preview=${preview != null}, analysis=${analysis != null})"
+            "ensureBound: binding ${useCases.size} use cases (preview=${preview != null}, analysis=true)"
         )
         val camera =
             withContext(Dispatchers.Main) {
@@ -383,4 +414,66 @@ object CameraSessionManager {
             270 -> android.media.ExifInterface.ORIENTATION_ROTATE_270
             else -> android.media.ExifInterface.ORIENTATION_NORMAL
         }
+
+    // Phase-8 real-time analyzer. Runs on the single-threaded
+    // analysisExecutor. Skips entirely when nobody's subscribed (JS
+    // isn't showing the overlay), so the CameraX repeating request
+    // still fires but we don't waste JNI + native cycles on a frame
+    // no one will look at.
+    private fun analyzeFrame(proxy: ImageProxy) {
+        val listener = frameColorListener ?: return
+        if (proxy.format != ImageFormat.YUV_420_888) return
+        val yPlane = proxy.planes[0]
+        val w = proxy.width
+        val h = proxy.height
+
+        // Hardcoded phase-8.2 ROIs in Y-plane (sensor) coordinates.
+        // Pixel 6a's rear camera is landscape 4:3 with rotationDegrees=90,
+        // so display-portrait maps to sensor-landscape rotated 90° CW.
+        // Under that mapping, the overlay's top rect (display fractions
+        // 0.15..0.85 x 0.10..0.40) lands on the sensor's LEFT stripe
+        // (0.10..0.40 x 0.15..0.85), and the overlay's bottom rect on
+        // the RIGHT stripe. Phase 8.3 will replace this with a shared
+        // ROI source driven from JS so the overlay + analyzer stay in
+        // sync across orientations + devices.
+        val refCode = analyzeRoiToCode(
+            yPlane, w, h,
+            (0.10f * w).toInt(), (0.15f * h).toInt(),
+            (0.30f * w).toInt(), (0.70f * h).toInt(),
+        )
+        val sampleCode = analyzeRoiToCode(
+            yPlane, w, h,
+            (0.55f * w).toInt(), (0.15f * h).toInt(),
+            (0.30f * w).toInt(), (0.70f * h).toInt(),
+        )
+        listener(refCode, sampleCode)
+    }
+
+    private fun analyzeRoiToCode(
+        yPlane: ImageProxy.PlaneProxy,
+        planeWidth: Int,
+        planeHeight: Int,
+        x: Int,
+        y: Int,
+        w: Int,
+        h: Int,
+    ): Int {
+        FrameAnalyzer.nativeAnalyzeYPlane(
+            yPlane.buffer,
+            yPlane.rowStride,
+            planeWidth,
+            planeHeight,
+            x,
+            y,
+            w,
+            h,
+            statsBuf,
+        )
+        val variance = statsBuf[FrameAnalyzer.OUT_VARIANCE]
+        return if (variance < VARIANCE_GREEN_THRESHOLD) {
+            RoiOverlayView.COLOR_GREEN
+        } else {
+            RoiOverlayView.COLOR_RED
+        }
+    }
 }

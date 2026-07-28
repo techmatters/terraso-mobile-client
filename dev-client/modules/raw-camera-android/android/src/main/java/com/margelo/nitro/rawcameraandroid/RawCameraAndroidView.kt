@@ -47,11 +47,26 @@ constructor(
             implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         }
 
+    // Phase-8 overlay drawn on top of the preview. Reads per-ROI
+    // colour codes from atomic ints — phase 8.0 leaves them at the
+    // default "unknown / grey", phase 8.2 will wire actual analysis
+    // results. Public so external code (session manager) can flip
+    // codes without going through this class.
+    val overlay: RoiOverlayView =
+        RoiOverlayView(context).apply {
+            layoutParams =
+                ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                )
+        }
+
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var currentJob: Job? = null
 
     init {
         addView(previewView)
+        addView(overlay) // draw order: overlay after preview → drawn on top
     }
 
     override fun onAttachedToWindow() {
@@ -63,6 +78,15 @@ constructor(
                 Log.i(TAG, "onAttachedToWindow: attaching surface provider")
                 CameraSessionManager.attachSurfaceProvider(previewView.surfaceProvider)
             }
+        // Subscribe the phase-8 overlay to per-frame analysis results.
+        // The listener fires on the analysisExecutor background thread;
+        // AtomicInteger writes are safe from any thread and
+        // postInvalidate() hops to the UI thread for the redraw.
+        CameraSessionManager.setFrameColorListener { refCode, sampleCode ->
+            overlay.refColorCode.set(refCode)
+            overlay.sampleColorCode.set(sampleCode)
+            overlay.postInvalidate()
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -71,6 +95,7 @@ constructor(
     }
 
     override fun onDetachedFromWindow() {
+        CameraSessionManager.setFrameColorListener(null)
         currentJob?.cancel()
         currentJob =
             scope.launch {

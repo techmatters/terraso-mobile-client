@@ -5,13 +5,17 @@ set(PACKAGE_NAME RawCameraAndroid)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 20)
 
-# This module's actual logic is 100% Kotlin (CameraX + Camera2 +
-# DngCreator). The only reason we build a native library at all is that
-# Nitro's Android integration wires HybridObjects through a JNI OnLoad
-# bridge — so we compile the nitrogen-generated JNI shim + a minimal
-# cpp-adapter.cpp that calls it.
+# Most of this module's logic is Kotlin (CameraX + Camera2 +
+# DngCreator). The C++ pieces are:
+#   - cpp-adapter.cpp: Nitro's JNI OnLoad bridge (registers the
+#     RawCameraAndroid HybridObject).
+#   - frame_analyzer.cpp: per-ROI Y-plane mean/variance for the phase-8
+#     real-time overlay, NEON-optimised on ARM64. Called from the
+#     CameraX ImageAnalysis thread via FrameAnalyzer.kt's JNI.
 add_library(${PACKAGE_NAME} SHARED
         src/main/cpp/cpp-adapter.cpp
+        src/main/cpp/frame_analyzer.cpp
+        src/main/cpp/frame_analyzer_jni.cpp
 )
 
 include(${CMAKE_SOURCE_DIR}/../nitrogen/generated/android/RawCameraAndroid+autolinking.cmake)
