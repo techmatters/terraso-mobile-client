@@ -18,7 +18,10 @@
 import {Pressable} from 'react-native';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
-import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import {
+  CaptureResult,
+  ContainerFormat,
+} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RawImagePicker} from 'terraso-mobile-client/components/inputs/image/RawImagePicker';
 import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
@@ -26,12 +29,15 @@ type Props = {
   featureName: string;
   onPick: (result: CaptureResult) => void;
   /**
-   * When `'dng'`, the in-app camera captures a DNG (ProRAW on modern
-   * iPhone Pro, plain Bayer on Android + older iOS Pros) and `onPick`
-   * receives a `{kind: 'raw', ...}` CaptureResult. Default `'jpeg'`
+   * When `'dng'` or `'dng-live'`, the in-app camera captures a DNG
+   * (ProRAW on modern iPhone Pro, plain Bayer on Android + older iOS
+   * Pros) and `onPick` receives a `{kind: 'raw', ...}` CaptureResult.
+   * `'dng-live'` additionally mounts the phase-8 real-time ROI analyzer
+   * overlay on top of the preview (iOS today; Android's overlay is
+   * always-on for phase 8.2, JS-tunable is task #78). Default `'jpeg'`
    * preserves the production behavior.
    */
-  containerFormat?: 'jpeg' | 'dng';
+  containerFormat?: ContainerFormat;
 };
 
 /**

@@ -18,6 +18,23 @@
 import {Photo} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 
 /**
+ * Which capture pipeline the in-app camera should use.
+ *
+ *   - `'jpeg'`     — expo-image-picker-shaped JPEG (production path).
+ *   - `'dng'`      — DNG capture, no live analysis overlay.
+ *   - `'dng-live'` — DNG capture + the phase-8 real-time ROI analyzer
+ *                    overlay. Behaves like `'dng'` for capture; the
+ *                    additional cost is a background vision-camera
+ *                    frame output feeding the Y-plane analyzer.
+ */
+export type ContainerFormat = 'jpeg' | 'dng' | 'dng-live';
+
+// Both DNG-flavoured modes share the same capture pipeline — this
+// helper keeps the "is this a RAW mode" check obvious at call sites.
+export const isDngContainer = (f: ContainerFormat | undefined): boolean =>
+  f === 'dng' || f === 'dng-live';
+
+/**
  * Return type of the raw-or-jpeg capture flow. Phase 2 only emits `'jpeg'`;
  * the `'raw'` case is wired up in phase 4 (see docs/raw-camera-plan.md).
  */

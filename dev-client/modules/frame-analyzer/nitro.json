@@ -1,0 +1,20 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": ["frameanalyzer"],
+  "ios": {
+    "iosModuleName": "FrameAnalyzer"
+  },
+  "android": {
+    "androidNamespace": ["frameanalyzer"],
+    "androidCxxLibName": "FrameAnalyzer"
+  },
+  "autolinking": {
+    "FrameAnalyzer": {
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridFrameAnalyzer"
+      }
+    }
+  },
+  "ignorePaths": ["**/node_modules"]
+}

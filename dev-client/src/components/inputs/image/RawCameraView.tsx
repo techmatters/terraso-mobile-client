@@ -15,7 +15,15 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   Modal,
@@ -33,12 +41,23 @@ import {
   useCameraPermission,
   usePhotoOutput,
 } from 'react-native-vision-camera';
+import type {CameraDevice, CameraPhotoOutput} from 'react-native-vision-camera';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {setAndroidRawCaptureCallbacks} from 'terraso-mobile-client/components/inputs/image/androidRawCaptureRequest';
-import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import {
+  CaptureResult,
+  ContainerFormat,
+  isDngContainer,
+} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import {RoiOverlay} from 'terraso-mobile-client/components/inputs/image/RoiOverlay';
+import {
+  DISPLAY_REF_ROI,
+  DISPLAY_SAMPLE_ROI,
+  useRoiFrameAnalyzer,
+} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {theme} from 'terraso-mobile-client/theme';
@@ -49,12 +68,16 @@ type Props = {
   onCancel: () => void;
   /**
    * `'jpeg'` (default) mirrors the current expo-image-picker output.
-   * `'dng'` captures RAW: on iOS via vision-camera + our ProRAW patch,
-   * on Android via the raw-camera-android Nitro module (bypassing
-   * vision-camera whose Android side can't save RAW_SENSOR photos yet
-   * — see docs/raw-camera-plan.md phase 7).
+   * `'dng'` and `'dng-live'` both capture RAW: on iOS via vision-camera
+   * + our ProRAW patch, on Android via the raw-camera-android Nitro
+   * module (bypassing vision-camera whose Android side can't save
+   * RAW_SENSOR photos yet — see docs/raw-camera-plan.md phase 7).
+   * `'dng-live'` additionally mounts the phase-8 real-time ROI analyzer
+   * overlay on top of the preview. On Android (phase 8.2) the overlay
+   * is currently always-on regardless of which of the two DNG modes
+   * you pick — the JS-tunable suppression is a follow-up (task #78).
    */
-  containerFormat?: 'jpeg' | 'dng';
+  containerFormat?: ContainerFormat;
   /**
    * Dev-only escape hatch. When set, RAW photos are handed off through
    * this callback (with the saved DNG file URI) instead of the normal
@@ -73,7 +96,7 @@ type Props = {
 // handles DNG file writing natively over there.
 export const RawCameraView = (props: Props) => {
   const useAndroidRaw =
-    Platform.OS === 'android' && props.containerFormat === 'dng';
+    Platform.OS === 'android' && isDngContainer(props.containerFormat);
   return useAndroidRaw ? (
     <AndroidRawViewImpl {...props} />
   ) : (
@@ -112,12 +135,16 @@ const VisionCameraViewImpl = ({
     [allDevices],
   );
   const device =
-    containerFormat === 'dng' && Platform.OS === 'ios'
+    isDngContainer(containerFormat) && Platform.OS === 'ios'
       ? singleWideDevice
       : defaultDevice;
   const {hasPermission, requestPermission} = useCameraPermission();
 
   const [isCapturing, setIsCapturing] = useState(false);
+  // Set by IosDngCameraLayer when it mounts (dng-live only). Used by
+  // shutter to bracket photoOutput.capturePhoto() with a detach/reattach
+  // of the frame output — see IosDngCameraLayer's `prepareForCapture`.
+  const iosDngLayerRef = useRef<IosDngCameraLayerHandle | null>(null);
 
   useEffect(() => {
     if (visible && !hasPermission) {
@@ -131,12 +158,19 @@ const VisionCameraViewImpl = ({
   // by identity to decide whether to reconfigure the capture session, and a
   // fresh object literal every render triggers reconfigure loops (which can
   // crash the native camera stack right after init).
+  // vision-camera only knows 'jpeg' / 'dng' / 'heic' / 'native' — collapse
+  // our 'dng-live' virtual mode down to 'dng' for the capture pipeline.
+  // The `-live` suffix only affects whether we mount the overlay layer
+  // below; the DNG shot itself is identical.
+  const nativeContainerFormat: 'jpeg' | 'dng' = isDngContainer(containerFormat)
+    ? 'dng'
+    : 'jpeg';
   const photoOutputOptions = useMemo(
     () => ({
       targetResolution: {width: 4032, height: 3024},
-      containerFormat,
+      containerFormat: nativeContainerFormat,
     }),
-    [containerFormat],
+    [nativeContainerFormat],
   );
   const photoOutput = usePhotoOutput(photoOutputOptions);
   // Same rationale for the outputs array passed to <Camera>.
@@ -151,7 +185,19 @@ const VisionCameraViewImpl = ({
     if (isCapturing) return;
     setIsCapturing(true);
     try {
-      const photo = await photoOutput.capturePhoto({}, {});
+      // In 'dng-live' mode, the frame output has to come off the session
+      // before RAW capture can run — otherwise AVCapturePhotoOutput has
+      // no RAW pixel formats available. IosDngCameraLayer handles the
+      // detach + wait-for-reconfigure via its ref; we reattach in
+      // `finally` so the overlay resumes even if capture threw.
+      const dngLayer = iosDngLayerRef.current;
+      if (dngLayer) await dngLayer.prepareForCapture();
+      let photo;
+      try {
+        photo = await photoOutput.capturePhoto({}, {});
+      } finally {
+        dngLayer?.finishCapture();
+      }
 
       if (photo.isRawPhoto) {
         const rawPath = await photo.saveToTemporaryFileAsync();
@@ -162,7 +208,7 @@ const VisionCameraViewImpl = ({
           onRawPhotoDevOnly(rawUri);
           return;
         }
-        if (containerFormat === 'dng') {
+        if (isDngContainer(containerFormat)) {
           onCapture(makeRawCaptureResult(rawUri, photo.width, photo.height));
           return;
         }
@@ -201,19 +247,36 @@ const VisionCameraViewImpl = ({
     containerFormat,
   ]);
 
+  // Mount the phase-8.4 real-time analyzer + overlay only when the caller
+  // explicitly opted in via 'dng-live'. The sub-component owns
+  // useFrameOutput so the hook (which requires vision-camera-worklets)
+  // never runs on Android, in JPEG mode, or in plain 'dng' mode — three
+  // places where it'd either fail (worklets provider absent on Android)
+  // or waste cycles for no visible benefit.
+  const useIosPhase8Overlay =
+    Platform.OS === 'ios' && containerFormat === 'dng-live';
   const preview =
     device && hasPermission ? (
-      <Camera
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={visible}
-        outputs={outputs}
-        // Tap anywhere on the viewfinder to refocus there.
-        // Continuous autofocus is on by default; this lets the user
-        // pick a specific point (soil patch or reference card) when
-        // that matters.
-        enableNativeTapToFocusGesture={true}
-      />
+      useIosPhase8Overlay ? (
+        <IosDngCameraLayer
+          ref={iosDngLayerRef}
+          device={device}
+          isActive={visible}
+          photoOutput={photoOutput}
+        />
+      ) : (
+        <Camera
+          style={StyleSheet.absoluteFill}
+          device={device}
+          isActive={visible}
+          outputs={outputs}
+          // Tap anywhere on the viewfinder to refocus there.
+          // Continuous autofocus is on by default; this lets the user
+          // pick a specific point (soil patch or reference card) when
+          // that matters.
+          enableNativeTapToFocusGesture={true}
+        />
+      )
     ) : null;
 
   return (
@@ -226,6 +289,100 @@ const VisionCameraViewImpl = ({
       hasPermission={hasPermission}>
       {preview}
     </CameraChrome>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// iOS-only DNG camera layer with the phase-8.4 real-time analyzer +
+// overlay. Isolated here so useFrameOutput (which internally requires
+// react-native-vision-camera-worklets) is only ever invoked on iOS
+// DNG captures — never on Android and never in JPEG mode.
+
+// The parent shutter uses this to bracket a photoOutput.capturePhoto()
+// call: on iOS, adding a vision-camera frame output forces the session
+// to pick a non-RAW-capable AVCaptureDeviceFormat, so we have to
+// detach the frame output, wait for the session to reconfigure, run
+// the capture, then reattach. Called only when in 'dng-live' mode.
+export type IosDngCameraLayerHandle = {
+  prepareForCapture: () => Promise<void>;
+  finishCapture: () => void;
+};
+
+// The vision-camera constraint API doesn't have an "any Format that
+// supports RAW capture" knob (see CameraPhotoOutput.nitro.ts TODO).
+// resolutionBias helps but on iPhone rear cams it still isn't enough
+// to guarantee the RAW-capable Format is picked when a frame output
+// is present. So instead of biasing, we detach the frame output around
+// each capture — see `prepareForCapture` below.
+const IosDngCameraLayer = ({
+  ref,
+  device,
+  isActive,
+  photoOutput,
+}: {
+  ref?: React.Ref<IosDngCameraLayerHandle>;
+  device: CameraDevice;
+  isActive: boolean;
+  photoOutput: CameraPhotoOutput;
+}) => {
+  const {frameOutput, refCode, sampleCode} = useRoiFrameAnalyzer();
+  // Toggled by prepareForCapture/finishCapture. When true, the outputs
+  // list drops frameOutput → session reconfigures to a RAW-capable
+  // Format → capture works → we flip back.
+  const [detachedForCapture, setDetachedForCapture] = useState(false);
+  const outputs = useMemo(
+    () => (detachedForCapture ? [photoOutput] : [photoOutput, frameOutput]),
+    [detachedForCapture, photoOutput, frameOutput],
+  );
+
+  // Resolver for the next-onConfigured promise. `prepareForCapture`
+  // sets this, then flips `detachedForCapture` → session reconfigures →
+  // onConfigured fires → resolve the pending promise. Cleared after
+  // each resolve so subsequent onConfigureds (e.g. the reattach one)
+  // are no-ops.
+  const configResolveRef = useRef<(() => void) | null>(null);
+  const onConfigured = useCallback(() => {
+    const resolve = configResolveRef.current;
+    if (resolve) {
+      configResolveRef.current = null;
+      resolve();
+    }
+  }, []);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      prepareForCapture: () => {
+        const pending = new Promise<void>(resolve => {
+          configResolveRef.current = resolve;
+        });
+        setDetachedForCapture(true);
+        return pending;
+      },
+      finishCapture: () => {
+        setDetachedForCapture(false);
+      },
+    }),
+    [],
+  );
+
+  return (
+    <>
+      <Camera
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={isActive}
+        outputs={outputs}
+        onConfigured={onConfigured}
+        enableNativeTapToFocusGesture={true}
+      />
+      <RoiOverlay
+        refRoi={DISPLAY_REF_ROI}
+        sampleRoi={DISPLAY_SAMPLE_ROI}
+        refCode={refCode}
+        sampleCode={sampleCode}
+      />
+    </>
   );
 };
 

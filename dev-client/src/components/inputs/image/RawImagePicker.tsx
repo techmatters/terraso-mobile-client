@@ -25,7 +25,10 @@ import {
 import {createAssetAsync} from 'expo-media-library';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import {
+  CaptureResult,
+  ContainerFormat,
+} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RawCameraView} from 'terraso-mobile-client/components/inputs/image/RawCameraView';
 import {
   ModalHandle,
@@ -40,7 +43,7 @@ type Props = {
   featureName: string;
   children: ModalTrigger;
   /** Threaded through to {@link RawCameraView}. Default `'jpeg'`. */
-  containerFormat?: 'jpeg' | 'dng';
+  containerFormat?: ContainerFormat;
 };
 
 /**

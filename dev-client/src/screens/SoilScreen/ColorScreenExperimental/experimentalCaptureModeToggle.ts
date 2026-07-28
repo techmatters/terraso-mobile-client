@@ -20,17 +20,23 @@ import {useSyncExternalStore} from 'react';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 // Which capture pipeline the experimental ColorScreen uses.
-//   'jpeg' — expo-image-picker → JPEG → correctSampleRGB (current path,
-//            matches production behavior)
-//   'raw'  — RawCameraView → DNG → DngDecoderHybrid → linear-sRGB
-export type ExperimentalCaptureMode = 'jpeg' | 'raw';
+//   'jpeg'     — expo-image-picker → JPEG → correctSampleRGB (current
+//                path, matches production behavior)
+//   'raw'      — RawCameraView → DNG → DngDecoderHybrid → linear-sRGB.
+//                Same DNG capture as 'raw-live' below, minus the overlay.
+//   'raw-live' — like 'raw' but with the phase-8 real-time ROI analyzer
+//                overlay mounted on top of the preview. iOS today; on
+//                Android the overlay is currently always-on regardless
+//                (see task #78).
+export type ExperimentalCaptureMode = 'jpeg' | 'raw' | 'raw-live';
 
 const KEY = 'experimentalCaptureMode';
 const DEFAULT: ExperimentalCaptureMode = 'jpeg';
 
 export const getExperimentalCaptureMode = (): ExperimentalCaptureMode => {
   const stored = kvStorage.getString(KEY);
-  return stored === 'raw' ? 'raw' : DEFAULT;
+  if (stored === 'raw' || stored === 'raw-live') return stored;
+  return DEFAULT;
 };
 
 export const setExperimentalCaptureMode = (

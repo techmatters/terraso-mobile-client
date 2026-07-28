@@ -87,7 +87,13 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
             <RawPickImageButton
               featureName={t('soil.color.featureName')}
               onPick={onPickImage}
-              containerFormat={captureMode === 'raw' ? 'dng' : 'jpeg'}
+              containerFormat={
+                captureMode === 'raw'
+                  ? 'dng'
+                  : captureMode === 'raw-live'
+                    ? 'dng-live'
+                    : 'jpeg'
+              }
             />
           </Box>
           <Column
@@ -119,14 +125,19 @@ const CaptureModeSelector = ({current}: {current: ExperimentalCaptureMode}) => (
     justifyContent="center"
     space="md">
     <ModeButton
-      label="JPEG capture"
+      label="JPEG"
       selected={current === 'jpeg'}
       onPress={() => setExperimentalCaptureMode('jpeg')}
     />
     <ModeButton
-      label="RAW capture"
+      label="RAW"
       selected={current === 'raw'}
       onPress={() => setExperimentalCaptureMode('raw')}
+    />
+    <ModeButton
+      label="RAW-Live"
+      selected={current === 'raw-live'}
+      onPress={() => setExperimentalCaptureMode('raw-live')}
     />
   </Row>
 );
