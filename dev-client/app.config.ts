@@ -145,7 +145,13 @@ const defaultConfig: ExpoConfig = {
       'aps-environment': 'development',
     },
     infoPlist: {
-      LSMinimumSystemVersion: '16.4',
+      // Apple's App Store validator rejects LSMinimumSystemVersion values
+      // in [16.0, 26.0) — must be < 16.0 or >= 26.0. IPHONEOS_DEPLOYMENT_TARGET
+      // (the real iOS floor) stays at 16.4 via ios/Podfile; this key is a
+      // legacy macOS-Launch-Services value that shouldn't apply to iOS at
+      // all, but is kept because removing it re-triggers ITMS-90899.
+      // Matches the pattern of PR #2331.
+      LSMinimumSystemVersion: '12.0',
       CFBundleAllowMixedLocalizations: true,
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription:
