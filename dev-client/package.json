@@ -75,6 +75,7 @@
     "expo-font": "~56.0.7",
     "expo-image-manipulator": "~56.0.23",
     "expo-image-picker": "~56.0.22",
+    "expo-keep-awake": "~56.0.3",
     "expo-linking": "~56.0.16",
     "expo-localization": "~56.0.6",
     "expo-location": "~56.0.22",
@@ -204,8 +205,7 @@
   "expo": {
     "autolinking": {
       "exclude": [
-        "expo-application",
-        "expo-keep-awake"
+        "expo-application"
       ]
     }
   },

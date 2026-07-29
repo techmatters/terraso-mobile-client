@@ -18,6 +18,8 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {Alert, Pressable, StyleSheet, View} from 'react-native';
 
+import {useKeepAwake} from 'expo-keep-awake';
+
 import {DngDecoderHybrid} from 'dng-decoder';
 import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
 
@@ -45,6 +47,11 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 // prove capture works.
 export const AndroidRawCaptureScreen = () => {
   const navigation = useNavigation();
+  // Screen is only mounted while the user is on it, so a plain
+  // useKeepAwake tied to component lifetime is exactly what we want.
+  // Prevents Android's idle-dim from kicking in while the user is
+  // framing a card in the phase-8 overlay.
+  useKeepAwake('AndroidRawCaptureScreen');
 
   // Grab the pending callbacks once at mount. Missing callbacks means
   // the screen was opened directly (deep link, dev tools) rather than

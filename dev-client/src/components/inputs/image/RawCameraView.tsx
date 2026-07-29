@@ -43,6 +43,8 @@ import {
 } from 'react-native-vision-camera';
 import type {CameraDevice, CameraPhotoOutput} from 'react-native-vision-camera';
 
+import {activateKeepAwakeAsync, deactivateKeepAwake} from 'expo-keep-awake';
+
 import {DngDecoderHybrid} from 'dng-decoder';
 
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
@@ -445,6 +447,10 @@ const AndroidRawViewImpl = ({
   return null;
 };
 
+// Tag for expo-keep-awake — namespacing lets the wake-lock coexist
+// cleanly with any other keep-awake callers elsewhere in the app.
+const KEEP_AWAKE_TAG = 'RawCameraView';
+
 // ---------------------------------------------------------------------------
 // Shared modal chrome: cancel button, shutter button, no-permission
 // fallback, black backdrop. Doesn't care what preview surface goes in
@@ -468,6 +474,20 @@ const CameraChrome = ({
   children: ReactNode;
 }) => {
   const {t} = useTranslation();
+  // Keep the screen awake while the modal is visible so the phase-8
+  // overlay remains usable — users spend real seconds framing a card
+  // against a soil sample and iOS's default idle-dim (~30s) hits at
+  // exactly the wrong moment. Imperative activate/deactivate lets us
+  // tie the wake-lock to `visible` instead of just component-mount.
+  useEffect(() => {
+    if (!visible) return;
+    activateKeepAwakeAsync(KEEP_AWAKE_TAG).catch(err => {
+      console.warn('activateKeepAwakeAsync failed:', err);
+    });
+    return () => {
+      deactivateKeepAwake(KEEP_AWAKE_TAG);
+    };
+  }, [visible]);
   return (
     <Modal
       visible={visible}
