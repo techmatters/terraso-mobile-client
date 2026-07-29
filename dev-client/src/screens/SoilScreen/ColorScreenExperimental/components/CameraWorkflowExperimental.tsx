@@ -23,6 +23,10 @@ import {ContainedButton} from 'terraso-mobile-client/components/buttons/Containe
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RawPickImageButton} from 'terraso-mobile-client/components/inputs/image/RawPickImageButton';
 import {
+  DISPLAY_REF_ROI,
+  DISPLAY_SAMPLE_ROI,
+} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
+import {
   Box,
   Column,
   Paragraph,
@@ -57,20 +61,26 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
         });
         return;
       }
-      // kind === 'raw'. Hand the DNG off to the experimental ROI-picker
-      // screen for manual reference/sample selection + analysis. The
-      // CaptureResult itself carries functions (decodeRoi, dispose)
+      // kind === 'raw'. Hand the DNG off to the experimental analysis
+      // screen. CaptureResult carries functions (decodeRoi, dispose)
       // that can't be serialized through React Navigation params, so
-      // we pass just the sensor dimensions + path. The picker calls
-      // DngDecoderHybrid directly.
+      // we pass just the sensor dimensions + path. In 'raw-live' mode
+      // we also pass the fractional overlay ROIs so the screen skips
+      // the manual crop picker and analyzes those regions directly —
+      // the user placed the card/sample inside those boxes when they
+      // shot, so re-cropping is redundant.
+      const usedLiveOverlay = captureMode === 'raw-live';
       navigation.navigate('RAW_COLOR_ANALYSIS_EXPERIMENTAL', {
         dngPath: result.dngPath,
         sensorWidth: result.width,
         sensorHeight: result.height,
         pitProps: props,
+        preSelectedDisplayRois: usedLiveOverlay
+          ? {ref: DISPLAY_REF_ROI, sample: DISPLAY_SAMPLE_ROI}
+          : undefined,
       });
     },
-    [navigation, props],
+    [navigation, props, captureMode],
   );
 
   const onUseGuide = useCallback(

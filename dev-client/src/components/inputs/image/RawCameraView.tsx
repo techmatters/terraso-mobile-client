@@ -325,7 +325,7 @@ const IosDngCameraLayer = ({
   isActive: boolean;
   photoOutput: CameraPhotoOutput;
 }) => {
-  const {frameOutput, refCode, sampleCode} = useRoiFrameAnalyzer();
+  const {frameOutput, refQuality, sampleQuality} = useRoiFrameAnalyzer();
   // Toggled by prepareForCapture/finishCapture. When true, the outputs
   // list drops frameOutput → session reconfigures to a RAW-capable
   // Format → capture works → we flip back.
@@ -379,8 +379,8 @@ const IosDngCameraLayer = ({
       <RoiOverlay
         refRoi={DISPLAY_REF_ROI}
         sampleRoi={DISPLAY_SAMPLE_ROI}
-        refCode={refCode}
-        sampleCode={sampleCode}
+        refQuality={refQuality}
+        sampleQuality={sampleQuality}
       />
     </>
   );
