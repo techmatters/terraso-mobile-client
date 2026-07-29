@@ -16,6 +16,7 @@ public protocol HybridDngDecoderSpec_protocol: HybridObject {
   func readMetadata(dngPath: String) throws -> DngMetadata
   func decodeDngRois(dngPath: String, rois: [Roi]) throws -> [LinearRgb]
   func renderPreview(dngPath: String, maxDim: Double) throws -> PreviewImage
+  func readPreviewGrayscale(dngPath: String, maxDim: Double) throws -> PreviewGrayscale
 }
 
 public extension HybridDngDecoderSpec_protocol {

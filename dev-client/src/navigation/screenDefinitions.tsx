@@ -41,6 +41,7 @@ import {TemporaryLocationScreen} from 'terraso-mobile-client/screens/LocationScr
 import {TemporaryLocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/TemporaryLocationSoilIdScreen';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
+import {MunsellChartValidatorScreen} from 'terraso-mobile-client/screens/MunsellChartValidator/MunsellChartValidatorScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectViewScreen';
 import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/AddSiteNoteScreen';
@@ -117,6 +118,7 @@ export const screenDefinitions = {
   RAW_COLOR_CROP_EXPERIMENTAL: RawCropScreen,
   CALIBRATE_REFERENCE_EXPERIMENTAL: CalibrateReferenceScreen,
   MANAGE_CUSTOM_REFERENCES_EXPERIMENTAL: ManageCustomReferencesScreen,
+  MUNSELL_CHART_VALIDATOR: MunsellChartValidatorScreen,
   ANDROID_RAW_CAPTURE: AndroidRawCaptureScreen,
   DATA_EXPORT: UserDataExportScreen,
   SITE_EXPORT: SiteExportScreen,

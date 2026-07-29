@@ -63,6 +63,15 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         )
     }
 
+    override fun readPreviewGrayscale(dngPath: String, maxDim: Double): PreviewGrayscale {
+        // Not yet implemented on Android — the Munsell chart validator that
+        // consumes this is iOS-only for now. Add a Kotlin implementation
+        // when the tool is ported to Android.
+        throw NotImplementedError(
+            "DngDecoder.readPreviewGrayscale is not yet implemented on Android"
+        )
+    }
+
     override fun decodeDngRois(dngPath: String, rois: Array<Roi>): Array<LinearRgb> {
         val flat = IntArray(rois.size * 4)
         for (i in rois.indices) {

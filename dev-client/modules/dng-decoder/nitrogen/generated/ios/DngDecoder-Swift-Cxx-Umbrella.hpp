@@ -14,6 +14,8 @@ namespace margelo::nitro::dngdecoder { struct DngMetadata; }
 namespace margelo::nitro::dngdecoder { class HybridDngDecoderSpec; }
 // Forward declaration of `LinearRgb` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct LinearRgb; }
+// Forward declaration of `PreviewGrayscale` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct PreviewGrayscale; }
 // Forward declaration of `PreviewImage` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct PreviewImage; }
 // Forward declaration of `Roi` to properly resolve imports.
@@ -23,8 +25,10 @@ namespace margelo::nitro::dngdecoder { struct Roi; }
 #include "DngMetadata.hpp"
 #include "HybridDngDecoderSpec.hpp"
 #include "LinearRgb.hpp"
+#include "PreviewGrayscale.hpp"
 #include "PreviewImage.hpp"
 #include "Roi.hpp"
+#include <NitroModules/ArrayBuffer.hpp>
 #include <NitroModules/Result.hpp>
 #include <exception>
 #include <memory>

@@ -20,6 +20,10 @@ namespace margelo::nitro::dngdecoder { struct LinearRgb; }
 namespace margelo::nitro::dngdecoder { struct Roi; }
 // Forward declaration of `PreviewImage` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct PreviewImage; }
+// Forward declaration of `PreviewGrayscale` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct PreviewGrayscale; }
+// Forward declaration of `ArrayBufferHolder` to properly resolve imports.
+namespace NitroModules { class ArrayBufferHolder; }
 
 #include "DngMetadata.hpp"
 #include <string>
@@ -27,6 +31,9 @@ namespace margelo::nitro::dngdecoder { struct PreviewImage; }
 #include <vector>
 #include "Roi.hpp"
 #include "PreviewImage.hpp"
+#include "PreviewGrayscale.hpp"
+#include <NitroModules/ArrayBuffer.hpp>
+#include <NitroModules/ArrayBufferHolder.hpp>
 
 #include "DngDecoder-Swift-Cxx-Umbrella.hpp"
 
@@ -96,6 +103,14 @@ namespace margelo::nitro::dngdecoder {
     }
     inline PreviewImage renderPreview(const std::string& dngPath, double maxDim) override {
       auto __result = _swiftPart.renderPreview(dngPath, std::forward<decltype(maxDim)>(maxDim));
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
+    inline PreviewGrayscale readPreviewGrayscale(const std::string& dngPath, double maxDim) override {
+      auto __result = _swiftPart.readPreviewGrayscale(dngPath, std::forward<decltype(maxDim)>(maxDim));
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }

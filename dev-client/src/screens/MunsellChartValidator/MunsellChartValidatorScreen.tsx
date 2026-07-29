@@ -1,0 +1,666 @@
+/*
+ * Copyright © 2026 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {ActivityIndicator, Image, StyleSheet, View} from 'react-native';
+import Share from 'react-native-share';
+import Svg, {Rect, Text as SvgText} from 'react-native-svg';
+
+import {
+  cacheDirectory,
+  EncodingType,
+  writeAsStringAsync,
+} from 'expo-file-system/legacy';
+
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {
+  Box,
+  Column,
+  Paragraph,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {
+  analyzeMunsellChart,
+  type MunsellChartResult,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/chartAnalysis';
+import {
+  CHART_CHROMAS,
+  CHART_HUE,
+  CHART_VALUES,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+
+// Dev tool: point at a captured DNG of the 10YR Munsell soil-colour
+// card, auto-register the chart in the image, decode all ~32 swatches,
+// compare each measured colour to its published Munsell notation, and
+// render a comparison grid the tester can share.
+//
+// Nav route: MUNSELL_CHART_VALIDATOR, param `dngPath` (file:// URI
+// from a fresh RAW capture).
+
+export type MunsellChartValidatorProps = {
+  dngPath: string;
+};
+
+// SVG layout (fixed-pixel viewBox — easier to reason about text sizing
+// than a fractional viewBox). The `EXPORT_SCALE` multiplier below then
+// renders the whole thing at 4× when saving to PNG for share, so the
+// exported image is high-DPI-crisp regardless of what the viewBox is
+// sized at.
+const SVG_WIDTH = 800;
+const HEADER_H = 50;
+const LABEL_W = 70;
+const CELL_W = (SVG_WIDTH - LABEL_W) / CHART_CHROMAS.length;
+const CELL_H = 130;
+// Legend band above the grid. Explains what the two swatches, the
+// two Munsell notations, and the background heatmap mean.
+const LEGEND_H = 260;
+const GRID_START_Y = LEGEND_H;
+const SVG_HEIGHT = LEGEND_H + HEADER_H + CELL_H * CHART_VALUES.length + 40;
+
+// Font sizes are absolute in viewBox units. Bumped up (was 20/11/12)
+// so the rendered image is legible without needing to zoom.
+const FONT_HEADER = 28;
+const FONT_NOTATION = 17;
+const FONT_DELTAE = 20;
+
+// react-native-svg's toDataURL on iOS draws using the on-screen
+// SVG's own bounds, not the width/height options passed in — so
+// passing a big width just gives you a big empty canvas with the
+// content still rendered at the on-screen size. Workaround: mount a
+// second SVG off-screen at the desired export size, then call
+// toDataURL on that instance (with no options). It renders at its
+// own on-screen bounds × device scale, giving a proper high-res PNG.
+//
+// EXPORT_CSS_WIDTH is in CSS points; the actual PNG comes back at
+// EXPORT_CSS_WIDTH × [UIScreen.mainScreen.scale] pixels (2× or 3×
+// on retina). 1600pt → ~3200-4800px, plenty for pinch-zoom.
+const EXPORT_CSS_WIDTH = 1600;
+const EXPORT_CSS_HEIGHT = Math.round(
+  EXPORT_CSS_WIDTH * (SVG_HEIGHT / SVG_WIDTH),
+);
+
+// Colour a cell's background by ΔE. Rough visual quality gate:
+// < 3 excellent, < 6 acceptable, < 12 noticeable, >= 12 bad.
+const deltaEColor = (deltaE: number): string => {
+  if (deltaE < 3) return '#c8f5c8';
+  if (deltaE < 6) return '#e6f5c8';
+  if (deltaE < 12) return '#f5e6c8';
+  return '#f5c8c8';
+};
+
+const rgbToHex = (rgb: {r: number; g: number; b: number}): string => {
+  const c = (v: number) => {
+    const clamped = Math.max(0, Math.min(1, v));
+    // Rough gamma-encode so preview swatches read as approximate sRGB
+    // (both expected + measured are stored linear; the SVG viewer
+    // expects sRGB values).
+    const srgb =
+      clamped <= 0.0031308
+        ? 12.92 * clamped
+        : 1.055 * clamped ** (1 / 2.4) - 0.055;
+    const byte = Math.round(Math.max(0, Math.min(1, srgb)) * 255);
+    return byte.toString(16).padStart(2, '0');
+  };
+  return `#${c(rgb.r)}${c(rgb.g)}${c(rgb.b)}`;
+};
+
+export const MunsellChartValidatorScreen = ({
+  dngPath,
+}: MunsellChartValidatorProps) => {
+  const navigation = useNavigation();
+  const [state, setState] = useState<
+    | {kind: 'analyzing'}
+    | {kind: 'ready'; result: MunsellChartResult}
+    | {kind: 'error'; message: string}
+  >({kind: 'analyzing'});
+  // On-screen SVG (fills the scroll view width). Not used for export
+  // because it's at layout size, not export size.
+  const onScreenSvgRef = useRef<Svg>(null);
+  // Off-screen export SVG at the fixed EXPORT_CSS_WIDTH × EXPORT_CSS_HEIGHT
+  // size — this is what we hand to toDataURL.
+  const exportSvgRef = useRef<Svg>(null);
+  const [sharing, setSharing] = useState(false);
+  const [view, setView] = useState<'grid' | 'source'>('grid');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const result = await analyzeMunsellChart(dngPath);
+        setState({kind: 'ready', result});
+      } catch (err) {
+        console.error('Munsell chart analysis failed:', err);
+        setState({kind: 'error', message: String(err)});
+      }
+    })();
+  }, [dngPath]);
+
+  const shareAsImage = useCallback(() => {
+    const svg = exportSvgRef.current;
+    if (!svg) return;
+    setSharing(true);
+    // No width/height options here — the off-screen SVG's own bounds
+    // (EXPORT_CSS_WIDTH × EXPORT_CSS_HEIGHT) are what get rendered,
+    // × the device's screen scale.
+    (
+      svg as unknown as {
+        toDataURL: (cb: (b64: string) => void, opts?: object) => void;
+      }
+    ).toDataURL(async (base64: string) => {
+      try {
+        const outPath = `${cacheDirectory}munsell-chart-result.png`;
+        await writeAsStringAsync(outPath, base64, {
+          encoding: EncodingType.Base64,
+        });
+        await Share.open({
+          url: outPath.startsWith('file://') ? outPath : `file://${outPath}`,
+          type: 'image/png',
+          failOnCancel: false,
+        });
+      } catch (err) {
+        console.error('Munsell result share failed:', err);
+      } finally {
+        setSharing(false);
+      }
+    });
+  }, []);
+
+  return (
+    <ScreenScaffold
+      AppBar={<AppBar title={`Munsell ${CHART_HUE} validator`} />}>
+      <SafeScrollView>
+        <Column padding="md" space="md">
+          {state.kind === 'analyzing' && (
+            <Row alignItems="center" space="sm">
+              <ActivityIndicator />
+              <Text variant="body1">Analyzing chart…</Text>
+            </Row>
+          )}
+          {state.kind === 'error' && (
+            <Column space="sm">
+              <Text variant="body1" bold>
+                Analysis failed
+              </Text>
+              <Paragraph>{state.message}</Paragraph>
+              <ContainedButton label="Back" onPress={() => navigation.pop()} />
+            </Column>
+          )}
+          {state.kind === 'ready' && (
+            <>
+              <Paragraph>
+                Auto-registered chart, decoded {state.result.cells.length}{' '}
+                swatches.
+              </Paragraph>
+              <Row space="sm">
+                <ViewToggleButton
+                  label="Result grid"
+                  selected={view === 'grid'}
+                  onPress={() => setView('grid')}
+                />
+                <ViewToggleButton
+                  label="Source + ROIs"
+                  selected={view === 'source'}
+                  onPress={() => setView('source')}
+                />
+              </Row>
+              {view === 'grid' ? (
+                <Box width="100%" aspectRatio={SVG_WIDTH / SVG_HEIGHT}>
+                  <ResultSvg ref={onScreenSvgRef} result={state.result} />
+                </Box>
+              ) : (
+                <SourceOverlayView result={state.result} />
+              )}
+              <ContainedButton
+                label={sharing ? 'Sharing…' : 'Share result grid as image'}
+                onPress={shareAsImage}
+                disabled={sharing}
+              />
+              {/* Off-screen duplicate used only for high-res PNG export.
+                 Positioned way off the visible area so RN still lays
+                 it out (needed for toDataURL to render pixels), but
+                 the user never sees it. */}
+              <View style={styles.exportContainer} pointerEvents="none">
+                <ResultSvg ref={exportSvgRef} result={state.result} />
+              </View>
+            </>
+          )}
+        </Column>
+      </SafeScrollView>
+    </ScreenScaffold>
+  );
+};
+
+// The full comparison grid, rendered as an SVG so it can be exported
+// straight to a PNG via Svg.toDataURL. Layout mirrors the physical
+// card: rows are Value (8/ at top, 2/ at bottom), columns are Chroma
+// (/1 on left, /8 on right). Cells that don't exist on the physical
+// card render as empty (light gray).
+const ResultSvg = ({
+  ref,
+  result,
+}: {
+  ref: React.RefObject<Svg | null>;
+  result: MunsellChartResult;
+}) => {
+  // Build a lookup so we can drop each cell into its grid position.
+  const byKey = new Map<string, (typeof result.cells)[number]>();
+  for (const c of result.cells) {
+    byKey.set(`${c.cell.value}/${c.cell.chroma}`, c);
+  }
+
+  const elements: React.ReactNode[] = [];
+
+  // Legend band at the top explaining each part of a cell.
+  elements.push(<Legend key="legend" />);
+
+  // Column headers.
+  CHART_CHROMAS.forEach((chroma, colIdx) => {
+    const x = LABEL_W + CELL_W * colIdx + CELL_W / 2;
+    elements.push(
+      <SvgText
+        key={`col-${chroma}`}
+        x={x}
+        y={GRID_START_Y + HEADER_H - 14}
+        fill="black"
+        fontSize={FONT_HEADER}
+        fontWeight="bold"
+        textAnchor="middle">
+        /{chroma}
+      </SvgText>,
+    );
+  });
+
+  // Row headers + cells.
+  CHART_VALUES.forEach((value, rowIdx) => {
+    const y = GRID_START_Y + HEADER_H + CELL_H * rowIdx;
+    elements.push(
+      <SvgText
+        key={`row-${value}`}
+        x={LABEL_W - 14}
+        y={y + CELL_H / 2 + FONT_HEADER / 3}
+        fill="black"
+        fontSize={FONT_HEADER}
+        fontWeight="bold"
+        textAnchor="end">
+        {value}/
+      </SvgText>,
+    );
+
+    CHART_CHROMAS.forEach((chroma, colIdx) => {
+      const cx = LABEL_W + CELL_W * colIdx;
+      const key = `${value}/${chroma}`;
+      const cellResult = byKey.get(key);
+      if (!cellResult) {
+        // Grid slot with no swatch on the physical card. Render an
+        // empty placeholder so the visual layout still lines up.
+        elements.push(
+          <Rect
+            key={`empty-${key}`}
+            x={cx + 2}
+            y={y + 2}
+            width={CELL_W - 4}
+            height={CELL_H - 4}
+            fill="#f0f0f0"
+            stroke="#dddddd"
+            strokeWidth={1}
+          />,
+        );
+        return;
+      }
+      elements.push(
+        <ResultCell
+          key={key}
+          x={cx + 2}
+          y={y + 2}
+          w={CELL_W - 4}
+          h={CELL_H - 4}
+          cellResult={cellResult}
+        />,
+      );
+    });
+  });
+
+  return (
+    <Svg
+      ref={ref}
+      style={StyleSheet.absoluteFill}
+      viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+      preserveAspectRatio="xMidYMid meet">
+      {elements}
+    </Svg>
+  );
+};
+
+// A single cell: coloured background by ΔE, two colour swatches
+// (expected on the left half, measured on the right), and text with
+// the two Munsell notations + the ΔE.
+const ResultCell = ({
+  x,
+  y,
+  w,
+  h,
+  cellResult,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  cellResult: MunsellChartResult['cells'][number];
+}) => {
+  const bg = deltaEColor(cellResult.deltaE);
+  const expHex = rgbToHex(cellResult.cell.expectedLinearRgb);
+  const measHex = rgbToHex(cellResult.measuredLinearRgb);
+  const swatchH = h * 0.35;
+  const swatchW = (w - 6) / 2;
+  const textY = y + swatchH + 10;
+  return (
+    <>
+      <Rect x={x} y={y} width={w} height={h} fill={bg} />
+      {/* Expected + measured swatches. */}
+      <Rect
+        x={x + 2}
+        y={y + 2}
+        width={swatchW}
+        height={swatchH}
+        fill={expHex}
+      />
+      <Rect
+        x={x + 4 + swatchW}
+        y={y + 2}
+        width={swatchW}
+        height={swatchH}
+        fill={measHex}
+      />
+      {/* Notation + ΔE. */}
+      <SvgText
+        x={x + w / 2}
+        y={textY + FONT_NOTATION}
+        fill="black"
+        fontSize={FONT_NOTATION}
+        textAnchor="middle">
+        {cellResult.cell.notation}
+      </SvgText>
+      <SvgText
+        x={x + w / 2}
+        y={textY + FONT_NOTATION * 2 + 4}
+        fill="#444"
+        fontSize={FONT_NOTATION}
+        textAnchor="middle">
+        {cellResult.measuredMunsell}
+      </SvgText>
+      <SvgText
+        x={x + w / 2}
+        y={textY + FONT_NOTATION * 2 + FONT_DELTAE + 10}
+        fill="black"
+        fontSize={FONT_DELTAE}
+        fontWeight="bold"
+        textAnchor="middle">
+        ΔE {cellResult.deltaE.toFixed(1)}
+      </SvgText>
+    </>
+  );
+};
+
+// "Did the auto-registration land on the right pixels?" view — shows
+// the DNG preview with the detected chart bounding box (yellow) and
+// each per-swatch sampling rect (red) overlaid. If a swatch mis-lands
+// on a cutout or the wrong cell, it's immediately obvious.
+const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
+  const {preview, previewRects, corners} = result;
+  const aspect = preview.width / preview.height;
+  return (
+    <Box width="100%" aspectRatio={aspect} backgroundColor="grey.900">
+      <Image
+        source={{uri: preview.uri}}
+        style={StyleSheet.absoluteFill}
+        resizeMode="contain"
+      />
+      <Svg
+        style={StyleSheet.absoluteFill}
+        viewBox={`0 0 ${preview.width} ${preview.height}`}
+        preserveAspectRatio="xMidYMid meet">
+        {/* Detected chart quadrilateral in yellow. */}
+        <Rect
+          x={corners.tl.x}
+          y={corners.tl.y}
+          width={corners.tr.x - corners.tl.x}
+          height={corners.bl.y - corners.tl.y}
+          stroke="#ffcc00"
+          strokeWidth={3}
+          fill="none"
+        />
+        {/* Each swatch sampling rect in red. */}
+        {previewRects.map((r, i) => (
+          <Rect
+            key={i}
+            x={r.x}
+            y={r.y}
+            width={r.w}
+            height={r.h}
+            stroke="#ff2020"
+            strokeWidth={2}
+            fill="none"
+          />
+        ))}
+      </Svg>
+    </Box>
+  );
+};
+
+// Two-option toggle above the result view. Matches the existing
+// experimental capture-mode selector's chip style.
+const ViewToggleButton = ({
+  label,
+  selected,
+  onPress,
+}: {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+}) => (
+  <Box flex={1}>
+    <ContainedButton
+      label={label}
+      onPress={onPress}
+      disabled={selected}
+      stretchToFit={true}
+    />
+  </Box>
+);
+
+// Legend band at the top of the chart image. Left: a sample cell
+// showing what the swatches / text / heatmap look like. Right: a
+// numbered explanation of each element.
+const Legend = () => {
+  const sampleX = LABEL_W;
+  const sampleY = 30;
+  const sampleW = CELL_W;
+  const sampleH = CELL_H;
+  // Fake data for the demo cell — chosen to produce visibly distinct
+  // expected + measured swatches so the "left vs right" contrast is
+  // obvious at a glance.
+  const demoExpected = {r: 0.42, g: 0.34, b: 0.2};
+  const demoMeasured = {r: 0.5, g: 0.38, b: 0.22};
+  const demoDeltaE = 4.2;
+  const demoNotation = '10YR 5/4';
+  const demoMeasured_ = '10YR 5/3';
+
+  const textX = sampleX + sampleW + 30;
+  const lineH = 32;
+  const textStartY = sampleY + 20;
+
+  return (
+    <>
+      {/* Title bar */}
+      <SvgText
+        x={SVG_WIDTH / 2}
+        y={22}
+        fill="black"
+        fontSize={22}
+        fontWeight="bold"
+        textAnchor="middle">
+        Munsell 10YR chart validation — how to read each cell
+      </SvgText>
+
+      {/* Sample cell */}
+      <Rect
+        x={sampleX}
+        y={sampleY}
+        width={sampleW}
+        height={sampleH}
+        fill={deltaEColor(demoDeltaE)}
+      />
+      <Rect
+        x={sampleX + 2}
+        y={sampleY + 2}
+        width={(sampleW - 6) / 2}
+        height={sampleH * 0.35}
+        fill={rgbToHex(demoExpected)}
+      />
+      <Rect
+        x={sampleX + 4 + (sampleW - 6) / 2}
+        y={sampleY + 2}
+        width={(sampleW - 6) / 2}
+        height={sampleH * 0.35}
+        fill={rgbToHex(demoMeasured)}
+      />
+      <SvgText
+        x={sampleX + sampleW / 2}
+        y={sampleY + sampleH * 0.35 + 10 + FONT_NOTATION}
+        fill="black"
+        fontSize={FONT_NOTATION}
+        textAnchor="middle">
+        {demoNotation}
+      </SvgText>
+      <SvgText
+        x={sampleX + sampleW / 2}
+        y={sampleY + sampleH * 0.35 + 10 + FONT_NOTATION * 2 + 4}
+        fill="#444"
+        fontSize={FONT_NOTATION}
+        textAnchor="middle">
+        {demoMeasured_}
+      </SvgText>
+      <SvgText
+        x={sampleX + sampleW / 2}
+        y={sampleY + sampleH * 0.35 + 10 + FONT_NOTATION * 2 + FONT_DELTAE + 10}
+        fill="black"
+        fontSize={FONT_DELTAE}
+        fontWeight="bold"
+        textAnchor="middle">
+        ΔE {demoDeltaE.toFixed(1)}
+      </SvgText>
+
+      {/* Right-side explanation lines. */}
+      <SvgText
+        x={textX}
+        y={textStartY}
+        fill="black"
+        fontSize={20}
+        fontWeight="bold">
+        Each cell shows:
+      </SvgText>
+      <SvgText x={textX} y={textStartY + lineH} fill="black" fontSize={18}>
+        • Left swatch: expected colour (Munsell reference)
+      </SvgText>
+      <SvgText x={textX} y={textStartY + lineH * 2} fill="black" fontSize={18}>
+        • Right swatch: measured colour (from your DNG)
+      </SvgText>
+      <SvgText x={textX} y={textStartY + lineH * 3} fill="black" fontSize={18}>
+        • Line 1: expected Munsell notation
+      </SvgText>
+      <SvgText x={textX} y={textStartY + lineH * 4} fill="black" fontSize={18}>
+        • Line 2: measured Munsell notation
+      </SvgText>
+      <SvgText x={textX} y={textStartY + lineH * 5} fill="black" fontSize={18}>
+        • ΔE (CIE ΔE2000): 0 = perfect, ≥ 12 = clearly off
+      </SvgText>
+      <SvgText x={textX} y={textStartY + lineH * 6} fill="black" fontSize={18}>
+        • Cell background: ΔE bucket
+      </SvgText>
+
+      {/* Colour-swatch key for the ΔE buckets. */}
+      <LegendBucket
+        x={textX}
+        y={textStartY + lineH * 6 + 14}
+        deltaE={1}
+        label="≤3"
+      />
+      <LegendBucket
+        x={textX + 90}
+        y={textStartY + lineH * 6 + 14}
+        deltaE={5}
+        label="≤6"
+      />
+      <LegendBucket
+        x={textX + 180}
+        y={textStartY + lineH * 6 + 14}
+        deltaE={10}
+        label="≤12"
+      />
+      <LegendBucket
+        x={textX + 270}
+        y={textStartY + lineH * 6 + 14}
+        deltaE={20}
+        label=">12"
+      />
+
+      {/* Divider between legend and grid. */}
+      <Rect
+        x={0}
+        y={LEGEND_H - 4}
+        width={SVG_WIDTH}
+        height={2}
+        fill="#cccccc"
+      />
+    </>
+  );
+};
+
+const LegendBucket = ({
+  x,
+  y,
+  deltaE,
+  label,
+}: {
+  x: number;
+  y: number;
+  deltaE: number;
+  label: string;
+}) => (
+  <>
+    <Rect x={x} y={y} width={26} height={20} fill={deltaEColor(deltaE)} />
+    <SvgText x={x + 32} y={y + 15} fill="black" fontSize={16}>
+      {label}
+    </SvgText>
+  </>
+);
+
+const styles = StyleSheet.create({
+  exportContainer: {
+    position: 'absolute',
+    // Way off the visible area — RN still lays this out so
+    // toDataURL has real pixels to render, but the user never sees it.
+    left: -100000,
+    top: 0,
+    width: EXPORT_CSS_WIDTH,
+    height: EXPORT_CSS_HEIGHT,
+  },
+});

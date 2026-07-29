@@ -17,6 +17,7 @@ namespace margelo::nitro::dngdecoder {
       prototype.registerHybridMethod("readMetadata", &HybridDngDecoderSpec::readMetadata);
       prototype.registerHybridMethod("decodeDngRois", &HybridDngDecoderSpec::decodeDngRois);
       prototype.registerHybridMethod("renderPreview", &HybridDngDecoderSpec::renderPreview);
+      prototype.registerHybridMethod("readPreviewGrayscale", &HybridDngDecoderSpec::readPreviewGrayscale);
     });
   }
 

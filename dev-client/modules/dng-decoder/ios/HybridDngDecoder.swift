@@ -213,6 +213,101 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     )
   }
 
+  func readPreviewGrayscale(dngPath: String, maxDim: Double) throws
+    -> PreviewGrayscale
+  {
+    let url = URL(fileURLWithPath: stripFileScheme(dngPath))
+    guard let rawFilter = CIRAWFilter(imageURL: url) else {
+      throw RuntimeError.error(
+        withMessage: "CIRAWFilter could not open DNG at \(url.path)")
+    }
+    // Same neutralisation as decodeDngRois / renderPreview so the
+    // grayscale image the CV sees matches the pixels the analysis
+    // pipeline will decode later.
+    rawFilter.boostAmount = 0.0
+    rawFilter.boostShadowAmount = 0.0
+
+    guard let ciImage = rawFilter.outputImage else {
+      throw RuntimeError.error(withMessage: "CIRAWFilter produced no outputImage")
+    }
+
+    // Full-res dims from CIRAWFilter — same coord space decodeDngRois
+    // works in. Included in the return value so JS callers can back
+    // out preview-space → sensor-space scaling.
+    let srcW = ciImage.extent.width
+    let srcH = ciImage.extent.height
+    let sourceWidth = Int(srcW.rounded())
+    let sourceHeight = Int(srcH.rounded())
+    let maxDimCG = CGFloat(maxDim)
+    let scale = min(maxDimCG / srcW, maxDimCG / srcH, 1.0)
+    let scaledImage: CIImage =
+      scale < 1.0
+      ? ciImage.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+      : ciImage
+    let dstW = Int(scaledImage.extent.width.rounded())
+    let dstH = Int(scaledImage.extent.height.rounded())
+
+    // Render into sRGB so the byte values match what a user would see
+    // in a screenshot — CV thresholds (e.g. "very bright" for chart
+    // background / cutouts) are much easier to reason about in
+    // display-gamma space than in linear light.
+    guard let displaySpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+      throw RuntimeError.error(withMessage: "sRGB color space unavailable")
+    }
+    let context = CIContext(options: [
+      .workingColorSpace: displaySpace,
+      .outputColorSpace: displaySpace,
+    ])
+    guard
+      let cgImage = context.createCGImage(
+        scaledImage, from: scaledImage.extent, format: .RGBA8,
+        colorSpace: displaySpace)
+    else {
+      throw RuntimeError.error(
+        withMessage: "CIContext.createCGImage returned nil")
+    }
+
+    // Draw the CGImage into a 4-byte RGBA scratch buffer via a
+    // hand-rolled CGContext, then reduce to Rec709 luma in a single
+    // pass. Avoids relying on CIFormat.L8/R8 support (which varies by
+    // OS version and can silently return a mis-configured pixel format).
+    let bytesPerRow = dstW * 4
+    var rgba = [UInt8](repeating: 0, count: bytesPerRow * dstH)
+    let bitmapInfo: UInt32 =
+      CGBitmapInfo.byteOrder32Big.rawValue
+      | CGImageAlphaInfo.premultipliedLast.rawValue
+    guard
+      let ctx = CGContext(
+        data: &rgba, width: dstW, height: dstH, bitsPerComponent: 8,
+        bytesPerRow: bytesPerRow, space: displaySpace,
+        bitmapInfo: bitmapInfo)
+    else {
+      throw RuntimeError.error(withMessage: "CGContext allocation failed")
+    }
+    ctx.draw(cgImage, in: CGRect(x: 0, y: 0, width: dstW, height: dstH))
+
+    let pixelCount = dstW * dstH
+    let buffer = ArrayBuffer.allocate(size: pixelCount)
+    let out = buffer.data
+    for i in 0..<pixelCount {
+      let r = Int(rgba[i * 4])
+      let g = Int(rgba[i * 4 + 1])
+      let b = Int(rgba[i * 4 + 2])
+      // Rec709 luma coefficients (0.2126, 0.7152, 0.0722), scaled to
+      // integer fixed-point (÷256) and rounded — cheap, no float ops.
+      let y = UInt8(min(255, (r * 54 + g * 183 + b * 19 + 128) >> 8))
+      (out + i).pointee = y
+    }
+
+    return PreviewGrayscale(
+      width: Double(dstW),
+      height: Double(dstH),
+      pixels: buffer,
+      sourceWidth: Double(sourceWidth),
+      sourceHeight: Double(sourceHeight)
+    )
+  }
+
   private func channelChar(_ c: UInt8) -> String {
     switch c {
     case 0: return "R"

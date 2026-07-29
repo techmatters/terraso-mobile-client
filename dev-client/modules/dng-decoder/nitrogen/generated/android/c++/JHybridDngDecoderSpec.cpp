@@ -13,6 +13,8 @@ namespace margelo::nitro::dngdecoder { struct DngMetadata; }
 namespace margelo::nitro::dngdecoder { struct LinearRgb; }
 // Forward declaration of `PreviewImage` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct PreviewImage; }
+// Forward declaration of `PreviewGrayscale` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct PreviewGrayscale; }
 // Forward declaration of `Roi` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct Roi; }
 
@@ -24,6 +26,10 @@ namespace margelo::nitro::dngdecoder { struct Roi; }
 #include "JLinearRgb.hpp"
 #include "PreviewImage.hpp"
 #include "JPreviewImage.hpp"
+#include "PreviewGrayscale.hpp"
+#include "JPreviewGrayscale.hpp"
+#include <NitroModules/ArrayBuffer.hpp>
+#include <NitroModules/JArrayBuffer.hpp>
 #include "Roi.hpp"
 #include "JRoi.hpp"
 
@@ -90,6 +96,11 @@ namespace margelo::nitro::dngdecoder {
   }
   PreviewImage JHybridDngDecoderSpec::renderPreview(const std::string& dngPath, double maxDim) {
     static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPreviewImage>(jni::alias_ref<jni::JString> /* dngPath */, double /* maxDim */)>("renderPreview");
+    auto __result = method(_javaPart, jni::make_jstring(dngPath), maxDim);
+    return __result->toCpp();
+  }
+  PreviewGrayscale JHybridDngDecoderSpec::readPreviewGrayscale(const std::string& dngPath, double maxDim) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPreviewGrayscale>(jni::alias_ref<jni::JString> /* dngPath */, double /* maxDim */)>("readPreviewGrayscale");
     auto __result = method(_javaPart, jni::make_jstring(dngPath), maxDim);
     return __result->toCpp();
   }
