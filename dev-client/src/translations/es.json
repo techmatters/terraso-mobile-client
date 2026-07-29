@@ -2,18 +2,25 @@
     "welcome": {
         "title": "Bienvenido a LandPKS Soil ID",
         "next": {
-            "title": "¿Qué sigue?",
-            "bullet_1": "pH del suelo"
+            "title": "Las próximas versiones incluirán:",
+            "bullet_1": "Mejoras en el módulo de color del suelo"
         },
         "version_includes": {
             "title": "Esta versión incluye:",
-            "bullet_1": "Sin conexión: creación de sitios y edición de metadatos y notas habilitadas",
-            "bullet_2": "Nuevo idioma: suajili",
-            "bullet_3": "Traducciones mejoradas para ucraniano, georgiano y español",
-            "bullet_4": "Mensaje de error más descriptivo para conflictos de sincronización",
-            "bullet_5": "Experiencia mejorada al buscar coordenadas en el mapa",
-            "bullet_6": "Se solucionó un problema por el cual los usuarios que cerraban sesión y volvían a iniciar sesión con una cuenta diferente veían temporalmente los datos de la primera cuenta",
-            "bullet_7": "Se solucionó un error por el cual el módulo de color fallaba con fotos sobreexpuestas"
+            "bullet_1": "La profundidad máxima del suelo aumentó a 300 cm",
+            "bullet_2": "Eliminación de cuenta simplificada",
+            "bullet_3": "Se añadió la opción «sin afiliación» al filtro de la lista de sitios",
+            "bullet_4": "Se corrigió un error que mostraba brevemente una alerta al eliminar un sitio",
+            "bullet_5": "Mejoras en el funcionamiento de los campos de texto",
+            "bullet_6": "Se añadió la atribución de Mapbox",
+            "bullet_7": "Se actualizaron los enlaces al nuevo sitio web de LandPKS"
+        },
+        "soil_id_updates": {
+            "title": "Mejoras en el algoritmo de Soil ID desde la última versión:",
+            "bullet_1": "Se corrigió un error que hacía que el algoritmo fallara",
+            "bullet_2": "Se corrigió un error que podía mostrar datos de suelo incorrectos",
+            "bullet_3": "Se corrigió un error por el cual dejar profundidades vacías reducía los datos enviados al algoritmo",
+            "bullet_4": "Se corrigió un error por el cual Soil ID no devolvía suelos en ciertas ubicaciones"
         },
         "learn_more": "Aprender más y mantenerte actualizado:",
         "link_text": "LandPKS de Terraso",
