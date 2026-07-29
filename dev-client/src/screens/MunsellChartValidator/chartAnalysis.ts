@@ -24,35 +24,53 @@ import {labToMunsell, munsellToLab} from 'munsell';
 import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
 
 import {
+  detectChartByGrid,
+  type GridDetection,
+  type GridEntry,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/gridRegistration';
+import {
+  CHART_CHROMAS,
   CHART_HUE,
+  CHART_VALUES,
   MUNSELL_10YR_CELLS,
-  SWATCH_SAMPLE_HALF_U,
-  SWATCH_SAMPLE_HALF_V,
   type MunsellChartCell,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
-import {
-  applyHomography,
-  computeHomography,
-  detectChartCorners,
-  type ChartCorners,
-  type Homography,
-} from 'terraso-mobile-client/screens/MunsellChartValidator/registration';
 
 // End-to-end Munsell chart analysis: takes a captured DNG file,
-// auto-registers the chart, decodes every swatch via the RAW pipeline,
-// and returns measured vs. expected per cell.
+// auto-registers the chart by finding its swatch grid, decodes every
+// swatch via the RAW pipeline, and returns measured vs. expected per
+// cell.
 //
 // Split into named steps so the UI can surface intermediate failures
-// (couldn't find chart / couldn't decode / etc) instead of dumping a
+// (couldn't find grid / couldn't decode / etc.) instead of dumping a
 // stack trace on the user.
 
 const PREVIEW_MAX_DIM = 1200;
 
+// Fraction of a detected swatch cell to sample from the centre. The
+// half-width means the FULL sample rect is 2× this fraction of a
+// cell in each axis. Kept smallish so the rect stays clear of swatch
+// edges even when the grid fit is a few pixels off.
+const SAMPLE_HALF_W_FRAC = 0.17;
+const SAMPLE_HALF_H_FRAC = 0.13;
+
+// Raw per-cell measurement — the linear-sRGB the DNG decoder returned
+// for the swatch, no WB correction applied. Kept separate from the
+// display-ready MunsellCellResult below so the screen can re-apply a
+// reference-cell WB correction on demand without re-decoding the DNG.
+export type CellMeasurement = {
+  cell: MunsellChartCell;
+  rawLinearRgb: {r: number; g: number; b: number};
+};
+
 export type MunsellCellResult = {
   cell: MunsellChartCell;
+  // The linear-sRGB actually used to compute measuredMunsell + deltaE.
+  // Equals `rawLinearRgb` when no reference is active; otherwise
+  // WB-corrected against the reference cell.
   measuredLinearRgb: {r: number; g: number; b: number};
-  // Munsell notation the algorithm assigns to the measured colour.
-  // Format matches munsellToRgb inputs (e.g. "10YR 5/4").
+  // Munsell notation the algorithm assigns to the (possibly corrected)
+  // measured colour. Format matches munsellToRgb inputs, e.g. "10YR 5/4".
   measuredMunsell: string;
   // ΔE (CIE ΔE2000) between measured and expected colour, both
   // converted through the same Lab pipeline. 0 = perfect, ~1 = just
@@ -61,67 +79,72 @@ export type MunsellCellResult = {
 };
 
 export type MunsellChartResult = {
-  corners: ChartCorners;
-  cells: MunsellCellResult[];
+  measurements: CellMeasurement[];
+  // Grid geometry the detector found — includes per-detected-blob
+  // entries the validation view uses to draw diagnostics.
+  grid: GridDetection;
   // Preview PNG for the "did the auto-registration land on the right
-  // pixels?" validation view. Rendered from the same DNG at the same
-  // maxDim so the previewRects below index into its pixel space
-  // directly.
+  // pixels?" view. Rendered from the same DNG at the same maxDim so
+  // the previewRects below index into its pixel space directly.
   preview: {uri: string; width: number; height: number};
   // Per-cell sampling rectangle in preview-space pixels. Same length
-  // as `cells`. Rendered as red-outlined overlays on top of the
-  // preview image so the tester can visually confirm each rect lands
-  // on the correct swatch (not on a cutout or the white gap).
+  // as `measurements`. Rendered as red-outlined overlays on top of the
+  // preview so a tester can visually confirm each rect lands on the
+  // correct swatch.
   previewRects: {x: number; y: number; w: number; h: number}[];
+  // Detected swatch centroids, in preview-space pixels — drawn as
+  // small green dots on the source view so the tester can see how
+  // many swatches were actually detected vs. extrapolated.
+  detectedSwatches: GridEntry[];
 };
+
+// Sensible default reference cell: 10YR 5/1 is a mid-value, low-chroma
+// neutral — the most colour-agnostic of the swatches on the 10YR page,
+// so best-suited to define "grey" for WB. Testers can tap any other
+// cell in the result grid to override.
+export const DEFAULT_REFERENCE_NOTATION = '10YR 5/1';
 
 export const analyzeMunsellChart = async (
   dngPath: string,
 ): Promise<MunsellChartResult> => {
-  // 1. Auto-registration on a downsampled grayscale render.
+  // 1. Grayscale render for the CV.
   const gray = DngDecoderHybrid.readPreviewGrayscale(dngPath, PREVIEW_MAX_DIM);
   const grayImage = {
     width: gray.width,
     height: gray.height,
     pixels: new Uint8Array(gray.pixels),
   };
-  const corners = detectChartCorners(grayImage);
-  if (!corners) {
+
+  // 2. Find the swatch grid directly — much more robust than trying
+  //    to identify the chart card body (which can lose against a
+  //    bright paper background).
+  const grid = detectChartByGrid(grayImage);
+  if (!grid) {
     throw new Error(
-      'Could not auto-detect chart in image. Ensure the whole chart is visible with a darker background.',
+      'Could not detect the Munsell swatch grid in the image. ' +
+        'Ensure the whole chart is visible and framed reasonably square-on.',
     );
   }
 
-  // 2. Build homography from chart-normalized to image pixel coords.
-  // The preview is at PREVIEW_MAX_DIM long-edge scale; the DNG decoder
-  // works in the same coordinate space (CIRAWFilter's extent is
-  // orientation-aware and matches renderPreview's output). So the
-  // corners in preview-pixel coords can be scaled up to DNG-pixel
-  // coords by the ratio dng.dim / preview.dim — but we don't need
-  // that scaling since decodeDngRois' coord space matches
-  // renderPreview's exactly (see comments in RawColorAnalysisScreen).
-  //
-  // TL;DR: corners are in *preview* coords → homography maps into
-  // preview coords → we then scale sampling rects into DNG coords for
-  // decodeDngRois below.
-  const H = computeHomography(corners);
-
-  // 3. For each cell, compute a preview-space sampling rect, scale up
-  // to CIRAWFilter's full-res coord space (which is what decodeDngRois
-  // works in — see HybridDngDecoder.swift decodeDngRois), and batch
-  // into one decodeDngRois call.
+  // 3. Compute per-cell sample rectangles in preview coords straight
+  //    from the detected grid. cellW/cellH already reflect the actual
+  //    swatch spacing in this capture; no homography needed.
+  const halfW = grid.cellW * SAMPLE_HALF_W_FRAC;
+  const halfH = grid.cellH * SAMPLE_HALF_H_FRAC;
   const scaleX = gray.sourceWidth / gray.width;
   const scaleY = gray.sourceHeight / gray.height;
-  const previewRectsRaw = MUNSELL_10YR_CELLS.map(cell =>
-    sampleRectForCell(cell, H),
-  );
-  const previewRects = previewRectsRaw.map(r => ({
-    x: Math.round(r.x),
-    y: Math.round(r.y),
-    w: Math.round(r.w),
-    h: Math.round(r.h),
-  }));
-  const dngRois = previewRectsRaw.map(r => ({
+  const previewRects = MUNSELL_10YR_CELLS.map(cell => {
+    const rowIdx = CHART_VALUES.indexOf(cell.value);
+    const colIdx = CHART_CHROMAS.indexOf(cell.chroma);
+    const {x: cx, y: cy} = grid.centers[rowIdx][colIdx];
+    return {
+      x: Math.round(cx - halfW),
+      y: Math.round(cy - halfH),
+      w: Math.round(halfW * 2),
+      h: Math.round(halfH * 2),
+    };
+  });
+  const dngRois = previewRects.map(r => ({
     x: Math.round(r.x * scaleX),
     y: Math.round(r.y * scaleY),
     w: Math.round(r.w * scaleX),
@@ -129,9 +152,42 @@ export const analyzeMunsellChart = async (
   }));
   const measured = DngDecoderHybrid.decodeDngRois(dngPath, dngRois);
 
-  // 4. Turn each measurement into (Munsell notation + ΔE vs expected).
-  const cells: MunsellCellResult[] = MUNSELL_10YR_CELLS.map((cell, idx) => {
-    const measuredLinearRgb = measured[idx];
+  // 4. Bundle each cell with its raw measurement. Munsell notation
+  //    and ΔE come later — the screen recomputes them any time the
+  //    user picks a different reference cell.
+  const measurements: CellMeasurement[] = MUNSELL_10YR_CELLS.map(
+    (cell, idx) => ({cell, rawLinearRgb: measured[idx]}),
+  );
+
+  // 5. Colour PNG preview for the validation view.
+  const preview = DngDecoderHybrid.renderPreview(dngPath, PREVIEW_MAX_DIM);
+
+  return {
+    measurements,
+    grid,
+    preview,
+    previewRects,
+    detectedSwatches: grid.detected,
+  };
+};
+
+// Turn raw per-cell measurements into display-ready cell results,
+// optionally after applying a per-channel WB correction that maps the
+// reference cell's raw colour onto its expected colour. Same reasoning
+// as `getColorFromLinearRgb`: illumination shows up as a per-channel
+// scale factor on the decoder output, and dividing it out is the
+// simplest first-order correction.
+export const computeCellResults = (
+  measurements: readonly CellMeasurement[],
+  referenceNotation: string | null,
+): MunsellCellResult[] => {
+  const scale = wbScaleFromReference(measurements, referenceNotation);
+  return measurements.map(({cell, rawLinearRgb}) => {
+    const measuredLinearRgb = {
+      r: rawLinearRgb.r * scale.r,
+      g: rawLinearRgb.g * scale.g,
+      b: rawLinearRgb.b * scale.b,
+    };
     const [X, Y, Z] = linearRgbToXyz(
       measuredLinearRgb.r,
       measuredLinearRgb.g,
@@ -146,40 +202,27 @@ export const analyzeMunsellChart = async (
     const measuredMunsell = safeLabToMunsell(measuredLab, cell.notation);
     return {cell, measuredLinearRgb, measuredMunsell, deltaE};
   });
-
-  // 5. Render a colour PNG preview at the same maxDim so the
-  // validation view can display it. Cheap extra decode; this is a
-  // dev/testing tool, not a hot path.
-  const preview = DngDecoderHybrid.renderPreview(dngPath, PREVIEW_MAX_DIM);
-
-  return {corners, cells, preview, previewRects};
 };
 
-// Compute the preview-pixel rect to sample for a given chart cell.
-// Sampling window is a fraction of the cell centred on the swatch's
-// nominal centre — see SWATCH_SAMPLE_HALF_* in the chart template.
-const sampleRectForCell = (
-  cell: MunsellChartCell,
-  H: Homography,
-): {x: number; y: number; w: number; h: number} => {
-  // Corners of the sampling window in chart-normalized coords.
-  const u0 = cell.u - SWATCH_SAMPLE_HALF_U;
-  const u1 = cell.u + SWATCH_SAMPLE_HALF_U;
-  const v0 = cell.v - SWATCH_SAMPLE_HALF_V;
-  const v1 = cell.v + SWATCH_SAMPLE_HALF_V;
-  // Project all 4 corners into image pixel space, then take the
-  // axis-aligned bounding box. Under a mild perspective transform
-  // this is close to the true window (any distortion is well under
-  // the middle-1/4 tolerance).
-  const p00 = applyHomography(H, u0, v0);
-  const p10 = applyHomography(H, u1, v0);
-  const p01 = applyHomography(H, u0, v1);
-  const p11 = applyHomography(H, u1, v1);
-  const minX = Math.min(p00.x, p10.x, p01.x, p11.x);
-  const maxX = Math.max(p00.x, p10.x, p01.x, p11.x);
-  const minY = Math.min(p00.y, p10.y, p01.y, p11.y);
-  const maxY = Math.max(p00.y, p10.y, p01.y, p11.y);
-  return {x: minX, y: minY, w: maxX - minX, h: maxY - minY};
+// Per-channel scale factor to apply to every raw measurement so that
+// the reference cell's raw colour maps onto its expected colour.
+// Returns (1, 1, 1) when no reference is set or when the raw values
+// are too small to divide by safely.
+const wbScaleFromReference = (
+  measurements: readonly CellMeasurement[],
+  referenceNotation: string | null,
+): {r: number; g: number; b: number} => {
+  if (referenceNotation == null) return {r: 1, g: 1, b: 1};
+  const ref = measurements.find(m => m.cell.notation === referenceNotation);
+  if (!ref) return {r: 1, g: 1, b: 1};
+  const {rawLinearRgb: raw, cell} = ref;
+  const {r: er, g: eg, b: eb} = cell.expectedLinearRgb;
+  const MIN = 1e-4;
+  return {
+    r: raw.r > MIN ? er / raw.r : 1,
+    g: raw.g > MIN ? eg / raw.g : 1,
+    b: raw.b > MIN ? eb / raw.b : 1,
+  };
 };
 
 // labToMunsell can throw on out-of-gamut points or hit its iteration

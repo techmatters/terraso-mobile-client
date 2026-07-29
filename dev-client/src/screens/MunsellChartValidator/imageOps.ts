@@ -27,17 +27,26 @@ export type GrayImage = {
   pixels: Uint8Array;
 };
 
-// Threshold every pixel: 1 if pixel >= `threshold`, else 0. Output is
-// a same-shape mask packed as Uint8Array of 0/1 values (not a bit
+// Threshold every pixel. Default: 1 if pixel >= `threshold`, else 0.
+// With `invert: true`: 1 if pixel < `threshold`, else 0 — useful for
+// isolating dark regions (e.g. the chart's swatches). Output is a
+// same-shape mask packed as Uint8Array of 0/1 values (not bit
 // packing — clarity > space here).
 export const threshold = (
   img: GrayImage,
   thresholdValue: number,
+  invert: boolean = false,
 ): GrayImage => {
   const {width, height, pixels} = img;
   const out = new Uint8Array(pixels.length);
-  for (let i = 0; i < pixels.length; i++) {
-    out[i] = pixels[i] >= thresholdValue ? 1 : 0;
+  if (invert) {
+    for (let i = 0; i < pixels.length; i++) {
+      out[i] = pixels[i] < thresholdValue ? 1 : 0;
+    }
+  } else {
+    for (let i = 0; i < pixels.length; i++) {
+      out[i] = pixels[i] >= thresholdValue ? 1 : 0;
+    }
   }
   return {width, height, pixels: out};
 };

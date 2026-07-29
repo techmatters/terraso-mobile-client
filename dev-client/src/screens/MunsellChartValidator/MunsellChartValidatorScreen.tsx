@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ActivityIndicator, Image, StyleSheet, View} from 'react-native';
 import Share from 'react-native-share';
 import Svg, {Rect, Text as SvgText} from 'react-native-svg';
@@ -39,6 +39,9 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   analyzeMunsellChart,
+  computeCellResults,
+  DEFAULT_REFERENCE_NOTATION,
+  type MunsellCellResult,
   type MunsellChartResult,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/chartAnalysis';
 import {
@@ -140,6 +143,19 @@ export const MunsellChartValidatorScreen = ({
   const exportSvgRef = useRef<Svg>(null);
   const [sharing, setSharing] = useState(false);
   const [view, setView] = useState<'grid' | 'source'>('grid');
+  // Cell notation the tester picked as WB reference. Default to a
+  // near-neutral mid-value cell. Tapping any swatch on the grid
+  // re-computes everything against that cell.
+  const [referenceNotation, setReferenceNotation] = useState<string | null>(
+    DEFAULT_REFERENCE_NOTATION,
+  );
+  const cells = useMemo(
+    () =>
+      state.kind === 'ready'
+        ? computeCellResults(state.result.measurements, referenceNotation)
+        : [],
+    [state, referenceNotation],
+  );
 
   useEffect(() => {
     (async () => {
@@ -206,8 +222,10 @@ export const MunsellChartValidatorScreen = ({
           {state.kind === 'ready' && (
             <>
               <Paragraph>
-                Auto-registered chart, decoded {state.result.cells.length}{' '}
-                swatches.
+                Auto-registered chart, decoded{' '}
+                {state.result.measurements.length} swatches. Reference:{' '}
+                {referenceNotation ?? 'none (raw uncorrected)'}. Tap any cell to
+                change reference.
               </Paragraph>
               <Row space="sm">
                 <ViewToggleButton
@@ -223,22 +241,45 @@ export const MunsellChartValidatorScreen = ({
               </Row>
               {view === 'grid' ? (
                 <Box width="100%" aspectRatio={SVG_WIDTH / SVG_HEIGHT}>
-                  <ResultSvg ref={onScreenSvgRef} result={state.result} />
+                  <ResultSvg
+                    ref={onScreenSvgRef}
+                    cells={cells}
+                    referenceNotation={referenceNotation}
+                    onCellPress={setReferenceNotation}
+                  />
                 </Box>
               ) : (
                 <SourceOverlayView result={state.result} />
               )}
-              <ContainedButton
-                label={sharing ? 'Sharing…' : 'Share result grid as image'}
-                onPress={shareAsImage}
-                disabled={sharing}
-              />
+              <Row space="sm">
+                <Box flex={1}>
+                  <ContainedButton
+                    label="Clear reference"
+                    onPress={() => setReferenceNotation(null)}
+                    disabled={referenceNotation === null}
+                    stretchToFit
+                  />
+                </Box>
+                <Box flex={1}>
+                  <ContainedButton
+                    label={sharing ? 'Sharing…' : 'Share as image'}
+                    onPress={shareAsImage}
+                    disabled={sharing}
+                    stretchToFit
+                  />
+                </Box>
+              </Row>
               {/* Off-screen duplicate used only for high-res PNG export.
                  Positioned way off the visible area so RN still lays
                  it out (needed for toDataURL to render pixels), but
                  the user never sees it. */}
               <View style={styles.exportContainer} pointerEvents="none">
-                <ResultSvg ref={exportSvgRef} result={state.result} />
+                <ResultSvg
+                  ref={exportSvgRef}
+                  cells={cells}
+                  referenceNotation={referenceNotation}
+                  onCellPress={null}
+                />
               </View>
             </>
           )}
@@ -255,18 +296,38 @@ export const MunsellChartValidatorScreen = ({
 // card render as empty (light gray).
 const ResultSvg = ({
   ref,
-  result,
+  cells,
+  referenceNotation,
+  onCellPress,
 }: {
   ref: React.RefObject<Svg | null>;
-  result: MunsellChartResult;
+  cells: MunsellCellResult[];
+  referenceNotation: string | null;
+  // Called with the tapped cell's Munsell notation. `null` disables
+  // interactivity (used for the off-screen export copy).
+  onCellPress: ((notation: string) => void) | null;
 }) => {
   // Build a lookup so we can drop each cell into its grid position.
-  const byKey = new Map<string, (typeof result.cells)[number]>();
-  for (const c of result.cells) {
+  const byKey = new Map<string, MunsellCellResult>();
+  for (const c of cells) {
     byKey.set(`${c.cell.value}/${c.cell.chroma}`, c);
   }
 
   const elements: React.ReactNode[] = [];
+
+  // Solid white background so the exported PNG isn't transparent —
+  // otherwise Preview / Messages / etc render the file over whatever's
+  // behind them (often dark), making everything unreadable.
+  elements.push(
+    <Rect
+      key="bg"
+      x={0}
+      y={0}
+      width={SVG_WIDTH}
+      height={SVG_HEIGHT}
+      fill="white"
+    />,
+  );
 
   // Legend band at the top explaining each part of a cell.
   elements.push(<Legend key="legend" />);
@@ -333,6 +394,12 @@ const ResultSvg = ({
           w={CELL_W - 4}
           h={CELL_H - 4}
           cellResult={cellResult}
+          isReference={cellResult.cell.notation === referenceNotation}
+          onPress={
+            onCellPress
+              ? () => onCellPress(cellResult.cell.notation)
+              : undefined
+          }
         />,
       );
     });
@@ -350,6 +417,11 @@ const ResultSvg = ({
 };
 
 // A single cell: coloured background by ΔE, two colour swatches
+// (expected left / measured right), Munsell notations, and ΔE. When
+// `isReference` is true, adds a thick blue border to mark it as the
+// active WB anchor. `onPress` is wired on both the background rect
+// and swatches so tapping anywhere in the cell fires — react-native-svg
+// dispatches onPress through Rect elements.
 // (expected on the left half, measured on the right), and text with
 // the two Munsell notations + the ΔE.
 const ResultCell = ({
@@ -358,12 +430,16 @@ const ResultCell = ({
   w,
   h,
   cellResult,
+  isReference,
+  onPress,
 }: {
   x: number;
   y: number;
   w: number;
   h: number;
-  cellResult: MunsellChartResult['cells'][number];
+  cellResult: MunsellCellResult;
+  isReference: boolean;
+  onPress?: () => void;
 }) => {
   const bg = deltaEColor(cellResult.deltaE);
   const expHex = rgbToHex(cellResult.cell.expectedLinearRgb);
@@ -373,7 +449,7 @@ const ResultCell = ({
   const textY = y + swatchH + 10;
   return (
     <>
-      <Rect x={x} y={y} width={w} height={h} fill={bg} />
+      <Rect x={x} y={y} width={w} height={h} fill={bg} onPress={onPress} />
       {/* Expected + measured swatches. */}
       <Rect
         x={x + 2}
@@ -381,6 +457,7 @@ const ResultCell = ({
         width={swatchW}
         height={swatchH}
         fill={expHex}
+        onPress={onPress}
       />
       <Rect
         x={x + 4 + swatchW}
@@ -388,6 +465,7 @@ const ResultCell = ({
         width={swatchW}
         height={swatchH}
         fill={measHex}
+        onPress={onPress}
       />
       {/* Notation + ΔE. */}
       <SvgText
@@ -415,16 +493,33 @@ const ResultCell = ({
         textAnchor="middle">
         ΔE {cellResult.deltaE.toFixed(1)}
       </SvgText>
+      {/* Reference-cell marker: a thick blue outline on top of
+         everything else. Non-interactive (onPress passes through
+         the underlying rects). */}
+      {isReference && (
+        <Rect
+          x={x}
+          y={y}
+          width={w}
+          height={h}
+          fill="none"
+          stroke="#1e88e5"
+          strokeWidth={5}
+        />
+      )}
     </>
   );
 };
 
 // "Did the auto-registration land on the right pixels?" view — shows
-// the DNG preview with the detected chart bounding box (yellow) and
-// each per-swatch sampling rect (red) overlaid. If a swatch mis-lands
-// on a cutout or the wrong cell, it's immediately obvious.
+// the DNG preview with the per-swatch sample rectangles (red) and the
+// centroids the grid detector actually found (green dots) overlaid.
+// If the reds are shifted off the swatches, registration is off. If
+// most cells have a corresponding green dot inside them, we found
+// most swatches directly; if not, most cells were extrapolated from
+// what few we did find.
 const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
-  const {preview, previewRects, corners} = result;
+  const {preview, previewRects, detectedSwatches, grid} = result;
   const aspect = preview.width / preview.height;
   return (
     <Box width="100%" aspectRatio={aspect} backgroundColor="grey.900">
@@ -437,20 +532,26 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
         style={StyleSheet.absoluteFill}
         viewBox={`0 0 ${preview.width} ${preview.height}`}
         preserveAspectRatio="xMidYMid meet">
-        {/* Detected chart quadrilateral in yellow. */}
-        <Rect
-          x={corners.tl.x}
-          y={corners.tl.y}
-          width={corners.tr.x - corners.tl.x}
-          height={corners.bl.y - corners.tl.y}
-          stroke="#ffcc00"
-          strokeWidth={3}
-          fill="none"
-        />
-        {/* Each swatch sampling rect in red. */}
+        {/* Fitted-grid intersections in yellow — one dot per (row, col)
+           position, computed from the affine fit of the detected
+           swatch centroids. Useful for seeing whether the fit lined
+           up with the physical swatches on tilted / skewed captures. */}
+        {grid.centers.flatMap((row, ri) =>
+          row.map((p, ci) => (
+            <Rect
+              key={`grid-${ri}-${ci}`}
+              x={p.x - 3}
+              y={p.y - 3}
+              width={6}
+              height={6}
+              fill="#ffcc00"
+            />
+          )),
+        )}
+        {/* Per-swatch sampling rects in red. */}
         {previewRects.map((r, i) => (
           <Rect
-            key={i}
+            key={`roi-${i}`}
             x={r.x}
             y={r.y}
             width={r.w}
@@ -458,6 +559,19 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
             stroke="#ff2020"
             strokeWidth={2}
             fill="none"
+          />
+        ))}
+        {/* Blobs the detector directly identified as swatch candidates —
+           small green dots. Cells with a green dot inside were
+           detected; cells without one were extrapolated. */}
+        {detectedSwatches.map((d, i) => (
+          <Rect
+            key={`det-${i}`}
+            x={d.cx - 4}
+            y={d.cy - 4}
+            width={8}
+            height={8}
+            fill="#22cc22"
           />
         ))}
       </Svg>
