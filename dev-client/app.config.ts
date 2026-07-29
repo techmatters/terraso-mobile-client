@@ -18,7 +18,7 @@
 import 'ts-node/register';
 
 import {ExpoConfig} from 'expo/config';
-import {withAppBuildGradle} from 'expo/config-plugins';
+import {withAppBuildGradle, withGradleProperties} from 'expo/config-plugins';
 
 import {withSentry} from '@sentry/react-native/expo';
 
@@ -89,6 +89,24 @@ if (typeof APP_BUILD === 'string') {
 
   ENV_CONFIG.APP_BUILD = buildNumber.toString();
 }
+
+// This app outgrew the React Native template's 2GB default: release builds intermittently failed with OutOfMemoryError while merging our ~48k classes into dex. That merge step runs inside the Gradle daemon, so grow the daemon's heap.
+const GRADLE_JVM_ARGS = '-Xmx6g -XX:MaxMetaspaceSize=512m';
+
+const withGradleHeap = (modConfig: ExpoConfig): ExpoConfig =>
+  withGradleProperties(modConfig, gradle => {
+    const jvmArgs = gradle.modResults.find(
+      item => item.type === 'property' && item.key === 'org.gradle.jvmargs',
+    );
+    // The React Native template always ships this property, so its absence means the template changed and this override has silently stopped applying. Fail here rather than let the build run out of heap 15 minutes later.
+    if (jvmArgs?.type !== 'property') {
+      throw new Error(
+        `Expected org.gradle.jvmargs in gradle.properties; cannot apply "${GRADLE_JVM_ARGS}".`,
+      );
+    }
+    jvmArgs.value = GRADLE_JVM_ARGS;
+    return gradle;
+  });
 
 const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
@@ -187,6 +205,7 @@ const defaultConfig: ExpoConfig = {
         return modConfig;
       }) as any,
     ],
+    [withGradleHeap as any],
     [
       'expo-build-properties',
       {
