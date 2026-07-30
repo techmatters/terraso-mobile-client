@@ -367,23 +367,16 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     )
   }
 
-  // Shared pre-decode config for every CIRAWFilter entry point. Two
-  // reasons this is centralized:
+  // Shared pre-decode config for every CIRAWFilter entry point.
+  // `boostAmount` / `boostShadowAmount` = 0 disable Apple's default
+  // tone shaping so the RAW pipeline stays as linear as possible.
   //
-  // 1. `boostAmount` / `boostShadowAmount` = 0 disable Apple's default
-  //    tone shaping, keeping the RAW pipeline as linear as possible.
-  //
-  // 2. `orientation = .up` forces the sensor-native coordinate frame
-  //    regardless of the DNG's Orientation EXIF tag. We saw the tag
-  //    flip between EV=0 and EV=-1 captures (probably vision-camera's
-  //    session reconfigure re-deriving `AVCaptureConnection.videoOrientation`
-  //    from a stale value), which rotated `outputImage` and desynced the
-  //    ROI coords chart-registration produces from the pixels the
-  //    preview PNG shows. Forcing `.up` normalizes it.
-  //
-  // We log the DNG's stored orientation tag so we can confirm the
-  // hypothesis without shipping the workaround forever if it turns out
-  // to be a vision-camera bug we can fix upstream.
+  // Orientation is deliberately NOT overridden — CIRAWFilter's default
+  // is to honour the DNG's Orientation EXIF tag, so a phone-held-portrait
+  // capture comes out portrait, which is what the chart validator UI
+  // expects. We log the tag so if it ever varies (e.g. between EV=0 and
+  // EV=-1 captures, which was the original hypothesis) we can see it
+  // in Metro instead of guessing.
   private func configureRawFilter(
     _ rawFilter: CIRAWFilter, url: URL, tag: String
   ) {
@@ -392,9 +385,8 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     let stored = readDngOrientation(url: url)
     let storedName = stored.map(orientationName) ?? "nil"
     NSLog(
-      "DngDecoder [\(tag)]: DNG stored orientation=\(storedName), "
-        + "forcing filter.orientation=.up")
-    rawFilter.orientation = .up
+      "DngDecoder [\(tag)]: DNG stored orientation=\(storedName) "
+        + "(honoured by CIRAWFilter)")
   }
 
   private func readDngOrientation(url: URL) -> CGImagePropertyOrientation? {

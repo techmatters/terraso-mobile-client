@@ -412,7 +412,7 @@ export const MunsellChartValidatorScreen = ({
                       y={s.y}
                       width={s.w}
                       height={s.h}
-                      fill="rgba(0,180,255,0.65)"
+                      fill="rgb(0,180,255)"
                     />
                   ))}
                 </Svg>
@@ -717,7 +717,7 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
               y={s.y}
               width={s.w}
               height={s.h}
-              fill="rgba(0,180,255,0.65)"
+              fill="rgb(0,180,255)"
             />
           ))}
         {maskView === 'body' &&
