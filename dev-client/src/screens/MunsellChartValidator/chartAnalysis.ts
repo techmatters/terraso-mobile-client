@@ -24,7 +24,7 @@ import {labToMunsell, munsellToLab} from 'munsell';
 import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
 
 import {
-  detectChartByGrid,
+  detectChartByRegions,
   type GridDetection,
   type GridEntry,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/gridRegistration';
@@ -115,14 +115,16 @@ export const analyzeMunsellChart = async (
     pixels: new Uint8Array(gray.pixels),
   };
 
-  // 2. Find the swatch grid directly — much more robust than trying
-  //    to identify the chart card body (which can lose against a
-  //    bright paper background).
-  const grid = detectChartByGrid(grayImage);
+  // 2. Region-growing chart detection. Grows uniform-brightness
+  //    regions from every pixel; dark swatches and bright holes
+  //    both surface as their own regions and are used together as
+  //    grid anchors. No global brightness threshold — adapts to
+  //    whatever lighting the capture has.
+  const grid = detectChartByRegions(grayImage);
   if (!grid) {
     throw new Error(
-      'Could not detect the Munsell swatch grid in the image. ' +
-        'Ensure the whole chart is visible and framed reasonably square-on.',
+      'Could not detect the Munsell chart in the image. ' +
+        'Ensure the whole chart is visible and reasonably square-on.',
     );
   }
 
@@ -223,6 +225,106 @@ const wbScaleFromReference = (
     g: raw.g > MIN ? eg / raw.g : 1,
     b: raw.b > MIN ? eb / raw.b : 1,
   };
+};
+
+// Dev export: one row per swatch, with the same Munsell / ΔE the
+// on-screen grid shows plus BT.709 full-range 8-bit YCbCr for both the
+// expected and measured colour. Each side is emitted twice — once
+// straight from linear-sRGB (scene-referred), once from
+// gamma-encoded sRGB (display-referred, what a camera pipeline
+// typically outputs). Tester picks which one is meaningful for the
+// question they're asking.
+//
+// BT.709 luma weights + full-range 8-bit for both variants. Matches
+// the "Rec709-ish 0..255 luma" note in DngDecoder.nitro.ts and the
+// frame-analyzer, so numbers line up with ImageAnalysis Y-plane bytes
+// elsewhere in the app.
+export const csvFromCells = (
+  cells: readonly MunsellCellResult[],
+  referenceNotation: string | null,
+): string => {
+  const header = [
+    'notation_expected',
+    'notation_measured',
+    'delta_e',
+    'y_lin_expected',
+    'cb_lin_expected',
+    'cr_lin_expected',
+    'y_srgb_expected',
+    'cb_srgb_expected',
+    'cr_srgb_expected',
+    'y_lin_measured',
+    'cb_lin_measured',
+    'cr_lin_measured',
+    'y_srgb_measured',
+    'cb_srgb_measured',
+    'cr_srgb_measured',
+    'is_reference',
+  ].join(',');
+  const rows = cells.map(c => {
+    const ex = linearRgbToYCbCrPair(c.cell.expectedLinearRgb);
+    const me = linearRgbToYCbCrPair(c.measuredLinearRgb);
+    return [
+      csvQuote(c.cell.notation),
+      csvQuote(c.measuredMunsell),
+      c.deltaE.toFixed(2),
+      ex.linear.y,
+      ex.linear.cb,
+      ex.linear.cr,
+      ex.srgb.y,
+      ex.srgb.cb,
+      ex.srgb.cr,
+      me.linear.y,
+      me.linear.cb,
+      me.linear.cr,
+      me.srgb.y,
+      me.srgb.cb,
+      me.srgb.cr,
+      c.cell.notation === referenceNotation ? 'true' : 'false',
+    ].join(',');
+  });
+  return [header, ...rows].join('\n') + '\n';
+};
+
+const csvQuote = (s: string) => `"${s.replace(/"/g, '""')}"`;
+
+type YCbCr = {y: number; cb: number; cr: number};
+
+// Both linear- and sRGB-encoded YCbCr for the same linear-RGB input.
+// Same BT.709 weights + full-range 8-bit scaling on both; the only
+// difference is whether the sRGB gamma curve is applied first.
+// Unclamped — over-range measurements (post-WB scaling) can produce
+// Y > 255 or Cb/Cr outside [0, 255], and the CSV keeps those visible
+// rather than clipping them silently.
+const linearRgbToYCbCrPair = (rgb: {
+  r: number;
+  g: number;
+  b: number;
+}): {linear: YCbCr; srgb: YCbCr} => ({
+  linear: rgbToYCbCr(rgb.r, rgb.g, rgb.b),
+  srgb: rgbToYCbCr(
+    linearToSrgb(rgb.r),
+    linearToSrgb(rgb.g),
+    linearToSrgb(rgb.b),
+  ),
+});
+
+const rgbToYCbCr = (r: number, g: number, b: number): YCbCr => {
+  const y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  const cb = (b - y) / 1.8556;
+  const cr = (r - y) / 1.5748;
+  return {
+    y: Math.round(y * 255),
+    cb: Math.round(cb * 255 + 128),
+    cr: Math.round(cr * 255 + 128),
+  };
+};
+
+// Standard sRGB piecewise gamma. Negative inputs fall through the
+// linear branch (12.92 * x), avoiding NaN from Math.pow on negatives.
+const linearToSrgb = (x: number): number => {
+  if (x <= 0.0031308) return 12.92 * x;
+  return 1.055 * Math.pow(x, 1 / 2.4) - 0.055;
 };
 
 // labToMunsell can throw on out-of-gamut points or hit its iteration

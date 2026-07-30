@@ -16,9 +16,15 @@
  */
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {ActivityIndicator, Image, StyleSheet, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Text as RNText,
+  StyleSheet,
+  View,
+} from 'react-native';
 import Share from 'react-native-share';
-import Svg, {Rect, Text as SvgText} from 'react-native-svg';
+import Svg, {Rect, Image as SvgImage, Text as SvgText} from 'react-native-svg';
 
 import {
   cacheDirectory,
@@ -40,6 +46,7 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {
   analyzeMunsellChart,
   computeCellResults,
+  csvFromCells,
   DEFAULT_REFERENCE_NOTATION,
   type MunsellCellResult,
   type MunsellChartResult,
@@ -141,6 +148,10 @@ export const MunsellChartValidatorScreen = ({
   // Off-screen export SVG at the fixed EXPORT_CSS_WIDTH × EXPORT_CSS_HEIGHT
   // size — this is what we hand to toDataURL.
   const exportSvgRef = useRef<Svg>(null);
+  // Off-screen SVG for the flat-mask debug PNG export. Sized to the
+  // preview's own pixel dimensions so toDataURL produces a full-res
+  // bitmap the tester can pinch-zoom to inspect the mask.
+  const flatExportSvgRef = useRef<Svg>(null);
   const [sharing, setSharing] = useState(false);
   const [view, setView] = useState<'grid' | 'source'>('grid');
   // Cell notation the tester picked as WB reference. Default to a
@@ -193,6 +204,51 @@ export const MunsellChartValidatorScreen = ({
         });
       } catch (err) {
         console.error('Munsell result share failed:', err);
+      } finally {
+        setSharing(false);
+      }
+    });
+  }, []);
+
+  const shareAsCsv = useCallback(async () => {
+    setSharing(true);
+    try {
+      const csv = csvFromCells(cells, referenceNotation);
+      const outPath = `${cacheDirectory}munsell-chart-result.csv`;
+      await writeAsStringAsync(outPath, csv, {encoding: EncodingType.UTF8});
+      await Share.open({
+        url: outPath.startsWith('file://') ? outPath : `file://${outPath}`,
+        type: 'text/csv',
+        failOnCancel: false,
+      });
+    } catch (err) {
+      console.error('Munsell result CSV share failed:', err);
+    } finally {
+      setSharing(false);
+    }
+  }, [cells, referenceNotation]);
+
+  const shareFlat = useCallback(() => {
+    const svg = flatExportSvgRef.current;
+    if (!svg) return;
+    setSharing(true);
+    (
+      svg as unknown as {
+        toDataURL: (cb: (b64: string) => void, opts?: object) => void;
+      }
+    ).toDataURL(async (base64: string) => {
+      try {
+        const outPath = `${cacheDirectory}munsell-flat-mask.png`;
+        await writeAsStringAsync(outPath, base64, {
+          encoding: EncodingType.Base64,
+        });
+        await Share.open({
+          url: outPath.startsWith('file://') ? outPath : `file://${outPath}`,
+          type: 'image/png',
+          failOnCancel: false,
+        });
+      } catch (err) {
+        console.error('Munsell flat-mask share failed:', err);
       } finally {
         setSharing(false);
       }
@@ -268,6 +324,24 @@ export const MunsellChartValidatorScreen = ({
                     stretchToFit
                   />
                 </Box>
+                <Box flex={1}>
+                  <ContainedButton
+                    label={sharing ? 'Sharing…' : 'Share as CSV'}
+                    onPress={shareAsCsv}
+                    disabled={sharing}
+                    stretchToFit
+                  />
+                </Box>
+              </Row>
+              <Row space="sm">
+                <Box flex={1}>
+                  <ContainedButton
+                    label={sharing ? 'Sharing…' : 'Share flat mask (debug)'}
+                    onPress={shareFlat}
+                    disabled={sharing}
+                    stretchToFit
+                  />
+                </Box>
               </Row>
               {/* Off-screen duplicate used only for high-res PNG export.
                  Positioned way off the visible area so RN still lays
@@ -280,6 +354,45 @@ export const MunsellChartValidatorScreen = ({
                   referenceNotation={referenceNotation}
                   onCellPress={null}
                 />
+              </View>
+              {/* Off-screen flat-mask export: preview image + blue
+                 flat-mask overlay at full preview resolution, so
+                 toDataURL yields a bitmap the tester can zoom into
+                 and actually read. */}
+              <View
+                style={[
+                  styles.exportContainer,
+                  {
+                    width: state.result.preview.width,
+                    height: state.result.preview.height,
+                  },
+                ]}
+                pointerEvents="none">
+                <Svg
+                  ref={flatExportSvgRef}
+                  width="100%"
+                  height="100%"
+                  viewBox={`0 0 ${state.result.preview.width} ${state.result.preview.height}`}
+                  preserveAspectRatio="xMidYMid meet">
+                  <SvgImage
+                    href={state.result.preview.uri}
+                    x={0}
+                    y={0}
+                    width={state.result.preview.width}
+                    height={state.result.preview.height}
+                    preserveAspectRatio="xMidYMid meet"
+                  />
+                  {state.result.grid.brightMaskSpans.map((s, i) => (
+                    <Rect
+                      key={`fm-${i}`}
+                      x={s.x}
+                      y={s.y}
+                      width={s.w}
+                      height={s.h}
+                      fill="rgba(0,180,255,0.65)"
+                    />
+                  ))}
+                </Svg>
               </View>
             </>
           )}
@@ -518,9 +631,27 @@ const ResultCell = ({
 // most cells have a corresponding green dot inside them, we found
 // most swatches directly; if not, most cells were extrapolated from
 // what few we did find.
+// Colour code for the raw-blob debug rectangles. Chosen so kept
+// blobs disappear into the (existing) green dots while each rejection
+// reason is easy to eyeball on a busy overlay.
+const RAW_BLOB_STROKE: Record<string, string> = {
+  kept: 'rgba(34,204,34,0.9)', // green
+  kept_dark: 'rgba(0,220,0,0.9)', // green — dark swatch candidates
+  kept_bright: 'rgba(0,255,180,0.9)', // teal — bright hole candidates
+  reject_area_low: 'rgba(180,180,180,0.6)', // grey — noise
+  reject_area_high: 'rgba(0,120,255,0.9)', // blue — chart body / paper
+  reject_aspect: 'rgba(255,80,255,0.9)', // magenta — oblong
+  reject_fill: 'rgba(255,160,0,0.9)', // orange — ring/text/hollow
+  reject_mindim: 'rgba(140,140,140,0.7)', // grey — tiny
+  reject_touches_edge: 'rgba(255,255,0,0.6)', // yellow — edge
+  reject_brightness: 'rgba(150,100,50,0.7)', // brown — mid-value regions
+  reject_low_contrast: 'rgba(200,50,50,0.5)', // dark red — paper fragmentation
+};
+
 const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
   const {preview, previewRects, detectedSwatches, grid} = result;
   const aspect = preview.width / preview.height;
+  const [maskView, setMaskView] = useState<'none' | 'bright' | 'body'>('none');
   return (
     <Box width="100%" aspectRatio={aspect} backgroundColor="grey.900">
       <Image
@@ -532,6 +663,64 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
         style={StyleSheet.absoluteFill}
         viewBox={`0 0 ${preview.width} ${preview.height}`}
         preserveAspectRatio="xMidYMid meet">
+        {/* Mask overlay (semi-transparent white for the bright mask
+           post-restrict-post-open, magenta for the chart body mask
+           pre-largest-CC). Toggled below so we can see one at a
+           time without them stacking into mush. */}
+        {maskView === 'bright' &&
+          grid.brightMaskSpans.map((s, i) => (
+            <Rect
+              key={`bm-${i}`}
+              x={s.x}
+              y={s.y}
+              width={s.w}
+              height={s.h}
+              fill="rgba(0,180,255,0.65)"
+            />
+          ))}
+        {maskView === 'body' &&
+          grid.chartBodyMaskSpans.map((s, i) => (
+            <Rect
+              key={`cbm-${i}`}
+              x={s.x}
+              y={s.y}
+              width={s.w}
+              height={s.h}
+              fill="rgba(255,0,255,0.35)"
+            />
+          ))}
+        {/* Chart body bounding box in cyan — the region hole detection
+           was restricted to. If this outline doesn't match the actual
+           chart, the chart-body detector is at fault (wrong bandpass
+           thresholds, or a similarly-grey object in the frame). */}
+        {grid.chartBodyBounds && (
+          <Rect
+            key="chart-body"
+            x={grid.chartBodyBounds.minX}
+            y={grid.chartBodyBounds.minY}
+            width={grid.chartBodyBounds.maxX - grid.chartBodyBounds.minX + 1}
+            height={grid.chartBodyBounds.maxY - grid.chartBodyBounds.minY + 1}
+            stroke="cyan"
+            strokeWidth={2}
+            fill="none"
+          />
+        )}
+        {/* Raw connected-components (post noise floor), colour-coded
+           by why the shape filter kept or rejected them. Rendered
+           first so the smaller "detected" and "ROI" markers sit on
+           top. */}
+        {grid.rawBlobs.map((b, i) => (
+          <Rect
+            key={`raw-${i}`}
+            x={b.minX}
+            y={b.minY}
+            width={b.maxX - b.minX + 1}
+            height={b.maxY - b.minY + 1}
+            stroke={RAW_BLOB_STROKE[b.status] ?? 'white'}
+            strokeWidth={1}
+            fill="none"
+          />
+        ))}
         {/* Fitted-grid intersections in yellow — one dot per (row, col)
            position, computed from the affine fit of the detected
            swatch centroids. Useful for seeing whether the fit lined
@@ -575,7 +764,59 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
           />
         ))}
       </Svg>
+      <RawBlobLegend rawBlobs={grid.rawBlobs} />
+      <MaskToggle value={maskView} onChange={setMaskView} />
     </Box>
+  );
+};
+
+// Toggle for the mask overlays. Sits in the top-right of the source
+// view. Buttons are big enough to hit reliably on-device but small
+// enough not to obscure the chart.
+const MaskToggle = ({
+  value,
+  onChange,
+}: {
+  value: 'none' | 'bright' | 'body';
+  onChange: (v: 'none' | 'bright' | 'body') => void;
+}) => {
+  const btn = (label: string, v: 'none' | 'bright' | 'body', color: string) => (
+    <RNText
+      key={v}
+      style={[styles.maskToggleBtn, value === v && {backgroundColor: color}]}
+      onPress={() => onChange(v)}>
+      {label}
+    </RNText>
+  );
+  return (
+    <View style={styles.maskToggleContainer}>
+      {btn('none', 'none', 'rgba(120,120,120,0.9)')}
+      {btn('flat', 'bright', 'rgba(255,255,255,0.9)')}
+      {btn('body', 'body', 'rgba(255,0,255,0.9)')}
+    </View>
+  );
+};
+
+// Small legend rendered over the top-left of the source overlay: one
+// line per rejection reason with a count, so you can see at a glance
+// "22 blobs rejected as too big" without having to eyeball colours.
+const RawBlobLegend = ({
+  rawBlobs,
+}: {
+  rawBlobs: MunsellChartResult['grid']['rawBlobs'];
+}) => {
+  const counts: Record<string, number> = {};
+  for (const b of rawBlobs) counts[b.status] = (counts[b.status] ?? 0) + 1;
+  const entries = Object.entries(counts).sort(([, a], [, b]) => b - a);
+  return (
+    <View style={styles.legendContainer} pointerEvents="none">
+      {entries.map(([status, n]) => (
+        <RNText key={status} style={styles.legendLine}>
+          <RNText style={{color: RAW_BLOB_STROKE[status] ?? 'white'}}>■</RNText>
+          {`  ${status}: ${n}`}
+        </RNText>
+      ))}
+    </View>
   );
 };
 
@@ -776,5 +1017,35 @@ const styles = StyleSheet.create({
     top: 0,
     width: EXPORT_CSS_WIDTH,
     height: EXPORT_CSS_HEIGHT,
+  },
+  legendContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+  },
+  legendLine: {
+    color: 'white',
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  maskToggleContainer: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    flexDirection: 'row',
+    gap: 4,
+  },
+  maskToggleBtn: {
+    color: 'white',
+    fontSize: 11,
+    fontWeight: '600',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    overflow: 'hidden',
+    borderRadius: 4,
   },
 });
