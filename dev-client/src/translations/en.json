@@ -3,17 +3,24 @@
         "title": "Welcome to LandPKS Soil ID",
         "version_includes": {
             "title": "This version includes:",
-            "bullet_1": "Offline: enabled site creation, edit site metadata and notes",
-            "bullet_2": "New language: Swahili",
-            "bullet_3": "Improved translations for Ukrainian, Georgian, and Spanish",
-            "bullet_4": "More descriptive error message for sync conflicts",
-            "bullet_5": "Improved experience of searching for coordinates on map",
-            "bullet_6": "Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data",
-            "bullet_7": "Fixed a bug where the color module would crash with overexposed photos"
+            "bullet_1": "Max soil depth increased to 300cm",
+            "bullet_2": "Streamlined account deletion",
+            "bullet_3": "Added an “unaffiliated” option to filter sites list",
+            "bullet_4": "Fixed a bug that flashed an alert when a user deleted a site",
+            "bullet_5": "Functionality updates for text fields",
+            "bullet_6": "Added Mapbox attribution",
+            "bullet_7": "Updated links to new LandPKS website"
+        },
+        "soil_id_updates": {
+            "title": "Improvements to the Soil ID Algorithm since last release:",
+            "bullet_1": "Fixed a bug that would cause the algorithm to crash",
+            "bullet_2": "Fixed a bug which could cause the wrong soils data to display",
+            "bullet_3": "Fixed a bug where leaving empty depths would reduce data sent to the algorithm",
+            "bullet_4": "Fixed a bug where Soil ID did not return soils at certain locations"
         },
         "next": {
             "title": "Future versions will include:",
-            "bullet_1": "Soil pH"
+            "bullet_1": "Improvements to the soil color module"
         },
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",

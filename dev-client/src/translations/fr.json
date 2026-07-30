@@ -2,18 +2,25 @@
     "welcome": {
         "title": "Bienvenue sur LandPKS Soil ID",
         "next": {
-            "title": "Quelle est la prochaine étape ?",
-            "bullet_1": "pH du sol"
+            "title": "Les prochaines versions comprendront :",
+            "bullet_1": "Améliorations du module de couleur du sol"
         },
         "version_includes": {
             "title": "Cette version comprend :",
-            "bullet_1": "Hors ligne : création de sites et modification des métadonnées et notes activées",
-            "bullet_2": "Nouvelle langue : swahili",
-            "bullet_3": "Traductions améliorées pour l'ukrainien, le géorgien et l'espagnol",
-            "bullet_4": "Message d'erreur plus détaillé pour les conflits de synchronisation",
-            "bullet_5": "Expérience améliorée pour la recherche de coordonnées sur la carte",
-            "bullet_6": "Correction d'un problème où les utilisateurs qui se déconnectaient puis se reconnectaient avec un autre compte voyaient temporairement les données du premier compte",
-            "bullet_7": "Correction d'un bug où le module de couleur plantait avec des photos surexposées"
+            "bullet_1": "Profondeur maximale du sol portée à 300 cm",
+            "bullet_2": "Suppression de compte simplifiée",
+            "bullet_3": "Ajout d'une option « non affilié » pour filtrer la liste des sites",
+            "bullet_4": "Correction d'un bug qui affichait brièvement une alerte lors de la suppression d'un site",
+            "bullet_5": "Améliorations du fonctionnement des champs de texte",
+            "bullet_6": "Ajout de l'attribution Mapbox",
+            "bullet_7": "Mise à jour des liens vers le nouveau site web LandPKS"
+        },
+        "soil_id_updates": {
+            "title": "Améliorations de l'algorithme Soil ID depuis la dernière version :",
+            "bullet_1": "Correction d'un bug qui faisait planter l'algorithme",
+            "bullet_2": "Correction d'un bug qui pouvait afficher des données de sol erronées",
+            "bullet_3": "Correction d'un bug où laisser des profondeurs vides réduisait les données envoyées à l'algorithme",
+            "bullet_4": "Correction d'un bug où Soil ID ne renvoyait aucun sol à certains endroits"
         },
         "learn_more": "Apprenez-en plus et restez informé :",
         "link_text": "LandPKS de Terraso",

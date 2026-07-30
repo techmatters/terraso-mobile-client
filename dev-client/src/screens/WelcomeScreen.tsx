@@ -63,6 +63,11 @@ export const WelcomeScreen = () => {
           </Text>
           <TranslatedBulletList i18nKeyPrefix="welcome.version_includes.bullet_" />
 
+          <Text variant="body1" mb="sm">
+            {t('welcome.soil_id_updates.title')}
+          </Text>
+          <TranslatedBulletList i18nKeyPrefix="welcome.soil_id_updates.bullet_" />
+
           <Text variant="body1-strong" mb="sm">
             {t('welcome.next.title')}
           </Text>
