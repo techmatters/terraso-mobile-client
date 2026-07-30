@@ -202,19 +202,24 @@ export const applyAffine = (t: Affine, p: Point): Point => ({
   y: t.d * p.x + t.e * p.y + t.f,
 });
 
-// Score a candidate transform by continuous per-ref contribution:
-// each ref point finds its nearest unclaimed detected point (greedy
-// unique assignment); if that nearest lies within pixelThreshold,
-// it contributes `1 - (dist/threshold)²` to the score (so 1 at
-// perfect overlap, 0 at threshold, 0 beyond); otherwise 0. Sum
-// across all refs. Max possible ≈ min(refs, detected), but only
-// hit if every matched pair overlaps perfectly — which gives the
-// scorer natural tie-breaking: two transforms that match the same
-// count of refs favour the one with tighter residuals.
+// Score a candidate transform. Each ref point finds its nearest
+// unclaimed detected point (greedy unique assignment); if within
+// pixelThreshold, contributes `1 + TIGHTNESS_BONUS × (1 - (dist/
+// threshold)²)` — a fixed 1.0 for the match itself plus a small
+// bonus for how close the residual is. Otherwise 0.
 //
-// Greedy unique-assignment (claimed[] array) still prevents
-// degenerate transforms that collapse many refs onto the same
-// detected point.
+// The fixed-1.0 term makes COUNT strictly dominant: a transform
+// matching 31 loose-but-in-threshold refs (score ≈ 31) will always
+// beat one matching 28 dead-on refs (score ≈ 30.8). The bonus is
+// only ever a tie-breaker between transforms with the same match
+// count. Earlier versions used only the (1 - (dist/thresh)²) term,
+// which let tight-but-fewer fits beat loose-but-more fits — that
+// caused visible "shifted by one row" misalignments where a
+// slightly-tighter fit ignored the bottom detected row.
+//
+// Greedy unique-assignment (claimed[] array) prevents degenerate
+// transforms that collapse many refs onto the same detected point.
+const TIGHTNESS_BONUS = 0.1;
 export const scoreTransform = (
   t: Affine,
   refPoints: readonly Point[],
@@ -241,7 +246,7 @@ export const scoreTransform = (
     }
     if (bestIdx >= 0) {
       claimed[bestIdx] = true;
-      score += 1 - bestDist2 / t2;
+      score += 1 + TIGHTNESS_BONUS * (1 - bestDist2 / t2);
     }
   }
   return score;
