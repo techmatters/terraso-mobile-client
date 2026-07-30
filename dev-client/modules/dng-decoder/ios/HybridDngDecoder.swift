@@ -52,19 +52,7 @@ class HybridDngDecoder: HybridDngDecoderSpec {
       throw RuntimeError.error(
         withMessage: "CIRAWFilter could not open DNG at \(url.path)")
     }
-
-    // Ask CIRAWFilter to give us the least-processed output it can. Apple's
-    // ISP has already applied WB / demosaic / tone curve / noise reduction
-    // into the ProRAW pixel data itself; these knobs only affect additional
-    // adjustments the filter would otherwise layer on top.
-    //
-    // Only boostAmount and boostShadowAmount are exposed as typed
-    // properties on the modern CIRAWFilter class; other knobs like
-    // disableGamutMap and noiseReductionAmount are on the old ObjC
-    // key-value interface and don't surface here. The two we can set are
-    // the dominant contributors to Apple's post-decode tone shaping.
-    rawFilter.boostAmount = 0.0
-    rawFilter.boostShadowAmount = 0.0
+    configureRawFilter(rawFilter, url: url, tag: "decodeDngRois")
 
     guard let ciImage = rawFilter.outputImage else {
       throw RuntimeError.error(withMessage: "CIRAWFilter produced no outputImage")
@@ -147,10 +135,7 @@ class HybridDngDecoder: HybridDngDecoderSpec {
       throw RuntimeError.error(
         withMessage: "CIRAWFilter could not open DNG at \(url.path)")
     }
-    // Same neutralization we do in decodeDngRois so the preview matches
-    // what the analysis is looking at.
-    rawFilter.boostAmount = 0.0
-    rawFilter.boostShadowAmount = 0.0
+    configureRawFilter(rawFilter, url: url, tag: "renderPreview")
 
     guard let ciImage = rawFilter.outputImage else {
       throw RuntimeError.error(withMessage: "CIRAWFilter produced no outputImage")
@@ -221,11 +206,7 @@ class HybridDngDecoder: HybridDngDecoderSpec {
       throw RuntimeError.error(
         withMessage: "CIRAWFilter could not open DNG at \(url.path)")
     }
-    // Same neutralisation as decodeDngRois / renderPreview so the
-    // grayscale image the CV sees matches the pixels the analysis
-    // pipeline will decode later.
-    rawFilter.boostAmount = 0.0
-    rawFilter.boostShadowAmount = 0.0
+    configureRawFilter(rawFilter, url: url, tag: "readPreviewGrayscale")
 
     guard let ciImage = rawFilter.outputImage else {
       throw RuntimeError.error(withMessage: "CIRAWFilter produced no outputImage")
@@ -306,6 +287,61 @@ class HybridDngDecoder: HybridDngDecoderSpec {
       sourceWidth: Double(sourceWidth),
       sourceHeight: Double(sourceHeight)
     )
+  }
+
+  // Shared pre-decode config for every CIRAWFilter entry point. Two
+  // reasons this is centralized:
+  //
+  // 1. `boostAmount` / `boostShadowAmount` = 0 disable Apple's default
+  //    tone shaping, keeping the RAW pipeline as linear as possible.
+  //
+  // 2. `orientation = .up` forces the sensor-native coordinate frame
+  //    regardless of the DNG's Orientation EXIF tag. We saw the tag
+  //    flip between EV=0 and EV=-1 captures (probably vision-camera's
+  //    session reconfigure re-deriving `AVCaptureConnection.videoOrientation`
+  //    from a stale value), which rotated `outputImage` and desynced the
+  //    ROI coords chart-registration produces from the pixels the
+  //    preview PNG shows. Forcing `.up` normalizes it.
+  //
+  // We log the DNG's stored orientation tag so we can confirm the
+  // hypothesis without shipping the workaround forever if it turns out
+  // to be a vision-camera bug we can fix upstream.
+  private func configureRawFilter(
+    _ rawFilter: CIRAWFilter, url: URL, tag: String
+  ) {
+    rawFilter.boostAmount = 0.0
+    rawFilter.boostShadowAmount = 0.0
+    let stored = readDngOrientation(url: url)
+    let storedName = stored.map(orientationName) ?? "nil"
+    NSLog(
+      "DngDecoder [\(tag)]: DNG stored orientation=\(storedName), "
+        + "forcing filter.orientation=.up")
+    rawFilter.orientation = .up
+  }
+
+  private func readDngOrientation(url: URL) -> CGImagePropertyOrientation? {
+    guard let src = CGImageSourceCreateWithURL(url as CFURL, nil),
+      let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil)
+        as? [CFString: Any],
+      let raw = props[kCGImagePropertyOrientation] as? UInt32
+    else {
+      return nil
+    }
+    return CGImagePropertyOrientation(rawValue: raw)
+  }
+
+  private func orientationName(_ o: CGImagePropertyOrientation) -> String {
+    switch o {
+    case .up: return "up(1)"
+    case .upMirrored: return "upMirrored(2)"
+    case .down: return "down(3)"
+    case .downMirrored: return "downMirrored(4)"
+    case .leftMirrored: return "leftMirrored(5)"
+    case .right: return "right(6)"
+    case .rightMirrored: return "rightMirrored(7)"
+    case .left: return "left(8)"
+    @unknown default: return "unknown(\(o.rawValue))"
+    }
   }
 
   private func channelChar(_ c: UInt8) -> String {

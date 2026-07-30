@@ -142,6 +142,18 @@ const VisionCameraViewImpl = ({
       : defaultDevice;
   const {hasPermission, requestPermission} = useCameraPermission();
 
+  // EV compensation for capture. iPhone ProRAW bakes Apple's ISP tone
+  // curve into the pixel data — bright cells get highlight-compressed
+  // toward neutral (very visible on high-value Munsell chart chips
+  // like 10YR 8/8). Under-exposing the whole capture keeps the sensor
+  // in the linear-ish middle of that curve where Apple's compression
+  // hasn't kicked in yet. Cycles 0 → -1 → -2 → 0 on tap so a tester
+  // can pick the least-clipped setting without leaving the camera.
+  const [exposureEv, setExposureEv] = useState<number>(0);
+  const cycleExposureEv = useCallback(() => {
+    setExposureEv(v => (v === 0 ? -1 : v === -1 ? -2 : 0));
+  }, []);
+
   const [isCapturing, setIsCapturing] = useState(false);
   // Set by IosDngCameraLayer when it mounts (dng-live only). Used by
   // shutter to bracket photoOutput.capturePhoto() with a detach/reattach
@@ -265,6 +277,7 @@ const VisionCameraViewImpl = ({
           device={device}
           isActive={visible}
           photoOutput={photoOutput}
+          exposure={exposureEv}
         />
       ) : (
         <Camera
@@ -272,6 +285,7 @@ const VisionCameraViewImpl = ({
           device={device}
           isActive={visible}
           outputs={outputs}
+          exposure={exposureEv}
           // Tap anywhere on the viewfinder to refocus there.
           // Continuous autofocus is on by default; this lets the user
           // pick a specific point (soil patch or reference card) when
@@ -288,7 +302,9 @@ const VisionCameraViewImpl = ({
       shutter={shutter}
       shutterDisabled={!device || !hasPermission || isCapturing}
       isCapturing={isCapturing}
-      hasPermission={hasPermission}>
+      hasPermission={hasPermission}
+      exposureEv={exposureEv}
+      onCycleExposure={cycleExposureEv}>
       {preview}
     </CameraChrome>
   );
@@ -321,11 +337,13 @@ const IosDngCameraLayer = ({
   device,
   isActive,
   photoOutput,
+  exposure,
 }: {
   ref?: React.Ref<IosDngCameraLayerHandle>;
   device: CameraDevice;
   isActive: boolean;
   photoOutput: CameraPhotoOutput;
+  exposure: number;
 }) => {
   const {frameOutput, refQuality, sampleQuality} = useRoiFrameAnalyzer();
   // Toggled by prepareForCapture/finishCapture. When true, the outputs
@@ -376,6 +394,7 @@ const IosDngCameraLayer = ({
         isActive={isActive}
         outputs={outputs}
         onConfigured={onConfigured}
+        exposure={exposure}
         enableNativeTapToFocusGesture={true}
       />
       <RoiOverlay
@@ -463,6 +482,8 @@ const CameraChrome = ({
   shutterDisabled,
   isCapturing,
   hasPermission,
+  exposureEv,
+  onCycleExposure,
   children,
 }: {
   visible: boolean;
@@ -471,6 +492,8 @@ const CameraChrome = ({
   shutterDisabled: boolean;
   isCapturing: boolean;
   hasPermission: boolean;
+  exposureEv: number;
+  onCycleExposure: () => void;
   children: ReactNode;
 }) => {
   const {t} = useTranslation();
@@ -513,6 +536,16 @@ const CameraChrome = ({
               hitSlop={12}
               style={styles.iconButton}>
               <Icon name="close" color="white" size="lg" />
+            </Pressable>
+            <Pressable
+              onPress={onCycleExposure}
+              accessibilityRole="button"
+              accessibilityLabel="cycle exposure compensation"
+              hitSlop={12}
+              style={styles.evButton}>
+              <Text color="white" variant="body1" bold>
+                {`EV ${exposureEv > 0 ? '+' : ''}${exposureEv}`}
+              </Text>
             </Pressable>
           </View>
           <View style={styles.bottomBar}>
@@ -586,6 +619,8 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 12,
     paddingHorizontal: 16,
     paddingTop: 12,
   },
@@ -595,6 +630,14 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 8,
+  },
+  evButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.6)',
   },
   shutter: {
     width: 72,
