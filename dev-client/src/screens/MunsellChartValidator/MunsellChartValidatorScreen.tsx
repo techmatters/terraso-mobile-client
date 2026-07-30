@@ -24,7 +24,12 @@ import {
   View,
 } from 'react-native';
 import Share from 'react-native-share';
-import Svg, {Rect, Image as SvgImage, Text as SvgText} from 'react-native-svg';
+import Svg, {
+  Circle,
+  Rect,
+  Image as SvgImage,
+  Text as SvgText,
+} from 'react-native-svg';
 
 import {
   cacheDirectory,
@@ -636,8 +641,8 @@ const ResultCell = ({
 // reason is easy to eyeball on a busy overlay.
 const RAW_BLOB_STROKE: Record<string, string> = {
   kept: 'rgba(34,204,34,0.9)', // green
-  kept_dark: 'rgba(0,220,0,0.9)', // green — dark swatch candidates
-  kept_bright: 'rgba(0,255,180,0.9)', // teal — bright hole candidates
+  kept_dark: 'rgba(0,220,0,0.9)', // green — dark swatch candidates (unused by new pipeline)
+  kept_bright: 'rgba(34,204,34,0.9)', // green — THE detected circles (RANSAC input)
   reject_area_low: 'rgba(180,180,180,0.6)', // grey — noise
   reject_area_high: 'rgba(0,120,255,0.9)', // blue — chart body / paper
   reject_aspect: 'rgba(255,80,255,0.9)', // magenta — oblong
@@ -646,6 +651,25 @@ const RAW_BLOB_STROKE: Record<string, string> = {
   reject_touches_edge: 'rgba(255,255,0,0.6)', // yellow — edge
   reject_brightness: 'rgba(150,100,50,0.7)', // brown — mid-value regions
   reject_low_contrast: 'rgba(200,50,50,0.5)', // dark red — paper fragmentation
+};
+
+// Statuses hidden from the legend and from the raw-blob overlay
+// because they aren't meaningful to the new RANSAC-match pipeline:
+// dark-classified circles aren't fed to the match, and the two
+// rejections cover blobs that are neutral / low-contrast (which
+// the match doesn't care about — they just aren't inputs).
+const HIDDEN_STATUSES = new Set([
+  'kept_dark',
+  'reject_low_contrast',
+  'reject_brightness',
+  'reject_fill',
+]);
+
+// Display label for statuses that get renamed in the legend to match
+// the vocabulary of the new pipeline (kept_bright → the actual
+// "detected circles" fed to RANSAC).
+const STATUS_LABEL: Record<string, string> = {
+  kept_bright: 'detected',
 };
 
 const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
@@ -705,42 +729,90 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
             fill="none"
           />
         )}
-        {/* Raw connected-components (post noise floor), colour-coded
-           by why the shape filter kept or rejected them. Rendered
-           first so the smaller "detected" and "ROI" markers sit on
-           top. */}
-        {grid.rawBlobs.map((b, i) => (
-          <Rect
-            key={`raw-${i}`}
-            x={b.minX}
-            y={b.minY}
-            width={b.maxX - b.minX + 1}
-            height={b.maxY - b.minY + 1}
-            stroke={RAW_BLOB_STROKE[b.status] ?? 'white'}
-            strokeWidth={1}
+        {/* Raw regions, colour-coded by classifier outcome. Hidden
+           statuses (kept_dark / reject_low_contrast / reject_
+           brightness) drop out entirely — they don't feed the
+           RANSAC match. The RANSAC-input circles (kept_bright)
+           render as small filled green squares at the centroid
+           for easy counting; other rejects render as bounding-
+           box outlines. */}
+        {grid.rawBlobs.map((b, i) => {
+          if (HIDDEN_STATUSES.has(b.status)) return null;
+          if (b.status === 'kept_bright') {
+            return (
+              <Rect
+                key={`raw-${i}`}
+                x={b.cx - 4}
+                y={b.cy - 4}
+                width={8}
+                height={8}
+                fill="#22cc22"
+              />
+            );
+          }
+          return (
+            <Rect
+              key={`raw-${i}`}
+              x={b.minX}
+              y={b.minY}
+              width={b.maxX - b.minX + 1}
+              height={b.maxY - b.minY + 1}
+              stroke={RAW_BLOB_STROKE[b.status] ?? 'white'}
+              strokeWidth={1}
+              fill="none"
+            />
+          );
+        })}
+        {/* Fitted-grid intersections in yellow. When the RANSAC
+           triplet-match ran, draw ALL 36 REFERENCE_GRID points
+           after the winning transform, rendered as hollow circles
+           (radius ~13) so any green centre dot inside a detected
+           hole stays visible through them. When the match didn't
+           run, fall back to the old cluster-fit grid.centers. */}
+        {grid.matchedGrid
+          ? grid.matchedGrid.map((p, i) => (
+              <Circle
+                key={`mg-${i}`}
+                cx={p.x}
+                cy={p.y}
+                r={13}
+                stroke="#ffcc00"
+                strokeWidth={3}
+                fill="none"
+              />
+            ))
+          : grid.centers.flatMap((row, ri) =>
+              row.map((p, ci) => (
+                <Rect
+                  key={`grid-${ri}-${ci}`}
+                  x={p.x - 3}
+                  y={p.y - 3}
+                  width={6}
+                  height={6}
+                  fill="#ffcc00"
+                />
+              )),
+            )}
+        {/* The 3 detected points that formed the winning triplet.
+           Bright red rings around them so a tester can see exactly
+           which 3 anchors the whole transform was built from. */}
+        {grid.matchedTripletDetected?.map((p, i) => (
+          <Circle
+            key={`tri-${i}`}
+            cx={p.x}
+            cy={p.y}
+            r={22}
+            stroke="#ff2020"
+            strokeWidth={3}
             fill="none"
           />
         ))}
-        {/* Fitted-grid intersections in yellow — one dot per (row, col)
-           position, computed from the affine fit of the detected
-           swatch centroids. Useful for seeing whether the fit lined
-           up with the physical swatches on tilted / skewed captures. */}
-        {grid.centers.flatMap((row, ri) =>
-          row.map((p, ci) => (
-            <Rect
-              key={`grid-${ri}-${ci}`}
-              x={p.x - 3}
-              y={p.y - 3}
-              width={6}
-              height={6}
-              fill="#ffcc00"
-            />
-          )),
-        )}
-        {/* Per-swatch sampling rects in red. */}
-        {previewRects.map((r, i) => (
+        {/* Sample ROIs (SAMPLE_GRID transformed) as red squares.
+           These are the pixel regions the downstream analysis
+           actually samples for per-swatch colour. */}
+        {grid.matchedSampleRects?.map((r, i) => (
           <Rect
-            key={`roi-${i}`}
+            key={`sample-${i}`}
             x={r.x}
             y={r.y}
             width={r.w}
@@ -750,21 +822,46 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
             fill="none"
           />
         ))}
-        {/* Blobs the detector directly identified as swatch candidates —
-           small green dots. Cells with a green dot inside were
-           detected; cells without one were extrapolated. */}
-        {detectedSwatches.map((d, i) => (
-          <Rect
-            key={`det-${i}`}
-            x={d.cx - 4}
-            y={d.cy - 4}
-            width={8}
-            height={8}
-            fill="#22cc22"
-          />
-        ))}
+        {/* Per-swatch sampling rects in red — from the OLD
+           cluster-fit pipeline. Hidden when the new RANSAC match
+           ran, since those ROIs would confuse the picture and
+           we'll render new ones once we build the match-based
+           sampler. */}
+        {!grid.matchedGrid &&
+          previewRects.map((r, i) => (
+            <Rect
+              key={`roi-${i}`}
+              x={r.x}
+              y={r.y}
+              width={r.w}
+              height={r.h}
+              stroke="#ff2020"
+              strokeWidth={2}
+              fill="none"
+            />
+          ))}
+        {/* Filled green dots — swatch centroids from the OLD cluster
+           fit. Hidden when the RANSAC match ran, since those centres
+           come from a different code path and would confuse the
+           "which N points did RANSAC actually use" question. The
+           real RANSAC input set is the kept_bright regions
+           (teal-outlined boxes from rawBlobs). */}
+        {!grid.matchedGrid &&
+          detectedSwatches.map((d, i) => (
+            <Rect
+              key={`det-${i}`}
+              x={d.cx - 4}
+              y={d.cy - 4}
+              width={8}
+              height={8}
+              fill="#22cc22"
+            />
+          ))}
       </Svg>
-      <RawBlobLegend rawBlobs={grid.rawBlobs} />
+      <RawBlobLegend
+        rawBlobs={grid.rawBlobs}
+        matchedScore={grid.matchedScore}
+      />
       <MaskToggle value={maskView} onChange={setMaskView} />
     </Box>
   );
@@ -802,18 +899,30 @@ const MaskToggle = ({
 // "22 blobs rejected as too big" without having to eyeball colours.
 const RawBlobLegend = ({
   rawBlobs,
+  matchedScore,
 }: {
   rawBlobs: MunsellChartResult['grid']['rawBlobs'];
+  matchedScore: number | null;
 }) => {
   const counts: Record<string, number> = {};
   for (const b of rawBlobs) counts[b.status] = (counts[b.status] ?? 0) + 1;
-  const entries = Object.entries(counts).sort(([, a], [, b]) => b - a);
+  const entries = Object.entries(counts)
+    .filter(([status]) => !HIDDEN_STATUSES.has(status))
+    .sort(([, a], [, b]) => b - a);
   return (
     <View style={styles.legendContainer} pointerEvents="none">
+      {matchedScore != null && (
+        <RNText style={styles.legendLine}>
+          <RNText style={{color: '#ffcc00'}}>■</RNText>
+          {`  match: ${matchedScore.toFixed(1)} / ${
+            counts.kept_bright ? Math.min(36, counts.kept_bright) : 36
+          } (of 36 ref)`}
+        </RNText>
+      )}
       {entries.map(([status, n]) => (
         <RNText key={status} style={styles.legendLine}>
           <RNText style={{color: RAW_BLOB_STROKE[status] ?? 'white'}}>■</RNText>
-          {`  ${status}: ${n}`}
+          {`  ${STATUS_LABEL[status] ?? status}: ${n}`}
         </RNText>
       ))}
     </View>

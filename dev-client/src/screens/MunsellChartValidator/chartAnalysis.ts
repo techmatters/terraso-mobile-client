@@ -96,6 +96,12 @@ export type MunsellChartResult = {
   // small green dots on the source view so the tester can see how
   // many swatches were actually detected vs. extrapolated.
   detectedSwatches: GridEntry[];
+  // Raw linear-sRGB per SAMPLE_GRID position (8 rows × 6 cols = 48),
+  // sampled from the DNG via matchedSampleRects. Same ordering as
+  // SAMPLE_GRID / matchedSampleRects. Null if the RANSAC match
+  // step didn't run. Not yet mapped to Munsell notations — that
+  // mapping is the next step.
+  matchedSampleValues: {r: number; g: number; b: number}[] | null;
 };
 
 // Sensible default reference cell: 10YR 5/1 is a mid-value, low-chroma
@@ -164,12 +170,33 @@ export const analyzeMunsellChart = async (
   // 5. Colour PNG preview for the validation view.
   const preview = DngDecoderHybrid.renderPreview(dngPath, PREVIEW_MAX_DIM);
 
+  // 6. If the RANSAC match ran, ALSO sample the 48 SAMPLE_GRID
+  //    positions via the DNG decoder. These are the "new pipeline"
+  //    per-swatch samples — same underlying pixel-sampling
+  //    machinery, just at the match-based rect positions instead of
+  //    the old cluster-fit ones. Not mapped to Munsell notations
+  //    yet; caller decides what to do with the raw values.
+  let matchedSampleValues: {r: number; g: number; b: number}[] | null = null;
+  if (grid.matchedSampleRects) {
+    const sampleDngRois = grid.matchedSampleRects.map(r => ({
+      x: Math.round(r.x * scaleX),
+      y: Math.round(r.y * scaleY),
+      w: Math.round(r.w * scaleX),
+      h: Math.round(r.h * scaleY),
+    }));
+    matchedSampleValues = DngDecoderHybrid.decodeDngRois(
+      dngPath,
+      sampleDngRois,
+    );
+  }
+
   return {
     measurements,
     grid,
     preview,
     previewRects,
     detectedSwatches: grid.detected,
+    matchedSampleValues,
   };
 };
 

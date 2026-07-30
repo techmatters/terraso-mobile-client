@@ -35,6 +35,14 @@ import {
   type Region,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
 import {
+  applyAffine,
+  createRandomTripletIterator,
+  findBestTransform,
+  REFERENCE_GRID,
+  SAMPLE_GRID,
+  type Point,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
+import {
   CHART_CHROMAS,
   CHART_HUE,
   CHART_VALUES,
@@ -144,6 +152,27 @@ export type GridDetection = {
   // cutting off half the chart, the split will be visible here.
   // Rendered as semi-transparent magenta.
   chartBodyMaskSpans: {x: number; y: number; w: number; h: number}[];
+  // NEW APPROACH — matched grid points. 36 preview-space positions
+  // where the reference 6×6 grid landed after the best-fit affine
+  // was computed via RANSAC-style triplet matching against the
+  // detected circle centres. Rendered as yellow dots on the source
+  // overlay, replacing the cluster-fit yellow dots when present.
+  // Null if the match step didn't run or failed.
+  matchedGrid: {x: number; y: number}[] | null;
+  // Score for the winning transform (continuous score from
+  // scoreTransform). Shown in the debug legend.
+  matchedScore: number | null;
+  // The 3 DETECTED points that formed the winning ref↔detected
+  // triplet correspondence. Rendered as prominent red rings so a
+  // tester can see which 3 anchors the whole transform was built
+  // from. Null if the match step didn't run or failed.
+  matchedTripletDetected: {x: number; y: number}[] | null;
+  // SAMPLE_GRID points transformed into preview-space, expanded to
+  // square ROIs. 48 rects (8 rows × 6 cols). These are the
+  // rectangles that get sampled for per-swatch color values.
+  // Rendered as red outlines on the source overlay and used by
+  // downstream sampling. Null if the match step didn't run.
+  matchedSampleRects: {x: number; y: number; w: number; h: number}[] | null;
 };
 
 // Tunables. Values chosen for a ~1200-wide preview and a chart that
@@ -306,6 +335,10 @@ export const detectChartByGrid = (img: GrayImage): GridDetection | null => {
     chartBodyBounds: null,
     brightMaskSpans: [],
     chartBodyMaskSpans: [],
+    matchedGrid: null,
+    matchedScore: null,
+    matchedTripletDetected: null,
+    matchedSampleRects: null,
   };
 };
 
@@ -502,6 +535,10 @@ export const detectChartByHoles = (img: GrayImage): GridDetection | null => {
     chartBodyBounds,
     brightMaskSpans,
     chartBodyMaskSpans,
+    matchedGrid: null,
+    matchedScore: null,
+    matchedTripletDetected: null,
+    matchedSampleRects: null,
   };
 };
 
@@ -807,6 +844,94 @@ export const detectChartByRegions = (img: GrayImage): GridDetection | null => {
   const cellW = Math.hypot(xCoeffs[0], yCoeffs[0]);
   const cellH = Math.hypot(xCoeffs[1], yCoeffs[1]);
 
+  // NEW APPROACH — RANSAC triplet-match against the reference grid.
+  // Take the bright circle centres (holes are the most reliable
+  // detections; dark rects are sparse) and find the affine that
+  // maps REFERENCE_GRID onto them with the most inliers. Then apply
+  // that affine to REFERENCE_GRID to get 36 predicted grid points
+  // for rendering as yellow dots.
+  //
+  // Match threshold = cellH * 0.4 — roughly one hole-radius, so a
+  // ref point counts as matched if it lands anywhere near a real
+  // detected circle. Early exit at 30/36 matches (near-perfect) so
+  // typical clean captures return quickly instead of grinding
+  // through the full C(N,3)² sweep.
+  const brightRegions = tagged
+    .filter(t => t.status === 'kept_bright')
+    .map(t => t.region);
+  const detectedPoints: Point[] = brightRegions.map(r => ({
+    x: r.cx,
+    y: r.cy,
+  }));
+  let matchedGrid: {x: number; y: number}[] | null = null;
+  let matchedScore: number | null = null;
+  let matchedTripletDetected: {x: number; y: number}[] | null = null;
+  let matchedSampleRects:
+    | {x: number; y: number; w: number; h: number}[]
+    | null = null;
+  if (detectedPoints.length >= 3) {
+    // Tightened from 0.4 to 0.2 of cellH — 0.4 was roughly half a
+    // row-step which is bigger than one whole hole, so many wrong
+    // transforms could still score high. 0.2 is roughly a hole
+    // radius, so a ref-to-detected match requires the transformed
+    // ref to land inside or very near a real detected hole.
+    const matchThreshold = Math.max(10, cellH * 0.2);
+    // Outer (ref) iterator: TEMPORARY 100 random triplets for
+    // faster iteration during UX work. Real value should be ~1000+
+    // to cover all filtered-in ref triplets (~800 pass distinct
+    // rows/cols + non-collinear). Inner (detected) iterator:
+    // exhaustive.
+    const OUTER_TRIPLET_COUNT = 100;
+    const refIterator = createRandomTripletIterator(OUTER_TRIPLET_COUNT);
+    const tStart = Date.now();
+    const match = findBestTransform(
+      REFERENCE_GRID,
+      detectedPoints,
+      matchThreshold,
+      undefined,
+      undefined,
+      refIterator,
+    );
+    const tElapsed = Date.now() - tStart;
+    console.log(
+      `[chart-match] ${detectedPoints.length} detected × ${OUTER_TRIPLET_COUNT} ref triplets in ${tElapsed}ms; score=${match?.score?.toFixed(2) ?? 'null'}`,
+    );
+    if (match) {
+      matchedScore = match.score;
+      matchedGrid = REFERENCE_GRID.map(p => applyAffine(match.transform, p));
+      matchedTripletDetected = match.detectedTriplet.map(p => ({
+        x: p.x,
+        y: p.y,
+      }));
+      // Sample rects: transform each SAMPLE_GRID point into pixel
+      // space, expand to a square. Half-side = 0.25 × min(col-step,
+      // row-step) in pixels — a square that comfortably fits inside
+      // one swatch/hole area without overlapping neighbours.
+      const colStepPx = Math.hypot(
+        match.transform.a * 2,
+        match.transform.d * 2,
+      );
+      const rowStepPx = Math.hypot(
+        match.transform.b * 3,
+        match.transform.e * 3,
+      );
+      // Half-side = 0.1875 × min(colStepPx, rowStepPx) — 25% smaller
+      // than the previous 0.25 so the ROI stays comfortably inside a
+      // swatch even when the fit has slight residual drift near the
+      // chart edges.
+      const halfSide = 0.1875 * Math.min(colStepPx, rowStepPx);
+      matchedSampleRects = SAMPLE_GRID.map(p => {
+        const c = applyAffine(match.transform, p);
+        return {
+          x: c.x - halfSide,
+          y: c.y - halfSide,
+          w: halfSide * 2,
+          h: halfSide * 2,
+        };
+      });
+    }
+  }
+
   return {
     centers,
     cellW,
@@ -821,6 +946,10 @@ export const detectChartByRegions = (img: GrayImage): GridDetection | null => {
     // swatch/hole/chart-body interiors should be bright (1).
     brightMaskSpans: maskToSpans(flatMask, 4),
     chartBodyMaskSpans: [],
+    matchedGrid,
+    matchedScore,
+    matchedTripletDetected,
+    matchedSampleRects,
   };
 };
 
