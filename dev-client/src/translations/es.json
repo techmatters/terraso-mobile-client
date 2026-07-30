@@ -6,21 +6,15 @@
             "bullet_1": "Mejoras en el módulo de color del suelo"
         },
         "version_includes": {
-            "title": "Esta versión incluye:",
+            "title": "Novedades de esta versión:",
             "bullet_1": "La profundidad máxima del suelo aumentó a 300 cm",
             "bullet_2": "Eliminación de cuenta simplificada",
             "bullet_3": "Se añadió la opción «sin afiliación» al filtro de la lista de sitios",
             "bullet_4": "Se corrigió un error que mostraba brevemente una alerta al eliminar un sitio",
             "bullet_5": "Mejoras en el funcionamiento de los campos de texto",
             "bullet_6": "Se añadió la atribución de Mapbox",
-            "bullet_7": "Se actualizaron los enlaces al nuevo sitio web de LandPKS"
-        },
-        "soil_id_updates": {
-            "title": "Mejoras en el algoritmo de Soil ID desde la última versión:",
-            "bullet_1": "Se corrigió un error que hacía que el algoritmo fallara",
-            "bullet_2": "Se corrigió un error que podía mostrar datos de suelo incorrectos",
-            "bullet_3": "Se corrigió un error por el cual dejar profundidades vacías reducía los datos enviados al algoritmo",
-            "bullet_4": "Se corrigió un error por el cual Soil ID no devolvía suelos en ciertas ubicaciones"
+            "bullet_7": "Se actualizaron los enlaces al nuevo sitio web de LandPKS",
+            "bullet_8": "Mejoras en el algoritmo de Soil ID"
         },
         "learn_more": "Aprender más y mantenerte actualizado:",
         "link_text": "LandPKS de Terraso",

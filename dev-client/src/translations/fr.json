@@ -2,27 +2,21 @@
     "welcome": {
         "title": "Bienvenue sur LandPKS Soil ID",
         "next": {
-            "title": "Les prochaines versions comprendront :",
+            "title": "Les prochaines versions comprendront :",
             "bullet_1": "Améliorations du module de couleur du sol"
         },
         "version_includes": {
-            "title": "Cette version comprend :",
+            "title": "Nouveautés de cette version :",
             "bullet_1": "Profondeur maximale du sol portée à 300 cm",
             "bullet_2": "Suppression de compte simplifiée",
-            "bullet_3": "Ajout d'une option « non affilié » pour filtrer la liste des sites",
+            "bullet_3": "Ajout d'une option « non affilié » pour filtrer la liste des sites",
             "bullet_4": "Correction d'un bug qui affichait brièvement une alerte lors de la suppression d'un site",
             "bullet_5": "Améliorations du fonctionnement des champs de texte",
             "bullet_6": "Ajout de l'attribution Mapbox",
-            "bullet_7": "Mise à jour des liens vers le nouveau site web LandPKS"
+            "bullet_7": "Mise à jour des liens vers le nouveau site web LandPKS",
+            "bullet_8": "Améliorations de l'algorithme Soil ID"
         },
-        "soil_id_updates": {
-            "title": "Améliorations de l'algorithme Soil ID depuis la dernière version :",
-            "bullet_1": "Correction d'un bug qui faisait planter l'algorithme",
-            "bullet_2": "Correction d'un bug qui pouvait afficher des données de sol erronées",
-            "bullet_3": "Correction d'un bug où laisser des profondeurs vides réduisait les données envoyées à l'algorithme",
-            "bullet_4": "Correction d'un bug où Soil ID ne renvoyait aucun sol à certains endroits"
-        },
-        "learn_more": "Apprenez-en plus et restez informé :",
+        "learn_more": "Apprenez-en plus et restez informé :",
         "link_text": "LandPKS de Terraso",
         "link_url": "https://landpotential.org/",
         "get_started": "Commencer",
