@@ -201,22 +201,37 @@ export const analyzeMunsellChart = async (
 };
 
 // Turn raw per-cell measurements into display-ready cell results,
-// optionally after applying a per-channel WB correction that maps the
-// reference cell's raw colour onto its expected colour. Same reasoning
-// as `getColorFromLinearRgb`: illumination shows up as a per-channel
-// scale factor on the decoder output, and dividing it out is the
-// simplest first-order correction.
+// optionally after applying a WB correction that maps the reference
+// cell's raw colour onto its expected colour. Two correction modes:
+//
+//  - Per-channel RGB gain (`useBradford = false`): scale each of R,
+//    G, B independently in linear sRGB so the reference cell's raw
+//    lands on its expected. Cheap and OK for near-neutral references
+//    under near-neutral light.
+//  - Bradford chromatic adaptation (`useBradford = true`): scale in
+//    the LMS "cone response" space instead, which more accurately
+//    models how physical illumination changes actually shift sensor
+//    responses. More accurate for warmer/tinted illuminants or
+//    strongly chromatic reference cells.
 export const computeCellResults = (
   measurements: readonly CellMeasurement[],
   referenceNotation: string | null,
+  useBradford: boolean = false,
 ): MunsellCellResult[] => {
-  const scale = wbScaleFromReference(measurements, referenceNotation);
+  const ref =
+    referenceNotation != null
+      ? measurements.find(m => m.cell.notation === referenceNotation)
+      : undefined;
+  const rgbScale = wbRgbScaleFromReference(ref);
+  const bfdScale = useBradford ? bradfordScaleFromReference(ref) : null;
   return measurements.map(({cell, rawLinearRgb}) => {
-    const measuredLinearRgb = {
-      r: rawLinearRgb.r * scale.r,
-      g: rawLinearRgb.g * scale.g,
-      b: rawLinearRgb.b * scale.b,
-    };
+    const measuredLinearRgb = bfdScale
+      ? bradfordAdapt(rawLinearRgb, bfdScale)
+      : {
+          r: rawLinearRgb.r * rgbScale.r,
+          g: rawLinearRgb.g * rgbScale.g,
+          b: rawLinearRgb.b * rgbScale.b,
+        };
     const [X, Y, Z] = linearRgbToXyz(
       measuredLinearRgb.r,
       measuredLinearRgb.g,
@@ -237,12 +252,9 @@ export const computeCellResults = (
 // the reference cell's raw colour maps onto its expected colour.
 // Returns (1, 1, 1) when no reference is set or when the raw values
 // are too small to divide by safely.
-const wbScaleFromReference = (
-  measurements: readonly CellMeasurement[],
-  referenceNotation: string | null,
+const wbRgbScaleFromReference = (
+  ref: CellMeasurement | undefined,
 ): {r: number; g: number; b: number} => {
-  if (referenceNotation == null) return {r: 1, g: 1, b: 1};
-  const ref = measurements.find(m => m.cell.notation === referenceNotation);
   if (!ref) return {r: 1, g: 1, b: 1};
   const {rawLinearRgb: raw, cell} = ref;
   const {r: er, g: eg, b: eb} = cell.expectedLinearRgb;
@@ -254,18 +266,111 @@ const wbScaleFromReference = (
   };
 };
 
+// ---------------------------------------------------------------------------
+// Bradford chromatic adaptation. Illumination changes are best
+// approximated as a per-channel diagonal scale in LMS "cone response"
+// space rather than in linear sRGB — so we transform to LMS via the
+// Bradford matrix, scale per channel there, then transform back to
+// XYZ and finally to linear sRGB for storage.
+
+// Bradford XYZ → LMS matrix (Lam 1985; standard CIE definition).
+const M_BFD: readonly [
+  readonly [number, number, number],
+  readonly [number, number, number],
+  readonly [number, number, number],
+] = [
+  [0.8951, 0.2664, -0.1614],
+  [-0.7502, 1.7135, 0.0367],
+  [0.0389, -0.0685, 1.0296],
+];
+// Inverse of M_BFD (LMS → XYZ).
+const M_BFD_INV: readonly [
+  readonly [number, number, number],
+  readonly [number, number, number],
+  readonly [number, number, number],
+] = [
+  [0.9869929, -0.1470543, 0.1599627],
+  [0.4323053, 0.5183603, 0.049291],
+  [-0.0085287, 0.0400428, 0.9684867],
+];
+// XYZ → linear sRGB (Rec.709 primaries, D65) — standard sRGB inverse
+// matrix. Needed to convert corrected XYZ back into linear sRGB for
+// storage in `measuredLinearRgb`.
+const M_XYZ_TO_LRGB: readonly [
+  readonly [number, number, number],
+  readonly [number, number, number],
+  readonly [number, number, number],
+] = [
+  [3.2404542, -1.5371385, -0.4985314],
+  [-0.969266, 1.8760108, 0.041556],
+  [0.0556434, -0.2040259, 1.0572252],
+];
+
+const mat3Vec = (
+  M: readonly (readonly [number, number, number])[],
+  v: readonly [number, number, number],
+): [number, number, number] => [
+  M[0][0] * v[0] + M[0][1] * v[1] + M[0][2] * v[2],
+  M[1][0] * v[0] + M[1][1] * v[1] + M[1][2] * v[2],
+  M[2][0] * v[0] + M[2][1] * v[1] + M[2][2] * v[2],
+];
+
+// Bradford scale in LMS space. Computed once per (reference, chart)
+// pair — same factor applies to every measurement.
+const bradfordScaleFromReference = (
+  ref: CellMeasurement | undefined,
+): [number, number, number] | null => {
+  if (!ref) return null;
+  const rawXyz = linearRgbToXyz(
+    ref.rawLinearRgb.r,
+    ref.rawLinearRgb.g,
+    ref.rawLinearRgb.b,
+  ) as [number, number, number];
+  const expXyz = linearRgbToXyz(
+    ref.cell.expectedLinearRgb.r,
+    ref.cell.expectedLinearRgb.g,
+    ref.cell.expectedLinearRgb.b,
+  ) as [number, number, number];
+  const rawLms = mat3Vec(M_BFD, rawXyz);
+  const expLms = mat3Vec(M_BFD, expXyz);
+  const MIN = 1e-6;
+  return [
+    Math.abs(rawLms[0]) > MIN ? expLms[0] / rawLms[0] : 1,
+    Math.abs(rawLms[1]) > MIN ? expLms[1] / rawLms[1] : 1,
+    Math.abs(rawLms[2]) > MIN ? expLms[2] / rawLms[2] : 1,
+  ];
+};
+
+// Apply a Bradford scale to a raw linear-sRGB triple: convert to XYZ,
+// to LMS, scale each cone response, back to XYZ, back to linear sRGB.
+const bradfordAdapt = (
+  rawLinearRgb: {r: number; g: number; b: number},
+  scale: readonly [number, number, number],
+): {r: number; g: number; b: number} => {
+  const xyz = linearRgbToXyz(
+    rawLinearRgb.r,
+    rawLinearRgb.g,
+    rawLinearRgb.b,
+  ) as [number, number, number];
+  const lms = mat3Vec(M_BFD, xyz);
+  const lmsScaled: [number, number, number] = [
+    lms[0] * scale[0],
+    lms[1] * scale[1],
+    lms[2] * scale[2],
+  ];
+  const xyzAdapted = mat3Vec(M_BFD_INV, lmsScaled);
+  const rgb = mat3Vec(M_XYZ_TO_LRGB, xyzAdapted);
+  return {r: rgb[0], g: rgb[1], b: rgb[2]};
+};
+
 // Dev export: one row per swatch, with the same Munsell / ΔE the
-// on-screen grid shows plus BT.709 full-range 8-bit YCbCr for both the
-// expected and measured colour. Each side is emitted twice — once
-// straight from linear-sRGB (scene-referred), once from
-// gamma-encoded sRGB (display-referred, what a camera pipeline
-// typically outputs). Tester picks which one is meaningful for the
-// question they're asking.
-//
-// BT.709 luma weights + full-range 8-bit for both variants. Matches
-// the "Rec709-ish 0..255 luma" note in DngDecoder.nitro.ts and the
-// frame-analyzer, so numbers line up with ImageAnalysis Y-plane bytes
-// elsewhere in the app.
+// on-screen grid shows plus the expected + measured colour as
+// LINEAR sRGB triples. Linear-sRGB is what the whole correction /
+// Munsell-conversion pipeline actually operates in, so exporting
+// those values keeps the CSV numerically comparable to the internal
+// computations. Values are floats in 0..1 (may exceed 1.0 after WB
+// over-scaling — kept unclamped so out-of-range values stay visible
+// to the tester).
 export const csvFromCells = (
   cells: readonly MunsellCellResult[],
   referenceNotation: string | null,
@@ -274,85 +379,32 @@ export const csvFromCells = (
     'notation_expected',
     'notation_measured',
     'delta_e',
-    'y_lin_expected',
-    'cb_lin_expected',
-    'cr_lin_expected',
-    'y_srgb_expected',
-    'cb_srgb_expected',
-    'cr_srgb_expected',
-    'y_lin_measured',
-    'cb_lin_measured',
-    'cr_lin_measured',
-    'y_srgb_measured',
-    'cb_srgb_measured',
-    'cr_srgb_measured',
+    'r_expected',
+    'g_expected',
+    'b_expected',
+    'r_measured',
+    'g_measured',
+    'b_measured',
     'is_reference',
   ].join(',');
-  const rows = cells.map(c => {
-    const ex = linearRgbToYCbCrPair(c.cell.expectedLinearRgb);
-    const me = linearRgbToYCbCrPair(c.measuredLinearRgb);
-    return [
+  const rows = cells.map(c =>
+    [
       csvQuote(c.cell.notation),
       csvQuote(c.measuredMunsell),
       c.deltaE.toFixed(2),
-      ex.linear.y,
-      ex.linear.cb,
-      ex.linear.cr,
-      ex.srgb.y,
-      ex.srgb.cb,
-      ex.srgb.cr,
-      me.linear.y,
-      me.linear.cb,
-      me.linear.cr,
-      me.srgb.y,
-      me.srgb.cb,
-      me.srgb.cr,
+      c.cell.expectedLinearRgb.r.toFixed(4),
+      c.cell.expectedLinearRgb.g.toFixed(4),
+      c.cell.expectedLinearRgb.b.toFixed(4),
+      c.measuredLinearRgb.r.toFixed(4),
+      c.measuredLinearRgb.g.toFixed(4),
+      c.measuredLinearRgb.b.toFixed(4),
       c.cell.notation === referenceNotation ? 'true' : 'false',
-    ].join(',');
-  });
+    ].join(','),
+  );
   return [header, ...rows].join('\n') + '\n';
 };
 
 const csvQuote = (s: string) => `"${s.replace(/"/g, '""')}"`;
-
-type YCbCr = {y: number; cb: number; cr: number};
-
-// Both linear- and sRGB-encoded YCbCr for the same linear-RGB input.
-// Same BT.709 weights + full-range 8-bit scaling on both; the only
-// difference is whether the sRGB gamma curve is applied first.
-// Unclamped — over-range measurements (post-WB scaling) can produce
-// Y > 255 or Cb/Cr outside [0, 255], and the CSV keeps those visible
-// rather than clipping them silently.
-const linearRgbToYCbCrPair = (rgb: {
-  r: number;
-  g: number;
-  b: number;
-}): {linear: YCbCr; srgb: YCbCr} => ({
-  linear: rgbToYCbCr(rgb.r, rgb.g, rgb.b),
-  srgb: rgbToYCbCr(
-    linearToSrgb(rgb.r),
-    linearToSrgb(rgb.g),
-    linearToSrgb(rgb.b),
-  ),
-});
-
-const rgbToYCbCr = (r: number, g: number, b: number): YCbCr => {
-  const y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  const cb = (b - y) / 1.8556;
-  const cr = (r - y) / 1.5748;
-  return {
-    y: Math.round(y * 255),
-    cb: Math.round(cb * 255 + 128),
-    cr: Math.round(cr * 255 + 128),
-  };
-};
-
-// Standard sRGB piecewise gamma. Negative inputs fall through the
-// linear branch (12.92 * x), avoiding NaN from Math.pow on negatives.
-const linearToSrgb = (x: number): number => {
-  if (x <= 0.0031308) return 12.92 * x;
-  return 1.055 * Math.pow(x, 1 / 2.4) - 0.055;
-};
 
 // labToMunsell can throw on out-of-gamut points or hit its iteration
 // cap. When it does, return the expected notation as a fallback so

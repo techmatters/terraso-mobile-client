@@ -165,12 +165,21 @@ export const MunsellChartValidatorScreen = ({
   const [referenceNotation, setReferenceNotation] = useState<string | null>(
     DEFAULT_REFERENCE_NOTATION,
   );
+  // Bradford chromatic adaptation toggle. Off = per-channel RGB gain
+  // (simpler, fine for near-neutral references under neutral light).
+  // On = LMS-space Bradford adaptation (more accurate for tinted
+  // illuminants or strongly chromatic reference cells).
+  const [useBradford, setUseBradford] = useState(false);
   const cells = useMemo(
     () =>
       state.kind === 'ready'
-        ? computeCellResults(state.result.measurements, referenceNotation)
+        ? computeCellResults(
+            state.result.measurements,
+            referenceNotation,
+            useBradford,
+          )
         : [],
-    [state, referenceNotation],
+    [state, referenceNotation, useBradford],
   );
 
   useEffect(() => {
@@ -312,6 +321,15 @@ export const MunsellChartValidatorScreen = ({
               ) : (
                 <SourceOverlayView result={state.result} />
               )}
+              <Row space="sm">
+                <Box flex={1}>
+                  <ContainedButton
+                    label={useBradford ? 'Bradford: ON' : 'Bradford: OFF'}
+                    onPress={() => setUseBradford(v => !v)}
+                    stretchToFit
+                  />
+                </Box>
+              </Row>
               <Row space="sm">
                 <Box flex={1}>
                   <ContainedButton
