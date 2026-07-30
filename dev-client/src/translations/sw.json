@@ -6,21 +6,15 @@
             "bullet_1": "Maboresho ya moduli ya rangi ya udongo"
         },
         "version_includes": {
-            "title": "Toleo hili linajumuisha:",
+            "title": "Mapya katika toleo hili:",
             "bullet_1": "Kina cha juu zaidi cha udongo kimeongezwa hadi sentimita 300",
             "bullet_2": "Ufutaji wa akaunti umerahisishwa",
             "bullet_3": "Imeongezwa chaguo la “isiyo na uhusiano” katika kuchuja orodha ya maeneo",
             "bullet_4": "Imerekebishwa hitilafu iliyoonyesha arifa kwa muda mfupi mtumiaji alipofuta eneo",
             "bullet_5": "Maboresho ya utendaji wa sehemu za maandishi",
             "bullet_6": "Imeongezwa utambulisho wa Mapbox",
-            "bullet_7": "Viungo vimesasishwa kuelekeza kwenye tovuti mpya ya LandPKS"
-        },
-        "soil_id_updates": {
-            "title": "Maboresho ya Algoriti ya Soil ID kutoka toleo lililopita:",
-            "bullet_1": "Imerekebishwa hitilafu iliyosababisha algoriti kuanguka",
-            "bullet_2": "Imerekebishwa hitilafu ambayo ingeweza kuonyesha data ya udongo isiyo sahihi",
-            "bullet_3": "Imerekebishwa hitilafu ambapo kuacha kina bila data kulipunguza data iliyotumwa kwa algoriti",
-            "bullet_4": "Imerekebishwa hitilafu ambapo Soil ID haikurudisha udongo katika maeneo fulani"
+            "bullet_7": "Viungo vimesasishwa kuelekeza kwenye tovuti mpya ya LandPKS",
+            "bullet_8": "Maboresho ya Algoriti ya Soil ID"
         },
         "learn_more": "Jifunze zaidi na uendelee kupata taarifa mpya:",
         "link_text": "LandPKS kutoka Terraso",
