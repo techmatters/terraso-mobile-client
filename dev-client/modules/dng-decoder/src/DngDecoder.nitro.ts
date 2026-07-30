@@ -46,6 +46,21 @@ export type PreviewGrayscale = {
   sourceHeight: number;
 };
 
+export type PreviewRgb = {
+  width: number;
+  height: number;
+  // Row-major interleaved RGB bytes, 3 per pixel (no alpha, no padding).
+  // Length = width * height * 3. Rendered through CIRAWFilter in
+  // gamma-encoded sRGB — same numeric convention as readPreviewGrayscale
+  // — so CV thresholds picked on eyeballed screenshots apply directly.
+  // Callers that need chromaticity in addition to luminance (e.g. the
+  // Munsell chart validator's white-mask stage) use this instead of the
+  // grayscale variant.
+  pixels: ArrayBuffer;
+  sourceWidth: number;
+  sourceHeight: number;
+};
+
 export interface DngDecoder
   extends HybridObject<{ios: 'swift'; android: 'kotlin'}> {
   readMetadata(dngPath: string): DngMetadata;
@@ -68,4 +83,13 @@ export interface DngDecoder
    * step and returns raw luma bytes in an ArrayBuffer.
    */
   readPreviewGrayscale(dngPath: string, maxDim: number): PreviewGrayscale;
+
+  /**
+   * Same as readPreviewGrayscale but returns interleaved RGB bytes
+   * (3 per pixel). Used by CV that needs chromaticity in addition to
+   * luminance — currently the Munsell chart validator's white-mask
+   * stage, which needs to distinguish paper-white from off-white chart
+   * body based on chroma, not just brightness.
+   */
+  readPreviewRgb(dngPath: string, maxDim: number): PreviewRgb;
 }

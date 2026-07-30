@@ -18,6 +18,8 @@ namespace margelo::nitro::dngdecoder { struct LinearRgb; }
 namespace margelo::nitro::dngdecoder { struct PreviewGrayscale; }
 // Forward declaration of `PreviewImage` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct PreviewImage; }
+// Forward declaration of `PreviewRgb` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct PreviewRgb; }
 // Forward declaration of `Roi` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct Roi; }
 
@@ -27,6 +29,7 @@ namespace margelo::nitro::dngdecoder { struct Roi; }
 #include "LinearRgb.hpp"
 #include "PreviewGrayscale.hpp"
 #include "PreviewImage.hpp"
+#include "PreviewRgb.hpp"
 #include "Roi.hpp"
 #include <NitroModules/ArrayBuffer.hpp>
 #include <NitroModules/Result.hpp>

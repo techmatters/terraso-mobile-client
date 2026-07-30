@@ -43,6 +43,10 @@ abstract class HybridDngDecoderSpec: HybridObject() {
   @DoNotStrip
   @Keep
   abstract fun readPreviewGrayscale(dngPath: String, maxDim: Double): PreviewGrayscale
+  
+  @DoNotStrip
+  @Keep
+  abstract fun readPreviewRgb(dngPath: String, maxDim: Double): PreviewRgb
 
   // Default implementation of `HybridObject.toString()`
   override fun toString(): String {

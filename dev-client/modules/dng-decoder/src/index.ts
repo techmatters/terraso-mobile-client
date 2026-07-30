@@ -8,6 +8,7 @@ export type {
   LinearRgb,
   PreviewGrayscale,
   PreviewImage,
+  PreviewRgb,
   Roi,
 } from './DngDecoder.nitro';
 

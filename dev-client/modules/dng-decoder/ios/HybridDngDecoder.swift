@@ -289,6 +289,84 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     )
   }
 
+  func readPreviewRgb(dngPath: String, maxDim: Double) throws -> PreviewRgb {
+    // Same rendering pipeline as readPreviewGrayscale, but the reduction
+    // step at the end just strips the alpha channel instead of collapsing
+    // to luma — CV callers that need chromaticity (the Munsell chart
+    // validator's white-mask stage) get all three channels here.
+    let url = URL(fileURLWithPath: stripFileScheme(dngPath))
+    guard let rawFilter = CIRAWFilter(imageURL: url) else {
+      throw RuntimeError.error(
+        withMessage: "CIRAWFilter could not open DNG at \(url.path)")
+    }
+    configureRawFilter(rawFilter, url: url, tag: "readPreviewRgb")
+
+    guard let ciImage = rawFilter.outputImage else {
+      throw RuntimeError.error(withMessage: "CIRAWFilter produced no outputImage")
+    }
+
+    let srcW = ciImage.extent.width
+    let srcH = ciImage.extent.height
+    let sourceWidth = Int(srcW.rounded())
+    let sourceHeight = Int(srcH.rounded())
+    let maxDimCG = CGFloat(maxDim)
+    let scale = min(maxDimCG / srcW, maxDimCG / srcH, 1.0)
+    let scaledImage: CIImage =
+      scale < 1.0
+      ? ciImage.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+      : ciImage
+    let dstW = Int(scaledImage.extent.width.rounded())
+    let dstH = Int(scaledImage.extent.height.rounded())
+
+    guard let displaySpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+      throw RuntimeError.error(withMessage: "sRGB color space unavailable")
+    }
+    let context = CIContext(options: [
+      .workingColorSpace: displaySpace,
+      .outputColorSpace: displaySpace,
+    ])
+    guard
+      let cgImage = context.createCGImage(
+        scaledImage, from: scaledImage.extent, format: .RGBA8,
+        colorSpace: displaySpace)
+    else {
+      throw RuntimeError.error(
+        withMessage: "CIContext.createCGImage returned nil")
+    }
+
+    let bytesPerRow = dstW * 4
+    var rgba = [UInt8](repeating: 0, count: bytesPerRow * dstH)
+    let bitmapInfo: UInt32 =
+      CGBitmapInfo.byteOrder32Big.rawValue
+      | CGImageAlphaInfo.premultipliedLast.rawValue
+    guard
+      let ctx = CGContext(
+        data: &rgba, width: dstW, height: dstH, bitsPerComponent: 8,
+        bytesPerRow: bytesPerRow, space: displaySpace,
+        bitmapInfo: bitmapInfo)
+    else {
+      throw RuntimeError.error(withMessage: "CGContext allocation failed")
+    }
+    ctx.draw(cgImage, in: CGRect(x: 0, y: 0, width: dstW, height: dstH))
+
+    let pixelCount = dstW * dstH
+    let buffer = ArrayBuffer.allocate(size: pixelCount * 3)
+    let out = buffer.data
+    for i in 0..<pixelCount {
+      (out + i * 3).pointee = rgba[i * 4]
+      (out + i * 3 + 1).pointee = rgba[i * 4 + 1]
+      (out + i * 3 + 2).pointee = rgba[i * 4 + 2]
+    }
+
+    return PreviewRgb(
+      width: Double(dstW),
+      height: Double(dstH),
+      pixels: buffer,
+      sourceWidth: Double(sourceWidth),
+      sourceHeight: Double(sourceHeight)
+    )
+  }
+
   // Shared pre-decode config for every CIRAWFilter entry point. Two
   // reasons this is centralized:
   //

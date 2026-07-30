@@ -18,6 +18,8 @@ namespace margelo::nitro::dngdecoder { struct LinearRgb; }
 namespace margelo::nitro::dngdecoder { struct PreviewGrayscale; }
 // Forward declaration of `PreviewImage` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct PreviewImage; }
+// Forward declaration of `PreviewRgb` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct PreviewRgb; }
 // Forward declaration of `Roi` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct Roi; }
 
@@ -31,6 +33,7 @@ namespace DngDecoder { class HybridDngDecoderSpec_cxx; }
 #include "LinearRgb.hpp"
 #include "PreviewGrayscale.hpp"
 #include "PreviewImage.hpp"
+#include "PreviewRgb.hpp"
 #include "Roi.hpp"
 #include <NitroModules/Result.hpp>
 #include <exception>
@@ -111,6 +114,15 @@ namespace margelo::nitro::dngdecoder::bridge::swift {
   }
   inline Result_PreviewGrayscale_ create_Result_PreviewGrayscale_(const std::exception_ptr& error) noexcept {
     return Result<PreviewGrayscale>::withError(error);
+  }
+  
+  // pragma MARK: Result<PreviewRgb>
+  using Result_PreviewRgb_ = Result<PreviewRgb>;
+  inline Result_PreviewRgb_ create_Result_PreviewRgb_(const PreviewRgb& value) noexcept {
+    return Result<PreviewRgb>::withValue(value);
+  }
+  inline Result_PreviewRgb_ create_Result_PreviewRgb_(const std::exception_ptr& error) noexcept {
+    return Result<PreviewRgb>::withError(error);
   }
 
 } // namespace margelo::nitro::dngdecoder::bridge::swift

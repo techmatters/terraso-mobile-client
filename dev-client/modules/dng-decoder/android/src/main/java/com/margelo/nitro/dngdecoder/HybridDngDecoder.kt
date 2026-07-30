@@ -72,6 +72,14 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         )
     }
 
+    override fun readPreviewRgb(dngPath: String, maxDim: Double): PreviewRgb {
+        // Not yet implemented on Android — same rationale as
+        // readPreviewGrayscale above.
+        throw NotImplementedError(
+            "DngDecoder.readPreviewRgb is not yet implemented on Android"
+        )
+    }
+
     override fun decodeDngRois(dngPath: String, rois: Array<Roi>): Array<LinearRgb> {
         val flat = IntArray(rois.size * 4)
         for (i in rois.indices) {

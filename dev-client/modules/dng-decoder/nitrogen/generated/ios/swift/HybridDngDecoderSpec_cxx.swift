@@ -177,4 +177,16 @@ open class HybridDngDecoderSpec_cxx {
       return bridge.create_Result_PreviewGrayscale_(__exceptionPtr)
     }
   }
+  
+  @inline(__always)
+  public final func readPreviewRgb(dngPath: std.string, maxDim: Double) -> bridge.Result_PreviewRgb_ {
+    do {
+      let __result = try self.__implementation.readPreviewRgb(dngPath: String(dngPath), maxDim: maxDim)
+      let __resultCpp = __result
+      return bridge.create_Result_PreviewRgb_(__resultCpp)
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_PreviewRgb_(__exceptionPtr)
+    }
+  }
 }

@@ -26,7 +26,6 @@ import {
   erode1,
   findFlatCircles,
   findFlatRectangles,
-  localFlatMask,
   maskToSpans,
   regionGrow,
   threshold,
@@ -578,18 +577,8 @@ const classifyHoleBlob = (
 // data of a single-polarity detector.
 
 // Tolerance for the region-growing seed comparison (unused since
-// switching to localFlatMask, kept for the fallback path).
+// switching to a caller-provided mask, kept for the fallback path).
 const REGION_TOLERANCE = 25;
-// Local-flatness window half-width (radius 2 = 5×5 window). Small
-// enough to fit inside a swatch or hole interior (~30 pixels wide),
-// large enough to trigger at any boundary between two different
-// colours.
-const FLAT_RADIUS = 2;
-// Max spread (max-min brightness) inside the 5×5 window for the
-// window's centre pixel to count as "flat". 15 survives JPEG blur
-// and mild lighting gradients while still rejecting any pixel near
-// a real colour transition.
-const FLAT_TOLERANCE = 15;
 // A region qualifies as a "dark swatch candidate" if its mean is
 // below this cutoff, or a "bright hole candidate" if above the
 // bright cutoff. Neither → rejected as neutral (chart body,
@@ -625,30 +614,26 @@ const MIN_BRIGHT_FILL_RATIO = 0.55;
 // real features.
 const MIN_SURROUND_CONTRAST = 30;
 
-export const detectChartByRegions = (img: GrayImage): GridDetection | null => {
-  // 1. Local-flatness mask: for every pixel, check whether a 5×5
-  //    window centred on it is uniform (max-min < FLAT_TOLERANCE).
-  //    Uniform interiors of swatches, holes, and chart body come
-  //    out as 1-regions; boundaries between different-colour
-  //    regions are always 0 (window straddles the boundary). This
-  //    gives cleaner separation than seed-based region growing —
-  //    no risk of gradient drift merging adjacent regions.
-  const flatMask = localFlatMask(img, FLAT_RADIUS, FLAT_TOLERANCE);
-
-  // 2. Find inscribed circles in the flat mask. Distance transform
-  //    gives, at every 1-pixel, the max radius circle that fits
-  //    inside a 1-region centred there. Take the local maxima with
-  //    radius in [minRadius, maxRadius] and greedy-keep largest-
-  //    first, dropping any candidate that overlaps a kept circle.
-  //    Circles beat rectangles as the primitive: swatch and hole
-  //    interiors both inscribe cleanly, and the "no overlap" rule
-  //    naturally produces one detection per feature.
+export const detectChartByRegions = (
+  img: GrayImage,
+  // Precomputed binary mask (same dimensions as img) marking pixel
+  // regions that findFlatCircles should inscribe circles into. Caller
+  // owns the mask-building strategy — the Munsell chart validator now
+  // uses whiteMask (paper-white + neutral chroma) so every hole shows
+  // as its own isolated 1-region enclosed by the chart body.
+  mask: GrayImage,
+): GridDetection | null => {
+  // 1. Find inscribed circles in the mask. Distance transform gives,
+  //    at every 1-pixel, the max radius circle that fits inside a
+  //    1-region centred there. Take the local maxima with radius in
+  //    [minRadius, maxRadius] and greedy-keep largest-first, dropping
+  //    any candidate that overlaps a kept circle.
   const totalPixels = img.width * img.height;
   const minArea = Math.max(50, MIN_REGION_AREA_FRAC * totalPixels);
   const maxArea = MAX_REGION_AREA_FRAC * totalPixels;
   const minRadius = Math.sqrt(minArea / Math.PI);
   const maxRadius = Math.sqrt(maxArea / Math.PI);
-  const circles = findFlatCircles(flatMask, minRadius, maxRadius);
+  const circles = findFlatCircles(mask, minRadius, maxRadius);
 
   // Wrap each circle as a Region — same shape as before so the
   // classifier / clusterer / fitter don't change. Bounding box is
@@ -939,12 +924,12 @@ export const detectChartByRegions = (img: GrayImage): GridDetection | null => {
     detected,
     rawBlobs,
     chartBodyBounds: null,
-    // Repurposed for this detector: shows the localFlatMask so the
-    // debug overlay's "flat" toggle can visualise which pixels the
-    // detector considered "locally uniform." Boundary pixels between
-    // different-colour regions should be dark (0) in the overlay;
-    // swatch/hole/chart-body interiors should be bright (1).
-    brightMaskSpans: maskToSpans(flatMask, 4),
+    // Repurposed for this detector: shows the caller-provided mask so
+    // the debug overlay's "flat" toggle can visualise which pixels the
+    // detector considered candidates. With whiteMask feeding in: paper
+    // + all hole interiors should be bright (1); chart body + colored
+    // chips should be dark (0).
+    brightMaskSpans: maskToSpans(mask, 4),
     chartBodyMaskSpans: [],
     matchedGrid,
     matchedScore,

@@ -27,6 +27,127 @@ export type GrayImage = {
   pixels: Uint8Array;
 };
 
+// Row-major RGB image, 3 bytes per pixel (no alpha, no padding),
+// values 0..255 in gamma-encoded sRGB — same convention as GrayImage.
+// Length of `pixels` is width * height * 3.
+export type RgbImage = {
+  width: number;
+  height: number;
+  pixels: Uint8Array;
+};
+
+// Rec709 luma of a single RGB triple. Same coefficients the Swift
+// grayscale reducer uses, so luminance thresholds cross-check between
+// readPreviewGrayscale and readPreviewRgb.
+export const rec709Luma = (r: number, g: number, b: number): number =>
+  Math.min(255, (r * 54 + g * 183 + b * 19 + 128) >> 8);
+
+// Reduce an RgbImage to grayscale — used when downstream CV still wants
+// luminance-only but we already paid for the RGB fetch (e.g. classifier
+// brightness / surroundingContrast).
+export const rgbToGray = (rgb: RgbImage): GrayImage => {
+  const {width, height, pixels} = rgb;
+  const n = width * height;
+  const out = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
+    out[i] = rec709Luma(pixels[i * 3], pixels[i * 3 + 1], pixels[i * 3 + 2]);
+  }
+  return {width, height, pixels: out};
+};
+
+// Build a binary mask marking pixels that look like "paper white":
+// bright enough AND near-neutral in chromaticity. Purpose is to give
+// the chart-registration pipeline a mask where every swatch hole
+// (which shows white paper through it) forms its own isolated 1-region
+// enclosed by the chart body's off-white 0-region — so downstream
+// distanceTransform + findFlatCircles finds one circle per hole
+// without paper margins bleeding in through partial shadow-ring gaps.
+//
+// Two gates:
+//   1. Luminance ≥ (anchor - lumaTolerance) where anchor = the
+//      lumaAnchorPercentile of the image's per-pixel luma. Anchor
+//      makes the threshold auto-adjust to the capture's white level
+//      instead of a fixed 255-based cutoff that fails when the whole
+//      capture is dim.
+//   2. Chromaticity (max channel spread |R-G|, |G-B|, |R-B|) ≤
+//      chromaTolerance. Excludes off-white chart body (warm tint, R>G>B)
+//      and colored chips even when their luma also passes the first gate.
+//
+// The percentile-based anchor is a single global number. Non-uniform
+// lighting (half the paper in shadow) is handled by picking a
+// permissive lumaTolerance rather than by adaptive local windowing —
+// works well enough at the target framings. Add local adaptation if
+// this proves brittle.
+export type WhiteMaskParams = {
+  lumaAnchorPercentile: number;
+  lumaTolerance: number;
+  chromaTolerance: number;
+};
+
+export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
+  lumaAnchorPercentile: 0.95,
+  lumaTolerance: 60,
+  chromaTolerance: 12,
+};
+
+export type WhiteMaskResult = {
+  mask: GrayImage;
+  lumaAnchor: number;
+  lumaCutoff: number;
+};
+
+export const whiteMask = (
+  rgb: RgbImage,
+  params: WhiteMaskParams = DEFAULT_WHITE_MASK_PARAMS,
+): WhiteMaskResult => {
+  const {width, height, pixels} = rgb;
+  const n = width * height;
+
+  // Pass 1 — luma histogram, then walk from the top down to find the
+  // luma value at lumaAnchorPercentile.
+  const hist = new Uint32Array(256);
+  const luma = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
+    const y = rec709Luma(pixels[i * 3], pixels[i * 3 + 1], pixels[i * 3 + 2]);
+    luma[i] = y;
+    hist[y]++;
+  }
+  const targetCount = Math.max(
+    1,
+    Math.floor(n * (1 - params.lumaAnchorPercentile)),
+  );
+  let acc = 0;
+  let anchor = 255;
+  for (let v = 255; v >= 0; v--) {
+    acc += hist[v];
+    if (acc >= targetCount) {
+      anchor = v;
+      break;
+    }
+  }
+  const cutoff = Math.max(0, anchor - params.lumaTolerance);
+
+  // Pass 2 — apply luma + chroma gates.
+  const out = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
+    if (luma[i] < cutoff) continue;
+    const r = pixels[i * 3];
+    const g = pixels[i * 3 + 1];
+    const b = pixels[i * 3 + 2];
+    const rg = Math.abs(r - g);
+    const gb = Math.abs(g - b);
+    const rb = Math.abs(r - b);
+    const chroma = Math.max(rg, gb, rb);
+    if (chroma > params.chromaTolerance) continue;
+    out[i] = 1;
+  }
+  return {
+    mask: {width, height, pixels: out},
+    lumaAnchor: anchor,
+    lumaCutoff: cutoff,
+  };
+};
+
 // Threshold every pixel. Default: 1 if pixel >= `threshold`, else 0.
 // With `invert: true`: 1 if pixel < `threshold`, else 0 — useful for
 // isolating dark regions (e.g. the chart's swatches). Output is a

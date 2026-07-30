@@ -29,6 +29,11 @@ import {
   type GridEntry,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/gridRegistration';
 import {
+  rgbToGray,
+  whiteMask,
+  type RgbImage,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
+import {
   CHART_CHROMAS,
   CHART_HUE,
   CHART_VALUES,
@@ -113,20 +118,28 @@ export const DEFAULT_REFERENCE_NOTATION = '10YR 5/1';
 export const analyzeMunsellChart = async (
   dngPath: string,
 ): Promise<MunsellChartResult> => {
-  // 1. Grayscale render for the CV.
-  const gray = DngDecoderHybrid.readPreviewGrayscale(dngPath, PREVIEW_MAX_DIM);
-  const grayImage = {
-    width: gray.width,
-    height: gray.height,
-    pixels: new Uint8Array(gray.pixels),
+  // 1. RGB render for the CV. We need chromaticity (not just luma) to
+  //    build a "paper white" mask that isolates each swatch hole as
+  //    its own 1-region — off-white chart body has warm chroma and
+  //    gets rejected by the chroma gate even though its luma is close
+  //    to paper.
+  const rgbPreview = DngDecoderHybrid.readPreviewRgb(dngPath, PREVIEW_MAX_DIM);
+  const rgbImage: RgbImage = {
+    width: rgbPreview.width,
+    height: rgbPreview.height,
+    pixels: new Uint8Array(rgbPreview.pixels),
   };
+  const grayImage = rgbToGray(rgbImage);
+  const {mask, lumaAnchor, lumaCutoff} = whiteMask(rgbImage);
+  console.log(
+    `[chartAnalysis] whiteMask: anchor=${lumaAnchor} cutoff=${lumaCutoff}`,
+  );
 
-  // 2. Region-growing chart detection. Grows uniform-brightness
-  //    regions from every pixel; dark swatches and bright holes
-  //    both surface as their own regions and are used together as
-  //    grid anchors. No global brightness threshold — adapts to
-  //    whatever lighting the capture has.
-  const grid = detectChartByRegions(grayImage);
+  // 2. Chart registration. Uses the white mask to find hole-shaped
+  //    inscribed circles (each hole shows white paper through it, and
+  //    the off-white chart body encloses it) then RANSAC-matches
+  //    against the 6×6 reference grid to fit the affine.
+  const grid = detectChartByRegions(grayImage, mask);
   if (!grid) {
     throw new Error(
       'Could not detect the Munsell chart in the image. ' +
@@ -139,8 +152,8 @@ export const analyzeMunsellChart = async (
   //    swatch spacing in this capture; no homography needed.
   const halfW = grid.cellW * SAMPLE_HALF_W_FRAC;
   const halfH = grid.cellH * SAMPLE_HALF_H_FRAC;
-  const scaleX = gray.sourceWidth / gray.width;
-  const scaleY = gray.sourceHeight / gray.height;
+  const scaleX = rgbPreview.sourceWidth / rgbPreview.width;
+  const scaleY = rgbPreview.sourceHeight / rgbPreview.height;
   const previewRects = MUNSELL_10YR_CELLS.map(cell => {
     const rowIdx = CHART_VALUES.indexOf(cell.value);
     const colIdx = CHART_CHROMAS.indexOf(cell.chroma);
