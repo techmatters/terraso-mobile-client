@@ -35,10 +35,14 @@ import {
 } from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
 import {
   applyAffine,
+  composeAffineFilters,
   createRandomTripletIterator,
   findBestTransform,
+  notTooSkewed,
   REFERENCE_GRID,
   SAMPLE_GRID,
+  scaleInRange,
+  similarScales,
   type Point,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {
@@ -158,6 +162,13 @@ export type GridDetection = {
   // overlay, replacing the cluster-fit yellow dots when present.
   // Null if the match step didn't run or failed.
   matchedGrid: {x: number; y: number}[] | null;
+  // Per-ref-point boolean, parallel to matchedGrid: true if that
+  // ref point found a detected point within matchThreshold under
+  // the winning transform (i.e. counted as an inlier for scoring),
+  // false otherwise. Rendered by filling matched yellow rings so
+  // the tester can see which ref points contributed to the score.
+  // Null when matchedGrid is null.
+  matchedGridInliers: boolean[] | null;
   // Score for the winning transform (continuous score from
   // scoreTransform). Shown in the debug legend.
   matchedScore: number | null;
@@ -335,6 +346,7 @@ export const detectChartByGrid = (img: GrayImage): GridDetection | null => {
     brightMaskSpans: [],
     chartBodyMaskSpans: [],
     matchedGrid: null,
+    matchedGridInliers: null,
     matchedScore: null,
     matchedTripletDetected: null,
     matchedSampleRects: null,
@@ -535,6 +547,7 @@ export const detectChartByHoles = (img: GrayImage): GridDetection | null => {
     brightMaskSpans,
     chartBodyMaskSpans,
     matchedGrid: null,
+    matchedGridInliers: null,
     matchedScore: null,
     matchedTripletDetected: null,
     matchedSampleRects: null,
@@ -590,14 +603,17 @@ const DARK_REGION_MAX_MEAN = 100;
 // body sits around 130-160 which falls between DARK_REGION_MAX
 // and BRIGHT_REGION_MIN and gets rejected as reject_brightness.
 const BRIGHT_REGION_MIN_MEAN = 170;
-// Area range for a swatch / hole in a ~1200-wide preview. Lower
-// bound (~radius 20 px) rejects binder holes and text; the actual
-// discrimination between real anchors and paper fragmentation
-// islands is done by surroundingContrast, so this floor doesn't
-// need to be aggressive. Upper bound catches chart-body / paper as
-// reject_area_high before they reach the classifier.
-const MIN_REGION_AREA_FRAC = 0.001;
-const MAX_REGION_AREA_FRAC = 0.02;
+// Radius range for a swatch hole, expressed as a fraction of the
+// preview's SHORTER dimension. Aspect- and pixel-count-independent:
+// the same fractions apply to any phone's preview regardless of
+// sensor aspect or PREVIEW_MAX_DIM. With the chart validator's
+// framing guide (chart-on-8.5×11-paper filling most of the frame),
+// a real hole spans roughly 3% of the shorter dimension. Current
+// values are permissive (0.02..0.09) to keep the current tuning
+// equivalent to the old MIN/MAX_REGION_AREA_FRAC = 0.001..0.02;
+// tighten these once framing-with-guide is verified.
+const MIN_HOLE_RADIUS_FRAC = 0.02;
+const MAX_HOLE_RADIUS_FRAC = 0.09;
 const MAX_REGION_ASPECT = 2.2;
 // Fill ratio floors — dark swatches are near-rectangular so require
 // a densely-filled bounding box; bright holes are oval so allow a
@@ -627,12 +643,15 @@ export const detectChartByRegions = (
   //    at every 1-pixel, the max radius circle that fits inside a
   //    1-region centred there. Take the local maxima with radius in
   //    [minRadius, maxRadius] and greedy-keep largest-first, dropping
-  //    any candidate that overlaps a kept circle.
-  const totalPixels = img.width * img.height;
-  const minArea = Math.max(50, MIN_REGION_AREA_FRAC * totalPixels);
-  const maxArea = MAX_REGION_AREA_FRAC * totalPixels;
-  const minRadius = Math.sqrt(minArea / Math.PI);
-  const maxRadius = Math.sqrt(maxArea / Math.PI);
+  //    any candidate that overlaps a kept circle. Bounds are derived
+  //    from the shorter frame dimension so they're pixel-count- AND
+  //    aspect-ratio-independent (different phones = different sensor
+  //    resolutions and aspects; same fractions apply everywhere).
+  const shorterDim = Math.min(img.width, img.height);
+  const minRadius = Math.max(5, MIN_HOLE_RADIUS_FRAC * shorterDim);
+  const maxRadius = MAX_HOLE_RADIUS_FRAC * shorterDim;
+  const minArea = Math.PI * minRadius * minRadius;
+  const maxArea = Math.PI * maxRadius * maxRadius;
   const circles = findFlatCircles(mask, minRadius, maxRadius);
 
   // Wrap each circle as a Region — same shape as before so the
@@ -833,7 +852,7 @@ export const detectChartByRegions = (
   // Take the bright circle centres (holes are the most reliable
   // detections; dark rects are sparse) and find the affine that
   // maps REFERENCE_GRID onto them with the most inliers. Then apply
-  // that affine to REFERENCE_GRID to get 36 predicted grid points
+  // that affine to REFERENCE_GRID to get the predicted grid points
   // for rendering as yellow dots.
   //
   // Match threshold = cellH * 0.4 — roughly one hole-radius, so a
@@ -849,6 +868,7 @@ export const detectChartByRegions = (
     y: r.cy,
   }));
   let matchedGrid: {x: number; y: number}[] | null = null;
+  let matchedGridInliers: boolean[] | null = null;
   let matchedScore: number | null = null;
   let matchedTripletDetected: {x: number; y: number}[] | null = null;
   let matchedSampleRects:
@@ -860,7 +880,13 @@ export const detectChartByRegions = (
     // transforms could still score high. 0.2 is roughly a hole
     // radius, so a ref-to-detected match requires the transformed
     // ref to land inside or very near a real detected hole.
-    const matchThreshold = Math.max(10, cellH * 0.2);
+    // Middle-ground between the original 0.2 (~20 px, too loose —
+    // wandered onto neighbours) and the first tighten to 0.1 (~10 px,
+    // too tight — dropped legitimate matches 12-15 px off due to
+    // capture wobble / perspective drift). 0.15 tolerates real
+    // registration slop across a slightly-tilted chart without
+    // counting matches that are visibly off.
+    const matchThreshold = Math.max(8, cellH * 0.15);
     // Outer (ref) iterator: TEMPORARY 100 random triplets for
     // faster iteration during UX work. Real value should be ~1000+
     // to cover all filtered-in ref triplets (~800 pass distinct
@@ -869,6 +895,32 @@ export const detectChartByRegions = (
     const OUTER_TRIPLET_COUNT = 100;
     const refIterator = createRandomTripletIterator(OUTER_TRIPLET_COUNT);
     const tStart = Date.now();
+    // Skew tolerance: 15° off perpendicular. Real chart-photo affines
+    // sit well under 5° (chart is flat, camera roughly overhead); a
+    // 30°+ skew is the fingerprint of a bad triplet whose 3 detections
+    // happen to line up in a way that fits a degenerate transform.
+    //
+    // Aspect-scale tolerance: |colX| / |colY| within 1.6× either way.
+    // REFERENCE_GRID's 2-unit col-step / 3-unit row-step already
+    // encodes the chart's real physical aspect, so a valid transform
+    // should map both ref axes at the SAME pixels-per-unit. A
+    // wrong-pairing fit (right triplet, wrong index assignment)
+    // typically produces a wildly-different scale ratio to reach the
+    // mispaired detected point, so this catches that class of bad
+    // fit without rejecting real perspective tilt.
+    //
+    // Absolute-scale range: with the chart-validator guide framing
+    // the chart at ~80% of the shorter preview dim and the ref grid
+    // spanning 10 units horizontally, expected pixels-per-unit is
+    // ~0.08 × shorterDim. Allow 0.04-0.13 (roughly half to 1.6× the
+    // nominal) to accommodate framing variance while still rejecting
+    // compressed / stretched fits that would otherwise sneak by the
+    // ratio-only filters and win by matching paper-margin false-
+    // positives. Neither notTooSkewed nor similarScales catches
+    // uniform compression — they both stay ratio-matched under it.
+    const shorterPreviewDim = Math.min(img.width, img.height);
+    const minPxPerUnit = 0.04 * shorterPreviewDim;
+    const maxPxPerUnit = 0.13 * shorterPreviewDim;
     const match = findBestTransform(
       REFERENCE_GRID,
       detectedPoints,
@@ -876,6 +928,13 @@ export const detectChartByRegions = (
       undefined,
       undefined,
       refIterator,
+      undefined,
+      undefined,
+      composeAffineFilters(
+        notTooSkewed(15),
+        similarScales(1.6),
+        scaleInRange(minPxPerUnit, maxPxPerUnit),
+      ),
     );
     const tElapsed = Date.now() - tStart;
     console.log(
@@ -884,6 +943,33 @@ export const detectChartByRegions = (
     if (match) {
       matchedScore = match.score;
       matchedGrid = REFERENCE_GRID.map(p => applyAffine(match.transform, p));
+      // Compute which ref points were inliers under the winning
+      // transform — mirrors scoreTransform's greedy unique-assignment
+      // logic so the display matches what scored. A ref point is an
+      // inlier if its nearest unclaimed detected point is within
+      // matchThreshold; that detected index is then marked claimed
+      // so two ref points can't share the same detected match.
+      const t2 = matchThreshold * matchThreshold;
+      const claimed = new Array(detectedPoints.length).fill(false);
+      matchedGridInliers = matchedGrid.map(({x: ex, y: ey}) => {
+        let bestIdx = -1;
+        let bestDist2 = t2;
+        for (let i = 0; i < detectedPoints.length; i++) {
+          if (claimed[i]) continue;
+          const dx = detectedPoints[i].x - ex;
+          const dy = detectedPoints[i].y - ey;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < bestDist2) {
+            bestDist2 = d2;
+            bestIdx = i;
+          }
+        }
+        if (bestIdx >= 0) {
+          claimed[bestIdx] = true;
+          return true;
+        }
+        return false;
+      });
       matchedTripletDetected = match.detectedTriplet.map(p => ({
         x: p.x,
         y: p.y,
@@ -932,6 +1018,7 @@ export const detectChartByRegions = (
     brightMaskSpans: maskToSpans(mask, 4),
     chartBodyMaskSpans: [],
     matchedGrid,
+    matchedGridInliers,
     matchedScore,
     matchedTripletDetected,
     matchedSampleRects,
@@ -961,16 +1048,14 @@ const classifyRegion = (
     return 'reject_touches_edge';
   }
   if (Math.min(blobW(r), blobH(r)) < 8) return 'reject_mindim';
-  // Contrast-with-surroundings check. Filters out flat-mask
-  // fragmentation islands on the paper background: their centre and
-  // surrounding pixels are all the same paper brightness, so the
-  // absolute difference is tiny. Real chart features sit against
-  // chart body (~140 grey) which is far from either hole (~230) or
-  // swatch (~40) brightness.
-  const radius = Math.max((r.maxX - r.minX) / 2, (r.maxY - r.minY) / 2);
-  if (surroundingContrast(img, r.cx, r.cy, radius) < MIN_SURROUND_CONTRAST) {
-    return 'reject_low_contrast';
-  }
+  // surroundingContrast check disabled: with the current whiteMask +
+  // every-pixel-is-a-candidate detector, real hole centers can end up
+  // with neighbours (at 1.6 × R) that fall inside OTHER hole interiors
+  // (also white in the gray image), giving low mean-abs-diff and
+  // rejecting perfectly valid detections. The paper-fragmentation
+  // false-positive class it was designed to catch is now handled
+  // upstream by whiteMask + MAX_HOLE_RADIUS_FRAC + the affine filters
+  // (skew, aspect). Leave the helper defined in case we want it back.
   return isDark ? 'kept_dark' : 'kept_bright';
 };
 

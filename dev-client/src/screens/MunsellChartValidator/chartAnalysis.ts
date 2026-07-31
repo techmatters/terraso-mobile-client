@@ -34,12 +34,14 @@ import {
   type RgbImage,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
 import {
-  CHART_CHROMAS,
   CHART_HUE,
-  CHART_VALUES,
-  MUNSELL_10YR_CELLS,
-  type MunsellChartCell,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
+import {
+  MUNSELL_PAGES,
+  pageCells,
+  type MunsellPage,
+  type MunsellPageCell,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 
 // End-to-end Munsell chart analysis: takes a captured DNG file,
 // auto-registers the chart by finding its swatch grid, decodes every
@@ -64,12 +66,12 @@ const SAMPLE_HALF_H_FRAC = 0.13;
 // display-ready MunsellCellResult below so the screen can re-apply a
 // reference-cell WB correction on demand without re-decoding the DNG.
 export type CellMeasurement = {
-  cell: MunsellChartCell;
+  cell: MunsellPageCell;
   rawLinearRgb: {r: number; g: number; b: number};
 };
 
 export type MunsellCellResult = {
-  cell: MunsellChartCell;
+  cell: MunsellPageCell;
   // The linear-sRGB actually used to compute measuredMunsell + deltaE.
   // Equals `rawLinearRgb` when no reference is active; otherwise
   // WB-corrected against the reference cell.
@@ -115,9 +117,28 @@ export type MunsellChartResult = {
 // cell in the result grid to override.
 export const DEFAULT_REFERENCE_NOTATION = '10YR 5/1';
 
+// Everything analyzeMunsellChart managed to compute BEFORE the fatal
+// failure. Rendered on the failure UI so a dev can inspect what the
+// algorithm saw — the preview PNG, the white mask, and any raw circle
+// candidates that got classified. Any field may be null if analysis
+// died before that stage.
+export type MunsellChartFailureDebug = {
+  reason: string;
+  lumaAnchor: number | null;
+  lumaCutoff: number | null;
+  preview: {uri: string; width: number; height: number} | null;
+  grid: GridDetection | null;
+};
+
+export type MunsellChartOutcome =
+  | {kind: 'success'; result: MunsellChartResult}
+  | {kind: 'failure'; debug: MunsellChartFailureDebug};
+
 export const analyzeMunsellChart = async (
   dngPath: string,
-): Promise<MunsellChartResult> => {
+  page: MunsellPage = MUNSELL_PAGES[0],
+): Promise<MunsellChartOutcome> => {
+  const cells = pageCells(page);
   // 1. RGB render for the CV. We need chromaticity (not just luma) to
   //    build a "paper white" mask that isolates each swatch hole as
   //    its own 1-region — off-white chart body has warm chroma and
@@ -138,13 +159,29 @@ export const analyzeMunsellChart = async (
   // 2. Chart registration. Uses the white mask to find hole-shaped
   //    inscribed circles (each hole shows white paper through it, and
   //    the off-white chart body encloses it) then RANSAC-matches
-  //    against the 6×6 reference grid to fit the affine.
+  //    against the 6×6 reference grid to fit the affine. On detection
+  //    failure, return a partial-debug object so the UI can render the
+  //    preview + white mask + whatever raw blobs were classified,
+  //    plus a Share DNG button, so a dev can figure out what went wrong.
   const grid = detectChartByRegions(grayImage, mask);
   if (!grid) {
-    throw new Error(
-      'Could not detect the Munsell chart in the image. ' +
-        'Ensure the whole chart is visible and reasonably square-on.',
-    );
+    const preview = DngDecoderHybrid.renderPreview(dngPath, PREVIEW_MAX_DIM);
+    return {
+      kind: 'failure',
+      debug: {
+        reason:
+          'detectChartByRegions returned null — too few detected candidates ' +
+          'or clustering failed. Preview and white mask are still available.',
+        lumaAnchor,
+        lumaCutoff,
+        preview: {
+          uri: preview.uri,
+          width: preview.width,
+          height: preview.height,
+        },
+        grid: null,
+      },
+    };
   }
 
   // 3. Compute per-cell sample rectangles in preview coords straight
@@ -154,10 +191,8 @@ export const analyzeMunsellChart = async (
   const halfH = grid.cellH * SAMPLE_HALF_H_FRAC;
   const scaleX = rgbPreview.sourceWidth / rgbPreview.width;
   const scaleY = rgbPreview.sourceHeight / rgbPreview.height;
-  const previewRects = MUNSELL_10YR_CELLS.map(cell => {
-    const rowIdx = CHART_VALUES.indexOf(cell.value);
-    const colIdx = CHART_CHROMAS.indexOf(cell.chroma);
-    const {x: cx, y: cy} = grid.centers[rowIdx][colIdx];
+  const previewRects = cells.map(cell => {
+    const {x: cx, y: cy} = grid.centers[cell.rowIdx][cell.colIdx];
     return {
       x: Math.round(cx - halfW),
       y: Math.round(cy - halfH),
@@ -176,9 +211,10 @@ export const analyzeMunsellChart = async (
   // 4. Bundle each cell with its raw measurement. Munsell notation
   //    and ΔE come later — the screen recomputes them any time the
   //    user picks a different reference cell.
-  const measurements: CellMeasurement[] = MUNSELL_10YR_CELLS.map(
-    (cell, idx) => ({cell, rawLinearRgb: measured[idx]}),
-  );
+  const measurements: CellMeasurement[] = cells.map((cell, idx) => ({
+    cell,
+    rawLinearRgb: measured[idx],
+  }));
 
   // 5. Colour PNG preview for the validation view.
   const preview = DngDecoderHybrid.renderPreview(dngPath, PREVIEW_MAX_DIM);
@@ -204,12 +240,15 @@ export const analyzeMunsellChart = async (
   }
 
   return {
-    measurements,
-    grid,
-    preview,
-    previewRects,
-    detectedSwatches: grid.detected,
-    matchedSampleValues,
+    kind: 'success',
+    result: {
+      measurements,
+      grid,
+      preview,
+      previewRects,
+      detectedSwatches: grid.detected,
+      matchedSampleValues,
+    },
   };
 };
 

@@ -62,6 +62,7 @@ export const MunsellChartValidatorItem = () => {
         containerFormat="dng"
         onCancel={closeCamera}
         onCapture={onCapture}
+        chartGuide={{aspectW: 4.5, aspectH: 7, marginFrac: 0.1}}
       />
     </>
   );

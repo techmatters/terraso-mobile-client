@@ -371,12 +371,21 @@ class HybridDngDecoder: HybridDngDecoderSpec {
   // `boostAmount` / `boostShadowAmount` = 0 disable Apple's default
   // tone shaping so the RAW pipeline stays as linear as possible.
   //
-  // Orientation is deliberately NOT overridden — CIRAWFilter's default
-  // is to honour the DNG's Orientation EXIF tag, so a phone-held-portrait
-  // capture comes out portrait, which is what the chart validator UI
-  // expects. We log the tag so if it ever varies (e.g. between EV=0 and
-  // EV=-1 captures, which was the original hypothesis) we can see it
-  // in Metro instead of guessing.
+  // orientation = .right forces portrait output on every capture,
+  // regardless of what the DNG's Orientation EXIF tag says. The tag
+  // has been observed to flip between captures (probably vision-
+  // camera reconfiguring on prop changes and iOS re-deriving the
+  // capture-time orientation from stale state), causing the same
+  // capture pipeline to produce either portrait or landscape frames.
+  // Since the chart validator (and every other current caller) shoots
+  // phone-held-portrait, .right — which tells CIRAWFilter "the raw
+  // data was captured with a right-side rotation, apply 90° CCW to
+  // upright" — gives consistent portrait output. If we ever add a
+  // caller that legitimately shoots landscape, thread the desired
+  // orientation through as a parameter.
+  //
+  // Log the stored tag alongside the forced override so any future
+  // capture-orientation debugging has a paper trail.
   private func configureRawFilter(
     _ rawFilter: CIRAWFilter, url: URL, tag: String
   ) {
@@ -385,8 +394,9 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     let stored = readDngOrientation(url: url)
     let storedName = stored.map(orientationName) ?? "nil"
     NSLog(
-      "DngDecoder [\(tag)]: DNG stored orientation=\(storedName) "
-        + "(honoured by CIRAWFilter)")
+      "DngDecoder [\(tag)]: DNG stored orientation=\(storedName), "
+        + "forcing filter.orientation=.right (portrait)")
+    rawFilter.orientation = .right
   }
 
   private func readDngOrientation(url: URL) -> CGImagePropertyOrientation? {

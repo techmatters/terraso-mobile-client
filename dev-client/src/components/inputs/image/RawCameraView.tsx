@@ -89,6 +89,20 @@ type Props = {
    * `raw-camera-android` module is what would have to know about it).
    */
   onRawPhotoDevOnly?: (uri: string) => void;
+  /**
+   * When set, overlay a centered {aspectW × aspectH}-ratio framing
+   * rectangle on the viewfinder as a shooting guide. Used by the
+   * Munsell chart validator flow so the tester frames the chart
+   * consistently — a known chart size in the capture lets
+   * downstream registration tighten its size/skew tolerances. Pass
+   * something like `{aspectW: 4.5, aspectH: 7, marginFrac: 0.25}`
+   * for the 10YR chart on 8.5×11 paper.
+   */
+  chartGuide?: {
+    aspectW: number;
+    aspectH: number;
+    marginFrac: number;
+  };
 };
 
 // Top-level router. Android + DNG uses the raw-camera-android Nitro
@@ -117,6 +131,7 @@ const VisionCameraViewImpl = ({
   onCancel,
   containerFormat = 'jpeg',
   onRawPhotoDevOnly,
+  chartGuide,
 }: Props) => {
   // For DNG capture on iOS, bind to a truly single-camera device
   // (isVirtualDevice=false) rather than a virtual multi-cam aggregation.
@@ -286,6 +301,12 @@ const VisionCameraViewImpl = ({
           isActive={visible}
           outputs={outputs}
           exposure={exposureEv}
+          // Show the FULL sensor image letterboxed instead of
+          // cropping-to-fill. Makes the viewfinder WYSIWYG relative to
+          // the captured DNG — a guide overlay positioned inside the
+          // camera bounds corresponds 1:1 to a position in the DNG,
+          // which matters for the chart validator's framing.
+          resizeMode="contain"
           // Tap anywhere on the viewfinder to refocus there.
           // Continuous autofocus is on by default; this lets the user
           // pick a specific point (soil patch or reference card) when
@@ -304,7 +325,8 @@ const VisionCameraViewImpl = ({
       isCapturing={isCapturing}
       hasPermission={hasPermission}
       exposureEv={exposureEv}
-      onCycleExposure={cycleExposureEv}>
+      onCycleExposure={cycleExposureEv}
+      chartGuide={chartGuide}>
       {preview}
     </CameraChrome>
   );
@@ -395,6 +417,7 @@ const IosDngCameraLayer = ({
         outputs={outputs}
         onConfigured={onConfigured}
         exposure={exposure}
+        resizeMode="contain"
         enableNativeTapToFocusGesture={true}
       />
       <RoiOverlay
@@ -484,6 +507,7 @@ const CameraChrome = ({
   hasPermission,
   exposureEv,
   onCycleExposure,
+  chartGuide,
   children,
 }: {
   visible: boolean;
@@ -494,6 +518,7 @@ const CameraChrome = ({
   hasPermission: boolean;
   exposureEv: number;
   onCycleExposure: () => void;
+  chartGuide?: {aspectW: number; aspectH: number; marginFrac: number};
   children: ReactNode;
 }) => {
   const {t} = useTranslation();
@@ -519,7 +544,17 @@ const CameraChrome = ({
       onRequestClose={cancel}>
       <StatusBar hidden />
       <View style={styles.container}>
-        {children}
+        {/* Sensor-aspect frame that both the letterboxed camera preview
+           and the chart guide overlay share, so any guide-rect position
+           on screen corresponds 1:1 to a position in the captured DNG.
+           Aspect is hard-coded to the iPhone rear cam's 3:4 portrait
+           (sensor is 4:3 landscape, DNG orientation rotates it). If we
+           add cameras with a different native aspect, thread that in
+           as a prop. */}
+        <SensorAspectFrame aspect={SENSOR_ASPECT}>
+          {children}
+          {chartGuide && <ChartGuideOverlay guide={chartGuide} />}
+        </SensorAspectFrame>
         {!hasPermission && (
           <View style={styles.messageContainer}>
             <Text color="white" variant="body1">
@@ -601,7 +636,110 @@ const makeRawCaptureResult = (
   },
 });
 
+// iPhone rear camera sensor is 4:3 landscape; DNG orientation
+// rotates it to 3:4 portrait for display and CV. If we ever add
+// support for cameras with a different native aspect (unlikely for
+// this app in the near term), thread the aspect through as a prop.
+const SENSOR_ASPECT = 3 / 4; // width / height, portrait
+
+// Fixed-aspect wrapper centered inside its parent, letterboxed with
+// black bars on the axis that doesn't bind. Everything inside sees
+// the same coordinate system: whatever fills this view fills the
+// same area as the captured sensor image (assuming the camera is
+// rendered with resizeMode="contain"). That's what lets a screen-
+// space overlay (like the chart guide) map 1:1 to a DNG-space
+// region. Uses onLayout instead of aspectRatio-style so behaviour
+// is predictable across RN versions.
+const SensorAspectFrame = ({
+  aspect,
+  children,
+}: {
+  aspect: number;
+  children: ReactNode;
+}) => {
+  const [container, setContainer] = useState<{w: number; h: number} | null>(
+    null,
+  );
+  let inner: {width: number; height: number} | null = null;
+  if (container) {
+    // Fit `aspect` (w/h) inside the container. Whichever dimension
+    // is the binding one wins; the other gets letterboxed.
+    if (container.w / container.h >= aspect) {
+      inner = {height: container.h, width: container.h * aspect};
+    } else {
+      inner = {width: container.w, height: container.w / aspect};
+    }
+  }
+  return (
+    <View
+      style={styles.sensorFrameOuter}
+      onLayout={e =>
+        setContainer({
+          w: e.nativeEvent.layout.width,
+          h: e.nativeEvent.layout.height,
+        })
+      }>
+      {inner && <View style={inner}>{children}</View>}
+    </View>
+  );
+};
+
+// Centered aspectW×aspectH framing rectangle used as a shooting
+// guide when the caller opts in via the `chartGuide` prop. Fits
+// inside the SensorAspectFrame with `marginFrac` breathing room on
+// the tighter dimension (so the guide's shorter axis leaves that
+// fraction of the frame as margin; the other axis gets whatever's
+// left). pointerEvents: 'none' so it never intercepts touches — the
+// shutter and tap-to-focus still work through it.
+const ChartGuideOverlay = ({
+  guide,
+}: {
+  guide: {aspectW: number; aspectH: number; marginFrac: number};
+}) => {
+  const [layout, setLayout] = useState<{w: number; h: number} | null>(null);
+  const {aspectW, aspectH, marginFrac} = guide;
+  let rectStyle: {width: number; height: number} | null = null;
+  if (layout) {
+    const {w, h} = layout;
+    // Fit the aspect box inside the viewfinder with `marginFrac`
+    // margin — pick whichever dimension is binding.
+    const maxW = w * (1 - 2 * marginFrac);
+    const maxH = h * (1 - 2 * marginFrac);
+    const boxW = Math.min(maxW, (maxH * aspectW) / aspectH);
+    const boxH = (boxW * aspectH) / aspectW;
+    rectStyle = {width: boxW, height: boxH};
+  }
+  return (
+    <View
+      style={styles.guideContainer}
+      pointerEvents="none"
+      onLayout={e =>
+        setLayout({
+          w: e.nativeEvent.layout.width,
+          h: e.nativeEvent.layout.height,
+        })
+      }>
+      {rectStyle && <View style={[styles.guideRect, rectStyle]} />}
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
+  sensorFrameOuter: {
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  guideContainer: {
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  guideRect: {
+    borderColor: 'rgba(255,255,255,0.85)',
+    borderWidth: 2,
+    borderRadius: 6,
+  },
   container: {
     flex: 1,
     backgroundColor: 'black',

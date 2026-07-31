@@ -87,7 +87,13 @@ export type WhiteMaskParams = {
 export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
   lumaAnchorPercentile: 0.95,
   lumaTolerance: 60,
-  chromaTolerance: 12,
+  // 7 (was 12) so slightly-warm chart body fails the chroma gate.
+  // Chart body reads warmer than paper (R > G > B by ~10-15 grey
+  // levels); tighter gate rejects it while paper (near-neutral)
+  // and hole interiors (showing white paper through them) still
+  // pass. Prevents holes from merging into one wide 1-region via
+  // the chart-body gutters between chip columns.
+  chromaTolerance: 7,
 };
 
 export type WhiteMaskResult = {
@@ -230,7 +236,7 @@ export type FlatRect = {
   maxY: number;
 };
 
-// Scan a binary flat mask for rectangles of all-1s. At each unvisited
+// Scan a binary white mask for rectangles of all-1s. At each unvisited
 // 1-pixel, compute the LARGEST all-1s rectangle with that pixel as
 // its top-left corner (height-major search: for each candidate
 // height, take the min consecutive 1s across those rows starting at
@@ -332,7 +338,7 @@ const zeroRect = (
   }
 };
 
-// One circle inscribed in a 1-region of the flat mask.
+// One circle inscribed in a 1-region of the white mask.
 export type FlatCircle = {cx: number; cy: number; r: number};
 
 // Two-pass chamfer distance transform. For each foreground (1)
@@ -402,12 +408,24 @@ export const distanceTransform = (mask: GrayImage): Float32Array => {
 };
 
 // Find non-overlapping circles inscribed in the 1-regions of a
-// flat mask. For each pixel that is a local maximum of the distance
-// transform, with radius (=distance) in [minRadius, maxRadius],
-// emit a candidate circle. Then greedily keep the largest circles
-// that don't overlap any already-kept one — i.e. two circles are
-// considered to overlap when centre-distance < r1 + r2, and the
-// smaller of an overlapping pair is discarded.
+// white mask. Every pixel whose DT value falls in [minRadius,
+// maxRadius] is a candidate circle centered there; sort by radius
+// descending, greedy-keep the ones that don't overlap any already-
+// kept one (overlap = centre-distance < r1 + r2).
+//
+// Historical note: this used to only consider strict local maxima
+// of the DT. That works when every feature (hole) is its own
+// isolated 1-region — one local max per region → one detection
+// per hole. But when adjacent holes get glued together in the mask
+// (e.g. chart body between chip columns passing the whiteMask
+// chroma gate), the DT along the connecting corridor is a near-
+// constant ridge with no strict local max per hole, so we'd get
+// zero detections across the whole merged band. Dropping the
+// local-max requirement makes the algorithm robust to that: every
+// hole-sized pixel is a candidate, and the greedy overlap rule
+// naturally sphere-packs one detection per hole because each
+// winning candidate eliminates only within 2 × hole-radius of
+// itself (the DT is bounded by hole size in a hole-shaped region).
 export const findFlatCircles = (
   mask: GrayImage,
   minRadius: number,
@@ -416,24 +434,12 @@ export const findFlatCircles = (
   const {width, height} = mask;
   const dt = distanceTransform(mask);
   const candidates: FlatCircle[] = [];
-  for (let y = 1; y < height - 1; y++) {
-    for (let x = 1; x < width - 1; x++) {
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
       const i = y * width + x;
       const d = dt[i];
       if (d < minRadius || d > maxRadius) continue;
-      // Local maximum check — ≥ all 8-neighbours (>= not >, so ties
-      // pick the first-scanned representative).
-      let isPeak = true;
-      for (let dy = -1; dy <= 1 && isPeak; dy++) {
-        for (let dx = -1; dx <= 1; dx++) {
-          if (dx === 0 && dy === 0) continue;
-          if (dt[i + dy * width + dx] > d) {
-            isPeak = false;
-            break;
-          }
-        }
-      }
-      if (isPeak) candidates.push({cx: x, cy: y, r: d});
+      candidates.push({cx: x, cy: y, r: d});
     }
   }
   candidates.sort((a, b) => b.r - a.r);

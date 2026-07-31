@@ -15,7 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -38,6 +44,7 @@ import {
 } from 'expo-file-system/legacy';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   Box,
   Column,
@@ -54,13 +61,20 @@ import {
   csvFromCells,
   DEFAULT_REFERENCE_NOTATION,
   type MunsellCellResult,
+  type MunsellChartFailureDebug,
   type MunsellChartResult,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/chartAnalysis';
+import {REFERENCE_GRID} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {
   CHART_CHROMAS,
   CHART_HUE,
   CHART_VALUES,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
+import {
+  findMunsellPage,
+  MUNSELL_PAGES,
+  type MunsellPage,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 // Dev tool: point at a captured DNG of the 10YR Munsell soil-colour
@@ -145,6 +159,13 @@ export const MunsellChartValidatorScreen = ({
   const [state, setState] = useState<
     | {kind: 'analyzing'}
     | {kind: 'ready'; result: MunsellChartResult}
+    // 'failed' carries structured debug info (preview PNG, partial
+    // grid, luma thresholds) so the dev UI can render the same source
+    // overlay as the success path plus the failure reason, alongside
+    // Share DNG / Share white mask buttons.
+    | {kind: 'failed'; debug: MunsellChartFailureDebug}
+    // 'error' is the truly-unexpected exception path (native decoder
+    // crash, out-of-memory, etc.) — no partial data, just the message.
     | {kind: 'error'; message: string}
   >({kind: 'analyzing'});
   // On-screen SVG (fills the scroll view width). Not used for export
@@ -153,10 +174,10 @@ export const MunsellChartValidatorScreen = ({
   // Off-screen export SVG at the fixed EXPORT_CSS_WIDTH × EXPORT_CSS_HEIGHT
   // size — this is what we hand to toDataURL.
   const exportSvgRef = useRef<Svg>(null);
-  // Off-screen SVG for the flat-mask debug PNG export. Sized to the
+  // Off-screen SVG for the white-mask debug PNG export. Sized to the
   // preview's own pixel dimensions so toDataURL produces a full-res
   // bitmap the tester can pinch-zoom to inspect the mask.
-  const flatExportSvgRef = useRef<Svg>(null);
+  const whiteMaskExportSvgRef = useRef<Svg>(null);
   const [sharing, setSharing] = useState(false);
   const [view, setView] = useState<'grid' | 'source'>('grid');
   // Cell notation the tester picked as WB reference. Default to a
@@ -170,6 +191,13 @@ export const MunsellChartValidatorScreen = ({
   // On = LMS-space Bradford adaptation (more accurate for tinted
   // illuminants or strongly chromatic reference cells).
   const [useBradford, setUseBradford] = useState(false);
+  // Which Munsell page the user says this DNG is of. Changing this
+  // re-runs analyzeMunsellChart with the new page's cell layout
+  // (chip positions differ across hues) so sampling picks up the
+  // right ROIs on the right holes. Default to the first configured
+  // page (10YR).
+  const [pageHue, setPageHue] = useState<string>(MUNSELL_PAGES[0].hue);
+  const page = useMemo(() => findMunsellPage(pageHue), [pageHue]);
   const cells = useMemo(
     () =>
       state.kind === 'ready'
@@ -183,16 +211,24 @@ export const MunsellChartValidatorScreen = ({
   );
 
   useEffect(() => {
+    // Re-run when the selected page changes — analyzeMunsellChart uses
+    // page.cells to build the per-cell sample rects, so a page swap
+    // resamples the DNG at the right chip positions.
+    setState({kind: 'analyzing'});
     (async () => {
       try {
-        const result = await analyzeMunsellChart(dngPath);
-        setState({kind: 'ready', result});
+        const outcome = await analyzeMunsellChart(dngPath, page);
+        if (outcome.kind === 'success') {
+          setState({kind: 'ready', result: outcome.result});
+        } else {
+          setState({kind: 'failed', debug: outcome.debug});
+        }
       } catch (err) {
         console.error('Munsell chart analysis failed:', err);
         setState({kind: 'error', message: String(err)});
       }
     })();
-  }, [dngPath]);
+  }, [dngPath, page]);
 
   const shareAsImage = useCallback(() => {
     const svg = exportSvgRef.current;
@@ -242,8 +278,25 @@ export const MunsellChartValidatorScreen = ({
     }
   }, [cells, referenceNotation]);
 
-  const shareFlat = useCallback(() => {
-    const svg = flatExportSvgRef.current;
+  const shareDng = useCallback(async () => {
+    setSharing(true);
+    try {
+      await Share.open({
+        url: dngPath.startsWith('file://') ? dngPath : `file://${dngPath}`,
+        // DNG has no universal MIME type; image/x-adobe-dng is the
+        // closest, and Share honours it for AirDrop / Files / mail.
+        type: 'image/x-adobe-dng',
+        failOnCancel: false,
+      });
+    } catch (err) {
+      console.error('Munsell DNG share failed:', err);
+    } finally {
+      setSharing(false);
+    }
+  }, [dngPath]);
+
+  const shareWhiteMask = useCallback(() => {
+    const svg = whiteMaskExportSvgRef.current;
     if (!svg) return;
     setSharing(true);
     (
@@ -252,7 +305,7 @@ export const MunsellChartValidatorScreen = ({
       }
     ).toDataURL(async (base64: string) => {
       try {
-        const outPath = `${cacheDirectory}munsell-flat-mask.png`;
+        const outPath = `${cacheDirectory}munsell-white-mask.png`;
         await writeAsStringAsync(outPath, base64, {
           encoding: EncodingType.Base64,
         });
@@ -262,7 +315,7 @@ export const MunsellChartValidatorScreen = ({
           failOnCancel: false,
         });
       } catch (err) {
-        console.error('Munsell flat-mask share failed:', err);
+        console.error('Munsell white-mask share failed:', err);
       } finally {
         setSharing(false);
       }
@@ -271,7 +324,7 @@ export const MunsellChartValidatorScreen = ({
 
   return (
     <ScreenScaffold
-      AppBar={<AppBar title={`Munsell ${CHART_HUE} validator`} />}>
+      AppBar={<AppBar title={`Munsell ${page.hue} validator`} />}>
       <SafeScrollView>
         <Column padding="md" space="md">
           {state.kind === 'analyzing' && (
@@ -283,11 +336,35 @@ export const MunsellChartValidatorScreen = ({
           {state.kind === 'error' && (
             <Column space="sm">
               <Text variant="body1" bold>
-                Analysis failed
+                Analysis failed (unexpected exception)
               </Text>
               <Paragraph>{state.message}</Paragraph>
-              <ContainedButton label="Back" onPress={() => navigation.pop()} />
+              <Row space="sm">
+                <Box flex={1}>
+                  <ContainedButton
+                    label={sharing ? 'Sharing…' : 'Share DNG'}
+                    onPress={shareDng}
+                    disabled={sharing}
+                    stretchToFit
+                  />
+                </Box>
+                <Box flex={1}>
+                  <ContainedButton
+                    label="Back"
+                    onPress={() => navigation.pop()}
+                    stretchToFit
+                  />
+                </Box>
+              </Row>
             </Column>
+          )}
+          {state.kind === 'failed' && (
+            <FailedView
+              debug={state.debug}
+              sharing={sharing}
+              onShareDng={shareDng}
+              onBack={() => navigation.pop()}
+            />
           )}
           {state.kind === 'ready' && (
             <>
@@ -297,6 +374,18 @@ export const MunsellChartValidatorScreen = ({
                 {referenceNotation ?? 'none (raw uncorrected)'}. Tap any cell to
                 change reference.
               </Paragraph>
+              {/* Munsell hue-page selector. Changing this re-runs the
+                 analyzer with the picked page's (value, chroma) layout —
+                 sample rects follow the page's chip positions, expected
+                 notations follow its (hue, value, chroma) triples. */}
+              <Select<string, false>
+                nullable={false}
+                options={MUNSELL_PAGES.map(p => p.hue)}
+                value={pageHue}
+                onValueChange={setPageHue}
+                renderValue={hue => `Munsell ${hue} page`}
+                label="Chart page"
+              />
               <Row space="sm">
                 <ViewToggleButton
                   label="Result grid"
@@ -314,6 +403,7 @@ export const MunsellChartValidatorScreen = ({
                   <ResultSvg
                     ref={onScreenSvgRef}
                     cells={cells}
+                    page={page}
                     referenceNotation={referenceNotation}
                     onCellPress={setReferenceNotation}
                   />
@@ -359,8 +449,16 @@ export const MunsellChartValidatorScreen = ({
               <Row space="sm">
                 <Box flex={1}>
                   <ContainedButton
-                    label={sharing ? 'Sharing…' : 'Share flat mask (debug)'}
-                    onPress={shareFlat}
+                    label={sharing ? 'Sharing…' : 'Share white mask (debug)'}
+                    onPress={shareWhiteMask}
+                    disabled={sharing}
+                    stretchToFit
+                  />
+                </Box>
+                <Box flex={1}>
+                  <ContainedButton
+                    label={sharing ? 'Sharing…' : 'Share DNG'}
+                    onPress={shareDng}
                     disabled={sharing}
                     stretchToFit
                   />
@@ -374,12 +472,13 @@ export const MunsellChartValidatorScreen = ({
                 <ResultSvg
                   ref={exportSvgRef}
                   cells={cells}
+                  page={page}
                   referenceNotation={referenceNotation}
                   onCellPress={null}
                 />
               </View>
-              {/* Off-screen flat-mask export: preview image + blue
-                 flat-mask overlay at full preview resolution, so
+              {/* Off-screen white-mask export: preview image + blue
+                 white-mask overlay at full preview resolution, so
                  toDataURL yields a bitmap the tester can zoom into
                  and actually read. */}
               <View
@@ -392,7 +491,7 @@ export const MunsellChartValidatorScreen = ({
                 ]}
                 pointerEvents="none">
                 <Svg
-                  ref={flatExportSvgRef}
+                  ref={whiteMaskExportSvgRef}
                   width="100%"
                   height="100%"
                   viewBox={`0 0 ${state.result.preview.width} ${state.result.preview.height}`}
@@ -405,16 +504,14 @@ export const MunsellChartValidatorScreen = ({
                     height={state.result.preview.height}
                     preserveAspectRatio="xMidYMid meet"
                   />
-                  {state.result.grid.brightMaskSpans.map((s, i) => (
-                    <Rect
-                      key={`fm-${i}`}
-                      x={s.x}
-                      y={s.y}
-                      width={s.w}
-                      height={s.h}
-                      fill="rgb(0,180,255)"
-                    />
-                  ))}
+                  {/* Same layers the on-screen SourceOverlayView draws,
+                     with the mask forced on. Gives the shared PNG the
+                     full debug context (blobs, fitted grid, winning
+                     triplet, sample rects) not just the mask alone. */}
+                  <DebugOverlayLayers
+                    result={state.result}
+                    maskView="bright"
+                  />
                 </Svg>
               </View>
             </>
@@ -433,11 +530,13 @@ export const MunsellChartValidatorScreen = ({
 const ResultSvg = ({
   ref,
   cells,
+  page,
   referenceNotation,
   onCellPress,
 }: {
   ref: React.RefObject<Svg | null>;
   cells: MunsellCellResult[];
+  page: MunsellPage;
   referenceNotation: string | null;
   // Called with the tapped cell's Munsell notation. `null` disables
   // interactivity (used for the off-screen export copy).
@@ -469,7 +568,7 @@ const ResultSvg = ({
   elements.push(<Legend key="legend" />);
 
   // Column headers.
-  CHART_CHROMAS.forEach((chroma, colIdx) => {
+  page.chromas.forEach((chroma, colIdx) => {
     const x = LABEL_W + CELL_W * colIdx + CELL_W / 2;
     elements.push(
       <SvgText
@@ -480,13 +579,13 @@ const ResultSvg = ({
         fontSize={FONT_HEADER}
         fontWeight="bold"
         textAnchor="middle">
-        /{chroma}
+        {chroma}
       </SvgText>,
     );
   });
 
   // Row headers + cells.
-  CHART_VALUES.forEach((value, rowIdx) => {
+  page.values.forEach((value, rowIdx) => {
     const y = GRID_START_Y + HEADER_H + CELL_H * rowIdx;
     elements.push(
       <SvgText
@@ -497,11 +596,11 @@ const ResultSvg = ({
         fontSize={FONT_HEADER}
         fontWeight="bold"
         textAnchor="end">
-        {value}/
+        {value}
       </SvgText>,
     );
 
-    CHART_CHROMAS.forEach((chroma, colIdx) => {
+    page.chromas.forEach((chroma, colIdx) => {
       const cx = LABEL_W + CELL_W * colIdx;
       const key = `${value}/${chroma}`;
       const cellResult = byKey.get(key);
@@ -690,8 +789,304 @@ const STATUS_LABEL: Record<string, string> = {
   kept_bright: 'detected',
 };
 
+// Shared debug-overlay layers rendered on top of the preview image
+// (mask + classified blobs + fitted grid + winning triplet + sample
+// rects). Used by both the on-screen source view (with a togglable
+// mask) and the off-screen white-mask export (mask always on) so the
+// shared PNG carries the same context testers see in-app.
+const DebugOverlayLayers = ({
+  result,
+  maskView,
+}: {
+  result: MunsellChartResult;
+  maskView: 'none' | 'bright' | 'body';
+}) => {
+  const {previewRects, detectedSwatches, grid} = result;
+  return (
+    <>
+      {/* Mask overlay (opaque blue for the bright mask so the tester
+         can see exactly which pixels the mask includes; magenta for
+         the chart body mask). Toggled below so we can see one at a
+         time without them stacking into mush. */}
+      {maskView === 'bright' &&
+        grid.brightMaskSpans.map((s, i) => (
+          <Rect
+            key={`bm-${i}`}
+            x={s.x}
+            y={s.y}
+            width={s.w}
+            height={s.h}
+            fill="rgb(0,180,255)"
+          />
+        ))}
+      {maskView === 'body' &&
+        grid.chartBodyMaskSpans.map((s, i) => (
+          <Rect
+            key={`cbm-${i}`}
+            x={s.x}
+            y={s.y}
+            width={s.w}
+            height={s.h}
+            fill="rgba(255,0,255,0.35)"
+          />
+        ))}
+      {/* Chart body bounding box in cyan — the region hole detection
+         was restricted to. If this outline doesn't match the actual
+         chart, the chart-body detector is at fault (wrong bandpass
+         thresholds, or a similarly-grey object in the frame). */}
+      {grid.chartBodyBounds && (
+        <Rect
+          key="chart-body"
+          x={grid.chartBodyBounds.minX}
+          y={grid.chartBodyBounds.minY}
+          width={grid.chartBodyBounds.maxX - grid.chartBodyBounds.minX + 1}
+          height={grid.chartBodyBounds.maxY - grid.chartBodyBounds.minY + 1}
+          stroke="cyan"
+          strokeWidth={2}
+          fill="none"
+        />
+      )}
+      {/* Raw regions, colour-coded by classifier outcome. Hidden
+         statuses drop out entirely — they don't feed the RANSAC
+         match. The RANSAC-input circles (kept_bright) render as a
+         green ring at the DETECTED radius (so we can see if the
+         circle-finder picked a plausible-sized region) plus a small
+         filled green centre dot for easy counting; other rejects
+         render as bounding-box outlines. */}
+      {grid.rawBlobs.map((b, i) => {
+        if (HIDDEN_STATUSES.has(b.status)) return null;
+        if (b.status === 'kept_bright') {
+          // Back out the inscribed radius from the bbox — findFlatCircles
+          // stored the circle's inscribing square as minX/minY/maxX/maxY.
+          // Just the outer green ring here — the centre dot is drawn
+          // AFTER the yellow ring pass below, so it stays visible on
+          // top of any matched-inlier yellow fill.
+          const r = (b.maxX - b.minX) / 2;
+          return (
+            <Circle
+              key={`raw-${i}`}
+              cx={b.cx}
+              cy={b.cy}
+              r={r}
+              stroke="#22cc22"
+              strokeWidth={2}
+              fill="none"
+            />
+          );
+        }
+        return (
+          <Rect
+            key={`raw-${i}`}
+            x={b.minX}
+            y={b.minY}
+            width={b.maxX - b.minX + 1}
+            height={b.maxY - b.minY + 1}
+            stroke={RAW_BLOB_STROKE[b.status] ?? 'white'}
+            strokeWidth={1}
+            fill="none"
+          />
+        );
+      })}
+      {/* Fitted-grid intersections in yellow. Draw all REFERENCE_GRID
+         points after the winning transform. Matched ones (inliers
+         within matchThreshold of a detected point) get FILLED yellow
+         so testers can see which ref points actually contributed to
+         the score; unmatched ones stay hollow. Green centre dots for
+         kept_bright detections are re-rendered after this pass so
+         they stay visible on top of the fills. */}
+      {grid.matchedGrid
+        ? grid.matchedGrid.map((p, i) => (
+            <Circle
+              key={`mg-${i}`}
+              cx={p.x}
+              cy={p.y}
+              r={10}
+              stroke="#ffcc00"
+              strokeWidth={3}
+              fill={grid.matchedGridInliers?.[i] ? '#ffcc00' : 'none'}
+            />
+          ))
+        : grid.centers.flatMap((row, ri) =>
+            row.map((p, ci) => (
+              <Rect
+                key={`grid-${ri}-${ci}`}
+                x={p.x - 3}
+                y={p.y - 3}
+                width={6}
+                height={6}
+                fill="#ffcc00"
+              />
+            )),
+          )}
+      {/* Green centre dots for kept_bright detections, drawn AFTER
+         the yellow rings so they sit visibly on top of any inlier
+         fill. Paired with the outer green rings drawn in the raw-
+         blobs pass above. */}
+      {grid.rawBlobs.map((b, i) => {
+        if (b.status !== 'kept_bright') return null;
+        return (
+          <Rect
+            key={`raw-dot-${i}`}
+            x={b.cx - 3}
+            y={b.cy - 3}
+            width={6}
+            height={6}
+            fill="#22cc22"
+          />
+        );
+      })}
+      {/* The 3 detected points that formed the winning triplet.
+         Bright red rings so a tester can see exactly which 3 anchors
+         the whole transform was built from. */}
+      {grid.matchedTripletDetected?.map((p, i) => (
+        <Circle
+          key={`tri-${i}`}
+          cx={p.x}
+          cy={p.y}
+          r={22}
+          stroke="#ff2020"
+          strokeWidth={3}
+          fill="none"
+        />
+      ))}
+      {/* Sample ROIs (SAMPLE_GRID transformed) as red squares. These
+         are the pixel regions the downstream analysis actually samples
+         for per-swatch colour. */}
+      {grid.matchedSampleRects?.map((r, i) => (
+        <Rect
+          key={`sample-${i}`}
+          x={r.x}
+          y={r.y}
+          width={r.w}
+          height={r.h}
+          stroke="#ff2020"
+          strokeWidth={2}
+          fill="none"
+        />
+      ))}
+      {/* Per-swatch sampling rects in red — from the OLD cluster-fit
+         pipeline. Hidden when the new RANSAC match ran. */}
+      {!grid.matchedGrid &&
+        previewRects.map((r, i) => (
+          <Rect
+            key={`roi-${i}`}
+            x={r.x}
+            y={r.y}
+            width={r.w}
+            height={r.h}
+            stroke="#ff2020"
+            strokeWidth={2}
+            fill="none"
+          />
+        ))}
+      {/* Filled green dots — swatch centroids from the OLD cluster
+         fit. Hidden when the RANSAC match ran. */}
+      {!grid.matchedGrid &&
+        detectedSwatches.map((d, i) => (
+          <Rect
+            key={`det-${i}`}
+            x={d.cx - 4}
+            y={d.cy - 4}
+            width={8}
+            height={8}
+            fill="#22cc22"
+          />
+        ))}
+    </>
+  );
+};
+
+// Dev-only failure view — shown when analyzeMunsellChart returned
+// {kind: 'failure', debug} (typically because detectChartByRegions
+// couldn't find enough candidates or couldn't fit a plausible grid).
+// Renders the preview PNG if we have one and dumps the structured
+// debug info a dev can act on: failure reason, white-mask luma
+// threshold values, and per-status blob counts. Share buttons cover
+// the DNG (always available) so the shot can be inspected off-device.
+const FailedView = ({
+  debug,
+  sharing,
+  onShareDng,
+  onBack,
+}: {
+  debug: MunsellChartFailureDebug;
+  sharing: boolean;
+  onShareDng: () => void;
+  onBack: () => void;
+}) => {
+  const preview = debug.preview;
+  const aspect = preview ? preview.width / preview.height : 4 / 3;
+  return (
+    <Column space="sm">
+      <Text variant="body1" bold>
+        Analysis failed
+      </Text>
+      <Paragraph>{debug.reason}</Paragraph>
+      <Text variant="body2">
+        {`whiteMask: lumaAnchor=${debug.lumaAnchor ?? 'n/a'}, `}
+        {`lumaCutoff=${debug.lumaCutoff ?? 'n/a'}`}
+      </Text>
+      {debug.grid && (
+        <Text variant="body2">
+          {`rawBlobs=${debug.grid.rawBlobs.length}, `}
+          {`detected=${debug.grid.detected.length}, `}
+          {`cellW=${debug.grid.cellW.toFixed(1)}, cellH=${debug.grid.cellH.toFixed(1)}`}
+        </Text>
+      )}
+      {preview && (
+        <Box width="100%" aspectRatio={aspect} backgroundColor="grey.900">
+          <Image
+            source={{uri: preview.uri}}
+            style={StyleSheet.absoluteFill}
+            resizeMode="contain"
+          />
+          {debug.grid && (
+            <Svg
+              style={StyleSheet.absoluteFill}
+              viewBox={`0 0 ${preview.width} ${preview.height}`}
+              preserveAspectRatio="xMidYMid meet">
+              {/* Reuse the debug overlay, forcing the white-mask
+                 view on so the dev sees the mask + any candidate
+                 blobs even though there's no fitted grid. Pass a
+                 synthetic MunsellChartResult shape — only the
+                 grid + preview fields are used by DebugOverlayLayers
+                 for this call. */}
+              <DebugOverlayLayers
+                result={
+                  {
+                    grid: debug.grid,
+                    preview,
+                    previewRects: [],
+                    detectedSwatches: [],
+                    measurements: [],
+                    matchedSampleValues: null,
+                  } as unknown as MunsellChartResult
+                }
+                maskView="bright"
+              />
+            </Svg>
+          )}
+        </Box>
+      )}
+      <Row space="sm">
+        <Box flex={1}>
+          <ContainedButton
+            label={sharing ? 'Sharing…' : 'Share DNG'}
+            onPress={onShareDng}
+            disabled={sharing}
+            stretchToFit
+          />
+        </Box>
+        <Box flex={1}>
+          <ContainedButton label="Back" onPress={onBack} stretchToFit />
+        </Box>
+      </Row>
+    </Column>
+  );
+};
+
 const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
-  const {preview, previewRects, detectedSwatches, grid} = result;
+  const {preview} = result;
   const aspect = preview.width / preview.height;
   const [maskView, setMaskView] = useState<'none' | 'bright' | 'body'>('none');
   return (
@@ -705,180 +1100,11 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
         style={StyleSheet.absoluteFill}
         viewBox={`0 0 ${preview.width} ${preview.height}`}
         preserveAspectRatio="xMidYMid meet">
-        {/* Mask overlay (semi-transparent white for the bright mask
-           post-restrict-post-open, magenta for the chart body mask
-           pre-largest-CC). Toggled below so we can see one at a
-           time without them stacking into mush. */}
-        {maskView === 'bright' &&
-          grid.brightMaskSpans.map((s, i) => (
-            <Rect
-              key={`bm-${i}`}
-              x={s.x}
-              y={s.y}
-              width={s.w}
-              height={s.h}
-              fill="rgb(0,180,255)"
-            />
-          ))}
-        {maskView === 'body' &&
-          grid.chartBodyMaskSpans.map((s, i) => (
-            <Rect
-              key={`cbm-${i}`}
-              x={s.x}
-              y={s.y}
-              width={s.w}
-              height={s.h}
-              fill="rgba(255,0,255,0.35)"
-            />
-          ))}
-        {/* Chart body bounding box in cyan — the region hole detection
-           was restricted to. If this outline doesn't match the actual
-           chart, the chart-body detector is at fault (wrong bandpass
-           thresholds, or a similarly-grey object in the frame). */}
-        {grid.chartBodyBounds && (
-          <Rect
-            key="chart-body"
-            x={grid.chartBodyBounds.minX}
-            y={grid.chartBodyBounds.minY}
-            width={grid.chartBodyBounds.maxX - grid.chartBodyBounds.minX + 1}
-            height={grid.chartBodyBounds.maxY - grid.chartBodyBounds.minY + 1}
-            stroke="cyan"
-            strokeWidth={2}
-            fill="none"
-          />
-        )}
-        {/* Raw regions, colour-coded by classifier outcome. Hidden
-           statuses (kept_dark / reject_low_contrast / reject_
-           brightness) drop out entirely — they don't feed the
-           RANSAC match. The RANSAC-input circles (kept_bright)
-           render as small filled green squares at the centroid
-           for easy counting; other rejects render as bounding-
-           box outlines. */}
-        {grid.rawBlobs.map((b, i) => {
-          if (HIDDEN_STATUSES.has(b.status)) return null;
-          if (b.status === 'kept_bright') {
-            return (
-              <Rect
-                key={`raw-${i}`}
-                x={b.cx - 4}
-                y={b.cy - 4}
-                width={8}
-                height={8}
-                fill="#22cc22"
-              />
-            );
-          }
-          return (
-            <Rect
-              key={`raw-${i}`}
-              x={b.minX}
-              y={b.minY}
-              width={b.maxX - b.minX + 1}
-              height={b.maxY - b.minY + 1}
-              stroke={RAW_BLOB_STROKE[b.status] ?? 'white'}
-              strokeWidth={1}
-              fill="none"
-            />
-          );
-        })}
-        {/* Fitted-grid intersections in yellow. When the RANSAC
-           triplet-match ran, draw ALL 36 REFERENCE_GRID points
-           after the winning transform, rendered as hollow circles
-           (radius ~13) so any green centre dot inside a detected
-           hole stays visible through them. When the match didn't
-           run, fall back to the old cluster-fit grid.centers. */}
-        {grid.matchedGrid
-          ? grid.matchedGrid.map((p, i) => (
-              <Circle
-                key={`mg-${i}`}
-                cx={p.x}
-                cy={p.y}
-                r={13}
-                stroke="#ffcc00"
-                strokeWidth={3}
-                fill="none"
-              />
-            ))
-          : grid.centers.flatMap((row, ri) =>
-              row.map((p, ci) => (
-                <Rect
-                  key={`grid-${ri}-${ci}`}
-                  x={p.x - 3}
-                  y={p.y - 3}
-                  width={6}
-                  height={6}
-                  fill="#ffcc00"
-                />
-              )),
-            )}
-        {/* The 3 detected points that formed the winning triplet.
-           Bright red rings around them so a tester can see exactly
-           which 3 anchors the whole transform was built from. */}
-        {grid.matchedTripletDetected?.map((p, i) => (
-          <Circle
-            key={`tri-${i}`}
-            cx={p.x}
-            cy={p.y}
-            r={22}
-            stroke="#ff2020"
-            strokeWidth={3}
-            fill="none"
-          />
-        ))}
-        {/* Sample ROIs (SAMPLE_GRID transformed) as red squares.
-           These are the pixel regions the downstream analysis
-           actually samples for per-swatch colour. */}
-        {grid.matchedSampleRects?.map((r, i) => (
-          <Rect
-            key={`sample-${i}`}
-            x={r.x}
-            y={r.y}
-            width={r.w}
-            height={r.h}
-            stroke="#ff2020"
-            strokeWidth={2}
-            fill="none"
-          />
-        ))}
-        {/* Per-swatch sampling rects in red — from the OLD
-           cluster-fit pipeline. Hidden when the new RANSAC match
-           ran, since those ROIs would confuse the picture and
-           we'll render new ones once we build the match-based
-           sampler. */}
-        {!grid.matchedGrid &&
-          previewRects.map((r, i) => (
-            <Rect
-              key={`roi-${i}`}
-              x={r.x}
-              y={r.y}
-              width={r.w}
-              height={r.h}
-              stroke="#ff2020"
-              strokeWidth={2}
-              fill="none"
-            />
-          ))}
-        {/* Filled green dots — swatch centroids from the OLD cluster
-           fit. Hidden when the RANSAC match ran, since those centres
-           come from a different code path and would confuse the
-           "which N points did RANSAC actually use" question. The
-           real RANSAC input set is the kept_bright regions
-           (teal-outlined boxes from rawBlobs). */}
-        {!grid.matchedGrid &&
-          detectedSwatches.map((d, i) => (
-            <Rect
-              key={`det-${i}`}
-              x={d.cx - 4}
-              y={d.cy - 4}
-              width={8}
-              height={8}
-              fill="#22cc22"
-            />
-          ))}
+        <DebugOverlayLayers result={result} maskView={maskView} />
       </Svg>
       <RawBlobLegend
-        rawBlobs={grid.rawBlobs}
-        matchedScore={grid.matchedScore}
+        rawBlobs={result.grid.rawBlobs}
+        matchedScore={result.grid.matchedScore}
       />
       <MaskToggle value={maskView} onChange={setMaskView} />
     </Box>
@@ -906,7 +1132,7 @@ const MaskToggle = ({
   return (
     <View style={styles.maskToggleContainer}>
       {btn('none', 'none', 'rgba(120,120,120,0.9)')}
-      {btn('flat', 'bright', 'rgba(255,255,255,0.9)')}
+      {btn('white', 'bright', 'rgba(255,255,255,0.9)')}
       {btn('body', 'body', 'rgba(255,0,255,0.9)')}
     </View>
   );
@@ -933,8 +1159,10 @@ const RawBlobLegend = ({
         <RNText style={styles.legendLine}>
           <RNText style={{color: '#ffcc00'}}>■</RNText>
           {`  match: ${matchedScore.toFixed(1)} / ${
-            counts.kept_bright ? Math.min(36, counts.kept_bright) : 36
-          } (of 36 ref)`}
+            counts.kept_bright
+              ? Math.min(REFERENCE_GRID.length, counts.kept_bright)
+              : REFERENCE_GRID.length
+          } (of ${REFERENCE_GRID.length} ref)`}
         </RNText>
       )}
       {entries.map(([status, n]) => (
@@ -999,7 +1227,7 @@ const Legend = () => {
         fontSize={22}
         fontWeight="bold"
         textAnchor="middle">
-        Munsell 10YR chart validation — how to read each cell
+        Munsell chart validation — how to read each cell
       </SvgText>
 
       {/* Sample cell */}

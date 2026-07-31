@@ -20,7 +20,7 @@
 // problem as matching detected circles to a reference grid pattern
 // via point-triplet correspondences. Three non-collinear point
 // correspondences define an affine transform, so if we can pick 3
-// detected circles and figure out which 3 reference-grid positions
+// detected circles and figure out which 3REFER reference-grid positions
 // they map to, everything else follows.
 //
 // This file contains the primitives:
@@ -39,40 +39,43 @@
 
 export type Point = {x: number; y: number};
 
-// Fixed 6×6 template lattice. Column-step is 2 template units,
-// row-step is 3 template units — the exact numbers don't matter as
-// long as they're consistent across callers; downstream code
-// computes an affine transform that maps this lattice into pixel
-// coordinates. Ordering is row-major (row 0 col 0, row 0 col 1, …,
-// row 5 col 5).
-export const REFERENCE_GRID: readonly Point[] = (() => {
-  const out: Point[] = [];
-  for (let row = 0; row < 6; row++) {
-    for (let col = 0; col < 6; col++) {
-      out.push({x: col * 2, y: row * 3});
-    }
-  }
-  return out;
-})();
+// Runtime deps: munsellPages exports a small helper set that the
+// REFERENCE_GRID / SAMPLE_GRID constants below use to compose their
+// coordinates from the per-page chip layouts. munsellPages does a
+// TYPE-only import of Point from this file, so there's no runtime
+// circular dependency.
+// eslint-disable-next-line import/order
+import {
+  computeUniversalMaxSampleGrid,
+  computeUniversalMinReferenceGrid,
+  MUNSELL_PAGES,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
+
+// Reference lattice for RANSAC matching — the SET of chart-hole
+// positions the algorithm expects to align its transform to.
+// Computed as the per-row MINIMUM of hole counts across ALL pages
+// in MUNSELL_PAGES, so a single fitted affine can register any
+// physical chart the user might shoot without knowing the page in
+// advance. Column-step is 2 template units, row-step is 3 units;
+// downstream code fits an affine that maps these template coords
+// into pixel coordinates.
+//
+// See munsellPages.ts for how the per-row minimum is derived; it
+// starts from the 10YR-only baseline of [6,6,6,5,5,2] and shrinks
+// as pages with fewer chips on any row are added.
+export const REFERENCE_GRID: readonly Point[] =
+  computeUniversalMinReferenceGrid(MUNSELL_PAGES);
 
 // Sampling grid template — where we actually pick pixel color from
-// the chart. 7 rows × 6 cols = 42 positions in template units. Same
-// column x-positions as REFERENCE_GRID; y is `row * 3 - 1.5` for
-// row = 0..6, so the sample rows sit half a row-step offset from
-// the reference hole rows (i.e., at the swatch positions on the
-// chart, which print between the holes vertically). The 7 rows
-// straddle the 6 hole rows: one above the top hole (y = -1.5),
-// five between adjacent holes, and one below the bottom hole
-// (y = 16.5).
-export const SAMPLE_GRID: readonly Point[] = (() => {
-  const out: Point[] = [];
-  for (let row = 0; row < 7; row++) {
-    for (let col = 0; col < 6; col++) {
-      out.push({x: col * 2, y: row * 3 - 1.5});
-    }
-  }
-  return out;
-})();
+// the chart. Computed as the per-row MAXIMUM of chip counts across
+// ALL pages, so a single decode pass captures every chip position
+// that could exist on any page. Each per-page result then reads
+// only the subset of positions that has real chips on that page.
+// Column-step is 2, row-step is 3, with a -1.5 offset in y so chip
+// rows sit half a row-step above the corresponding hole row
+// (physically, the chip is above its comparison hole).
+export const SAMPLE_GRID: readonly Point[] =
+  computeUniversalMaxSampleGrid(MUNSELL_PAGES);
 
 // A filter runs on a candidate triplet and returns true to accept
 // it, false to reject. Rejected triplets are skipped by the
@@ -268,6 +271,77 @@ export type AffineFilter = (t: Affine) => boolean;
 // because `sameOrder` catches these cases earlier and cheaper.
 export const isAxisAligned: AffineFilter = t =>
   t.a >= Math.abs(t.b) && t.e >= Math.abs(t.d);
+
+// Reject transforms whose (image of REF x-axis) and (image of REF
+// y-axis) are more than `maxSkewDeg` away from perpendicular. Real
+// photos of a flat chart at reasonable tilt look nearly perpendicular
+// (< 5° off in practice); a 30°+ skew is almost always a bad fit from
+// a degenerate triplet, not a real perspective. Cheap: one dot
+// product and two hypots per transform.
+export const notTooSkewed = (maxSkewDeg: number): AffineFilter => {
+  // Skew angle = 90° − angle_between(colX, colY). Allow up to
+  // maxSkewDeg means |cos(angle_between)| ≤ sin(maxSkewDeg).
+  const cosThreshold = Math.sin((maxSkewDeg * Math.PI) / 180);
+  return (t: Affine) => {
+    const lenX = Math.hypot(t.a, t.d);
+    const lenY = Math.hypot(t.b, t.e);
+    if (lenX < 1e-6 || lenY < 1e-6) return false;
+    const dot = t.a * t.b + t.d * t.e;
+    return Math.abs(dot / (lenX * lenY)) < cosThreshold;
+  };
+};
+
+// Reject transforms whose x-scale and y-scale differ by more than
+// `maxRatio`× either way. REFERENCE_GRID's col-spacing (2 units) and
+// row-spacing (3 units) already encode the chart's real aspect ratio,
+// so a valid transform should map both ref axes at the SAME pixels-per-
+// unit — i.e., `|colX| ≈ |colY|`. Wrong-pairing fits (correct triplet
+// members paired to WRONG ref indices, e.g. mapping ref-bottom-left
+// onto chart-bottom-right) almost always come out with mismatched
+// scales because they're stretching one axis to reach a point that
+// really belongs on the other axis. Cheap: two hypots per transform.
+export const similarScales = (maxRatio: number): AffineFilter => {
+  return (t: Affine) => {
+    const lenX = Math.hypot(t.a, t.d);
+    const lenY = Math.hypot(t.b, t.e);
+    if (lenX < 1e-6 || lenY < 1e-6) return false;
+    const ratio = lenX / lenY;
+    return ratio >= 1 / maxRatio && ratio <= maxRatio;
+  };
+};
+
+// Reject transforms whose per-unit scale (pixels per REFERENCE_GRID
+// template unit) falls outside `[minPxPerUnit, maxPxPerUnit]`. Since
+// the chart-guide framing constrains how big the chart is in the
+// capture, we know the expected pixels-per-unit range up front —
+// rejecting fits well outside that range kills compressed and
+// stretched fits that would otherwise score decently by matching
+// paper-margin false-positives (the every-pixel candidate detector
+// leaves a lot of those). `notTooSkewed` + `similarScales` don't
+// catch uniform compression because both stay ratio-matched under
+// scale. Cheap: two hypots per transform.
+export const scaleInRange = (
+  minPxPerUnit: number,
+  maxPxPerUnit: number,
+): AffineFilter => {
+  return (t: Affine) => {
+    const lenX = Math.hypot(t.a, t.d);
+    const lenY = Math.hypot(t.b, t.e);
+    return (
+      lenX >= minPxPerUnit &&
+      lenX <= maxPxPerUnit &&
+      lenY >= minPxPerUnit &&
+      lenY <= maxPxPerUnit
+    );
+  };
+};
+
+// Compose several AffineFilters — transform must pass ALL of them.
+// Mirrors composeFilters for TripletFilter.
+export const composeAffineFilters =
+  (...filters: AffineFilter[]): AffineFilter =>
+  t =>
+    filters.every(f => f(t));
 
 // Pre-fit predicate on a (refTriplet, detectedTriplet) pair. Called
 // before the affine solve so a rejected pair skips the fit and score
