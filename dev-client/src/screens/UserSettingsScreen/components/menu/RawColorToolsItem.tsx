@@ -21,25 +21,21 @@ import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-// Dev-only menu row: opens ManageCustomReferencesScreen where the
-// tester can review + delete calibrated custom references saved via
-// CalibrateReferenceItem. See phase 6 in docs/raw-camera-plan.md.
-export const ManageCustomReferencesItem = () => {
+// Dev-only menu row: opens the consolidated RawColorToolsScreen where
+// the tester can capture RAW fixtures, calibrate custom references,
+// manage them, and launch the Munsell chart validator. Replaces the
+// four separate menu rows that used to live under FF_testing here.
+export const RawColorToolsItem = () => {
   const navigation = useNavigation();
-
   const onPress = useCallback(() => {
-    navigation.navigate('MANAGE_CUSTOM_REFERENCES_EXPERIMENTAL');
+    navigation.navigate('RAW_COLOR_TOOLS_EXPERIMENTAL');
   }, [navigation]);
-
-  if (APP_CONFIG.environment === 'production') {
-    return null;
-  }
-
+  if (APP_CONFIG.environment === 'production') return null;
   return (
     <MenuItem
       variant="default"
-      icon="list"
-      label="Manage custom references (dev)"
+      icon="palette"
+      label="RAW & color tools (dev)"
       onPress={onPress}
     />
   );

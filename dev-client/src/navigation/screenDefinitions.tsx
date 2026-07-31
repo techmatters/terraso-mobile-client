@@ -52,6 +52,7 @@ import {SitesScreen} from 'terraso-mobile-client/screens/SitesScreen/SitesScreen
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
 import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
+import {RawColorToolsScreen} from 'terraso-mobile-client/screens/RawColorToolsScreen/RawColorToolsScreen';
 import {SlopeShapeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeShapeScreen';
 import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
 import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/CarbonatesScreen';
@@ -119,6 +120,7 @@ export const screenDefinitions = {
   CALIBRATE_REFERENCE_EXPERIMENTAL: CalibrateReferenceScreen,
   MANAGE_CUSTOM_REFERENCES_EXPERIMENTAL: ManageCustomReferencesScreen,
   MUNSELL_CHART_VALIDATOR: MunsellChartValidatorScreen,
+  RAW_COLOR_TOOLS_EXPERIMENTAL: RawColorToolsScreen,
   ANDROID_RAW_CAPTURE: AndroidRawCaptureScreen,
   DATA_EXPORT: UserDataExportScreen,
   SITE_EXPORT: SiteExportScreen,

@@ -186,15 +186,48 @@ export const pageReferenceGridPoints = (page: MunsellPage): Point[] => {
   return out;
 };
 
-// Universal reference-grid template — the per-row MIN of hole counts
+// Universal reference-grid template — the per-row MAX of hole counts
 // across ALL pages in MUNSELL_PAGES. This is what the RANSAC anchor
-// matcher fits against, so it doesn't need to know which page is being
-// captured. Any real chart will contain at least these hole positions;
-// the fitted affine works regardless.
+// matcher fits against, so it doesn't need to know which page is
+// being captured. The MAX (union) choice lets every real chart hole
+// contribute to the score: if the fit lands a ref point on a page
+// position that has no chip, it simply doesn't find a match there —
+// no penalty. Compare to the MIN (intersection) choice which would
+// silently discard the ~6 extra hole positions 10YR has beyond what
+// every other page has, giving max-24-match instead of max-30.
 //
 // Assumes all pages have the same number of value rows (7 → 6 hole
 // rows); throws if they don't, since a mixed-length page set breaks
-// the min-per-row logic.
+// the per-row max logic.
+export const computeUniversalMaxReferenceGrid = (
+  pages: readonly MunsellPage[],
+): Point[] => {
+  if (pages.length === 0) return [];
+  const nHoleRows = pages[0].chipsPerRow.length - 1;
+  for (const p of pages) {
+    if (p.chipsPerRow.length - 1 !== nHoleRows) {
+      throw new Error(
+        `MunsellPage ${p.hue} has ${p.chipsPerRow.length} chip rows; ` +
+          `expected ${nHoleRows + 1} (all pages must have the same row count)`,
+      );
+    }
+  }
+  const out: Point[] = [];
+  for (let row = 0; row < nHoleRows; row++) {
+    let maxCount = 0;
+    for (const p of pages) {
+      maxCount = Math.max(maxCount, p.chipsPerRow[row + 1]);
+    }
+    for (let col = 0; col < maxCount; col++) {
+      out.push({x: col * 2, y: row * 3});
+    }
+  }
+  return out;
+};
+
+// Universal reference-grid template — MIN across all pages (kept for
+// history; see computeUniversalMaxReferenceGrid above for the current
+// choice and rationale).
 export const computeUniversalMinReferenceGrid = (
   pages: readonly MunsellPage[],
 ): Point[] => {

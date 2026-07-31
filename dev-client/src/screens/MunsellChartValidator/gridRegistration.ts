@@ -638,7 +638,14 @@ export const detectChartByRegions = (
   // uses whiteMask (paper-white + neutral chroma) so every hole shows
   // as its own isolated 1-region enclosed by the chart body.
   mask: GrayImage,
+  // Reference grid RANSAC fits against. Default is the universal MAX
+  // across all pages (any real chart's holes contribute to scoring).
+  // Pass a per-page grid when the caller knows which page the DNG is
+  // of — RANSAC then can't "win" by matching a fit that lines up with
+  // ref points where THIS page has no chip.
+  refGrid: readonly Point[] = REFERENCE_GRID,
 ): GridDetection | null => {
+  const tStartAll = Date.now();
   // 1. Find inscribed circles in the mask. Distance transform gives,
   //    at every 1-pixel, the max radius circle that fits inside a
   //    1-region centred there. Take the local maxima with radius in
@@ -867,6 +874,7 @@ export const detectChartByRegions = (
     x: r.cx,
     y: r.cy,
   }));
+  const tAfterCircles = Date.now();
   let matchedGrid: {x: number; y: number}[] | null = null;
   let matchedGridInliers: boolean[] | null = null;
   let matchedScore: number | null = null;
@@ -887,12 +895,14 @@ export const detectChartByRegions = (
     // registration slop across a slightly-tilted chart without
     // counting matches that are visibly off.
     const matchThreshold = Math.max(8, cellH * 0.15);
-    // Outer (ref) iterator: TEMPORARY 100 random triplets for
-    // faster iteration during UX work. Real value should be ~1000+
-    // to cover all filtered-in ref triplets (~800 pass distinct
-    // rows/cols + non-collinear). Inner (detected) iterator:
-    // exhaustive.
-    const OUTER_TRIPLET_COUNT = 100;
+    // Outer (ref) iterator: 1000 random triplets — enough to cover
+    // most valid ref triplets after distinctRowsAndCols +
+    // isNonCollinear filtering (~1500-2500 pass with the 35-point
+    // MAX ref grid). 100 was too few, letting wrong-alignment fits
+    // that scored ~25 win over the correct 30-match alignment
+    // because the correct triplet just wasn't sampled. Inner
+    // (detected) iterator: exhaustive.
+    const OUTER_TRIPLET_COUNT = 1000;
     const refIterator = createRandomTripletIterator(OUTER_TRIPLET_COUNT);
     const tStart = Date.now();
     // Skew tolerance: 15° off perpendicular. Real chart-photo affines
@@ -922,7 +932,7 @@ export const detectChartByRegions = (
     const minPxPerUnit = 0.04 * shorterPreviewDim;
     const maxPxPerUnit = 0.13 * shorterPreviewDim;
     const match = findBestTransform(
-      REFERENCE_GRID,
+      refGrid,
       detectedPoints,
       matchThreshold,
       undefined,
@@ -936,13 +946,18 @@ export const detectChartByRegions = (
         scaleInRange(minPxPerUnit, maxPxPerUnit),
       ),
     );
-    const tElapsed = Date.now() - tStart;
+    const tEndAll = Date.now();
+    const circlesMs = tAfterCircles - tStartAll;
+    const ransacMs = tEndAll - tStart;
+    const totalMs = tEndAll - tStartAll;
     console.log(
-      `[chart-match] ${detectedPoints.length} detected × ${OUTER_TRIPLET_COUNT} ref triplets in ${tElapsed}ms; score=${match?.score?.toFixed(2) ?? 'null'}`,
+      `[chart-match] ${detectedPoints.length} detected × ${OUTER_TRIPLET_COUNT} ref triplets; ` +
+        `circles ${circlesMs}ms, RANSAC ${ransacMs}ms, total ${totalMs}ms; ` +
+        `score=${match?.score?.toFixed(2) ?? 'null'}`,
     );
     if (match) {
       matchedScore = match.score;
-      matchedGrid = REFERENCE_GRID.map(p => applyAffine(match.transform, p));
+      matchedGrid = refGrid.map(p => applyAffine(match.transform, p));
       // Compute which ref points were inliers under the winning
       // transform — mirrors scoreTransform's greedy unique-assignment
       // logic so the display matches what scored. A ref point is an

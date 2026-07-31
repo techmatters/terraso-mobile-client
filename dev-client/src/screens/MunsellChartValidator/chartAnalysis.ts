@@ -39,6 +39,7 @@ import {
 import {
   MUNSELL_PAGES,
   pageCells,
+  pageReferenceGridPoints,
   type MunsellPage,
   type MunsellPageCell,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
@@ -117,6 +118,13 @@ export type MunsellChartResult = {
 // cell in the result grid to override.
 export const DEFAULT_REFERENCE_NOTATION = '10YR 5/1';
 
+// Sentinel `notation` value the screen uses when the user taps the
+// test-swatch cell to make it the WB reference for every other cell.
+// computeCellResults looks up refs by notation; we inject a synthetic
+// CellMeasurement carrying this notation whose expected/rawLinearRgb
+// comes from the picked reference + the DNG sample at TEST_SWATCH_INDEX.
+export const TEST_SWATCH_REFERENCE_NOTATION = '__test_swatch__';
+
 // Everything analyzeMunsellChart managed to compute BEFORE the fatal
 // failure. Rendered on the failure UI so a dev can inspect what the
 // algorithm saw — the preview PNG, the white mask, and any raw circle
@@ -163,7 +171,13 @@ export const analyzeMunsellChart = async (
   //    failure, return a partial-debug object so the UI can render the
   //    preview + white mask + whatever raw blobs were classified,
   //    plus a Share DNG button, so a dev can figure out what went wrong.
-  const grid = detectChartByRegions(grayImage, mask);
+  // Per-page ref grid: RANSAC only rewards fits that land on hole
+  // positions THIS specific page actually has. Prevents the shifted-
+  // by-one wrong-alignment that the universal MAX grid allowed (a
+  // wrong fit could score more than the correct one by lining up
+  // paper false-positives with ref points where this page has no chip).
+  const pageRefGrid = pageReferenceGridPoints(page);
+  const grid = detectChartByRegions(grayImage, mask, pageRefGrid);
   if (!grid) {
     const preview = DngDecoderHybrid.renderPreview(dngPath, PREVIEW_MAX_DIM);
     return {
@@ -265,25 +279,44 @@ export const analyzeMunsellChart = async (
 //    models how physical illumination changes actually shift sensor
 //    responses. More accurate for warmer/tinted illuminants or
 //    strongly chromatic reference cells.
-export const computeCellResults = (
-  measurements: readonly CellMeasurement[],
-  referenceNotation: string | null,
+// Apply the same WB correction computeCellResults applies per cell,
+// to any raw linear-sRGB triple. Exported so callers that need to
+// display a WB-corrected colour without going through the full
+// measurement→MunsellCellResult pipeline (e.g. the test-swatch cell,
+// which has no Munsell notation) can share the exact same logic.
+export const applyWbCorrection = (
+  raw: {r: number; g: number; b: number},
+  ref: CellMeasurement | undefined,
   useBradford: boolean = false,
-): MunsellCellResult[] => {
-  const ref =
-    referenceNotation != null
-      ? measurements.find(m => m.cell.notation === referenceNotation)
-      : undefined;
+): {r: number; g: number; b: number} => {
   const rgbScale = wbRgbScaleFromReference(ref);
   const bfdScale = useBradford ? bradfordScaleFromReference(ref) : null;
+  return bfdScale
+    ? bradfordAdapt(raw, bfdScale)
+    : {
+        r: raw.r * rgbScale.r,
+        g: raw.g * rgbScale.g,
+        b: raw.b * rgbScale.b,
+      };
+};
+
+export const computeCellResults = (
+  measurements: readonly CellMeasurement[],
+  // WB reference to correct against — resolved by the caller so this
+  // function doesn't need to know how the notation-to-measurement
+  // lookup works (in particular, the test-swatch synthetic reference
+  // has a notation the munsell library can't parse and must not appear
+  // in the `measurements` array below, or the per-cell munsellToLab
+  // conversion inside the map would throw).
+  ref: CellMeasurement | undefined,
+  useBradford: boolean = false,
+): MunsellCellResult[] => {
   return measurements.map(({cell, rawLinearRgb}) => {
-    const measuredLinearRgb = bfdScale
-      ? bradfordAdapt(rawLinearRgb, bfdScale)
-      : {
-          r: rawLinearRgb.r * rgbScale.r,
-          g: rawLinearRgb.g * rgbScale.g,
-          b: rawLinearRgb.b * rgbScale.b,
-        };
+    const measuredLinearRgb = applyWbCorrection(
+      rawLinearRgb,
+      ref,
+      useBradford,
+    );
     const [X, Y, Z] = linearRgbToXyz(
       measuredLinearRgb.r,
       measuredLinearRgb.g,

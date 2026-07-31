@@ -46,25 +46,22 @@ export type Point = {x: number; y: number};
 // circular dependency.
 // eslint-disable-next-line import/order
 import {
+  computeUniversalMaxReferenceGrid,
   computeUniversalMaxSampleGrid,
-  computeUniversalMinReferenceGrid,
   MUNSELL_PAGES,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 
 // Reference lattice for RANSAC matching — the SET of chart-hole
 // positions the algorithm expects to align its transform to.
-// Computed as the per-row MINIMUM of hole counts across ALL pages
-// in MUNSELL_PAGES, so a single fitted affine can register any
-// physical chart the user might shoot without knowing the page in
-// advance. Column-step is 2 template units, row-step is 3 units;
-// downstream code fits an affine that maps these template coords
-// into pixel coordinates.
-//
-// See munsellPages.ts for how the per-row minimum is derived; it
-// starts from the 10YR-only baseline of [6,6,6,5,5,2] and shrinks
-// as pages with fewer chips on any row are added.
+// Computed as the per-row MAX (union) of hole counts across ALL
+// pages in MUNSELL_PAGES so any real chart's holes can contribute
+// to scoring: a fit that lands a ref point at a position where the
+// physical page has no chip simply doesn't find a nearby detection,
+// which costs nothing. Using MIN (intersection) discarded ~6 ref
+// positions 10YR has beyond what every other page has and cut its
+// max score from 30 to 24.
 export const REFERENCE_GRID: readonly Point[] =
-  computeUniversalMinReferenceGrid(MUNSELL_PAGES);
+  computeUniversalMaxReferenceGrid(MUNSELL_PAGES);
 
 // Sampling grid template — where we actually pick pixel color from
 // the chart. Computed as the per-row MAXIMUM of chip counts across
@@ -74,8 +71,19 @@ export const REFERENCE_GRID: readonly Point[] =
 // Column-step is 2, row-step is 3, with a -1.5 offset in y so chip
 // rows sit half a row-step above the corresponding hole row
 // (physically, the chip is above its comparison hole).
-export const SAMPLE_GRID: readonly Point[] =
-  computeUniversalMaxSampleGrid(MUNSELL_PAGES);
+//
+// One extra point is appended at (10, 16.5) — bottom-right corner of
+// a full 7×6 grid, one slot beyond any page's actual chip layout.
+// That slot is always empty on the physical chart; the result-grid UI
+// uses it as a "test swatch" cell that compares a user-picked
+// reference colour (Post-it yellow, gray card, etc.) against whatever
+// the DNG shows at that position. Read via TEST_SWATCH_INDEX below.
+const TEST_SWATCH_POINT: Point = {x: 5 * 2, y: 6 * 3 - 1.5};
+export const SAMPLE_GRID: readonly Point[] = [
+  ...computeUniversalMaxSampleGrid(MUNSELL_PAGES),
+  TEST_SWATCH_POINT,
+];
+export const TEST_SWATCH_INDEX: number = SAMPLE_GRID.length - 1;
 
 // A filter runs on a candidate triplet and returns true to accept
 // it, false to reject. Rejected triplets are skipped by the

@@ -29,6 +29,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import DeltaE from 'delta-e';
 import Share from 'react-native-share';
 import Svg, {
   Circle,
@@ -36,6 +37,8 @@ import Svg, {
   Image as SvgImage,
   Text as SvgText,
 } from 'react-native-svg';
+
+import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
 
 import {
   cacheDirectory,
@@ -45,6 +48,11 @@ import {
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
+import {
+  listAvailableReferences,
+  type AvailableReference,
+} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
+import {useCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
 import {
   Box,
   Column,
@@ -60,11 +68,17 @@ import {
   computeCellResults,
   csvFromCells,
   DEFAULT_REFERENCE_NOTATION,
+  TEST_SWATCH_REFERENCE_NOTATION,
+  applyWbCorrection,
+  type CellMeasurement,
   type MunsellCellResult,
   type MunsellChartFailureDebug,
   type MunsellChartResult,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/chartAnalysis';
-import {REFERENCE_GRID} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
+import {
+  REFERENCE_GRID,
+  TEST_SWATCH_INDEX,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {
   CHART_CHROMAS,
   CHART_HUE,
@@ -82,11 +96,17 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 // compare each measured colour to its published Munsell notation, and
 // render a comparison grid the tester can share.
 //
-// Nav route: MUNSELL_CHART_VALIDATOR, param `dngPath` (file:// URI
-// from a fresh RAW capture).
+// Nav route: MUNSELL_CHART_VALIDATOR. Params:
+//   - dngPath: file:// URI from a fresh RAW capture (or a loaded file).
+//   - pageHue: the Munsell page hue the DNG was shot against ('10YR',
+//     '7.5YR', etc.). Picked by the user on the RAW_COLOR_TOOLS screen
+//     before capture so the analyzer can use that page's SPECIFIC hole
+//     layout for RANSAC (instead of the universal MAX grid, which lets
+//     shifted-by-one fits win when they match a paper false-positive).
 
 export type MunsellChartValidatorProps = {
   dngPath: string;
+  pageHue: string;
 };
 
 // SVG layout (fixed-pixel viewBox — easier to reason about text sizing
@@ -154,6 +174,7 @@ const rgbToHex = (rgb: {r: number; g: number; b: number}): string => {
 
 export const MunsellChartValidatorScreen = ({
   dngPath,
+  pageHue,
 }: MunsellChartValidatorProps) => {
   const navigation = useNavigation();
   const [state, setState] = useState<
@@ -191,23 +212,81 @@ export const MunsellChartValidatorScreen = ({
   // On = LMS-space Bradford adaptation (more accurate for tinted
   // illuminants or strongly chromatic reference cells).
   const [useBradford, setUseBradford] = useState(false);
-  // Which Munsell page the user says this DNG is of. Changing this
-  // re-runs analyzeMunsellChart with the new page's cell layout
-  // (chip positions differ across hues) so sampling picks up the
-  // right ROIs on the right holes. Default to the first configured
-  // page (10YR).
-  const [pageHue, setPageHue] = useState<string>(MUNSELL_PAGES[0].hue);
+  // Which Munsell page this DNG is of — passed as a nav param from
+  // the RAW & color tools screen (the user picks it there before
+  // capture so the analyzer can use the page's SPECIFIC hole layout
+  // for RANSAC).
   const page = useMemo(() => findMunsellPage(pageHue), [pageHue]);
+  // Test-swatch reference — a built-in or user-calibrated colour
+  // reference (Post-it yellow, gray card, etc.) that gets sampled from
+  // the DNG at TEST_SWATCH_POINT (bottom-right corner of the 7×6 chart
+  // grid, always empty on the physical chart). Compared vs. the picked
+  // reference's expected colour in the bottom-right cell of the result
+  // grid. Default to the Post-it built-in.
+  const customRefs = useCustomReferences();
+  const availableRefs = useMemo(
+    () => listAvailableReferences(customRefs),
+    [customRefs],
+  );
+  const [testRefId, setTestRefId] = useState<string>('builtin:POST_IT_YELLOW');
+  const testRef: AvailableReference | undefined = useMemo(
+    () => availableRefs.find(r => r.id === testRefId) ?? availableRefs[0],
+    [availableRefs, testRefId],
+  );
+  // Resolve the WB reference measurement. If the user tapped the
+  // test-swatch cell, build a synthetic CellMeasurement from the
+  // picked reference's expected colour + the DNG sample at
+  // TEST_SWATCH_INDEX. Otherwise look up a real cell by notation.
+  // Hoisted out of the `cells` useMemo so the test-swatch's corrected
+  // measured colour can reuse it via applyWbCorrection below.
+  const testMeasuredRaw =
+    state.kind === 'ready'
+      ? (state.result.matchedSampleValues?.[TEST_SWATCH_INDEX] ?? null)
+      : null;
+  const ref: CellMeasurement | undefined = useMemo(() => {
+    if (state.kind !== 'ready') return undefined;
+    if (
+      referenceNotation === TEST_SWATCH_REFERENCE_NOTATION &&
+      testRef &&
+      testMeasuredRaw
+    ) {
+      return {
+        cell: {
+          hue: 'TEST',
+          value: 0,
+          chroma: 0,
+          notation: TEST_SWATCH_REFERENCE_NOTATION,
+          expectedLinearRgb: testRef.linearRgb,
+          rowIdx: -1,
+          colIdx: -1,
+        },
+        rawLinearRgb: testMeasuredRaw,
+      };
+    }
+    if (referenceNotation != null) {
+      return state.result.measurements.find(
+        m => m.cell.notation === referenceNotation,
+      );
+    }
+    return undefined;
+  }, [state, referenceNotation, testRef, testMeasuredRaw]);
   const cells = useMemo(
     () =>
       state.kind === 'ready'
-        ? computeCellResults(
-            state.result.measurements,
-            referenceNotation,
-            useBradford,
-          )
+        ? computeCellResults(state.result.measurements, ref, useBradford)
         : [],
-    [state, referenceNotation, useBradford],
+    [state, ref, useBradford],
+  );
+  // WB-corrected test-swatch measured colour — mirrors what
+  // computeCellResults does per Munsell cell, so tapping a Munsell
+  // reference cell shifts the test-swatch's measured colour the same
+  // way it shifts every other cell.
+  const testMeasuredCorrected = useMemo(
+    () =>
+      testMeasuredRaw
+        ? applyWbCorrection(testMeasuredRaw, ref, useBradford)
+        : null,
+    [testMeasuredRaw, ref, useBradford],
   );
 
   useEffect(() => {
@@ -374,17 +453,21 @@ export const MunsellChartValidatorScreen = ({
                 {referenceNotation ?? 'none (raw uncorrected)'}. Tap any cell to
                 change reference.
               </Paragraph>
-              {/* Munsell hue-page selector. Changing this re-runs the
-                 analyzer with the picked page's (value, chroma) layout —
-                 sample rects follow the page's chip positions, expected
-                 notations follow its (hue, value, chroma) triples. */}
+              {/* Test-swatch reference. Sampled from the DNG at the
+                 bottom-right corner of the 7×6 chart grid (always
+                 empty on any physical page). Compared against the
+                 picked reference's expected colour in the last cell
+                 of the result grid; tap the cell to also use it as
+                 the WB reference for every other cell. */}
               <Select<string, false>
                 nullable={false}
-                options={MUNSELL_PAGES.map(p => p.hue)}
-                value={pageHue}
-                onValueChange={setPageHue}
-                renderValue={hue => `Munsell ${hue} page`}
-                label="Chart page"
+                options={availableRefs.map(r => r.id)}
+                value={testRefId}
+                onValueChange={setTestRefId}
+                renderValue={id =>
+                  availableRefs.find(r => r.id === id)?.name ?? id
+                }
+                label="Test-swatch reference"
               />
               <Row space="sm">
                 <ViewToggleButton
@@ -406,6 +489,14 @@ export const MunsellChartValidatorScreen = ({
                     page={page}
                     referenceNotation={referenceNotation}
                     onCellPress={setReferenceNotation}
+                    testRef={testRef}
+                    testMeasuredLinearRgb={testMeasuredCorrected}
+                    onTestSwatchPress={() =>
+                      setReferenceNotation(TEST_SWATCH_REFERENCE_NOTATION)
+                    }
+                    testSwatchIsReference={
+                      referenceNotation === TEST_SWATCH_REFERENCE_NOTATION
+                    }
                   />
                 </Box>
               ) : (
@@ -475,6 +566,15 @@ export const MunsellChartValidatorScreen = ({
                   page={page}
                   referenceNotation={referenceNotation}
                   onCellPress={null}
+                  testRef={testRef}
+                  testMeasuredLinearRgb={
+                    state.result.matchedSampleValues?.[TEST_SWATCH_INDEX] ??
+                    null
+                  }
+                  onTestSwatchPress={undefined}
+                  testSwatchIsReference={
+                    referenceNotation === TEST_SWATCH_REFERENCE_NOTATION
+                  }
                 />
               </View>
               {/* Off-screen white-mask export: preview image + blue
@@ -533,6 +633,10 @@ const ResultSvg = ({
   page,
   referenceNotation,
   onCellPress,
+  testRef,
+  testMeasuredLinearRgb,
+  onTestSwatchPress,
+  testSwatchIsReference,
 }: {
   ref: React.RefObject<Svg | null>;
   cells: MunsellCellResult[];
@@ -541,7 +645,19 @@ const ResultSvg = ({
   // Called with the tapped cell's Munsell notation. `null` disables
   // interactivity (used for the off-screen export copy).
   onCellPress: ((notation: string) => void) | null;
+  // Test-swatch reference (Post-it, gray card, etc.) rendered in the
+  // bottom-right corner cell — always empty on the physical chart, so
+  // we repurpose it to compare a user-picked colour reference against
+  // whatever the DNG shows at TEST_SWATCH_INDEX. Tapping the cell also
+  // makes it the WB reference for every other cell (like tapping any
+  // ordinary Munsell cell).
+  testRef: AvailableReference | undefined;
+  testMeasuredLinearRgb: {r: number; g: number; b: number} | null;
+  onTestSwatchPress: (() => void) | undefined;
+  testSwatchIsReference: boolean;
 }) => {
+  const testSwatchRowIdx = page.values.length - 1;
+  const testSwatchColIdx = page.chromas.length - 1;
   // Build a lookup so we can drop each cell into its grid position.
   const byKey = new Map<string, MunsellCellResult>();
   for (const c of cells) {
@@ -604,6 +720,27 @@ const ResultSvg = ({
       const cx = LABEL_W + CELL_W * colIdx;
       const key = `${value}/${chroma}`;
       const cellResult = byKey.get(key);
+      // Bottom-right corner: repurposed for the test-swatch comparison
+      // (see TEST_SWATCH_INDEX). This position is always empty on the
+      // physical chart across all configured pages.
+      const isTestSwatchSlot =
+        rowIdx === testSwatchRowIdx && colIdx === testSwatchColIdx;
+      if (isTestSwatchSlot && testRef && testMeasuredLinearRgb) {
+        elements.push(
+          <TestSwatchCell
+            key="test-swatch"
+            x={cx + 2}
+            y={y + 2}
+            w={CELL_W - 4}
+            h={CELL_H - 4}
+            testRef={testRef}
+            measuredLinearRgb={testMeasuredLinearRgb}
+            onPress={onTestSwatchPress}
+            isReference={testSwatchIsReference}
+          />,
+        );
+        return;
+      }
       if (!cellResult) {
         // Grid slot with no swatch on the physical card. Render an
         // empty placeholder so the visual layout still lines up.
@@ -744,6 +881,155 @@ const ResultCell = ({
       )}
     </>
   );
+};
+
+// Test-swatch cell — same layout as ResultCell (expected swatch left,
+// measured swatch right, ΔE bottom) but the identifier line shows the
+// picked reference's name (Post-it yellow, gray card, …) instead of a
+// Munsell notation. Rendered in the bottom-right corner of the result
+// grid at the always-empty (row=last, col=last) position. Non-
+// interactive here (picker is a Select above the grid); make it
+// pressable later if a tap-to-open-picker UX is wanted.
+const TestSwatchCell = ({
+  x,
+  y,
+  w,
+  h,
+  testRef,
+  measuredLinearRgb,
+  onPress,
+  isReference,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  testRef: AvailableReference;
+  measuredLinearRgb: {r: number; g: number; b: number};
+  onPress?: () => void;
+  isReference: boolean;
+}) => {
+  // Simple ΔE computed on the fly — reuses the same linearRgb→XYZ→Lab
+  // chain the chart cells use, kept inline so this cell stays self-
+  // contained (no new export from chartAnalysis).
+  const [eX, eY, eZ] = linearRgbToXyz(
+    testRef.linearRgb.r,
+    testRef.linearRgb.g,
+    testRef.linearRgb.b,
+  );
+  const [mX, mY, mZ] = linearRgbToXyz(
+    measuredLinearRgb.r,
+    measuredLinearRgb.g,
+    measuredLinearRgb.b,
+  );
+  const [eL, ea, eb] = xyzToLab(eX, eY, eZ);
+  const [mL, ma, mb] = xyzToLab(mX, mY, mZ);
+  const deltaE = DeltaE.getDeltaE00(
+    {L: mL, A: ma, B: mb},
+    {L: eL, A: ea, B: eb},
+  );
+  const bg = deltaEColor(deltaE);
+  const expHex = rgbToHex(testRef.linearRgb);
+  const measHex = rgbToHex(measuredLinearRgb);
+  const swatchH = h * 0.35;
+  const swatchW = (w - 6) / 2;
+  const textY = y + swatchH + 10;
+  // Wrap the reference name so long labels like
+  // "3M Post-it Yellow (canary)" don't overflow the cell. Split on
+  // " (" first (most builtins have "Name (details)" shape); fall back
+  // to a rough word-count split for names without a paren. Anything
+  // still wide gets a slightly smaller font.
+  const nameLines = wrapRefName(testRef.name);
+  const nameFontSize = Math.max(9, FONT_NOTATION - (nameLines.length - 1) * 3);
+  return (
+    <>
+      <Rect
+        x={x}
+        y={y}
+        width={w}
+        height={h}
+        fill={bg}
+        onPress={onPress}
+      />
+      <Rect
+        x={x + 2}
+        y={y + 2}
+        width={swatchW}
+        height={swatchH}
+        fill={expHex}
+        onPress={onPress}
+      />
+      <Rect
+        x={x + 4 + swatchW}
+        y={y + 2}
+        width={swatchW}
+        height={swatchH}
+        fill={measHex}
+        onPress={onPress}
+      />
+      {nameLines.map((line, i) => (
+        <SvgText
+          key={`line-${i}`}
+          x={x + w / 2}
+          y={textY + nameFontSize * (i + 1) + i * 2}
+          fill="black"
+          fontSize={nameFontSize}
+          textAnchor="middle">
+          {line}
+        </SvgText>
+      ))}
+      <SvgText
+        x={x + w / 2}
+        y={
+          textY +
+          nameFontSize * nameLines.length +
+          (nameLines.length - 1) * 2 +
+          FONT_DELTAE +
+          10
+        }
+        fill="black"
+        fontSize={FONT_DELTAE}
+        fontWeight="bold"
+        textAnchor="middle">
+        ΔE {deltaE.toFixed(1)}
+      </SvgText>
+      {isReference && (
+        <Rect
+          x={x}
+          y={y}
+          width={w}
+          height={h}
+          fill="none"
+          stroke="#1e88e5"
+          strokeWidth={5}
+        />
+      )}
+    </>
+  );
+};
+
+// Break a reference name into 1-2 lines that fit inside a result-grid
+// cell. Prefer splitting at " (" so "Name (extra)" wraps cleanly; else
+// fall back to splitting roughly in half at the nearest space.
+const wrapRefName = (name: string): string[] => {
+  const parenIdx = name.indexOf(' (');
+  if (parenIdx > 0) return [name.slice(0, parenIdx), name.slice(parenIdx + 1)];
+  if (name.length <= 20) return [name];
+  const mid = Math.floor(name.length / 2);
+  // Find nearest space either side of mid.
+  let split = -1;
+  for (let off = 0; off < mid; off++) {
+    if (name[mid - off] === ' ') {
+      split = mid - off;
+      break;
+    }
+    if (name[mid + off] === ' ') {
+      split = mid + off;
+      break;
+    }
+  }
+  if (split < 0) return [name];
+  return [name.slice(0, split), name.slice(split + 1)];
 };
 
 // "Did the auto-registration land on the right pixels?" view — shows
