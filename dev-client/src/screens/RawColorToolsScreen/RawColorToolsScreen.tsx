@@ -18,6 +18,8 @@
 import {useCallback, useState} from 'react';
 import Share from 'react-native-share';
 
+import * as DocumentPicker from 'expo-document-picker';
+
 import {DngDecoderHybrid} from 'dng-decoder';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -197,15 +199,34 @@ export const RawColorToolsScreen = () => {
           />
           <ContainedButton
             label="Load DNG from Files…"
-            onPress={() => {
-              // TODO: hook up expo-document-picker (needs
-              // `expo install expo-document-picker` + a rebuild). Until
-              // then, testers can re-analyze a DNG by sharing it via
-              // "Share DNG" on the results screen and calling this back
-              // from the receiving app.
-              console.warn(
-                'RawColorToolsScreen: Load DNG not wired up yet — pending expo-document-picker install',
-              );
+            onPress={async () => {
+              // Wildcard type so iOS Files surfaces DNGs regardless
+              // of which UTI the source app labelled them with (Adobe
+              // apps use 'com.adobe.raw-image', others 'public.raw-
+              // image', some just 'public.image'). Filter on the
+              // extension afterwards.
+              const res = await DocumentPicker.getDocumentAsync({
+                type: '*/*',
+                copyToCacheDirectory: true,
+                multiple: false,
+              });
+              if (res.canceled) return;
+              const asset = res.assets?.[0];
+              if (!asset) return;
+              if (!asset.name.toLowerCase().endsWith('.dng')) {
+                console.warn(
+                  'RawColorToolsScreen: picked file is not a .dng',
+                  asset.name,
+                );
+                return;
+              }
+              const dngPath = asset.uri.startsWith('file://')
+                ? asset.uri
+                : `file://${asset.uri}`;
+              navigation.navigate('MUNSELL_CHART_VALIDATOR', {
+                dngPath,
+                pageHue,
+              });
             }}
           />
         </Column>

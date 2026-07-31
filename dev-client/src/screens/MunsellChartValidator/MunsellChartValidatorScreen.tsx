@@ -440,6 +440,7 @@ export const MunsellChartValidatorScreen = ({
           {state.kind === 'failed' && (
             <FailedView
               debug={state.debug}
+              page={page}
               sharing={sharing}
               onShareDng={shareDng}
               onBack={() => navigation.pop()}
@@ -500,7 +501,7 @@ export const MunsellChartValidatorScreen = ({
                   />
                 </Box>
               ) : (
-                <SourceOverlayView result={state.result} />
+                <SourceOverlayView result={state.result} page={page} />
               )}
               <Row space="sm">
                 <Box flex={1}>
@@ -611,6 +612,7 @@ export const MunsellChartValidatorScreen = ({
                   <DebugOverlayLayers
                     result={state.result}
                     maskView="bright"
+                    page={page}
                   />
                 </Svg>
               </View>
@@ -1083,11 +1085,35 @@ const STATUS_LABEL: Record<string, string> = {
 const DebugOverlayLayers = ({
   result,
   maskView,
+  page,
 }: {
   result: MunsellChartResult;
   maskView: 'none' | 'bright' | 'body';
+  // Which page the DNG is of — controls which SAMPLE_GRID red-square
+  // rects to draw. Universal SAMPLE_GRID has entries for every chip
+  // position across all pages plus one test-swatch slot; per-page,
+  // only the positions actually populated on THIS page (plus the
+  // test-swatch slot at the end) are meaningful.
+  page: MunsellPage;
 }) => {
   const {previewRects, detectedSwatches, grid} = result;
+  // Universal SAMPLE_GRID layout is 7 rows × MAX_COLS = 42, then one
+  // extra TEST_SWATCH point appended. Row N stride = MAX_COLS = 6
+  // (max chromas across all pages). Precompute the set of valid
+  // matchedSampleRects indices for the current page.
+  const MAX_COLS = 6;
+  const N_CHIP_ROWS = page.chipsPerRow.length;
+  const validSampleIdx = new Set<number>();
+  for (let row = 0; row < N_CHIP_ROWS; row++) {
+    for (let col = 0; col < page.chipsPerRow[row]; col++) {
+      validSampleIdx.add(row * MAX_COLS + col);
+    }
+  }
+  // TEST_SWATCH_INDEX is the last entry — SAMPLE_GRID length - 1.
+  // Always include it; the test-swatch cell renders it regardless.
+  if (grid.matchedSampleRects) {
+    validSampleIdx.add(grid.matchedSampleRects.length - 1);
+  }
   return (
     <>
       {/* Mask overlay (opaque blue for the bright mask so the tester
@@ -1237,19 +1263,23 @@ const DebugOverlayLayers = ({
       ))}
       {/* Sample ROIs (SAMPLE_GRID transformed) as red squares. These
          are the pixel regions the downstream analysis actually samples
-         for per-swatch colour. */}
-      {grid.matchedSampleRects?.map((r, i) => (
-        <Rect
-          key={`sample-${i}`}
-          x={r.x}
-          y={r.y}
-          width={r.w}
-          height={r.h}
-          stroke="#ff2020"
-          strokeWidth={2}
-          fill="none"
-        />
-      ))}
+         for per-swatch colour. Filtered to positions that actually
+         have a chip on the current page (plus the test-swatch slot);
+         drawing rects on empty grid slots wasn't useful. */}
+      {grid.matchedSampleRects?.map((r, i) =>
+        validSampleIdx.has(i) ? (
+          <Rect
+            key={`sample-${i}`}
+            x={r.x}
+            y={r.y}
+            width={r.w}
+            height={r.h}
+            stroke="#ff2020"
+            strokeWidth={2}
+            fill="none"
+          />
+        ) : null,
+      )}
       {/* Per-swatch sampling rects in red — from the OLD cluster-fit
          pipeline. Hidden when the new RANSAC match ran. */}
       {!grid.matchedGrid &&
@@ -1291,11 +1321,13 @@ const DebugOverlayLayers = ({
 // the DNG (always available) so the shot can be inspected off-device.
 const FailedView = ({
   debug,
+  page,
   sharing,
   onShareDng,
   onBack,
 }: {
   debug: MunsellChartFailureDebug;
+  page: MunsellPage;
   sharing: boolean;
   onShareDng: () => void;
   onBack: () => void;
@@ -1349,6 +1381,7 @@ const FailedView = ({
                   } as unknown as MunsellChartResult
                 }
                 maskView="bright"
+                page={page}
               />
             </Svg>
           )}
@@ -1371,7 +1404,13 @@ const FailedView = ({
   );
 };
 
-const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
+const SourceOverlayView = ({
+  result,
+  page,
+}: {
+  result: MunsellChartResult;
+  page: MunsellPage;
+}) => {
   const {preview} = result;
   const aspect = preview.width / preview.height;
   const [maskView, setMaskView] = useState<'none' | 'bright' | 'body'>('none');
@@ -1386,7 +1425,7 @@ const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
         style={StyleSheet.absoluteFill}
         viewBox={`0 0 ${preview.width} ${preview.height}`}
         preserveAspectRatio="xMidYMid meet">
-        <DebugOverlayLayers result={result} maskView={maskView} />
+        <DebugOverlayLayers result={result} maskView={maskView} page={page} />
       </Svg>
       <RawBlobLegend
         rawBlobs={result.grid.rawBlobs}
