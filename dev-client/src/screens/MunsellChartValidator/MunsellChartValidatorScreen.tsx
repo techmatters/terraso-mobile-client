@@ -105,8 +105,15 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 //     shifted-by-one fits win when they match a paper false-positive).
 
 export type MunsellChartValidatorProps = {
+  // File path to the image being analyzed. Called `dngPath` for
+  // historical reasons but with `format='photo'` it's any format
+  // CIImage can open (JPEG / HEIC / PNG).
   dngPath: string;
   pageHue: string;
+  // Which decoder path to route through: 'raw' → CIRAWFilter (DNG),
+  // 'photo' → CIImage (JPEG / HEIC / etc.). Downstream analysis is
+  // identical for both.
+  format: 'raw' | 'photo';
 };
 
 // SVG layout (fixed-pixel viewBox — easier to reason about text sizing
@@ -175,6 +182,7 @@ const rgbToHex = (rgb: {r: number; g: number; b: number}): string => {
 export const MunsellChartValidatorScreen = ({
   dngPath,
   pageHue,
+  format,
 }: MunsellChartValidatorProps) => {
   const navigation = useNavigation();
   const [state, setState] = useState<
@@ -296,7 +304,7 @@ export const MunsellChartValidatorScreen = ({
     setState({kind: 'analyzing'});
     (async () => {
       try {
-        const outcome = await analyzeMunsellChart(dngPath, page);
+        const outcome = await analyzeMunsellChart(dngPath, page, format);
         if (outcome.kind === 'success') {
           setState({kind: 'ready', result: outcome.result});
         } else {

@@ -59,6 +59,8 @@ namespace margelo::nitro::dngdecoder {
     PreviewImage renderPreview(const std::string& dngPath, double maxDim) override;
     PreviewGrayscale readPreviewGrayscale(const std::string& dngPath, double maxDim) override;
     PreviewRgb readPreviewRgb(const std::string& dngPath, double maxDim) override;
+    PreviewRgb readPreviewRgbPhoto(const std::string& imagePath, double maxDim) override;
+    std::vector<LinearRgb> decodePhotoRois(const std::string& imagePath, const std::vector<Roi>& rois) override;
 
   private:
     jni::global_ref<JHybridDngDecoderSpec::JavaPart> _javaPart;

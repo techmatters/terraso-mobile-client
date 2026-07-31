@@ -142,9 +142,18 @@ export type MunsellChartOutcome =
   | {kind: 'success'; result: MunsellChartResult}
   | {kind: 'failure'; debug: MunsellChartFailureDebug};
 
+// 'raw' → route through CIRAWFilter (readPreviewRgb / decodeDngRois),
+// 'photo' → route through CIImage (readPreviewRgbPhoto /
+// decodePhotoRois). Everything downstream is identical — both paths
+// return interleaved 3-byte-per-pixel sRGB previews and linear-sRGB
+// ROIs. See the caveat in the photo variants' comments: photo pixels
+// have already been WB-corrected + tone-curved by Apple's ISP.
+export type ChartFormat = 'raw' | 'photo';
+
 export const analyzeMunsellChart = async (
-  dngPath: string,
+  imagePath: string,
   page: MunsellPage = MUNSELL_PAGES[0],
+  format: ChartFormat = 'raw',
 ): Promise<MunsellChartOutcome> => {
   const cells = pageCells(page);
   // 1. RGB render for the CV. We need chromaticity (not just luma) to
@@ -152,7 +161,10 @@ export const analyzeMunsellChart = async (
   //    its own 1-region — off-white chart body has warm chroma and
   //    gets rejected by the chroma gate even though its luma is close
   //    to paper.
-  const rgbPreview = DngDecoderHybrid.readPreviewRgb(dngPath, PREVIEW_MAX_DIM);
+  const rgbPreview =
+    format === 'raw'
+      ? DngDecoderHybrid.readPreviewRgb(imagePath, PREVIEW_MAX_DIM)
+      : DngDecoderHybrid.readPreviewRgbPhoto(imagePath, PREVIEW_MAX_DIM);
   const rgbImage: RgbImage = {
     width: rgbPreview.width,
     height: rgbPreview.height,
@@ -179,7 +191,19 @@ export const analyzeMunsellChart = async (
   const pageRefGrid = pageReferenceGridPoints(page);
   const grid = detectChartByRegions(grayImage, mask, pageRefGrid);
   if (!grid) {
-    const preview = DngDecoderHybrid.renderPreview(dngPath, PREVIEW_MAX_DIM);
+    // For failure debug — RAW gets the CIRAWFilter-rendered preview
+    // PNG; PHOTO reuses the source file directly (it's already a
+    // display-friendly image the RN <Image> can consume).
+    const preview =
+      format === 'raw'
+        ? DngDecoderHybrid.renderPreview(imagePath, PREVIEW_MAX_DIM)
+        : {
+            uri: imagePath.startsWith('file://')
+              ? imagePath
+              : `file://${imagePath}`,
+            width: rgbPreview.sourceWidth,
+            height: rgbPreview.sourceHeight,
+          };
     return {
       kind: 'failure',
       debug: {
@@ -220,7 +244,10 @@ export const analyzeMunsellChart = async (
     w: Math.round(r.w * scaleX),
     h: Math.round(r.h * scaleY),
   }));
-  const measured = DngDecoderHybrid.decodeDngRois(dngPath, dngRois);
+  const measured =
+    format === 'raw'
+      ? DngDecoderHybrid.decodeDngRois(imagePath, dngRois)
+      : DngDecoderHybrid.decodePhotoRois(imagePath, dngRois);
 
   // 4. Bundle each cell with its raw measurement. Munsell notation
   //    and ΔE come later — the screen recomputes them any time the
@@ -230,8 +257,19 @@ export const analyzeMunsellChart = async (
     rawLinearRgb: measured[idx],
   }));
 
-  // 5. Colour PNG preview for the validation view.
-  const preview = DngDecoderHybrid.renderPreview(dngPath, PREVIEW_MAX_DIM);
+  // 5. Colour preview for the validation view. RAW → renderPreview
+  // (CIRAWFilter → PNG in temp). PHOTO → use the source file URI
+  // directly; it's already a display-friendly image.
+  const preview =
+    format === 'raw'
+      ? DngDecoderHybrid.renderPreview(imagePath, PREVIEW_MAX_DIM)
+      : {
+          uri: imagePath.startsWith('file://')
+            ? imagePath
+            : `file://${imagePath}`,
+          width: rgbPreview.sourceWidth,
+          height: rgbPreview.sourceHeight,
+        };
 
   // 6. If the RANSAC match ran, ALSO sample the 48 SAMPLE_GRID
   //    positions via the DNG decoder. These are the "new pipeline"
@@ -247,10 +285,10 @@ export const analyzeMunsellChart = async (
       w: Math.round(r.w * scaleX),
       h: Math.round(r.h * scaleY),
     }));
-    matchedSampleValues = DngDecoderHybrid.decodeDngRois(
-      dngPath,
-      sampleDngRois,
-    );
+    matchedSampleValues =
+      format === 'raw'
+        ? DngDecoderHybrid.decodeDngRois(imagePath, sampleDngRois)
+        : DngDecoderHybrid.decodePhotoRois(imagePath, sampleDngRois);
   }
 
   return {

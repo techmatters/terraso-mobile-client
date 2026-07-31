@@ -19,6 +19,7 @@ import {useCallback, useState} from 'react';
 import Share from 'react-native-share';
 
 import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 
@@ -53,14 +54,31 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 const CHART_PAGE_HUE_KEY = 'munsellChartValidator.selectedPageHue';
 
+// Pick 'raw' for .dng and 'photo' for common photo formats; null for
+// anything else (we bail on unsupported extensions). Case-insensitive.
+const detectFormatFromName = (name: string): 'raw' | 'photo' | null => {
+  const lower = name.toLowerCase();
+  if (lower.endsWith('.dng')) return 'raw';
+  if (
+    lower.endsWith('.jpg') ||
+    lower.endsWith('.jpeg') ||
+    lower.endsWith('.heic') ||
+    lower.endsWith('.heif') ||
+    lower.endsWith('.png')
+  ) {
+    return 'photo';
+  }
+  return null;
+};
+
 // Which capture flow the RawCameraView modal (mounted once at the
 // bottom of this screen) is currently servicing. Non-null while the
-// modal is open; used by onCapture to route the resulting DNG to
-// the right downstream screen.
+// modal is open; used by onCapture to route the resulting DNG or
+// JPEG to the right downstream screen.
 type CaptureFlow =
   | {kind: 'fixture'} // dev: log to Metro + share sheet
   | {kind: 'calibrate'}
-  | {kind: 'chart'; pageHue: string};
+  | {kind: 'chart'; pageHue: string; format: 'raw' | 'photo'};
 
 export const RawColorToolsScreen = () => {
   const navigation = useNavigation();
@@ -109,26 +127,37 @@ export const RawColorToolsScreen = () => {
       const flow = captureFlow;
       setCaptureFlow(null);
       if (!flow) return;
-      if (result.kind !== 'raw') {
-        console.warn(
-          'RawColorToolsScreen: expected raw capture, got',
-          result.kind,
-        );
-        return;
-      }
-      if (flow.kind === 'calibrate') {
-        navigation.navigate('CALIBRATE_REFERENCE_EXPERIMENTAL', {
-          dngPath: result.dngPath,
-          sensorWidth: result.width,
-          sensorHeight: result.height,
-        });
+      if (flow.kind === 'calibrate' || flow.kind === 'fixture') {
+        // Calibrate & fixture both require RAW; fixture is handled
+        // by onRawPhotoDevOnly (no nav here).
+        if (result.kind !== 'raw') {
+          console.warn(
+            'RawColorToolsScreen: expected raw capture for',
+            flow.kind,
+            'got',
+            result.kind,
+          );
+          return;
+        }
+        if (flow.kind === 'calibrate') {
+          navigation.navigate('CALIBRATE_REFERENCE_EXPERIMENTAL', {
+            dngPath: result.dngPath,
+            sensorWidth: result.width,
+            sensorHeight: result.height,
+          });
+        }
       } else if (flow.kind === 'chart') {
+        // Chart accepts either — the picked format was baked into the
+        // flow when the button was tapped, and matches the container
+        // format the camera was configured with.
+        const path =
+          result.kind === 'raw' ? result.dngPath : result.photo.uri;
         navigation.navigate('MUNSELL_CHART_VALIDATOR', {
-          dngPath: result.dngPath,
+          dngPath: path,
           pageHue: flow.pageHue,
+          format: flow.format,
         });
       }
-      // 'fixture' handled via onRawPhotoDevOnly instead — no navigation.
     },
     [navigation, captureFlow],
   );
@@ -194,17 +223,25 @@ export const RawColorToolsScreen = () => {
             label="Chart page"
           />
           <ContainedButton
-            label="Capture new DNG"
-            onPress={() => setCaptureFlow({kind: 'chart', pageHue})}
+            label="Capture raw (DNG)"
+            onPress={() =>
+              setCaptureFlow({kind: 'chart', pageHue, format: 'raw'})
+            }
           />
           <ContainedButton
-            label="Load DNG from Files…"
+            label="Capture photo (JPEG)"
+            onPress={() =>
+              setCaptureFlow({kind: 'chart', pageHue, format: 'photo'})
+            }
+          />
+          <ContainedButton
+            label="Load from file…"
             onPress={async () => {
-              // Wildcard type so iOS Files surfaces DNGs regardless
-              // of which UTI the source app labelled them with (Adobe
-              // apps use 'com.adobe.raw-image', others 'public.raw-
-              // image', some just 'public.image'). Filter on the
-              // extension afterwards.
+              // Wildcard type + extension detection: DNGs are labelled
+              // with various UTIs depending on source app, and photos
+              // are labelled with their own set. Filter by extension
+              // so Files' picker offers everything and we route based
+              // on what the user actually picked.
               const res = await DocumentPicker.getDocumentAsync({
                 type: '*/*',
                 copyToCacheDirectory: true,
@@ -213,19 +250,54 @@ export const RawColorToolsScreen = () => {
               if (res.canceled) return;
               const asset = res.assets?.[0];
               if (!asset) return;
-              if (!asset.name.toLowerCase().endsWith('.dng')) {
+              const format = detectFormatFromName(asset.name);
+              if (!format) {
                 console.warn(
-                  'RawColorToolsScreen: picked file is not a .dng',
+                  'RawColorToolsScreen: unsupported file extension',
                   asset.name,
                 );
                 return;
               }
-              const dngPath = asset.uri.startsWith('file://')
+              const path = asset.uri.startsWith('file://')
                 ? asset.uri
                 : `file://${asset.uri}`;
               navigation.navigate('MUNSELL_CHART_VALIDATOR', {
-                dngPath,
+                dngPath: path,
                 pageHue,
+                format,
+              });
+            }}
+          />
+          <ContainedButton
+            label="Load from photos…"
+            onPress={async () => {
+              // Photos always come through as JPEG/HEIC from the
+              // Photos library (iOS auto-converts RAW to JPEG at pick
+              // time, so DNG-from-Photos isn't possible via this
+              // path — use Load from file for DNGs).
+              const perm =
+                await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (!perm.granted) {
+                console.warn(
+                  'RawColorToolsScreen: photo library permission denied',
+                );
+                return;
+              }
+              const res = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsMultipleSelection: false,
+                exif: false,
+              });
+              if (res.canceled) return;
+              const asset = res.assets?.[0];
+              if (!asset) return;
+              const path = asset.uri.startsWith('file://')
+                ? asset.uri
+                : `file://${asset.uri}`;
+              navigation.navigate('MUNSELL_CHART_VALIDATOR', {
+                dngPath: path,
+                pageHue,
+                format: 'photo',
               });
             }}
           />
@@ -233,7 +305,11 @@ export const RawColorToolsScreen = () => {
       </SafeScrollView>
       <RawCameraView
         visible={cameraVisible}
-        containerFormat="dng"
+        containerFormat={
+          captureFlow?.kind === 'chart' && captureFlow.format === 'photo'
+            ? 'jpeg'
+            : 'dng'
+        }
         onCancel={cancelCapture}
         onCapture={onCapture}
         onRawPhotoDevOnly={

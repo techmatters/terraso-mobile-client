@@ -71,6 +71,8 @@ namespace margelo::nitro::dngdecoder {
       virtual PreviewImage renderPreview(const std::string& dngPath, double maxDim) = 0;
       virtual PreviewGrayscale readPreviewGrayscale(const std::string& dngPath, double maxDim) = 0;
       virtual PreviewRgb readPreviewRgb(const std::string& dngPath, double maxDim) = 0;
+      virtual PreviewRgb readPreviewRgbPhoto(const std::string& imagePath, double maxDim) = 0;
+      virtual std::vector<LinearRgb> decodePhotoRois(const std::string& imagePath, const std::vector<Roi>& rois) = 0;
 
     protected:
       // Hybrid Setup

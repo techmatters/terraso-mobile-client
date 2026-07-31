@@ -367,6 +367,174 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     )
   }
 
+  // Photo-file variant of decodeDngRois. Loads the file via CIImage
+  // (JPEG / HEIC / PNG / etc. — anything CIImage supports natively)
+  // instead of CIRAWFilter, then follows the same per-ROI area-
+  // average + linear-sRGB-render path. Photo pixels are already
+  // WB-corrected + tone-curved by Apple's ISP; downstream WB stacks
+  // on top of Apple's decisions.
+  func decodePhotoRois(imagePath: String, rois: [Roi]) throws -> [LinearRgb] {
+    let url = URL(fileURLWithPath: stripFileScheme(imagePath))
+    guard let ciImage = loadPhotoCIImage(url: url) else {
+      throw RuntimeError.error(
+        withMessage: "CIImage could not open photo at \(url.path)")
+    }
+    return try decodeRoisFromCIImage(ciImage, rois: rois, tag: "decodePhotoRois")
+  }
+
+  // Photo-file variant of readPreviewRgb. Same shape (interleaved
+  // 3-byte-per-pixel sRGB, sourceWidth/Height back-annotated) so
+  // callers can share downstream code. Caveat: photo pixels are
+  // Apple-ISP-processed, so treat linear-sRGB values as illustrative
+  // more than absolute for tone-sensitive comparisons.
+  func readPreviewRgbPhoto(imagePath: String, maxDim: Double) throws
+    -> PreviewRgb
+  {
+    let url = URL(fileURLWithPath: stripFileScheme(imagePath))
+    guard let ciImage = loadPhotoCIImage(url: url) else {
+      throw RuntimeError.error(
+        withMessage: "CIImage could not open photo at \(url.path)")
+    }
+    return try renderPreviewRgbFromCIImage(ciImage, maxDim: maxDim)
+  }
+
+  // Load a photo file as CIImage, respecting its stored orientation
+  // tag so a phone-portrait JPEG comes out portrait (not sensor-
+  // landscape). CIImage's default init does NOT auto-apply
+  // orientation; we read the tag from the file's properties and use
+  // `.oriented(_:)` to bake it in.
+  private func loadPhotoCIImage(url: URL) -> CIImage? {
+    guard let base = CIImage(contentsOf: url) else { return nil }
+    if let src = CGImageSourceCreateWithURL(url as CFURL, nil),
+      let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil)
+        as? [CFString: Any],
+      let orientationRaw = props[kCGImagePropertyOrientation] as? UInt32,
+      let orientation = CGImagePropertyOrientation(rawValue: orientationRaw)
+    {
+      return base.oriented(orientation)
+    }
+    return base
+  }
+
+  // Shared per-ROI decode: given a CIImage already in the caller's
+  // preferred orientation, run area-average per ROI and render each
+  // to a 1×1 float RGBA bitmap in linear-sRGB working space.
+  private func decodeRoisFromCIImage(
+    _ ciImage: CIImage, rois: [Roi], tag: String
+  ) throws -> [LinearRgb] {
+    let extent = ciImage.extent
+    NSLog(
+      "DngDecoder [\(tag)]: CIImage extent = \(Int(extent.width))x\(Int(extent.height))"
+    )
+    guard let linearSpace = CGColorSpace(name: CGColorSpace.linearSRGB) else {
+      throw RuntimeError.error(withMessage: "linearSRGB color space unavailable")
+    }
+    let context = CIContext(options: [
+      .workingColorSpace: linearSpace,
+      .outputColorSpace: linearSpace,
+    ])
+    var results: [LinearRgb] = []
+    results.reserveCapacity(rois.count)
+    for roi in rois {
+      let cropRect = CGRect(
+        x: extent.minX + CGFloat(roi.x),
+        y: extent.maxY - CGFloat(roi.y + roi.h),
+        width: CGFloat(roi.w),
+        height: CGFloat(roi.h)
+      )
+      let cropped = ciImage.cropped(to: cropRect)
+      let avg = CIFilter.areaAverage()
+      avg.inputImage = cropped
+      avg.extent = cropRect
+      guard let averaged = avg.outputImage else {
+        throw RuntimeError.error(
+          withMessage: "CIAreaAverage produced no output for ROI")
+      }
+      var bitmap: [Float] = [0, 0, 0, 0]
+      context.render(
+        averaged,
+        toBitmap: &bitmap,
+        rowBytes: MemoryLayout<Float>.size * 4,
+        bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+        format: .RGBAf,
+        colorSpace: linearSpace
+      )
+      results.append(
+        LinearRgb(
+          r: clamp01(Double(bitmap[0])),
+          g: clamp01(Double(bitmap[1])),
+          b: clamp01(Double(bitmap[2]))
+        ))
+    }
+    return results
+  }
+
+  // Shared preview-RGB renderer: given a CIImage already in the
+  // caller's preferred orientation, scale-to-fit maxDim and render
+  // as interleaved 3-byte-per-pixel sRGB bytes with sourceWidth /
+  // sourceHeight back-annotated for the caller to reconstruct pixel-
+  // to-preview scaling.
+  private func renderPreviewRgbFromCIImage(
+    _ ciImage: CIImage, maxDim: Double
+  ) throws -> PreviewRgb {
+    let srcW = ciImage.extent.width
+    let srcH = ciImage.extent.height
+    let sourceWidth = Int(srcW.rounded())
+    let sourceHeight = Int(srcH.rounded())
+    let maxDimCG = CGFloat(maxDim)
+    let scale = min(maxDimCG / srcW, maxDimCG / srcH, 1.0)
+    let scaledImage: CIImage =
+      scale < 1.0
+      ? ciImage.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+      : ciImage
+    let dstW = Int(scaledImage.extent.width.rounded())
+    let dstH = Int(scaledImage.extent.height.rounded())
+    guard let displaySpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+      throw RuntimeError.error(withMessage: "sRGB color space unavailable")
+    }
+    let context = CIContext(options: [
+      .workingColorSpace: displaySpace,
+      .outputColorSpace: displaySpace,
+    ])
+    guard
+      let cgImage = context.createCGImage(
+        scaledImage, from: scaledImage.extent, format: .RGBA8,
+        colorSpace: displaySpace)
+    else {
+      throw RuntimeError.error(
+        withMessage: "CIContext.createCGImage returned nil")
+    }
+    let bytesPerRow = dstW * 4
+    var rgba = [UInt8](repeating: 0, count: bytesPerRow * dstH)
+    let bitmapInfo: UInt32 =
+      CGBitmapInfo.byteOrder32Big.rawValue
+      | CGImageAlphaInfo.premultipliedLast.rawValue
+    guard
+      let ctx = CGContext(
+        data: &rgba, width: dstW, height: dstH, bitsPerComponent: 8,
+        bytesPerRow: bytesPerRow, space: displaySpace,
+        bitmapInfo: bitmapInfo)
+    else {
+      throw RuntimeError.error(withMessage: "CGContext allocation failed")
+    }
+    ctx.draw(cgImage, in: CGRect(x: 0, y: 0, width: dstW, height: dstH))
+    let pixelCount = dstW * dstH
+    let buffer = ArrayBuffer.allocate(size: pixelCount * 3)
+    let out = buffer.data
+    for i in 0..<pixelCount {
+      (out + i * 3).pointee = rgba[i * 4]
+      (out + i * 3 + 1).pointee = rgba[i * 4 + 1]
+      (out + i * 3 + 2).pointee = rgba[i * 4 + 2]
+    }
+    return PreviewRgb(
+      width: Double(dstW),
+      height: Double(dstH),
+      pixels: buffer,
+      sourceWidth: Double(sourceWidth),
+      sourceHeight: Double(sourceHeight)
+    )
+  }
+
   // Shared pre-decode config for every CIRAWFilter entry point.
   // `boostAmount` / `boostShadowAmount` = 0 disable Apple's default
   // tone shaping so the RAW pipeline stays as linear as possible.

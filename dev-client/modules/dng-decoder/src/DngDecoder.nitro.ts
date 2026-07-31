@@ -92,4 +92,23 @@ export interface DngDecoder
    * body based on chroma, not just brightness.
    */
   readPreviewRgb(dngPath: string, maxDim: number): PreviewRgb;
+
+  /**
+   * Photo-file (JPEG / HEIC / PNG) variant of readPreviewRgb. Loads
+   * the file via CIImage (no CIRAWFilter) and renders through the
+   * same linear-sRGB working space, so the caller receives the same
+   * shape of data as the RAW path. Lets the Munsell chart validator
+   * work from ordinary phone photos as well as DNGs when a RAW isn't
+   * available — with the caveat that photo pixels have already been
+   * WB-corrected and tone-curved by Apple's ISP, so downstream WB
+   * correction is applied on top of Apple's decisions.
+   */
+  readPreviewRgbPhoto(imagePath: string, maxDim: number): PreviewRgb;
+
+  /**
+   * Photo-file variant of decodeDngRois. Loads via CIImage, renders
+   * in linear-sRGB working space; same output convention as the RAW
+   * variant. Same photo-pipeline caveat as readPreviewRgbPhoto.
+   */
+  decodePhotoRois(imagePath: string, rois: Roi[]): LinearRgb[];
 }

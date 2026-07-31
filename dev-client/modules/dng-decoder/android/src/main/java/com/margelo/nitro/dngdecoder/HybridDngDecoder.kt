@@ -80,6 +80,20 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         )
     }
 
+    override fun readPreviewRgbPhoto(imagePath: String, maxDim: Double): PreviewRgb {
+        // Not yet implemented on Android — the Munsell chart validator's
+        // photo path is iOS-only for now.
+        throw NotImplementedError(
+            "DngDecoder.readPreviewRgbPhoto is not yet implemented on Android"
+        )
+    }
+
+    override fun decodePhotoRois(imagePath: String, rois: Array<Roi>): Array<LinearRgb> {
+        throw NotImplementedError(
+            "DngDecoder.decodePhotoRois is not yet implemented on Android"
+        )
+    }
+
     override fun decodeDngRois(dngPath: String, rois: Array<Roi>): Array<LinearRgb> {
         val flat = IntArray(rois.size * 4)
         for (i in rois.indices) {

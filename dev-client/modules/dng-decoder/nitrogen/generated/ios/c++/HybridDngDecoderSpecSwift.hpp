@@ -128,6 +128,22 @@ namespace margelo::nitro::dngdecoder {
       auto __value = std::move(__result.value());
       return __value;
     }
+    inline PreviewRgb readPreviewRgbPhoto(const std::string& imagePath, double maxDim) override {
+      auto __result = _swiftPart.readPreviewRgbPhoto(imagePath, std::forward<decltype(maxDim)>(maxDim));
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
+    inline std::vector<LinearRgb> decodePhotoRois(const std::string& imagePath, const std::vector<Roi>& rois) override {
+      auto __result = _swiftPart.decodePhotoRois(imagePath, rois);
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
 
   private:
     DngDecoder::HybridDngDecoderSpec_cxx _swiftPart;

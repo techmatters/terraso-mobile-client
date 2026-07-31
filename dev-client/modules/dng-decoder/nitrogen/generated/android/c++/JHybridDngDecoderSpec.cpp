@@ -113,5 +113,33 @@ namespace margelo::nitro::dngdecoder {
     auto __result = method(_javaPart, jni::make_jstring(dngPath), maxDim);
     return __result->toCpp();
   }
+  PreviewRgb JHybridDngDecoderSpec::readPreviewRgbPhoto(const std::string& imagePath, double maxDim) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPreviewRgb>(jni::alias_ref<jni::JString> /* imagePath */, double /* maxDim */)>("readPreviewRgbPhoto");
+    auto __result = method(_javaPart, jni::make_jstring(imagePath), maxDim);
+    return __result->toCpp();
+  }
+  std::vector<LinearRgb> JHybridDngDecoderSpec::decodePhotoRois(const std::string& imagePath, const std::vector<Roi>& rois) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<jni::JArrayClass<JLinearRgb>>(jni::alias_ref<jni::JString> /* imagePath */, jni::alias_ref<jni::JArrayClass<JRoi>> /* rois */)>("decodePhotoRois");
+    auto __result = method(_javaPart, jni::make_jstring(imagePath), [&](auto&& __input) {
+      size_t __size = __input.size();
+      jni::local_ref<jni::JArrayClass<JRoi>> __array = jni::JArrayClass<JRoi>::newArray(__size);
+      for (size_t __i = 0; __i < __size; __i++) {
+        const auto& __element = __input[__i];
+        auto __elementJni = JRoi::fromCpp(__element);
+        __array->setElement(__i, *__elementJni);
+      }
+      return __array;
+    }(rois));
+    return [&](auto&& __input) {
+      size_t __size = __input->size();
+      std::vector<LinearRgb> __vector;
+      __vector.reserve(__size);
+      for (size_t __i = 0; __i < __size; __i++) {
+        auto __element = __input->getElement(__i);
+        __vector.push_back(__element->toCpp());
+      }
+      return __vector;
+    }(__result);
+  }
 
 } // namespace margelo::nitro::dngdecoder

@@ -189,4 +189,34 @@ open class HybridDngDecoderSpec_cxx {
       return bridge.create_Result_PreviewRgb_(__exceptionPtr)
     }
   }
+  
+  @inline(__always)
+  public final func readPreviewRgbPhoto(imagePath: std.string, maxDim: Double) -> bridge.Result_PreviewRgb_ {
+    do {
+      let __result = try self.__implementation.readPreviewRgbPhoto(imagePath: String(imagePath), maxDim: maxDim)
+      let __resultCpp = __result
+      return bridge.create_Result_PreviewRgb_(__resultCpp)
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_PreviewRgb_(__exceptionPtr)
+    }
+  }
+  
+  @inline(__always)
+  public final func decodePhotoRois(imagePath: std.string, rois: bridge.std__vector_Roi_) -> bridge.Result_std__vector_LinearRgb__ {
+    do {
+      let __result = try self.__implementation.decodePhotoRois(imagePath: String(imagePath), rois: rois.map({ __item in __item }))
+      let __resultCpp = { () -> bridge.std__vector_LinearRgb_ in
+        var __vector = bridge.create_std__vector_LinearRgb_(__result.count)
+        for __item in __result {
+          __vector.push_back(__item)
+        }
+        return __vector
+      }()
+      return bridge.create_Result_std__vector_LinearRgb__(__resultCpp)
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_std__vector_LinearRgb__(__exceptionPtr)
+    }
+  }
 }
