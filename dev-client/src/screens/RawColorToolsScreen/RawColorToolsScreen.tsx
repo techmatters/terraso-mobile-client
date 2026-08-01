@@ -24,9 +24,9 @@ import * as ImagePicker from 'expo-image-picker';
 import {DngDecoderHybrid} from 'dng-decoder';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
-import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RawCameraView} from 'terraso-mobile-client/components/inputs/image/RawCameraView';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   Column,
   Paragraph,
@@ -36,10 +36,8 @@ import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScro
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
-import {
-  findMunsellPage,
-  MUNSELL_PAGES,
-} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
+import {CHART_GUIDE} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
+import {MUNSELL_PAGES} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 // Dev-only aggregate screen — one place for all RAW / DNG / colour-
@@ -150,8 +148,7 @@ export const RawColorToolsScreen = () => {
         // Chart accepts either — the picked format was baked into the
         // flow when the button was tapped, and matches the container
         // format the camera was configured with.
-        const path =
-          result.kind === 'raw' ? result.dngPath : result.photo.uri;
+        const path = result.kind === 'raw' ? result.dngPath : result.photo.uri;
         navigation.navigate('MUNSELL_CHART_VALIDATOR', {
           dngPath: path,
           pageHue: flow.pageHue,
@@ -172,16 +169,16 @@ export const RawColorToolsScreen = () => {
       <SafeScrollView>
         <Column padding="md" space="md">
           <Paragraph>
-            Experimental RAW-DNG based colour capture, plus dev tools
-            around reference calibration and the Munsell chart validator.
+            Experimental RAW-DNG based colour capture, plus dev tools around
+            reference calibration and the Munsell chart validator.
           </Paragraph>
 
           <Text variant="body1" bold>
             RAW fixture capture
           </Text>
           <Paragraph>
-            Take a DNG, log the centre ROI's linear-sRGB to Metro, and
-            AirDrop / share the raw file for offline inspection.
+            Take a DNG, log the centre ROI's linear-sRGB to Metro, and AirDrop /
+            share the raw file for offline inspection.
           </Paragraph>
           <ContainedButton
             label="Capture RAW fixture"
@@ -192,8 +189,8 @@ export const RawColorToolsScreen = () => {
             References
           </Text>
           <Paragraph>
-            Calibrate a new custom colour reference from a card, or
-            review / delete existing ones.
+            Calibrate a new custom colour reference from a card, or review /
+            delete existing ones.
           </Paragraph>
           <ContainedButton
             label="Calibrate reference…"
@@ -210,9 +207,9 @@ export const RawColorToolsScreen = () => {
             Munsell chart validator
           </Text>
           <Paragraph>
-            Compare a DNG of a Munsell soil-colour page to the published
-            values, cell by cell. Pick the page BEFORE capture so the
-            registration knows the exact chip layout.
+            Compare a DNG of a Munsell soil-colour page to the published values,
+            cell by cell. Pick the page BEFORE capture so the registration knows
+            the exact chip layout.
           </Paragraph>
           <Select<string, false>
             nullable={false}
@@ -315,11 +312,7 @@ export const RawColorToolsScreen = () => {
         onRawPhotoDevOnly={
           captureFlow?.kind === 'fixture' ? handleFixtureCapture : undefined
         }
-        chartGuide={
-          captureFlow?.kind === 'chart'
-            ? {aspectW: 4.5, aspectH: 7, marginFrac: 0.1}
-            : undefined
-        }
+        chartGuide={captureFlow?.kind === 'chart' ? CHART_GUIDE : undefined}
       />
     </ScreenScaffold>
   );

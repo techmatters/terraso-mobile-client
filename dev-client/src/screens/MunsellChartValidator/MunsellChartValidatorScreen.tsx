@@ -15,13 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -29,7 +23,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import DeltaE from 'delta-e';
 import Share from 'react-native-share';
 import Svg, {
   Circle,
@@ -38,21 +31,17 @@ import Svg, {
   Text as SvgText,
 } from 'react-native-svg';
 
-import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
-
 import {
   cacheDirectory,
   EncodingType,
   writeAsStringAsync,
 } from 'expo-file-system/legacy';
 
+import DeltaE from 'delta-e';
+import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
+
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
-import {
-  listAvailableReferences,
-  type AvailableReference,
-} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
-import {useCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
 import {
   Box,
   Column,
@@ -61,32 +50,33 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
+import {useCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
+import {
+  listAvailableReferences,
+  type AvailableReference,
+} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {
   analyzeMunsellChart,
+  applyWbCorrection,
   computeCellResults,
   csvFromCells,
   DEFAULT_REFERENCE_NOTATION,
   TEST_SWATCH_REFERENCE_NOTATION,
-  applyWbCorrection,
   type CellMeasurement,
   type MunsellCellResult,
   type MunsellChartFailureDebug,
   type MunsellChartResult,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/chartAnalysis';
-import {
-  REFERENCE_GRID,
-  TEST_SWATCH_INDEX,
-} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
+import {computeChartGuideRect} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
+import {TEST_SWATCH_INDEX} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {
   CHART_CHROMAS,
-  CHART_HUE,
   CHART_VALUES,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
 import {
   findMunsellPage,
-  MUNSELL_PAGES,
   type MunsellPage,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -315,7 +305,7 @@ export const MunsellChartValidatorScreen = ({
         setState({kind: 'error', message: String(err)});
       }
     })();
-  }, [dngPath, page]);
+  }, [dngPath, page, format]);
 
   const shareAsImage = useCallback(() => {
     const svg = exportSvgRef.current;
@@ -410,8 +400,7 @@ export const MunsellChartValidatorScreen = ({
   }, []);
 
   return (
-    <ScreenScaffold
-      AppBar={<AppBar title={`Munsell ${page.hue} validator`} />}>
+    <ScreenScaffold AppBar={<AppBar title={`Munsell ${page.hue} validator`} />}>
       <SafeScrollView>
         <Column padding="md" space="md">
           {state.kind === 'analyzing' && (
@@ -953,14 +942,7 @@ const TestSwatchCell = ({
   const nameFontSize = Math.max(9, FONT_NOTATION - (nameLines.length - 1) * 3);
   return (
     <>
-      <Rect
-        x={x}
-        y={y}
-        width={w}
-        height={h}
-        fill={bg}
-        onPress={onPress}
-      />
+      <Rect x={x} y={y} width={w} height={h} fill={bg} onPress={onPress} />
       <Rect
         x={x + 2}
         y={y + 2}
@@ -1104,7 +1086,13 @@ const DebugOverlayLayers = ({
   // test-swatch slot at the end) are meaningful.
   page: MunsellPage;
 }) => {
-  const {previewRects, detectedSwatches, grid} = result;
+  const {preview, previewRects, detectedSwatches, grid} = result;
+  // Where the camera-view chart-guide rectangle WAS at capture time,
+  // in preview-image coordinates. Same math as ChartGuideOverlay, so
+  // this is exactly the rectangle the user was framing the chart into
+  // (assuming they captured with the app; for loaded photos it's the
+  // hypothetical guide at the same fractions inside the loaded image).
+  const guideRect = computeChartGuideRect(preview.width, preview.height);
   // Universal SAMPLE_GRID layout is 7 rows × MAX_COLS = 42, then one
   // extra TEST_SWATCH point appended. Row N stride = MAX_COLS = 6
   // (max chromas across all pages). Precompute the set of valid
@@ -1150,6 +1138,24 @@ const DebugOverlayLayers = ({
             fill="rgba(255,0,255,0.35)"
           />
         ))}
+      {/* Where the viewfinder chart-guide rectangle sat at capture
+         time. Lets a tester see how well they framed the chart
+         inside the guide — a chart that landed well inside the
+         rectangle vs. one that crept toward an edge is useful info
+         for tuning the ROI heuristics or filtering out spurious
+         circles that fell outside the guide. Yellow dashed to
+         distinguish from the solid green rings (detected holes) and
+         the yellow ring (matched-ref grid). */}
+      <Rect
+        x={guideRect.x}
+        y={guideRect.y}
+        width={guideRect.w}
+        height={guideRect.h}
+        stroke="#ffeb3b"
+        strokeWidth={2}
+        strokeDasharray="8,6"
+        fill="none"
+      />
       {/* Chart body bounding box in cyan — the region hole detection
          was restricted to. If this outline doesn't match the actual
          chart, the chart-body detector is at fault (wrong bandpass
@@ -1438,6 +1444,12 @@ const SourceOverlayView = ({
       <RawBlobLegend
         rawBlobs={result.grid.rawBlobs}
         matchedScore={result.grid.matchedScore}
+        matchedRefCount={result.grid.matchedRefCount}
+        matchedInlierCount={
+          result.grid.matchedGridInliers
+            ? result.grid.matchedGridInliers.filter(Boolean).length
+            : null
+        }
       />
       <MaskToggle value={maskView} onChange={setMaskView} />
     </Box>
@@ -1477,9 +1489,18 @@ const MaskToggle = ({
 const RawBlobLegend = ({
   rawBlobs,
   matchedScore,
+  matchedRefCount,
+  matchedInlierCount,
 }: {
   rawBlobs: MunsellChartResult['grid']['rawBlobs'];
   matchedScore: number | null;
+  // Number of ref-grid points the RANSAC ran against (per-page — 30
+  // for 10YR, 35 for the universal MAX fallback). Denominator for the
+  // score/inlier display.
+  matchedRefCount: number | null;
+  // How many ref points landed inside matchThreshold under the winning
+  // transform (i.e. contributed a +1 to score).
+  matchedInlierCount: number | null;
 }) => {
   const counts: Record<string, number> = {};
   for (const b of rawBlobs) counts[b.status] = (counts[b.status] ?? 0) + 1;
@@ -1488,14 +1509,13 @@ const RawBlobLegend = ({
     .sort(([, a], [, b]) => b - a);
   return (
     <View style={styles.legendContainer} pointerEvents="none">
-      {matchedScore != null && (
+      {matchedScore != null && matchedRefCount != null && (
         <RNText style={styles.legendLine}>
-          <RNText style={{color: '#ffcc00'}}>■</RNText>
-          {`  match: ${matchedScore.toFixed(1)} / ${
-            counts.kept_bright
-              ? Math.min(REFERENCE_GRID.length, counts.kept_bright)
-              : REFERENCE_GRID.length
-          } (of ${REFERENCE_GRID.length} ref)`}
+          <RNText style={styles.legendMatchDot}>■</RNText>
+          {`  match: ${matchedScore.toFixed(1)} / ${(matchedRefCount * 1.1).toFixed(1)}` +
+            (matchedInlierCount != null
+              ? ` (${matchedInlierCount}/${matchedRefCount} refs)`
+              : ` (${matchedRefCount} refs)`)}
         </RNText>
       )}
       {entries.map(([status, n]) => (
@@ -1718,6 +1738,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 11,
     lineHeight: 14,
+  },
+  legendMatchDot: {
+    color: '#ffcc00',
   },
   maskToggleContainer: {
     position: 'absolute',

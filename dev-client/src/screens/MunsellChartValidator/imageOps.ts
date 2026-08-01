@@ -40,6 +40,7 @@ export type RgbImage = {
 // grayscale reducer uses, so luminance thresholds cross-check between
 // readPreviewGrayscale and readPreviewRgb.
 export const rec709Luma = (r: number, g: number, b: number): number =>
+  // eslint-disable-next-line no-bitwise -- >>8 is integer divide by 256, hot path
   Math.min(255, (r * 54 + g * 183 + b * 19 + 128) >> 8);
 
 // Reduce an RgbImage to grayscale — used when downstream CV still wants
@@ -503,6 +504,7 @@ export const regionGrow = (img: GrayImage, tolerance: number): Region[] => {
     let maxY = 0;
     while (stack.length > 0) {
       const idx = stack.pop()!;
+      // eslint-disable-next-line no-bitwise -- |0 is a fast floor for non-negative int
       const y = (idx / width) | 0;
       const x = idx - y * width;
       area++;

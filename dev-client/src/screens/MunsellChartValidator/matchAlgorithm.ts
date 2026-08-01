@@ -15,6 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {
+  computeUniversalMaxReferenceGrid,
+  computeUniversalMaxSampleGrid,
+  MUNSELL_PAGES,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
+
 // New chart-registration approach: rather than clustering detected
 // features into rows/cols and enumerating template offsets, cast the
 // problem as matching detected circles to a reference grid pattern
@@ -38,18 +44,6 @@
 //     once the surrounding pipeline is in place.
 
 export type Point = {x: number; y: number};
-
-// Runtime deps: munsellPages exports a small helper set that the
-// REFERENCE_GRID / SAMPLE_GRID constants below use to compose their
-// coordinates from the per-page chip layouts. munsellPages does a
-// TYPE-only import of Point from this file, so there's no runtime
-// circular dependency.
-// eslint-disable-next-line import/order
-import {
-  computeUniversalMaxReferenceGrid,
-  computeUniversalMaxSampleGrid,
-  MUNSELL_PAGES,
-} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 
 // Reference lattice for RANSAC matching — the SET of chart-hole
 // positions the algorithm expects to align its transform to.
@@ -261,6 +255,43 @@ export const scoreTransform = (
     }
   }
   return score;
+};
+
+// Cheap upper bound on scoreTransform. For each ref point, count 1 if
+// ANY detected point sits within pixelThreshold (no uniqueness
+// tracking, no tightness bonus, first-hit break). Since scoreTransform
+// applies greedy unique assignment (each detected can claim at most
+// one ref), its match count is ≤ this count. Since tightness bonus is
+// ≤ 0.1 per match, scoreTransform(t) ≤ cheapScoreUpperBound(t) × 1.1.
+//
+// That inequality makes this a PROVABLY CORRECT prune: if the cheap
+// score × 1.1 is already less than the current best, the full score
+// cannot exceed the best either, so we skip. Killed 90%+ of full
+// scoreTransform calls in profile — full-score cost went from
+// dominating the RANSAC wall-clock to a small tail behind the cheap
+// pre-score.
+export const cheapScoreUpperBound = (
+  t: Affine,
+  refPoints: readonly Point[],
+  detectedPoints: readonly Point[],
+  pixelThreshold: number,
+): number => {
+  const t2 = pixelThreshold * pixelThreshold;
+  let count = 0;
+  const nDet = detectedPoints.length;
+  for (const r of refPoints) {
+    const ex = t.a * r.x + t.b * r.y + t.c;
+    const ey = t.d * r.x + t.e * r.y + t.f;
+    for (let i = 0; i < nDet; i++) {
+      const dx = detectedPoints[i].x - ex;
+      const dy = detectedPoints[i].y - ey;
+      if (dx * dx + dy * dy < t2) {
+        count++;
+        break;
+      }
+    }
+  }
+  return count;
 };
 
 // Post-fit predicate on an Affine. Return true to accept, false to
@@ -487,6 +518,222 @@ export const findBestTransform = (
   // Refine the winning 3-point fit as a least-squares fit over ALL
   // inliers. Bumps the score meaningfully on real charts by
   // averaging out the residuals a single triplet can't correct for.
+  const refined = refineAffineWithInliers(
+    bestT,
+    refPoints,
+    detectedPoints,
+    pixelThreshold,
+  );
+  if (refined) {
+    const refinedScore = scoreTransform(
+      refined,
+      refPoints,
+      detectedPoints,
+      pixelThreshold,
+    );
+    if (refinedScore >= bestScore) {
+      bestT = refined;
+      bestScore = refinedScore;
+    }
+  }
+  return {
+    transform: bestT,
+    score: bestScore,
+    refTriplet: bestRefTri,
+    detectedTriplet: bestDetTri,
+  };
+};
+
+// Faster alternative to findBestTransform. Instead of enumerating
+// all C(N,3) detected triplets per ref triplet, iterate detected
+// PAIRS, compute the similarity that maps two ref points to the two
+// detected, PREDICT where the third ref point should land, and only
+// fit + score if a real detected point sits near that prediction.
+//
+// The similarity (uniform-scale rotation + translation, 4 DOF) is an
+// approximation to the true affine (6 DOF): it can't represent shear.
+// But for a flat chart photographed roughly overhead the true affine
+// IS a similarity to within a few percent, so predicted-third almost
+// always lands within a fraction of a hole radius of the real third
+// detection. That prediction step turns the O(N³) inner enumeration
+// into O(N²) + O(N) nearest-detected lookup — ~25× speedup in
+// practice. The winning pair still gets a full 3-point affine fit +
+// LSQ refinement over inliers, so the final transform quality is
+// identical to findBestTransform's.
+//
+// Correctness note: fixing (r0, r1) → (d0, d1) means the orientation
+// of the pair is baked in. We still do a sameOrder2 pre-check to kill
+// mirror-flipped and 180°-rotated pairs before the similarity solve.
+// Per-stage counters + block timers filled in by findBestTransformViaPairs
+// so callers (or the chart-registration log line) can see where the
+// wall-clock went — nearest-scan vs. score/fit vs. everything else.
+// Cheap: increments are integer ops in the tight loop, one Date.now
+// bracket around the (rare) score-fit block. Zero perf impact worth
+// measuring vs. the seconds-long RANSAC total.
+export type PairsProfile = {
+  refTripletsTried: number;
+  pairsTried: number; // (i,j) with i!=j actually entered
+  pairsPassedSameOrder2: number;
+  fitsAttempted: number; // reached fitAffineFromTriplets
+  fitsOk: number; // non-null affine
+  fitsPassedAffineFilter: number; // reached the cheap-score prune
+  cheapScorePassed: number; // reached the full scoreTransform
+  cheapScoreMs: number;
+  scoreFitMs: number; // wall-clock inside just the full scoreTransform call
+  bestScoreUpdates: number;
+};
+
+export const findBestTransformViaPairs = (
+  refPoints: readonly Point[],
+  detectedPoints: readonly Point[],
+  pixelThreshold: number,
+  refFilter: TripletFilter | null = composeFilters(
+    isNonCollinear,
+    distinctRowsAndCols,
+  ),
+  refIterator: TripletIterator = iterateAllTriplets,
+  affineFilter: AffineFilter | null = null,
+  // Tolerance for "the predicted third point is near a detected
+  // point." The similarity is approximate (no shear); allow 2× the
+  // pixelThreshold so perspective drift doesn't cause us to miss the
+  // correct third. Bumping this loosens the pre-filter but doesn't
+  // affect scoring — bad candidates still lose at the score step.
+  predictionToleranceMultiplier: number = 2,
+  profile?: PairsProfile,
+): {
+  transform: Affine;
+  score: number;
+  refTriplet: readonly Point[];
+  detectedTriplet: readonly Point[];
+} | null => {
+  let bestT: Affine | null = null;
+  let bestScore = 0;
+  let bestRefTri: readonly Point[] | null = null;
+  let bestDetTri: readonly Point[] | null = null;
+  const predT = pixelThreshold * predictionToleranceMultiplier;
+  const predT2 = predT * predT;
+  const nDet = detectedPoints.length;
+  // Local aliases for the profile counters — property access on an
+  // optional object in the hot loop would slow things down. Copy back
+  // at the end.
+  let refTripletsTried = 0;
+  let pairsTried = 0;
+  let pairsPassedSameOrder2 = 0;
+  let fitsAttempted = 0;
+  let fitsOk = 0;
+  let fitsPassedAffineFilter = 0;
+  let cheapScorePassed = 0;
+  let cheapScoreMs = 0;
+  let scoreFitMs = 0;
+  let bestScoreUpdates = 0;
+  for (const rTri of refIterator(refPoints, refFilter)) {
+    refTripletsTried++;
+    const [r0, r1, r2] = rTri;
+    const drX = r1.x - r0.x;
+    const drY = r1.y - r0.y;
+    const drNormSq = drX * drX + drY * drY;
+    if (drNormSq < 1e-12) continue;
+    // Enumerate detected pairs (i, j) with i != j. Unordered pairs
+    // aren't enough — the direction (r0→r1) fixes which detected
+    // point is "d0" and which is "d1", so we need both (i, j) and
+    // (j, i). Not a real cost multiplier since sameOrder2 kills the
+    // mirror half almost immediately.
+    for (let i = 0; i < nDet; i++) {
+      const d0 = detectedPoints[i];
+      for (let j = 0; j < nDet; j++) {
+        if (j === i) continue;
+        pairsTried++;
+        const d1 = detectedPoints[j];
+        // sameOrder2: 2-point analogue of sameOrder — kills flipped
+        // and mirrored pairs before the similarity solve.
+        if (r0.x < r1.x !== d0.x < d1.x) continue;
+        if (r0.y < r1.y !== d0.y < d1.y) continue;
+        pairsPassedSameOrder2++;
+        // Similarity mapping (r0,r1) → (d0,d1). Let vr = r1-r0,
+        // vd = d1-d0. Complex-number style:
+        //   scaleCos = (vr · vd) / |vr|²
+        //   scaleSin = (vr × vd) / |vr|²
+        //   x' = scaleCos*x − scaleSin*y + tx
+        //   y' = scaleSin*x + scaleCos*y + ty
+        const ddX = d1.x - d0.x;
+        const ddY = d1.y - d0.y;
+        const scaleCos = (drX * ddX + drY * ddY) / drNormSq;
+        const scaleSin = (drX * ddY - drY * ddX) / drNormSq;
+        const tx = d0.x - (scaleCos * r0.x - scaleSin * r0.y);
+        const ty = d0.y - (scaleSin * r0.x + scaleCos * r0.y);
+        // Predict where r2 should land.
+        const d2predX = scaleCos * r2.x - scaleSin * r2.y + tx;
+        const d2predY = scaleSin * r2.x + scaleCos * r2.y + ty;
+        // Find nearest detected to the prediction. Linear scan; N is
+        // small enough (~100) that a kd-tree isn't worth the setup.
+        let bestIdx = -1;
+        let bestDist2 = predT2;
+        for (let k = 0; k < nDet; k++) {
+          if (k === i || k === j) continue;
+          const dp = detectedPoints[k];
+          const dxk = dp.x - d2predX;
+          const dyk = dp.y - d2predY;
+          const dk2 = dxk * dxk + dyk * dyk;
+          if (dk2 < bestDist2) {
+            bestDist2 = dk2;
+            bestIdx = k;
+          }
+        }
+        if (bestIdx < 0) continue;
+        const d2 = detectedPoints[bestIdx];
+        // Fit the FULL affine on the 3-point correspondence — the
+        // similarity is a predictor only, we want proper 6-DOF fit
+        // for scoring and downstream sampling.
+        fitsAttempted++;
+        const t = fitAffineFromTriplets([r0, r1, r2], [d0, d1, d2]);
+        if (!t) continue;
+        fitsOk++;
+        if (affineFilter && !affineFilter(t)) continue;
+        fitsPassedAffineFilter++;
+        // Cheap upper-bound prune. cheapScoreUpperBound(t) × 1.1 is a
+        // provable upper bound on scoreTransform(t) (see the helper
+        // comment). If that already can't beat the current best, skip
+        // the full score — dominant win when scoreTransform is the
+        // hot spot. Profile earlier showed 194K full scores taking
+        // 40s; this drops it to ~10K full scores + 194K cheap scores.
+        const tCheap0 = Date.now();
+        const cheap = cheapScoreUpperBound(
+          t,
+          refPoints,
+          detectedPoints,
+          pixelThreshold,
+        );
+        cheapScoreMs += Date.now() - tCheap0;
+        if (cheap * (1 + TIGHTNESS_BONUS) < bestScore) continue;
+        cheapScorePassed++;
+        const tFit0 = Date.now();
+        const s = scoreTransform(t, refPoints, detectedPoints, pixelThreshold);
+        scoreFitMs += Date.now() - tFit0;
+        if (s > bestScore) {
+          bestScore = s;
+          bestT = t;
+          bestRefTri = [r0, r1, r2];
+          bestDetTri = [d0, d1, d2];
+          bestScoreUpdates++;
+        }
+      }
+    }
+  }
+  if (profile) {
+    profile.refTripletsTried = refTripletsTried;
+    profile.pairsTried = pairsTried;
+    profile.pairsPassedSameOrder2 = pairsPassedSameOrder2;
+    profile.fitsAttempted = fitsAttempted;
+    profile.fitsOk = fitsOk;
+    profile.fitsPassedAffineFilter = fitsPassedAffineFilter;
+    profile.cheapScorePassed = cheapScorePassed;
+    profile.cheapScoreMs = cheapScoreMs;
+    profile.scoreFitMs = scoreFitMs;
+    profile.bestScoreUpdates = bestScoreUpdates;
+  }
+  if (!bestT || !bestRefTri || !bestDetTri) return null;
+  // Same LSQ refit as findBestTransform — spread residual error
+  // across all inliers instead of leaning on the winning triplet.
   const refined = refineAffineWithInliers(
     bestT,
     refPoints,

@@ -44,6 +44,7 @@ import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMe
 import {MunsellChartValidatorScreen} from 'terraso-mobile-client/screens/MunsellChartValidator/MunsellChartValidatorScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectViewScreen';
+import {RawColorToolsScreen} from 'terraso-mobile-client/screens/RawColorToolsScreen/RawColorToolsScreen';
 import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/AddSiteNoteScreen';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/EditSiteNoteScreen';
 import {ReadPinnedNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/ReadPinnedNoteScreen';
@@ -52,7 +53,6 @@ import {SitesScreen} from 'terraso-mobile-client/screens/SitesScreen/SitesScreen
 import {SiteTeamSettingsScreen} from 'terraso-mobile-client/screens/SiteTeamSettingsScreen';
 import {SiteTransferProjectScreen} from 'terraso-mobile-client/screens/SiteTransferProjectScreen/SiteTransferProjectScreen';
 import {SlopeMeterScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeMeterScreen';
-import {RawColorToolsScreen} from 'terraso-mobile-client/screens/RawColorToolsScreen/RawColorToolsScreen';
 import {SlopeShapeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeShapeScreen';
 import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
 import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/CarbonatesScreen';

@@ -33,9 +33,7 @@ import {
   whiteMask,
   type RgbImage,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
-import {
-  CHART_HUE,
-} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
+import {CHART_HUE} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
 import {
   MUNSELL_PAGES,
   pageCells,
@@ -350,11 +348,7 @@ export const computeCellResults = (
   useBradford: boolean = false,
 ): MunsellCellResult[] => {
   return measurements.map(({cell, rawLinearRgb}) => {
-    const measuredLinearRgb = applyWbCorrection(
-      rawLinearRgb,
-      ref,
-      useBradford,
-    );
+    const measuredLinearRgb = applyWbCorrection(rawLinearRgb, ref, useBradford);
     const [X, Y, Z] = linearRgbToXyz(
       measuredLinearRgb.r,
       measuredLinearRgb.g,

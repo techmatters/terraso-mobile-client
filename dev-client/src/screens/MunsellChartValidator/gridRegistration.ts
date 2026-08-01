@@ -25,9 +25,7 @@ import {
   dilate1,
   erode1,
   findFlatCircles,
-  findFlatRectangles,
   maskToSpans,
-  regionGrow,
   threshold,
   type Blob,
   type GrayImage,
@@ -37,12 +35,13 @@ import {
   applyAffine,
   composeAffineFilters,
   createRandomTripletIterator,
-  findBestTransform,
+  findBestTransformViaPairs,
   notTooSkewed,
   REFERENCE_GRID,
   SAMPLE_GRID,
   scaleInRange,
   similarScales,
+  type PairsProfile,
   type Point,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {
@@ -172,6 +171,13 @@ export type GridDetection = {
   // Score for the winning transform (continuous score from
   // scoreTransform). Shown in the debug legend.
   matchedScore: number | null;
+  // Number of ref-grid points RANSAC was run against. Denominator for
+  // the legend's "score / max" and the "inliers / refCount" display —
+  // per-page ref grids have fewer points than the universal MAX
+  // REFERENCE_GRID (e.g. 30 for 10YR vs 35 universal), so the legend
+  // can't derive this from REFERENCE_GRID.length. Null when the match
+  // step didn't run.
+  matchedRefCount: number | null;
   // The 3 DETECTED points that formed the winning ref↔detected
   // triplet correspondence. Rendered as prominent red rings so a
   // tester can see which 3 anchors the whole transform was built
@@ -348,6 +354,7 @@ export const detectChartByGrid = (img: GrayImage): GridDetection | null => {
     matchedGrid: null,
     matchedGridInliers: null,
     matchedScore: null,
+    matchedRefCount: null,
     matchedTripletDetected: null,
     matchedSampleRects: null,
   };
@@ -549,6 +556,7 @@ export const detectChartByHoles = (img: GrayImage): GridDetection | null => {
     matchedGrid: null,
     matchedGridInliers: null,
     matchedScore: null,
+    matchedRefCount: null,
     matchedTripletDetected: null,
     matchedSampleRects: null,
   };
@@ -589,9 +597,6 @@ const classifyHoleBlob = (
 // lattice, just offset by half a row), giving the affine fit ~2× the
 // data of a single-polarity detector.
 
-// Tolerance for the region-growing seed comparison (unused since
-// switching to a caller-provided mask, kept for the fallback path).
-const REGION_TOLERANCE = 25;
 // A region qualifies as a "dark swatch candidate" if its mean is
 // below this cutoff, or a "bright hole candidate" if above the
 // bright cutoff. Neither → rejected as neutral (chart body,
@@ -620,16 +625,6 @@ const MAX_REGION_ASPECT = 2.2;
 // looser fill.
 const MIN_DARK_FILL_RATIO = 0.75;
 const MIN_BRIGHT_FILL_RATIO = 0.55;
-// Minimum mean-absolute contrast between the candidate's centre and
-// 8 sample points just outside its bounding radius. Real chart
-// features (holes on grey chart body, dark swatches on grey chart
-// body) have contrast of 80-100+. Uniform paper "circles" produced
-// by localFlat fragmentation of paper have near-zero contrast
-// because their "surroundings" are more paper. 30 is a comfortable
-// floor — well above the fragmentation-noise regime, well below
-// real features.
-const MIN_SURROUND_CONTRAST = 30;
-
 export const detectChartByRegions = (
   img: GrayImage,
   // Precomputed binary mask (same dimensions as img) marking pixel
@@ -878,6 +873,7 @@ export const detectChartByRegions = (
   let matchedGrid: {x: number; y: number}[] | null = null;
   let matchedGridInliers: boolean[] | null = null;
   let matchedScore: number | null = null;
+  let matchedRefCount: number | null = null;
   let matchedTripletDetected: {x: number; y: number}[] | null = null;
   let matchedSampleRects:
     | {x: number; y: number; w: number; h: number}[]
@@ -931,32 +927,74 @@ export const detectChartByRegions = (
     const shorterPreviewDim = Math.min(img.width, img.height);
     const minPxPerUnit = 0.04 * shorterPreviewDim;
     const maxPxPerUnit = 0.13 * shorterPreviewDim;
-    const match = findBestTransform(
+    // Fast RANSAC via 2-point similarity prediction (see
+    // findBestTransformViaPairs). Turns the inner O(N³) detected
+    // enumeration into O(N²) + O(N) nearest-lookup per predicted
+    // third — same final fit quality (full 3-point affine + LSQ
+    // refinement over inliers), ~25× faster in practice.
+    const profile: PairsProfile = {
+      refTripletsTried: 0,
+      pairsTried: 0,
+      pairsPassedSameOrder2: 0,
+      fitsAttempted: 0,
+      fitsOk: 0,
+      fitsPassedAffineFilter: 0,
+      cheapScorePassed: 0,
+      cheapScoreMs: 0,
+      scoreFitMs: 0,
+      bestScoreUpdates: 0,
+    };
+    const match = findBestTransformViaPairs(
       refGrid,
       detectedPoints,
       matchThreshold,
       undefined,
-      undefined,
       refIterator,
-      undefined,
-      undefined,
       composeAffineFilters(
         notTooSkewed(15),
         similarScales(1.6),
         scaleInRange(minPxPerUnit, maxPxPerUnit),
       ),
+      undefined,
+      profile,
     );
     const tEndAll = Date.now();
     const circlesMs = tAfterCircles - tStartAll;
     const ransacMs = tEndAll - tStart;
     const totalMs = tEndAll - tStartAll;
+    // Score max = refGrid.length * (1 + TIGHTNESS_BONUS) = refGrid.length * 1.1.
+    // Keep both scoreMax AND refGrid.length in the log so it's obvious
+    // when a per-page grid is smaller than the universal MAX (e.g. 30
+    // for 10YR vs 35 universal). Ref-block after RANSAC line lists
+    // per-stage counters so we can see where the time went — most of
+    // it should be in nearest-scan (pairs that survived sameOrder2 but
+    // didn't find a near-prediction) with a small tail in score/fit.
+    const scoreMax = refGrid.length * 1.1;
     console.log(
       `[chart-match] ${detectedPoints.length} detected × ${OUTER_TRIPLET_COUNT} ref triplets; ` +
         `circles ${circlesMs}ms, RANSAC ${ransacMs}ms, total ${totalMs}ms; ` +
-        `score=${match?.score?.toFixed(2) ?? 'null'}`,
+        `score=${match?.score?.toFixed(2) ?? 'null'} / ${scoreMax.toFixed(1)} ` +
+        `(${refGrid.length} ref pts)`,
+    );
+    // Per-stage counters. "otherMs" is everything not accounted for by
+    // the cheap-score / full-score timers — mostly the nearest-scan on
+    // the predicted third + similarity + affine solve + affine filter.
+    const otherMs = ransacMs - profile.cheapScoreMs - profile.scoreFitMs;
+    console.log(
+      `[chart-match:profile] refTri=${profile.refTripletsTried} ` +
+        `pairs=${profile.pairsTried} ` +
+        `→sameOrder2=${profile.pairsPassedSameOrder2} ` +
+        `→predHit=${profile.fitsAttempted} ` +
+        `→fitOk=${profile.fitsOk} ` +
+        `→postAffFilt=${profile.fitsPassedAffineFilter} ` +
+        `→cheapPass=${profile.cheapScorePassed} ` +
+        `bestUpdates=${profile.bestScoreUpdates}; ` +
+        `time: other≈${otherMs}ms, cheapScore=${profile.cheapScoreMs}ms, ` +
+        `scoreFit=${profile.scoreFitMs}ms`,
     );
     if (match) {
       matchedScore = match.score;
+      matchedRefCount = refGrid.length;
       matchedGrid = refGrid.map(p => applyAffine(match.transform, p));
       // Compute which ref points were inliers under the winning
       // transform — mirrors scoreTransform's greedy unique-assignment
@@ -1035,6 +1073,7 @@ export const detectChartByRegions = (
     matchedGrid,
     matchedGridInliers,
     matchedScore,
+    matchedRefCount,
     matchedTripletDetected,
     matchedSampleRects,
   };
@@ -1072,81 +1111,6 @@ const classifyRegion = (
   // upstream by whiteMask + MAX_HOLE_RADIUS_FRAC + the affine filters
   // (skew, aspect). Leave the helper defined in case we want it back.
   return isDark ? 'kept_dark' : 'kept_bright';
-};
-
-// Mean absolute difference between the centre pixel and 8 points
-// sampled on a ring at 1.6× the candidate's radius. Off-image
-// samples are skipped. Returns 0 if all samples were off-image.
-const surroundingContrast = (
-  img: GrayImage,
-  cx: number,
-  cy: number,
-  radius: number,
-): number => {
-  const cxInt = Math.round(cx);
-  const cyInt = Math.round(cy);
-  if (cxInt < 0 || cyInt < 0 || cxInt >= img.width || cyInt >= img.height) {
-    return 0;
-  }
-  const centreVal = img.pixels[cyInt * img.width + cxInt];
-  const sampleR = radius * 1.6;
-  let sumDiff = 0;
-  let n = 0;
-  for (let i = 0; i < 8; i++) {
-    const angle = (i * Math.PI) / 4;
-    const sx = Math.round(cx + Math.cos(angle) * sampleR);
-    const sy = Math.round(cy + Math.sin(angle) * sampleR);
-    if (sx < 0 || sy < 0 || sx >= img.width || sy >= img.height) continue;
-    sumDiff += Math.abs(img.pixels[sy * img.width + sx] - centreVal);
-    n++;
-  }
-  return n > 0 ? sumDiff / n : 0;
-};
-
-// Pick the template-index offset (row or col) that best places the
-// full extrapolated grid inside the image bounds. For each candidate
-// offset from 0 to (templateCount - detectedCount), reassigns the
-// blobs to template indices, fits a 1D linear model along the target
-// axis, extrapolates all templateCount positions, and counts how
-// many land inside the image on that axis. Highest count wins;
-// ties break to the lower offset.
-const pickBestOffset = (
-  candidates: readonly Region[],
-  rowCenters: readonly number[],
-  colCenters: readonly number[],
-  templateCount: number,
-  img: GrayImage,
-  axis: 'row' | 'col',
-): number => {
-  const detectedCount = axis === 'row' ? rowCenters.length : colCenters.length;
-  const missing = templateCount - detectedCount;
-  if (missing <= 0) return 0;
-  const limit = axis === 'row' ? img.height : img.width;
-  let bestOffset = 0;
-  let bestInFrame = -1;
-  for (let candidate = 0; candidate <= missing; candidate++) {
-    const samples: [number, number, number][] = candidates.map(b => {
-      const rowIdxDet = nearestIndex(rowCenters, b.cy);
-      const colIdxDet = nearestIndex(colCenters, b.cx);
-      const rowIdx = axis === 'row' ? candidate + rowIdxDet : rowIdxDet;
-      const colIdx = axis === 'col' ? candidate + colIdxDet : colIdxDet;
-      return [colIdx, rowIdx, axis === 'row' ? b.cy : b.cx];
-    });
-    const coeffs = leastSquares3(samples);
-    if (!coeffs) continue;
-    let inFrame = 0;
-    for (let r = 0; r < CHART_VALUES.length; r++) {
-      for (let c = 0; c < CHART_CHROMAS.length; c++) {
-        const v = coeffs[0] * c + coeffs[1] * r + coeffs[2];
-        if (v >= 0 && v < limit) inFrame++;
-      }
-    }
-    if (inFrame > bestInFrame) {
-      bestInFrame = inFrame;
-      bestOffset = candidate;
-    }
-  }
-  return bestOffset;
 };
 
 // Rough bounding box of the chart card body (the grey card material)
