@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {computeChartGuideRect} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
 import {
   bandpass,
   blobAspect,
@@ -43,6 +44,7 @@ import {
   SAMPLE_GRID,
   scaleInRange,
   similarScales,
+  type DirectedQuadrantProfile,
   type PairsProfile,
   type Point,
   type RegistrationAlgorithm,
@@ -956,7 +958,7 @@ export const detectChartByRegions = (
     // REGISTRATION_ALGORITHMS + a runner in matchAlgorithm.ts + a case
     // below.
     let match: ReturnType<typeof findBestTransformViaPairs> = null;
-    const profile: PairsProfile = {
+    const crProfile: PairsProfile = {
       refTripletsTried: 0,
       pairsTried: 0,
       pairsPassedSameOrder2: 0,
@@ -968,6 +970,21 @@ export const detectChartByRegions = (
       scoreFitMs: 0,
       bestScoreUpdates: 0,
     };
+    const dqProfile: DirectedQuadrantProfile = {
+      tlCandidatePool: 0,
+      trCandidatePool: 0,
+      blCandidatePool: 0,
+      tripletsTried: 0,
+      combosTried: 0,
+      fitsOk: 0,
+      fitsPassedAffineFilter: 0,
+      cheapScorePassed: 0,
+      cheapScoreMs: 0,
+      scoreFitMs: 0,
+      bestScoreUpdates: 0,
+      slopX: 0,
+      slopY: 0,
+    };
     switch (algorithm) {
       case 'constrained-random':
         match = findBestTransformViaPairs(
@@ -978,17 +995,27 @@ export const detectChartByRegions = (
           refIterator,
           affineFilter,
           undefined,
-          profile,
+          crProfile,
         );
         break;
-      case 'directed-quadrant':
+      case 'directed-quadrant': {
+        // Guide rect at capture time in preview-image coords. The
+        // algorithm needs this to seed its nominal ref→image affine —
+        // see the header comment on findBestTransformDirectedQuadrant.
+        // Computed against the preview image dims (img.width/height)
+        // since detectedPoints are in preview-image space.
+        const guideRect = computeChartGuideRect(img.width, img.height);
         match = findBestTransformDirectedQuadrant(
           refGrid,
           detectedPoints,
           matchThreshold,
           affineFilter,
+          guideRect,
+          undefined,
+          dqProfile,
         );
         break;
+      }
     }
     const tEndAll = Date.now();
     const circlesMs = tAfterCircles - tStartAll;
@@ -1005,21 +1032,34 @@ export const detectChartByRegions = (
         `score=${match?.score?.toFixed(2) ?? 'null'} / ${scoreMax.toFixed(1)} ` +
         `(${refGrid.length} ref pts)`,
     );
-    // Per-stage counters (constrained-random only — directed-quadrant
-    // has its own instrumentation once implemented).
+    // Per-stage counters — one line per algorithm, per-stage counts +
+    // per-block wall-time so we can see where the budget went.
     if (algorithm === 'constrained-random') {
-      const otherMs = ransacMs - profile.cheapScoreMs - profile.scoreFitMs;
+      const otherMs = ransacMs - crProfile.cheapScoreMs - crProfile.scoreFitMs;
       console.log(
-        `[chart-match:profile] refTri=${profile.refTripletsTried} ` +
-          `pairs=${profile.pairsTried} ` +
-          `→sameOrder2=${profile.pairsPassedSameOrder2} ` +
-          `→predHit=${profile.fitsAttempted} ` +
-          `→fitOk=${profile.fitsOk} ` +
-          `→postAffFilt=${profile.fitsPassedAffineFilter} ` +
-          `→cheapPass=${profile.cheapScorePassed} ` +
-          `bestUpdates=${profile.bestScoreUpdates}; ` +
-          `time: other≈${otherMs}ms, cheapScore=${profile.cheapScoreMs}ms, ` +
-          `scoreFit=${profile.scoreFitMs}ms`,
+        `[chart-match:profile] refTri=${crProfile.refTripletsTried} ` +
+          `pairs=${crProfile.pairsTried} ` +
+          `→sameOrder2=${crProfile.pairsPassedSameOrder2} ` +
+          `→predHit=${crProfile.fitsAttempted} ` +
+          `→fitOk=${crProfile.fitsOk} ` +
+          `→postAffFilt=${crProfile.fitsPassedAffineFilter} ` +
+          `→cheapPass=${crProfile.cheapScorePassed} ` +
+          `bestUpdates=${crProfile.bestScoreUpdates}; ` +
+          `time: other≈${otherMs}ms, cheapScore=${crProfile.cheapScoreMs}ms, ` +
+          `scoreFit=${crProfile.scoreFitMs}ms`,
+      );
+    } else if (algorithm === 'directed-quadrant') {
+      const otherMs = ransacMs - dqProfile.cheapScoreMs - dqProfile.scoreFitMs;
+      console.log(
+        `[chart-match:profile] slop=±${dqProfile.slopX.toFixed(0)}×${dqProfile.slopY.toFixed(0)}px ` +
+          `cand-pool tl/tr/bl=${dqProfile.tlCandidatePool}/${dqProfile.trCandidatePool}/${dqProfile.blCandidatePool} ` +
+          `triplets=${dqProfile.tripletsTried} combos=${dqProfile.combosTried} ` +
+          `→fitOk=${dqProfile.fitsOk} ` +
+          `→postAffFilt=${dqProfile.fitsPassedAffineFilter} ` +
+          `→cheapPass=${dqProfile.cheapScorePassed} ` +
+          `bestUpdates=${dqProfile.bestScoreUpdates}; ` +
+          `time: other≈${otherMs}ms, cheapScore=${dqProfile.cheapScoreMs}ms, ` +
+          `scoreFit=${dqProfile.scoreFitMs}ms`,
       );
     }
     if (match) {

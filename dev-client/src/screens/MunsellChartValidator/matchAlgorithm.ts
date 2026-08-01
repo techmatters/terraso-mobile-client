@@ -919,34 +919,276 @@ export const resolveRegistrationAlgorithm = (
   return DEFAULT_REGISTRATION_ALGORITHM;
 };
 
-// Directed-quadrant algorithm — stub. Idea: pick ref triplets from
-// three well-separated corners of the ref grid (e.g. top-left,
-// top-right, bottom-left; 9 candidates per corner → 9^3 = 729 outer
-// iterations). For each outer triplet, use the chart-guide rectangle
-// to compute each ref point's EXPECTED image position + a tolerance
-// radius, gather only detected holes inside that radius, enumerate
-// small combinations, fit + score. Should be ~10-100× faster than
-// findBestTransformViaPairs and more robust when the user framed the
-// chart inside the guide. Falls back to constrained-random when the
-// best directed score is below some floor (framing was poor / chart
-// was rotated inside the guide).
+// Directed-quadrant algorithm. Pick ref triplets from three
+// well-separated corners of the ref grid (top-left, top-right,
+// bottom-left; 9 candidates per corner → 9^3 = 729 outer iterations).
+// For each outer triplet, use the chart-guide rectangle to compute each
+// ref point's EXPECTED image position + a per-axis slop window, gather
+// only detected holes inside that window, enumerate the small
+// cross-product of candidates, fit + score. Much faster than
+// findBestTransformViaPairs when the user framed the chart within the
+// guide — the slop window replaces the O(N) nearest-scan with an O(k)
+// candidate scan where k is typically 1-3.
 //
-// Signature matches findBestTransformViaPairs's — same inputs, same
-// return shape — so the caller can swap them behind the registration-
-// algorithm dispatch without any downstream changes.
+// Signature matches findBestTransformViaPairs's — same return shape —
+// so the algorithm dispatcher can swap them behind a switch. Extra
+// input: `guideRect` (image-pixel coords of the capture-time chart
+// guide) is required — the algorithm has nothing to pivot around
+// without it.
+export type DirectedQuadrantProfile = {
+  tlCandidatePool: number; // detected holes near top-left corner refs
+  trCandidatePool: number;
+  blCandidatePool: number;
+  tripletsTried: number; // (i,j,k) outer combos actually entered
+  combosTried: number; // (d0,d1,d2) candidate combos actually entered
+  fitsOk: number;
+  fitsPassedAffineFilter: number;
+  cheapScorePassed: number;
+  cheapScoreMs: number;
+  scoreFitMs: number;
+  bestScoreUpdates: number;
+  slopX: number; // slop radius actually used, in pixels
+  slopY: number;
+};
+
+const CORNER_SIZE = 9; // per-corner ref count (roughly 3x3 near the corner)
+
 export const findBestTransformDirectedQuadrant = (
-  _refPoints: readonly Point[],
-  _detectedPoints: readonly Point[],
-  _pixelThreshold: number,
-  _affineFilter: AffineFilter | null = null,
+  refPoints: readonly Point[],
+  detectedPoints: readonly Point[],
+  pixelThreshold: number,
+  affineFilter: AffineFilter | null = null,
+  // Chart-guide rectangle in image-pixel coords — from
+  // computeChartGuideRect(imgW, imgH). The nominal ref-space →
+  // image-space affine is derived by mapping the ref-grid bounding box
+  // onto this rectangle directly (no inset). The affine only needs to
+  // land expected positions "close enough" for slop to catch a real
+  // detection; the final fit step corrects any scale mismatch (chart
+  // typically has a border, so real hole positions sit slightly inside
+  // the guide — the slop absorbs that).
+  guideRect: {x: number; y: number; w: number; h: number} | null = null,
+  // Fraction of guide.w and guide.h used as per-axis slop half-width
+  // for candidate selection. 0.15 = ±15% of guide dimension. Widen if
+  // charts are consistently missed (framing loose, or chart border
+  // large); tighten if too many wrong candidates get picked and score
+  // slower.
+  slopFrac: number = 0.15,
+  profile?: DirectedQuadrantProfile,
 ): {
   transform: Affine;
   score: number;
   refTriplet: readonly Point[];
   detectedTriplet: readonly Point[];
 } | null => {
-  throw new Error(
-    'findBestTransformDirectedQuadrant: not yet implemented — pick ' +
-      '"Constrained random" in the RAW & color tools screen for now.',
+  if (!guideRect) {
+    throw new Error(
+      'findBestTransformDirectedQuadrant: guideRect is required — this ' +
+        'algorithm derives its nominal ref→image affine from the ' +
+        'capture-time chart-guide rectangle.',
+    );
+  }
+  if (refPoints.length < 3 || detectedPoints.length < 3) return null;
+
+  // 1. Bounding box of the ref grid — origin for the nominal affine.
+  let refMinX = Infinity;
+  let refMaxX = -Infinity;
+  let refMinY = Infinity;
+  let refMaxY = -Infinity;
+  for (const p of refPoints) {
+    if (p.x < refMinX) refMinX = p.x;
+    if (p.x > refMaxX) refMaxX = p.x;
+    if (p.y < refMinY) refMinY = p.y;
+    if (p.y > refMaxY) refMaxY = p.y;
+  }
+  const refW = refMaxX - refMinX;
+  const refH = refMaxY - refMinY;
+  if (refW < 1e-6 || refH < 1e-6) return null;
+
+  // 2. Nominal ref → image affine. Maps refBounds directly onto
+  //    guideRect (anisotropic in general — ref-grid aspect and guide
+  //    aspect don't have to match; per-axis slop below handles that).
+  const sx = guideRect.w / refW;
+  const sy = guideRect.h / refH;
+  const nominalA = sx;
+  const nominalE = sy;
+  const nominalC = guideRect.x - refMinX * sx;
+  const nominalF = guideRect.y - refMinY * sy;
+  const nominalExpectedX = (p: Point) => nominalA * p.x + nominalC;
+  const nominalExpectedY = (p: Point) => nominalE * p.y + nominalF;
+
+  // 3. Corner subsets — the CORNER_SIZE nearest ref points to each
+  //    corner (roughly a 3x3 block on a rectangular grid). Deliberately
+  //    NOT top-right along with bottom-left plus bottom-right, since two
+  //    corners on the same edge give a narrow triangle → unstable fit;
+  //    top-left / top-right / bottom-left is a wide L shape.
+  const pickNearestCorner = (cornerX: number, cornerY: number): Point[] => {
+    const scored = refPoints
+      .map(p => ({
+        p,
+        d2:
+          (p.x - cornerX) * (p.x - cornerX) + (p.y - cornerY) * (p.y - cornerY),
+      }))
+      .sort((a, b) => a.d2 - b.d2)
+      .slice(0, CORNER_SIZE);
+    return scored.map(x => x.p);
+  };
+  const tlRefs = pickNearestCorner(refMinX, refMinY);
+  const trRefs = pickNearestCorner(refMaxX, refMinY);
+  const blRefs = pickNearestCorner(refMinX, refMaxY);
+
+  // 4. Per-axis slop window. Rectangle, not circle — a portrait guide
+  //    would give a tiny circle if we used min(w,h) × frac.
+  const slopX = guideRect.w * slopFrac;
+  const slopY = guideRect.h * slopFrac;
+
+  // 5. Precompute candidate detected indices for each ref point in
+  //    each corner. For most well-framed captures each ref maps to 1-3
+  //    candidates.
+  const candidatesFor = (r: Point): number[] => {
+    const expX = nominalExpectedX(r);
+    const expY = nominalExpectedY(r);
+    const out: number[] = [];
+    for (let i = 0; i < detectedPoints.length; i++) {
+      const dp = detectedPoints[i];
+      if (Math.abs(dp.x - expX) < slopX && Math.abs(dp.y - expY) < slopY) {
+        out.push(i);
+      }
+    }
+    return out;
+  };
+  const tlCandidates = tlRefs.map(candidatesFor);
+  const trCandidates = trRefs.map(candidatesFor);
+  const blCandidates = blRefs.map(candidatesFor);
+
+  // Sum candidate pool sizes for the profile — a low pool count is the
+  // usual failure mode (framing was off / slop too tight).
+  const poolSize = (lists: number[][]) =>
+    lists.reduce((n, l) => n + l.length, 0);
+  const tlPool = poolSize(tlCandidates);
+  const trPool = poolSize(trCandidates);
+  const blPool = poolSize(blCandidates);
+
+  // 6. Outer loop over 9^3 = 729 ref-triplets, inner loop over the
+  //    small cross-product of candidate detected points per ref.
+  let bestT: Affine | null = null;
+  let bestScore = 0;
+  let bestRefTri: readonly Point[] | null = null;
+  let bestDetTri: readonly Point[] | null = null;
+  let tripletsTried = 0;
+  let combosTried = 0;
+  let fitsOk = 0;
+  let fitsPassedAffineFilter = 0;
+  let cheapScorePassed = 0;
+  let cheapScoreMs = 0;
+  let scoreFitMs = 0;
+  let bestScoreUpdates = 0;
+
+  for (let i = 0; i < tlRefs.length; i++) {
+    const r0 = tlRefs[i];
+    const c0List = tlCandidates[i];
+    if (c0List.length === 0) continue;
+    for (let j = 0; j < trRefs.length; j++) {
+      const r1 = trRefs[j];
+      const c1List = trCandidates[j];
+      if (c1List.length === 0) continue;
+      for (let k = 0; k < blRefs.length; k++) {
+        const r2 = blRefs[k];
+        const c2List = blCandidates[k];
+        if (c2List.length === 0) continue;
+        tripletsTried++;
+
+        for (const d0i of c0List) {
+          const d0 = detectedPoints[d0i];
+          for (const d1i of c1List) {
+            if (d1i === d0i) continue;
+            const d1 = detectedPoints[d1i];
+            for (const d2i of c2List) {
+              if (d2i === d0i || d2i === d1i) continue;
+              const d2 = detectedPoints[d2i];
+              combosTried++;
+
+              const t = fitAffineFromTriplets([r0, r1, r2], [d0, d1, d2]);
+              if (!t) continue;
+              fitsOk++;
+              if (affineFilter && !affineFilter(t)) continue;
+              fitsPassedAffineFilter++;
+
+              // Cheap-score prune, same as constrained-random.
+              const tCheap0 = Date.now();
+              const cheap = cheapScoreUpperBound(
+                t,
+                refPoints,
+                detectedPoints,
+                pixelThreshold,
+              );
+              cheapScoreMs += Date.now() - tCheap0;
+              if (cheap * (1 + TIGHTNESS_BONUS) < bestScore) continue;
+              cheapScorePassed++;
+
+              const tFit0 = Date.now();
+              const s = scoreTransform(
+                t,
+                refPoints,
+                detectedPoints,
+                pixelThreshold,
+              );
+              scoreFitMs += Date.now() - tFit0;
+              if (s > bestScore) {
+                bestScore = s;
+                bestT = t;
+                bestRefTri = [r0, r1, r2];
+                bestDetTri = [d0, d1, d2];
+                bestScoreUpdates++;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (profile) {
+    profile.tlCandidatePool = tlPool;
+    profile.trCandidatePool = trPool;
+    profile.blCandidatePool = blPool;
+    profile.tripletsTried = tripletsTried;
+    profile.combosTried = combosTried;
+    profile.fitsOk = fitsOk;
+    profile.fitsPassedAffineFilter = fitsPassedAffineFilter;
+    profile.cheapScorePassed = cheapScorePassed;
+    profile.cheapScoreMs = cheapScoreMs;
+    profile.scoreFitMs = scoreFitMs;
+    profile.bestScoreUpdates = bestScoreUpdates;
+    profile.slopX = slopX;
+    profile.slopY = slopY;
+  }
+
+  if (!bestT || !bestRefTri || !bestDetTri) return null;
+
+  // Same LSQ refinement as constrained-random — spread residual error
+  // across all inliers rather than leaning on the winning triplet.
+  const refined = refineAffineWithInliers(
+    bestT,
+    refPoints,
+    detectedPoints,
+    pixelThreshold,
   );
+  if (refined) {
+    const refinedScore = scoreTransform(
+      refined,
+      refPoints,
+      detectedPoints,
+      pixelThreshold,
+    );
+    if (refinedScore >= bestScore) {
+      bestT = refined;
+      bestScore = refinedScore;
+    }
+  }
+  return {
+    transform: bestT,
+    score: bestScore,
+    refTriplet: bestRefTri,
+    detectedTriplet: bestDetTri,
+  };
 };
