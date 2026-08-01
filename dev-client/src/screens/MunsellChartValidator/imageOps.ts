@@ -703,12 +703,23 @@ export const distanceTransform = (mask: GrayImage): Float32Array => {
 // (e.g. chart body between chip columns passing the whiteMask
 // chroma gate), the DT along the connecting corridor is a near-
 // constant ridge with no strict local max per hole, so we'd get
-// zero detections across the whole merged band. Dropping the
-// local-max requirement makes the algorithm robust to that: every
-// hole-sized pixel is a candidate, and the greedy overlap rule
-// naturally sphere-packs one detection per hole because each
-// winning candidate eliminates only within 2 × hole-radius of
-// itself (the DT is bounded by hole size in a hole-shaped region).
+// zero detections across the whole merged band.
+//
+// Instead of considering every hole-sized pixel individually
+// (which produced 200-500K candidates on a 900x1200 preview because
+// every pixel in a wide ring around the chart / tape / paper edges
+// falls into the [minRadius, maxRadius] band), we downsample onto
+// a coarse cell grid at half-min-radius spacing and keep the max-DT
+// pixel per cell. Any legal circle (radius >= minRadius) spans
+// multiple cells so this doesn't lose holes — the cell containing
+// the hole's centre still surfaces it as a candidate — but drops
+// the candidate count by ~cellSize² (~50x). Downstream sort +
+// O(K x M) greedy overlap pruning drops correspondingly.
+//
+// Storage is a triple of typed arrays (candX / candY / candR) so
+// the per-pixel inner loop never allocates a heap object; the
+// FlatCircle[] materialisation only happens for the small kept
+// set at the end.
 export const findFlatCircles = (
   mask: GrayImage,
   minRadius: number,
@@ -716,29 +727,65 @@ export const findFlatCircles = (
 ): FlatCircle[] => {
   const {width, height} = mask;
   const dt = distanceTransform(mask);
-  const candidates: FlatCircle[] = [];
+
+  // Cell size = half min-radius (never below 4 px). Guarantees that
+  // any legal circle spans at least 2 cells in each axis so we
+  // never miss a hole via cell aliasing. Also caps cell count at
+  // a manageable number: for a 900x1200 preview at minRadius=15,
+  // cellSize=7 gives ~130x170 = 22K cells vs 1M pixels.
+  const cellSize = Math.max(4, Math.floor(minRadius / 2));
+  const cellCols = Math.ceil(width / cellSize);
+  const cellRows = Math.ceil(height / cellSize);
+  const cellCount = cellCols * cellRows;
+  const candR = new Float32Array(cellCount);
+  const candX = new Float32Array(cellCount);
+  const candY = new Float32Array(cellCount);
+
   for (let y = 0; y < height; y++) {
+    // eslint-disable-next-line no-bitwise -- |0 is a fast floor
+    const cellY = (y / cellSize) | 0;
+    const rowBase = cellY * cellCols;
+    const dtRowBase = y * width;
     for (let x = 0; x < width; x++) {
-      const i = y * width + x;
-      const d = dt[i];
+      const d = dt[dtRowBase + x];
       if (d < minRadius || d > maxRadius) continue;
-      candidates.push({cx: x, cy: y, r: d});
+      // eslint-disable-next-line no-bitwise -- |0 is a fast floor
+      const ci = rowBase + ((x / cellSize) | 0);
+      if (d > candR[ci]) {
+        candR[ci] = d;
+        candX[ci] = x;
+        candY[ci] = y;
+      }
     }
   }
-  candidates.sort((a, b) => b.r - a.r);
+
+  // Compact — indices of cells with a valid candidate. Number of
+  // candidates here is bounded by cellCount and typically much
+  // smaller (only cells intersecting the [minRadius, maxRadius] DT
+  // band get filled).
+  const indices: number[] = [];
+  for (let ci = 0; ci < cellCount; ci++) {
+    if (candR[ci] > 0) indices.push(ci);
+  }
+  indices.sort((a, b) => candR[b] - candR[a]);
+
+  // Greedy non-overlap over the (small) compact set.
   const kept: FlatCircle[] = [];
-  for (const c of candidates) {
+  for (const ci of indices) {
+    const cx = candX[ci];
+    const cy = candY[ci];
+    const cr = candR[ci];
     let overlaps = false;
     for (const k of kept) {
-      const dx = c.cx - k.cx;
-      const dy = c.cy - k.cy;
-      const sumR = c.r + k.r;
+      const dx = cx - k.cx;
+      const dy = cy - k.cy;
+      const sumR = cr + k.r;
       if (dx * dx + dy * dy < sumR * sumR) {
         overlaps = true;
         break;
       }
     }
-    if (!overlaps) kept.push(c);
+    if (!overlaps) kept.push({cx, cy, r: cr});
   }
   return kept;
 };
