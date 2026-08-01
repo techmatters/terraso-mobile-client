@@ -98,13 +98,26 @@ export type WhiteMaskParams = {
   // back to the percentile path — happens on loaded photos with weird
   // aspects or extreme framing that leaves no paper visible.
   borderMinSamples: number;
+  // Only the TOP borderLumaKeepFrac of ring pixels by luma feed into
+  // the R/G/B median + MAD. Auto-excludes shadow regions in the ring
+  // (bottom edge of a chart on a table lit from one side, phone
+  // shadow, etc.). 0.6 keeps 60% brightest, drops 40% (comfortably
+  // more than any real shadow occupies).
+  borderLumaKeepFrac: number;
   // Per-channel tolerance = max(borderMinChannelTolerance, k × MAD)
-  // where k is borderChannelToleranceMultiplier. Setting k high or
-  // MAD floor high widens the mask (more chart-body speckle leaks in);
-  // setting them low tightens it (hole interiors may be excluded if
-  // paper reads differently through them than in the border).
+  // where k is borderChannelToleranceMultiplier. Widening lets more
+  // chart-body speckle leak in; tightening may exclude paper regions
+  // that look slightly different through hole interiors.
   borderChannelToleranceMultiplier: number;
   borderMinChannelTolerance: number;
+  // Paper-relative chroma-spread gate. For each pixel compute
+  // (dr, dg, db) = (r-medR, g-medG, b-medB) — the OFFSET from paper's
+  // own chromaticity. Then require max(|dr-dg|, |dg-db|, |dr-db|) <
+  // this value. Rejects pixels whose color has shifted in a
+  // DIFFERENT direction from paper (warm chart body, near-white
+  // chips) while still accepting shadowed paper (equal darkening
+  // across channels → all three deltas move together → spread ≈ 0).
+  borderChromaSpreadTolerance: number;
 };
 
 export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
@@ -117,11 +130,14 @@ export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
   borderInnerBufferFrac: 0.08,
   borderOuterMarginFrac: 0.05,
   borderMinSamples: 2000,
-  borderChannelToleranceMultiplier: 4,
-  // 15 grey levels — comfortably covers per-channel paper variation
-  // from mild shading + JPEG/demosaic noise, but tight enough to
-  // reject chart body (typically 20-40 grey levels off paper).
-  borderMinChannelTolerance: 15,
+  borderLumaKeepFrac: 0.6,
+  borderChannelToleranceMultiplier: 3,
+  // 12 grey levels — covers mild per-channel paper variation without
+  // opening the gate wide enough to admit chart body (typically 20-40
+  // grey levels off paper). Was 15 pre chroma-spread gate; tightened
+  // once the chroma gate started catching warm-shifted pixels too.
+  borderMinChannelTolerance: 12,
+  borderChromaSpreadTolerance: 6,
 };
 
 export type WhiteMaskResult = {
@@ -215,92 +231,141 @@ export const whiteMask = (
       maxY: Math.min(height, Math.ceil(height - outerMargin)),
     };
 
-    // Pass 1 (ring sample) — per-channel value histograms across
-    // pixels in `outer` but NOT in `dead`.
-    const rHist = new Uint32Array(256);
-    const gHist = new Uint32Array(256);
-    const bHist = new Uint32Array(256);
-    let sampleCount = 0;
+    // Pass 1 (ring luma) — build a luma histogram of ring pixels so
+    // we can trim away the bottom (borderLumaKeepFrac) fraction before
+    // computing calibration stats. Kills shadow contamination.
+    const ringLumaHist = new Uint32Array(256);
+    let ringSampleCount = 0;
     for (let y = outer.minY; y < outer.maxY; y++) {
       const insideDeadY = y >= dead.minY && y < dead.maxY;
       for (let x = outer.minX; x < outer.maxX; x++) {
         if (insideDeadY && x >= dead.minX && x < dead.maxX) continue;
-        const i = y * width + x;
-        rHist[pixels[i * 3]]++;
-        gHist[pixels[i * 3 + 1]]++;
-        bHist[pixels[i * 3 + 2]]++;
-        sampleCount++;
+        ringLumaHist[luma[y * width + x]]++;
+        ringSampleCount++;
       }
     }
 
-    if (sampleCount >= params.borderMinSamples) {
-      const medR = medianFromHist(rHist, sampleCount);
-      const medG = medianFromHist(gHist, sampleCount);
-      const medB = medianFromHist(bHist, sampleCount);
+    if (ringSampleCount >= params.borderMinSamples) {
+      // Luma cutoff at the (1 - keepFrac) percentile from the BOTTOM,
+      // i.e. keep the top `keepFrac` brightest pixels. Walk the hist
+      // from 255 down accumulating counts until we cover keepFrac.
+      const keepTarget = Math.max(
+        1,
+        Math.floor(ringSampleCount * params.borderLumaKeepFrac),
+      );
+      let accHigh = 0;
+      let lumaKeepCutoff = 0;
+      for (let v = 255; v >= 0; v--) {
+        accHigh += ringLumaHist[v];
+        if (accHigh >= keepTarget) {
+          lumaKeepCutoff = v;
+          break;
+        }
+      }
 
-      // Pass 2 (ring re-scan) — per-channel |value - median| histograms
-      // → MAD as the median of those. Same ring, same skip logic.
-      const rDevHist = new Uint32Array(256);
-      const gDevHist = new Uint32Array(256);
-      const bDevHist = new Uint32Array(256);
+      // Pass 2 (ring, luma-trimmed) — per-channel value histograms.
+      const rHist = new Uint32Array(256);
+      const gHist = new Uint32Array(256);
+      const bHist = new Uint32Array(256);
+      let keptCount = 0;
       for (let y = outer.minY; y < outer.maxY; y++) {
         const insideDeadY = y >= dead.minY && y < dead.maxY;
         for (let x = outer.minX; x < outer.maxX; x++) {
           if (insideDeadY && x >= dead.minX && x < dead.maxX) continue;
           const i = y * width + x;
-          rDevHist[Math.abs(pixels[i * 3] - medR)]++;
-          gDevHist[Math.abs(pixels[i * 3 + 1] - medG)]++;
-          bDevHist[Math.abs(pixels[i * 3 + 2] - medB)]++;
+          if (luma[i] < lumaKeepCutoff) continue;
+          rHist[pixels[i * 3]]++;
+          gHist[pixels[i * 3 + 1]]++;
+          bHist[pixels[i * 3 + 2]]++;
+          keptCount++;
         }
       }
-      const madR = medianFromHist(rDevHist, sampleCount);
-      const madG = medianFromHist(gDevHist, sampleCount);
-      const madB = medianFromHist(bDevHist, sampleCount);
 
-      const tolR = Math.max(
-        params.borderMinChannelTolerance,
-        params.borderChannelToleranceMultiplier * madR,
-      );
-      const tolG = Math.max(
-        params.borderMinChannelTolerance,
-        params.borderChannelToleranceMultiplier * madG,
-      );
-      const tolB = Math.max(
-        params.borderMinChannelTolerance,
-        params.borderChannelToleranceMultiplier * madB,
-      );
+      if (keptCount >= params.borderMinSamples) {
+        const medR = medianFromHist(rHist, keptCount);
+        const medG = medianFromHist(gHist, keptCount);
+        const medB = medianFromHist(bHist, keptCount);
 
-      // Pass 3 (whole image) — apply the per-channel bounds.
-      const out = new Uint8Array(n);
-      for (let i = 0; i < n; i++) {
-        const r = pixels[i * 3];
-        const g = pixels[i * 3 + 1];
-        const b = pixels[i * 3 + 2];
-        if (
-          Math.abs(r - medR) < tolR &&
-          Math.abs(g - medG) < tolG &&
-          Math.abs(b - medB) < tolB
-        ) {
+        // Pass 3 (ring, luma-trimmed) — per-channel |value - median|
+        // histograms → MAD as the median of those.
+        const rDevHist = new Uint32Array(256);
+        const gDevHist = new Uint32Array(256);
+        const bDevHist = new Uint32Array(256);
+        for (let y = outer.minY; y < outer.maxY; y++) {
+          const insideDeadY = y >= dead.minY && y < dead.maxY;
+          for (let x = outer.minX; x < outer.maxX; x++) {
+            if (insideDeadY && x >= dead.minX && x < dead.maxX) continue;
+            const i = y * width + x;
+            if (luma[i] < lumaKeepCutoff) continue;
+            rDevHist[Math.abs(pixels[i * 3] - medR)]++;
+            gDevHist[Math.abs(pixels[i * 3 + 1] - medG)]++;
+            bDevHist[Math.abs(pixels[i * 3 + 2] - medB)]++;
+          }
+        }
+        const madR = medianFromHist(rDevHist, keptCount);
+        const madG = medianFromHist(gDevHist, keptCount);
+        const madB = medianFromHist(bDevHist, keptCount);
+
+        const tolR = Math.max(
+          params.borderMinChannelTolerance,
+          params.borderChannelToleranceMultiplier * madR,
+        );
+        const tolG = Math.max(
+          params.borderMinChannelTolerance,
+          params.borderChannelToleranceMultiplier * madG,
+        );
+        const tolB = Math.max(
+          params.borderMinChannelTolerance,
+          params.borderChannelToleranceMultiplier * madB,
+        );
+        const chromaSpreadTol = params.borderChromaSpreadTolerance;
+
+        // Pass 4 (whole image) — dual gate:
+        //   (a) per-channel |value - median| < tolerance (luma proximity to paper)
+        //   (b) paper-relative chroma-spread < tolerance (same chromaticity direction)
+        // (a) alone lets warm-shifted pixels (chart body, near-white
+        // value-8 chips) slip through when their per-channel deltas
+        // all fit in tolR/tolG/tolB. (b) rejects those: it says the
+        // pixel is only "paper" if its deviation from the paper
+        // median is roughly UNIFORM across R/G/B — i.e. just brighter
+        // or darker paper, not a chromatic shift. Shadowed paper
+        // still passes because darkening lands equally on all channels.
+        const out = new Uint8Array(n);
+        for (let i = 0; i < n; i++) {
+          const r = pixels[i * 3];
+          const g = pixels[i * 3 + 1];
+          const b = pixels[i * 3 + 2];
+          const dr = r - medR;
+          const dg = g - medG;
+          const db = b - medB;
+          if (Math.abs(dr) >= tolR) continue;
+          if (Math.abs(dg) >= tolG) continue;
+          if (Math.abs(db) >= tolB) continue;
+          const drg = Math.abs(dr - dg);
+          const dgb = Math.abs(dg - db);
+          const drb = Math.abs(dr - db);
+          if (drg >= chromaSpreadTol) continue;
+          if (dgb >= chromaSpreadTol) continue;
+          if (drb >= chromaSpreadTol) continue;
           out[i] = 1;
         }
+        return {
+          mask: {width, height, pixels: out},
+          lumaAnchor: anchor,
+          lumaCutoff: cutoff,
+          borderMedianR: medR,
+          borderMedianG: medG,
+          borderMedianB: medB,
+          borderMadR: madR,
+          borderMadG: madG,
+          borderMadB: madB,
+          borderSampleCount: keptCount,
+          usedBorderCalibration: true,
+        };
       }
-      return {
-        mask: {width, height, pixels: out},
-        lumaAnchor: anchor,
-        lumaCutoff: cutoff,
-        borderMedianR: medR,
-        borderMedianG: medG,
-        borderMedianB: medB,
-        borderMadR: madR,
-        borderMadG: madG,
-        borderMadB: madB,
-        borderSampleCount: sampleCount,
-        usedBorderCalibration: true,
-      };
     }
-    // Fall through to percentile path with `sampleCount` captured for
-    // the log. Border ring was too small (extreme framing / loaded
-    // photo of unusual aspect).
+    // Fall through to percentile path with the ring counts captured
+    // for the log. Border ring or trimmed subset was too small.
     const out = applyPercentileMask(pixels, luma, n, cutoff, params);
     return {
       mask: {width, height, pixels: out},
@@ -312,7 +377,7 @@ export const whiteMask = (
       borderMadR: null,
       borderMadG: null,
       borderMadB: null,
-      borderSampleCount: sampleCount,
+      borderSampleCount: ringSampleCount,
       usedBorderCalibration: false,
     };
   }
