@@ -35,6 +35,8 @@ import {
   applyAffine,
   composeAffineFilters,
   createRandomTripletIterator,
+  DEFAULT_REGISTRATION_ALGORITHM,
+  findBestTransformDirectedQuadrant,
   findBestTransformViaPairs,
   notTooSkewed,
   REFERENCE_GRID,
@@ -43,6 +45,7 @@ import {
   similarScales,
   type PairsProfile,
   type Point,
+  type RegistrationAlgorithm,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {
   CHART_CHROMAS,
@@ -639,6 +642,12 @@ export const detectChartByRegions = (
   // of — RANSAC then can't "win" by matching a fit that lines up with
   // ref points where THIS page has no chip.
   refGrid: readonly Point[] = REFERENCE_GRID,
+  // Which registration algorithm to run against the detected circles.
+  // Hole-detection (findFlatCircles + classifyRegion) is shared; only
+  // the ref-to-detected matching step branches on this. See
+  // RegistrationAlgorithm for the current set and matchAlgorithm.ts
+  // for the runners.
+  algorithm: RegistrationAlgorithm = DEFAULT_REGISTRATION_ALGORITHM,
 ): GridDetection | null => {
   const tStartAll = Date.now();
   // 1. Find inscribed circles in the mask. Distance transform gives,
@@ -932,6 +941,21 @@ export const detectChartByRegions = (
     // enumeration into O(N²) + O(N) nearest-lookup per predicted
     // third — same final fit quality (full 3-point affine + LSQ
     // refinement over inliers), ~25× faster in practice.
+    // Common affine gate for both algorithms — kills degenerate
+    // transforms early (see comments on notTooSkewed / similarScales /
+    // scaleInRange for what each one catches).
+    const affineFilter = composeAffineFilters(
+      notTooSkewed(15),
+      similarScales(1.6),
+      scaleInRange(minPxPerUnit, maxPxPerUnit),
+    );
+    // Algorithm dispatch. Both branches consume the SAME detectedPoints
+    // and return the SAME {transform, score, refTriplet, detectedTriplet}
+    // shape, so downstream sample-rect / inlier / debug rendering is
+    // agnostic. Adding a new algorithm = add an id to
+    // REGISTRATION_ALGORITHMS + a runner in matchAlgorithm.ts + a case
+    // below.
+    let match: ReturnType<typeof findBestTransformViaPairs> = null;
     const profile: PairsProfile = {
       refTripletsTried: 0,
       pairsTried: 0,
@@ -944,20 +968,28 @@ export const detectChartByRegions = (
       scoreFitMs: 0,
       bestScoreUpdates: 0,
     };
-    const match = findBestTransformViaPairs(
-      refGrid,
-      detectedPoints,
-      matchThreshold,
-      undefined,
-      refIterator,
-      composeAffineFilters(
-        notTooSkewed(15),
-        similarScales(1.6),
-        scaleInRange(minPxPerUnit, maxPxPerUnit),
-      ),
-      undefined,
-      profile,
-    );
+    switch (algorithm) {
+      case 'constrained-random':
+        match = findBestTransformViaPairs(
+          refGrid,
+          detectedPoints,
+          matchThreshold,
+          undefined,
+          refIterator,
+          affineFilter,
+          undefined,
+          profile,
+        );
+        break;
+      case 'directed-quadrant':
+        match = findBestTransformDirectedQuadrant(
+          refGrid,
+          detectedPoints,
+          matchThreshold,
+          affineFilter,
+        );
+        break;
+    }
     const tEndAll = Date.now();
     const circlesMs = tAfterCircles - tStartAll;
     const ransacMs = tEndAll - tStart;
@@ -965,33 +997,31 @@ export const detectChartByRegions = (
     // Score max = refGrid.length * (1 + TIGHTNESS_BONUS) = refGrid.length * 1.1.
     // Keep both scoreMax AND refGrid.length in the log so it's obvious
     // when a per-page grid is smaller than the universal MAX (e.g. 30
-    // for 10YR vs 35 universal). Ref-block after RANSAC line lists
-    // per-stage counters so we can see where the time went — most of
-    // it should be in nearest-scan (pairs that survived sameOrder2 but
-    // didn't find a near-prediction) with a small tail in score/fit.
+    // for 10YR vs 35 universal).
     const scoreMax = refGrid.length * 1.1;
     console.log(
-      `[chart-match] ${detectedPoints.length} detected × ${OUTER_TRIPLET_COUNT} ref triplets; ` +
+      `[chart-match:${algorithm}] ${detectedPoints.length} detected; ` +
         `circles ${circlesMs}ms, RANSAC ${ransacMs}ms, total ${totalMs}ms; ` +
         `score=${match?.score?.toFixed(2) ?? 'null'} / ${scoreMax.toFixed(1)} ` +
         `(${refGrid.length} ref pts)`,
     );
-    // Per-stage counters. "otherMs" is everything not accounted for by
-    // the cheap-score / full-score timers — mostly the nearest-scan on
-    // the predicted third + similarity + affine solve + affine filter.
-    const otherMs = ransacMs - profile.cheapScoreMs - profile.scoreFitMs;
-    console.log(
-      `[chart-match:profile] refTri=${profile.refTripletsTried} ` +
-        `pairs=${profile.pairsTried} ` +
-        `→sameOrder2=${profile.pairsPassedSameOrder2} ` +
-        `→predHit=${profile.fitsAttempted} ` +
-        `→fitOk=${profile.fitsOk} ` +
-        `→postAffFilt=${profile.fitsPassedAffineFilter} ` +
-        `→cheapPass=${profile.cheapScorePassed} ` +
-        `bestUpdates=${profile.bestScoreUpdates}; ` +
-        `time: other≈${otherMs}ms, cheapScore=${profile.cheapScoreMs}ms, ` +
-        `scoreFit=${profile.scoreFitMs}ms`,
-    );
+    // Per-stage counters (constrained-random only — directed-quadrant
+    // has its own instrumentation once implemented).
+    if (algorithm === 'constrained-random') {
+      const otherMs = ransacMs - profile.cheapScoreMs - profile.scoreFitMs;
+      console.log(
+        `[chart-match:profile] refTri=${profile.refTripletsTried} ` +
+          `pairs=${profile.pairsTried} ` +
+          `→sameOrder2=${profile.pairsPassedSameOrder2} ` +
+          `→predHit=${profile.fitsAttempted} ` +
+          `→fitOk=${profile.fitsOk} ` +
+          `→postAffFilt=${profile.fitsPassedAffineFilter} ` +
+          `→cheapPass=${profile.cheapScorePassed} ` +
+          `bestUpdates=${profile.bestScoreUpdates}; ` +
+          `time: other≈${otherMs}ms, cheapScore=${profile.cheapScoreMs}ms, ` +
+          `scoreFit=${profile.scoreFitMs}ms`,
+      );
+    }
     if (match) {
       matchedScore = match.score;
       matchedRefCount = refGrid.length;

@@ -882,3 +882,71 @@ export const refineAffineWithInliers = (
   if (!xC || !yC) return null;
   return {a: xC[0], b: xC[1], c: xC[2], d: yC[0], e: yC[1], f: yC[2]};
 };
+
+// ---------------------------------------------------------------------------
+// Registration-algorithm registry. Pluggable so the RawColorTools screen
+// can offer a dropdown of registration strategies to A/B against each
+// other on the same set of detected holes. Every algorithm consumes the
+// SAME hole-detection output (mask → inscribed circles) and returns the
+// SAME shape — a best-fit affine + score + which ref/detected triplet
+// won — so downstream sampling and debug rendering are unchanged.
+
+export type RegistrationAlgorithm = 'constrained-random' | 'directed-quadrant';
+
+// Entry for the RawColorTools dropdown. `id` is what gets persisted to
+// kvStorage + threaded through the nav params + resolved to a runner
+// inside gridRegistration. `label` is what the user sees.
+export const REGISTRATION_ALGORITHMS: readonly {
+  id: RegistrationAlgorithm;
+  label: string;
+}[] = [
+  {id: 'constrained-random', label: 'Constrained random'},
+  {id: 'directed-quadrant', label: 'Directed quadrant'},
+];
+
+export const DEFAULT_REGISTRATION_ALGORITHM: RegistrationAlgorithm =
+  'constrained-random';
+
+// Look up a persisted string against the known algorithm ids; fall back
+// to the default if unrecognised (protects against renamed / removed
+// ids leaving stale kvStorage entries in a bad state).
+export const resolveRegistrationAlgorithm = (
+  value: string | undefined | null,
+): RegistrationAlgorithm => {
+  if (value && REGISTRATION_ALGORITHMS.some(a => a.id === value)) {
+    return value as RegistrationAlgorithm;
+  }
+  return DEFAULT_REGISTRATION_ALGORITHM;
+};
+
+// Directed-quadrant algorithm — stub. Idea: pick ref triplets from
+// three well-separated corners of the ref grid (e.g. top-left,
+// top-right, bottom-left; 9 candidates per corner → 9^3 = 729 outer
+// iterations). For each outer triplet, use the chart-guide rectangle
+// to compute each ref point's EXPECTED image position + a tolerance
+// radius, gather only detected holes inside that radius, enumerate
+// small combinations, fit + score. Should be ~10-100× faster than
+// findBestTransformViaPairs and more robust when the user framed the
+// chart inside the guide. Falls back to constrained-random when the
+// best directed score is below some floor (framing was poor / chart
+// was rotated inside the guide).
+//
+// Signature matches findBestTransformViaPairs's — same inputs, same
+// return shape — so the caller can swap them behind the registration-
+// algorithm dispatch without any downstream changes.
+export const findBestTransformDirectedQuadrant = (
+  _refPoints: readonly Point[],
+  _detectedPoints: readonly Point[],
+  _pixelThreshold: number,
+  _affineFilter: AffineFilter | null = null,
+): {
+  transform: Affine;
+  score: number;
+  refTriplet: readonly Point[];
+  detectedTriplet: readonly Point[];
+} | null => {
+  throw new Error(
+    'findBestTransformDirectedQuadrant: not yet implemented — pick ' +
+      '"Constrained random" in the RAW & color tools screen for now.',
+  );
+};

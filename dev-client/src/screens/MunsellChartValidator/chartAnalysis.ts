@@ -33,6 +33,10 @@ import {
   whiteMask,
   type RgbImage,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
+import {
+  DEFAULT_REGISTRATION_ALGORITHM,
+  type RegistrationAlgorithm,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {CHART_HUE} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
 import {
   MUNSELL_PAGES,
@@ -152,6 +156,7 @@ export const analyzeMunsellChart = async (
   imagePath: string,
   page: MunsellPage = MUNSELL_PAGES[0],
   format: ChartFormat = 'raw',
+  algorithm: RegistrationAlgorithm = DEFAULT_REGISTRATION_ALGORITHM,
 ): Promise<MunsellChartOutcome> => {
   const cells = pageCells(page);
   // 1. RGB render for the CV. We need chromaticity (not just luma) to
@@ -187,7 +192,7 @@ export const analyzeMunsellChart = async (
   // wrong fit could score more than the correct one by lining up
   // paper false-positives with ref points where this page has no chip).
   const pageRefGrid = pageReferenceGridPoints(page);
-  const grid = detectChartByRegions(grayImage, mask, pageRefGrid);
+  const grid = detectChartByRegions(grayImage, mask, pageRefGrid, algorithm);
   if (!grid) {
     // For failure debug — RAW gets the CIRAWFilter-rendered preview
     // PNG; PHOTO reuses the source file directly (it's already a

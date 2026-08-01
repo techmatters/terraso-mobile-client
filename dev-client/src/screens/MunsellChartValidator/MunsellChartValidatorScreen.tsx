@@ -70,7 +70,11 @@ import {
   type MunsellChartResult,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/chartAnalysis';
 import {computeChartGuideRect} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
-import {TEST_SWATCH_INDEX} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
+import {
+  DEFAULT_REGISTRATION_ALGORITHM,
+  TEST_SWATCH_INDEX,
+  type RegistrationAlgorithm,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {
   CHART_CHROMAS,
   CHART_VALUES,
@@ -104,6 +108,10 @@ export type MunsellChartValidatorProps = {
   // 'photo' → CIImage (JPEG / HEIC / etc.). Downstream analysis is
   // identical for both.
   format: 'raw' | 'photo';
+  // Which registration algorithm to run against the detected holes.
+  // Picked on the RAW_COLOR_TOOLS screen before capture; defaults to
+  // the constrained-random pair-similarity implementation if not set.
+  algorithm?: RegistrationAlgorithm;
 };
 
 // SVG layout (fixed-pixel viewBox — easier to reason about text sizing
@@ -173,6 +181,7 @@ export const MunsellChartValidatorScreen = ({
   dngPath,
   pageHue,
   format,
+  algorithm = DEFAULT_REGISTRATION_ALGORITHM,
 }: MunsellChartValidatorProps) => {
   const navigation = useNavigation();
   const [state, setState] = useState<
@@ -294,7 +303,12 @@ export const MunsellChartValidatorScreen = ({
     setState({kind: 'analyzing'});
     (async () => {
       try {
-        const outcome = await analyzeMunsellChart(dngPath, page, format);
+        const outcome = await analyzeMunsellChart(
+          dngPath,
+          page,
+          format,
+          algorithm,
+        );
         if (outcome.kind === 'success') {
           setState({kind: 'ready', result: outcome.result});
         } else {
@@ -305,7 +319,7 @@ export const MunsellChartValidatorScreen = ({
         setState({kind: 'error', message: String(err)});
       }
     })();
-  }, [dngPath, page, format]);
+  }, [dngPath, page, format, algorithm]);
 
   const shareAsImage = useCallback(() => {
     const svg = exportSvgRef.current;

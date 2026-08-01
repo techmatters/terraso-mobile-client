@@ -37,6 +37,11 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {CHART_GUIDE} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
+import {
+  REGISTRATION_ALGORITHMS,
+  resolveRegistrationAlgorithm,
+  type RegistrationAlgorithm,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {MUNSELL_PAGES} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
@@ -51,6 +56,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 //     later without touching UserSettingsScreen again.
 
 const CHART_PAGE_HUE_KEY = 'munsellChartValidator.selectedPageHue';
+const CHART_ALGORITHM_KEY = 'munsellChartValidator.registrationAlgorithm';
 
 // Pick 'raw' for .dng and 'photo' for common photo formats; null for
 // anything else (we bail on unsupported extensions). Case-insensitive.
@@ -76,7 +82,12 @@ const detectFormatFromName = (name: string): 'raw' | 'photo' | null => {
 type CaptureFlow =
   | {kind: 'fixture'} // dev: log to Metro + share sheet
   | {kind: 'calibrate'}
-  | {kind: 'chart'; pageHue: string; format: 'raw' | 'photo'};
+  | {
+      kind: 'chart';
+      pageHue: string;
+      format: 'raw' | 'photo';
+      algorithm: RegistrationAlgorithm;
+    };
 
 export const RawColorToolsScreen = () => {
   const navigation = useNavigation();
@@ -90,6 +101,13 @@ export const RawColorToolsScreen = () => {
   const setPageHue = useCallback((hue: string) => {
     kvStorage.setString(CHART_PAGE_HUE_KEY, hue);
     setPageHueState(hue);
+  }, []);
+  const [algorithm, setAlgorithmState] = useState<RegistrationAlgorithm>(() =>
+    resolveRegistrationAlgorithm(kvStorage.getString(CHART_ALGORITHM_KEY)),
+  );
+  const setAlgorithm = useCallback((a: RegistrationAlgorithm) => {
+    kvStorage.setString(CHART_ALGORITHM_KEY, a);
+    setAlgorithmState(a);
   }, []);
   const [captureFlow, setCaptureFlow] = useState<CaptureFlow | null>(null);
   const cancelCapture = useCallback(() => setCaptureFlow(null), []);
@@ -153,6 +171,7 @@ export const RawColorToolsScreen = () => {
           dngPath: path,
           pageHue: flow.pageHue,
           format: flow.format,
+          algorithm: flow.algorithm,
         });
       }
     },
@@ -219,16 +238,36 @@ export const RawColorToolsScreen = () => {
             renderValue={hue => `Munsell ${hue} page`}
             label="Chart page"
           />
+          <Select<RegistrationAlgorithm, false>
+            nullable={false}
+            options={REGISTRATION_ALGORITHMS.map(a => a.id)}
+            value={algorithm}
+            onValueChange={setAlgorithm}
+            renderValue={id =>
+              REGISTRATION_ALGORITHMS.find(a => a.id === id)?.label ?? id
+            }
+            label="Registration algorithm"
+          />
           <ContainedButton
             label="Capture raw (DNG)"
             onPress={() =>
-              setCaptureFlow({kind: 'chart', pageHue, format: 'raw'})
+              setCaptureFlow({
+                kind: 'chart',
+                pageHue,
+                format: 'raw',
+                algorithm,
+              })
             }
           />
           <ContainedButton
             label="Capture photo (JPEG)"
             onPress={() =>
-              setCaptureFlow({kind: 'chart', pageHue, format: 'photo'})
+              setCaptureFlow({
+                kind: 'chart',
+                pageHue,
+                format: 'photo',
+                algorithm,
+              })
             }
           />
           <ContainedButton
@@ -262,6 +301,7 @@ export const RawColorToolsScreen = () => {
                 dngPath: path,
                 pageHue,
                 format,
+                algorithm,
               });
             }}
           />
@@ -295,6 +335,7 @@ export const RawColorToolsScreen = () => {
                 dngPath: path,
                 pageHue,
                 format: 'photo',
+                algorithm,
               });
             }}
           />
