@@ -23,6 +23,7 @@ import {labToMunsell, munsellToLab} from 'munsell';
 // rather than re-implement them here.
 import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
 
+import {computeChartGuideRect} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
 import {
   detectChartByRegions,
   type GridDetection,
@@ -176,10 +177,27 @@ export const analyzeMunsellChart = async (
     pixels: new Uint8Array(rgbPreview.pixels),
   };
   const grayImage = rgbToGray(rgbImage);
-  const {mask, lumaAnchor, lumaCutoff} = whiteMask(rgbImage);
-  console.log(
-    `[chartAnalysis] whiteMask: anchor=${lumaAnchor} cutoff=${lumaCutoff}`,
-  );
+  // Border-calibrated whiteMask when a guide is available (always, for
+  // now — computeChartGuideRect works on any image dims). Falls back
+  // internally to the old percentile-anchor path if the border ring
+  // has too few samples.
+  const guideRect = computeChartGuideRect(rgbImage.width, rgbImage.height);
+  const maskResult = whiteMask(rgbImage, undefined, guideRect);
+  const {mask, lumaAnchor, lumaCutoff} = maskResult;
+  if (maskResult.usedBorderCalibration) {
+    console.log(
+      `[chartAnalysis] whiteMask: border-calibrated ` +
+        `medRGB=(${maskResult.borderMedianR},${maskResult.borderMedianG},${maskResult.borderMedianB}) ` +
+        `MAD=(${maskResult.borderMadR},${maskResult.borderMadG},${maskResult.borderMadB}) ` +
+        `samples=${maskResult.borderSampleCount}`,
+    );
+  } else {
+    console.log(
+      `[chartAnalysis] whiteMask: fallback percentile ` +
+        `anchor=${lumaAnchor} cutoff=${lumaCutoff} ` +
+        `(border samples=${maskResult.borderSampleCount})`,
+    );
+  }
 
   // 2. Chart registration. Uses the white mask to find hole-shaped
   //    inscribed circles (each hole shows white paper through it, and

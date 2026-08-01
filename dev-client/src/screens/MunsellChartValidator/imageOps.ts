@@ -56,62 +56,122 @@ export const rgbToGray = (rgb: RgbImage): GrayImage => {
   return {width, height, pixels: out};
 };
 
-// Build a binary mask marking pixels that look like "paper white":
-// bright enough AND near-neutral in chromaticity. Purpose is to give
-// the chart-registration pipeline a mask where every swatch hole
-// (which shows white paper through it) forms its own isolated 1-region
-// enclosed by the chart body's off-white 0-region — so downstream
-// distanceTransform + findFlatCircles finds one circle per hole
-// without paper margins bleeding in through partial shadow-ring gaps.
+// Build a binary mask marking pixels that look like "paper white".
 //
-// Two gates:
+// PREFERRED path (when `guideRect` is provided and the border ring
+// has enough samples): calibrate from a ring of pixels OUTSIDE the
+// capture-time chart guide but INSIDE a small outer margin — the ring
+// is very likely to be pure paper background, so its per-channel
+// medians tell us exactly what "paper" looks like in this specific
+// capture (warm tint, cool tint, dim, bright — whatever). Median +
+// MAD (median-absolute-deviation) is robust to a Post-It or hand
+// that lands partially in the ring: it takes >50% contamination to
+// shift the estimator.
+//
+// A pixel is "paper" if its per-channel value is within
+// max(MIN_CHANNEL_TOL, k × MAD) of the ring's per-channel median.
+// Uses per-channel bounds (not a chromaticity spread gate) because
+// the ring tells us the paper's actual R, G, B — no need to assume
+// neutrality.
+//
+// FALLBACK path (guide rect not supplied, or border has <
+// borderMinSamples pixels): a percentile-based luma anchor + fixed
+// chroma spread gate. Same behaviour as the original whiteMask.
 //   1. Luminance ≥ (anchor - lumaTolerance) where anchor = the
-//      lumaAnchorPercentile of the image's per-pixel luma. Anchor
-//      makes the threshold auto-adjust to the capture's white level
-//      instead of a fixed 255-based cutoff that fails when the whole
-//      capture is dim.
+//      lumaAnchorPercentile of the image's per-pixel luma.
 //   2. Chromaticity (max channel spread |R-G|, |G-B|, |R-B|) ≤
-//      chromaTolerance. Excludes off-white chart body (warm tint, R>G>B)
-//      and colored chips even when their luma also passes the first gate.
-//
-// The percentile-based anchor is a single global number. Non-uniform
-// lighting (half the paper in shadow) is handled by picking a
-// permissive lumaTolerance rather than by adaptive local windowing —
-// works well enough at the target framings. Add local adaptation if
-// this proves brittle.
+//      chromaTolerance.
+// The fallback works for near-neutral paper under near-neutral light
+// but silently fails under warm/cool ambient — this is exactly the
+// case the border calibration is here to fix.
 export type WhiteMaskParams = {
+  // Fallback (percentile) path.
   lumaAnchorPercentile: number;
   lumaTolerance: number;
   chromaTolerance: number;
+  // Border-calibration path.
+  // Sample ring geometry, both expressed as fractions of the SHORTER
+  // image dimension so behaviour is aspect-invariant.
+  borderInnerBufferFrac: number; // 0.08 = start ring 8% OUTSIDE the guide
+  borderOuterMarginFrac: number; // 0.05 = end ring 5% inside the frame edge
+  // If the ring produces fewer than this many sample pixels, we fall
+  // back to the percentile path — happens on loaded photos with weird
+  // aspects or extreme framing that leaves no paper visible.
+  borderMinSamples: number;
+  // Per-channel tolerance = max(borderMinChannelTolerance, k × MAD)
+  // where k is borderChannelToleranceMultiplier. Setting k high or
+  // MAD floor high widens the mask (more chart-body speckle leaks in);
+  // setting them low tightens it (hole interiors may be excluded if
+  // paper reads differently through them than in the border).
+  borderChannelToleranceMultiplier: number;
+  borderMinChannelTolerance: number;
 };
 
 export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
+  // Fallback params — matched to the original whiteMask defaults so
+  // captures without a guide behave identically to before.
   lumaAnchorPercentile: 0.95,
   lumaTolerance: 60,
-  // 7 (was 12) so slightly-warm chart body fails the chroma gate.
-  // Chart body reads warmer than paper (R > G > B by ~10-15 grey
-  // levels); tighter gate rejects it while paper (near-neutral)
-  // and hole interiors (showing white paper through them) still
-  // pass. Prevents holes from merging into one wide 1-region via
-  // the chart-body gutters between chip columns.
   chromaTolerance: 7,
+  // Border-calibration params.
+  borderInnerBufferFrac: 0.08,
+  borderOuterMarginFrac: 0.05,
+  borderMinSamples: 2000,
+  borderChannelToleranceMultiplier: 4,
+  // 15 grey levels — comfortably covers per-channel paper variation
+  // from mild shading + JPEG/demosaic noise, but tight enough to
+  // reject chart body (typically 20-40 grey levels off paper).
+  borderMinChannelTolerance: 15,
 };
 
 export type WhiteMaskResult = {
   mask: GrayImage;
+  // Fallback-path outputs. Always populated on fallback; on border-
+  // calibration they're computed too so a dev can compare, but not
+  // used to build the mask.
   lumaAnchor: number;
   lumaCutoff: number;
+  // Border-calibration outputs. Non-null only when border calibration
+  // was actually used to build the mask (i.e. guideRect supplied AND
+  // borderSampleCount ≥ borderMinSamples). null on fallback.
+  borderMedianR: number | null;
+  borderMedianG: number | null;
+  borderMedianB: number | null;
+  borderMadR: number | null;
+  borderMadG: number | null;
+  borderMadB: number | null;
+  borderSampleCount: number;
+  usedBorderCalibration: boolean;
+};
+
+// Rectangle in pixel coords, half-open on the max side (max is one
+// past the last pixel — same convention as slicing).
+type Rect = {minX: number; minY: number; maxX: number; maxY: number};
+
+// Median of a 0-255 integer histogram (Uint32Array of length 256).
+const medianFromHist = (hist: Uint32Array, totalCount: number): number => {
+  const half = totalCount / 2;
+  let acc = 0;
+  for (let v = 0; v <= 255; v++) {
+    acc += hist[v];
+    if (acc >= half) return v;
+  }
+  return 255;
 };
 
 export const whiteMask = (
   rgb: RgbImage,
   params: WhiteMaskParams = DEFAULT_WHITE_MASK_PARAMS,
+  // If provided, tries the border-calibration path first. If the ring
+  // yields too few samples, silently falls back to the percentile path.
+  guideRect?: {x: number; y: number; w: number; h: number},
 ): WhiteMaskResult => {
   const {width, height, pixels} = rgb;
   const n = width * height;
 
-  // Pass 1 — luma histogram, then walk from the top down to find the
-  // luma value at lumaAnchorPercentile.
+  // ── Fallback-path prelude: compute the percentile-based luma anchor.
+  // Kept even on the border path so its values still show up in the
+  // returned struct for debug logging.
   const hist = new Uint32Array(256);
   const luma = new Uint8Array(n);
   for (let i = 0; i < n; i++) {
@@ -134,7 +194,156 @@ export const whiteMask = (
   }
   const cutoff = Math.max(0, anchor - params.lumaTolerance);
 
-  // Pass 2 — apply luma + chroma gates.
+  // ── Border-calibration path (when a guide is supplied).
+  if (guideRect) {
+    const shortDim = Math.min(width, height);
+    const innerBuf = shortDim * params.borderInnerBufferFrac;
+    const outerMargin = shortDim * params.borderOuterMarginFrac;
+    // Extended guide (dead zone in the middle) and inner-image bounds
+    // (outer sample cap). Clamped to image bounds so a mis-computed
+    // guide can't send us out of range.
+    const dead: Rect = {
+      minX: Math.max(0, Math.floor(guideRect.x - innerBuf)),
+      minY: Math.max(0, Math.floor(guideRect.y - innerBuf)),
+      maxX: Math.min(width, Math.ceil(guideRect.x + guideRect.w + innerBuf)),
+      maxY: Math.min(height, Math.ceil(guideRect.y + guideRect.h + innerBuf)),
+    };
+    const outer: Rect = {
+      minX: Math.max(0, Math.floor(outerMargin)),
+      minY: Math.max(0, Math.floor(outerMargin)),
+      maxX: Math.min(width, Math.ceil(width - outerMargin)),
+      maxY: Math.min(height, Math.ceil(height - outerMargin)),
+    };
+
+    // Pass 1 (ring sample) — per-channel value histograms across
+    // pixels in `outer` but NOT in `dead`.
+    const rHist = new Uint32Array(256);
+    const gHist = new Uint32Array(256);
+    const bHist = new Uint32Array(256);
+    let sampleCount = 0;
+    for (let y = outer.minY; y < outer.maxY; y++) {
+      const insideDeadY = y >= dead.minY && y < dead.maxY;
+      for (let x = outer.minX; x < outer.maxX; x++) {
+        if (insideDeadY && x >= dead.minX && x < dead.maxX) continue;
+        const i = y * width + x;
+        rHist[pixels[i * 3]]++;
+        gHist[pixels[i * 3 + 1]]++;
+        bHist[pixels[i * 3 + 2]]++;
+        sampleCount++;
+      }
+    }
+
+    if (sampleCount >= params.borderMinSamples) {
+      const medR = medianFromHist(rHist, sampleCount);
+      const medG = medianFromHist(gHist, sampleCount);
+      const medB = medianFromHist(bHist, sampleCount);
+
+      // Pass 2 (ring re-scan) — per-channel |value - median| histograms
+      // → MAD as the median of those. Same ring, same skip logic.
+      const rDevHist = new Uint32Array(256);
+      const gDevHist = new Uint32Array(256);
+      const bDevHist = new Uint32Array(256);
+      for (let y = outer.minY; y < outer.maxY; y++) {
+        const insideDeadY = y >= dead.minY && y < dead.maxY;
+        for (let x = outer.minX; x < outer.maxX; x++) {
+          if (insideDeadY && x >= dead.minX && x < dead.maxX) continue;
+          const i = y * width + x;
+          rDevHist[Math.abs(pixels[i * 3] - medR)]++;
+          gDevHist[Math.abs(pixels[i * 3 + 1] - medG)]++;
+          bDevHist[Math.abs(pixels[i * 3 + 2] - medB)]++;
+        }
+      }
+      const madR = medianFromHist(rDevHist, sampleCount);
+      const madG = medianFromHist(gDevHist, sampleCount);
+      const madB = medianFromHist(bDevHist, sampleCount);
+
+      const tolR = Math.max(
+        params.borderMinChannelTolerance,
+        params.borderChannelToleranceMultiplier * madR,
+      );
+      const tolG = Math.max(
+        params.borderMinChannelTolerance,
+        params.borderChannelToleranceMultiplier * madG,
+      );
+      const tolB = Math.max(
+        params.borderMinChannelTolerance,
+        params.borderChannelToleranceMultiplier * madB,
+      );
+
+      // Pass 3 (whole image) — apply the per-channel bounds.
+      const out = new Uint8Array(n);
+      for (let i = 0; i < n; i++) {
+        const r = pixels[i * 3];
+        const g = pixels[i * 3 + 1];
+        const b = pixels[i * 3 + 2];
+        if (
+          Math.abs(r - medR) < tolR &&
+          Math.abs(g - medG) < tolG &&
+          Math.abs(b - medB) < tolB
+        ) {
+          out[i] = 1;
+        }
+      }
+      return {
+        mask: {width, height, pixels: out},
+        lumaAnchor: anchor,
+        lumaCutoff: cutoff,
+        borderMedianR: medR,
+        borderMedianG: medG,
+        borderMedianB: medB,
+        borderMadR: madR,
+        borderMadG: madG,
+        borderMadB: madB,
+        borderSampleCount: sampleCount,
+        usedBorderCalibration: true,
+      };
+    }
+    // Fall through to percentile path with `sampleCount` captured for
+    // the log. Border ring was too small (extreme framing / loaded
+    // photo of unusual aspect).
+    const out = applyPercentileMask(pixels, luma, n, cutoff, params);
+    return {
+      mask: {width, height, pixels: out},
+      lumaAnchor: anchor,
+      lumaCutoff: cutoff,
+      borderMedianR: null,
+      borderMedianG: null,
+      borderMedianB: null,
+      borderMadR: null,
+      borderMadG: null,
+      borderMadB: null,
+      borderSampleCount: sampleCount,
+      usedBorderCalibration: false,
+    };
+  }
+
+  // No guide supplied — go straight to the percentile fallback.
+  const out = applyPercentileMask(pixels, luma, n, cutoff, params);
+  return {
+    mask: {width, height, pixels: out},
+    lumaAnchor: anchor,
+    lumaCutoff: cutoff,
+    borderMedianR: null,
+    borderMedianG: null,
+    borderMedianB: null,
+    borderMadR: null,
+    borderMadG: null,
+    borderMadB: null,
+    borderSampleCount: 0,
+    usedBorderCalibration: false,
+  };
+};
+
+// Original luma-anchor + chroma-spread gate. Extracted so both the
+// no-guide entry and the "guide supplied but too few border samples"
+// fallback can share the exact same behaviour.
+const applyPercentileMask = (
+  pixels: Uint8Array,
+  luma: Uint8Array,
+  n: number,
+  cutoff: number,
+  params: WhiteMaskParams,
+): Uint8Array => {
   const out = new Uint8Array(n);
   for (let i = 0; i < n; i++) {
     if (luma[i] < cutoff) continue;
@@ -148,11 +357,7 @@ export const whiteMask = (
     if (chroma > params.chromaTolerance) continue;
     out[i] = 1;
   }
-  return {
-    mask: {width, height, pixels: out},
-    lumaAnchor: anchor,
-    lumaCutoff: cutoff,
-  };
+  return out;
 };
 
 // Threshold every pixel. Default: 1 if pixel >= `threshold`, else 0.
