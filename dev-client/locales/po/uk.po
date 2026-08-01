@@ -14,7 +14,7 @@ msgstr "Ласкаво просимо до LandPKS Soil ID"
 #: 
 #, fuzzy
 msgid "welcome##next##title"
-msgstr "Що далі?"
+msgstr "Майбутні версії включатимуть:"
 
 #: 
 msgid "search##placeholder"
@@ -697,28 +697,29 @@ msgid "slope##shape##info##linear"
 msgstr "Лінійний"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "Ця версія включає:"
+msgstr "Нове в цьому випуску:"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Офлайн: увімкнено створення ділянок, редагування метаданих ділянок та нотаток"
+msgstr "Максимальну глибину ґрунту збільшено до 300 см"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Нова мова: суахілі"
+msgstr "Спрощено видалення облікового запису"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Покращені переклади для української, грузинської та іспанської мов"
+msgstr "Додано опцію «неафілійовані» до фільтра списку ділянок"
 
 #: 
 #, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "pH ґрунту"
+msgstr "Покращення модуля кольору ґрунту"
 
 #: 
 msgid "welcome##learn_more"
@@ -729,8 +730,9 @@ msgid "welcome##link_text"
 msgstr "LandPKS від Terraso"
 
 #: 
+#, fuzzy
 msgid "welcome##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "welcome##get_started"
@@ -868,8 +870,9 @@ msgid "site##soil_id##matches##error_generic_title"
 msgstr "Не вдалося завантажити карту ґрунтів"
 
 #: 
+#, fuzzy
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS не зміг отримати карту ґрунту для цього місця. Спробуйте перезапустити програму. Якщо проблема не зникне, спробуйте пізніше або надішліть запит на підтримку через веб-сайт landpks.terraso.org."
+msgstr "LandPKS не зміг отримати карту ґрунту для цього місця. Спробуйте перезапустити програму. Якщо проблема не зникне, спробуйте пізніше або надішліть запит на підтримку через веб-сайт landpotential.org."
 
 #: 
 msgid "site##soil_id##matches##no_map_data_title"
@@ -1386,8 +1389,9 @@ msgid "general##info##privacy_item4"
 msgstr "<bold>Налаштування конфіденційності проєкту визначає конфіденційність пов’язаних з ним ділянок.</bold> Ділянки, визначені як конфіденційні у проєкті, доступні для членів команди проєкту. Керівник проєкту може змінити налаштування конфіденційності будь-коли."
 
 #: 
+#, fuzzy
 msgid "general##info##data_portal_link_url"
-msgstr "https://landpks.terraso.org/portal"
+msgstr "https://landpotential.org/data-portal"
 
 #: 
 msgid "general##info##data_portal_link_text"
@@ -2262,12 +2266,14 @@ msgstr "<bold>Знайдіть більше інформації та посіб
 "<icon />"
 
 #: 
+#, fuzzy
 msgid "info##link_label"
-msgstr "landpks.terraso.org"
+msgstr "landpotential.org"
 
 #: 
+#, fuzzy
 msgid "info##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "projects##search##lastModAsc"
@@ -2400,8 +2406,9 @@ msgid "general##help##label"
 msgstr "Допомога та підтримка"
 
 #: 
+#, fuzzy
 msgid "general##help##url"
-msgstr "https://landpks.terraso.org/help/"
+msgstr "https://landpotential.org/help/"
 
 #: 
 msgid "general##tos##label"
@@ -2438,8 +2445,9 @@ msgid "errors##sync_conflict##body"
 msgstr "Цей проєкт змінився. Дізнайтеся більше та отримайте підтримку на вебсайті LandPKS."
 
 #: 
+#, fuzzy
 msgid "errors##sync_conflict##support_url"
-msgstr "https://landpks.terraso.org/help/synchronization-conflict/"
+msgstr "https://landpotential.org/help/synchronization-conflict/"
 
 #: 
 msgid "projects##offline_create"
@@ -2476,8 +2484,9 @@ msgstr "\n"
 "Зверніться до ґрунтового експерта, щоб отримати допомогу в інтерпретації спостережень та визначити відповідність ґрунту цієї ділянки. Ви можете дізнатися більше про прогнозні ґрунтові карти та відповідність ідентифікації Soil ID на вебсайті:"
 
 #: 
+#, fuzzy
 msgid "site##soil_id##matches##info##description##learn_more_url"
-msgstr "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+msgstr "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
 
 #: 
 msgid "site##soil_id##soil_info##description_title"
@@ -4647,8 +4656,9 @@ msgid "slope##info##data_region_text_global_or_unknown"
 msgstr "Характеристики схилів допомагають визначити можливості ерозії ґрунту, його здатність утримувати воду тощо."
 
 #: 
+#, fuzzy
 msgid "general##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
+msgstr "https://terraso.org/privacy-policy/"
 
 #: 
 msgid "general##privacy_policy_link_text"
@@ -4709,7 +4719,7 @@ msgstr "У вас є несинхронізовані зміни, які пот�
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "Більш детальне повідомлення про помилку для конфліктів синхронізації"
+msgstr "Виправлено помилку, через яку під час видалення ділянки коротко з'являлося попередження"
 
 #: 
 #, fuzzy
@@ -4951,17 +4961,17 @@ msgstr "Виникла проблема з визначенням кольору
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_5"
-msgstr "Покращений досвід пошуку координат на карті"
+msgstr "Оновлено функціональність текстових полів"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_6"
-msgstr "Виправлено проблему, через яку користувачі, які виходили з системи та входили з іншим обліковим записом, тимчасово бачили дані першого облікового запису"
+msgstr "Додано атрибуцію Mapbox"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_7"
-msgstr "Виправлено помилку, через яку модуль кольору аварійно завершував роботу з переекспонованими фотографіями"
+msgstr "Оновлено посилання на новий вебсайт LandPKS"
 
 #: 
 #, fuzzy
@@ -5002,4 +5012,14 @@ msgstr "Обліковий запис видалено"
 #, fuzzy
 msgid "account_deleted##body"
 msgstr "Обліковий запис, пов'язаний із {{email}}, було видалено. Якщо це сталося помилково, зверніться до нашої служби підтримки."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_8"
+msgstr "Покращення алгоритму Soil ID"
+
+#: 
+#, fuzzy
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} створено видаленим користувачем"
 

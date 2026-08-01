@@ -751,6 +751,7 @@ msgid "site##elevation_unknown"
 msgstr "haijulikani"
 
 #: 
+#, fuzzy
 msgid "site##create##name_label"
 msgstr "Jina la Eneo"
 
@@ -759,6 +760,7 @@ msgid "site##create##location_label"
 msgstr "Mahali pa Eneo"
 
 #: 
+#, fuzzy
 msgid "site##create##location_accuracy"
 msgstr "Usahihi wa GPS: {{accuracyM}} m"
 
@@ -1063,10 +1065,12 @@ msgid "projects##role_filter_label"
 msgstr "Chuja miradi kwa majukumu"
 
 #: 
+#, fuzzy
 msgid "projects##create##name_label"
 msgstr "Jina la Mradi"
 
 #: 
+#, fuzzy
 msgid "projects##create##description_label"
 msgstr "Maelezo ya Mradi"
 
@@ -1199,8 +1203,9 @@ msgid "projects##add_user##user_in_project"
 msgstr "Tayari ni mwanachama wa timu"
 
 #: 
+#, fuzzy
 msgid "projects##add_user##invalid_email"
-msgstr "Weka anwani sahihi ya barua pepe"
+msgstr "Anwani sahihi ya barua pepe inahitajika"
 
 #: 
 msgid "projects##manage_member##title"
@@ -1261,10 +1266,6 @@ msgstr "Jina la mradi lazima liwe na angalau herufi {{min}}"
 #: 
 msgid "projects##form##name_max_length_error"
 msgstr "Jina la mradi lazima liwe na herufi zisizozidi {{max}}"
-
-#: 
-msgid "projects##form##description_min_length_error"
-msgstr "Maelezo ya mradi lazima yawe angalau herufi {{min}}"
 
 #: 
 msgid "projects##form##description_max_length_error"
@@ -1431,32 +1432,33 @@ msgid "delete_account##confirm##p0"
 msgstr "<bold>{{email}}</bold>"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p1"
-msgstr "Akaunti ya LandPKS inayohusiana na anwani hii ya barua pepe itafutwa. Hii huondoa:"
+msgstr "Akaunti ya Terraso na data ya LandPKS zinazohusiana na anwani hii ya barua pepe zitafutwa. Hii inajumuisha:"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p2##b0"
-msgstr "maeneo yako yasiyohusiana"
+msgstr "Maeneo yako ya LandPKS yasiyohusiana"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p2##b1"
-msgstr "miradi ambayo wewe ndiye msimamizi pekee, na maeneo yao yanayohusiana nayo"
+msgstr "Miradi yako ya LandPKS isiyo na wasimamizi wengine, na maeneo yao yanayohusiana nayo"
 
 #: 
 msgid "delete_account##confirm##p3"
 msgstr "Yafuatayo hayatafutwa:"
 
 #: 
+#, fuzzy
 msgid "delete_account##confirm##p4##b0"
-msgstr "uchunguzi uliochangia katika mradi ambao wewe si meneja pekee"
+msgstr "Uchunguzi wa LandPKS uliouingiza katika miradi yenye wasimamizi wengine"
 
 #: 
-msgid "delete_account##confirm##p4##b1"
-msgstr "akaunti yako ya Terraso (ikiwa ni pamoja na vikundi, mandhari, na ramani za hadithi)"
-
-#: 
+#, fuzzy
 msgid "delete_account##confirm##p5"
-msgstr "<bold>Andika anwani yako ya barua pepe ili kuthibitisha kufutwa:</bold>"
+msgstr "<bold>Andika anwani ya barua pepe iliyo hapo juu ili kuthibitisha kufutwa:</bold>"
 
 #: 
 msgid "delete_account##confirm##cancel"
@@ -1471,12 +1473,9 @@ msgid "delete_account##pending##p0"
 msgstr "<bold>{{email}}</bold>"
 
 #: 
+#, fuzzy
 msgid "delete_account##pending##p1"
-msgstr "Ombi lako la kufuta akaunti limetumwa. Akaunti ya {{email}} itafutwa ndani ya siku tano za kazi."
-
-#: 
-msgid "delete_account##pending##p2"
-msgstr "Utapokea barua pepe ya uthibitisho akaunti yako itakapofutwa."
+msgstr "Ombi lako la kufuta akaunti limetumwa."
 
 #: 
 msgid "sign_out##confirm_body"
@@ -2063,12 +2062,14 @@ msgid "slope##steepness##percentage_placeholder"
 msgstr "Asilimia"
 
 #: 
+#, fuzzy
 msgid "slope##steepness##percentage_help"
-msgstr "0%–999%"
+msgstr "0–999"
 
 #: 
+#, fuzzy
 msgid "slope##steepness##degree_help"
-msgstr "0°–89°"
+msgstr "0–89"
 
 #: 
 msgid "slope##steepness##degree_placeholder"
@@ -4866,4 +4867,39 @@ msgstr "Imerekebishwa hitilafu ambapo moduli ya rangi ilianguka kwa picha zilizo
 #, fuzzy
 msgid "projects##sites##transfer_offline"
 msgstr "Uhamisho wa tovuti unapatikana tu ukiwa mtandaoni."
+
+#: 
+#, fuzzy
+msgid "site##form##number_error"
+msgstr "Nambari na nukta pekee ndizo zinazoruhusiwa"
+
+#: 
+#, fuzzy
+msgid "general##filter##unaffiliated"
+msgstr "Unaffiliated (no project)"
+
+#: 
+#, fuzzy
+msgid "general##read_only"
+msgstr "Soma tu"
+
+#: 
+#, fuzzy
+msgid "delete_account##confirm##p2##b2"
+msgstr "Akaunti yako ya Terraso (ikiwa ni pamoja na vikundi, mandhari, na ramani za hadithi)"
+
+#: 
+#, fuzzy
+msgid "delete_account##confirm##error"
+msgstr "Barua pepe hazilingani"
+
+#: 
+#, fuzzy
+msgid "account_deleted##title"
+msgstr "Akaunti imefutwa"
+
+#: 
+#, fuzzy
+msgid "account_deleted##body"
+msgstr "Akaunti inayohusiana na {{email}} imefutwa. Ikiwa hii ilifanywa kwa makosa, wasiliana na timu yetu ya usaidizi."
 

@@ -14,7 +14,7 @@ msgstr "Karibu kwenye LandPKS Soil ID"
 #: 
 #, fuzzy
 msgid "welcome##next##title"
-msgstr "Nini kitafuata?"
+msgstr "Matoleo yajayo yatajumuisha:"
 
 #: 
 #, fuzzy
@@ -679,28 +679,29 @@ msgid "slope##shape##info##linear"
 msgstr "Mstari"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "Toleo hili linajumuisha:"
+msgstr "Mapya katika toleo hili:"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Nje ya mtandao: kuwezesha kuunda maeneo na kuhariri metadata na vidokezo vya maeneo"
+msgstr "Kina cha juu zaidi cha udongo kimeongezwa hadi sentimita 300"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Lugha mpya: Kiswahili"
+msgstr "Ufutaji wa akaunti umerahisishwa"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Tafsiri zilizoboreshwa kwa Kiukreni, Kijojia, na Kihispania"
+msgstr "Imeongezwa chaguo la “isiyo na uhusiano” katika kuchuja orodha ya maeneo"
 
 #: 
 #, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "pH ya udongo"
+msgstr "Maboresho ya moduli ya rangi ya udongo"
 
 #: 
 msgid "welcome##learn_more"
@@ -711,8 +712,9 @@ msgid "welcome##link_text"
 msgstr "LandPKS kutoka Terraso"
 
 #: 
+#, fuzzy
 msgid "welcome##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "welcome##get_started"
@@ -845,8 +847,9 @@ msgid "site##soil_id##matches##error_generic_title"
 msgstr "Haiwezi kupata ramani ya udongo"
 
 #: 
+#, fuzzy
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS haikuweza kupata ramani ya udongo kwa eneo hili. Jaribu kusimamisha na kuanzisha upya programu. Ikiwa tatizo litaendelea, jaribu tena baadaye au wasilisha ombi la usaidizi kupitia tovuti ya landpks.terraso.org."
+msgstr "LandPKS haikuweza kupata ramani ya udongo kwa eneo hili. Jaribu kusimamisha na kuanzisha upya programu. Ikiwa tatizo litaendelea, jaribu tena baadaye au wasilisha ombi la usaidizi kupitia tovuti ya landpotential.org."
 
 #: 
 msgid "site##soil_id##matches##no_map_data_title"
@@ -1352,8 +1355,9 @@ msgid "general##info##privacy_item4"
 msgstr "<bold>Mpangilio wa faragha wa mradi huamua faragha ya maeneo yake yanayohusiana.</bold> Maeneo ambayo ni ya mradi wa kibinafsi yanaonekana kwa wanachama wa timu ya mradi. Meneja wa mradi anaweza kubadilisha faragha wakati wowote."
 
 #: 
+#, fuzzy
 msgid "general##info##data_portal_link_url"
-msgstr "https://landpks.terraso.org/portal"
+msgstr "https://landpotential.org/data-portal"
 
 #: 
 msgid "general##info##data_portal_link_text"
@@ -2221,12 +2225,14 @@ msgstr "<bold>Pata maelezo zaidi na miongozo</bold> katika:\n"
 "<icon />"
 
 #: 
+#, fuzzy
 msgid "info##link_label"
-msgstr "landpks.terraso.org"
+msgstr "landpotential.org"
 
 #: 
+#, fuzzy
 msgid "info##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "projects##search##lastModAsc"
@@ -2358,8 +2364,9 @@ msgid "general##help##label"
 msgstr "Msaada na usaidizi"
 
 #: 
+#, fuzzy
 msgid "general##help##url"
-msgstr "https://landpks.terraso.org/help/"
+msgstr "https://landpotential.org/help/"
 
 #: 
 msgid "general##tos##label"
@@ -2396,8 +2403,9 @@ msgid "errors##sync_conflict##body"
 msgstr "Mradi huu umebadilika. Jifunze zaidi na upate usaidizi katika tovuti ya LandPKS."
 
 #: 
+#, fuzzy
 msgid "errors##sync_conflict##support_url"
-msgstr "https://landpks.terraso.org/help/synchronization-conflict/"
+msgstr "https://landpotential.org/help/synchronization-conflict/"
 
 #: 
 msgid "projects##offline_create"
@@ -2434,8 +2442,9 @@ msgstr "\n"
 "Wasiliana na mtaalamu wa udongo ili akusaidie kutafsiri uchunguzi na kubaini ulinganifu wa udongo. Unaweza kujifunza zaidi kuhusu utabiri wa ramani ya udongo na ulinganifu wa vitambulisho vya udongo kwenye tovuti:"
 
 #: 
+#, fuzzy
 msgid "site##soil_id##matches##info##description##learn_more_url"
-msgstr "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+msgstr "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
 
 #: 
 msgid "site##soil_id##soil_info##description_title"
@@ -4596,8 +4605,9 @@ msgid "slope##info##data_region_text_global_or_unknown"
 msgstr "Sifa za mteremko husaidia kubaini uwezo wa mmomonyoko wa udongo, uwezo wa kushikilia maji, na mengineyo."
 
 #: 
+#, fuzzy
 msgid "general##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
+msgstr "https://terraso.org/privacy-policy/"
 
 #: 
 msgid "general##privacy_policy_link_text"
@@ -4654,7 +4664,7 @@ msgstr "Una mabadiliko ambayo hayajasawazishwa ambayo yanahitaji kupakiwa kabla 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "Ujumbe wa kosa wa kina zaidi kwa migongano ya usawazishaji"
+msgstr "Imerekebishwa hitilafu iliyoonyesha arifa kwa muda mfupi mtumiaji alipofuta eneo"
 
 #: 
 msgid "projects##tabs##export"
@@ -4851,17 +4861,17 @@ msgstr "Kulikuwa na tatizo la kutambua rangi ya udongo. Hakikisha unafuata maagi
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_5"
-msgstr "Uzoefu ulioboreshwa wa kutafuta viwianishi kwenye ramani"
+msgstr "Maboresho ya utendaji wa sehemu za maandishi"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_6"
-msgstr "Imerekebishwa hitilafu ambapo watumiaji walioondoka na kuingia tena kwa akaunti tofauti waliona data ya akaunti ya kwanza kwa muda"
+msgstr "Imeongezwa utambulisho wa Mapbox"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_7"
-msgstr "Imerekebishwa hitilafu ambapo moduli ya rangi ilianguka kwa picha zilizopigwa kwa mwanga mwingi sana"
+msgstr "Viungo vimesasishwa kuelekeza kwenye tovuti mpya ya LandPKS"
 
 #: 
 #, fuzzy
@@ -4902,4 +4912,14 @@ msgstr "Akaunti imefutwa"
 #, fuzzy
 msgid "account_deleted##body"
 msgstr "Akaunti inayohusiana na {{email}} imefutwa. Ikiwa hii ilifanywa kwa makosa, wasiliana na timu yetu ya usaidizi."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_8"
+msgstr "Maboresho ya Algoriti ya Soil ID"
+
+#: 
+#, fuzzy
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} na mtumiaji aliyefutwa"
 
