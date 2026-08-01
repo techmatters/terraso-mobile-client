@@ -525,6 +525,14 @@ export const MunsellChartValidatorScreen = ({
               ) : (
                 <SourceOverlayView result={state.result} page={page} />
               )}
+              <TestSwatchReverseMatch
+                testRef={testRef}
+                testMeasuredCorrected={testMeasuredCorrected}
+                testSwatchIsReference={
+                  referenceNotation === TEST_SWATCH_REFERENCE_NOTATION
+                }
+                wbReferenceLabel={referenceNotation}
+              />
               <Row space="sm">
                 <Box flex={1}>
                   <ContainedButton
@@ -1493,6 +1501,54 @@ const FailedView = ({
   );
 };
 
+// Empirical linear-sRGB of the test-swatch cell, computed as
+// applyWbCorrection(rawMeasurement, chosenWbRef). This is what the
+// physical swatch REALLY looks like once we correct for the capture's
+// illuminant using the picked Munsell cell — copy the value into
+// getColorFromLinearRgb.ts LINEAR_REFERENCES to define / refine a
+// reference from this measurement.
+//
+// Hidden when the test swatch itself is the WB reference — under that
+// choice the correction is derived FROM the swatch to make it match
+// the picked expected exactly, so the number is trivially the picked
+// expected and tells you nothing new.
+const TestSwatchReverseMatch = ({
+  testRef,
+  testMeasuredCorrected,
+  testSwatchIsReference,
+  wbReferenceLabel,
+}: {
+  testRef: AvailableReference | undefined;
+  testMeasuredCorrected: {r: number; g: number; b: number} | null;
+  testSwatchIsReference: boolean;
+  // Notation of the WB reference cell (e.g. "10YR 5/4"), or null if
+  // no WB reference is picked (uncorrected raw measurement).
+  wbReferenceLabel: string | null;
+}) => {
+  if (testSwatchIsReference) return null;
+  if (!testMeasuredCorrected || !testRef) return null;
+  const {r, g, b} = testMeasuredCorrected;
+  const rgbLine = `r: ${r.toFixed(4)}, g: ${g.toFixed(4)}, b: ${b.toFixed(4)}`;
+  const wbSource = wbReferenceLabel ?? '(no WB — raw measurement)';
+  return (
+    <Box style={styles.reverseMatchBox}>
+      <Text variant="body1" bold>
+        Test-swatch reverse match (linear-sRGB)
+      </Text>
+      <Text variant="caption">
+        Under WB ref {wbSource}, the physical "{testRef.name}" measures:
+      </Text>
+      <Text variant="body1" style={styles.monoText}>
+        {rgbLine}
+      </Text>
+      <Text variant="caption">
+        Paste into LINEAR_REFERENCES in src/model/color/getColorFromLinearRgb.ts
+        to define a new / refined reference from this measurement.
+      </Text>
+    </Box>
+  );
+};
+
 const SourceOverlayView = ({
   result,
   page,
@@ -1816,6 +1872,16 @@ const styles = StyleSheet.create({
   },
   legendMatchDot: {
     color: '#ffcc00',
+  },
+  monoText: {
+    fontFamily: 'Courier',
+  },
+  reverseMatchBox: {
+    padding: 8,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#c5c5c5',
+    backgroundColor: '#f5f5f5',
   },
   maskToggleContainer: {
     position: 'absolute',

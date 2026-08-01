@@ -350,7 +350,11 @@ const promptNameAndSave = (
   const rgbLabel = `r=${expected.r.toFixed(4)}, g=${expected.g.toFixed(4)}, b=${expected.b.toFixed(4)}`;
   Alert.prompt(
     'Name this reference',
-    `Computed linear-sRGB:\n${rgbLabel}\n\nEnter a name for this reference:`,
+    `Computed linear-sRGB:\n${rgbLabel}\n\n` +
+      `Paste these values into LINEAR_REFERENCES ` +
+      `(src/model/color/getColorFromLinearRgb.ts) to promote this ` +
+      `custom reference to a builtin.\n\n` +
+      `Enter a name for this reference:`,
     [
       {
         text: 'Cancel',
@@ -414,9 +418,12 @@ const saveAndConfirm = (
         `linearRgb=(${linearRgb.r.toFixed(4)},${linearRgb.g.toFixed(4)},${linearRgb.b.toFixed(4)}) ` +
         `calibratedUnder=${JSON.stringify(calibratedUnder)}`,
     );
+    const rgbLine =
+      `linear-sRGB: r=${linearRgb.r.toFixed(4)}, ` +
+      `g=${linearRgb.g.toFixed(4)}, b=${linearRgb.b.toFixed(4)}`;
     Alert.alert(
       'Reference saved',
-      `"${name}" is now in your custom references library.`,
+      `"${name}" is now in your custom references library.\n\n${rgbLine}`,
       [{text: 'OK', onPress: () => onDone()}],
     );
   } catch (err) {

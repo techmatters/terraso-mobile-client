@@ -79,7 +79,7 @@ const CustomReferenceRow = ({reference}: {reference: CustomReference}) => {
   }, [reference.id, reference.name]);
 
   const {r, g, b} = reference.linearRgb;
-  const rgbLabel = `r=${r.toFixed(4)}  g=${g.toFixed(4)}  b=${b.toFixed(4)}`;
+  const rgbLabel = `linear-sRGB: r=${r.toFixed(4)} g=${g.toFixed(4)} b=${b.toFixed(4)}`;
   const createdLabel = new Date(reference.createdAt).toLocaleString();
 
   return (
