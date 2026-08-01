@@ -723,7 +723,15 @@ export const detectChartByRegions = (
       area: t.region.area,
       status: t.status,
     }));
-  if (candidates.length < 6) return null;
+  if (candidates.length < 6) {
+    console.log(
+      `[detectChartByRegions] null: too few candidates ` +
+        `(${candidates.length} < 6; ` +
+        `dark=${darkCandidates.length}, bright=${brightCandidates.length}, ` +
+        `raw circles=${circles.length})`,
+    );
+    return null;
+  }
 
   // 3. Cluster surviving candidates by y (rows) and x (cols). Dark
   //    swatches and bright holes sit on the same grid columns; they
@@ -733,7 +741,15 @@ export const detectChartByRegions = (
   const medianW = median(candidates.map(b => blobW(b)));
   const rowClusters = clusterByAxis(candidates, b => b.cy, medianH * 0.6);
   const colClusters = clusterByAxis(candidates, b => b.cx, medianW * 0.6);
-  if (rowClusters.length < 2 || colClusters.length < 2) return null;
+  if (rowClusters.length < 2 || colClusters.length < 2) {
+    console.log(
+      `[detectChartByRegions] null: too few clusters ` +
+        `(rows=${rowClusters.length}, cols=${colClusters.length}; ` +
+        `candidates=${candidates.length}, medianH=${medianH.toFixed(1)}, ` +
+        `medianW=${medianW.toFixed(1)})`,
+    );
+    return null;
+  }
 
   // Cluster info: keep the member count alongside the center so we
   // can trim by count later. Spurious clusters (binder holes on the
@@ -776,7 +792,14 @@ export const detectChartByRegions = (
   );
   const rowClusterCenters = rowInfoFinal.map(x => x.center);
   const colClusterCenters = colInfoFinal.map(x => x.center);
-  if (rowClusterCenters.length < 2 || colClusterCenters.length < 2) return null;
+  if (rowClusterCenters.length < 2 || colClusterCenters.length < 2) {
+    console.log(
+      `[detectChartByRegions] null: after prune/trim, cluster count too low ` +
+        `(rows=${rowClusterCenters.length}, cols=${colClusterCenters.length}; ` +
+        `pre-trim rows=${rowInfoAll.length}, cols=${colInfoAll.length})`,
+    );
+    return null;
+  }
 
   // 3. Brightness-match search. For every viable combination of
   //    (rowSubset, colSubset, rowOffset, colOffset), fit the affine
@@ -834,7 +857,15 @@ export const detectChartByRegions = (
       }
     }
   }
-  if (!bestXCoeffs || !bestYCoeffs || !bestDetected) return null;
+  if (!bestXCoeffs || !bestYCoeffs || !bestDetected) {
+    console.log(
+      `[detectChartByRegions] null: brightness-match search found no ` +
+        `viable (rowSubset,colSubset,offset) — no candidate subset had ` +
+        `>=6 in-tolerance blobs (rowClusters=${rowClusterCenters.length}, ` +
+        `colClusters=${colClusterCenters.length}, candidates=${candidates.length})`,
+    );
+    return null;
+  }
   const xCoeffs = bestXCoeffs;
   const yCoeffs = bestYCoeffs;
   const detected = bestDetected;

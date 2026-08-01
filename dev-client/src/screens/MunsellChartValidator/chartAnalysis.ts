@@ -29,6 +29,7 @@ import {
   type GridEntry,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/gridRegistration';
 import {
+  maskToSpans,
   rgbToGray,
   whiteMask,
   type RgbImage,
@@ -130,14 +131,15 @@ export const TEST_SWATCH_REFERENCE_NOTATION = '__test_swatch__';
 // Everything analyzeMunsellChart managed to compute BEFORE the fatal
 // failure. Rendered on the failure UI so a dev can inspect what the
 // algorithm saw — the preview PNG, the white mask, and any raw circle
-// candidates that got classified. Any field may be null if analysis
-// died before that stage.
+// candidates that got classified. `grid` is ALWAYS populated (even
+// when detection returned null we synthesize a minimal GridDetection
+// with just the mask spans so the debug overlay still renders).
 export type MunsellChartFailureDebug = {
   reason: string;
   lumaAnchor: number | null;
   lumaCutoff: number | null;
   preview: {uri: string; width: number; height: number} | null;
-  grid: GridDetection | null;
+  grid: GridDetection;
 };
 
 export type MunsellChartOutcome =
@@ -207,22 +209,53 @@ export const analyzeMunsellChart = async (
             width: rgbPreview.sourceWidth,
             height: rgbPreview.sourceHeight,
           };
-    return {
-      kind: 'failure',
-      debug: {
-        reason:
-          'detectChartByRegions returned null — too few detected candidates ' +
-          'or clustering failed. Preview and white mask are still available.',
-        lumaAnchor,
-        lumaCutoff,
-        preview: {
-          uri: preview.uri,
-          width: preview.width,
-          height: preview.height,
-        },
-        grid: null,
-      },
+    // Populate a minimal GridDetection with just the whiteMask spans
+    // so the debug view can render the mask overlay (blue) and the
+    // dashed guide rect. Everything else is null/empty — enough for
+    // the debug UI to bind to; the "detected/matched" layers just
+    // don't render.
+    const partialGrid: GridDetection = {
+      centers: [],
+      cellW: 0,
+      cellH: 0,
+      detected: [],
+      rawBlobs: [],
+      chartBodyBounds: null,
+      brightMaskSpans: maskToSpans(mask, 4),
+      chartBodyMaskSpans: [],
+      matchedGrid: null,
+      matchedGridInliers: null,
+      matchedScore: null,
+      matchedRefCount: null,
+      matchedTripletDetected: null,
+      matchedSampleRects: null,
     };
+    const debug: MunsellChartFailureDebug = {
+      reason:
+        'detectChartByRegions returned null — too few detected candidates ' +
+        'or clustering failed. Preview and white mask are still available.',
+      lumaAnchor,
+      lumaCutoff,
+      preview: {
+        uri: preview.uri,
+        width: preview.width,
+        height: preview.height,
+      },
+      grid: partialGrid,
+    };
+    // Dump the debug object to Metro so a dev can copy-paste the
+    // structured reason + counts even without an IDE debugger attached.
+    // Preview URI is elided — it's a local cache path that's noisy in
+    // the console and unhelpful once the file is gone. Mask-span
+    // count is a proxy for "did the whiteMask find any paper at all."
+    console.log(
+      `[chartAnalysis] FAILURE reason="${debug.reason}" ` +
+        `lumaAnchor=${lumaAnchor} lumaCutoff=${lumaCutoff} ` +
+        `previewSize=${preview.width}x${preview.height} ` +
+        `whiteMaskSpans=${partialGrid.brightMaskSpans.length} ` +
+        `algorithm=${algorithm} page=${page.hue}`,
+    );
+    return {kind: 'failure', debug};
   }
 
   // 3. Compute per-cell sample rectangles in preview coords straight

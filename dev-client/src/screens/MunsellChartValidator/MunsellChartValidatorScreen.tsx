@@ -206,6 +206,11 @@ export const MunsellChartValidatorScreen = ({
   // preview's own pixel dimensions so toDataURL produces a full-res
   // bitmap the tester can pinch-zoom to inspect the mask.
   const whiteMaskExportSvgRef = useRef<Svg>(null);
+  // Separate ref for the FAILURE state — its own SVG instance lives
+  // inside FailedView (mounted only when kind === 'failed'), so it
+  // has to be a distinct ref from the ready-state one. shareWhiteMask
+  // picks whichever is populated based on the current state.
+  const failedWhiteMaskExportSvgRef = useRef<Svg>(null);
   const [sharing, setSharing] = useState(false);
   const [view, setView] = useState<'grid' | 'source'>('grid');
   // Cell notation the tester picked as WB reference. Default to a
@@ -387,7 +392,11 @@ export const MunsellChartValidatorScreen = ({
   }, [dngPath]);
 
   const shareWhiteMask = useCallback(() => {
-    const svg = whiteMaskExportSvgRef.current;
+    // Two possible sources: the ready-state export SVG (rendered when
+    // kind === 'ready') and the failed-state one (rendered when kind
+    // === 'failed'). Only one is mounted at any time.
+    const svg =
+      whiteMaskExportSvgRef.current ?? failedWhiteMaskExportSvgRef.current;
     if (!svg) return;
     setSharing(true);
     (
@@ -454,6 +463,8 @@ export const MunsellChartValidatorScreen = ({
               page={page}
               sharing={sharing}
               onShareDng={shareDng}
+              onShareWhiteMask={shareWhiteMask}
+              whiteMaskExportSvgRef={failedWhiteMaskExportSvgRef}
               onBack={() => navigation.pop()}
             />
           )}
@@ -1352,16 +1363,38 @@ const FailedView = ({
   page,
   sharing,
   onShareDng,
+  onShareWhiteMask,
+  whiteMaskExportSvgRef,
   onBack,
 }: {
   debug: MunsellChartFailureDebug;
   page: MunsellPage;
   sharing: boolean;
   onShareDng: () => void;
+  // Parent owns the toDataURL/Share flow (needs setSharing) and hands
+  // us a callback + the export SVG ref to render into. The off-screen
+  // SVG is mounted below the on-screen one at preview-pixel size so
+  // the shared PNG is full-resolution.
+  onShareWhiteMask: () => void;
+  whiteMaskExportSvgRef: React.RefObject<Svg | null>;
   onBack: () => void;
 }) => {
   const preview = debug.preview;
   const aspect = preview ? preview.width / preview.height : 4 / 3;
+  // Synthetic MunsellChartResult shape for DebugOverlayLayers — only
+  // .grid and .preview are actually read on the failure path (the
+  // rest of the layers gracefully render nothing when grid.matchedGrid
+  // etc. are null).
+  const syntheticResult = preview
+    ? ({
+        grid: debug.grid,
+        preview,
+        previewRects: [],
+        detectedSwatches: [],
+        measurements: [],
+        matchedSampleValues: null,
+      } as unknown as MunsellChartResult)
+    : null;
   return (
     <Column space="sm">
       <Text variant="body1" bold>
@@ -1370,49 +1403,37 @@ const FailedView = ({
       <Paragraph>{debug.reason}</Paragraph>
       <Text variant="body2">
         {`whiteMask: lumaAnchor=${debug.lumaAnchor ?? 'n/a'}, `}
-        {`lumaCutoff=${debug.lumaCutoff ?? 'n/a'}`}
+        {`lumaCutoff=${debug.lumaCutoff ?? 'n/a'}, `}
+        {`spans=${debug.grid.brightMaskSpans.length}`}
       </Text>
-      {debug.grid && (
-        <Text variant="body2">
-          {`rawBlobs=${debug.grid.rawBlobs.length}, `}
-          {`detected=${debug.grid.detected.length}, `}
-          {`cellW=${debug.grid.cellW.toFixed(1)}, cellH=${debug.grid.cellH.toFixed(1)}`}
-        </Text>
-      )}
-      {preview && (
+      <Text variant="body2">
+        {`rawBlobs=${debug.grid.rawBlobs.length}, `}
+        {`detected=${debug.grid.detected.length}, `}
+        {`cellW=${debug.grid.cellW.toFixed(1)}, ` +
+          `cellH=${debug.grid.cellH.toFixed(1)}`}
+      </Text>
+      {preview && syntheticResult && (
         <Box width="100%" aspectRatio={aspect} backgroundColor="grey.900">
           <Image
             source={{uri: preview.uri}}
             style={StyleSheet.absoluteFill}
             resizeMode="contain"
           />
-          {debug.grid && (
-            <Svg
-              style={StyleSheet.absoluteFill}
-              viewBox={`0 0 ${preview.width} ${preview.height}`}
-              preserveAspectRatio="xMidYMid meet">
-              {/* Reuse the debug overlay, forcing the white-mask
-                 view on so the dev sees the mask + any candidate
-                 blobs even though there's no fitted grid. Pass a
-                 synthetic MunsellChartResult shape — only the
-                 grid + preview fields are used by DebugOverlayLayers
-                 for this call. */}
-              <DebugOverlayLayers
-                result={
-                  {
-                    grid: debug.grid,
-                    preview,
-                    previewRects: [],
-                    detectedSwatches: [],
-                    measurements: [],
-                    matchedSampleValues: null,
-                  } as unknown as MunsellChartResult
-                }
-                maskView="bright"
-                page={page}
-              />
-            </Svg>
-          )}
+          <Svg
+            style={StyleSheet.absoluteFill}
+            viewBox={`0 0 ${preview.width} ${preview.height}`}
+            preserveAspectRatio="xMidYMid meet">
+            {/* Same layers as the success-state "source + ROIs"
+               overlay, with the mask forced on. The synthetic
+               MunsellChartResult only populates .grid + .preview —
+               all detected / matched / triplet layers render nothing
+               because their source fields are empty / null. */}
+            <DebugOverlayLayers
+              result={syntheticResult}
+              maskView="bright"
+              page={page}
+            />
+          </Svg>
         </Box>
       )}
       <Row space="sm">
@@ -1425,9 +1446,49 @@ const FailedView = ({
           />
         </Box>
         <Box flex={1}>
+          <ContainedButton
+            label={sharing ? 'Sharing…' : 'Share white mask'}
+            onPress={onShareWhiteMask}
+            disabled={sharing || !preview}
+            stretchToFit
+          />
+        </Box>
+        <Box flex={1}>
           <ContainedButton label="Back" onPress={onBack} stretchToFit />
         </Box>
       </Row>
+      {/* Off-screen export SVG mirroring the on-screen overlay at
+         preview-pixel size — toDataURL renders from THIS one so the
+         shared PNG is high-DPI-crisp instead of screen-sized. */}
+      {preview && syntheticResult && (
+        <View
+          style={[
+            styles.exportContainer,
+            {width: preview.width, height: preview.height},
+          ]}
+          pointerEvents="none">
+          <Svg
+            ref={whiteMaskExportSvgRef}
+            width="100%"
+            height="100%"
+            viewBox={`0 0 ${preview.width} ${preview.height}`}
+            preserveAspectRatio="xMidYMid meet">
+            <SvgImage
+              href={preview.uri}
+              x={0}
+              y={0}
+              width={preview.width}
+              height={preview.height}
+              preserveAspectRatio="xMidYMid meet"
+            />
+            <DebugOverlayLayers
+              result={syntheticResult}
+              maskView="bright"
+              page={page}
+            />
+          </Svg>
+        </View>
+      )}
     </Column>
   );
 };
