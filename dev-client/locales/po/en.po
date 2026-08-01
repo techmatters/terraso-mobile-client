@@ -5,41 +5,44 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-07-23T22:08:39.634Z\n"
-"PO-Revision-Date: 2026-07-23T22:08:39.635Z\n"
+"POT-Creation-Date: 2026-08-01T04:07:15.906Z\n"
+"PO-Revision-Date: 2026-08-01T04:07:15.907Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
 
 msgid "welcome##version_includes##title"
-msgstr "This version includes:"
+msgstr "New in this release:"
 
 msgid "welcome##version_includes##bullet_1"
-msgstr "Offline: enabled site creation, edit site metadata and notes"
+msgstr "Max soil depth increased to 300cm"
 
 msgid "welcome##version_includes##bullet_2"
-msgstr "New language: Swahili"
+msgstr "Streamlined account deletion"
 
 msgid "welcome##version_includes##bullet_3"
-msgstr "Improved translations for Ukrainian, Georgian, and Spanish"
+msgstr "Added an “unaffiliated” option to filter sites list"
 
 msgid "welcome##version_includes##bullet_4"
-msgstr "More descriptive error message for sync conflicts"
+msgstr "Fixed a bug that flashed an alert when a user deleted a site"
 
 msgid "welcome##version_includes##bullet_5"
-msgstr "Improved experience of searching for coordinates on map"
+msgstr "Functionality updates for text fields"
 
 msgid "welcome##version_includes##bullet_6"
-msgstr "Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data"
+msgstr "Added Mapbox attribution"
 
 msgid "welcome##version_includes##bullet_7"
-msgstr "Fixed a bug where the color module would crash with overexposed photos"
+msgstr "Updated links to new LandPKS website"
+
+msgid "welcome##version_includes##bullet_8"
+msgstr "Improvements to the Soil ID Algorithm"
 
 msgid "welcome##next##title"
 msgstr "Future versions will include:"
 
 msgid "welcome##next##bullet_1"
-msgstr "Soil pH"
+msgstr "Improvements to the soil color module"
 
 msgid "welcome##learn_more"
 msgstr "Learn more and stay updated:"
@@ -48,7 +51,7 @@ msgid "welcome##link_text"
 msgstr "LandPKS from Terraso"
 
 msgid "welcome##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 msgid "welcome##terms"
 msgstr "By using LandPKS you accept our privacy policy and terms of service."
@@ -71,10 +74,10 @@ msgid "info##get_started"
 msgstr "<bold>To get started, use the map to create a site:</bold>"
 
 msgid "info##link_label"
-msgstr "landpks.terraso.org"
+msgstr "landpotential.org"
 
 msgid "info##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 msgid "search##placeholder"
 msgstr "Search map"
@@ -233,7 +236,7 @@ msgstr ""
 "Consult a soil expert to help interpret the observations and determine a soil match. You can learn more about soil map predictions and Soil ID matches on the website:"
 
 msgid "site##soil_id##matches##info##description##learn_more_url"
-msgstr "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+msgstr "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
 
 msgid "site##soil_id##matches##match_score"
 msgstr "{{score}}"
@@ -245,7 +248,7 @@ msgid "site##soil_id##matches##error_generic_title"
 msgstr "Can’t fetch soil map"
 
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS was unable to fetch the soil map for this location. Try stopping and restarting the app. If the issue continues, try again later or submit a support request through the website landpks.terraso.org."
+msgstr "LandPKS was unable to fetch the soil map for this location. Try stopping and restarting the app. If the issue continues, try again later or submit a support request through the website landpotential.org."
 
 msgid "site##soil_id##matches##no_map_data_title"
 msgstr "No soil map data"
@@ -432,6 +435,9 @@ msgstr "Site Note"
 
 msgid "site##notes##note_attribution"
 msgstr "{{createdAt}} by {{name}}"
+
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} by deleted user"
 
 msgid "site##notes##confirm_removal_title"
 msgstr "Delete note?"
@@ -893,7 +899,7 @@ msgid "general##info##privacy_item4"
 msgstr "<bold>A project’s privacy setting determines the privacy of its affiliated sites.</bold> Sites that belong to a private project are visible to project team members. A project manager can change the privacy at any time. "
 
 msgid "general##info##data_portal_link_url"
-msgstr "https://landpks.terraso.org/portal"
+msgstr "https://landpotential.org/data-portal"
 
 msgid "general##info##data_portal_link_text"
 msgstr "LandPKS Data Portal"
@@ -929,7 +935,7 @@ msgid "general##help##label"
 msgstr "Help and support"
 
 msgid "general##help##url"
-msgstr "https://landpks.terraso.org/help/"
+msgstr "https://landpotential.org/help/"
 
 msgid "general##tos##label"
 msgstr "Terms of service"
@@ -938,7 +944,7 @@ msgid "general##tos##url"
 msgstr "https://terraso.org/terms-of-service/"
 
 msgid "general##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
+msgstr "https://terraso.org/privacy-policy/"
 
 msgid "general##privacy_policy_link_text"
 msgstr "Privacy Policy"
@@ -992,7 +998,7 @@ msgid "errors##sync_conflict##body"
 msgstr "Some of your information could not be loaded or saved. This may be due to a connection issue or a change made by another user."
 
 msgid "errors##sync_conflict##support_url"
-msgstr "https://landpks.terraso.org/help/synchronization-conflict/"
+msgstr "https://landpotential.org/help/synchronization-conflict/"
 
 msgid "screens##SITES"
 msgstr "LandPKS Soil ID"

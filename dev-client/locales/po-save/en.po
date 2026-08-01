@@ -742,7 +742,7 @@ msgstr "unknown"
 
 #: 
 msgid "site##create##name_label"
-msgstr "Site Name"
+msgstr "Site name"
 
 #: 
 msgid "site##create##location_label"
@@ -750,7 +750,7 @@ msgstr "Site Location"
 
 #: 
 msgid "site##create##location_accuracy"
-msgstr "GPS accuracy: {{accuracyM}} m"
+msgstr "GPS Location accuracy: {{accuracyM}} m"
 
 #: 
 msgid "site##create##add_to_project_label"
@@ -1054,11 +1054,11 @@ msgstr "Filter projects by role"
 
 #: 
 msgid "projects##create##name_label"
-msgstr "Project Name"
+msgstr "Project name"
 
 #: 
 msgid "projects##create##description_label"
-msgstr "Project Description"
+msgstr "Project description"
 
 #: 
 msgid "projects##create##privacy_label"
@@ -1190,7 +1190,7 @@ msgstr "Already a team member"
 
 #: 
 msgid "projects##add_user##invalid_email"
-msgstr "Enter a valid email address"
+msgstr "Valid email address required"
 
 #: 
 msgid "projects##manage_member##title"
@@ -1251,10 +1251,6 @@ msgstr "Project name must be at least {{min}} characters"
 #: 
 msgid "projects##form##name_max_length_error"
 msgstr "Project name must be at most {{max}} characters"
-
-#: 
-msgid "projects##form##description_min_length_error"
-msgstr "Project description must be at least {{min}} characters"
 
 #: 
 msgid "projects##form##description_max_length_error"
@@ -1422,15 +1418,15 @@ msgstr "<bold>{{email}}</bold>"
 
 #: 
 msgid "delete_account##confirm##p1"
-msgstr "The LandPKS account associated with this email address will be deleted. This removes:"
+msgstr "The Terraso account and LandPKS data associated with this email address will be deleted. This includes:"
 
 #: 
 msgid "delete_account##confirm##p2##b0"
-msgstr "your unaffiliated sites"
+msgstr "Your LandPKS unaffiliated sites"
 
 #: 
 msgid "delete_account##confirm##p2##b1"
-msgstr "projects for which you are the only manager, and their affiliated sites"
+msgstr "Your LandPKS projects with no other managers, and their affiliated sites"
 
 #: 
 msgid "delete_account##confirm##p3"
@@ -1438,15 +1434,11 @@ msgstr "The following won’t be deleted:"
 
 #: 
 msgid "delete_account##confirm##p4##b0"
-msgstr "observations you contributed to a project for which you aren’t the only manager"
-
-#: 
-msgid "delete_account##confirm##p4##b1"
-msgstr "your Terraso account (including groups, landscapes, and story maps)"
+msgstr "LandPKS observations you entered in projects with other managers"
 
 #: 
 msgid "delete_account##confirm##p5"
-msgstr "<bold>Type your email address to confirm deletion:</bold>"
+msgstr "<bold>Type the email address above to confirm deletion:</bold>"
 
 #: 
 msgid "delete_account##confirm##cancel"
@@ -1462,11 +1454,7 @@ msgstr "<bold>{{email}}</bold>"
 
 #: 
 msgid "delete_account##pending##p1"
-msgstr "Your account deletion request has been sent. The account for {{email}} will be deleted within five business days."
-
-#: 
-msgid "delete_account##pending##p2"
-msgstr "You will receive an email confirmation when your account has been deleted."
+msgstr "Your account deletion request has been sent."
 
 #: 
 msgid "sign_out##confirm_body"
@@ -2054,11 +2042,11 @@ msgstr "Percentage"
 
 #: 
 msgid "slope##steepness##percentage_help"
-msgstr "0%–999%"
+msgstr "0–999"
 
 #: 
 msgid "slope##steepness##degree_help"
-msgstr "0°–89°"
+msgstr "0–89"
 
 #: 
 msgid "slope##steepness##degree_placeholder"
@@ -4847,4 +4835,32 @@ msgstr "Fixed a bug where the color module would crash with overexposed photos"
 #: 
 msgid "projects##sites##transfer_offline"
 msgstr "Transferring sites is only available while online."
+
+#: 
+msgid "site##form##number_error"
+msgstr "Only numbers and period allowed"
+
+#: 
+msgid "general##filter##unaffiliated"
+msgstr "Unaffiliated (no project)"
+
+#: 
+msgid "general##read_only"
+msgstr "Read-only"
+
+#: 
+msgid "delete_account##confirm##p2##b2"
+msgstr "Your Terraso account (including groups, landscapes, and story maps)"
+
+#: 
+msgid "delete_account##confirm##error"
+msgstr "Email doesn't match"
+
+#: 
+msgid "account_deleted##title"
+msgstr "Account deleted"
+
+#: 
+msgid "account_deleted##body"
+msgstr "The account associated with {{email}} has been deleted. If this was done in error, contact our support team."
 
