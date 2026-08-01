@@ -130,14 +130,26 @@ export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
   borderInnerBufferFrac: 0.08,
   borderOuterMarginFrac: 0.05,
   borderMinSamples: 2000,
-  borderLumaKeepFrac: 0.6,
-  borderChannelToleranceMultiplier: 3,
-  // 12 grey levels — covers mild per-channel paper variation without
-  // opening the gate wide enough to admit chart body (typically 20-40
-  // grey levels off paper). Was 15 pre chroma-spread gate; tightened
-  // once the chroma gate started catching warm-shifted pixels too.
-  borderMinChannelTolerance: 12,
-  borderChromaSpreadTolerance: 6,
+  // Effectively disable the shadow trim (1.0 → keep all ring pixels).
+  // Trimming biased calibration toward one brightness band, and once
+  // per-channel bounds tightened around the biased median, dim paper
+  // failed per-channel and got dropped from the mask. Under a lighting
+  // gradient the whole ring is real paper — median is robust to shadow
+  // via median-not-mean, so no trim is needed. Keep the knob for
+  // future tuning if a pathological capture demands it.
+  borderLumaKeepFrac: 1.0,
+  // Per-channel bounds are now the LOOSE gate — its job is just to
+  // reject very-dark chips (values 2-6, deviation 50+ from paper on
+  // most channels). The chroma-spread gate below is the tight filter.
+  // 45 grey levels covers paper variation across strong lighting
+  // gradients (~30-40 delta between brightest and dimmest paper).
+  borderChannelToleranceMultiplier: 4,
+  borderMinChannelTolerance: 45,
+  // Chroma-spread gate — primary filter. 10 admits real paper (spread
+  // 3-8 depending on capture noise) while rejecting chart body
+  // (spread 15-20 due to warm tint) and near-white chips (spread
+  // 15+ due to warm shift). Was 6 which was too tight under noise.
+  borderChromaSpreadTolerance: 10,
 };
 
 export type WhiteMaskResult = {
