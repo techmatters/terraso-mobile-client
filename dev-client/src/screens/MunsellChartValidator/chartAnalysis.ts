@@ -167,6 +167,7 @@ export const analyzeMunsellChart = async (
   //    its own 1-region — off-white chart body has warm chroma and
   //    gets rejected by the chroma gate even though its luma is close
   //    to paper.
+  const tBeforePreview = Date.now();
   const rgbPreview =
     format === 'raw'
       ? DngDecoderHybrid.readPreviewRgb(imagePath, PREVIEW_MAX_DIM)
@@ -176,7 +177,9 @@ export const analyzeMunsellChart = async (
     height: rgbPreview.height,
     pixels: new Uint8Array(rgbPreview.pixels),
   };
+  const tAfterPreview = Date.now();
   const grayImage = rgbToGray(rgbImage);
+  const tAfterRgbToGray = Date.now();
   // Border-calibrated whiteMask when a guide is available (always, for
   // now — computeChartGuideRect works on any image dims). Falls back
   // internally to the old percentile-anchor path if the border ring
@@ -184,6 +187,10 @@ export const analyzeMunsellChart = async (
   const guideRect = computeChartGuideRect(rgbImage.width, rgbImage.height);
   const maskResult = whiteMask(rgbImage, undefined, guideRect);
   const {mask, lumaAnchor, lumaCutoff} = maskResult;
+  const tAfterWhiteMask = Date.now();
+  const previewMs = tAfterPreview - tBeforePreview;
+  const rgbToGrayMs = tAfterRgbToGray - tAfterPreview;
+  const whiteMaskMs = tAfterWhiteMask - tAfterRgbToGray;
   if (maskResult.usedBorderCalibration) {
     console.log(
       `[chartAnalysis] whiteMask: border-calibrated ` +
@@ -198,6 +205,11 @@ export const analyzeMunsellChart = async (
         `(border samples=${maskResult.borderSampleCount})`,
     );
   }
+  console.log(
+    `[chartAnalysis] preFrontend: preview=${previewMs}ms ` +
+      `rgbToGray=${rgbToGrayMs}ms whiteMask=${whiteMaskMs}ms ` +
+      `(preview ${rgbPreview.width}x${rgbPreview.height})`,
+  );
 
   // 2. Chart registration. Uses the white mask to find hole-shaped
   //    inscribed circles (each hole shows white paper through it, and

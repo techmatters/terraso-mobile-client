@@ -665,7 +665,9 @@ export const detectChartByRegions = (
   const maxRadius = MAX_HOLE_RADIUS_FRAC * shorterDim;
   const minArea = Math.PI * minRadius * minRadius;
   const maxArea = Math.PI * maxRadius * maxRadius;
+  const tBeforeFindCircles = Date.now();
   const circles = findFlatCircles(mask, minRadius, maxRadius);
+  const tAfterFindCircles = Date.now();
 
   // Wrap each circle as a Region — same shape as before so the
   // classifier / clusterer / fitter don't change. Bounding box is
@@ -686,6 +688,7 @@ export const detectChartByRegions = (
       meanBrightness: img.pixels[cyInt * img.width + cxInt],
     };
   });
+  const tAfterRegionWrap = Date.now();
 
   // 3. Classify and filter. Dark rectangles and bright ovals both
   //    survive; chart body and paper are rejected as too-large.
@@ -693,6 +696,7 @@ export const detectChartByRegions = (
     region: r,
     status: classifyRegion(r, img, minArea, maxArea),
   }));
+  const tAfterClassify = Date.now();
   // Pick whichever anchor type has more detections. Dark-only
   // gives the cleanest fit (bottom-N heuristic is provably right,
   // no swatch/hole offset needed), but often only 2-3 rows detect
@@ -1052,6 +1056,18 @@ export const detectChartByRegions = (
     const circlesMs = tAfterCircles - tStartAll;
     const ransacMs = tEndAll - tStart;
     const totalMs = tEndAll - tStartAll;
+    // Sub-buckets of the "circles" phase:
+    //   findFlatCircles — distance transform + local-max hole picking
+    //   regionWrap      — one small object allocation per circle
+    //   classify        — per-region brightness / aspect / fill / edge checks
+    //   circlesOther    — everything else attributed to circles (should be
+    //                     small: the clustering / prune / brightness-match
+    //                     search runs AFTER tAfterClassify).
+    const findCirclesMs = tAfterFindCircles - tBeforeFindCircles;
+    const regionWrapMs = tAfterRegionWrap - tAfterFindCircles;
+    const classifyMs = tAfterClassify - tAfterRegionWrap;
+    const circlesOtherMs =
+      circlesMs - findCirclesMs - regionWrapMs - classifyMs;
     // Score max = refGrid.length * (1 + TIGHTNESS_BONUS) = refGrid.length * 1.1.
     // Keep both scoreMax AND refGrid.length in the log so it's obvious
     // when a per-page grid is smaller than the universal MAX (e.g. 30
@@ -1059,7 +1075,10 @@ export const detectChartByRegions = (
     const scoreMax = refGrid.length * 1.1;
     console.log(
       `[chart-match:${algorithm}] ${detectedPoints.length} detected; ` +
-        `circles ${circlesMs}ms, RANSAC ${ransacMs}ms, total ${totalMs}ms; ` +
+        `circles ${circlesMs}ms (findFlatCircles=${findCirclesMs} ` +
+        `regionWrap=${regionWrapMs} classify=${classifyMs} ` +
+        `other=${circlesOtherMs}), ` +
+        `RANSAC ${ransacMs}ms, total ${totalMs}ms; ` +
         `score=${match?.score?.toFixed(2) ?? 'null'} / ${scoreMax.toFixed(1)} ` +
         `(${refGrid.length} ref pts)`,
     );
