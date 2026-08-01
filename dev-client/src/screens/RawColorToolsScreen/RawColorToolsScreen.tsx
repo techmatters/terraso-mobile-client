@@ -37,11 +37,7 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {CHART_GUIDE} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
-import {
-  REGISTRATION_ALGORITHMS,
-  resolveRegistrationAlgorithm,
-  type RegistrationAlgorithm,
-} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
+import {type RegistrationAlgorithm} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {MUNSELL_PAGES} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
@@ -56,7 +52,6 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 //     later without touching UserSettingsScreen again.
 
 const CHART_PAGE_HUE_KEY = 'munsellChartValidator.selectedPageHue';
-const CHART_ALGORITHM_KEY = 'munsellChartValidator.registrationAlgorithm';
 
 // Pick 'raw' for .dng and 'photo' for common photo formats; null for
 // anything else (we bail on unsupported extensions). Case-insensitive.
@@ -102,13 +97,12 @@ export const RawColorToolsScreen = () => {
     kvStorage.setString(CHART_PAGE_HUE_KEY, hue);
     setPageHueState(hue);
   }, []);
-  const [algorithm, setAlgorithmState] = useState<RegistrationAlgorithm>(() =>
-    resolveRegistrationAlgorithm(kvStorage.getString(CHART_ALGORITHM_KEY)),
-  );
-  const setAlgorithm = useCallback((a: RegistrationAlgorithm) => {
-    kvStorage.setString(CHART_ALGORITHM_KEY, a);
-    setAlgorithmState(a);
-  }, []);
+  // Directed-quadrant is now the only supported registration
+  // algorithm — the constrained-random path is retained in the code
+  // (matchAlgorithm.ts still exports both and the CaptureFlow /
+  // MunsellChartValidator plumbing still threads the choice through)
+  // but no longer surfaced in the UI. Dead-code cleanup is deferred.
+  const algorithm: RegistrationAlgorithm = 'directed-quadrant';
   const [captureFlow, setCaptureFlow] = useState<CaptureFlow | null>(null);
   const cancelCapture = useCallback(() => setCaptureFlow(null), []);
 
@@ -237,16 +231,6 @@ export const RawColorToolsScreen = () => {
             onValueChange={setPageHue}
             renderValue={hue => `Munsell ${hue} page`}
             label="Chart page"
-          />
-          <Select<RegistrationAlgorithm, false>
-            nullable={false}
-            options={REGISTRATION_ALGORITHMS.map(a => a.id)}
-            value={algorithm}
-            onValueChange={setAlgorithm}
-            renderValue={id =>
-              REGISTRATION_ALGORITHMS.find(a => a.id === id)?.label ?? id
-            }
-            label="Registration algorithm"
           />
           <ContainedButton
             label="Capture raw (DNG)"
