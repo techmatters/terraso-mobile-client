@@ -270,16 +270,28 @@ export const scoreTransform = (
 // scoreTransform calls in profile — full-score cost went from
 // dominating the RANSAC wall-clock to a small tail behind the cheap
 // pre-score.
+//
+// `minRequired` lets the function early-exit as soon as
+// count + refsRemaining < minRequired — the count can't possibly
+// reach the threshold, so the caller will prune. Caller passes
+// `Math.ceil(bestScore / 1.1)` for that threshold. Returned value in
+// the early-exit case is an upper bound on the TRUE count (specifically
+// `count + refsRemaining`), which is still < minRequired, so the
+// caller's `cheap * 1.1 < bestScore` test correctly prunes. Pass 0
+// (default) to disable early-exit and get the full count.
 export const cheapScoreUpperBound = (
   t: Affine,
   refPoints: readonly Point[],
   detectedPoints: readonly Point[],
   pixelThreshold: number,
+  minRequired: number = 0,
 ): number => {
   const t2 = pixelThreshold * pixelThreshold;
   let count = 0;
   const nDet = detectedPoints.length;
-  for (const r of refPoints) {
+  const nRef = refPoints.length;
+  for (let ri = 0; ri < nRef; ri++) {
+    const r = refPoints[ri];
     const ex = t.a * r.x + t.b * r.y + t.c;
     const ey = t.d * r.x + t.e * r.y + t.f;
     for (let i = 0; i < nDet; i++) {
@@ -289,6 +301,15 @@ export const cheapScoreUpperBound = (
         count++;
         break;
       }
+    }
+    // Early-exit: if even matching every remaining ref wouldn't reach
+    // minRequired, the caller will prune regardless. Bail with an
+    // upper-bound value (count + remaining) that's still < minRequired.
+    // Skips the tail of nDet-scans for hopeless candidates — dominant
+    // speedup on transforms that barely miss the winning score.
+    if (minRequired > 0) {
+      const remaining = nRef - 1 - ri;
+      if (count + remaining < minRequired) return count + remaining;
     }
   }
   return count;
@@ -696,12 +717,17 @@ export const findBestTransformViaPairs = (
         // the full score — dominant win when scoreTransform is the
         // hot spot. Profile earlier showed 194K full scores taking
         // 40s; this drops it to ~10K full scores + 194K cheap scores.
+        // minRequired lets cheapScoreUpperBound itself early-exit as
+        // soon as it can't reach the threshold — dominant secondary
+        // speedup on the cheap-score cost itself.
+        const minRequired = Math.ceil(bestScore / (1 + TIGHTNESS_BONUS));
         const tCheap0 = Date.now();
         const cheap = cheapScoreUpperBound(
           t,
           refPoints,
           detectedPoints,
           pixelThreshold,
+          minRequired,
         );
         cheapScoreMs += Date.now() - tCheap0;
         if (cheap * (1 + TIGHTNESS_BONUS) < bestScore) continue;
@@ -1113,13 +1139,18 @@ export const findBestTransformDirectedQuadrant = (
               if (affineFilter && !affineFilter(t)) continue;
               fitsPassedAffineFilter++;
 
-              // Cheap-score prune, same as constrained-random.
+              // Cheap-score prune, same as constrained-random —
+              // with early-exit via minRequired so cheapScore itself
+              // bails on hopeless candidates instead of always
+              // iterating all ref points.
+              const minRequired = Math.ceil(bestScore / (1 + TIGHTNESS_BONUS));
               const tCheap0 = Date.now();
               const cheap = cheapScoreUpperBound(
                 t,
                 refPoints,
                 detectedPoints,
                 pixelThreshold,
+                minRequired,
               );
               cheapScoreMs += Date.now() - tCheap0;
               if (cheap * (1 + TIGHTNESS_BONUS) < bestScore) continue;
