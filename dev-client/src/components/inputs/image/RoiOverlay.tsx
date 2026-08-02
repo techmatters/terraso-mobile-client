@@ -15,7 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet, Text, useWindowDimensions, View} from 'react-native';
+import {useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import Animated, {
   useAnimatedProps,
   type SharedValue,
@@ -94,9 +95,23 @@ export const RoiOverlay = ({
   refQuality,
   sampleQuality,
 }: Props) => {
-  const {width: screenW, height: screenH} = useWindowDimensions();
+  // Container dims — the RoiOverlay is mounted inside a sensor-aspect
+  // frame (SensorAspectFrame in RawCameraView), which is smaller than
+  // the window on one axis. Labels position themselves via absolute
+  // (left, top) inside this container, so multiplying ROI fractions
+  // by window dims would land labels outside the SVG. onLayout tracks
+  // the actual container size we're rendering into.
+  const [layout, setLayout] = useState<{w: number; h: number} | null>(null);
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View
+      style={StyleSheet.absoluteFill}
+      pointerEvents="none"
+      onLayout={e =>
+        setLayout({
+          w: e.nativeEvent.layout.width,
+          h: e.nativeEvent.layout.height,
+        })
+      }>
       <Svg
         style={StyleSheet.absoluteFill}
         viewBox="0 0 1 1"
@@ -134,18 +149,22 @@ export const RoiOverlay = ({
       </Svg>
       {/* Labels sit above the SVG in a plain RN layer so rotation
          doesn't get sheared by the non-uniform SVG scale. */}
-      <RotatedLabel
-        roi={refRoi}
-        label={REF_LABEL}
-        screenW={screenW}
-        screenH={screenH}
-      />
-      <RotatedLabel
-        roi={sampleRoi}
-        label={SAMPLE_LABEL}
-        screenW={screenW}
-        screenH={screenH}
-      />
+      {layout && (
+        <>
+          <RotatedLabel
+            roi={refRoi}
+            label={REF_LABEL}
+            containerW={layout.w}
+            containerH={layout.h}
+          />
+          <RotatedLabel
+            roi={sampleRoi}
+            label={SAMPLE_LABEL}
+            containerW={layout.w}
+            containerH={layout.h}
+          />
+        </>
+      )}
     </View>
   );
 };
@@ -201,24 +220,27 @@ const RoiWithBar = ({
   );
 };
 
-// RN <Text> anchored to the screen-left of a ROI, rotated 90° CW so
+// RN <Text> anchored to the container-left of a ROI, rotated 90° CW so
 // the glyphs read correctly when the phone is held landscape-CCW.
+// Container dims are the RoiOverlay's own layout box (sensor-aspect
+// frame), NOT the window — see RoiOverlay's onLayout tracker.
 const RotatedLabel = ({
   roi,
   label,
-  screenW,
-  screenH,
+  containerW,
+  containerH,
 }: {
   roi: FractionalRoi;
   label: string;
-  screenW: number;
-  screenH: number;
+  containerW: number;
+  containerH: number;
 }) => {
-  const centerY = (roi.y + roi.h / 2) * screenH;
-  // Anchor sits screen-left of the ROI border. RN's `rotate` transform
-  // pivots around the element's center, so we bias the top by half the
-  // font size to keep the rotated glyphs centered on the ROI's midline.
-  const anchorX = roi.x * screenW - LABEL_OFFSET_PX;
+  const centerY = (roi.y + roi.h / 2) * containerH;
+  // Anchor sits container-left of the ROI border. RN's `rotate`
+  // transform pivots around the element's center, so we bias the top
+  // by half the font size to keep the rotated glyphs centered on the
+  // ROI's midline.
+  const anchorX = roi.x * containerW - LABEL_OFFSET_PX;
   const anchorY = centerY - LABEL_FONT_SIZE / 2;
   return (
     <View style={[styles.labelWrap, {left: anchorX, top: anchorY}]}>

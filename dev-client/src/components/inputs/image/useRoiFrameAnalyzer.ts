@@ -45,11 +45,22 @@ import {FrameAnalyzerHybrid} from 'frame-analyzer';
 // 200 was aggressive enough that even nicely-framed cards read red.
 const MAX_VARIANCE = 500;
 
-// Fractional ROIs in **display** coordinates. Same rectangles the overlay
-// uses. Worklet rotates them into sensor coordinates using
-// `frame.orientation`.
-export const DISPLAY_REF_ROI = {x: 0.15, y: 0.1, w: 0.7, h: 0.3};
-export const DISPLAY_SAMPLE_ROI = {x: 0.15, y: 0.55, w: 0.7, h: 0.3};
+// Fractional ROIs in **display** coordinates (portrait sensor-aspect
+// frame — the SensorAspectFrame that RoiOverlay + Camera share). Same
+// rectangles the overlay uses. Worklet rotates them into sensor
+// coordinates using `frame.orientation`.
+//
+// Historical sizing note: originally set at h=0.3 when Camera used
+// resizeMode="cover" and filled the whole (portrait, ~0.44 aspect)
+// screen — that gave visibly-near-square boxes in the user's
+// landscape hold. Switching to resizeMode="contain" + a 3:4
+// sensor-aspect frame shrunk the display container from
+// ~400x900 to ~400x533, so the same fractional h=0.3 rendered as
+// tall narrow rectangles (280x160 -> 160x280 in landscape user view).
+// Bumped h to 0.45 to restore near-square (280x240 -> 240x280) at the
+// cost of tighter vertical margins between the two ROIs.
+export const DISPLAY_REF_ROI = {x: 0.15, y: 0.05, w: 0.7, h: 0.45};
+export const DISPLAY_SAMPLE_ROI = {x: 0.15, y: 0.5, w: 0.7, h: 0.45};
 
 type FractionalRoi = {x: number; y: number; w: number; h: number};
 
