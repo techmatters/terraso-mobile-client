@@ -57,10 +57,12 @@ const MAX_VARIANCE = 500;
 // sensor-aspect frame shrunk the display container from
 // ~400x900 to ~400x533, so the same fractional h=0.3 rendered as
 // tall narrow rectangles (280x160 -> 160x280 in landscape user view).
-// Bumped h to 0.45 to restore near-square (280x240 -> 240x280) at the
-// cost of tighter vertical margins between the two ROIs.
-export const DISPLAY_REF_ROI = {x: 0.15, y: 0.05, w: 0.7, h: 0.45};
-export const DISPLAY_SAMPLE_ROI = {x: 0.15, y: 0.5, w: 0.7, h: 0.45};
+// Bumped h to 0.4 with a 0.1 gap between the two ROIs (Ref ends at
+// 0.45, Sample starts at 0.55) — restores near-square boxes AND a
+// visible separator between them so the user can see there are two
+// distinct sampling regions.
+export const DISPLAY_REF_ROI = {x: 0.15, y: 0.05, w: 0.7, h: 0.4};
+export const DISPLAY_SAMPLE_ROI = {x: 0.15, y: 0.55, w: 0.7, h: 0.4};
 
 type FractionalRoi = {x: number; y: number; w: number; h: number};
 

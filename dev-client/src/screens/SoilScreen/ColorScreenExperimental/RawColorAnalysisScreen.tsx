@@ -32,6 +32,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {munsellToString} from 'terraso-mobile-client/model/color/colorConversions';
+import {linearToSrgb} from 'terraso-mobile-client/model/color/colorDetection';
 import {listCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
 import {
   getColorFromLinearRgb,
@@ -317,19 +318,23 @@ export const RawColorAnalysisScreen = ({
     <ScreenScaffold AppBar={<AppBar title="RAW analysis (experimental)" />}>
       <SafeScrollView>
         <Column padding="md" space="md">
-          <Paragraph>
-            {preSelectedDisplayRois
-              ? 'Analyzing the reference card and soil sample regions you framed in the overlay…'
-              : 'Select the reference card region, then the soil sample region. Pan/pinch inside each crop screen to frame precisely.'}
-          </Paragraph>
-          <PreviewThumbnail
-            uri={session.preview?.uri}
-            aspectRatio={
-              session.preview
-                ? session.preview.width / session.preview.height
-                : 3 / 4
-            }
-          />
+          {!analyzed && (
+            <Paragraph>
+              {preSelectedDisplayRois
+                ? 'Analyzing the reference card and soil sample regions you framed in the overlay…'
+                : 'Select the reference card region, then the soil sample region. Pan/pinch inside each crop screen to frame precisely.'}
+            </Paragraph>
+          )}
+          {!analyzed && (
+            <PreviewThumbnail
+              uri={session.preview?.uri}
+              aspectRatio={
+                session.preview
+                  ? session.preview.width / session.preview.height
+                  : 3 / 4
+              }
+            />
+          )}
           {!analyzed && !preSelectedDisplayRois && (
             <>
               <Row space="sm">
@@ -363,6 +368,8 @@ export const RawColorAnalysisScreen = ({
           )}
           {analyzed && selectedRef && munsell && (
             <ResultView
+              card={analyzed.card}
+              sample={analyzed.sample}
               ranked={analyzed.ranked}
               selectedRef={selectedRef}
               munsellText={munsell.text}
@@ -376,18 +383,23 @@ export const RawColorAnalysisScreen = ({
   );
 };
 
-// Post-analyze result panel — reference dropdown + current Munsell +
-// low-confidence warning + Done. The dropdown labels each option with
-// its confidence % so the tester can see at a glance which reference
-// the algorithm thinks is the best match; the primary sort order
-// (ranked[]) is best-first, so the top entry is the auto-guess.
+// Post-analyze result panel — captured-color swatches + reference
+// dropdown + current Munsell + low-confidence warning + Done. Shows
+// the RAW measured colors (before WB correction) as swatches so the
+// user can eyeball whether the analyzer sampled sensible regions;
+// the Munsell text below reflects those colors after the WB
+// correction against the selected reference.
 const ResultView = ({
+  card,
+  sample,
   ranked,
   selectedRef,
   munsellText,
   onSelectReference,
   onDone,
 }: {
+  card: LinearRgb;
+  sample: LinearRgb;
   ranked: RankedReference[];
   selectedRef: RankedReference;
   munsellText: string;
@@ -398,6 +410,10 @@ const ResultView = ({
     selectedRef.confidence < LOW_CONFIDENCE_WARNING_THRESHOLD;
   return (
     <>
+      <Row space="md" alignItems="center">
+        <CapturedSwatch label="Reference" linearRgb={card} />
+        <CapturedSwatch label="Soil" linearRgb={sample} />
+      </Row>
       <Text variant="body1" bold>
         Soil color: {munsellText}
       </Text>
@@ -436,6 +452,33 @@ const ResultView = ({
       )}
       <ContainedButton label="Done" onPress={onDone} />
     </>
+  );
+};
+
+// Labelled colored square for a measured linear-sRGB triple. Renders
+// the color gamma-encoded so it looks right on-screen; the underlying
+// numbers are stored linear.
+const CapturedSwatch = ({
+  label,
+  linearRgb,
+}: {
+  label: string;
+  linearRgb: LinearRgb;
+}) => {
+  const toByte = (v: number) => Math.round(linearToSrgb(v));
+  const css = `rgb(${toByte(linearRgb.r)}, ${toByte(linearRgb.g)}, ${toByte(linearRgb.b)})`;
+  return (
+    <Column alignItems="center" space="sm">
+      <Box
+        width="72px"
+        height="72px"
+        borderRadius="4px"
+        borderWidth="1px"
+        borderColor="grey.500"
+        backgroundColor={css}
+      />
+      <Text variant="caption">{label}</Text>
+    </Column>
   );
 };
 
