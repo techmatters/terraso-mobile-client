@@ -15,13 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Alert, Image, StyleSheet, View} from 'react-native';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 
 import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {Select} from 'terraso-mobile-client/components/inputs/Select';
 import {
   Box,
   Column,
@@ -41,6 +42,7 @@ import {
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
   RawAnalysisRole,
@@ -50,6 +52,19 @@ import {
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/rawAnalysisSession';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 import {useDispatch} from 'terraso-mobile-client/store';
+
+// Persisted between captures. If the stored id no longer exists in
+// the ranked list (reference was deleted from customReferences, or
+// builtin renamed), the auto-select silently falls back to the top-
+// ranked entry — see resolveInitialRefId below.
+const LAST_USED_REF_KEY = 'soilColor.lastUsedReferenceId';
+
+// Confidence = max(0, 1 - deltaE/40). At the threshold below (0.6)
+// deltaE is ~16 — a meaningful chromaticity mismatch between the
+// measured card and the selected reference, i.e. "probably wrong
+// card, or the light was really unusual". Show a warning so the user
+// can double-check before treating the result as authoritative.
+const LOW_CONFIDENCE_WARNING_THRESHOLD = 0.6;
 
 export type RawColorAnalysisProps = {
   /** file:// URI to the captured DNG. */
@@ -99,6 +114,16 @@ export const RawColorAnalysisScreen = ({
   const session = useRawAnalysisSession();
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  // Populated once decode succeeds. The dropdown + result view render
+  // off this. `card` / `sample` are cached so changing the selected
+  // reference on the result view recomputes Munsell locally without
+  // re-decoding the DNG.
+  const [analyzed, setAnalyzed] = useState<{
+    card: LinearRgb;
+    sample: LinearRgb;
+    ranked: RankedReference[];
+  } | null>(null);
+  const [selectedRefId, setSelectedRefId] = useState<string | null>(null);
 
   // Render the preview once (per capture). Cache the result in the
   // session so navigating between the crop screens doesn't re-render.
@@ -154,54 +179,22 @@ export const RawColorAnalysisScreen = ({
       }
 
       // Rank predefined + user-calibrated references against the
-      // measured card, then present a picker so the user confirms which
-      // physical card they framed. Auto-pick the top-ranked reference in
-      // the alert's default position.
+      // measured card. No modal picker — the result view below the
+      // preview shows a Select dropdown and lets the user change the
+      // reference in-place, with the Munsell result recomputing as
+      // they do. Auto-select "last used" (persisted across captures)
+      // if it's still in the ranked list, else the top-ranked entry.
       const ranked = rankReferences(decoded.card, listCustomReferences());
-      const finalizeWith = async (chosen: RankedReference) => {
-        try {
-          const munsell = await finalizeAnalysis({
-            card: decoded.card,
-            sample: decoded.sample,
-            reference: chosen,
-            pitProps,
-            dispatch,
-          });
-          Alert.alert(
-            'RAW analysis complete',
-            `Soil color saved: ${munsell}\n\nReturning to Color screen.`,
-            [{text: 'OK', onPress: () => navigation.pop()}],
-          );
-        } catch (err) {
-          console.error('RAW analyze failed:', err);
-          Alert.alert('Analyze failed', String(err));
-        } finally {
-          setAnalyzing(false);
-        }
-      };
-
-      Alert.alert(
-        'Choose reference card',
-        'Which reference did you frame? Ranked by closest color match to the measured card.',
-        [
-          ...ranked.map(r => ({
-            text: `${r.name}  (ΔE ${r.deltaE.toFixed(1)}, ${Math.round(
-              r.confidence * 100,
-            )}%)`,
-            onPress: () => {
-              finalizeWith(r);
-            },
-          })),
-          {
-            text: 'Cancel',
-            style: 'cancel' as const,
-            onPress: () => setAnalyzing(false),
-          },
-        ],
-        {cancelable: true, onDismiss: () => setAnalyzing(false)},
-      );
+      const persisted = kvStorage.getString(LAST_USED_REF_KEY);
+      const initialRefId =
+        persisted && ranked.some(r => r.id === persisted)
+          ? persisted
+          : (ranked[0]?.id ?? null);
+      setAnalyzed({card: decoded.card, sample: decoded.sample, ranked});
+      setSelectedRefId(initialRefId);
+      setAnalyzing(false);
     },
-    [dngPath, sensorWidth, sensorHeight, pitProps, dispatch, navigation],
+    [dngPath, sensorWidth, sensorHeight],
   );
 
   // Manual-picker Analyze button — pulls crops from the session and
@@ -250,6 +243,61 @@ export const RawColorAnalysisScreen = ({
     );
   }, [preSelectedDisplayRois, session.preview, runAnalyze]);
 
+  // Currently-selected ranked entry. Null if analyzed hasn't run yet
+  // or if selectedRefId doesn't resolve (e.g. stale kvStorage entry
+  // that got pruned — shouldn't happen given resolveInitialRefId
+  // above, but the type demands the guard).
+  const selectedRef: RankedReference | null = useMemo(() => {
+    if (!analyzed || !selectedRefId) return null;
+    return analyzed.ranked.find(r => r.id === selectedRefId) ?? null;
+  }, [analyzed, selectedRefId]);
+
+  // Recompute Munsell whenever card/sample/selected-reference changes.
+  // Splitting the color computation out of the dispatch effect below
+  // lets us render the notation in the result view without triggering
+  // an extra Redux round-trip.
+  const munsell = useMemo(() => {
+    if (!analyzed || !selectedRef) return null;
+    const result = getColorFromLinearRgb(
+      analyzed.card,
+      analyzed.sample,
+      selectedRef.linearRgb,
+    );
+    const hvc = 'result' in result ? result.result : result.nearestValidResult;
+    return {hvc, text: munsellToString(hvc)};
+  }, [analyzed, selectedRef]);
+
+  // Dispatch the current Munsell to Redux whenever it changes — same
+  // aggressive-save semantics as the rest of the color screen. Backing
+  // out preserves whatever was last dispatched.
+  useEffect(() => {
+    if (!munsell) return;
+    dispatch(
+      updateDepthDependentSoilData({
+        siteId: pitProps.siteId,
+        depthInterval: pitProps.depthInterval.depthInterval,
+        colorHue: munsell.hvc.colorHue,
+        colorValue: munsell.hvc.colorValue,
+        colorChroma: munsell.hvc.colorChroma,
+        colorPhotoUsed: true,
+      }),
+    );
+    trackSoilObservation({
+      input_type: 'soil_color',
+      input_method: 'photo',
+      site_id: pitProps.siteId,
+      depthInterval: pitProps.depthInterval.depthInterval,
+    });
+  }, [munsell, dispatch, pitProps.siteId, pitProps.depthInterval]);
+
+  // User picked a different reference from the dropdown. Update local
+  // state (recomputes munsell + fires the dispatch effect) and persist
+  // for next capture.
+  const onSelectReference = useCallback((id: string) => {
+    setSelectedRefId(id);
+    kvStorage.setString(LAST_USED_REF_KEY, id);
+  }, []);
+
   if (previewError) {
     return (
       <ScreenScaffold AppBar={<AppBar title="RAW analysis (experimental)" />}>
@@ -282,7 +330,7 @@ export const RawColorAnalysisScreen = ({
                 : 3 / 4
             }
           />
-          {!preSelectedDisplayRois && (
+          {!analyzed && !preSelectedDisplayRois && (
             <>
               <Row space="sm">
                 <SelectButton
@@ -310,12 +358,84 @@ export const RawColorAnalysisScreen = ({
               />
             </>
           )}
-          {preSelectedDisplayRois && analyzing && (
+          {!analyzed && preSelectedDisplayRois && analyzing && (
             <Paragraph>Analyzing…</Paragraph>
+          )}
+          {analyzed && selectedRef && munsell && (
+            <ResultView
+              ranked={analyzed.ranked}
+              selectedRef={selectedRef}
+              munsellText={munsell.text}
+              onSelectReference={onSelectReference}
+              onDone={() => navigation.pop()}
+            />
           )}
         </Column>
       </SafeScrollView>
     </ScreenScaffold>
+  );
+};
+
+// Post-analyze result panel — reference dropdown + current Munsell +
+// low-confidence warning + Done. The dropdown labels each option with
+// its confidence % so the tester can see at a glance which reference
+// the algorithm thinks is the best match; the primary sort order
+// (ranked[]) is best-first, so the top entry is the auto-guess.
+const ResultView = ({
+  ranked,
+  selectedRef,
+  munsellText,
+  onSelectReference,
+  onDone,
+}: {
+  ranked: RankedReference[];
+  selectedRef: RankedReference;
+  munsellText: string;
+  onSelectReference: (id: string) => void;
+  onDone: () => void;
+}) => {
+  const lowConfidence =
+    selectedRef.confidence < LOW_CONFIDENCE_WARNING_THRESHOLD;
+  return (
+    <>
+      <Text variant="body1" bold>
+        Soil color: {munsellText}
+      </Text>
+      <Select<string, false>
+        nullable={false}
+        options={ranked.map(r => r.id)}
+        value={selectedRef.id}
+        onValueChange={onSelectReference}
+        renderValue={id => {
+          const r = ranked.find(x => x.id === id);
+          if (!r) return id;
+          return `${r.name}  (ΔE ${r.deltaE.toFixed(1)}, ${Math.round(
+            r.confidence * 100,
+          )}%)`;
+        }}
+        label="Reference card"
+      />
+      {lowConfidence && (
+        <Box
+          padding="sm"
+          borderRadius="4px"
+          borderWidth="1px"
+          borderColor="warning.main"
+          backgroundColor="warning.background">
+          <Text variant="body2" bold>
+            Low-confidence reference match
+          </Text>
+          <Text variant="caption">
+            The selected reference matches the measured card at only{' '}
+            {Math.round(selectedRef.confidence * 100)}% confidence (ΔE{' '}
+            {selectedRef.deltaE.toFixed(1)}). Double-check that you picked the
+            reference card you actually used — the Munsell result above depends
+            on this being correct.
+          </Text>
+        </Box>
+      )}
+      <ContainedButton label="Done" onPress={onDone} />
+    </>
   );
 };
 
@@ -429,53 +549,4 @@ const decodeRects = async ({
       `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)})`,
   );
   return {card, sample};
-};
-
-// Apply the WB correction against the chosen reference, dispatch to
-// Redux, and return a display-ready Munsell string for the
-// confirmation Alert.
-const finalizeAnalysis = async ({
-  card,
-  sample,
-  reference,
-  pitProps,
-  dispatch,
-}: {
-  card: LinearRgb;
-  sample: LinearRgb;
-  reference: RankedReference;
-  pitProps: SoilPitInputScreenProps;
-  dispatch: ReturnType<typeof useDispatch>;
-}): Promise<string> => {
-  const colorResult = getColorFromLinearRgb(card, sample, reference.linearRgb);
-  const dispatched =
-    'result' in colorResult
-      ? colorResult.result
-      : colorResult.nearestValidResult;
-  if (!dispatched) {
-    throw new Error('Munsell match produced no dispatchable result');
-  }
-  dispatch(
-    updateDepthDependentSoilData({
-      siteId: pitProps.siteId,
-      depthInterval: pitProps.depthInterval.depthInterval,
-      colorHue: dispatched.colorHue,
-      colorValue: dispatched.colorValue,
-      colorChroma: dispatched.colorChroma,
-      colorPhotoUsed: true,
-    }),
-  );
-  trackSoilObservation({
-    input_type: 'soil_color',
-    input_method: 'photo',
-    site_id: pitProps.siteId,
-    depthInterval: pitProps.depthInterval.depthInterval,
-  });
-  const munsellText = munsellToString(dispatched);
-  console.log(
-    `RAW finalize dispatched: ${munsellText} using reference=${reference.id} (${reference.name}) ` +
-      `card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
-      `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)})`,
-  );
-  return munsellText;
 };
