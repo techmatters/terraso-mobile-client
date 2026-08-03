@@ -70,7 +70,7 @@ export const MUNSELL_PAGES: readonly MunsellPage[] = [
     hue: '10R',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
-    chipsPerRow: [4, 6, 6, 6, 5, 5, 2],
+    chipsPerRow: [4, 6, 6, 6, 6, 5, 2],
   },
   {
     hue: '2.5YR',
