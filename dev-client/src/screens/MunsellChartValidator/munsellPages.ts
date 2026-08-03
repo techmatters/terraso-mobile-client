@@ -170,15 +170,25 @@ export const pageSampleGridPoints = (page: MunsellPage): Point[] => {
 
 // Hole-position template for a page, in the reference-grid coordinate
 // system: (col * 2, row * 3). A hole row lives BETWEEN two chip rows
-// (below chip row N, above chip row N+1) and inherits its column count
-// from the LOWER chip row (chipsPerRow[N+1]) — physically, each hole
-// sits directly above the chip it compares to. There's no hole row
-// above the top-most chip row (that's the chart's top edge), so the
-// hole-row count is chipsPerRow.length - 1.
+// (below chip row N, above chip row N+1). A hole at (row, col) exists
+// only when BOTH adjacent chip strips have a chip at that column —
+// physically, each hole brackets a soil colour between the chip
+// above and the chip below, so a missing chip on either side means
+// there's no hole there either. This is min(chipsPerRow[N],
+// chipsPerRow[N+1]).
+//
+// Previously used just chipsPerRow[N+1] (the LOWER row) which was
+// correct for pages where the top row is complete (e.g. 10YR has 6
+// chips top→bottom, then falls off) but wrong for pages like 5R
+// whose TOP row is short (chipsPerRow[0] = 4, [1] = 6) — the code
+// invented two phantom holes at hole-row 0 columns 4-5.
 export const pageReferenceGridPoints = (page: MunsellPage): Point[] => {
   const out: Point[] = [];
   for (let holeRow = 0; holeRow < page.chipsPerRow.length - 1; holeRow++) {
-    const nHoles = page.chipsPerRow[holeRow + 1];
+    const nHoles = Math.min(
+      page.chipsPerRow[holeRow],
+      page.chipsPerRow[holeRow + 1],
+    );
     for (let col = 0; col < nHoles; col++) {
       out.push({x: col * 2, y: holeRow * 3});
     }
