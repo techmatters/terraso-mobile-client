@@ -56,9 +56,11 @@ import {
 } from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RoiOverlay} from 'terraso-mobile-client/components/inputs/image/RoiOverlay';
 import {
-  DISPLAY_REF_ROI,
-  DISPLAY_SAMPLE_ROI,
+  getActiveRoiPresetIndex,
+  ROI_PRESETS,
+  setActiveRoiPresetIndex,
   useRoiFrameAnalyzer,
+  type FractionalRoi,
 } from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -284,6 +286,20 @@ const VisionCameraViewImpl = ({
   // or waste cycles for no visible benefit.
   const useIosPhase8Overlay =
     Platform.OS === 'ios' && containerFormat === 'dng-live';
+  // ROI preset state — the size-selector buttons in CameraChrome
+  // cycle through ROI_PRESETS and this is the currently-selected
+  // index. Initialised from kvStorage so a user's choice persists
+  // between captures; every change writes back so any consumer that
+  // reads at capture time (RawColorAnalysisScreen via its
+  // preSelectedDisplayRois nav param) sees the current value.
+  const [roiPresetIndex, setRoiPresetIndex] = useState<number>(
+    getActiveRoiPresetIndex,
+  );
+  const activePreset = ROI_PRESETS[roiPresetIndex];
+  const changeRoiPresetIndex = useCallback((next: number) => {
+    setRoiPresetIndex(next);
+    setActiveRoiPresetIndex(next);
+  }, []);
   const preview =
     device && hasPermission ? (
       useIosPhase8Overlay ? (
@@ -293,6 +309,8 @@ const VisionCameraViewImpl = ({
           isActive={visible}
           photoOutput={photoOutput}
           exposure={exposureEv}
+          refRoi={activePreset.ref}
+          sampleRoi={activePreset.sample}
         />
       ) : (
         <Camera
@@ -316,6 +334,18 @@ const VisionCameraViewImpl = ({
       )
     ) : null;
 
+  // Size-selector callbacks only make sense with the ROI overlay
+  // (dng-live). Leave undefined for other flows so CameraChrome
+  // doesn't render size buttons when no overlay is visible to change.
+  const roiSize = useIosPhase8Overlay
+    ? {
+        canShrink: roiPresetIndex > 0,
+        canGrow: roiPresetIndex < ROI_PRESETS.length - 1,
+        onShrink: () => changeRoiPresetIndex(roiPresetIndex - 1),
+        onGrow: () => changeRoiPresetIndex(roiPresetIndex + 1),
+      }
+    : undefined;
+
   return (
     <CameraChrome
       visible={visible}
@@ -326,7 +356,8 @@ const VisionCameraViewImpl = ({
       hasPermission={hasPermission}
       exposureEv={exposureEv}
       onCycleExposure={cycleExposureEv}
-      chartGuide={chartGuide}>
+      chartGuide={chartGuide}
+      roiSize={roiSize}>
       {preview}
     </CameraChrome>
   );
@@ -360,14 +391,21 @@ const IosDngCameraLayer = ({
   isActive,
   photoOutput,
   exposure,
+  refRoi,
+  sampleRoi,
 }: {
   ref?: React.Ref<IosDngCameraLayerHandle>;
   device: CameraDevice;
   isActive: boolean;
   photoOutput: CameraPhotoOutput;
   exposure: number;
+  refRoi: FractionalRoi;
+  sampleRoi: FractionalRoi;
 }) => {
-  const {frameOutput, refQuality, sampleQuality} = useRoiFrameAnalyzer();
+  const {frameOutput, refQuality, sampleQuality} = useRoiFrameAnalyzer(
+    refRoi,
+    sampleRoi,
+  );
   // Toggled by prepareForCapture/finishCapture. When true, the outputs
   // list drops frameOutput → session reconfigures to a RAW-capable
   // Format → capture works → we flip back.
@@ -421,8 +459,8 @@ const IosDngCameraLayer = ({
         enableNativeTapToFocusGesture={true}
       />
       <RoiOverlay
-        refRoi={DISPLAY_REF_ROI}
-        sampleRoi={DISPLAY_SAMPLE_ROI}
+        refRoi={refRoi}
+        sampleRoi={sampleRoi}
         refQuality={refQuality}
         sampleQuality={sampleQuality}
       />
@@ -508,6 +546,7 @@ const CameraChrome = ({
   exposureEv,
   onCycleExposure,
   chartGuide,
+  roiSize,
   children,
 }: {
   visible: boolean;
@@ -519,6 +558,15 @@ const CameraChrome = ({
   exposureEv: number;
   onCycleExposure: () => void;
   chartGuide?: {aspectW: number; aspectH: number; marginFrac: number};
+  // Present only when the caller is using RoiOverlay (dng-live). When
+  // set, two icon buttons appear flanking the shutter — shrink/grow
+  // cycle through ROI_PRESETS. Undefined → no buttons rendered.
+  roiSize?: {
+    canShrink: boolean;
+    canGrow: boolean;
+    onShrink: () => void;
+    onGrow: () => void;
+  };
   children: ReactNode;
 }) => {
   const {t} = useTranslation();
@@ -584,6 +632,22 @@ const CameraChrome = ({
             </Pressable>
           </View>
           <View style={styles.bottomBar}>
+            {roiSize ? (
+              <Pressable
+                onPress={roiSize.onShrink}
+                disabled={!roiSize.canShrink}
+                accessibilityRole="button"
+                accessibilityLabel="smaller capture boxes"
+                hitSlop={12}
+                style={[
+                  styles.roiSizeButton,
+                  !roiSize.canShrink && styles.roiSizeButtonDisabled,
+                ]}>
+                <Icon name="remove" color="white" size="md" />
+              </Pressable>
+            ) : (
+              <View style={styles.roiSizeButtonPlaceholder} />
+            )}
             <Pressable
               onPress={shutter}
               disabled={shutterDisabled}
@@ -595,6 +659,22 @@ const CameraChrome = ({
               ]}>
               <View style={styles.shutterInner} />
             </Pressable>
+            {roiSize ? (
+              <Pressable
+                onPress={roiSize.onGrow}
+                disabled={!roiSize.canGrow}
+                accessibilityRole="button"
+                accessibilityLabel="larger capture boxes"
+                hitSlop={12}
+                style={[
+                  styles.roiSizeButton,
+                  !roiSize.canGrow && styles.roiSizeButtonDisabled,
+                ]}>
+                <Icon name="add" color="white" size="md" />
+              </Pressable>
+            ) : (
+              <View style={styles.roiSizeButtonPlaceholder} />
+            )}
           </View>
         </SafeAreaView>
       </View>
@@ -763,8 +843,31 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   bottomBar: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 24,
+    gap: 32,
+  },
+  roiSizeButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  roiSizeButtonDisabled: {
+    opacity: 0.35,
+  },
+  // Same width as roiSizeButton so the shutter stays horizontally
+  // centered when the size buttons are hidden (chart-validator flow
+  // and everything else that doesn't use RoiOverlay).
+  roiSizeButtonPlaceholder: {
+    width: 48,
+    height: 48,
   },
   iconButton: {
     padding: 8,

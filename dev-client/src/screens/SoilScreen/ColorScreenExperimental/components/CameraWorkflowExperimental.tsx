@@ -22,10 +22,7 @@ import {Pressable} from 'react-native';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RawPickImageButton} from 'terraso-mobile-client/components/inputs/image/RawPickImageButton';
-import {
-  DISPLAY_REF_ROI,
-  DISPLAY_SAMPLE_ROI,
-} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
+import {getActiveRoiPreset} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
 import {
   Box,
   Column,
@@ -70,13 +67,19 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
       // the user placed the card/sample inside those boxes when they
       // shot, so re-cropping is redundant.
       const usedLiveOverlay = captureMode === 'raw-live';
+      // Read the ROI preset that was ACTIVE at capture time — the
+      // user can cycle sizes via the size-selector buttons on the
+      // camera screen, and whichever preset was on screen at shutter
+      // is what got captured. Read fresh here (post-capture) so we
+      // pick up any change made just before the shot.
+      const activePreset = usedLiveOverlay ? getActiveRoiPreset() : null;
       navigation.navigate('RAW_COLOR_ANALYSIS_EXPERIMENTAL', {
         dngPath: result.dngPath,
         sensorWidth: result.width,
         sensorHeight: result.height,
         pitProps: props,
-        preSelectedDisplayRois: usedLiveOverlay
-          ? {ref: DISPLAY_REF_ROI, sample: DISPLAY_SAMPLE_ROI}
+        preSelectedDisplayRois: activePreset
+          ? {ref: activePreset.ref, sample: activePreset.sample}
           : undefined,
       });
     },

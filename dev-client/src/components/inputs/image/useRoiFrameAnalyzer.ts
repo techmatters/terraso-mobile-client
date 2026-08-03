@@ -21,6 +21,8 @@ import {useFrameOutput} from 'react-native-vision-camera';
 
 import {FrameAnalyzerHybrid} from 'frame-analyzer';
 
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
+
 // Phase-8.4 iOS real-time analyzer. Wraps vision-camera's useFrameOutput
 // with a worklet that runs the Nitro-hosted C++ Y-plane analyzer for two
 // hardcoded ROIs and publishes per-ROI colour codes to shared values the
@@ -45,26 +47,79 @@ import {FrameAnalyzerHybrid} from 'frame-analyzer';
 // 200 was aggressive enough that even nicely-framed cards read red.
 const MAX_VARIANCE = 500;
 
-// Fractional ROIs in **display** coordinates (portrait sensor-aspect
-// frame — the SensorAspectFrame that RoiOverlay + Camera share). Same
-// rectangles the overlay uses. Worklet rotates them into sensor
-// coordinates using `frame.orientation`.
-//
-// Historical sizing note: originally set at h=0.3 when Camera used
-// resizeMode="cover" and filled the whole (portrait, ~0.44 aspect)
-// screen — that gave visibly-near-square boxes in the user's
-// landscape hold. Switching to resizeMode="contain" + a 3:4
-// sensor-aspect frame shrunk the display container from
-// ~400x900 to ~400x533, so the same fractional h=0.3 rendered as
-// tall narrow rectangles (280x160 -> 160x280 in landscape user view).
-// Bumped h to 0.4 with a 0.1 gap between the two ROIs (Ref ends at
-// 0.45, Sample starts at 0.55) — restores near-square boxes AND a
-// visible separator between them so the user can see there are two
-// distinct sampling regions.
-export const DISPLAY_REF_ROI = {x: 0.15, y: 0.05, w: 0.7, h: 0.4};
-export const DISPLAY_SAMPLE_ROI = {x: 0.15, y: 0.55, w: 0.7, h: 0.4};
+export type FractionalRoi = {x: number; y: number; w: number; h: number};
 
-type FractionalRoi = {x: number; y: number; w: number; h: number};
+// Discrete set of ROI sizes the capture UI lets the user cycle
+// through. Each preset defines both the Ref (top) and Sample (bottom)
+// rectangles in **display** coordinates (portrait sensor-aspect
+// frame — SensorAspectFrame that RoiOverlay + Camera share).
+// Constraints per preset:
+//   - Two rectangles stacked vertically, always centered horizontally
+//   - Sample.y ≥ Ref.y + Ref.h + gap (visible separator between them)
+//   - Ref.y ≥ 0 and Sample.y + Sample.h ≤ 1 (fit inside the frame)
+//
+// Add / reorder entries here to change what the size-selector buttons
+// offer — the UI reads `ROI_PRESETS.length` and doesn't care how many
+// there are. Keep the array sorted small → large so the +/- buttons'
+// "shrink" / "grow" affordance stays consistent.
+export type RoiPreset = {
+  label: string;
+  ref: FractionalRoi;
+  sample: FractionalRoi;
+};
+
+export const ROI_PRESETS: readonly RoiPreset[] = [
+  {
+    label: 'small',
+    ref: {x: 0.25, y: 0.2, w: 0.5, h: 0.25},
+    sample: {x: 0.25, y: 0.55, w: 0.5, h: 0.25},
+  },
+  {
+    label: 'medium',
+    ref: {x: 0.15, y: 0.05, w: 0.7, h: 0.4},
+    sample: {x: 0.15, y: 0.55, w: 0.7, h: 0.4},
+  },
+  {
+    label: 'large',
+    ref: {x: 0.075, y: 0.0, w: 0.85, h: 0.45},
+    sample: {x: 0.075, y: 0.55, w: 0.85, h: 0.45},
+  },
+];
+
+export const DEFAULT_ROI_PRESET_INDEX = 1; // medium
+
+// Persisted between captures. Any component that needs to know the
+// active ROIs (RawCameraView overlay, useRoiFrameAnalyzer, the
+// downstream analysis screen) reads from kvStorage so they stay in
+// sync without threading state through the app.
+const ROI_PRESET_INDEX_KEY = 'roiCapture.presetIndex';
+
+export const getActiveRoiPresetIndex = (): number => {
+  const stored = kvStorage.getNumber(ROI_PRESET_INDEX_KEY);
+  if (
+    typeof stored === 'number' &&
+    Number.isInteger(stored) &&
+    stored >= 0 &&
+    stored < ROI_PRESETS.length
+  ) {
+    return stored;
+  }
+  return DEFAULT_ROI_PRESET_INDEX;
+};
+
+export const setActiveRoiPresetIndex = (i: number): void => {
+  if (i < 0 || i >= ROI_PRESETS.length) return;
+  kvStorage.setNumber(ROI_PRESET_INDEX_KEY, i);
+};
+
+export const getActiveRoiPreset = (): RoiPreset =>
+  ROI_PRESETS[getActiveRoiPresetIndex()];
+
+// Backward-compat aliases for callers that don't yet plumb the active
+// preset through. Point at the DEFAULT (medium) preset so behaviour
+// matches pre-preset expectations.
+export const DISPLAY_REF_ROI = ROI_PRESETS[DEFAULT_ROI_PRESET_INDEX].ref;
+export const DISPLAY_SAMPLE_ROI = ROI_PRESETS[DEFAULT_ROI_PRESET_INDEX].sample;
 
 // Rotate a display-space fractional ROI into sensor-space fractional
 // coordinates, according to the frame's `orientation` — vision-camera's
@@ -107,9 +162,21 @@ export type UseRoiFrameAnalyzerResult = {
   sampleQuality: SharedValue<number>;
 };
 
-export function useRoiFrameAnalyzer(): UseRoiFrameAnalyzerResult {
+export function useRoiFrameAnalyzer(
+  refRoi: FractionalRoi,
+  sampleRoi: FractionalRoi,
+): UseRoiFrameAnalyzerResult {
   const refQuality = useSharedValue(0);
   const sampleQuality = useSharedValue(0);
+  // Copy the roi objects into shared values so the worklet reads them
+  // by identity — using the props directly in the worklet closure
+  // pins whatever object identity happened to exist at hook-creation
+  // time, and later re-renders with a new roi object wouldn't reach
+  // the worklet.
+  const refRoiShared = useSharedValue(refRoi);
+  const sampleRoiShared = useSharedValue(sampleRoi);
+  refRoiShared.value = refRoi;
+  sampleRoiShared.value = sampleRoi;
   // Frame counter for the throttled debug log below. Shared across
   // worklet runs via SharedValue so the worklet-side increment sticks.
   const frameCounter = useSharedValue(0);
@@ -141,11 +208,11 @@ export function useRoiFrameAnalyzer(): UseRoiFrameAnalyzerResult {
         const h = yPlane.height;
         const stride = yPlane.bytesPerRow;
         const refSensor = rotateDisplayRoiToSensor(
-          DISPLAY_REF_ROI,
+          refRoiShared.value,
           frame.orientation,
         );
         const sampleSensor = rotateDisplayRoiToSensor(
-          DISPLAY_SAMPLE_ROI,
+          sampleRoiShared.value,
           frame.orientation,
         );
         const refStats = FrameAnalyzerHybrid.analyzeYPlane(
