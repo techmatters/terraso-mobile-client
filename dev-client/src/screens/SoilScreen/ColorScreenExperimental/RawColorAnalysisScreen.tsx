@@ -133,24 +133,42 @@ export const RawColorAnalysisScreen = ({
     preview: {uri: string; width: number; height: number};
   } | null>(null);
   const [selectedRefId, setSelectedRefId] = useState<string | null>(null);
+  // Flipped true only AFTER renderPreview for the CURRENT dngPath has
+  // completed and repopulated the module-scope session. Gates the
+  // auto-analyze effect below so it doesn't fire with a stale
+  // session.preview left over from the previous capture — the reset
+  // + renderPreview happen inside a useEffect (post-commit), so the
+  // FIRST render of a 2nd capture still sees the old capture's
+  // session state via useSyncExternalStore.
+  const [previewReady, setPreviewReady] = useState(false);
 
   // Render the preview once (per capture). Cache the result in the
   // session so navigating between the crop screens doesn't re-render.
   useEffect(() => {
+    setPreviewReady(false);
     resetRawAnalysisSession(null);
+    let stale = false;
     (async () => {
       try {
         const p = await DngDecoderHybrid.renderPreview(dngPath, 1200);
+        // Guard against a later dngPath change racing this one — if
+        // the component unmounted or the effect re-ran with a new
+        // dngPath, don't overwrite the newer state.
+        if (stale) return;
         resetRawAnalysisSession({
           uri: p.uri,
           width: p.width,
           height: p.height,
         });
+        setPreviewReady(true);
       } catch (err) {
         console.error('renderPreview failed:', err);
         setPreviewError(String(err));
       }
     })();
+    return () => {
+      stale = true;
+    };
   }, [dngPath]);
 
   const gotoCrop = useCallback(
@@ -234,9 +252,13 @@ export const RawColorAnalysisScreen = ({
   // convert the fractional display ROIs into preview-space rects and
   // fire runAnalyze once. autoRanRef guards against re-firing on
   // re-renders (preview identity is stable, but React can still re-run
-  // effects on fast-refresh / dev cycles).
+  // effects on fast-refresh / dev cycles). previewReady gates until
+  // the renderPreview for the CURRENT dngPath has completed — without
+  // this, the FIRST render of a subsequent capture would race the
+  // reset useEffect and read the previous capture's session.preview.
   const autoRanRef = useRef(false);
   useEffect(() => {
+    if (!previewReady) return;
     if (!preSelectedDisplayRois) return;
     if (autoRanRef.current) return;
     if (!session.preview) return;
@@ -257,7 +279,7 @@ export const RawColorAnalysisScreen = ({
       toRect(preSelectedDisplayRois.ref),
       toRect(preSelectedDisplayRois.sample),
     );
-  }, [preSelectedDisplayRois, session.preview, runAnalyze]);
+  }, [previewReady, preSelectedDisplayRois, session.preview, runAnalyze]);
 
   // Currently-selected ranked entry. Null if analyzed hasn't run yet
   // or if selectedRefId doesn't resolve (e.g. stale kvStorage entry
