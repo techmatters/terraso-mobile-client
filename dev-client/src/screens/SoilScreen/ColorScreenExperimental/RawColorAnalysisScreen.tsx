@@ -436,14 +436,17 @@ const ResultView = ({
     <>
       {/* DEBUG: crop views showing the EXACT preview region each ROI
          was sampled from. If these don't match the boxes the user
-         framed, the analyzer is sampling the wrong area. */}
+         framed, the analyzer is sampling the wrong area. Rotated 90°
+         CCW so the content appears in the same orientation the user
+         saw at capture time (they held the phone landscape-CCW; the
+         DNG preview is rendered portrait). */}
       <Row space="md" alignItems="center">
-        <RoiCrop label="Reference" rect={refRect} preview={preview} />
-        <RoiCrop label="Soil" rect={sampleRect} preview={preview} />
+        <RoiCrop label="Ref (photo)" rect={refRect} preview={preview} />
+        <RoiCrop label="Soil (photo)" rect={sampleRect} preview={preview} />
       </Row>
       <Row space="md" alignItems="center">
-        <CapturedSwatch label="Ref (avg)" linearRgb={card} />
-        <CapturedSwatch label="Soil (avg)" linearRgb={sample} />
+        <CapturedSwatch label="Ref (avg color)" linearRgb={card} />
+        <CapturedSwatch label="Soil (avg color)" linearRgb={sample} />
       </Row>
       <Text variant="body1" bold>
         Soil color: {munsellText}
@@ -533,7 +536,12 @@ const RoiCrop = ({
   const displayH = 100;
   return (
     <Column alignItems="center" space="sm">
-      <View style={[styles.roiCropBox, {width: displayW, height: displayH}]}>
+      <View
+        style={[
+          styles.roiCropBox,
+          styles.roiCropRotated,
+          {width: displayW, height: displayH},
+        ]}>
         <Svg
           width="100%"
           height="100%"
@@ -672,5 +680,13 @@ const styles = StyleSheet.create({
     borderColor: '#8a8a8a',
     borderRadius: 4,
     overflow: 'hidden',
+  },
+  // 90° CCW rotation to display the crop in the same orientation the
+  // user framed at capture time. The DNG preview is rendered portrait;
+  // the user held the phone landscape-CCW so what they saw as "top"
+  // maps to the preview's right edge. Rotating -90° here brings the
+  // preview's right back to visual top.
+  roiCropRotated: {
+    transform: [{rotate: '-90deg'}],
   },
 });
