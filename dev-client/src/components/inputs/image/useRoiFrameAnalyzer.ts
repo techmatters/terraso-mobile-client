@@ -70,6 +70,11 @@ export type RoiPreset = {
 
 export const ROI_PRESETS: readonly RoiPreset[] = [
   {
+    label: 'tiny',
+    ref: {x: 0.35, y: 0.3, w: 0.3, h: 0.16},
+    sample: {x: 0.35, y: 0.54, w: 0.3, h: 0.16},
+  },
+  {
     label: 'small',
     ref: {x: 0.25, y: 0.2, w: 0.5, h: 0.25},
     sample: {x: 0.25, y: 0.55, w: 0.5, h: 0.25},
@@ -86,7 +91,7 @@ export const ROI_PRESETS: readonly RoiPreset[] = [
   },
 ];
 
-export const DEFAULT_ROI_PRESET_INDEX = 1; // medium
+export const DEFAULT_ROI_PRESET_INDEX = 2; // medium
 
 // Persisted between captures. Any component that needs to know the
 // active ROIs (RawCameraView overlay, useRoiFrameAnalyzer, the

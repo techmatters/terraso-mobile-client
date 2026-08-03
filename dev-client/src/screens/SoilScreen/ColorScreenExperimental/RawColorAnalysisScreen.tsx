@@ -17,6 +17,7 @@
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Alert, Image, StyleSheet, View} from 'react-native';
+import Svg, {Image as SvgImage} from 'react-native-svg';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 
@@ -118,11 +119,18 @@ export const RawColorAnalysisScreen = ({
   // Populated once decode succeeds. The dropdown + result view render
   // off this. `card` / `sample` are cached so changing the selected
   // reference on the result view recomputes Munsell locally without
-  // re-decoding the DNG.
+  // re-decoding the DNG. `refRect` / `sampleRect` / `preview` are
+  // stored for the debug crop views below the swatches — they show
+  // WHICH region of the preview was actually sampled so a
+  // misalignment between visible overlay and analyzed region is
+  // visible at a glance.
   const [analyzed, setAnalyzed] = useState<{
     card: LinearRgb;
     sample: LinearRgb;
     ranked: RankedReference[];
+    refRect: PreviewRect;
+    sampleRect: PreviewRect;
+    preview: {uri: string; width: number; height: number};
   } | null>(null);
   const [selectedRefId, setSelectedRefId] = useState<string | null>(null);
 
@@ -157,7 +165,7 @@ export const RawColorAnalysisScreen = ({
   // preview-space rects so this doesn't have to branch on the source.
   const runAnalyze = useCallback(
     async (
-      preview: {width: number; height: number},
+      preview: {uri: string; width: number; height: number},
       refRect: PreviewRect,
       sampleRect: PreviewRect,
     ) => {
@@ -191,7 +199,14 @@ export const RawColorAnalysisScreen = ({
         persisted && ranked.some(r => r.id === persisted)
           ? persisted
           : (ranked[0]?.id ?? null);
-      setAnalyzed({card: decoded.card, sample: decoded.sample, ranked});
+      setAnalyzed({
+        card: decoded.card,
+        sample: decoded.sample,
+        ranked,
+        refRect,
+        sampleRect,
+        preview,
+      });
       setSelectedRefId(initialRefId);
       setAnalyzing(false);
     },
@@ -375,6 +390,9 @@ export const RawColorAnalysisScreen = ({
               munsellText={munsell.text}
               onSelectReference={onSelectReference}
               onDone={() => navigation.pop()}
+              refRect={analyzed.refRect}
+              sampleRect={analyzed.sampleRect}
+              preview={analyzed.preview}
             />
           )}
         </Column>
@@ -397,6 +415,9 @@ const ResultView = ({
   munsellText,
   onSelectReference,
   onDone,
+  refRect,
+  sampleRect,
+  preview,
 }: {
   card: LinearRgb;
   sample: LinearRgb;
@@ -405,14 +426,24 @@ const ResultView = ({
   munsellText: string;
   onSelectReference: (id: string) => void;
   onDone: () => void;
+  refRect: PreviewRect;
+  sampleRect: PreviewRect;
+  preview: {uri: string; width: number; height: number};
 }) => {
   const lowConfidence =
     selectedRef.confidence < LOW_CONFIDENCE_WARNING_THRESHOLD;
   return (
     <>
+      {/* DEBUG: crop views showing the EXACT preview region each ROI
+         was sampled from. If these don't match the boxes the user
+         framed, the analyzer is sampling the wrong area. */}
       <Row space="md" alignItems="center">
-        <CapturedSwatch label="Reference" linearRgb={card} />
-        <CapturedSwatch label="Soil" linearRgb={sample} />
+        <RoiCrop label="Reference" rect={refRect} preview={preview} />
+        <RoiCrop label="Soil" rect={sampleRect} preview={preview} />
+      </Row>
+      <Row space="md" alignItems="center">
+        <CapturedSwatch label="Ref (avg)" linearRgb={card} />
+        <CapturedSwatch label="Soil (avg)" linearRgb={sample} />
       </Row>
       <Text variant="body1" bold>
         Soil color: {munsellText}
@@ -477,6 +508,47 @@ const CapturedSwatch = ({
         borderColor="grey.500"
         backgroundColor={css}
       />
+      <Text variant="caption">{label}</Text>
+    </Column>
+  );
+};
+
+// Debug crop view — shows the EXACT region of the preview that was
+// sampled for one ROI. Uses SVG viewBox to crop without needing an
+// image-manipulator pass. If this crop doesn't visually match the
+// content the user thought was inside the box (e.g. it shows chart
+// body when the box was on the card), the analyzer's coord math is
+// off — the ROI drawn on the live camera and the ROI sampled from
+// the DNG have drifted apart.
+const RoiCrop = ({
+  label,
+  rect,
+  preview,
+}: {
+  label: string;
+  rect: PreviewRect;
+  preview: {uri: string; width: number; height: number};
+}) => {
+  const displayW = 100;
+  const displayH = 100;
+  return (
+    <Column alignItems="center" space="sm">
+      <View style={[styles.roiCropBox, {width: displayW, height: displayH}]}>
+        <Svg
+          width="100%"
+          height="100%"
+          viewBox={`${rect.left} ${rect.top} ${rect.width} ${rect.height}`}
+          preserveAspectRatio="xMidYMid slice">
+          <SvgImage
+            href={preview.uri}
+            x={0}
+            y={0}
+            width={preview.width}
+            height={preview.height}
+            preserveAspectRatio="xMidYMid meet"
+          />
+        </Svg>
+      </View>
       <Text variant="caption">{label}</Text>
     </Column>
   );
@@ -593,3 +665,12 @@ const decodeRects = async ({
   );
   return {card, sample};
 };
+
+const styles = StyleSheet.create({
+  roiCropBox: {
+    borderWidth: 1,
+    borderColor: '#8a8a8a',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+});
