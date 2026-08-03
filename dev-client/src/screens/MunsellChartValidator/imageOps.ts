@@ -90,10 +90,36 @@ export type WhiteMaskParams = {
   lumaTolerance: number;
   chromaTolerance: number;
   // Border-calibration path.
-  // Sample ring geometry, both expressed as fractions of the SHORTER
-  // image dimension so behaviour is aspect-invariant.
-  borderInnerBufferFrac: number; // 0.08 = start ring 8% OUTSIDE the guide
-  borderOuterMarginFrac: number; // 0.05 = end ring 5% inside the frame edge
+  //
+  // The sample ring is the annulus between:
+  //   OUTER boundary: `outerMargin = borderOuterMarginFrac × shortDim`
+  //                   INWARD from the frame edge (paper-white pixels
+  //                   too close to the actual frame edge may be dim
+  //                   from vignetting / grip shadow — skip them).
+  //   INNER boundary: `innerBuf = borderInnerBufferFrac × shortDim`
+  //                   OUTWARD from the (hypothetical) chart guide rect
+  //                   the user framed against. Anything inside this is
+  //                   assumed to potentially be chart body / chip / tape
+  //                   / hand and must not contaminate the paper
+  //                   estimate. shortDim = min(image w, h) so the same
+  //                   percentages work regardless of orientation.
+  //
+  // The dev overlay in MunsellChartValidatorScreen draws both boundaries
+  // as white dashed rects so a tester can eyeball what's actually in
+  // the sample area on any given capture.
+  //
+  // WATCH OUT: when the guide + innerBuf reaches an image edge before
+  // the outer margin does, the ring COLLAPSES to zero pixels on that
+  // edge and only the other edges contribute. This is easy on the
+  // top and bottom because the 4.5:7 chart guide is tall and centres
+  // vertically with small margins — a big innerBuf can push the dead
+  // zone past the frame edge there while the left/right ring is still
+  // fat. Effective sample count comes almost entirely from whichever
+  // edges retain any ring. Keep innerBuf small enough that all four
+  // edges stay non-degenerate for a typical framing (guide close to
+  // the frame edge on the short axis).
+  borderInnerBufferFrac: number; // fraction of shortDim
+  borderOuterMarginFrac: number; // fraction of shortDim
   // If the ring produces fewer than this many sample pixels, we fall
   // back to the percentile path — happens on loaded photos with weird
   // aspects or extreme framing that leaves no paper visible.
@@ -127,7 +153,18 @@ export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
   lumaTolerance: 60,
   chromaTolerance: 7,
   // Border-calibration params.
-  borderInnerBufferFrac: 0.08,
+  //
+  // 0.04 innerBuf keeps the top and bottom ring strips non-degenerate
+  // for the standard 4.5:7 chart guide in a portrait preview: at 0.08
+  // the dead zone reached past the outer margin on top/bottom (guide
+  // is tall) and 93% of the samples came from just the left/right
+  // vertical strips. Blue painter's tape at the corners then dominated
+  // those strips and pulled the paper anchor cool. 0.04 fattens all
+  // four sides, spreading the sample across more paper and diluting
+  // localised contamination. Any value < ~0.06 works for portrait 3:4;
+  // shrinking further starts risking chart body creeping into the ring
+  // if the user framed close to the guide edge.
+  borderInnerBufferFrac: 0.04,
   borderOuterMarginFrac: 0.05,
   borderMinSamples: 2000,
   // Effectively disable the shadow trim (1.0 → keep all ring pixels).

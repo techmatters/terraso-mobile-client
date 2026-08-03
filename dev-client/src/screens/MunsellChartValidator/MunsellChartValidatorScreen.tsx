@@ -26,6 +26,10 @@ import {
 import Share from 'react-native-share';
 import Svg, {
   Circle,
+  Defs,
+  Line,
+  Path,
+  Pattern,
   Rect,
   Image as SvgImage,
   Text as SvgText,
@@ -70,6 +74,7 @@ import {
   type MunsellChartResult,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/chartAnalysis';
 import {computeChartGuideRect} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
+import {DEFAULT_WHITE_MASK_PARAMS} from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
 import {
   DEFAULT_REGISTRATION_ALGORITHM,
   TEST_SWATCH_INDEX,
@@ -1189,6 +1194,87 @@ const DebugOverlayLayers = ({
         strokeDasharray="8,6"
         fill="none"
       />
+      {/* WhiteMask border-calibration sample area — the annulus is
+         filled with a white diagonal hash so it reads as an AREA (not
+         two boundary lines). Every hashed pixel is being fed to the
+         paper-anchor median. Inner boundary = guide + innerBuf; outer
+         boundary = frame - outerMargin. When these two boundaries
+         cross each other on some edge (usually top/bottom when the
+         guide is tall), the ring collapses to zero pixels on that
+         edge and only the other edges contribute. Use to eyeball
+         whether tape / Post-Its / stray objects are inside the sample
+         region. */}
+      {(() => {
+        const shortDim = Math.min(preview.width, preview.height);
+        const innerBuf =
+          shortDim * DEFAULT_WHITE_MASK_PARAMS.borderInnerBufferFrac;
+        const outerMargin =
+          shortDim * DEFAULT_WHITE_MASK_PARAMS.borderOuterMarginFrac;
+        const innerX = guideRect.x - innerBuf;
+        const innerY = guideRect.y - innerBuf;
+        const innerW = guideRect.w + 2 * innerBuf;
+        const innerH = guideRect.h + 2 * innerBuf;
+        const outerX = outerMargin;
+        const outerY = outerMargin;
+        const outerW = preview.width - 2 * outerMargin;
+        const outerH = preview.height - 2 * outerMargin;
+        // Two-subpath Path with evenodd fill = the outer rect minus
+        // the inner rect. Filled with a repeating diagonal-line pattern
+        // sized in the same user-space as the preview coords (so lines
+        // stay visually consistent across zoom levels).
+        const annulusPath =
+          `M${outerX},${outerY} h${outerW} v${outerH} h${-outerW} Z ` +
+          `M${innerX},${innerY} h${innerW} v${innerH} h${-innerW} Z`;
+        return (
+          <>
+            <Defs>
+              {/* Diagonal hash pattern. Drawn as an EXPLICIT slanted
+                 line rather than a vertical line + patternTransform=
+                 "rotate(45)" — react-native-svg's Pattern silently
+                 ignores patternTransform on iOS, and the tile rendered
+                 as vertical stubs that looked like tiny dots. Three
+                 overlapping segments make the diagonal continuous
+                 across tile edges (main line + two edge-fill lines
+                 that carry the diagonal past the tile corners). */}
+              <Pattern
+                id="whitemaskHash"
+                patternUnits="userSpaceOnUse"
+                width={16}
+                height={16}>
+                <Line
+                  x1={0}
+                  y1={16}
+                  x2={16}
+                  y2={0}
+                  stroke="white"
+                  strokeWidth={3}
+                />
+                <Line
+                  x1={-4}
+                  y1={4}
+                  x2={4}
+                  y2={-4}
+                  stroke="white"
+                  strokeWidth={3}
+                />
+                <Line
+                  x1={12}
+                  y1={20}
+                  x2={20}
+                  y2={12}
+                  stroke="white"
+                  strokeWidth={3}
+                />
+              </Pattern>
+            </Defs>
+            <Path
+              d={annulusPath}
+              fill="url(#whitemaskHash)"
+              fillRule="evenodd"
+            />
+          </>
+        );
+      })()}
       {/* Chart body bounding box in cyan — the region hole detection
          was restricted to. If this outline doesn't match the actual
          chart, the chart-body detector is at fault (wrong bandpass
