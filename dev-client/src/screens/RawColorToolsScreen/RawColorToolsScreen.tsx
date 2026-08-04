@@ -88,10 +88,10 @@ export const RawColorToolsScreen = () => {
   const navigation = useNavigation();
   const [pageHue, setPageHueState] = useState<string>(() => {
     const persisted = kvStorage.getString(CHART_PAGE_HUE_KEY);
-    if (persisted && MUNSELL_PAGES.some(p => p.hue === persisted)) {
+    if (persisted && MUNSELL_PAGES.some(p => p.name === persisted)) {
       return persisted;
     }
-    return MUNSELL_PAGES[0].hue;
+    return MUNSELL_PAGES[0].name;
   });
   const setPageHue = useCallback((hue: string) => {
     kvStorage.setString(CHART_PAGE_HUE_KEY, hue);
@@ -226,7 +226,7 @@ export const RawColorToolsScreen = () => {
           </Paragraph>
           <Select<string, false>
             nullable={false}
-            options={MUNSELL_PAGES.map(p => p.hue)}
+            options={MUNSELL_PAGES.map(p => p.name)}
             value={pageHue}
             onValueChange={setPageHue}
             renderValue={hue => `Munsell ${hue} page`}

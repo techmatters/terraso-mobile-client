@@ -77,7 +77,6 @@ import {computeChartGuideRect} from 'terraso-mobile-client/screens/MunsellChartV
 import {DEFAULT_WHITE_MASK_PARAMS} from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
 import {
   DEFAULT_REGISTRATION_ALGORITHM,
-  TEST_SWATCH_INDEX,
   type RegistrationAlgorithm,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {
@@ -126,7 +125,10 @@ export type MunsellChartValidatorProps = {
 // sized at.
 const SVG_WIDTH = 800;
 const HEADER_H = 50;
-const LABEL_W = 70;
+// 130 rather than 70 so multi-char row labels ("7.5YR /1", "10YR /2",
+// etc.) don't get clipped on WHITE / mixed-hue pages. Standard-page
+// single-digit value labels (2..8) still fit comfortably.
+const LABEL_W = 130;
 const CELL_W = (SVG_WIDTH - LABEL_W) / CHART_CHROMAS.length;
 const CELL_H = 130;
 // Legend band above the grid. Explains what the two swatches, the
@@ -252,14 +254,12 @@ export const MunsellChartValidatorScreen = ({
   );
   // Resolve the WB reference measurement. If the user tapped the
   // test-swatch cell, build a synthetic CellMeasurement from the
-  // picked reference's expected colour + the DNG sample at
-  // TEST_SWATCH_INDEX. Otherwise look up a real cell by notation.
+  // picked reference's expected colour + the DNG sample at the
+  // test-swatch position. Otherwise look up a real cell by notation.
   // Hoisted out of the `cells` useMemo so the test-swatch's corrected
   // measured colour can reuse it via applyWbCorrection below.
   const testMeasuredRaw =
-    state.kind === 'ready'
-      ? (state.result.matchedSampleValues?.[TEST_SWATCH_INDEX] ?? null)
-      : null;
+    state.kind === 'ready' ? (state.result.testSwatchLinearRgb ?? null) : null;
   const ref: CellMeasurement | undefined = useMemo(() => {
     if (state.kind !== 'ready') return undefined;
     if (
@@ -428,7 +428,8 @@ export const MunsellChartValidatorScreen = ({
   }, []);
 
   return (
-    <ScreenScaffold AppBar={<AppBar title={`Munsell ${page.hue} validator`} />}>
+    <ScreenScaffold
+      AppBar={<AppBar title={`Munsell ${page.name} validator`} />}>
       <SafeScrollView>
         <Column padding="md" space="md">
           {state.kind === 'analyzing' && (
@@ -465,7 +466,6 @@ export const MunsellChartValidatorScreen = ({
           {state.kind === 'failed' && (
             <FailedView
               debug={state.debug}
-              page={page}
               sharing={sharing}
               onShareDng={shareDng}
               onShareWhiteMask={shareWhiteMask}
@@ -528,7 +528,7 @@ export const MunsellChartValidatorScreen = ({
                   />
                 </Box>
               ) : (
-                <SourceOverlayView result={state.result} page={page} />
+                <SourceOverlayView result={state.result} />
               )}
               <TestSwatchReverseMatch
                 testRef={testRef}
@@ -604,8 +604,7 @@ export const MunsellChartValidatorScreen = ({
                   onCellPress={null}
                   testRef={testRef}
                   testMeasuredLinearRgb={
-                    state.result.matchedSampleValues?.[TEST_SWATCH_INDEX] ??
-                    null
+                    state.result.testSwatchLinearRgb ?? null
                   }
                   onTestSwatchPress={undefined}
                   testSwatchIsReference={
@@ -644,11 +643,7 @@ export const MunsellChartValidatorScreen = ({
                      with the mask forced on. Gives the shared PNG the
                      full debug context (blobs, fitted grid, winning
                      triplet, sample rects) not just the mask alone. */}
-                  <DebugOverlayLayers
-                    result={state.result}
-                    maskView="bright"
-                    page={page}
-                  />
+                  <DebugOverlayLayers result={state.result} maskView="bright" />
                 </Svg>
               </View>
             </>
@@ -693,12 +688,48 @@ const ResultSvg = ({
   onTestSwatchPress: (() => void) | undefined;
   testSwatchIsReference: boolean;
 }) => {
-  const testSwatchRowIdx = page.values.length - 1;
-  const testSwatchColIdx = page.chromas.length - 1;
+  // Layout-driven axis labels. Standard: rows=value, cols=chroma
+  // (with per-column hue subscript if the page has columnHues).
+  // White: rows=(hue,chroma) pair, cols=value.
+  const layout = page.layout ?? 'standard';
+  const firstCol = page.firstChipCol ?? 0;
+  const nRows = page.chipsPerRow.length;
+  const nDataCols =
+    layout === 'white' ? page.values.length : page.chromas.length;
+  const rowLabelFor = (rowIdx: number): string => {
+    if (layout === 'white') {
+      const r = page.rowLabels?.[rowIdx];
+      if (!r) return '';
+      return r.chroma === 0 ? r.hue : `${r.hue} /${r.chroma}`;
+    }
+    const v = page.values[rowIdx];
+    return v === undefined ? '' : `${v}`;
+  };
+  const colLabelFor = (dataCol: number): string => {
+    if (layout === 'white') {
+      const v = page.values[dataCol];
+      return v === undefined ? '' : `${v}`;
+    }
+    const chroma = page.chromas[dataCol];
+    const hue = page.columnHues?.[dataCol];
+    // For mixed-hue standard pages (10Y-5GY, GLEY1, GLEY2) the plain
+    // chroma alone doesn't identify a column — show hue too.
+    return hue ? `${hue} /${chroma}` : `${chroma}`;
+  };
+  // Test-swatch is drawn in the physical (rowIdx=last, colIdx=last)
+  // slot — always empty across the current page set. For pages where
+  // that slot IS populated (defensive: none today), we fall through
+  // to the real cell.
+  const testSwatchRowIdx = nRows - 1;
+  const testSwatchDataCol = nDataCols - 1;
+  const testSwatchPhysicalCol = firstCol + testSwatchDataCol;
   // Build a lookup so we can drop each cell into its grid position.
+  // Key by PHYSICAL (rowIdx, colIdx) — cells carry physical coords
+  // and mixed-hue pages have duplicate (value, chroma) pairs across
+  // columns that would collide on a notation- or chroma-based key.
   const byKey = new Map<string, MunsellCellResult>();
   for (const c of cells) {
-    byKey.set(`${c.cell.value}/${c.cell.chroma}`, c);
+    byKey.set(`r${c.cell.rowIdx}c${c.cell.colIdx}`, c);
   }
 
   const elements: React.ReactNode[] = [];
@@ -720,48 +751,60 @@ const ResultSvg = ({
   // Legend band at the top explaining each part of a cell.
   elements.push(<Legend key="legend" />);
 
-  // Column headers.
-  page.chromas.forEach((chroma, colIdx) => {
-    const x = LABEL_W + CELL_W * colIdx + CELL_W / 2;
+  // Column headers. Font shrinks a bit when the label carries a hue
+  // prefix (mixed-hue standard, or WHITE values) — otherwise the
+  // combined "10Y /2" style overflows the cell width.
+  const colHeaderNeedsHue =
+    layout === 'white' || !!page.columnHues || nDataCols < 6;
+  const colHeaderFont = colHeaderNeedsHue
+    ? Math.round(FONT_HEADER * 0.7)
+    : FONT_HEADER;
+  for (let dataCol = 0; dataCol < nDataCols; dataCol++) {
+    const x = LABEL_W + CELL_W * dataCol + CELL_W / 2;
     elements.push(
       <SvgText
-        key={`col-${chroma}`}
+        key={`col-${dataCol}`}
         x={x}
         y={GRID_START_Y + HEADER_H - 14}
         fill="black"
-        fontSize={FONT_HEADER}
+        fontSize={colHeaderFont}
         fontWeight="bold"
         textAnchor="middle">
-        {chroma}
+        {colLabelFor(dataCol)}
       </SvgText>,
     );
-  });
+  }
 
   // Row headers + cells.
-  page.values.forEach((value, rowIdx) => {
+  const rowHeaderFont =
+    layout === 'white' ? Math.round(FONT_HEADER * 0.7) : FONT_HEADER;
+  for (let rowIdx = 0; rowIdx < nRows; rowIdx++) {
     const y = GRID_START_Y + HEADER_H + CELL_H * rowIdx;
     elements.push(
       <SvgText
-        key={`row-${value}`}
+        key={`row-${rowIdx}`}
         x={LABEL_W - 14}
-        y={y + CELL_H / 2 + FONT_HEADER / 3}
+        y={y + CELL_H / 2 + rowHeaderFont / 3}
         fill="black"
-        fontSize={FONT_HEADER}
+        fontSize={rowHeaderFont}
         fontWeight="bold"
         textAnchor="end">
-        {value}
+        {rowLabelFor(rowIdx)}
       </SvgText>,
     );
 
-    page.chromas.forEach((chroma, colIdx) => {
-      const cx = LABEL_W + CELL_W * colIdx;
-      const key = `${value}/${chroma}`;
+    for (let dataCol = 0; dataCol < nDataCols; dataCol++) {
+      const cx = LABEL_W + CELL_W * dataCol;
+      const physicalCol = firstCol + dataCol;
+      const key = `r${rowIdx}c${physicalCol}`;
       const cellResult = byKey.get(key);
       // Bottom-right corner: repurposed for the test-swatch comparison
-      // (see TEST_SWATCH_INDEX). This position is always empty on the
-      // physical chart across all configured pages.
+      // (see TEST_SWATCH_INDEX in matchAlgorithm). Only if the slot
+      // isn't already claimed by a real chip.
       const isTestSwatchSlot =
-        rowIdx === testSwatchRowIdx && colIdx === testSwatchColIdx;
+        rowIdx === testSwatchRowIdx &&
+        physicalCol === testSwatchPhysicalCol &&
+        !cellResult;
       if (isTestSwatchSlot && testRef && testMeasuredLinearRgb) {
         elements.push(
           <TestSwatchCell
@@ -776,7 +819,7 @@ const ResultSvg = ({
             isReference={testSwatchIsReference}
           />,
         );
-        return;
+        continue;
       }
       if (!cellResult) {
         // Grid slot with no swatch on the physical card. Render an
@@ -793,7 +836,7 @@ const ResultSvg = ({
             strokeWidth={1}
           />,
         );
-        return;
+        continue;
       }
       elements.push(
         <ResultCell
@@ -811,8 +854,8 @@ const ResultSvg = ({
           }
         />,
       );
-    });
-  });
+    }
+  }
 
   return (
     <Svg
@@ -1113,16 +1156,13 @@ const STATUS_LABEL: Record<string, string> = {
 const DebugOverlayLayers = ({
   result,
   maskView,
-  page,
 }: {
   result: MunsellChartResult;
   maskView: 'none' | 'bright' | 'body';
-  // Which page the DNG is of — controls which SAMPLE_GRID red-square
-  // rects to draw. Universal SAMPLE_GRID has entries for every chip
-  // position across all pages plus one test-swatch slot; per-page,
-  // only the positions actually populated on THIS page (plus the
-  // test-swatch slot at the end) are meaningful.
-  page: MunsellPage;
+  // `page` was needed when this component filtered SAMPLE_GRID entries
+  // by page.chipsPerRow; that filter is gone now that chartAnalysis
+  // feeds detectChartByRegions a per-page sample grid. Keep the
+  // parameter list flat rather than reintroducing the page.
 }) => {
   const {preview, previewRects, detectedSwatches, grid} = result;
   // Where the camera-view chart-guide rectangle WAS at capture time,
@@ -1131,23 +1171,6 @@ const DebugOverlayLayers = ({
   // (assuming they captured with the app; for loaded photos it's the
   // hypothetical guide at the same fractions inside the loaded image).
   const guideRect = computeChartGuideRect(preview.width, preview.height);
-  // Universal SAMPLE_GRID layout is 7 rows × MAX_COLS = 42, then one
-  // extra TEST_SWATCH point appended. Row N stride = MAX_COLS = 6
-  // (max chromas across all pages). Precompute the set of valid
-  // matchedSampleRects indices for the current page.
-  const MAX_COLS = 6;
-  const N_CHIP_ROWS = page.chipsPerRow.length;
-  const validSampleIdx = new Set<number>();
-  for (let row = 0; row < N_CHIP_ROWS; row++) {
-    for (let col = 0; col < page.chipsPerRow[row]; col++) {
-      validSampleIdx.add(row * MAX_COLS + col);
-    }
-  }
-  // TEST_SWATCH_INDEX is the last entry — SAMPLE_GRID length - 1.
-  // Always include it; the test-swatch cell renders it regardless.
-  if (grid.matchedSampleRects) {
-    validSampleIdx.add(grid.matchedSampleRects.length - 1);
-  }
   return (
     <>
       {/* Mask overlay (opaque blue for the bright mask so the tester
@@ -1394,25 +1417,24 @@ const DebugOverlayLayers = ({
           fill="none"
         />
       ))}
-      {/* Sample ROIs (SAMPLE_GRID transformed) as red squares. These
-         are the pixel regions the downstream analysis actually samples
-         for per-swatch colour. Filtered to positions that actually
-         have a chip on the current page (plus the test-swatch slot);
-         drawing rects on empty grid slots wasn't useful. */}
-      {grid.matchedSampleRects?.map((r, i) =>
-        validSampleIdx.has(i) ? (
-          <Rect
-            key={`sample-${i}`}
-            x={r.x}
-            y={r.y}
-            width={r.w}
-            height={r.h}
-            stroke="#ff2020"
-            strokeWidth={2}
-            fill="none"
-          />
-        ) : null,
-      )}
+      {/* Sample ROIs (per-page sample grid transformed) as red
+         squares. These are the pixel regions the downstream analysis
+         actually samples for per-swatch colour. Since chartAnalysis
+         now feeds detectChartByRegions a PER-PAGE sample grid, every
+         entry is a real chip position (plus the test-swatch appended
+         last), so no filtering is needed. */}
+      {grid.matchedSampleRects?.map((r, i) => (
+        <Rect
+          key={`sample-${i}`}
+          x={r.x}
+          y={r.y}
+          width={r.w}
+          height={r.h}
+          stroke="#ff2020"
+          strokeWidth={2}
+          fill="none"
+        />
+      ))}
       {/* Per-swatch sampling rects in red — from the OLD cluster-fit
          pipeline. Hidden when the new RANSAC match ran. */}
       {!grid.matchedGrid &&
@@ -1454,7 +1476,6 @@ const DebugOverlayLayers = ({
 // the DNG (always available) so the shot can be inspected off-device.
 const FailedView = ({
   debug,
-  page,
   sharing,
   onShareDng,
   onShareWhiteMask,
@@ -1462,7 +1483,6 @@ const FailedView = ({
   onBack,
 }: {
   debug: MunsellChartFailureDebug;
-  page: MunsellPage;
   sharing: boolean;
   onShareDng: () => void;
   // Parent owns the toDataURL/Share flow (needs setSharing) and hands
@@ -1487,6 +1507,7 @@ const FailedView = ({
         detectedSwatches: [],
         measurements: [],
         matchedSampleValues: null,
+        testSwatchLinearRgb: null,
       } as unknown as MunsellChartResult)
     : null;
   return (
@@ -1522,11 +1543,7 @@ const FailedView = ({
                MunsellChartResult only populates .grid + .preview —
                all detected / matched / triplet layers render nothing
                because their source fields are empty / null. */}
-            <DebugOverlayLayers
-              result={syntheticResult}
-              maskView="bright"
-              page={page}
-            />
+            <DebugOverlayLayers result={syntheticResult} maskView="bright" />
           </Svg>
         </Box>
       )}
@@ -1575,11 +1592,7 @@ const FailedView = ({
               height={preview.height}
               preserveAspectRatio="xMidYMid meet"
             />
-            <DebugOverlayLayers
-              result={syntheticResult}
-              maskView="bright"
-              page={page}
-            />
+            <DebugOverlayLayers result={syntheticResult} maskView="bright" />
           </Svg>
         </View>
       )}
@@ -1635,13 +1648,7 @@ const TestSwatchReverseMatch = ({
   );
 };
 
-const SourceOverlayView = ({
-  result,
-  page,
-}: {
-  result: MunsellChartResult;
-  page: MunsellPage;
-}) => {
+const SourceOverlayView = ({result}: {result: MunsellChartResult}) => {
   const {preview} = result;
   const aspect = preview.width / preview.height;
   const [maskView, setMaskView] = useState<'none' | 'bright' | 'body'>('none');
@@ -1656,7 +1663,7 @@ const SourceOverlayView = ({
         style={StyleSheet.absoluteFill}
         viewBox={`0 0 ${preview.width} ${preview.height}`}
         preserveAspectRatio="xMidYMid meet">
-        <DebugOverlayLayers result={result} maskView={maskView} page={page} />
+        <DebugOverlayLayers result={result} maskView={maskView} />
       </Svg>
       <RawBlobLegend
         rawBlobs={result.grid.rawBlobs}

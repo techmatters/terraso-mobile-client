@@ -19,133 +19,263 @@ import {munsellToLinearRgb} from 'munsell';
 
 import type {Point} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 
-// One page of the standard Munsell Soil Color Book. Each printed page
-// covers a single hue (e.g. '10YR') at 7 value rows and up to 6 chroma
-// columns. Not every (value, chroma) cell exists on every page — the
-// low-value / high-chroma corner is trimmed differently per hue.
+// One page of the Munsell Soil Color Book. Every page shares the SAME
+// physical hole/chip grid (up to 7 chip rows × 6 chip cols) — each
+// specific page just fills in a subset of that grid. Three variations
+// exist and are handled uniformly here:
 //
-// Layout invariants used elsewhere in the codebase:
-//   - `chromas` is left-anchored: chipsPerRow[N] means "this row has
-//     chipsPerRow[N] chips at chromas[0..chipsPerRow[N]-1]". Missing
-//     chips are always the RIGHTMOST ones for a row.
-//   - `values` and `chipsPerRow` have the same length (one entry per
-//     chip row, top-to-bottom).
-//   - All pages currently use the same chromas [1, 2, 3, 4, 6, 8].
-//   - Row spacing is assumed uniform in the SAMPLE_GRID coord system
-//     regardless of bottom-value (a 2.5-bottom page is treated as
-//     having the same 7 evenly-spaced rows as a 2-bottom page). Verify
-//     against the physical card; if some page has non-uniform spacing,
-//     add a per-row-y hook to MunsellPage.
+//   - Traditional single-hue pages (10YR, 5R, 5YR, ...): every chip
+//     inherits `page.name` as its Munsell hue; rows = value, cols =
+//     chroma.
+//   - Mixed-hue pages (10Y-5GY, GLEY1, GLEY2): rows = value, cols =
+//     chroma, but each column carries its own hue via `columnHues[N]`
+//     — so column N shows page.name at value×columnHues[N]/chromas[N].
+//   - The WHITE page: rows are labelled by (hue, chroma) pairs
+//     (`rowLabels`), columns are values. `layout: 'white'` selects
+//     that interpretation.
+//
+// Empty leading rows / columns:
+//   - Leading empty ROWS: set chipsPerRow[i] = 0 for those rows.
+//     `values[i]` (or, on WHITE, the row's slot in `rowLabels`) still
+//     needs a placeholder for the array to line up, but no chips are
+//     emitted and no holes contribute to the reference grid there.
+//   - Leading empty COLS: set `firstChipCol = k` to indicate that the
+//     first CHIP column of every row lands at physical column k
+//     (10Y-5GY and WHITE both skip physical column 0). columnHues[],
+//     chromas[], and (for WHITE) values[] index the CHIPS present,
+//     starting at physical column firstChipCol.
 export type MunsellPage = {
-  hue: string;
+  // Human-facing page identifier — used in the dropdown, AppBar
+  // title, and log lines. For traditional pages, this is the intrinsic
+  // Munsell hue every chip inherits. For mixed-hue and WHITE pages
+  // it's a label; per-chip hues come from columnHues / rowLabels.
+  name: string;
+  // For 'standard' layout: value per physical row. Length must equal
+  // chipsPerRow.length (one entry per physical row).
+  // For 'white' layout: value per column. Length must equal the max
+  // chipsPerRow[i] across all rows.
   values: readonly number[];
+  // Chroma per column, for 'standard' layout only. Length = number of
+  // chip columns present on the page (usually 6 for traditional,
+  // fewer for mixed-hue). Unused for 'white'.
   chromas: readonly number[];
+  // Per-column hue for 'standard' layout with mixed hues. Length must
+  // equal chromas.length when provided. When omitted every chip
+  // inherits page.name. Unused for 'white'.
+  columnHues?: readonly string[];
+  // Chip count per PHYSICAL row (left-anchored within the row's chip
+  // strip that starts at physical column firstChipCol). Length = 7
+  // for the standard soil-color book; empty rows have entry 0.
   chipsPerRow: readonly number[];
+  // 'standard' (default): rows = value, cols = chroma.
+  // 'white': rows = (hue, chroma) pair (see rowLabels), cols = value.
+  layout?: 'standard' | 'white';
+  // Required when layout === 'white'. One entry per physical row —
+  // (hue, chroma) for chips in that row. Length must equal
+  // chipsPerRow.length.
+  rowLabels?: readonly {hue: string; chroma: number}[];
+  // Physical column where each row's chip strip starts. Default 0.
+  // Set to 1 for pages whose leftmost physical column is empty
+  // (10Y-5GY, WHITE). All chip / hole geometry accounts for it, so
+  // the same 7×6 gridRegistration handles every page without knowing
+  // which one it's looking at.
+  firstChipCol?: number;
 };
 
-// The 9 Munsell Soil Color Book pages. Start with 10YR (the historical
-// default this validator was built around); the other 8 hues are
-// filled in as we get accurate chipsPerRow data for each printed page.
-// The order below determines the dropdown order on the results screen.
+// Every page currently registered with the validator. Order determines
+// dropdown order on the results screen. New pages after 5Y use the
+// firstChipCol / mixed-hue / white-layout features documented on the
+// MunsellPage type.
 export const MUNSELL_PAGES: readonly MunsellPage[] = [
   {
-    hue: '10YR',
+    name: '10YR',
     values: [8, 7, 6, 5, 4, 3, 2],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [6, 6, 6, 6, 5, 5, 2],
   },
   {
-    hue: '5R',
+    name: '5R',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [4, 6, 6, 6, 6, 6, 5],
   },
   {
-    hue: '7.5R',
+    name: '7.5R',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [4, 6, 6, 6, 6, 6, 4],
   },
   {
-    hue: '10R',
+    name: '10R',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [4, 6, 6, 6, 6, 5, 2],
   },
   {
-    hue: '2.5YR',
+    name: '2.5YR',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [4, 6, 6, 6, 6, 5, 4],
   },
   {
-    hue: '5YR',
+    name: '5YR',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [4, 6, 6, 6, 5, 4, 2],
   },
   {
-    hue: '7.5YR',
+    name: '7.5YR',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [5, 6, 6, 6, 5, 4, 3],
   },
   {
-    hue: '2.5Y',
+    name: '2.5Y',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [6, 6, 6, 5, 4, 3, 1],
   },
   {
-    hue: '5Y',
+    name: '5Y',
     values: [8, 7, 6, 5, 4, 3, 2.5],
     chromas: [1, 2, 3, 4, 6, 8],
     chipsPerRow: [6, 6, 6, 5, 4, 2, 2],
   },
+  // Mixed-hue: 4 data columns (10Y at chromas 2 & 4, 5GY at chromas
+  // 2 & 4). Top two physical rows are empty (values 8 and 7 don't
+  // exist on this page); data rows are 6/5/4/3. firstChipCol=1 —
+  // physical column 0 is empty like on WHITE.
+  // TODO: verify the exact per-column (hue, chroma) split and the
+  // populated row range against the physical card (currently guessed
+  // as [10Y/2, 10Y/4, 5GY/2, 5GY/4]).
+  {
+    name: '10Y-5GY',
+    values: [8, 7, 6, 5, 4, 3, 2.5],
+    chromas: [2, 4, 2, 4],
+    columnHues: ['10Y', '10Y', '5GY', '5GY'],
+    chipsPerRow: [0, 0, 4, 4, 4, 4, 0],
+    firstChipCol: 1,
+  },
+  // TODO: verify GLEY1 layout against the physical card.
+  {
+    name: 'GLEY1',
+    values: [8, 7, 6, 5, 4, 3, 2.5],
+    chromas: [0, 1, 1, 1],
+    columnHues: ['N', '10Y', '5GY', '10GY'],
+    chipsPerRow: [4, 4, 4, 4, 4, 4, 4],
+    firstChipCol: 1,
+  },
+  // TODO: verify GLEY2 layout against the physical card.
+  {
+    name: 'GLEY2',
+    values: [8, 7, 6, 5, 4, 3, 2.5],
+    chromas: [1, 1, 1, 1],
+    columnHues: ['5G', '10G', '5BG', '10BG'],
+    chipsPerRow: [4, 4, 4, 4, 4, 4, 4],
+    firstChipCol: 1,
+  },
+  // WHITE page. Transposed axes: rows are (hue, chroma) pairs, cols
+  // are values. Same 7 physical rows and same chip-column widths as
+  // standard pages, but starts at physical column 1 (firstChipCol=1)
+  // — the leftmost physical column is empty. 4 chip columns per row,
+  // one per value.
+  {
+    name: 'WHITE',
+    layout: 'white',
+    values: [9.5, 9, 8.5, 8],
+    chromas: [], // unused for 'white' layout
+    rowLabels: [
+      {hue: 'N', chroma: 0},
+      {hue: '7.5YR', chroma: 1},
+      {hue: '7.5YR', chroma: 2},
+      {hue: '10YR', chroma: 1},
+      {hue: '10YR', chroma: 2},
+      {hue: '2.5Y', chroma: 1},
+      {hue: '2.5Y', chroma: 2},
+    ],
+    chipsPerRow: [4, 4, 4, 4, 4, 4, 4],
+    firstChipCol: 1,
+  },
 ];
 
-// Look up a page by hue string. Falls back to the first page (10YR)
-// if the hue isn't found — used so a persisted "last-picked page" that
-// doesn't exist any more doesn't crash the screen.
-export const findMunsellPage = (hue: string): MunsellPage =>
-  MUNSELL_PAGES.find(p => p.hue === hue) ?? MUNSELL_PAGES[0];
+// Look up a page by name string. Falls back to the first page (10YR)
+// if the name isn't found — used so a persisted "last-picked page"
+// that no longer exists doesn't crash the screen.
+export const findMunsellPage = (name: string): MunsellPage =>
+  MUNSELL_PAGES.find(p => p.name === name) ?? MUNSELL_PAGES[0];
 
-// One resolved chart cell — the union of the page's (value, chroma)
-// coordinate and the pre-computed expected linear-sRGB for that
-// notation. Replaces MunsellChartCell.
+// One resolved chart cell — the union of the page's (hue, value,
+// chroma) coordinate and the pre-computed expected linear-sRGB for
+// that Munsell notation.
 export type MunsellPageCell = {
   hue: string;
   value: number;
   chroma: number;
   notation: string;
   expectedLinearRgb: {r: number; g: number; b: number};
-  // Position in the page's 7×6 chip grid. rowIdx=0 is the top (highest
-  // value); colIdx=0 is the leftmost (lowest chroma).
+  // PHYSICAL position in the 7×6 chip grid. rowIdx = physical row
+  // (matches page.chipsPerRow[rowIdx] and grid.centers[rowIdx]).
+  // colIdx = physical column (accounts for firstChipCol and matches
+  // grid.centers[rowIdx][colIdx]). Two cells with the same
+  // (rowIdx, colIdx) are impossible by construction.
   rowIdx: number;
   colIdx: number;
 };
 
+// Resolve the (hue, value, chroma) for a given (physical row,
+// data-column) position, dispatching on layout. `dataCol` is the
+// 0-indexed column among CHIPS PRESENT — not the physical column.
+// Physical column = firstChipCol + dataCol.
+const resolveCellCoord = (
+  page: MunsellPage,
+  rowIdx: number,
+  dataCol: number,
+): {hue: string; value: number; chroma: number} => {
+  const layout = page.layout ?? 'standard';
+  if (layout === 'white') {
+    const row = page.rowLabels?.[rowIdx];
+    if (!row) {
+      throw new Error(
+        `MunsellPage ${page.name}: layout='white' but rowLabels[${rowIdx}] missing`,
+      );
+    }
+    const value = page.values[dataCol];
+    if (value === undefined) {
+      throw new Error(
+        `MunsellPage ${page.name}: layout='white' but values[${dataCol}] missing`,
+      );
+    }
+    return {hue: row.hue, value, chroma: row.chroma};
+  }
+  // standard
+  const value = page.values[rowIdx];
+  const chroma = page.chromas[dataCol];
+  const hue = page.columnHues?.[dataCol] ?? page.name;
+  return {hue, value, chroma};
+};
+
 // Expand a page into its full cell list, one entry per PRESENT chip.
-// Notation is `${hue} ${value}/${chroma}`; expected linear-sRGB comes
-// from the munsell npm package (same source the 10YR-only code used).
-// Sorted top-to-bottom, left-to-right — matches the physical chart and
-// the on-screen result grid.
+// Notation is `${hue} ${value}/${chroma}`; expected linear-sRGB
+// comes from the munsell npm package. Sorted top-to-bottom,
+// left-to-right — matches the physical chart and the on-screen
+// result grid. Emitted cells carry PHYSICAL (rowIdx, colIdx) so
+// downstream grid.centers lookups work directly with them.
 export const pageCells = (page: MunsellPage): MunsellPageCell[] => {
+  const firstCol = page.firstChipCol ?? 0;
   const out: MunsellPageCell[] = [];
-  page.values.forEach((value, rowIdx) => {
-    const nChips = page.chipsPerRow[rowIdx];
-    for (let colIdx = 0; colIdx < nChips; colIdx++) {
-      const chroma = page.chromas[colIdx];
-      const notation = `${page.hue} ${value}/${chroma}`;
+  page.chipsPerRow.forEach((nChips, rowIdx) => {
+    for (let dataCol = 0; dataCol < nChips; dataCol++) {
+      const {hue, value, chroma} = resolveCellCoord(page, rowIdx, dataCol);
+      const notation = `${hue} ${value}/${chroma}`;
       const [r, g, b] = munsellToLinearRgb(notation);
       out.push({
-        hue: page.hue,
+        hue,
         value,
         chroma,
         notation,
         expectedLinearRgb: {r, g, b},
         rowIdx,
-        colIdx,
+        colIdx: firstCol + dataCol,
       });
     }
   });
@@ -153,134 +283,106 @@ export const pageCells = (page: MunsellPage): MunsellPageCell[] => {
 };
 
 // Chip-position template for a page, in the reference-grid coordinate
-// system: (col * 2, row * 3 - 1.5). Chip row N sits half a row-step
-// ABOVE hole row N (i.e., at y = row*3 - 1.5, where hole row 0 is at
-// y=0). This is the per-page equivalent of the old universal
-// SAMPLE_GRID — the union across all pages is a 7×6 = 42-point grid,
-// each page selects the subset that has real chips.
+// system: (physicalCol * 2, chipRow * 3 - 1.5). Chip row N sits half
+// a row-step ABOVE hole row N. Physical column accounts for
+// firstChipCol so a page skipping physical column 0 emits chips
+// starting at x=2, not x=0.
 export const pageSampleGridPoints = (page: MunsellPage): Point[] => {
+  const firstCol = page.firstChipCol ?? 0;
   const out: Point[] = [];
   page.chipsPerRow.forEach((chipCount, chipRow) => {
-    for (let col = 0; col < chipCount; col++) {
-      out.push({x: col * 2, y: chipRow * 3 - 1.5});
+    for (let dataCol = 0; dataCol < chipCount; dataCol++) {
+      out.push({x: (firstCol + dataCol) * 2, y: chipRow * 3 - 1.5});
     }
   });
   return out;
 };
 
 // Hole-position template for a page, in the reference-grid coordinate
-// system: (col * 2, row * 3). A hole row lives BETWEEN two chip rows
-// (below chip row N, above chip row N+1). A hole at (row, col) exists
-// only when BOTH adjacent chip strips have a chip at that column —
-// physically, each hole brackets a soil colour between the chip
-// above and the chip below, so a missing chip on either side means
-// there's no hole there either. This is min(chipsPerRow[N],
-// chipsPerRow[N+1]).
+// system: (physicalCol * 2, holeRow * 3). A hole row lives BETWEEN
+// two chip rows (below chip row N, above chip row N+1). A hole
+// exists at (row, col) only when BOTH adjacent chip strips have a
+// chip at that column, so nHoles = min(chipsPerRow[N],
+// chipsPerRow[N+1]). Physical column accounts for firstChipCol
+// (same as chips).
 //
 // Previously used just chipsPerRow[N+1] (the LOWER row) which was
 // correct for pages where the top row is complete (e.g. 10YR has 6
-// chips top→bottom, then falls off) but wrong for pages like 5R
-// whose TOP row is short (chipsPerRow[0] = 4, [1] = 6) — the code
-// invented two phantom holes at hole-row 0 columns 4-5.
+// chips top→bottom) but wrong for pages like 5R whose TOP row is
+// short — the code invented phantom holes at hole-row 0.
 export const pageReferenceGridPoints = (page: MunsellPage): Point[] => {
+  const firstCol = page.firstChipCol ?? 0;
   const out: Point[] = [];
   for (let holeRow = 0; holeRow < page.chipsPerRow.length - 1; holeRow++) {
     const nHoles = Math.min(
       page.chipsPerRow[holeRow],
       page.chipsPerRow[holeRow + 1],
     );
-    for (let col = 0; col < nHoles; col++) {
-      out.push({x: col * 2, y: holeRow * 3});
+    for (let dataCol = 0; dataCol < nHoles; dataCol++) {
+      out.push({x: (firstCol + dataCol) * 2, y: holeRow * 3});
     }
   }
   return out;
 };
 
-// Universal reference-grid template — the per-row MAX of hole counts
-// across ALL pages in MUNSELL_PAGES. This is what the RANSAC anchor
-// matcher fits against, so it doesn't need to know which page is
-// being captured. The MAX (union) choice lets every real chart hole
-// contribute to the score: if the fit lands a ref point on a page
-// position that has no chip, it simply doesn't find a match there —
-// no penalty. Compare to the MIN (intersection) choice which would
-// silently discard the ~6 extra hole positions 10YR has beyond what
-// every other page has, giving max-24-match instead of max-30.
+// Universal reference grid — union across ALL registered pages, of
+// every physical (col, holeRow) position that any page has a hole
+// at. Used as the fallback reference grid for RANSAC when the caller
+// doesn't hand one in. Extra positions that no page has cost nothing
+// (the fit just doesn't find a matching detection there).
 //
-// Assumes all pages have the same number of value rows (7 → 6 hole
-// rows); throws if they don't, since a mixed-length page set breaks
-// the per-row max logic.
+// Handles heterogeneous chipsPerRow counts, firstChipCol shifts,
+// and 'white' layout uniformly by walking each page's own hole-
+// position template.
 export const computeUniversalMaxReferenceGrid = (
   pages: readonly MunsellPage[],
 ): Point[] => {
-  if (pages.length === 0) return [];
-  const nHoleRows = pages[0].chipsPerRow.length - 1;
-  for (const p of pages) {
-    if (p.chipsPerRow.length - 1 !== nHoleRows) {
-      throw new Error(
-        `MunsellPage ${p.hue} has ${p.chipsPerRow.length} chip rows; ` +
-          `expected ${nHoleRows + 1} (all pages must have the same row count)`,
-      );
-    }
-  }
-  const out: Point[] = [];
-  for (let row = 0; row < nHoleRows; row++) {
-    let maxCount = 0;
-    for (const p of pages) {
-      maxCount = Math.max(maxCount, p.chipsPerRow[row + 1]);
-    }
-    for (let col = 0; col < maxCount; col++) {
-      out.push({x: col * 2, y: row * 3});
-    }
-  }
-  return out;
+  return dedupPoints(pages.flatMap(pageReferenceGridPoints));
 };
 
-// Universal reference-grid template — MIN across all pages (kept for
-// history; see computeUniversalMaxReferenceGrid above for the current
-// choice and rationale).
+// Historical MIN (intersection) variant — kept for reference. Now
+// computed as the intersection of per-page hole templates.
 export const computeUniversalMinReferenceGrid = (
   pages: readonly MunsellPage[],
 ): Point[] => {
   if (pages.length === 0) return [];
-  const nHoleRows = pages[0].chipsPerRow.length - 1;
-  for (const p of pages) {
-    if (p.chipsPerRow.length - 1 !== nHoleRows) {
-      throw new Error(
-        `MunsellPage ${p.hue} has ${p.chipsPerRow.length} chip rows; ` +
-          `expected ${nHoleRows + 1} (all pages must have the same row count)`,
-      );
-    }
-  }
-  const out: Point[] = [];
-  for (let row = 0; row < nHoleRows; row++) {
-    let minCount = Infinity;
-    for (const p of pages) {
-      minCount = Math.min(minCount, p.chipsPerRow[row + 1]);
-    }
-    for (let col = 0; col < minCount; col++) {
-      out.push({x: col * 2, y: row * 3});
-    }
-  }
-  return out;
+  const perPage = pages.map(
+    p => new Set(pageReferenceGridPoints(p).map(pointKey)),
+  );
+  const first = perPage[0];
+  const inAll = Array.from(first).filter(k => perPage.every(s => s.has(k)));
+  return inAll
+    .map(unpointKey)
+    .sort((a, b) => (a.y === b.y ? a.x - b.x : a.y - b.y));
 };
 
-// Union across all pages — the widest possible chip grid. Used by the
-// analyzer to sample once at every position that COULD have a chip on
-// some page; each page then reads only the subset relevant to it.
+// Universal sample grid — union across ALL registered pages, of
+// every physical (col, chipRow) chip position that any page has.
+// Same rationale as the reference grid; also uniform across layouts
+// and firstChipCol via per-page pageSampleGridPoints.
 export const computeUniversalMaxSampleGrid = (
   pages: readonly MunsellPage[],
 ): Point[] => {
-  if (pages.length === 0) return [];
-  const nChipRows = pages[0].chipsPerRow.length;
+  return dedupPoints(pages.flatMap(pageSampleGridPoints));
+};
+
+// Point-set utilities — the universal grid computations need a
+// stable string key to dedupe / intersect points that were produced
+// independently by per-page templates.
+const pointKey = (p: Point): string => `${p.x},${p.y}`;
+const unpointKey = (k: string): Point => {
+  const [x, y] = k.split(',').map(Number);
+  return {x, y};
+};
+const dedupPoints = (points: readonly Point[]): Point[] => {
+  const seen = new Set<string>();
   const out: Point[] = [];
-  for (let row = 0; row < nChipRows; row++) {
-    let maxCount = 0;
-    for (const p of pages) {
-      maxCount = Math.max(maxCount, p.chipsPerRow[row]);
-    }
-    for (let col = 0; col < maxCount; col++) {
-      out.push({x: col * 2, y: row * 3 - 1.5});
+  for (const p of points) {
+    const k = pointKey(p);
+    if (!seen.has(k)) {
+      seen.add(k);
+      out.push(p);
     }
   }
-  return out;
+  return out.sort((a, b) => (a.y === b.y ? a.x - b.x : a.y - b.y));
 };

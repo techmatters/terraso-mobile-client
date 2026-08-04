@@ -72,7 +72,7 @@ export const REFERENCE_GRID: readonly Point[] =
 // uses it as a "test swatch" cell that compares a user-picked
 // reference colour (Post-it yellow, gray card, etc.) against whatever
 // the DNG shows at that position. Read via TEST_SWATCH_INDEX below.
-const TEST_SWATCH_POINT: Point = {x: 5 * 2, y: 6 * 3 - 1.5};
+export const TEST_SWATCH_POINT: Point = {x: 5 * 2, y: 6 * 3 - 1.5};
 export const SAMPLE_GRID: readonly Point[] = [
   ...computeUniversalMaxSampleGrid(MUNSELL_PAGES),
   TEST_SWATCH_POINT,

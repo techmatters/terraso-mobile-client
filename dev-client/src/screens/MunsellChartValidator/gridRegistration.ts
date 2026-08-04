@@ -650,6 +650,15 @@ export const detectChartByRegions = (
   // RegistrationAlgorithm for the current set and matchAlgorithm.ts
   // for the runners.
   algorithm: RegistrationAlgorithm = DEFAULT_REGISTRATION_ALGORITHM,
+  // Sample-grid template — the CHIP positions (plus any extras like
+  // TEST_SWATCH_POINT) the caller wants transformed into pixel
+  // rectangles once the fit is found. Default is the universal MAX
+  // sample grid across all pages, which includes chip positions no
+  // specific page has — passing a per-page sample grid keeps
+  // matchedSampleRects tight to the actual chart being analysed
+  // (so debug-overlay red rects don't appear at positions the page
+  // doesn't populate — e.g., WHITE's empty physical column 0).
+  sampleGrid: readonly Point[] = SAMPLE_GRID,
 ): GridDetection | null => {
   const tStartAll = Date.now();
   // 1. Find inscribed circles in the mask. Distance transform gives,
@@ -1164,7 +1173,7 @@ export const detectChartByRegions = (
       // swatch even when the fit has slight residual drift near the
       // chart edges.
       const halfSide = 0.1875 * Math.min(colStepPx, rowStepPx);
-      matchedSampleRects = SAMPLE_GRID.map(p => {
+      matchedSampleRects = sampleGrid.map(p => {
         const c = applyAffine(match.transform, p);
         return {
           x: c.x - halfSide,

@@ -37,6 +37,7 @@ import {
 } from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
 import {
   DEFAULT_REGISTRATION_ALGORITHM,
+  TEST_SWATCH_POINT,
   type RegistrationAlgorithm,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {CHART_HUE} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
@@ -44,6 +45,7 @@ import {
   MUNSELL_PAGES,
   pageCells,
   pageReferenceGridPoints,
+  pageSampleGridPoints,
   type MunsellPage,
   type MunsellPageCell,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
@@ -108,12 +110,18 @@ export type MunsellChartResult = {
   // small green dots on the source view so the tester can see how
   // many swatches were actually detected vs. extrapolated.
   detectedSwatches: GridEntry[];
-  // Raw linear-sRGB per SAMPLE_GRID position (8 rows × 6 cols = 48),
-  // sampled from the DNG via matchedSampleRects. Same ordering as
-  // SAMPLE_GRID / matchedSampleRects. Null if the RANSAC match
-  // step didn't run. Not yet mapped to Munsell notations — that
-  // mapping is the next step.
+  // Raw linear-sRGB per position in the PER-PAGE sample grid (chips
+  // the page populates + test-swatch appended last). Same ordering
+  // and length as grid.matchedSampleRects. Null if the RANSAC match
+  // step didn't run.
   matchedSampleValues: {r: number; g: number; b: number}[] | null;
+  // Raw linear-sRGB at the always-empty TEST_SWATCH_POINT position —
+  // used by the result view to compare a user-picked reference
+  // (Post-It, gray card, etc.) against a real pixel sample. Null if
+  // the RANSAC match step didn't run. This is just a convenience
+  // alias for matchedSampleValues[last]; kept as its own field so
+  // consumers don't need to hard-code the array's last index.
+  testSwatchLinearRgb: {r: number; g: number; b: number} | null;
 };
 
 // Sensible default reference cell: 10YR 5/1 is a mid-value, low-chroma
@@ -224,11 +232,29 @@ export const analyzeMunsellChart = async (
   // wrong fit could score more than the correct one by lining up
   // paper false-positives with ref points where this page has no chip).
   const pageRefGrid = pageReferenceGridPoints(page);
-  const grid = detectChartByRegions(grayImage, mask, pageRefGrid, algorithm);
+  // Per-page sample grid — chips this specific page populates, plus
+  // the test-swatch point at the end. Keeps matchedSampleRects tight
+  // to real chip positions (no spurious red squares at physical
+  // columns / rows the page leaves empty, e.g. WHITE's col 0).
+  const pageSampleGrid = [...pageSampleGridPoints(page), TEST_SWATCH_POINT];
+  const grid = detectChartByRegions(
+    grayImage,
+    mask,
+    pageRefGrid,
+    algorithm,
+    pageSampleGrid,
+  );
   if (!grid) {
     // For failure debug — RAW gets the CIRAWFilter-rendered preview
     // PNG; PHOTO reuses the source file directly (it's already a
-    // display-friendly image the RN <Image> can consume).
+    // display-friendly image the RN <Image> can consume). BOTH paths
+    // must report width/height in the SMALL PREVIEW coord space (the
+    // same space every debug span is drawn in — brightMaskSpans,
+    // guideRect, sample-area hash, ROI rects). RAW's renderPreview
+    // returns the scaled-down dims naturally; PHOTO must use
+    // rgbPreview.width/height, NOT sourceWidth/sourceHeight, or the
+    // SVG viewBox blows up to full-sensor size and every debug span
+    // ends up crammed into the top-left ~30% of the canvas.
     const preview =
       format === 'raw'
         ? DngDecoderHybrid.renderPreview(imagePath, PREVIEW_MAX_DIM)
@@ -236,8 +262,8 @@ export const analyzeMunsellChart = async (
             uri: imagePath.startsWith('file://')
               ? imagePath
               : `file://${imagePath}`,
-            width: rgbPreview.sourceWidth,
-            height: rgbPreview.sourceHeight,
+            width: rgbPreview.width,
+            height: rgbPreview.height,
           };
     // Populate a minimal GridDetection with just the whiteMask spans
     // so the debug view can render the mask overlay (blue) and the
@@ -283,7 +309,7 @@ export const analyzeMunsellChart = async (
         `lumaAnchor=${lumaAnchor} lumaCutoff=${lumaCutoff} ` +
         `previewSize=${preview.width}x${preview.height} ` +
         `whiteMaskSpans=${partialGrid.brightMaskSpans.length} ` +
-        `algorithm=${algorithm} page=${page.hue}`,
+        `algorithm=${algorithm} page=${page.name}`,
     );
     return {kind: 'failure', debug};
   }
@@ -325,7 +351,10 @@ export const analyzeMunsellChart = async (
 
   // 5. Colour preview for the validation view. RAW → renderPreview
   // (CIRAWFilter → PNG in temp). PHOTO → use the source file URI
-  // directly; it's already a display-friendly image.
+  // directly; it's already a display-friendly image. width/height
+  // must be the SMALL PREVIEW dims (same coord space as every debug
+  // span). See the matching comment on the failure-path preview
+  // above for why using sourceWidth/sourceHeight breaks the overlay.
   const preview =
     format === 'raw'
       ? DngDecoderHybrid.renderPreview(imagePath, PREVIEW_MAX_DIM)
@@ -333,8 +362,8 @@ export const analyzeMunsellChart = async (
           uri: imagePath.startsWith('file://')
             ? imagePath
             : `file://${imagePath}`,
-          width: rgbPreview.sourceWidth,
-          height: rgbPreview.sourceHeight,
+          width: rgbPreview.width,
+          height: rgbPreview.height,
         };
 
   // 6. If the RANSAC match ran, ALSO sample the 48 SAMPLE_GRID
@@ -366,6 +395,9 @@ export const analyzeMunsellChart = async (
       previewRects,
       detectedSwatches: grid.detected,
       matchedSampleValues,
+      testSwatchLinearRgb: matchedSampleValues
+        ? (matchedSampleValues[matchedSampleValues.length - 1] ?? null)
+        : null,
     },
   };
 };
