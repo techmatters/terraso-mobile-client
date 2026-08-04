@@ -603,9 +603,12 @@ export const MunsellChartValidatorScreen = ({
                   referenceNotation={referenceNotation}
                   onCellPress={null}
                   testRef={testRef}
-                  testMeasuredLinearRgb={
-                    state.result.testSwatchLinearRgb ?? null
-                  }
+                  // WB-corrected measurement (same value the on-screen
+                  // copy uses). Passing the RAW `testSwatchLinearRgb`
+                  // here made the exported PNG show the uncorrected
+                  // ΔE and skip the "test-swatch is reference → ΔE 0"
+                  // update when the user tapped that cell.
+                  testMeasuredLinearRgb={testMeasuredCorrected}
                   onTestSwatchPress={undefined}
                   testSwatchIsReference={
                     referenceNotation === TEST_SWATCH_REFERENCE_NOTATION
