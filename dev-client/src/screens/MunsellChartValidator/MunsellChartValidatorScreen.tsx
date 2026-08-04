@@ -696,6 +696,7 @@ const ResultSvg = ({
   // White: rows=(hue,chroma) pair, cols=value.
   const layout = page.layout ?? 'standard';
   const firstCol = page.firstChipCol ?? 0;
+  const firstRow = page.firstChipRow ?? 0;
   const nRows = page.chipsPerRow.length;
   const nDataCols =
     layout === 'white' ? page.values.length : page.chromas.length;
@@ -719,11 +720,15 @@ const ResultSvg = ({
     // chroma alone doesn't identify a column — show hue too.
     return hue ? `${hue} /${chroma}` : `${chroma}`;
   };
-  // Test-swatch is drawn in the physical (rowIdx=last, colIdx=last)
-  // slot — always empty across the current page set. For pages where
-  // that slot IS populated (defensive: none today), we fall through
-  // to the real cell.
-  const testSwatchRowIdx = nRows - 1;
+  // Test-swatch is drawn in the last data-row / last data-col slot,
+  // which is empty across the current page set. Loop iterates in
+  // data-space (0..nRows-1); we compare against the last data indices
+  // for the loop check, and compare against the last PHYSICAL col for
+  // the cell-collision check (cells emit physical coords). Same for
+  // row: loop dataRow vs. last data row, but the lookup uses physical
+  // row so cells with physical (rowIdx=firstRow+dataRow) don't get
+  // treated as a test-swatch slot.
+  const testSwatchDataRow = nRows - 1;
   const testSwatchDataCol = nDataCols - 1;
   const testSwatchPhysicalCol = firstCol + testSwatchDataCol;
   // Build a lookup so we can drop each cell into its grid position.
@@ -778,34 +783,37 @@ const ResultSvg = ({
     );
   }
 
-  // Row headers + cells.
+  // Row headers + cells. Loop iterates in DATA-space (0..nRows-1);
+  // the cell lookup uses `firstRow + dataRow` for the physical row
+  // that matches what pageCells emits into cell.rowIdx.
   const rowHeaderFont =
     layout === 'white' ? Math.round(FONT_HEADER * 0.7) : FONT_HEADER;
-  for (let rowIdx = 0; rowIdx < nRows; rowIdx++) {
-    const y = GRID_START_Y + HEADER_H + CELL_H * rowIdx;
+  for (let dataRow = 0; dataRow < nRows; dataRow++) {
+    const physicalRow = firstRow + dataRow;
+    const y = GRID_START_Y + HEADER_H + CELL_H * dataRow;
     elements.push(
       <SvgText
-        key={`row-${rowIdx}`}
+        key={`row-${dataRow}`}
         x={LABEL_W - 14}
         y={y + CELL_H / 2 + rowHeaderFont / 3}
         fill="black"
         fontSize={rowHeaderFont}
         fontWeight="bold"
         textAnchor="end">
-        {rowLabelFor(rowIdx)}
+        {rowLabelFor(dataRow)}
       </SvgText>,
     );
 
     for (let dataCol = 0; dataCol < nDataCols; dataCol++) {
       const cx = LABEL_W + CELL_W * dataCol;
       const physicalCol = firstCol + dataCol;
-      const key = `r${rowIdx}c${physicalCol}`;
+      const key = `r${physicalRow}c${physicalCol}`;
       const cellResult = byKey.get(key);
-      // Bottom-right corner: repurposed for the test-swatch comparison
-      // (see TEST_SWATCH_INDEX in matchAlgorithm). Only if the slot
-      // isn't already claimed by a real chip.
+      // Test-swatch slot: check by data-space indices (last data row +
+      // last data col). Loop's dataRow/physicalCol both work here
+      // since testSwatchPhysicalCol accounts for firstChipCol already.
       const isTestSwatchSlot =
-        rowIdx === testSwatchRowIdx &&
+        dataRow === testSwatchDataRow &&
         physicalCol === testSwatchPhysicalCol &&
         !cellResult;
       if (isTestSwatchSlot && testRef && testMeasuredLinearRgb) {
@@ -1119,36 +1127,25 @@ const wrapRefName = (name: string): string[] => {
 // blobs disappear into the (existing) green dots while each rejection
 // reason is easy to eyeball on a busy overlay.
 const RAW_BLOB_STROKE: Record<string, string> = {
-  kept: 'rgba(34,204,34,0.9)', // green
-  kept_dark: 'rgba(0,220,0,0.9)', // green — dark swatch candidates (unused by new pipeline)
-  kept_bright: 'rgba(34,204,34,0.9)', // green — THE detected circles (RANSAC input)
-  reject_area_low: 'rgba(180,180,180,0.6)', // grey — noise
-  reject_area_high: 'rgba(0,120,255,0.9)', // blue — chart body / paper
-  reject_aspect: 'rgba(255,80,255,0.9)', // magenta — oblong
-  reject_fill: 'rgba(255,160,0,0.9)', // orange — ring/text/hollow
-  reject_mindim: 'rgba(140,140,140,0.7)', // grey — tiny
-  reject_touches_edge: 'rgba(255,255,0,0.6)', // yellow — edge
-  reject_brightness: 'rgba(150,100,50,0.7)', // brown — mid-value regions
-  reject_low_contrast: 'rgba(200,50,50,0.5)', // dark red — paper fragmentation
+  kept: 'rgba(34,204,34,0.9)', // green — RANSAC input (chip-hole circles)
+  reject_area_low: 'rgba(180,180,180,0.6)', // grey — smaller than min hole
+  reject_area_high: 'rgba(0,120,255,0.9)', // blue — bigger than max hole
+  reject_touches_edge: 'rgba(255,255,0,0.6)', // yellow — bbox at image edge
+  reject_outside_guide: 'rgba(220,40,220,0.9)', // magenta — centre outside chart-guide rect
+  reject_brightness: 'rgba(150,100,50,0.7)', // brown — centre pixel wrong side of paper/avg midpoint
 };
 
-// Statuses hidden from the legend and from the raw-blob overlay
-// because they aren't meaningful to the new RANSAC-match pipeline:
-// dark-classified circles aren't fed to the match, and the two
-// rejections cover blobs that are neutral / low-contrast (which
-// the match doesn't care about — they just aren't inputs).
-const HIDDEN_STATUSES = new Set([
-  'kept_dark',
-  'reject_low_contrast',
-  'reject_brightness',
-  'reject_fill',
-]);
+// Statuses hidden from the legend and from the raw-blob overlay.
+// Empty during dark-background tuning so every classified blob shows
+// up in its status colour and the tester can see WHY chip holes went
+// missing. Add entries back if a status becomes noise once tuning is
+// stable.
+const HIDDEN_STATUSES = new Set<string>();
 
-// Display label for statuses that get renamed in the legend to match
-// the vocabulary of the new pipeline (kept_bright → the actual
-// "detected circles" fed to RANSAC).
+// Display label for statuses that read more clearly with a short
+// alias in the legend below the source view.
 const STATUS_LABEL: Record<string, string> = {
-  kept_bright: 'detected',
+  kept: 'detected',
 };
 
 // Shared debug-overlay layers rendered on top of the preview image
@@ -1326,7 +1323,7 @@ const DebugOverlayLayers = ({
          render as bounding-box outlines. */}
       {grid.rawBlobs.map((b, i) => {
         if (HIDDEN_STATUSES.has(b.status)) return null;
-        if (b.status === 'kept_bright') {
+        if (b.status === 'kept') {
           // Back out the inscribed radius from the bbox — findFlatCircles
           // stored the circle's inscribing square as minX/minY/maxX/maxY.
           // Just the outer green ring here — the centre dot is drawn
@@ -1358,43 +1355,35 @@ const DebugOverlayLayers = ({
           />
         );
       })}
-      {/* Fitted-grid intersections in yellow. Draw all REFERENCE_GRID
-         points after the winning transform. Matched ones (inliers
-         within matchThreshold of a detected point) get FILLED yellow
-         so testers can see which ref points actually contributed to
-         the score; unmatched ones stay hollow. Green centre dots for
-         kept_bright detections are re-rendered after this pass so
-         they stay visible on top of the fills. */}
-      {grid.matchedGrid
-        ? grid.matchedGrid.map((p, i) => (
-            <Circle
-              key={`mg-${i}`}
-              cx={p.x}
-              cy={p.y}
-              r={10}
-              stroke="#ffcc00"
-              strokeWidth={3}
-              fill={grid.matchedGridInliers?.[i] ? '#ffcc00' : 'none'}
-            />
-          ))
-        : grid.centers.flatMap((row, ri) =>
-            row.map((p, ci) => (
-              <Rect
-                key={`grid-${ri}-${ci}`}
-                x={p.x - 3}
-                y={p.y - 3}
-                width={6}
-                height={6}
-                fill="#ffcc00"
-              />
-            )),
-          )}
+      {/* Fitted-grid intersections in yellow. Draw all page-specific
+         ref-grid points after the winning RANSAC transform. Matched
+         ones (inliers within matchThreshold of a detected point) get
+         FILLED yellow so testers can see which ref points actually
+         contributed to the score; unmatched ones stay hollow.
+         Radius 14 so they're visible on small phone screens.
+         DELIBERATELY no `grid.centers` fallback anymore — when
+         RANSAC didn't produce a matchedGrid, the fallback used to
+         draw a scatter of 42 tiny yellow squares that was confusing
+         (looked like extra ref points). Showing nothing in the
+         RANSAC-failed case is clearer: the absence of the 12 rings
+         is itself the signal that registration failed. */}
+      {grid.matchedGrid?.map((p, i) => (
+        <Circle
+          key={`mg-${i}`}
+          cx={p.x}
+          cy={p.y}
+          r={14}
+          stroke="#ffcc00"
+          strokeWidth={3}
+          fill={grid.matchedGridInliers?.[i] ? '#ffcc00' : 'none'}
+        />
+      ))}
       {/* Green centre dots for kept_bright detections, drawn AFTER
          the yellow rings so they sit visibly on top of any inlier
          fill. Paired with the outer green rings drawn in the raw-
          blobs pass above. */}
       {grid.rawBlobs.map((b, i) => {
-        if (b.status !== 'kept_bright') return null;
+        if (b.status !== 'kept') return null;
         return (
           <Rect
             key={`raw-dot-${i}`}
@@ -1420,13 +1409,16 @@ const DebugOverlayLayers = ({
           fill="none"
         />
       ))}
-      {/* Sample ROIs (per-page sample grid transformed) as red
-         squares. These are the pixel regions the downstream analysis
-         actually samples for per-swatch colour. Since chartAnalysis
-         now feeds detectChartByRegions a PER-PAGE sample grid, every
-         entry is a real chip position (plus the test-swatch appended
-         last), so no filtering is needed. */}
-      {grid.matchedSampleRects?.map((r, i) => (
+      {/* Sample ROIs — one red square per real cell, drawn at the
+         pixel regions the analyzer ACTUALLY samples (chartAnalysis
+         builds previewRects from grid.centers[cell.rowIdx][cell.colIdx]).
+         Previously used grid.matchedSampleRects (RANSAC-derived), but
+         that can drift by a row on pages with a very symmetric
+         ref-grid (e.g. 10Y-5GY's 3×4 hole grid — multiple locally-
+         optimal RANSAC fits, and it picks the wrong one), giving a
+         debug view that doesn't match what's actually being measured.
+         previewRects reflects the real sample positions. */}
+      {previewRects.map((r, i) => (
         <Rect
           key={`sample-${i}`}
           x={r.x}
@@ -1438,21 +1430,6 @@ const DebugOverlayLayers = ({
           fill="none"
         />
       ))}
-      {/* Per-swatch sampling rects in red — from the OLD cluster-fit
-         pipeline. Hidden when the new RANSAC match ran. */}
-      {!grid.matchedGrid &&
-        previewRects.map((r, i) => (
-          <Rect
-            key={`roi-${i}`}
-            x={r.x}
-            y={r.y}
-            width={r.w}
-            height={r.h}
-            stroke="#ff2020"
-            strokeWidth={2}
-            fill="none"
-          />
-        ))}
       {/* Filled green dots — swatch centroids from the OLD cluster
          fit. Hidden when the RANSAC match ran. */}
       {!grid.matchedGrid &&

@@ -31,6 +31,7 @@ import {
 } from 'terraso-mobile-client/screens/MunsellChartValidator/gridRegistration';
 import {
   maskToSpans,
+  rec709Luma,
   rgbToGray,
   whiteMask,
   type RgbImage,
@@ -237,12 +238,34 @@ export const analyzeMunsellChart = async (
   // to real chip positions (no spurious red squares at physical
   // columns / rows the page leaves empty, e.g. WHITE's col 0).
   const pageSampleGrid = [...pageSampleGridPoints(page), TEST_SWATCH_POINT];
+  // Paper anchor luma (rec.709) from whitemask border-ring calibration
+  // — lets detectChartByRegions relax its "bright" cutoff for dim
+  // captures where paper reads well below the fallback 170. Null when
+  // the calibration ring didn't yield enough samples (whiteMask fell
+  // back to the percentile path); classifyRegion then uses the historic
+  // fixed cutoff.
+  const paperLuma =
+    maskResult.borderMedianR !== null &&
+    maskResult.borderMedianG !== null &&
+    maskResult.borderMedianB !== null
+      ? rec709Luma(
+          maskResult.borderMedianR,
+          maskResult.borderMedianG,
+          maskResult.borderMedianB,
+        )
+      : null;
   const grid = detectChartByRegions(
     grayImage,
     mask,
     pageRefGrid,
     algorithm,
     pageSampleGrid,
+    paperLuma,
+    // Reuse the same guide rect the whitemask calibrated against —
+    // classifyRegion uses it to reject circles whose centres fall
+    // outside the framing box (paper-shell noise near the frame edge,
+    // common on dark-background captures).
+    guideRect,
   );
   if (!grid) {
     // For failure debug — RAW gets the CIRAWFilter-rendered preview
@@ -314,14 +337,35 @@ export const analyzeMunsellChart = async (
     return {kind: 'failure', debug};
   }
 
-  // 3. Compute per-cell sample rectangles in preview coords straight
-  //    from the detected grid. cellW/cellH already reflect the actual
-  //    swatch spacing in this capture; no homography needed.
+  // 3. Compute per-cell sample rectangles in preview coords. Prefer
+  //    the RANSAC-derived matchedSampleRects (transformed from
+  //    pageSampleGridPoints which are page-specific and correctly
+  //    positioned) when available. Fall back to grid.centers[r][c]
+  //    from the older cluster-fit path if RANSAC didn't produce a
+  //    match. The RANSAC-based positions correctly handle sparse
+  //    pages like 10Y-5GY where cluster-fit's row-assignment scoring
+  //    picks the wrong template-row alignment.
   const halfW = grid.cellW * SAMPLE_HALF_W_FRAC;
   const halfH = grid.cellH * SAMPLE_HALF_H_FRAC;
   const scaleX = rgbPreview.sourceWidth / rgbPreview.width;
   const scaleY = rgbPreview.sourceHeight / rgbPreview.height;
-  const previewRects = cells.map(cell => {
+  // matchedSampleRects has one extra entry at the end for
+  // TEST_SWATCH_POINT (chartAnalysis appends it to pageSampleGridPoints
+  // before passing to detectChartByRegions), so it's exactly
+  // cells.length + 1 entries. Slice off the trailing test-swatch to
+  // align 1-to-1 with `cells`.
+  const previewRects = cells.map((cell, i) => {
+    if (grid.matchedSampleRects && grid.matchedSampleRects[i]) {
+      const r = grid.matchedSampleRects[i];
+      const cx = r.x + r.w / 2;
+      const cy = r.y + r.h / 2;
+      return {
+        x: Math.round(cx - halfW),
+        y: Math.round(cy - halfH),
+        w: Math.round(halfW * 2),
+        h: Math.round(halfH * 2),
+      };
+    }
     const {x: cx, y: cy} = grid.centers[cell.rowIdx][cell.colIdx];
     return {
       x: Math.round(cx - halfW),

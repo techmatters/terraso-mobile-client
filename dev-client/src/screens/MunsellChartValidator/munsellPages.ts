@@ -35,15 +35,19 @@ import type {Point} from 'terraso-mobile-client/screens/MunsellChartValidator/ma
 //     that interpretation.
 //
 // Empty leading rows / columns:
-//   - Leading empty ROWS: set chipsPerRow[i] = 0 for those rows.
-//     `values[i]` (or, on WHITE, the row's slot in `rowLabels`) still
-//     needs a placeholder for the array to line up, but no chips are
-//     emitted and no holes contribute to the reference grid there.
-//   - Leading empty COLS: set `firstChipCol = k` to indicate that the
-//     first CHIP column of every row lands at physical column k
-//     (10Y-5GY and WHITE both skip physical column 0). columnHues[],
-//     chromas[], and (for WHITE) values[] index the CHIPS present,
-//     starting at physical column firstChipCol.
+//   - Set `firstChipRow = k` when the first DATA row of the page sits
+//     at physical row k (so k physical rows above it are empty).
+//     `values` / `rowLabels` / `chipsPerRow` all describe just the
+//     DATA rows — no leading zeros or placeholders. 10Y-5GY skips
+//     physical rows 0 and 1 → firstChipRow=2.
+//   - Set `firstChipCol = k` symmetrically for empty leading columns
+//     (10Y-5GY and WHITE both skip physical column 0 → firstChipCol=1).
+//     `chromas` / `columnHues` (and for WHITE `values`) describe just
+//     the DATA columns.
+//   - `chipsPerRow[i]` still says "row i has N chips" and can be 0 if
+//     a specific DATA row happens to be blank (uncommon), but you no
+//     longer need [0, 0, 4, 4, ...] to skip empty leading rows —
+//     that's what firstChipRow is for.
 export type MunsellPage = {
   // Human-facing page identifier — used in the dropdown, AppBar
   // title, and log lines. For traditional pages, this is the intrinsic
@@ -80,6 +84,13 @@ export type MunsellPage = {
   // the same 7×6 gridRegistration handles every page without knowing
   // which one it's looking at.
   firstChipCol?: number;
+  // Physical row where the first DATA row lands. Default 0. Set to a
+  // positive integer to skip empty leading rows (10Y-5GY skips
+  // physical rows 0 and 1 → firstChipRow=2). values, chipsPerRow,
+  // rowLabels index only the DATA rows; pageSampleGridPoints /
+  // pageReferenceGridPoints add firstChipRow to compute physical y
+  // in template coordinates.
+  firstChipRow?: number;
 };
 
 // Every page currently registered with the validator. Order determines
@@ -150,11 +161,15 @@ export const MUNSELL_PAGES: readonly MunsellPage[] = [
   // as [10Y/2, 10Y/4, 5GY/2, 5GY/4]).
   {
     name: '10Y-5GY',
-    values: [8, 7, 6, 5, 4, 3, 2.5],
+    // 4 data rows starting at physical row 2 (physical rows 0/1 are
+    // empty — chart has no value-8 or value-7 chips), and 4 data
+    // columns starting at physical column 1.
+    values: [6, 5, 4, 3],
     chromas: [2, 4, 2, 4],
     columnHues: ['10Y', '10Y', '5GY', '5GY'],
-    chipsPerRow: [0, 0, 4, 4, 4, 4, 0],
+    chipsPerRow: [4, 4, 4, 4],
     firstChipCol: 1,
+    firstChipRow: 2,
   },
   // TODO: verify GLEY1 layout against the physical card.
   {
@@ -222,21 +237,22 @@ export type MunsellPageCell = {
   colIdx: number;
 };
 
-// Resolve the (hue, value, chroma) for a given (physical row,
-// data-column) position, dispatching on layout. `dataCol` is the
-// 0-indexed column among CHIPS PRESENT — not the physical column.
-// Physical column = firstChipCol + dataCol.
+// Resolve the (hue, value, chroma) for a given (data-row, data-col)
+// position, dispatching on layout. Both indices are 0-based into the
+// DATA arrays (values / chromas / rowLabels), not physical positions —
+// firstChipRow / firstChipCol are applied by the caller when emitting
+// physical grid coordinates.
 const resolveCellCoord = (
   page: MunsellPage,
-  rowIdx: number,
+  dataRow: number,
   dataCol: number,
 ): {hue: string; value: number; chroma: number} => {
   const layout = page.layout ?? 'standard';
   if (layout === 'white') {
-    const row = page.rowLabels?.[rowIdx];
+    const row = page.rowLabels?.[dataRow];
     if (!row) {
       throw new Error(
-        `MunsellPage ${page.name}: layout='white' but rowLabels[${rowIdx}] missing`,
+        `MunsellPage ${page.name}: layout='white' but rowLabels[${dataRow}] missing`,
       );
     }
     const value = page.values[dataCol];
@@ -248,7 +264,7 @@ const resolveCellCoord = (
     return {hue: row.hue, value, chroma: row.chroma};
   }
   // standard
-  const value = page.values[rowIdx];
+  const value = page.values[dataRow];
   const chroma = page.chromas[dataCol];
   const hue = page.columnHues?.[dataCol] ?? page.name;
   return {hue, value, chroma};
@@ -262,10 +278,11 @@ const resolveCellCoord = (
 // downstream grid.centers lookups work directly with them.
 export const pageCells = (page: MunsellPage): MunsellPageCell[] => {
   const firstCol = page.firstChipCol ?? 0;
+  const firstRow = page.firstChipRow ?? 0;
   const out: MunsellPageCell[] = [];
-  page.chipsPerRow.forEach((nChips, rowIdx) => {
+  page.chipsPerRow.forEach((nChips, dataRow) => {
     for (let dataCol = 0; dataCol < nChips; dataCol++) {
-      const {hue, value, chroma} = resolveCellCoord(page, rowIdx, dataCol);
+      const {hue, value, chroma} = resolveCellCoord(page, dataRow, dataCol);
       const notation = `${hue} ${value}/${chroma}`;
       const [r, g, b] = munsellToLinearRgb(notation);
       out.push({
@@ -274,7 +291,7 @@ export const pageCells = (page: MunsellPage): MunsellPageCell[] => {
         chroma,
         notation,
         expectedLinearRgb: {r, g, b},
-        rowIdx,
+        rowIdx: firstRow + dataRow,
         colIdx: firstCol + dataCol,
       });
     }
@@ -283,28 +300,30 @@ export const pageCells = (page: MunsellPage): MunsellPageCell[] => {
 };
 
 // Chip-position template for a page, in the reference-grid coordinate
-// system: (physicalCol * 2, chipRow * 3 - 1.5). Chip row N sits half
-// a row-step ABOVE hole row N. Physical column accounts for
-// firstChipCol so a page skipping physical column 0 emits chips
-// starting at x=2, not x=0.
+// system: (physicalCol * 2, physicalRow * 3 - 1.5). Chip row N sits
+// half a row-step ABOVE hole row N. Physical row/col account for
+// firstChipRow / firstChipCol so a page skipping physical row 0 or
+// column 0 emits chips starting at the right offset instead of at 0.
 export const pageSampleGridPoints = (page: MunsellPage): Point[] => {
   const firstCol = page.firstChipCol ?? 0;
+  const firstRow = page.firstChipRow ?? 0;
   const out: Point[] = [];
-  page.chipsPerRow.forEach((chipCount, chipRow) => {
+  page.chipsPerRow.forEach((chipCount, dataRow) => {
+    const physicalRow = firstRow + dataRow;
     for (let dataCol = 0; dataCol < chipCount; dataCol++) {
-      out.push({x: (firstCol + dataCol) * 2, y: chipRow * 3 - 1.5});
+      out.push({x: (firstCol + dataCol) * 2, y: physicalRow * 3 - 1.5});
     }
   });
   return out;
 };
 
 // Hole-position template for a page, in the reference-grid coordinate
-// system: (physicalCol * 2, holeRow * 3). A hole row lives BETWEEN
-// two chip rows (below chip row N, above chip row N+1). A hole
-// exists at (row, col) only when BOTH adjacent chip strips have a
-// chip at that column, so nHoles = min(chipsPerRow[N],
-// chipsPerRow[N+1]). Physical column accounts for firstChipCol
-// (same as chips).
+// system: (physicalCol * 2, physicalHoleRow * 3). A hole row lives
+// BETWEEN two chip rows (below chip row N, above chip row N+1). A
+// hole exists at (row, col) only when BOTH adjacent chip strips have
+// a chip at that column, so nHoles = min(chipsPerRow[N],
+// chipsPerRow[N+1]). Both physical row and physical column account
+// for firstChipRow / firstChipCol.
 //
 // Previously used just chipsPerRow[N+1] (the LOWER row) which was
 // correct for pages where the top row is complete (e.g. 10YR has 6
@@ -312,14 +331,20 @@ export const pageSampleGridPoints = (page: MunsellPage): Point[] => {
 // short — the code invented phantom holes at hole-row 0.
 export const pageReferenceGridPoints = (page: MunsellPage): Point[] => {
   const firstCol = page.firstChipCol ?? 0;
+  const firstRow = page.firstChipRow ?? 0;
   const out: Point[] = [];
-  for (let holeRow = 0; holeRow < page.chipsPerRow.length - 1; holeRow++) {
+  for (
+    let dataHoleRow = 0;
+    dataHoleRow < page.chipsPerRow.length - 1;
+    dataHoleRow++
+  ) {
     const nHoles = Math.min(
-      page.chipsPerRow[holeRow],
-      page.chipsPerRow[holeRow + 1],
+      page.chipsPerRow[dataHoleRow],
+      page.chipsPerRow[dataHoleRow + 1],
     );
+    const physicalHoleRow = firstRow + dataHoleRow;
     for (let dataCol = 0; dataCol < nHoles; dataCol++) {
-      out.push({x: (firstCol + dataCol) * 2, y: holeRow * 3});
+      out.push({x: (firstCol + dataCol) * 2, y: physicalHoleRow * 3});
     }
   }
   return out;

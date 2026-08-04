@@ -1000,6 +1000,23 @@ export const findBestTransformDirectedQuadrant = (
   // slower.
   slopFrac: number = 0.15,
   profile?: DirectedQuadrantProfile,
+  // Full-chart bounding box in ref-grid coordinate space. Nominal
+  // ref→image affine maps THESE bounds onto the guide rect (not the
+  // per-page refPoints bounding box). Necessary for pages whose ref
+  // grid populates only a subset of the physical grid — e.g.
+  // 10Y-5GY's 3 hole rows × 4 cols → refBounds (2..8, 6..12), which
+  // if used as-is would map that small strip across the entire guide,
+  // placing every nominal expected position far from where the actual
+  // holes are and giving fitOk=0. Pass canonical (0..10, 0..15) for
+  // standard Munsell soil-color-book pages so the ref-y/refBounds
+  // maps naturally onto the guide rect. Null → fall back to using
+  // refPoints' own bounding box (original behavior).
+  fullChartBounds: {
+    minX: number;
+    maxX: number;
+    minY: number;
+    maxY: number;
+  } | null = null,
 ): {
   transform: Affine;
   score: number;
@@ -1015,16 +1032,30 @@ export const findBestTransformDirectedQuadrant = (
   }
   if (refPoints.length < 3 || detectedPoints.length < 3) return null;
 
-  // 1. Bounding box of the ref grid — origin for the nominal affine.
-  let refMinX = Infinity;
-  let refMaxX = -Infinity;
-  let refMinY = Infinity;
-  let refMaxY = -Infinity;
-  for (const p of refPoints) {
-    if (p.x < refMinX) refMinX = p.x;
-    if (p.x > refMaxX) refMaxX = p.x;
-    if (p.y < refMinY) refMinY = p.y;
-    if (p.y > refMaxY) refMaxY = p.y;
+  // 1. Bounding box for the nominal affine. Prefer the caller-supplied
+  //    full-chart bounds (so pages populating only a subset of the
+  //    physical grid still map their ref points to the correct region
+  //    of the guide rect); fall back to the ref grid's own bbox.
+  let refMinX: number;
+  let refMaxX: number;
+  let refMinY: number;
+  let refMaxY: number;
+  if (fullChartBounds) {
+    refMinX = fullChartBounds.minX;
+    refMaxX = fullChartBounds.maxX;
+    refMinY = fullChartBounds.minY;
+    refMaxY = fullChartBounds.maxY;
+  } else {
+    refMinX = Infinity;
+    refMaxX = -Infinity;
+    refMinY = Infinity;
+    refMaxY = -Infinity;
+    for (const p of refPoints) {
+      if (p.x < refMinX) refMinX = p.x;
+      if (p.x > refMaxX) refMaxX = p.x;
+      if (p.y < refMinY) refMinY = p.y;
+      if (p.y > refMaxY) refMaxY = p.y;
+    }
   }
   const refW = refMaxX - refMinX;
   const refH = refMaxY - refMinY;
