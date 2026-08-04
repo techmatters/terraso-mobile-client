@@ -175,19 +175,17 @@ export const MUNSELL_PAGES: readonly MunsellPage[] = [
   {
     name: 'GLEY1',
     values: [8, 7, 6, 5, 4, 3, 2.5],
-    chromas: [0, 1, 1, 1],
-    columnHues: ['N', '10Y', '5GY', '10GY'],
-    chipsPerRow: [4, 4, 4, 4, 4, 4, 4],
-    firstChipCol: 1,
+    chromas: [0, 1, 1, 1, 1, 2],
+    columnHues: ['N', '10Y', '5GY', '10GY', '5G', '5G'],
+    chipsPerRow: [6, 6, 6, 6, 6, 6, 6],
   },
   // TODO: verify GLEY2 layout against the physical card.
   {
     name: 'GLEY2',
     values: [8, 7, 6, 5, 4, 3, 2.5],
-    chromas: [1, 1, 1, 1],
-    columnHues: ['5G', '10G', '5BG', '10BG'],
-    chipsPerRow: [4, 4, 4, 4, 4, 4, 4],
-    firstChipCol: 1,
+    chromas: [1, 1, 1, 1, 1, 1],
+    columnHues: ['10G', '5BG', '10BG', '5B', '10B', '5PB'],
+    chipsPerRow: [6, 6, 6, 6, 6, 6, 6],
   },
   // WHITE page. Transposed axes: rows are (hue, chroma) pairs, cols
   // are values. Same 7 physical rows and same chip-column widths as
