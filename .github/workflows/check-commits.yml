@@ -2,9 +2,8 @@ name: Conventional Commits
 
 on:
   pull_request:
-    branches:
-      - main
-      - dependencies
+    # No `branches:` filter — fire on PRs targeting any branch so stacked
+    # PRs get commit-message linting too.
     types:
       - opened
       - edited
