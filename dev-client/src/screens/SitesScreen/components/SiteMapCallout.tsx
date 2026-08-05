@@ -28,7 +28,7 @@ import {Card} from 'terraso-mobile-client/components/Card';
 import {Divider} from 'terraso-mobile-client/components/Divider';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
-import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
+import {useCollapseBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/BottomSheetContext';
 import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/SitesScreen/components/SiteClusterCalloutListItem';
 import {TemporaryLocationCallout} from 'terraso-mobile-client/screens/SitesScreen/components/TemporaryLocationCallout';
 import {
@@ -74,14 +74,14 @@ type CalloutChildProps = Props & {
 
 const CalloutChild = ({coords, sites, state, setState}: CalloutChildProps) => {
   const closeCallout = useCallback(() => setState(noneCallout()), [setState]);
-  const sitesScreen = useSitesScreenContext();
+  const collapseBottomSheet = useCollapseBottomSheet();
 
   // Collapse bottom sheet when showing location callout - use effect to avoid side effects during render
   useEffect(() => {
     if (state.kind === 'location') {
-      sitesScreen?.collapseBottomSheet();
+      collapseBottomSheet();
     }
-  }, [state.kind, sitesScreen]);
+  }, [state.kind, collapseBottomSheet]);
 
   switch (state.kind) {
     case 'site':

@@ -23,7 +23,7 @@ import {Formik} from 'formik';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
-import {usePendingSiteCallout} from 'terraso-mobile-client/context/SitesScreenContext';
+import {usePendingSiteCallout} from 'terraso-mobile-client/context/PendingSiteCalloutContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SiteAddInput} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';

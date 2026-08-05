@@ -15,16 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {LayoutChangeEvent} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -41,12 +32,10 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PosthogBanner} from 'terraso-mobile-client/components/PosthogBanner';
 import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {
-  SitesScreenContext,
-  usePendingSiteCallout,
-} from 'terraso-mobile-client/context/SitesScreenContext';
+import {usePendingSiteCallout} from 'terraso-mobile-client/context/PendingSiteCalloutContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {CollapseBottomSheetContext} from 'terraso-mobile-client/screens/SitesScreen/BottomSheetContext';
 import {MapHeader} from 'terraso-mobile-client/screens/SitesScreen/components/MapHeader';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/components/SiteListBottomSheet';
 import {
@@ -75,7 +64,6 @@ export const SitesScreen = memo(() => {
   const siteList = useMemo(() => Object.values(sites), [sites]);
   const mapRef = useRef<MapRef>(null);
   const siteProjectRoles = useSelector(selectSitesAndUserRoles);
-  const sitesScreenContext = useContext(SitesScreenContext);
 
   const showSiteOnMap = useCallback(
     (targetSite: Site) => {
@@ -89,14 +77,6 @@ export const SitesScreen = memo(() => {
   const collapseBottomSheet = useCallback(() => {
     siteListBottomSheetRef.current?.collapse();
   }, []);
-
-  useImperativeHandle(
-    sitesScreenContext,
-    () => ({
-      collapseBottomSheet,
-    }),
-    [collapseBottomSheet],
-  );
 
   const {pendingCalloutSiteId, setPendingCalloutSiteId} =
     usePendingSiteCallout();
@@ -205,37 +185,39 @@ export const SitesScreen = memo(() => {
   return (
     <ScreenScaffold
       AppBar={<AppBar LeftButton={null} RightButton={<LandPKSInfoButton />} />}>
-      <ListFilterProvider items={siteList} filters={filters}>
-        <Box testID="sites-screen" flex={1} onLayout={onContainerLayout}>
-          <FeatureFlagPollingTrigger />
-          <PosthogBanner />
-          <Box flex={1}>
-            <MapHeader
-              zoomTo={searchFunction}
-              zoomToUser={moveToUserAndShowCallout}
-              toggleMapLayer={toggleMapLayer}
-              isCalloutOpen={calloutState.kind !== 'none'}
-            />
-            <SiteMap
-              ref={mapRef}
-              calloutState={calloutState}
-              setCalloutState={setCalloutState}
-              styleURL={mapStyleURL}
-              onMapFinishedLoading={onMapFinishedLoading}
-              attributionBottom={attributionBottom}
-              attributionVisible={attributionVisible}
+      <CollapseBottomSheetContext.Provider value={collapseBottomSheet}>
+        <ListFilterProvider items={siteList} filters={filters}>
+          <Box testID="sites-screen" flex={1} onLayout={onContainerLayout}>
+            <FeatureFlagPollingTrigger />
+            <PosthogBanner />
+            <Box flex={1}>
+              <MapHeader
+                zoomTo={searchFunction}
+                zoomToUser={moveToUserAndShowCallout}
+                toggleMapLayer={toggleMapLayer}
+                isCalloutOpen={calloutState.kind !== 'none'}
+              />
+              <SiteMap
+                ref={mapRef}
+                calloutState={calloutState}
+                setCalloutState={setCalloutState}
+                styleURL={mapStyleURL}
+                onMapFinishedLoading={onMapFinishedLoading}
+                attributionBottom={attributionBottom}
+                attributionVisible={attributionVisible}
+              />
+            </Box>
+            <SiteListBottomSheet
+              ref={siteListBottomSheetRef}
+              sites={siteList}
+              showSiteOnMap={showSiteOnMap}
+              snapIndex={1}
+              onChange={onSheetChange}
+              onAnimate={onSheetAnimate}
             />
           </Box>
-          <SiteListBottomSheet
-            ref={siteListBottomSheetRef}
-            sites={siteList}
-            showSiteOnMap={showSiteOnMap}
-            snapIndex={1}
-            onChange={onSheetChange}
-            onAnimate={onSheetAnimate}
-          />
-        </Box>
-      </ListFilterProvider>
+        </ListFilterProvider>
+      </CollapseBottomSheetContext.Provider>
     </ScreenScaffold>
   );
 });

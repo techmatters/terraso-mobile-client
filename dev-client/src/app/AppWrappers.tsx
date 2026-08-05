@@ -33,7 +33,7 @@ import {ForegroundPermissionsProvider} from 'terraso-mobile-client/context/AppPe
 import {ConnectivityContextProvider} from 'terraso-mobile-client/context/connectivity/ConnectivityContext';
 import {GeospatialProvider} from 'terraso-mobile-client/context/GeospatialContext';
 import {HeaderHeightProvider} from 'terraso-mobile-client/context/HeaderHeightContext';
-import {SitesScreenContextProvider} from 'terraso-mobile-client/context/SitesScreenContext';
+import {PendingSiteCalloutProvider} from 'terraso-mobile-client/context/PendingSiteCalloutContext';
 import {SoilIdMatchContextProvider} from 'terraso-mobile-client/context/SoilIdMatchContext';
 import {SyncNotificationContextProvider} from 'terraso-mobile-client/context/SyncNotificationContext';
 import {SiteTabJumpContextProvider} from 'terraso-mobile-client/navigation/components/SiteTabJumpProvider';
@@ -74,7 +74,7 @@ export const AppWrappers = ({store, children}: Props) => {
                         <Portal.Host>
                           <BottomSheetModalProvider>
                             <GeospatialProvider>
-                              <SitesScreenContextProvider>
+                              <PendingSiteCalloutProvider>
                                 <ForegroundPermissionsProvider>
                                   <SyncNotificationContextProvider>
                                     <SoilIdMatchContextProvider>
@@ -82,7 +82,7 @@ export const AppWrappers = ({store, children}: Props) => {
                                     </SoilIdMatchContextProvider>
                                   </SyncNotificationContextProvider>
                                 </ForegroundPermissionsProvider>
-                              </SitesScreenContextProvider>
+                              </PendingSiteCalloutProvider>
                             </GeospatialProvider>
                           </BottomSheetModalProvider>
                         </Portal.Host>
