@@ -41,7 +41,10 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PosthogBanner} from 'terraso-mobile-client/components/PosthogBanner';
 import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
+import {
+  SitesScreenContext,
+  usePendingSiteCallout,
+} from 'terraso-mobile-client/context/SitesScreenContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {MapHeader} from 'terraso-mobile-client/screens/SitesScreen/components/MapHeader';
@@ -90,11 +93,25 @@ export const SitesScreen = memo(() => {
   useImperativeHandle(
     sitesScreenContext,
     () => ({
-      showSiteOnMap,
       collapseBottomSheet,
     }),
-    [showSiteOnMap, collapseBottomSheet],
+    [collapseBottomSheet],
   );
+
+  const {pendingCalloutSiteId, setPendingCalloutSiteId} =
+    usePendingSiteCallout();
+
+  /* Site creation happens on a screen that can't reach us imperatively (this screen is frozen while it's more than one level down the stack), so it leaves the site id here for us to pick up once we render again. */
+  useEffect(() => {
+    if (pendingCalloutSiteId === null) {
+      return;
+    }
+    const pendingSite = sites[pendingCalloutSiteId];
+    if (pendingSite) {
+      showSiteOnMap(pendingSite);
+    }
+    setPendingCalloutSiteId(null);
+  }, [pendingCalloutSiteId, setPendingCalloutSiteId, sites, showSiteOnMap]);
 
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
 
