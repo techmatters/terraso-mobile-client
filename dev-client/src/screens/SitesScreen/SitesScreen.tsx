@@ -32,10 +32,10 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {PosthogBanner} from 'terraso-mobile-client/components/PosthogBanner';
 import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
-import {usePendingSiteCallout} from 'terraso-mobile-client/context/PendingSiteCalloutContext';
+import {useConsumePendingSiteCallout} from 'terraso-mobile-client/context/PendingSiteCalloutContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {CollapseBottomSheetContext} from 'terraso-mobile-client/screens/SitesScreen/BottomSheetContext';
+import {CollapseBottomSheetProvider} from 'terraso-mobile-client/screens/SitesScreen/CollapseBottomSheetContext';
 import {MapHeader} from 'terraso-mobile-client/screens/SitesScreen/components/MapHeader';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/components/SiteListBottomSheet';
 import {
@@ -65,33 +65,20 @@ export const SitesScreen = memo(() => {
   const mapRef = useRef<MapRef>(null);
   const siteProjectRoles = useSelector(selectSitesAndUserRoles);
 
-  const showSiteOnMap = useCallback(
-    (targetSite: Site) => {
-      mapRef.current?.moveToPoint(targetSite);
-      setCalloutState(siteCallout(targetSite.id));
-      siteListBottomSheetRef.current?.collapse();
-    },
-    [setCalloutState],
-  );
-
   const collapseBottomSheet = useCallback(() => {
     siteListBottomSheetRef.current?.collapse();
   }, []);
 
-  const {pendingCalloutSiteId, setPendingCalloutSiteId} =
-    usePendingSiteCallout();
+  const showSiteOnMap = useCallback(
+    (targetSite: Site) => {
+      mapRef.current?.moveToPoint(targetSite);
+      setCalloutState(siteCallout(targetSite.id));
+      collapseBottomSheet();
+    },
+    [setCalloutState, collapseBottomSheet],
+  );
 
-  /* Site creation happens on a screen that can't reach us imperatively (this screen is frozen while it's more than one level down the stack), so it leaves the site id here for us to pick up once we render again. */
-  useEffect(() => {
-    if (pendingCalloutSiteId === null) {
-      return;
-    }
-    const pendingSite = sites[pendingCalloutSiteId];
-    if (pendingSite) {
-      showSiteOnMap(pendingSite);
-    }
-    setPendingCalloutSiteId(null);
-  }, [pendingCalloutSiteId, setPendingCalloutSiteId, sites, showSiteOnMap]);
+  useConsumePendingSiteCallout(showSiteOnMap);
 
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
 
@@ -185,7 +172,7 @@ export const SitesScreen = memo(() => {
   return (
     <ScreenScaffold
       AppBar={<AppBar LeftButton={null} RightButton={<LandPKSInfoButton />} />}>
-      <CollapseBottomSheetContext.Provider value={collapseBottomSheet}>
+      <CollapseBottomSheetProvider collapseBottomSheet={collapseBottomSheet}>
         <ListFilterProvider items={siteList} filters={filters}>
           <Box testID="sites-screen" flex={1} onLayout={onContainerLayout}>
             <FeatureFlagPollingTrigger />
@@ -217,7 +204,7 @@ export const SitesScreen = memo(() => {
             />
           </Box>
         </ListFilterProvider>
-      </CollapseBottomSheetContext.Provider>
+      </CollapseBottomSheetProvider>
     </ScreenScaffold>
   );
 });

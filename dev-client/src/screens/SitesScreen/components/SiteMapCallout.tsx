@@ -28,7 +28,7 @@ import {Card} from 'terraso-mobile-client/components/Card';
 import {Divider} from 'terraso-mobile-client/components/Divider';
 import {SiteCard} from 'terraso-mobile-client/components/SiteCard';
 import {coordsToPosition} from 'terraso-mobile-client/components/StaticMapView';
-import {useCollapseBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/BottomSheetContext';
+import {useCollapseBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/CollapseBottomSheetContext';
 import {SiteClusterCalloutListItem} from 'terraso-mobile-client/screens/SitesScreen/components/SiteClusterCalloutListItem';
 import {TemporaryLocationCallout} from 'terraso-mobile-client/screens/SitesScreen/components/TemporaryLocationCallout';
 import {

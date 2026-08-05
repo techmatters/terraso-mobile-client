@@ -17,8 +17,17 @@
 
 import {createContext, useContext} from 'react';
 
-export const CollapseBottomSheetContext = createContext<(() => void) | null>(
-  null,
+const CollapseBottomSheetContext = createContext<(() => void) | null>(null);
+
+type Props = React.PropsWithChildren<{collapseBottomSheet: () => void}>;
+
+export const CollapseBottomSheetProvider = ({
+  collapseBottomSheet,
+  children,
+}: Props) => (
+  <CollapseBottomSheetContext.Provider value={collapseBottomSheet}>
+    {children}
+  </CollapseBottomSheetContext.Provider>
 );
 
 /* Provided by SitesScreen for its own subtree — the map, the callout and the search box all collapse the site list as a side effect of what they do. */

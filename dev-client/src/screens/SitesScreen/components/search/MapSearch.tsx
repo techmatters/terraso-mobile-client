@@ -37,7 +37,7 @@ import {View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
-import {useCollapseBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/BottomSheetContext';
+import {useCollapseBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/CollapseBottomSheetContext';
 import {MapSearchOfflineAlertBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineAlertBox';
 import {
   CoordsSuggestionBox,

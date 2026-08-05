@@ -15,9 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-/* Lets the site creation flow ask SitesScreen to open the new site's callout on the map, once the user lands back there. */
+import {
+  createContext,
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
-import {createContext, memo, useContext, useMemo, useState} from 'react';
+import {Site} from 'terraso-client-shared/site/siteTypes';
+
+import {useSelector} from 'terraso-mobile-client/store';
 
 type PendingCalloutSiteId = string | null;
 
@@ -29,11 +38,12 @@ type PendingSiteCalloutContextValue = {
 const PendingSiteCalloutContext =
   createContext<PendingSiteCalloutContextValue | null>(null);
 
-/* Lives above the navigator because SitesScreen and the site creation screens are siblings in the root stack, so this is their nearest common ancestor. */
+/* Lives above the navigator because the requesting and consuming screens are siblings in the root stack, so this is their nearest common ancestor. */
 export const PendingSiteCalloutProvider = memo(
   ({children}: React.PropsWithChildren<{}>) => {
-    const [pendingCalloutSiteId, setPendingCalloutSiteId] =
-      useState<PendingCalloutSiteId>(null);
+    const [pendingCalloutSiteId, setPendingCalloutSiteId] = useState<
+      string | null
+    >(null);
     const value = useMemo(
       () => ({pendingCalloutSiteId, setPendingCalloutSiteId}),
       [pendingCalloutSiteId],
@@ -47,13 +57,44 @@ export const PendingSiteCalloutProvider = memo(
   },
 );
 
-/* A one-shot request to open the map callout for the site the user just created; SitesScreen reads it and clears it on its next render. Deliberately a value SitesScreen pulls rather than a callback it registers: react-freeze suspends screens more than one level below the focused one, and React tears down the effects of a suspended screen, so anything a screen publishes outward goes missing exactly when another screen needs it. */
-export const usePendingSiteCallout = () => {
+const usePendingSiteCalloutContext = () => {
   const context = useContext(PendingSiteCalloutContext);
   if (context === null) {
     throw new Error(
-      'usePendingSiteCallout must be used within a PendingSiteCalloutProvider',
+      'Pending site callout hooks must be used within a PendingSiteCalloutProvider',
     );
   }
   return context;
+};
+
+/* Asks whoever consumes the request to open a site's map callout, once they next render. Deliberately a value the consumer pulls rather than a callback it registers: react-freeze suspends screens more than one level below the focused one and React tears down their effects, so anything a screen publishes outward goes missing exactly when another screen needs it. */
+export const useRequestSiteCallout = (): ((siteId: string) => void) =>
+  usePendingSiteCalloutContext().setPendingCalloutSiteId;
+
+/* Runs `showSite` for a site requested via `useRequestSiteCallout`, then drops the request so it can't fire twice. */
+export const useConsumePendingSiteCallout = (
+  showSite: (site: Site) => void,
+) => {
+  const {pendingCalloutSiteId, setPendingCalloutSiteId} =
+    usePendingSiteCalloutContext();
+  const pendingSite = useSelector(state =>
+    pendingCalloutSiteId === null
+      ? undefined
+      : state.site.sites[pendingCalloutSiteId],
+  );
+
+  useEffect(() => {
+    if (pendingCalloutSiteId === null) {
+      return;
+    }
+    if (pendingSite === undefined) {
+      /* Requests are only made for sites already written to the store, so a miss means the site was deleted in between — nothing to show, so drop the request. */
+      console.warn(
+        `No site found for pending callout site id ${pendingCalloutSiteId}`,
+      );
+    } else {
+      showSite(pendingSite);
+    }
+    setPendingCalloutSiteId(null);
+  }, [pendingCalloutSiteId, pendingSite, setPendingCalloutSiteId, showSite]);
 };

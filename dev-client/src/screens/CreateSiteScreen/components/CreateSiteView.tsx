@@ -23,7 +23,7 @@ import {Formik} from 'formik';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
-import {usePendingSiteCallout} from 'terraso-mobile-client/context/PendingSiteCalloutContext';
+import {useRequestSiteCallout} from 'terraso-mobile-client/context/PendingSiteCalloutContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SiteAddInput} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -54,7 +54,7 @@ export const CreateSiteView = ({
   const defaultProject = useSelector(state =>
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
-  const {setPendingCalloutSiteId} = usePendingSiteCallout();
+  const requestSiteCallout = useRequestSiteCallout();
   const isOffline = useIsOffline();
 
   const navigation = useNavigation();
@@ -73,7 +73,7 @@ export const CreateSiteView = ({
         elevation: finalElevation,
       });
       if (createdSite !== undefined) {
-        setPendingCalloutSiteId(createdSite.id);
+        requestSiteCallout(createdSite.id);
         navigation.popTo('BOTTOM_TABS');
       }
     },
@@ -81,7 +81,7 @@ export const CreateSiteView = ({
       createSiteCallback,
       navigation,
       validationSchema,
-      setPendingCalloutSiteId,
+      requestSiteCallout,
       elevation,
       sitePin,
       isOffline,

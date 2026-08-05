@@ -36,7 +36,7 @@ import {
   coordsToPosition,
   positionToCoords,
 } from 'terraso-mobile-client/components/StaticMapView';
-import {useCollapseBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/BottomSheetContext';
+import {useCollapseBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/CollapseBottomSheetContext';
 import {CustomUserLocation} from 'terraso-mobile-client/screens/SitesScreen/components/CustomUserLocation';
 import {SiteMapCallout} from 'terraso-mobile-client/screens/SitesScreen/components/SiteMapCallout';
 import {
