@@ -91,6 +91,13 @@ export type MunsellPage = {
   // pageReferenceGridPoints add firstChipRow to compute physical y
   // in template coordinates.
   firstChipRow?: number;
+  // Where the reference / test card sits in template coords. Omitted
+  // for pages whose bottom-right (physical col 5, row 6) is empty on
+  // the printed chart — the default TEST_SWATCH_POINT lands there.
+  // Set for fully-populated pages (GLEY1/GLEY2) where the corner slot
+  // is occupied and the card has to go one column right and one row
+  // below the chip grid.
+  refCardPoint?: Point;
 };
 
 // Every page currently registered with the validator. Order determines
@@ -178,6 +185,11 @@ export const MUNSELL_PAGES: readonly MunsellPage[] = [
     chromas: [0, 1, 1, 1, 1, 2],
     columnHues: ['N', '10Y', '5GY', '10GY', '5G', '5G'],
     chipsPerRow: [6, 6, 6, 6, 6, 6, 6],
+    // Every chip slot is occupied — ref card goes one column right
+    // (x = 6*2 = 12) and one row below (y = 7*3 - 1.5 = 19.5) the
+    // last chip; user places the physical card in the paper margin
+    // there.
+    refCardPoint: {x: 12, y: 19.5},
   },
   // TODO: verify GLEY2 layout against the physical card.
   {
@@ -186,6 +198,9 @@ export const MUNSELL_PAGES: readonly MunsellPage[] = [
     chromas: [1, 1, 1, 1, 1, 1],
     columnHues: ['10G', '5BG', '10BG', '5B', '10B', '5PB'],
     chipsPerRow: [6, 6, 6, 6, 6, 6, 6],
+    // Same as GLEY1 — every chip slot is occupied, so the ref card
+    // sits one column right and one row below the chip grid.
+    refCardPoint: {x: 12, y: 19.5},
   },
   // WHITE page. Transposed axes: rows are (hue, chroma) pairs, cols
   // are values. Same 7 physical rows and same chip-column widths as

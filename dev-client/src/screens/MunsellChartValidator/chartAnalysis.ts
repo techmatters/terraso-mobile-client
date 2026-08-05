@@ -107,6 +107,13 @@ export type MunsellChartResult = {
   // preview so a tester can visually confirm each rect lands on the
   // correct swatch.
   previewRects: {x: number; y: number; w: number; h: number}[];
+  // Ref-card sample rectangle in preview-space pixels — the extra
+  // sample position appended to the per-page sample grid (either the
+  // default TEST_SWATCH_POINT or page.refCardPoint). Rendered on the
+  // debug overlay alongside `previewRects` so the tester can confirm
+  // the ref card sample lands where expected. Null if RANSAC didn't
+  // run (no matchedSampleRects to derive it from).
+  refCardRect: {x: number; y: number; w: number; h: number} | null;
   // Detected swatch centroids, in preview-space pixels — drawn as
   // small green dots on the source view so the tester can see how
   // many swatches were actually detected vs. extrapolated.
@@ -234,10 +241,14 @@ export const analyzeMunsellChart = async (
   // paper false-positives with ref points where this page has no chip).
   const pageRefGrid = pageReferenceGridPoints(page);
   // Per-page sample grid — chips this specific page populates, plus
-  // the test-swatch point at the end. Keeps matchedSampleRects tight
+  // the ref-card point at the end. Keeps matchedSampleRects tight
   // to real chip positions (no spurious red squares at physical
   // columns / rows the page leaves empty, e.g. WHITE's col 0).
-  const pageSampleGrid = [...pageSampleGridPoints(page), TEST_SWATCH_POINT];
+  // Ref card falls at the page's refCardPoint override when set
+  // (fully-populated pages like GLEY1/GLEY2), else at the default
+  // bottom-right corner slot that stays empty on most pages.
+  const refCardPoint = page.refCardPoint ?? TEST_SWATCH_POINT;
+  const pageSampleGrid = [...pageSampleGridPoints(page), refCardPoint];
   // Paper anchor luma (rec.709) from whitemask border-ring calibration
   // — lets detectChartByRegions relax its "bright" cutoff for dim
   // captures where paper reads well below the fallback 170. Null when
@@ -374,6 +385,24 @@ export const analyzeMunsellChart = async (
       h: Math.round(halfH * 2),
     };
   });
+  // Ref card lands at the LAST entry of matchedSampleRects (chartAnalysis
+  // appends refCardPoint after pageSampleGridPoints when it builds the
+  // per-page sample grid). Kept separate from previewRects so the chip
+  // sample list stays 1-to-1 with `cells` for downstream consumers.
+  const refCardRect =
+    grid.matchedSampleRects && grid.matchedSampleRects.length > 0
+      ? (() => {
+          const r = grid.matchedSampleRects[grid.matchedSampleRects.length - 1];
+          const cx = r.x + r.w / 2;
+          const cy = r.y + r.h / 2;
+          return {
+            x: Math.round(cx - halfW),
+            y: Math.round(cy - halfH),
+            w: Math.round(halfW * 2),
+            h: Math.round(halfH * 2),
+          };
+        })()
+      : null;
   const dngRois = previewRects.map(r => ({
     x: Math.round(r.x * scaleX),
     y: Math.round(r.y * scaleY),
@@ -437,6 +466,7 @@ export const analyzeMunsellChart = async (
       grid,
       preview,
       previewRects,
+      refCardRect,
       detectedSwatches: grid.detected,
       matchedSampleValues,
       testSwatchLinearRgb: matchedSampleValues

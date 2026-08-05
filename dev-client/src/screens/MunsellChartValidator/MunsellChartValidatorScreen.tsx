@@ -135,7 +135,10 @@ const CELL_H = 130;
 // two Munsell notations, and the background heatmap mean.
 const LEGEND_H = 260;
 const GRID_START_Y = LEGEND_H;
-const SVG_HEIGHT = LEGEND_H + HEADER_H + CELL_H * CHART_VALUES.length + 40;
+// +1 row of chart-height reserves a below-the-grid slot for the ref
+// card cell (drawn at data row nRows in ResultSvg).
+const SVG_HEIGHT =
+  LEGEND_H + HEADER_H + CELL_H * (CHART_VALUES.length + 1) + 40;
 
 // Font sizes are absolute in viewBox units. Bumped up (was 20/11/12)
 // so the rendered image is legible without needing to zoom.
@@ -720,17 +723,6 @@ const ResultSvg = ({
     // chroma alone doesn't identify a column — show hue too.
     return hue ? `${hue} /${chroma}` : `${chroma}`;
   };
-  // Test-swatch is drawn in the last data-row / last data-col slot,
-  // which is empty across the current page set. Loop iterates in
-  // data-space (0..nRows-1); we compare against the last data indices
-  // for the loop check, and compare against the last PHYSICAL col for
-  // the cell-collision check (cells emit physical coords). Same for
-  // row: loop dataRow vs. last data row, but the lookup uses physical
-  // row so cells with physical (rowIdx=firstRow+dataRow) don't get
-  // treated as a test-swatch slot.
-  const testSwatchDataRow = nRows - 1;
-  const testSwatchDataCol = nDataCols - 1;
-  const testSwatchPhysicalCol = firstCol + testSwatchDataCol;
   // Build a lookup so we can drop each cell into its grid position.
   // Key by PHYSICAL (rowIdx, colIdx) — cells carry physical coords
   // and mixed-hue pages have duplicate (value, chroma) pairs across
@@ -809,29 +801,6 @@ const ResultSvg = ({
       const physicalCol = firstCol + dataCol;
       const key = `r${physicalRow}c${physicalCol}`;
       const cellResult = byKey.get(key);
-      // Test-swatch slot: check by data-space indices (last data row +
-      // last data col). Loop's dataRow/physicalCol both work here
-      // since testSwatchPhysicalCol accounts for firstChipCol already.
-      const isTestSwatchSlot =
-        dataRow === testSwatchDataRow &&
-        physicalCol === testSwatchPhysicalCol &&
-        !cellResult;
-      if (isTestSwatchSlot && testRef && testMeasuredLinearRgb) {
-        elements.push(
-          <TestSwatchCell
-            key="test-swatch"
-            x={cx + 2}
-            y={y + 2}
-            w={CELL_W - 4}
-            h={CELL_H - 4}
-            testRef={testRef}
-            measuredLinearRgb={testMeasuredLinearRgb}
-            onPress={onTestSwatchPress}
-            isReference={testSwatchIsReference}
-          />,
-        );
-        continue;
-      }
       if (!cellResult) {
         // Grid slot with no swatch on the physical card. Render an
         // empty placeholder so the visual layout still lines up.
@@ -866,6 +835,42 @@ const ResultSvg = ({
         />,
       );
     }
+  }
+
+  // Ref-card cell in its own row below the main grid. Position on the
+  // printed chart varies per page (page.refCardPoint on chartAnalysis
+  // side; corner slot by default, offset for GLEY1/GLEY2), but the
+  // display always sits at data row nRows, data col 0 — one uniform
+  // slot regardless of layout, so mixed-hue and WHITE pages don't have
+  // to reserve their own bottom-right corner for it.
+  if (testRef && testMeasuredLinearRgb) {
+    const refY = GRID_START_Y + HEADER_H + CELL_H * nRows;
+    const refX = LABEL_W;
+    elements.push(
+      <SvgText
+        key="ref-row-label"
+        x={LABEL_W - 14}
+        y={refY + CELL_H / 2 + rowHeaderFont / 3}
+        fill="black"
+        fontSize={rowHeaderFont}
+        fontWeight="bold"
+        textAnchor="end">
+        REF
+      </SvgText>,
+    );
+    elements.push(
+      <TestSwatchCell
+        key="test-swatch"
+        x={refX + 2}
+        y={refY + 2}
+        w={CELL_W - 4}
+        h={CELL_H - 4}
+        testRef={testRef}
+        measuredLinearRgb={testMeasuredLinearRgb}
+        onPress={onTestSwatchPress}
+        isReference={testSwatchIsReference}
+      />,
+    );
   }
 
   return (
@@ -1164,7 +1169,7 @@ const DebugOverlayLayers = ({
   // feeds detectChartByRegions a per-page sample grid. Keep the
   // parameter list flat rather than reintroducing the page.
 }) => {
-  const {preview, previewRects, detectedSwatches, grid} = result;
+  const {preview, previewRects, refCardRect, detectedSwatches, grid} = result;
   // Where the camera-view chart-guide rectangle WAS at capture time,
   // in preview-image coordinates. Same math as ChartGuideOverlay, so
   // this is exactly the rectangle the user was framing the chart into
@@ -1430,6 +1435,22 @@ const DebugOverlayLayers = ({
           fill="none"
         />
       ))}
+      {/* Ref-card sample rect — same red as the chip rects since it's
+         the same kind of "here's what we sampled" annotation, just at
+         the extra per-page ref position (may sit outside the chip
+         grid on fully-populated pages like GLEY1/GLEY2). */}
+      {refCardRect && (
+        <Rect
+          key="sample-ref"
+          x={refCardRect.x}
+          y={refCardRect.y}
+          width={refCardRect.w}
+          height={refCardRect.h}
+          stroke="#ff2020"
+          strokeWidth={2}
+          fill="none"
+        />
+      )}
       {/* Filled green dots — swatch centroids from the OLD cluster
          fit. Hidden when the RANSAC match ran. */}
       {!grid.matchedGrid &&
@@ -1484,6 +1505,7 @@ const FailedView = ({
         grid: debug.grid,
         preview,
         previewRects: [],
+        refCardRect: null,
         detectedSwatches: [],
         measurements: [],
         matchedSampleValues: null,
