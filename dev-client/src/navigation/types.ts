@@ -16,6 +16,7 @@
  */
 import React from 'react';
 
+import {NavigatorScreenParams} from '@react-navigation/native';
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
@@ -32,8 +33,20 @@ export type ParamList<T extends ScreenDefinitions> = {
   [K in keyof T]: UnknownToUndefined<React.ComponentProps<T[K]>>;
 };
 
-export type BottomTabsParamList = ParamList<typeof bottomTabScreensDefinitions>;
-export type RootStackParamList = ParamList<typeof combinedScreenDefinitions>;
+/* ParamList derives each route's params from its screen component's props, which can't express two things these routes need: params that are optional, and a parent route that forwards {screen, params} into a nested navigator. Both are declared by hand here. */
+export type BottomTabsParamList = Omit<
+  ParamList<typeof bottomTabScreensDefinitions>,
+  'SITES'
+> & {
+  SITES: {calloutSiteId?: string} | undefined;
+};
+
+export type RootStackParamList = Omit<
+  ParamList<typeof combinedScreenDefinitions>,
+  'BOTTOM_TABS'
+> & {
+  BOTTOM_TABS: NavigatorScreenParams<BottomTabsParamList> | undefined;
+};
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();
 

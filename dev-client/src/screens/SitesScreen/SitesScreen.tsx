@@ -29,6 +29,8 @@ import {LayoutChangeEvent} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import BottomSheet from '@gorhom/bottom-sheet';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
@@ -43,6 +45,7 @@ import {positionToCoords} from 'terraso-mobile-client/components/StaticMapView';
 import {useGeospatialContext} from 'terraso-mobile-client/context/GeospatialContext';
 import {SitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {BottomTabsParamList} from 'terraso-mobile-client/navigation/types';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {MapHeader} from 'terraso-mobile-client/screens/SitesScreen/components/MapHeader';
 import {SiteListBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/components/SiteListBottomSheet';
@@ -90,11 +93,27 @@ export const SitesScreen = memo(() => {
   useImperativeHandle(
     sitesScreenContext,
     () => ({
-      showSiteOnMap,
       collapseBottomSheet,
     }),
-    [showSiteOnMap, collapseBottomSheet],
+    [collapseBottomSheet],
   );
+
+  const {calloutSiteId} =
+    useRoute<RouteProp<BottomTabsParamList, 'SITES'>>().params ?? {};
+  const tabNavigation =
+    useNavigation<BottomTabNavigationProp<BottomTabsParamList, 'SITES'>>();
+
+  /* Site creation asks for a callout by passing the new site's id in this screen's route params. React Navigation keeps params on the route, so clear them once used or the callout reopens every time this route remounts. */
+  useEffect(() => {
+    if (calloutSiteId === undefined) {
+      return;
+    }
+    const requestedSite = sites[calloutSiteId];
+    if (requestedSite) {
+      showSiteOnMap(requestedSite);
+    }
+    tabNavigation.setParams({calloutSiteId: undefined});
+  }, [calloutSiteId, sites, showSiteOnMap, tabNavigation]);
 
   const currentUserCoords = useSelector(state => state.map.userLocation.coords);
 

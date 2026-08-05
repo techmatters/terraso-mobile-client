@@ -23,7 +23,6 @@ import {Formik} from 'formik';
 import {Site} from 'terraso-client-shared/site/siteTypes';
 import {Coords} from 'terraso-client-shared/types';
 
-import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {SiteAddInput} from 'terraso-mobile-client/model/site/actions/localSiteActions';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -54,7 +53,6 @@ export const CreateSiteView = ({
   const defaultProject = useSelector(state =>
     defaultProjectId ? state.project.projects[defaultProjectId] : undefined,
   );
-  const sitesScreen = useSitesScreenContext();
   const isOffline = useIsOffline();
 
   const navigation = useNavigation();
@@ -73,15 +71,17 @@ export const CreateSiteView = ({
         elevation: finalElevation,
       });
       if (createdSite !== undefined) {
-        sitesScreen?.showSiteOnMap(createdSite);
-        navigation.popTo('BOTTOM_TABS');
+        /* Params ride along with the pop so the tab navigator hands them to SitesScreen, which opens the callout and then clears them. */
+        navigation.popTo('BOTTOM_TABS', {
+          screen: 'SITES',
+          params: {calloutSiteId: createdSite.id},
+        });
       }
     },
     [
       createSiteCallback,
       navigation,
       validationSchema,
-      sitesScreen,
       elevation,
       sitePin,
       isOffline,

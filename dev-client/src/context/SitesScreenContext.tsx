@@ -17,10 +17,7 @@
 
 import {createContext, memo, RefObject, useContext, useRef} from 'react';
 
-import {Site} from 'terraso-client-shared/site/siteTypes';
-
 type SitesScreenRef = {
-  showSiteOnMap: (site: Site) => void;
   collapseBottomSheet: () => void;
 };
 
