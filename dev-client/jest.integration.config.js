@@ -24,7 +24,7 @@ module.exports = {
     '<rootDir>/jest/integration/setup.ts',
   ],
   transformIgnorePatterns: [
-    'node_modules/(?!(.*/)?(@?react-native|react-native-.*|@react-navigation|@react-aria|uuid|immer|expo.*|@expo.*|@rnmapbox|@sentry|@gorhom|react-redux|@reduxjs|native-base))',
+    'node_modules/(?!(.*/)?(@?react-native|react-native-.*|@react-navigation|@react-aria|uuid|immer|expo.*|@expo.*|@rnmapbox|@sentry|@gorhom|react-redux|@reduxjs|native-base|terraso-client-shared))',
   ],
   moduleNameMapper: {
     '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
