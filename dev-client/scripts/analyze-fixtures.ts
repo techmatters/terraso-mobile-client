@@ -54,6 +54,7 @@ import {
 import {
   findMunsellPage,
   MUNSELL_PAGES,
+  pageReferenceGridPoints,
   type MunsellPage,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 
@@ -314,8 +315,81 @@ const scanFixtures = (root: string): ParsedFixture[] => {
 
 // ---- Output builders -------------------------------------------------------
 
+// Compute per-column and per-row mean brightness across INLIER
+// matched-grid points. Illumination-gradient diagnostic: a light
+// falling off from left→right shows as low col_means[0] and high
+// col_means[last]; a top→bottom fall-off shows in row_means.
+// Returns null when we don't have both matchedGridInliers and
+// matchedGridBrightness (i.e. RANSAC didn't lock).
+type IlluminationStats = {
+  column_means: (number | null)[];
+  row_means: (number | null)[];
+  column_range: number;
+  row_range: number;
+  unevenness: number; // max(column_range, row_range)
+  n_inliers: number;
+};
+const computeIllumination = (
+  page: MunsellPage,
+  matchedGridBrightness: readonly number[],
+  matchedGridInliers: readonly boolean[],
+): IlluminationStats | null => {
+  const refPoints = pageReferenceGridPoints(page);
+  if (
+    refPoints.length !== matchedGridBrightness.length ||
+    refPoints.length !== matchedGridInliers.length
+  ) {
+    return null;
+  }
+  const colSums = new Map<number, {sum: number; n: number}>();
+  const rowSums = new Map<number, {sum: number; n: number}>();
+  let nInliers = 0;
+  for (let i = 0; i < refPoints.length; i++) {
+    if (!matchedGridInliers[i]) continue;
+    // Template coords: x = physicalCol * 2, y = physicalRow * 3.
+    const col = Math.round(refPoints[i].x / 2);
+    const row = Math.round(refPoints[i].y / 3);
+    const b = matchedGridBrightness[i];
+    if (!colSums.has(col)) colSums.set(col, {sum: 0, n: 0});
+    colSums.get(col)!.sum += b;
+    colSums.get(col)!.n += 1;
+    if (!rowSums.has(row)) rowSums.set(row, {sum: 0, n: 0});
+    rowSums.get(row)!.sum += b;
+    rowSums.get(row)!.n += 1;
+    nInliers++;
+  }
+  if (nInliers === 0) return null;
+  const colKeys = [...colSums.keys()].sort((a, b) => a - b);
+  const rowKeys = [...rowSums.keys()].sort((a, b) => a - b);
+  const maxCol = colKeys[colKeys.length - 1];
+  const maxRow = rowKeys[rowKeys.length - 1];
+  const column_means: (number | null)[] = [];
+  const row_means: (number | null)[] = [];
+  for (let c = 0; c <= maxCol; c++) {
+    const s = colSums.get(c);
+    column_means.push(s ? Math.round((s.sum / s.n) * 10) / 10 : null);
+  }
+  for (let r = 0; r <= maxRow; r++) {
+    const s = rowSums.get(r);
+    row_means.push(s ? Math.round((s.sum / s.n) * 10) / 10 : null);
+  }
+  const cVals = column_means.filter((v): v is number => v !== null);
+  const rVals = row_means.filter((v): v is number => v !== null);
+  const colRange = cVals.length > 0 ? Math.max(...cVals) - Math.min(...cVals) : 0;
+  const rowRange = rVals.length > 0 ? Math.max(...rVals) - Math.min(...rVals) : 0;
+  return {
+    column_means,
+    row_means,
+    column_range: Math.round(colRange * 10) / 10,
+    row_range: Math.round(rowRange * 10) / 10,
+    unevenness: Math.round(Math.max(colRange, rowRange) * 10) / 10,
+    n_inliers: nInliers,
+  };
+};
+
 const buildRegistrationBlock = (
   outcome: MunsellChartOutcome,
+  page: MunsellPage,
 ): Record<string, unknown> => {
   if (outcome.kind === 'failure') {
     return {
@@ -329,14 +403,46 @@ const buildRegistrationBlock = (
   const inliers = g.matchedGridInliers
     ? g.matchedGridInliers.filter(Boolean).length
     : null;
+  const illumination =
+    g.matchedGridBrightness && g.matchedGridInliers
+      ? computeIllumination(page, g.matchedGridBrightness, g.matchedGridInliers)
+      : null;
   return {
     mode: g.matchedGrid ? 'auto' : 'auto-no-match',
     match_score: g.matchedScore,
     match_total: g.matchedRefCount,
     inliers,
+    inliers_ratio:
+      inliers !== null && g.matchedRefCount && g.matchedRefCount > 0
+        ? inliers / g.matchedRefCount
+        : null,
+    misses:
+      inliers !== null && g.matchedRefCount !== null
+        ? g.matchedRefCount - inliers
+        : null,
     n_detected: g.detected.length,
+    n_kept: g.nKept,
+    reject_counts: g.rejectCounts,
+    paper_luma: g.paperLuma,
+    avg_luma: Math.round(g.avgLuma * 10) / 10,
+    paper_gap:
+      g.paperLuma !== null ? Math.abs(g.paperLuma - g.avgLuma) : null,
+    // Midpoint the classifier's isPaperCentre uses to decide "paper
+    // vs not paper". Kept regions must be on the paper side of this
+    // (brighter than midpoint on bright_paper, darker on dark_paper).
+    paper_midpoint:
+      g.paperLuma !== null
+        ? Math.round(((g.paperLuma + g.avgLuma) / 2) * 10) / 10
+        : null,
+    direction:
+      g.brightPaperOnDark === null
+        ? 'fallback'
+        : g.brightPaperOnDark
+          ? 'bright_paper'
+          : 'dark_paper',
     cell_size_px: {w: g.cellW, h: g.cellH},
     chart_body_bounds: g.chartBodyBounds,
+    illumination,
   };
 };
 
@@ -446,6 +552,7 @@ const buildCaptureEntry = (
   anchorLabel: string,
   anchor: ResolvedAnchor,
   outcome: MunsellChartOutcome,
+  page: MunsellPage,
 ): unknown => {
   const base = path.basename(fixture.path, path.extname(fixture.path));
   const sanitizedAnchor = anchor.displayNotation
@@ -464,7 +571,7 @@ const buildCaptureEntry = (
       illuminant_tag: fixture.illuminant_tag,
       tags: fixture.tags,
     },
-    registration: buildRegistrationBlock(outcome),
+    registration: buildRegistrationBlock(outcome, page),
   };
   if (outcome.kind === 'failure') {
     return {...common, wb_correction: null, cells: [], ref_card: null};
@@ -567,11 +674,14 @@ const {values} = parseArgs({
     fixtures: {type: 'string'},
     out: {type: 'string'},
     refs: {type: 'string'},
+    pages: {type: 'string'},
+    'no-html': {type: 'boolean'},
   },
 });
 
 const fixturesDir = values.fixtures;
 const outPath = values.out;
+const emitHtml = !values['no-html'];
 if (!fixturesDir) die('missing --fixtures <dir>');
 if (!outPath) die('missing --out <path>');
 
@@ -585,9 +695,24 @@ const refNotations = values.refs
   : [REF_AUTO, REF_CARD];
 
 process.stderr.write(`scanning ${fixturesDir}\n`);
-const fixtures = scanFixtures(fixturesDir!);
+const allFixtures = scanFixtures(fixturesDir!);
+const pageFilter = values.pages
+  ? new Set(
+      values.pages
+        .split(',')
+        .map(s => s.trim().toLowerCase())
+        .filter(Boolean),
+    )
+  : null;
+const fixtures = pageFilter
+  ? allFixtures.filter(f => pageFilter.has(f.page.toLowerCase()))
+  : allFixtures;
 process.stderr.write(
-  `found ${fixtures.length} fixture(s); refs=[${refNotations.join(', ')}]\n`,
+  `found ${allFixtures.length} fixture(s)` +
+    (pageFilter
+      ? ` — filtered to ${fixtures.length} for pages=[${[...pageFilter].join(', ')}]`
+      : '') +
+    `; refs=[${refNotations.join(', ')}]\n`,
 );
 
 const decoder = new NodeDecoder(DNG_CLI);
@@ -635,6 +760,17 @@ let nFailure = 0;
             matchedRefCount: null,
             matchedTripletDetected: null,
             matchedSampleRects: null,
+            matchedGridBrightness: null,
+            avgLuma: 0,
+            paperLuma: null,
+            brightPaperOnDark: null,
+            nKept: 0,
+            rejectCounts: {
+              area_low: 0,
+              area_high: 0,
+              touches_edge: 0,
+              outside_guide: 0,
+            },
           },
         },
       };
@@ -650,9 +786,11 @@ let nFailure = 0;
     // full-res preview the analyzer already ran. Only worth doing for
     // successful analyses (failure path has no coord system to align
     // to). Skip on JPEG-encode error so a single bad fixture doesn't
-    // torpedo the whole run.
+    // torpedo the whole run. Skipped entirely under --no-html since
+    // JPEG encoding is the biggest per-fixture cost we can drop when
+    // the caller only wants the JSON.
     let previewImage: CaptureContext['previewImage'] | undefined;
-    if (outcome.kind === 'success') {
+    if (outcome.kind === 'success' && emitHtml) {
       try {
         const rendered = decoder.renderPreviewImage(
           fixture.path,
@@ -688,6 +826,7 @@ let nFailure = 0;
         refLabel,
         anchor,
         outcome,
+        page,
       ) as CaptureJsonEntry;
       captures.push(jsonEntry);
       captureContexts.push({
@@ -719,19 +858,26 @@ let nFailure = 0;
   fs.mkdirSync(path.dirname(outPath!), {recursive: true});
   fs.writeFileSync(outPath!, JSON.stringify(output, null, 2) + '\n');
 
-  // HTML report next to the JSON. Derive path by swapping .json → .html
-  // (or appending .html if the out arg doesn't end with .json).
-  const reportPath = outPath!.endsWith('.json')
-    ? outPath!.replace(/\.json$/, '.html')
-    : `${outPath}.html`;
-  const html = renderHtmlReport(runMeta, captureContexts);
-  fs.writeFileSync(reportPath, html);
-  const reportBytes = fs.statSync(reportPath).size;
-  process.stderr.write(
-    `wrote ${captures.length} capture(s) (${nSuccess} success, ${nFailure} failure)\n` +
-      `  json:   ${outPath}\n` +
-      `  report: ${reportPath}  (${(reportBytes / 1024 / 1024).toFixed(1)} MB)\n`,
-  );
+  if (emitHtml) {
+    // HTML report next to the JSON. Derive path by swapping .json → .html
+    // (or appending .html if the out arg doesn't end with .json).
+    const reportPath = outPath!.endsWith('.json')
+      ? outPath!.replace(/\.json$/, '.html')
+      : `${outPath}.html`;
+    const html = renderHtmlReport(runMeta, captureContexts);
+    fs.writeFileSync(reportPath, html);
+    const reportBytes = fs.statSync(reportPath).size;
+    process.stderr.write(
+      `wrote ${captures.length} capture(s) (${nSuccess} success, ${nFailure} failure)\n` +
+        `  json:   ${outPath}\n` +
+        `  report: ${reportPath}  (${(reportBytes / 1024 / 1024).toFixed(1)} MB)\n`,
+    );
+  } else {
+    process.stderr.write(
+      `wrote ${captures.length} capture(s) (${nSuccess} success, ${nFailure} failure)\n` +
+        `  json:   ${outPath}  (HTML skipped, --no-html)\n`,
+    );
+  }
 })().catch(err => {
   decoder.cleanup();
   die(`fatal: ${err instanceof Error ? err.stack ?? err.message : String(err)}`);

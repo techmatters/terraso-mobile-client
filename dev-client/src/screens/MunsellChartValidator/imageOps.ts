@@ -186,7 +186,10 @@ export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
   // 3-8 depending on capture noise) while rejecting chart body
   // (spread 15-20 due to warm tint) and near-white chips (spread
   // 15+ due to warm shift). Was 6 which was too tight under noise.
-  borderChromaSpreadTolerance: 10,
+  // TEMPORARY: raised to 20 to test whether bright_paper chip holes
+  // fill in more completely (currently only ~50% of each hole passes
+  // the gate). Revert to 10 once the experiment concludes.
+  borderChromaSpreadTolerance: 20,
 };
 
 export type WhiteMaskResult = {

@@ -111,15 +111,12 @@ export type DebugBlob = {
   //                           is expected to fit inside the guide, so
   //                           anything outside it is paper-shell noise
   //                           or a stray region)
-  //   reject_brightness     — centre pixel on the wrong side of the
-  //                           paper/avg midpoint (see classifyRegion)
   status:
     | 'kept'
     | 'reject_area_low'
     | 'reject_area_high'
     | 'reject_touches_edge'
-    | 'reject_outside_guide'
-    | 'reject_brightness';
+    | 'reject_outside_guide';
 };
 
 export type GridDetection = {
@@ -201,6 +198,40 @@ export type GridDetection = {
   // Rendered as red outlines on the source overlay and used by
   // downstream sampling. Null if the match step didn't run.
   matchedSampleRects: {x: number; y: number; w: number; h: number}[] | null;
+  // Grayscale (Rec.709 luma, 0-255) sampled from the preview at each
+  // matchedGrid centre — useful diagnostic for "why did this hole
+  // NOT get detected?": compare each value to the classifier's
+  // paper midpoint (paperLuma + avgLuma)/2. On bright_paper, values
+  // BELOW midpoint would be rejected by isPaperCentre. Same
+  // ordering / length as matchedGrid. Null when matchedGrid is null.
+  matchedGridBrightness: number[] | null;
+  // Whole-image average brightness (Rec.709 luma, computed inline in
+  // detectChartByRegions). Combined with paperLuma to feed the
+  // classifier's midpoint threshold; also useful downstream for
+  // regression tracking of "was this a bright-bg or dark-bg capture".
+  avgLuma: number;
+  // Paper anchor brightness from whiteMask border-cal (may be null
+  // when the ring didn't yield enough samples and whiteMask fell back
+  // to the percentile path).
+  paperLuma: number | null;
+  // True when paperLuma > avgLuma (chart paper is brighter than the
+  // surroundings). False in the flipped case (paper darker than
+  // surroundings, e.g. chart on a bright table). Null when paperLuma
+  // is null.
+  brightPaperOnDark: boolean | null;
+  // Count of "kept" classifications (matches DebugBlob[].status ===
+  // 'kept'). Same value the constrained-random matcher sees as its
+  // detected-circle count.
+  nKept: number;
+  // Full per-status counts from the classifier — useful for
+  // pin-pointing which reject bucket is dropping candidates on a
+  // problematic fixture.
+  rejectCounts: {
+    area_low: number;
+    area_high: number;
+    touches_edge: number;
+    outside_guide: number;
+  };
 };
 
 // -----------------------------------------------------------------
@@ -325,15 +356,7 @@ export const detectChartByRegions = (
   const avgLuma = meanLuma(img);
   const tagged = regions.map(r => ({
     region: r,
-    status: classifyRegion(
-      r,
-      img,
-      minArea,
-      maxArea,
-      paperLuma,
-      avgLuma,
-      guideRect,
-    ),
+    status: classifyRegion(r, img, minArea, maxArea, guideRect),
   }));
   const tAfterClassify = Date.now();
   // Detected candidates fed to RANSAC (single polarity now — old
@@ -582,6 +605,7 @@ export const detectChartByRegions = (
   let matchedSampleRects:
     | {x: number; y: number; w: number; h: number}[]
     | null = null;
+  let matchedGridBrightness: number[] | null = null;
   if (detectedPoints.length >= 3) {
     // Tightened from 0.4 to 0.2 of cellH — 0.4 was roughly half a
     // row-step which is bigger than one whole hole, so many wrong
@@ -791,6 +815,19 @@ export const detectChartByRegions = (
       matchedScore = match.score;
       matchedRefCount = refGrid.length;
       matchedGrid = refGrid.map(p => applyAffine(match.transform, p));
+      // Sample grayscale brightness at each matched-grid centre so
+      // the report can display it next to each yellow ring — makes
+      // "why wasn't this hole detected?" trivially answerable
+      // (compare vs. the paper-midpoint threshold shown in the
+      // registration block).
+      matchedGridBrightness = matchedGrid.map(p => {
+        const xi = Math.round(p.x);
+        const yi = Math.round(p.y);
+        if (xi < 0 || yi < 0 || xi >= img.width || yi >= img.height) {
+          return 0;
+        }
+        return img.pixels[yi * img.width + xi];
+      });
       // Compute which ref points were inliers under the winning
       // transform — mirrors scoreTransform's greedy unique-assignment
       // logic so the display matches what scored. A ref point is an
@@ -871,6 +908,18 @@ export const detectChartByRegions = (
     matchedRefCount,
     matchedTripletDetected,
     matchedSampleRects,
+    matchedGridBrightness,
+    avgLuma,
+    paperLuma,
+    brightPaperOnDark:
+      paperLuma === null ? null : paperLuma > avgLuma ? true : false,
+    nKept: statusCounts.kept ?? 0,
+    rejectCounts: {
+      area_low: statusCounts.reject_area_low ?? 0,
+      area_high: statusCounts.reject_area_high ?? 0,
+      touches_edge: statusCounts.reject_touches_edge ?? 0,
+      outside_guide: statusCounts.reject_outside_guide ?? 0,
+    },
   };
 };
 
@@ -895,13 +944,20 @@ export const detectChartByRegions = (
 // adaptive cutoff, and also collapses `kept_bright` / `kept_dark`
 // into a single `kept` status — the pipeline only ever needs one
 // polarity per capture, so tracking both was noise.
+// Note: the isPaperCentre midpoint check used to be an extra
+// classifier gate here. On WHITE-page bright-bg captures it dropped
+// legitimate chip holes whose paper reveal happens to sit just below
+// the (paperLuma+avgLuma)/2 midpoint (centres at ~170-178, midpoint
+// ~180, all rejected as reject_brightness even though the mask had
+// already qualified those pixels as paper). The mask is a more
+// nuanced gate — if a pixel passed the border-cal per-channel + chroma
+// spread test, trust it. Direction detection is still logged for
+// diagnostics but no longer acts here.
 const classifyRegion = (
   r: Region,
   img: GrayImage,
   minArea: number,
   maxArea: number,
-  paperLuma: number | null,
-  avgLuma: number,
   guideRect: {x: number; y: number; w: number; h: number} | null,
 ): DebugBlob['status'] => {
   if (r.area < minArea) return 'reject_area_low';
@@ -923,30 +979,14 @@ const classifyRegion = (
   ) {
     return 'reject_outside_guide';
   }
-  const isPaper = isPaperCentre(r.meanBrightness, paperLuma, avgLuma);
-  if (!isPaper) return 'reject_brightness';
   return 'kept';
 };
 
 // Fallback bright cutoff when whitemask calibration didn't supply a
-// paperLuma. Historical value from when the classifier was hard-
-// coded; kept only for the no-guide fallback path.
-const FALLBACK_BRIGHT_MIN = 170;
-
-const isPaperCentre = (
-  centre: number,
-  paperLuma: number | null,
-  avgLuma: number,
-): boolean => {
-  if (paperLuma === null) return centre > FALLBACK_BRIGHT_MIN;
-  const threshold = 0.5 * (paperLuma + avgLuma);
-  return paperLuma > avgLuma ? centre > threshold : centre < threshold;
-};
-
 // Mean pixel value across the whole grayscale image. Cheap one-pass
-// sum for the per-capture "average brightness" landmark used by
-// isPaperCentre. Computed inline (not from a histogram) so we don't
-// need to plumb a histogram out of whiteMask.
+// sum for the per-capture "average brightness" — used only for the
+// direction diagnostic + report banner now that isPaperCentre is
+// gone; kept because analysis tooling / regression reports expect it.
 const meanLuma = (img: GrayImage): number => {
   const {pixels} = img;
   let sum = 0;

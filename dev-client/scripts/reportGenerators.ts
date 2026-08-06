@@ -179,6 +179,67 @@ const wrapText = (
 // + red rect on ref-card position.
 // Skipped (add later if useful): whitemask blue span overlay,
 // chart-body cyan outline.
+// Small bar chart used under the whitemask to visualise per-column
+// and per-row mean brightness across matched-grid inliers. Bars fill
+// bottom-up (col chart) or left-to-right (row chart) — a lit-from-
+// one-side capture is instantly visible as a tilt in either bar.
+const renderBrightnessBarChart = (
+  values: readonly (number | null)[],
+  orientation: 'horizontal' | 'vertical',
+  label: string,
+): string => {
+  if (values.length === 0) return '';
+  const WIDTH = 260;
+  const HEIGHT = 90;
+  const PAD_L = 32;
+  const PAD_R = 8;
+  const PAD_T = 16;
+  const PAD_B = 22;
+  const plotW = WIDTH - PAD_L - PAD_R;
+  const plotH = HEIGHT - PAD_T - PAD_B;
+  // Fixed y-scale [80, 220] — brightness range that covers virtually
+  // all captures without truncating.
+  const Y_MIN = 80;
+  const Y_MAX = 220;
+  const yFor = (v: number): number =>
+    PAD_T + plotH * (1 - (v - Y_MIN) / (Y_MAX - Y_MIN));
+  const parts: string[] = [];
+  parts.push(
+    `<rect x="0" y="0" width="${WIDTH}" height="${HEIGHT}" fill="#fff" stroke="#ddd"/>`,
+  );
+  // Gridlines at 100/150/200.
+  for (const g of [100, 150, 200]) {
+    const gy = yFor(g);
+    parts.push(
+      `<line x1="${PAD_L}" y1="${gy}" x2="${WIDTH - PAD_R}" y2="${gy}" stroke="#eee"/>`,
+    );
+    parts.push(
+      `<text x="${PAD_L - 2}" y="${gy + 3}" font-size="9" fill="#888" text-anchor="end">${g}</text>`,
+    );
+  }
+  const barW = plotW / values.length;
+  values.forEach((v, i) => {
+    if (v === null) return;
+    const bx = PAD_L + i * barW + 1;
+    const bw = barW - 2;
+    const by = yFor(v);
+    const bh = HEIGHT - PAD_B - by;
+    parts.push(
+      `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="#3388cc"/>`,
+    );
+    parts.push(
+      `<text x="${bx + bw / 2}" y="${HEIGHT - PAD_B + 12}" font-size="9" fill="#666" text-anchor="middle">${i}</text>`,
+    );
+    parts.push(
+      `<text x="${bx + bw / 2}" y="${by - 2}" font-size="9" fill="#333" text-anchor="middle">${Math.round(v)}</text>`,
+    );
+  });
+  parts.push(
+    `<text x="${WIDTH / 2}" y="12" font-size="11" font-weight="bold" fill="#444" text-anchor="middle">${esc(label)}</text>`,
+  );
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}" width="${WIDTH}" height="${HEIGHT}">${parts.join('')}</svg>`;
+};
+
 export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   if (!cap.previewImage) {
     return '<div class="no-preview">(no preview available — analysis failed)</div>';
@@ -193,6 +254,19 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   parts.push(
     `<image href="data:image/${ext};base64,${base64}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`,
   );
+
+  // Whitemask spans — the pixels the border-cal classifier labelled
+  // "paper" (or "background color"). On bright-paper captures this
+  // covers the surroundings + paper-visible-through-hole regions; on
+  // dark-paper it covers only the dark surroundings. Drawn as
+  // semi-transparent blue so the preview stays visible underneath.
+  if (cap.outcome.kind === 'success') {
+    for (const s of cap.outcome.result.grid.brightMaskSpans) {
+      parts.push(
+        `<rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" fill="rgba(0,180,255,0.55)"/>`,
+      );
+    }
+  }
 
   // Chart guide rectangle — where the on-screen framing guide sits in
   // preview-image coordinates. Same math as the RN debug overlay.
@@ -241,6 +315,19 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   if (cap.outcome.kind === 'success') {
     const grid = cap.outcome.result.grid;
 
+    // Magenta boxes for REJECTED candidates — makes visible which
+    // blobs the classifier tossed and why. Same color for all reject
+    // statuses; hover over the source JSON if you need to know which
+    // reject bucket a specific box came from.
+    for (const b of grid.rawBlobs) {
+      if (b.status === 'kept') continue;
+      const w = b.maxX - b.minX + 1;
+      const h = b.maxY - b.minY + 1;
+      parts.push(
+        `<rect x="${b.minX}" y="${b.minY}" width="${w}" height="${h}" stroke="#cc00cc" stroke-width="1" fill="none"/>`,
+      );
+    }
+
     // Green rings on detected/kept circles + centre dots.
     for (const b of grid.rawBlobs) {
       if (b.status !== 'kept') continue;
@@ -254,12 +341,22 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
     }
 
     // Yellow rings on matched-ref grid — filled when inlier.
+    // Immediately below each ring, a small text with the grayscale
+    // brightness sampled from the preview at that point — makes it
+    // trivial to see "hollow ring at (x,y) has brightness 145, below
+    // paper midpoint 182 → rejected by classifier".
     if (grid.matchedGrid) {
       grid.matchedGrid.forEach((p, i) => {
         const fill = grid.matchedGridInliers?.[i] ? '#ffcc00' : 'none';
         parts.push(
           `<circle cx="${p.x}" cy="${p.y}" r="14" stroke="#ffcc00" stroke-width="3" fill="${fill}"/>`,
         );
+        const b = grid.matchedGridBrightness?.[i];
+        if (b !== undefined) {
+          parts.push(
+            `<text x="${p.x}" y="${p.y + 26}" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffcc00" stroke="black" stroke-width="0.4" paint-order="stroke">${b}</text>`,
+          );
+        }
       });
     }
 
@@ -572,12 +669,15 @@ export const renderHtmlReport = (
     table.meta th { background: #f7f7f7; font-weight: 600; white-space: nowrap; }
     section.capture { border: 1px solid #ccc; padding: 12px 18px; margin: 12px 0; border-radius: 6px; background: #fafafa; }
     section.capture.failed { background: #fff5f5; border-color: #f5c8c8; }
-    .whitemask-block { flex: 0 0 auto; }
-    .results-block { flex: 1 1 auto; min-width: 340px; }
+    /* Whitemask sits on its own row (full width) so it can render as
+       large as the browser will allow; result grids wrap below in a
+       flex row. */
+    .whitemask-block { flex: 1 1 100%; }
+    .results-block { flex: 1 1 100%; }
     .results-variants { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
     .results-variants > div { flex: 1 1 400px; min-width: 340px; }
     .images { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
-    svg.whitemask-svg { width: 100%; height: auto; max-width: 640px; background: #000; }
+    svg.whitemask-svg { width: 100%; height: auto; max-width: 1400px; background: #000; }
     svg.results-svg { width: 100%; height: auto; max-width: 800px; }
     .no-preview { padding: 20px; background: #eee; color: #666; font-style: italic; }
     code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 12px; }
@@ -589,6 +689,13 @@ export const renderHtmlReport = (
     .legend-flex li { margin: 2px 0; }
     .buckets { display: flex; gap: 6px; margin-top: 8px; font-size: 12px; }
     .buckets span { display: inline-block; padding: 4px 10px; border: 1px solid #ccc; }
+    .reg-table table { border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+    .reg-table th, .reg-table td { border: 1px solid #ddd; padding: 3px 10px; text-align: left; }
+    .reg-table th { background: #f7f7f7; font-weight: 600; }
+    .reg-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .reg-good { background: #c8f5c8; }
+    .reg-warn { background: #f5e6c8; }
+    .reg-bad { background: #f5c8c8; }
   </style>
 </head>
 <body>
@@ -600,12 +707,138 @@ export const renderHtmlReport = (
     <tr><th>Fixtures</th><td>${meta.n_fixtures} (${meta.n_success} ok, ${meta.n_failure} failed)</td></tr>
     <tr><th>Captures</th><td>${captures.length}</td></tr>
   </table>
+  ${renderRegistrationTable(groupList)}
   ${toc}
   ${renderLegend()}
   ${sections}
 </body>
 </html>
 `;
+};
+
+// Temporary diagnostic: one row per fixture with the registration
+// ratio (inliers/total) and absolute miss count, colour-coded so
+// problem fixtures pop out at a glance. Sorted alphabetically to
+// match the TOC / file browser ordering. Remove when the underlying
+// registration quality is consistently green.
+const renderRegistrationTable = (groups: CaptureContext[][]): string => {
+  type Row = {
+    label: string;
+    ratio: number;
+    misses: number;
+    total: number;
+    inliers: number;
+    paperGap: number | null;
+    direction: string | null;
+    unevenness: number | null;
+    valid: boolean;
+  };
+  const rows: Row[] = groups.map(g => {
+    const first = g[0];
+    const reg = first.jsonEntry.registration as {
+      mode?: string;
+      match_total?: number | null;
+      inliers?: number | null;
+      paper_gap?: number | null;
+      direction?: string | null;
+      illumination?: {unevenness?: number} | null;
+    };
+    const total = reg.match_total ?? 0;
+    const inl = reg.inliers ?? 0;
+    return {
+      label: first.jsonEntry.label,
+      ratio: total > 0 ? inl / total : 0,
+      misses: total - inl,
+      total,
+      inliers: inl,
+      paperGap: reg.paper_gap ?? null,
+      direction: reg.direction ?? null,
+      unevenness: reg.illumination?.unevenness ?? null,
+      valid: reg.mode === 'auto',
+    };
+  });
+  rows.sort((a, b) => a.label.localeCompare(b.label));
+
+  const ratioClass = (r: number, valid: boolean): string => {
+    if (!valid) return 'reg-bad';
+    if (r >= 0.9) return 'reg-good';
+    if (r < 0.7) return 'reg-bad';
+    return '';
+  };
+  const missesClass = (m: number, valid: boolean): string => {
+    if (!valid) return 'reg-bad';
+    if (m === 0) return 'reg-good';
+    if (m > 10) return 'reg-bad';
+    if (m > 2) return 'reg-warn';
+    return '';
+  };
+  // Gap correlation from the diagnostic run: >=50 → always perfect,
+  // <30 → nearly always poor, 30-50 → mixed.
+  const gapClass = (g: number | null): string => {
+    if (g === null) return '';
+    if (g >= 50) return 'reg-good';
+    if (g < 30) return 'reg-bad';
+    return 'reg-warn';
+  };
+  // Illumination unevenness (max of col_range, row_range across
+  // inlier chip brightness). <20 = even, >40 = clearly uneven.
+  const unevennessClass = (u: number | null): string => {
+    if (u === null) return '';
+    if (u < 20) return 'reg-good';
+    if (u > 40) return 'reg-bad';
+    return 'reg-warn';
+  };
+
+  const trs = rows
+    .map(r => {
+      const ratioText = r.valid ? r.ratio.toFixed(2) : 'FAIL';
+      const missesText = r.valid ? `${r.misses} / ${r.total}` : '—';
+      const gapText =
+        r.paperGap === null ? '—' : `${r.paperGap.toFixed(0)}`;
+      const dirText = r.direction === 'fallback' ? '' : r.direction ?? '';
+      const unevenText =
+        r.unevenness === null ? '—' : r.unevenness.toFixed(0);
+      return `
+      <tr>
+        <td><a href="#${fixtureSectionId(r.label)}">${esc(r.label)}</a></td>
+        <td class="num ${ratioClass(r.ratio, r.valid)}">${ratioText}</td>
+        <td class="num ${missesClass(r.misses, r.valid)}">${missesText}</td>
+        <td class="num ${gapClass(r.paperGap)}">${gapText}</td>
+        <td class="num ${unevennessClass(r.unevenness)}">${unevenText}</td>
+        <td>${esc(dirText)}</td>
+      </tr>`;
+    })
+    .join('');
+
+  return `
+<section class="reg-table">
+  <h2 style="margin-top:0">Registration quality (temporary)</h2>
+  <p style="font-size:12px; color:#666; margin:4px 0 8px 0">
+    Colours — ratio: <span class="reg-good" style="padding:1px 6px">&ge;0.90</span>
+    <span class="reg-bad" style="padding:1px 6px">&lt;0.70</span>;
+    misses: <span class="reg-good" style="padding:1px 6px">0</span>
+    <span class="reg-warn" style="padding:1px 6px">&gt;2</span>
+    <span class="reg-bad" style="padding:1px 6px">&gt;10</span>;
+    paper gap: <span class="reg-good" style="padding:1px 6px">&ge;50</span>
+    <span class="reg-warn" style="padding:1px 6px">30-49</span>
+    <span class="reg-bad" style="padding:1px 6px">&lt;30</span>;
+    illum unevenness: <span class="reg-good" style="padding:1px 6px">&lt;20</span>
+    <span class="reg-warn" style="padding:1px 6px">20-40</span>
+    <span class="reg-bad" style="padding:1px 6px">&gt;40</span>.
+  </p>
+  <table>
+    <thead><tr>
+      <th>Fixture</th>
+      <th>inliers / total (ratio)</th>
+      <th>misses / total</th>
+      <th>paper gap</th>
+      <th>illum unevenness</th>
+      <th>direction</th>
+    </tr></thead>
+    <tbody>${trs}
+    </tbody>
+  </table>
+</section>`;
 };
 
 // Section anchor id, derived from fixture label. Reused by the TOC's
@@ -738,6 +971,7 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
     <div class="whitemask-block">
       <h3>Whitemask + overlays</h3>
       ${renderWhitemaskOverlaySvg(first)}
+      ${renderIlluminationBlock(first)}
     </div>
     <div class="results-block">
       <h3>Result grids (per WB anchor)</h3>
@@ -746,6 +980,43 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
     </div>
   </div>
 </section>`;
+};
+
+// Pulls the illumination stats out of the fixture's registration
+// block and renders two small brightness bar charts + a one-line
+// "unevenness = N" summary. Silent when illumination is absent
+// (RANSAC didn't lock, so no matched-grid brightness data).
+const renderIlluminationBlock = (cap: CaptureContext): string => {
+  const illum = (cap.jsonEntry.registration as {illumination?: unknown})
+    .illumination as {
+    column_means: (number | null)[];
+    row_means: (number | null)[];
+    column_range: number;
+    row_range: number;
+    unevenness: number;
+    n_inliers: number;
+  } | null | undefined;
+  if (!illum) return '';
+  const uCls =
+    illum.unevenness < 20
+      ? 'reg-good'
+      : illum.unevenness > 40
+        ? 'reg-bad'
+        : 'reg-warn';
+  return `
+<div style="margin-top:8px">
+  <h3 style="margin:6px 0">Illumination evenness</h3>
+  <p style="font-size:12px; color:#444; margin:4px 0">
+    unevenness = <span class="${uCls}" style="padding:2px 8px; font-weight:bold">${illum.unevenness.toFixed(1)}</span>
+    · column range = ${illum.column_range.toFixed(1)}
+    · row range = ${illum.row_range.toFixed(1)}
+    · n_inliers = ${illum.n_inliers}
+  </p>
+  <div style="display:flex; gap:16px; flex-wrap:wrap">
+    ${renderBrightnessBarChart(illum.column_means, 'vertical', 'Per-column mean (physical col →)')}
+    ${renderBrightnessBarChart(illum.row_means, 'vertical', 'Per-row mean (physical row →)')}
+  </div>
+</div>`;
 };
 
 // Local re-export so the runner can pull one type from here without

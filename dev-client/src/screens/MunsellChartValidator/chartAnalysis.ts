@@ -289,6 +289,17 @@ export const analyzeMunsellChart = async (
       matchedRefCount: null,
       matchedTripletDetected: null,
       matchedSampleRects: null,
+      matchedGridBrightness: null,
+      avgLuma: 0,
+      paperLuma: null,
+      brightPaperOnDark: null,
+      nKept: 0,
+      rejectCounts: {
+        area_low: 0,
+        area_high: 0,
+        touches_edge: 0,
+        outside_guide: 0,
+      },
     };
     const debug: MunsellChartFailureDebug = {
       reason:
