@@ -35,9 +35,9 @@ import {Coords} from 'terraso-client-shared/types';
 import {searchBarStyles} from 'terraso-mobile-client/components/ListFilter';
 import {View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {MAP_QUERY_MIN_LENGTH} from 'terraso-mobile-client/constants';
-import {useSitesScreenContext} from 'terraso-mobile-client/context/SitesScreenContext';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
 import {useMapSuggestions} from 'terraso-mobile-client/hooks/useMapSuggestions';
+import {useCollapseBottomSheet} from 'terraso-mobile-client/screens/SitesScreen/CollapseBottomSheetContext';
 import {MapSearchOfflineAlertBox} from 'terraso-mobile-client/screens/SitesScreen/components/search/MapSearchOfflineAlertBox';
 import {
   CoordsSuggestionBox,
@@ -77,13 +77,13 @@ export const MapSearch = ({zoomTo}: MapSearchProps) => {
   const [query, setQuery] = useState('');
   const {suggestions, querySuggestions, lookupFeature} = useMapSuggestions();
   const [showAutocomplete, setShowAutocomplete] = useState(false);
-  const sitesScreen = useSitesScreenContext();
+  const collapseBottomSheet = useCollapseBottomSheet();
 
   useEffect(() => {
     if (query.length >= MAP_QUERY_MIN_LENGTH) {
-      sitesScreen?.collapseBottomSheet();
+      collapseBottomSheet();
     }
-  }, [sitesScreen, query]);
+  }, [collapseBottomSheet, query]);
 
   const selectMapboxSuggestion = useCallback(
     async (name: string, mapboxId: string) => {
