@@ -12,7 +12,10 @@
   "exclude": ["dist"],
   "ts-node": {
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "customConditions": null,
+      "allowImportingTsExtensions": false
     }
   }
 }

@@ -24,6 +24,8 @@
     "update-tests": "npm run test -- -u",
     "check-ts": "tsc --noEmit",
     "check-modules": "depcheck",
+    "build:dng-cli": "./tools/dng-cli/build.sh",
+    "analyze-fixtures": "node -r ts-node/register/transpile-only -r tsconfig-paths/register scripts/analyze-fixtures.ts",
     "prebuild": "expo prebuild",
     "clean-watchman": "watchman watch-del-all && watchman shutdown-server",
     "i18n-check": "node scripts/i18n/check.mjs",
@@ -195,6 +197,7 @@
     "react-native-svg-transformer": "^1.5.1",
     "react-test-renderer": "19.2.3",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "~5.9.3"
   },
   "jest": {

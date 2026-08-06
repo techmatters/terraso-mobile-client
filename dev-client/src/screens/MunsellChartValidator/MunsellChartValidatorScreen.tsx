@@ -42,6 +42,7 @@ import {
 } from 'expo-file-system/legacy';
 
 import DeltaE from 'delta-e';
+import {DngDecoderHybrid} from 'dng-decoder';
 import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
@@ -317,6 +318,7 @@ export const MunsellChartValidatorScreen = ({
     (async () => {
       try {
         const outcome = await analyzeMunsellChart(
+          DngDecoderHybrid,
           dngPath,
           page,
           format,

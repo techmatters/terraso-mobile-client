@@ -103,3 +103,7 @@ sentry.properties
 # Sometimes watchman creates cookie files
 .watchman-cookie-*
 .claude/settings.local.json
+
+# Munsell chart validator regression outputs (JSON exports, historical
+# device-run artifacts) — local-only, not for version control.
+dev-client/results/
