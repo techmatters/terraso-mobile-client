@@ -68,7 +68,9 @@ type Sample = {
   expected: string;
   measured: string;
   page: string;
-  refCard: string | null;
+  // 'none' when no physical ref card was in the shot; keeps the
+  // client-side grid model uniformly string-keyed.
+  refCard: string;
   illuminant: string | null;
   tags: string[];
   wbSource: string | null;
@@ -93,7 +95,7 @@ for (const cap of runDoc.captures) {
       expected: cell.expected_notation,
       measured: cell.measured_notation,
       page: cap.page,
-      refCard: cap.reference_card ?? null,
+      refCard: cap.reference_card ?? 'none',
       illuminant: cap.environment?.illuminant_tag ?? null,
       tags: cap.environment?.tags ?? [],
       wbSource: cap.wb_correction?.source ?? null,
@@ -157,11 +159,19 @@ const html = `<!DOCTYPE html>
          margin: 20px; color: #222; background: #fafafa; }
   h1 { margin: 0 0 4px 0; font-size: 20px; }
   .meta { color: #666; font-size: 12px; margin-bottom: 12px; }
-  #controls { display: flex; flex-wrap: wrap; gap: 20px; padding: 12px 16px;
-              background: #fff; border: 1px solid #ddd; border-radius: 6px;
-              margin-bottom: 12px; align-items: flex-start; }
+  .split-layout { display: flex; gap: 20px; align-items: flex-start; }
+  .left-panel { flex: 0 0 380px; }
+  /* min-width:0 lets the right panel actually shrink below its
+     intrinsic content width when the window narrows — otherwise
+     flex children default to min-content and refuse to compress. */
+  .right-panel { flex: 1 1 auto; min-width: 0; }
+  #controls { display: flex; flex-direction: column; gap: 10px;
+              padding: 12px 16px; background: #fff; border: 1px solid #ddd;
+              border-radius: 6px; margin-bottom: 12px; }
   #controls fieldset { border: 1px solid #ddd; padding: 6px 10px; margin: 0;
-                       border-radius: 4px; font-size: 13px; }
+                       border-radius: 4px; font-size: 13px; width: 100%;
+                       box-sizing: border-box; }
+  #ctl-grid { overflow-x: auto; }
   #controls legend { padding: 0 4px; font-weight: 600; font-size: 12px;
                      color: #555; }
   #controls label { display: block; padding: 1px 0; cursor: pointer; }
@@ -171,6 +181,11 @@ const html = `<!DOCTYPE html>
                    margin-bottom: 12px; font-size: 13px; }
   #view-switcher .vs-label { font-weight: 600; color: #555; margin-right: 4px; }
   #view-switcher label { cursor: pointer; }
+  #ref-page-grid { border-collapse: collapse; }
+  #ref-page-grid th, #ref-page-grid td { border: 1px solid #eee; }
+  #ref-page-grid input[type="checkbox"] { cursor: pointer; margin: 0; }
+  #ref-page-grid input[type="checkbox"]:disabled { cursor: not-allowed; opacity: 0.3; }
+  #ref-page-grid .cell-toggle:not(:checked) { opacity: 0.55; }
   #summary { font-size: 13px; color: #444; margin-bottom: 8px; }
   #filmstrip { display: flex; flex-wrap: wrap; gap: 12px; }
   .disk { background: #fff; border: 1px solid #ddd; border-radius: 6px;
@@ -194,59 +209,75 @@ const html = `<!DOCTYPE html>
   · generated: ${runDoc.generated_at ?? ''}
 </div>
 
-<div id="controls">
-  <fieldset id="ctl-refcard">
-    <legend>Ref card</legend>
-  </fieldset>
-  <fieldset id="ctl-illum">
-    <legend>Background</legend>
-  </fieldset>
-  <fieldset id="ctl-page">
-    <legend>Page</legend>
-  </fieldset>
-  <fieldset id="ctl-mode">
-    <legend>Arrow mode</legend>
-  </fieldset>
-  <fieldset id="ctl-uneven">
-    <legend>Max illum unevenness</legend>
-  </fieldset>
-</div>
-
-<div class="legend-row">
-  <span>ΔValue color:</span>
-  <span>−2</span>
-  <span class="legend-swatch"></span>
-  <span>+2</span>
-  <span style="margin-left:16px">blue = predicted too dark · red = too light</span>
-  <span style="margin-left:16px">×N label = N samples averaged into that chip's mean arrow</span>
-</div>
-
-<div id="view-switcher">
-  <span class="vs-label">View:</span>
-  <label><input type="radio" name="view" value="per-level" checked>
-    Per-level (2D disks)</label>
-  <label><input type="radio" name="view" value="3d">
-    3D stacked</label>
-</div>
-
-<div id="summary"></div>
-
-<div id="view-per-level" class="view-panel">
-  <div id="filmstrip"></div>
-</div>
-
-<div id="view-3d" class="view-panel" style="display: none;">
-  <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
-    Values stack V=1 (bottom) → V=10 (top).
-    Drag to rotate · scroll to zoom · shift-drag (or right-drag) to pan.
-    Chip spheres are the ground-truth Munsell lattice at each value
-    level; lines run from expected → measured, coloured by ΔValue.
-    Filters above apply.
+<div class="split-layout">
+  <div class="left-panel">
+    <div id="controls">
+      <fieldset id="ctl-illum">
+        <legend>Background</legend>
+      </fieldset>
+      <fieldset id="ctl-mode">
+        <legend>Arrow mode</legend>
+      </fieldset>
+      <fieldset id="ctl-uneven">
+        <legend>Max illum unevenness</legend>
+      </fieldset>
+      <fieldset id="ctl-grid">
+        <legend>Ref card × Page (availability updates with Background + Max illum)</legend>
+        <div style="margin-bottom: 6px; display: flex; gap: 8px;">
+          <button type="button" id="grid-select-all"
+            style="font-size: 11px; padding: 3px 8px; cursor: pointer;">
+            Select all available</button>
+          <button type="button" id="grid-deselect-all"
+            style="font-size: 11px; padding: 3px 8px; cursor: pointer;">
+            Deselect all</button>
+        </div>
+        <table id="ref-page-grid" style="border-collapse: collapse; font-size: 12px;"></table>
+        <div style="font-size: 10px; color: #888; margin-top: 4px;">
+          <b>self</b> column = WB was derived from a chart chip (regardless of physical card in shot).
+          Other columns = the physical ref card that was in the shot.
+        </div>
+      </fieldset>
+    </div>
   </div>
-  <div id="viz3d" style="width: 100%;
-    height: calc(100vh - 240px); min-height: 500px;
-    background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px;
-    overflow: hidden;"></div>
+
+  <div class="right-panel">
+    <div id="view-switcher">
+      <span class="vs-label">View:</span>
+      <label><input type="radio" name="view" value="per-level" checked>
+        Per-level (2D disks)</label>
+      <label><input type="radio" name="view" value="3d">
+        3D stacked</label>
+    </div>
+
+    <div class="legend-row">
+      <span>ΔValue color:</span>
+      <span>−2</span>
+      <span class="legend-swatch"></span>
+      <span>+2</span>
+      <span style="margin-left:16px">blue = predicted too dark · red = too light</span>
+      <span style="margin-left:16px">×N label = N samples averaged into that chip's mean arrow</span>
+    </div>
+
+    <div id="summary"></div>
+
+    <div id="view-per-level" class="view-panel">
+      <div id="filmstrip"></div>
+    </div>
+
+    <div id="view-3d" class="view-panel" style="display: none;">
+      <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
+        Values stack V=1 (bottom) → V=10 (top).
+        Drag to rotate · scroll to zoom · shift-drag (or right-drag) to pan.
+        Chip spheres are the ground-truth Munsell lattice at each value
+        level; lines run from expected → measured, coloured by ΔValue.
+        Filters at left apply.
+      </div>
+      <div id="viz3d" style="width: 100%;
+        height: calc(100vh - 240px); min-height: 500px;
+        background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px;
+        overflow: hidden;"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -321,16 +352,25 @@ function rgbHex(rgb) {
 // ---- Filter UI ----------------------------------------------------------
 
 const state = {
-  refCard: 'all',
   illum: 'all',
-  pages: new Set(),     // empty = all
-  mode: 'mean',
+  mode: 'raw',
   // Max illumination unevenness (max-of-col-range, row-range across
   // matched-grid inliers). Samples from captures above this threshold
-  // are hidden. Slider max = 999 = show all. Default 20 = only
+  // are hidden. Slider max = 100 = show all. Default 20 = only
   // evenly-lit captures.
   maxUneven: 20,
+  // Ref card × Page grid: Map<"page|refcard", boolean>. Missing key
+  // means enabled (default). Falsy means user turned that cell off.
+  cellEnabled: new Map(),
 };
+
+function cellKey(page, refCard) { return page + '|' + refCard; }
+function isCellEnabled(page, refCard) {
+  return state.cellEnabled.get(cellKey(page, refCard)) !== false;
+}
+function setCellEnabled(page, refCard, enabled) {
+  state.cellEnabled.set(cellKey(page, refCard), enabled);
+}
 
 function uniqueValues(arr, key) {
   const s = new Set();
@@ -374,36 +414,16 @@ function makeCheckGroup(el, options, currentGetter, onToggle) {
 }
 
 function initControls() {
-  // Ref card selector — physical cards (greycard / whibal / postit /
-  // nothing) plus two WB-anchor pseudo-options at the top:
-  //   self = WB source was 'auto' (a chip on the chart itself)
-  //   card = WB source was 'ref_card' (the physical card sampled)
-  // Physical-card entries filter by which card was in the shot;
-  // self/card entries filter by which anchor was used for WB.
-  const physicalCards = uniqueValues(SAMPLES, 'refCard');
-  const refCards = ['all', 'self', 'card', ...physicalCards];
-  makeRadioGroup(
-    document.getElementById('ctl-refcard'), 'refcard',
-    refCards.map(v => ({value: v, label: v})),
-    () => state.refCard, v => state.refCard = v,
-  );
   const illums = ['all', ...uniqueValues(SAMPLES, 'illuminant')];
   makeRadioGroup(
     document.getElementById('ctl-illum'), 'illum',
     illums.map(v => ({value: v, label: v})),
-    () => state.illum, v => state.illum = v,
-  );
-  const pages = uniqueValues(SAMPLES, 'page');
-  makeCheckGroup(
-    document.getElementById('ctl-page'),
-    pages.map(v => ({value: v, label: v})),
-    () => state.pages,
-    (v, on) => { if (on) state.pages.add(v); else state.pages.delete(v); },
+    () => state.illum, v => { state.illum = v; updateRefPageGrid(); },
   );
   makeRadioGroup(
     document.getElementById('ctl-mode'), 'mode',
-    [{value: 'mean', label: 'Mean per chip (quiver)'},
-     {value: 'raw',  label: 'Raw per-sample arrows'}],
+    [{value: 'raw',  label: 'Raw per-sample arrows'},
+     {value: 'mean', label: 'Mean per chip (quiver)'}],
     () => state.mode, v => state.mode = v,
   );
   // Illumination-unevenness slider. Range 0..100 with a max-position
@@ -428,29 +448,210 @@ function initControls() {
   slider.addEventListener('input', e => {
     state.maxUneven = parseInt(e.target.value, 10);
     label.textContent = state.maxUneven === 100 ? 'all' : state.maxUneven;
+    updateRefPageGrid();
     render();
   });
+
+  initRefPageGrid();
+}
+
+// Grid columns: leading 'self' pseudo-column (WB anchor = auto,
+// regardless of physical card in shot) followed by the physical
+// ref-card columns discovered in the samples.
+function gridColumns() {
+  return ['self', ...uniqueValues(SAMPLES, 'refCard')];
+}
+
+// Ref card × Page grid. Built once at init; cell availability + row
+// and column header states re-evaluated on every filter change that
+// could affect availability (Background, Max illum unevenness) or on
+// any change to state.cellEnabled.
+function initRefPageGrid() {
+  const pages = uniqueValues(SAMPLES, 'page');
+  const refCards = gridColumns();
+  const table = document.getElementById('ref-page-grid');
+  if (!table) return;
+  let html = '<thead><tr>';
+  html += '<th style="padding: 4px 6px; text-align: left; font-weight: 600; color: #555;">page \\ card</th>';
+  for (const rc of refCards) {
+    html += '<th style="padding: 4px 6px; text-align: center; font-weight: 400; color: #555; border-bottom: 1px solid #eee;">' +
+      '<div style="font-size: 11px;">' + rc + '</div>' +
+      '<input type="checkbox" class="col-toggle" data-refcard="' + rc + '" title="toggle whole column">' +
+      '</th>';
+  }
+  html += '</tr></thead><tbody>';
+  for (const p of pages) {
+    html += '<tr>';
+    html += '<th style="padding: 2px 6px; text-align: left; font-weight: 400; color: #555; border-right: 1px solid #eee; white-space: nowrap;">' +
+      '<input type="checkbox" class="row-toggle" data-page="' + p + '" title="toggle whole row"> ' +
+      p + '</th>';
+    for (const rc of refCards) {
+      html += '<td class="grid-cell" data-page="' + p + '" data-refcard="' + rc + '" ' +
+        'style="text-align: center; padding: 2px 6px;"></td>';
+    }
+    html += '</tr>';
+  }
+  html += '</tbody>';
+  table.innerHTML = html;
+
+  // Row / column toggles: click sets every cell in that dimension to
+  // the checkbox's new state (indeterminate → checked). Only affects
+  // AVAILABLE cells — unavailable cells stay '/'.
+  table.querySelectorAll('.row-toggle').forEach(cb => {
+    cb.addEventListener('change', e => {
+      const p = e.target.dataset.page;
+      const avail = availabilityMap();
+      for (const rc of refCards) {
+        if ((avail.get(cellKey(p, rc)) || 0) > 0) {
+          setCellEnabled(p, rc, e.target.checked);
+        }
+      }
+      updateRefPageGrid();
+      render();
+    });
+  });
+  table.querySelectorAll('.col-toggle').forEach(cb => {
+    cb.addEventListener('change', e => {
+      const rc = e.target.dataset.refcard;
+      const avail = availabilityMap();
+      for (const p of pages) {
+        if ((avail.get(cellKey(p, rc)) || 0) > 0) {
+          setCellEnabled(p, rc, e.target.checked);
+        }
+      }
+      updateRefPageGrid();
+      render();
+    });
+  });
+
+  // Bulk-select buttons: "Select all available" flips every
+  // currently-available cell on (leaves the '/' cells alone).
+  // "Deselect all" flips every cell off, available or not.
+  document.getElementById('grid-select-all').addEventListener('click', () => {
+    const avail = availabilityMap();
+    for (const p of pages) for (const rc of refCards) {
+      if ((avail.get(cellKey(p, rc)) || 0) > 0) {
+        setCellEnabled(p, rc, true);
+      }
+    }
+    updateRefPageGrid();
+    render();
+  });
+  document.getElementById('grid-deselect-all').addEventListener('click', () => {
+    for (const p of pages) for (const rc of refCards) {
+      setCellEnabled(p, rc, false);
+    }
+    updateRefPageGrid();
+    render();
+  });
+
+  updateRefPageGrid();
+}
+
+// Count samples per (page, refCard) respecting only the filters that
+// affect availability (Background + Max illum). The Ref-card × Page
+// grid itself does not filter its own availability — otherwise
+// turning off a cell would make it "unavailable" and unrecoverable.
+// Each sample contributes to its (page, physical-refCard) cell and,
+// when wbSource='auto', ALSO to the (page, 'self') pseudo-cell.
+function availabilityMap() {
+  const uMax = state.maxUneven === 100 ? Infinity : state.maxUneven;
+  const m = new Map();
+  for (const s of SAMPLES) {
+    if (state.illum !== 'all' && s.illuminant !== state.illum) continue;
+    if (s.illumUnevenness !== null && s.illumUnevenness > uMax) continue;
+    const k = cellKey(s.page, s.refCard);
+    m.set(k, (m.get(k) || 0) + 1);
+    if (s.wbSource === 'auto') {
+      const kSelf = cellKey(s.page, 'self');
+      m.set(kSelf, (m.get(kSelf) || 0) + 1);
+    }
+  }
+  return m;
+}
+
+function updateRefPageGrid() {
+  const pages = uniqueValues(SAMPLES, 'page');
+  const refCards = gridColumns();
+  const avail = availabilityMap();
+
+  // Cell contents: checkbox if available, muted '/' if not.
+  for (const p of pages) {
+    for (const rc of refCards) {
+      const cell = document.querySelector(
+        '.grid-cell[data-page="' + p + '"][data-refcard="' + rc + '"]');
+      if (!cell) continue;
+      const n = avail.get(cellKey(p, rc)) || 0;
+      if (n === 0) {
+        cell.innerHTML = '<span style="color: #ccc;" title="no samples for this combination">/</span>';
+      } else {
+        const checked = isCellEnabled(p, rc) ? 'checked' : '';
+        cell.innerHTML = '<input type="checkbox" class="cell-toggle" ' +
+          'data-page="' + p + '" data-refcard="' + rc + '" ' +
+          checked + ' title="' + n + ' samples">';
+      }
+    }
+  }
+  // Re-bind cell toggles (innerHTML replaced them).
+  document.querySelectorAll('#ref-page-grid .cell-toggle').forEach(cb => {
+    cb.addEventListener('change', e => {
+      setCellEnabled(e.target.dataset.page, e.target.dataset.refcard, e.target.checked);
+      updateRefPageGrid();
+      render();
+    });
+  });
+
+  // Row/col header tri-state: checked if all available cells in that
+  // line are enabled, indeterminate if some but not all, disabled if
+  // no available cells.
+  const setHeader = (cb, availCount, checkedCount) => {
+    cb.disabled = availCount === 0;
+    cb.checked = availCount > 0 && checkedCount === availCount;
+    cb.indeterminate = checkedCount > 0 && checkedCount < availCount;
+  };
+  for (const p of pages) {
+    const cb = document.querySelector('.row-toggle[data-page="' + p + '"]');
+    if (!cb) continue;
+    let a = 0, c = 0;
+    for (const rc of refCards) {
+      if ((avail.get(cellKey(p, rc)) || 0) === 0) continue;
+      a++;
+      if (isCellEnabled(p, rc)) c++;
+    }
+    setHeader(cb, a, c);
+  }
+  for (const rc of refCards) {
+    const cb = document.querySelector('.col-toggle[data-refcard="' + rc + '"]');
+    if (!cb) continue;
+    let a = 0, c = 0;
+    for (const p of pages) {
+      if ((avail.get(cellKey(p, rc)) || 0) === 0) continue;
+      a++;
+      if (isCellEnabled(p, rc)) c++;
+    }
+    setHeader(cb, a, c);
+  }
+}
+
+// A sample matches the grid if EITHER its (page, refCard) cell OR
+// — when wbSource='auto' — its (page, 'self') cell is enabled. The
+// 'self' column is a pseudo-column layered on top of the physical
+// ref-card columns.
+function sampleMatchesGrid(s) {
+  if (isCellEnabled(s.page, s.refCard)) return true;
+  if (s.wbSource === 'auto' && isCellEnabled(s.page, 'self')) return true;
+  return false;
 }
 
 function filterSamples() {
   const uMax = state.maxUneven === 100 ? Infinity : state.maxUneven;
   return SAMPLES.filter(s => {
-    // Ref card selector doubles as a WB-anchor shortcut: 'self' →
-    // wbSource=auto, 'card' → wbSource=ref_card. Physical card names
-    // filter by which card was physically in the shot.
-    if (state.refCard === 'self') {
-      if (s.wbSource !== 'auto') return false;
-    } else if (state.refCard === 'card') {
-      if (s.wbSource !== 'ref_card') return false;
-    } else if (state.refCard !== 'all' && s.refCard !== state.refCard) {
-      return false;
-    }
     if (state.illum !== 'all' && s.illuminant !== state.illum) return false;
-    if (state.pages.size > 0 && !state.pages.has(s.page)) return false;
     // Null unevenness (RANSAC didn't lock) → let it through; the
     // underlying sample may still be diagnostic even without the
     // per-fixture illum metric.
     if (s.illumUnevenness !== null && s.illumUnevenness > uMax) return false;
+    if (!sampleMatchesGrid(s)) return false;
     return true;
   });
 }
@@ -746,6 +947,8 @@ function renderDisk(valueBin, valueSamples) {
   // Chip lattice on TOP of arrows. Sampled chips (those an arrow
   // starts from) get a slightly larger radius + dark outline so the
   // arrow origin is unambiguous and the chip's true colour shows.
+  // data-notation carries the Munsell notation for the shared hover
+  // tooltip (see setup2DChipHover).
   for (const dot of chipDots) {
     const sampled = sampledNotations.has(dot.notation);
     const r = sampled ? 6 : 4.5;
@@ -753,7 +956,9 @@ function renderDisk(valueBin, valueSamples) {
     const strokeW = sampled ? 1.2 : 0.5;
     parts.push('<circle cx="' + dot.x + '" cy="' + dot.y +
       '" r="' + r + '" fill="' + dot.hex +
-      '" stroke="' + stroke + '" stroke-width="' + strokeW + '"/>');
+      '" stroke="' + stroke + '" stroke-width="' + strokeW +
+      '" data-notation="' + dot.notation.replace(/&/g, '&amp;').replace(/"/g, '&quot;') +
+      '"/>');
   }
 
   return {
@@ -768,6 +973,7 @@ function renderDisk(valueBin, valueSamples) {
 
 function render() {
   const filtered = filterSamples();
+  lastFiltered = filtered; // cache for hover tooltips (2D + 3D)
   const summary = document.getElementById('summary');
 
   // Bin samples by ground-truth value.
@@ -810,6 +1016,139 @@ const VSCALE = 60;
 let scene3D, camera3D, renderer3D, controls3D;
 let chipMesh3D = null;
 let arrowLines3D = null;
+// Sprite labels (value + hue anchors) collected so the animate loop
+// can update their opacity based on camera distance — labels fade
+// as the user zooms out so they don't crowd the scene.
+const labelSprites = [];
+// Snapshot of the last filterSamples() call. Both the 2D and 3D
+// hover tooltips read this to compute per-chip sample stats without
+// re-filtering on every mousemove. Refreshed by render().
+let lastFiltered = [];
+
+// Shared floating tooltip used by both the 2D disk hover and the 3D
+// raycast hover. Positioned fixed to the viewport so it can float
+// over any container.
+let hoverTooltipEl = null;
+function ensureHoverTooltip() {
+  if (hoverTooltipEl) return hoverTooltipEl;
+  hoverTooltipEl = document.createElement('div');
+  hoverTooltipEl.id = 'chip-hover-tooltip';
+  hoverTooltipEl.style.cssText =
+    'position:fixed; pointer-events:none; ' +
+    'background:rgba(255,255,255,0.96); border:1px solid #999; ' +
+    'border-radius:4px; padding:6px 10px; font-size:12px; ' +
+    'box-shadow:0 2px 8px rgba(0,0,0,0.15); display:none; ' +
+    'z-index:10000; font-family:-apple-system,BlinkMacSystemFont,sans-serif; ' +
+    'line-height:1.4;';
+  document.body.appendChild(hoverTooltipEl);
+  return hoverTooltipEl;
+}
+
+function tooltipHtmlForChip(notation, hex) {
+  let n = 0, sumDE = 0;
+  for (const s of lastFiltered) {
+    if (s.expected === notation) {
+      n++;
+      sumDE += s.deltaE || 0;
+    }
+  }
+  return '<div style="font-weight:600;font-size:13px;margin-bottom:2px;">' +
+      notation + '</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;">' +
+      '<span style="width:16px;height:16px;background:' + hex +
+        ';border:1px solid #666;display:inline-block;"></span>' +
+      '<span style="color:#555;">expected chip</span>' +
+    '</div>' +
+    (n > 0
+      ? '<div style="margin-top:3px;">' + n + ' sample' +
+        (n === 1 ? '' : 's') + ' · mean ΔE ' +
+        (sumDE / n).toFixed(1) + '</div>'
+      : '<div style="margin-top:3px;color:#999;">no samples match current filters</div>');
+}
+
+function positionTooltipAtCursor(el, clientX, clientY) {
+  const tw = el.offsetWidth;
+  const th = el.offsetHeight;
+  let tx = clientX + 14;
+  let ty = clientY + 14;
+  if (tx + tw > window.innerWidth - 8) tx = clientX - tw - 14;
+  if (ty + th > window.innerHeight - 8) ty = clientY - th - 14;
+  el.style.left = tx + 'px';
+  el.style.top = ty + 'px';
+}
+
+// 2D disk hover: event delegation on the #filmstrip container. Each
+// chip <circle> in the SVG carries data-notation; the mousemove
+// handler reads it, computes stats from lastFiltered, and shows the
+// shared tooltip. Chip hex is looked up from CHIPS by notation.
+function setup2DChipHover() {
+  const filmstrip = document.getElementById('filmstrip');
+  if (!filmstrip) return;
+  const tooltip = ensureHoverTooltip();
+  const chipHexByNotation = new Map();
+  for (const c of CHIPS) chipHexByNotation.set(c.notation, rgbHex(c.rgb));
+
+  filmstrip.addEventListener('mousemove', e => {
+    const el = e.target;
+    if (el && el.tagName === 'circle' &&
+        el.getAttribute && el.getAttribute('data-notation')) {
+      const notation = el.getAttribute('data-notation');
+      const hex = chipHexByNotation.get(notation) || '#ccc';
+      tooltip.innerHTML = tooltipHtmlForChip(notation, hex);
+      tooltip.style.display = 'block';
+      positionTooltipAtCursor(tooltip, e.clientX, e.clientY);
+    } else {
+      tooltip.style.display = 'none';
+    }
+  });
+  filmstrip.addEventListener('mouseleave', () => {
+    tooltip.style.display = 'none';
+  });
+}
+
+// Canvas-backed text sprite. Sprites always face the camera, so the
+// same label reads from any orbit angle without special view-direction
+// handling. Text is rendered to an offscreen canvas, uploaded as a
+// texture, and scaled so the world-height stays constant regardless
+// of the underlying canvas pixel dimensions.
+function makeTextSprite(text, opts) {
+  const o = opts || {};
+  const fontSize = o.fontSize || 40;
+  const color = o.color || '#666';       // lighter than pure black, less shouty
+  const border = o.border || '#444';      // dark enough to hold contrast against the busy 3D scene
+  const bg = o.bg || 'rgba(255,255,255,0.88)';
+  const worldSize = o.worldSize || 26;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const fontSpec = fontSize + 'px -apple-system,sans-serif'; // no bold
+  ctx.font = fontSpec;
+  const metrics = ctx.measureText(text);
+  const pad = 8;
+  const w = Math.ceil(metrics.width) + pad * 2;
+  const h = fontSize + pad * 2;
+  canvas.width = w;
+  canvas.height = h;
+  // Setting canvas.{width,height} clears the context, so re-set font.
+  ctx.font = fontSpec;
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = border;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
+  ctx.fillStyle = color;
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, w / 2, h / 2);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  const mat = new THREE.SpriteMaterial({map: texture, transparent: true, depthTest: false});
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set((w / h) * worldSize, worldSize, 1);
+  // depthTest:false + high renderOrder = labels stay readable even
+  // when a chip sphere is technically in front of them.
+  sprite.renderOrder = 999;
+  return sprite;
+}
 
 // Munsell chip → 3D world position. Angle uses the same hueAngle()
 // as the 2D view; Y = value * VSCALE (value = height axis, up).
@@ -878,9 +1217,10 @@ function setup3D() {
 
   // Cheap lighting so the chip spheres get subtle shading and read
   // as spheres, not flat dots. Ambient keeps every side visible;
-  // one directional adds the sphere-shading gradient.
-  scene3D.add(new THREE.AmbientLight(0xffffff, 0.65));
-  const dl = new THREE.DirectionalLight(0xffffff, 0.55);
+  // one directional adds the sphere-shading gradient. Slightly
+  // brightened so low-value (V1-V3) chips don't turn to mud.
+  scene3D.add(new THREE.AmbientLight(0xffffff, 0.75));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.7);
   dl.position.set(1, 2, 1);
   scene3D.add(dl);
 
@@ -907,7 +1247,7 @@ function setup3D() {
   ringGeom.setAttribute('position',
     new THREE.Float32BufferAttribute(ringPositions, 3));
   const ringMat = new THREE.LineBasicMaterial(
-    {color: 0xbbbbbb, transparent: true, opacity: 0.35});
+    {color: 0x555555, transparent: true, opacity: 0.75});
   for (let v = 2; v <= 9; v++) {
     const ring = new THREE.Line(ringGeom, ringMat);
     ring.position.y = v * VSCALE;
@@ -915,6 +1255,66 @@ function setup3D() {
   }
 
   buildChipLattice3D();
+
+  // Value axis labels — one sprite per integer value, offset slightly
+  // in X from the central pole so the label doesn't overlap the axis
+  // line. Sprites face the camera, so they read from any orbit angle.
+  for (let v = 1; v <= 9; v++) {
+    const sprite = makeTextSprite('V' + v, {fontSize: 34, worldSize: 22});
+    sprite.position.set(20, v * VSCALE, 0);
+    sprite.userData.isValueLabel = true;
+    scene3D.add(sprite);
+    labelSprites.push(sprite);
+  }
+
+  // Hue labels around the chroma-8 ring at V=5 (roughly the middle
+  // of the value stack). One "10<family>" anchor per hue family that
+  // has chips somewhere in the lattice — soil families (R..GY) plus
+  // GLEY families (G, BG, B). PB/P/RP have no chips so no anchor.
+  const HUE_ANCHORS_3D = [
+    {name: '10R',  family: 'R',  step: 10},
+    {name: '10YR', family: 'YR', step: 10},
+    {name: '10Y',  family: 'Y',  step: 10},
+    {name: '10GY', family: 'GY', step: 10},
+    {name: '10G',  family: 'G',  step: 10},
+    {name: '10BG', family: 'BG', step: 10},
+    {name: '10B',  family: 'B',  step: 10},
+  ];
+  const HUE_R = 8 * R_PER_CHROMA_3D + 25; // just outside chroma-8 ring
+  for (const anchor of HUE_ANCHORS_3D) {
+    const a = hueAngle(anchor.family, anchor.step) * Math.PI / 180;
+    const sprite = makeTextSprite(anchor.name,
+      {fontSize: 32, worldSize: 22});
+    sprite.position.set(HUE_R * Math.sin(a), 5 * VSCALE,
+      -HUE_R * Math.cos(a));
+    scene3D.add(sprite);
+    labelSprites.push(sprite);
+  }
+
+  // Hover tooltip: raycast against the chip InstancedMesh; reuse the
+  // shared tooltip element + rendering helpers so 2D and 3D hovers
+  // look identical.
+  const tooltipEl = ensureHoverTooltip();
+  const raycaster = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  renderer3D.domElement.addEventListener('mousemove', e => {
+    const rect = renderer3D.domElement.getBoundingClientRect();
+    ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(ndc, camera3D);
+    const hits = raycaster.intersectObject(chipMesh3D);
+    if (hits.length === 0 || hits[0].instanceId == null) {
+      tooltipEl.style.display = 'none';
+      return;
+    }
+    const chip = CHIPS[hits[0].instanceId];
+    tooltipEl.innerHTML = tooltipHtmlForChip(chip.notation, rgbHex(chip.rgb));
+    tooltipEl.style.display = 'block';
+    positionTooltipAtCursor(tooltipEl, e.clientX, e.clientY);
+  });
+  renderer3D.domElement.addEventListener('mouseleave', () => {
+    tooltipEl.style.display = 'none';
+  });
 
   window.addEventListener('resize', resize3D);
 
@@ -926,18 +1326,71 @@ function setup3D() {
     const panel = document.getElementById('view-3d');
     if (!panel || panel.style.display === 'none') return;
     controls3D.update();
+    // Hide value labels when the view is close to vertical (looking
+    // straight down or up) — the whole value stack collapses into a
+    // dot in that projection, so the labels just clutter the origin.
+    // 0.85 ≈ within ~32° of vertical.
+    const lookY = (controls3D.target.y - camera3D.position.y);
+    const lookLen = camera3D.position.distanceTo(controls3D.target);
+    const verticality = lookLen > 0 ? Math.abs(lookY / lookLen) : 0;
+    const hideValueLabels = verticality > 0.85;
+    // Depth-dim labels: opacity 1.0 up to LABEL_NEAR world units from
+    // camera, fading linearly to LABEL_MIN_OPACITY by LABEL_FAR. Keeps
+    // the scene calm when zoomed way out.
+    const LABEL_NEAR = 700;
+    const LABEL_FAR = 1800;
+    const LABEL_MIN_OPACITY = 0.22;
+    for (const sp of labelSprites) {
+      if (sp.userData.isValueLabel && hideValueLabels) {
+        sp.visible = false;
+        continue;
+      }
+      sp.visible = true;
+      const dist = sp.position.distanceTo(camera3D.position);
+      let op = 1;
+      if (dist > LABEL_NEAR) {
+        const t = Math.min(1, (dist - LABEL_NEAR) / (LABEL_FAR - LABEL_NEAR));
+        op = 1 - t * (1 - LABEL_MIN_OPACITY);
+      }
+      sp.material.opacity = op;
+    }
     renderer3D.render(scene3D, camera3D);
   }
   animate();
 }
 
 function buildChipLattice3D() {
+  // Silhouette outline: a slightly larger sphere per chip rendered
+  // as BackSide only. Back faces sit BEHIND the chip's front faces
+  // in depth, so where the chip covers them they're hidden — but
+  // where the outline sphere extends beyond the chip's silhouette,
+  // the dark back face shows through as a thin ring around every
+  // chip. Cheap and pure geometry (no shader), one draw call.
+  // Chip is 4.5; a very small radius bump makes the outline a thin
+  // 1-2px ring visually rather than a fat halo.
+  const outlineGeom = new THREE.SphereGeometry(4.75, 12, 8);
+  const outlineMat = new THREE.MeshBasicMaterial({
+    color: 0x222222,
+    side: THREE.BackSide,
+  });
+  const outlineMesh = new THREE.InstancedMesh(
+    outlineGeom, outlineMat, CHIPS.length);
+  const dummy = new THREE.Object3D();
+  for (let i = 0; i < CHIPS.length; i++) {
+    const chip = CHIPS[i];
+    const p = chipTo3D(chip.hue, chip.value, chip.chroma);
+    dummy.position.set(p.x, p.y, p.z);
+    dummy.updateMatrix();
+    outlineMesh.setMatrixAt(i, dummy.matrix);
+  }
+  outlineMesh.instanceMatrix.needsUpdate = true;
+  scene3D.add(outlineMesh);
+
+  // Chip fills — Lambert-shaded, per-instance colours from the
+  // linear-sRGB expected values (gamma-encoded for display).
   const geom = new THREE.SphereGeometry(4.5, 12, 8);
-  // Lambert so each sphere gets shading; instanceColor supplies the
-  // per-chip fill.
   const mat = new THREE.MeshLambertMaterial();
   chipMesh3D = new THREE.InstancedMesh(geom, mat, CHIPS.length);
-  const dummy = new THREE.Object3D();
   for (let i = 0; i < CHIPS.length; i++) {
     const chip = CHIPS[i];
     const p = chipTo3D(chip.hue, chip.value, chip.chroma);
@@ -1037,6 +1490,7 @@ render = function() {
 
 initControls();
 initViewSwitcher();
+setup2DChipHover();
 render();
 </script>
 </body>
