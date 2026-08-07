@@ -55,6 +55,10 @@ abstract class HybridDngDecoderSpec: HybridObject() {
   @DoNotStrip
   @Keep
   abstract fun decodePhotoRois(imagePath: String, rois: Array<Roi>): Array<LinearRgb>
+  
+  @DoNotStrip
+  @Keep
+  abstract fun extractDngPreviewJpeg(dngPath: String): String
 
   // Default implementation of `HybridObject.toString()`
   override fun toString(): String {

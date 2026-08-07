@@ -19,6 +19,7 @@ import {useCallback, useState} from 'react';
 import Share from 'react-native-share';
 
 import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as ImagePicker from 'expo-image-picker';
 
 import {DngDecoderHybrid} from 'dng-decoder';
@@ -80,9 +81,53 @@ type CaptureFlow =
   | {
       kind: 'chart';
       pageHue: string;
-      format: 'raw' | 'photo';
       algorithm: RegistrationAlgorithm;
     };
+
+// Timestamp for chart-capture filenames — yyyymmddThhmmss (seconds
+// resolution to avoid overwrite if the tester captures twice in a
+// minute; user-facing spec only showed minutes but seconds is a
+// safer default).
+const yyyymmddThhmmss = (d: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return (
+    `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
+    `T${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`
+  );
+};
+
+// Friendly filename stem for a chart capture: "{page}_BOTH_IOS_{ts}".
+// "BOTH" flags that the DNG has its ISP-processed JPEG companion
+// alongside (i.e. this is the mac-analysable pair). Page name is
+// used verbatim; Munsell page names are already filesystem-safe
+// ("10YR", "7.5YR", "GLEY1", "10Y-5GY").
+const friendlyStemForChartCapture = (pageHue: string, when: Date): string =>
+  `${pageHue}_BOTH_IOS_${yyyymmddThhmmss(when)}`;
+
+// Rename a DNG (+ optional sibling JPEG) to a friendly stem in the
+// same directory. Returns the new file:// URIs. Uses moveAsync so
+// no bytes are copied — cheap. Any prior file at the destination is
+// removed first so moveAsync doesn't error on a same-minute rename.
+const renamePairToFriendlyStem = async (
+  dngPath: string,
+  jpegPath: string | undefined,
+  friendlyStem: string,
+): Promise<{dngPath: string; jpegPath: string | undefined}> => {
+  const withoutScheme = (p: string) =>
+    p.startsWith('file://') ? p.slice('file://'.length) : p;
+  const dirOf = (p: string) => p.slice(0, p.lastIndexOf('/'));
+  const dir = dirOf(withoutScheme(dngPath));
+  const newDng = `file://${dir}/${friendlyStem}.dng`;
+  await FileSystem.deleteAsync(newDng, {idempotent: true});
+  await FileSystem.moveAsync({from: dngPath, to: newDng});
+  let newJpeg: string | undefined;
+  if (jpegPath) {
+    newJpeg = `file://${dir}/${friendlyStem}.jpg`;
+    await FileSystem.deleteAsync(newJpeg, {idempotent: true});
+    await FileSystem.moveAsync({from: jpegPath, to: newJpeg});
+  }
+  return {dngPath: newDng, jpegPath: newJpeg};
+};
 
 export const RawColorToolsScreen = () => {
   const navigation = useNavigation();
@@ -157,16 +202,50 @@ export const RawColorToolsScreen = () => {
           });
         }
       } else if (flow.kind === 'chart') {
-        // Chart accepts either — the picked format was baked into the
-        // flow when the button was tapped, and matches the container
-        // format the camera was configured with.
-        const path = result.kind === 'raw' ? result.dngPath : result.photo.uri;
-        navigation.navigate('MUNSELL_CHART_VALIDATOR', {
-          dngPath: path,
-          pageHue: flow.pageHue,
-          format: flow.format,
-          algorithm: flow.algorithm,
-        });
+        // Chart always captures DNG; the companion JPEG (Apple ISP's
+        // processed preview embedded in the DNG) is extracted in
+        // RawCameraView and passed through as jpegPath so the mac
+        // batch report can A/B both pipelines from a single shutter.
+        // The phone-side validator only analyses the DNG.
+        if (result.kind !== 'raw') {
+          console.warn(
+            'RawColorToolsScreen: chart capture expected RAW, got',
+            result.kind,
+          );
+          return;
+        }
+        // Rename the vision-camera temp files (mrousavyXXXX.dng/.jpg)
+        // to something a mac tester can identify at a glance after
+        // AirDrop: "10YR_BOTH_IOS_20260808T134502.dng" carries page,
+        // capture mode, source device, and timestamp. Best-effort —
+        // if the rename fails for any reason, we fall back to the
+        // vision-camera-generated names so capture still completes.
+        (async () => {
+          let dngPath = result.dngPath;
+          let jpegPath = result.jpegPath;
+          try {
+            const stem = friendlyStemForChartCapture(flow.pageHue, new Date());
+            const renamed = await renamePairToFriendlyStem(
+              dngPath,
+              jpegPath,
+              stem,
+            );
+            dngPath = renamed.dngPath;
+            jpegPath = renamed.jpegPath;
+          } catch (err) {
+            console.warn(
+              'RawColorToolsScreen: friendly-rename failed, ' +
+                'falling back to vision-camera temp names',
+              err,
+            );
+          }
+          navigation.navigate('MUNSELL_CHART_VALIDATOR', {
+            dngPath,
+            jpegPath,
+            pageHue: flow.pageHue,
+            algorithm: flow.algorithm,
+          });
+        })();
       }
     },
     [navigation, captureFlow],
@@ -233,23 +312,11 @@ export const RawColorToolsScreen = () => {
             label="Chart page"
           />
           <ContainedButton
-            label="Capture raw (DNG)"
+            label="Capture (DNG + JPEG)"
             onPress={() =>
               setCaptureFlow({
                 kind: 'chart',
                 pageHue,
-                format: 'raw',
-                algorithm,
-              })
-            }
-          />
-          <ContainedButton
-            label="Capture photo (JPEG)"
-            onPress={() =>
-              setCaptureFlow({
-                kind: 'chart',
-                pageHue,
-                format: 'photo',
                 algorithm,
               })
             }
@@ -281,10 +348,13 @@ export const RawColorToolsScreen = () => {
               const path = asset.uri.startsWith('file://')
                 ? asset.uri
                 : `file://${asset.uri}`;
+              // File extension tells us which pipeline the validator
+              // should default to. Loaded files never come as pairs,
+              // so exactly one of the two path props is set.
               navigation.navigate('MUNSELL_CHART_VALIDATOR', {
-                dngPath: path,
+                dngPath: format === 'raw' ? path : undefined,
+                jpegPath: format === 'photo' ? path : undefined,
                 pageHue,
-                format,
                 algorithm,
               });
             }}
@@ -316,9 +386,8 @@ export const RawColorToolsScreen = () => {
                 ? asset.uri
                 : `file://${asset.uri}`;
               navigation.navigate('MUNSELL_CHART_VALIDATOR', {
-                dngPath: path,
+                jpegPath: path,
                 pageHue,
-                format: 'photo',
                 algorithm,
               });
             }}
@@ -327,11 +396,10 @@ export const RawColorToolsScreen = () => {
       </SafeScrollView>
       <RawCameraView
         visible={cameraVisible}
-        containerFormat={
-          captureFlow?.kind === 'chart' && captureFlow.format === 'photo'
-            ? 'jpeg'
-            : 'dng'
-        }
+        // Chart, calibrate, and fixture flows all capture RAW now —
+        // chart because the DNG carries its embedded JPEG preview
+        // through as a companion for the JPEG pipeline.
+        containerFormat="dng"
         onCancel={cancelCapture}
         onCapture={onCapture}
         onRawPhotoDevOnly={

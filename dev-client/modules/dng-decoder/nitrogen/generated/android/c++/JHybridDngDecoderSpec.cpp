@@ -141,5 +141,10 @@ namespace margelo::nitro::dngdecoder {
       return __vector;
     }(__result);
   }
+  std::string JHybridDngDecoderSpec::extractDngPreviewJpeg(const std::string& dngPath) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<jni::JString>(jni::alias_ref<jni::JString> /* dngPath */)>("extractDngPreviewJpeg");
+    auto __result = method(_javaPart, jni::make_jstring(dngPath));
+    return __result->toStdString();
+  }
 
 } // namespace margelo::nitro::dngdecoder

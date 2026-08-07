@@ -21,6 +21,7 @@ namespace margelo::nitro::dngdecoder {
       prototype.registerHybridMethod("readPreviewRgb", &HybridDngDecoderSpec::readPreviewRgb);
       prototype.registerHybridMethod("readPreviewRgbPhoto", &HybridDngDecoderSpec::readPreviewRgbPhoto);
       prototype.registerHybridMethod("decodePhotoRois", &HybridDngDecoderSpec::decodePhotoRois);
+      prototype.registerHybridMethod("extractDngPreviewJpeg", &HybridDngDecoderSpec::extractDngPreviewJpeg);
     });
   }
 

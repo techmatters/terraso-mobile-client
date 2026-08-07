@@ -611,4 +611,89 @@ class HybridDngDecoder: HybridDngDecoderSpec {
   private func clamp01(_ v: Double) -> Double {
     return max(0.0, min(1.0, v))
   }
+
+  func extractDngPreviewJpeg(dngPath: String) throws -> String {
+    let srcPath = stripFileScheme(dngPath)
+    let srcUrl = URL(fileURLWithPath: srcPath)
+
+    guard
+      let src = CGImageSourceCreateWithURL(srcUrl as CFURL, nil)
+    else {
+      throw RuntimeError.error(
+        withMessage: "CGImageSourceCreateWithURL failed for \(srcPath)")
+    }
+    let count = CGImageSourceGetCount(src)
+    guard count > 0 else {
+      throw RuntimeError.error(
+        withMessage: "DNG has no images: \(srcPath)")
+    }
+
+    // AVCapturePhoto lays out an iOS RAW DNG as:
+    //   image 0: RAW Bayer data (huge, not JPEG)
+    //   image 1+: full-resolution Apple-processed JPEG preview(s)
+    // Pick the largest image that ImageIO actually reports as a
+    // JPEG-flavoured UTI — safer than blind index 1 in case an
+    // iOS release rearranges the layout.
+    var bestIdx = -1
+    var bestPixels = 0
+    for i in 0..<count {
+      guard
+        let props = CGImageSourceCopyPropertiesAtIndex(src, i, nil)
+          as? [CFString: Any]
+      else { continue }
+      let w = (props[kCGImagePropertyPixelWidth] as? Int) ?? 0
+      let h = (props[kCGImagePropertyPixelHeight] as? Int) ?? 0
+      let pixels = w * h
+      // ImageIO reports subimage UTIs via CGImageSourceGetType on the
+      // subsource, but the per-index API takes a different shape.
+      // Instead check that the sub-image is NOT raw — RAW subimages
+      // are flagged in the properties dict.
+      let isRaw =
+        (props[kCGImagePropertyIsRawImage] as? Bool) ?? false
+      if isRaw { continue }
+      if pixels > bestPixels {
+        bestPixels = pixels
+        bestIdx = i
+      }
+    }
+    guard bestIdx >= 0 else {
+      throw RuntimeError.error(
+        withMessage:
+          "no non-RAW preview subimage found in DNG (\(count) subimages)")
+    }
+
+    // Copy the JPEG bytes out losslessly with a JPEG destination.
+    // Uses the subimage's existing JPEG data if the type matches,
+    // avoiding a re-encode.
+    let dstPath = (srcPath as NSString).deletingPathExtension + ".jpg"
+    let dstUrl = URL(fileURLWithPath: dstPath)
+    // Remove any prior file at that path so CGImageDestinationFinalize
+    // doesn't fail silently.
+    try? FileManager.default.removeItem(at: dstUrl)
+
+    guard
+      let dst = CGImageDestinationCreateWithURL(
+        dstUrl as CFURL, "public.jpeg" as CFString, 1, nil)
+    else {
+      throw RuntimeError.error(
+        withMessage: "CGImageDestinationCreateWithURL failed for \(dstPath)")
+    }
+    // Passing nil options tells ImageIO to preserve the source
+    // encoding when the source is already JPEG — no re-encode, no
+    // quality loss. If the source subimage isn't already JPEG (would
+    // be surprising for iOS-captured DNGs but not impossible),
+    // ImageIO will encode at default quality.
+    CGImageDestinationAddImageFromSource(dst, src, bestIdx, nil)
+    guard CGImageDestinationFinalize(dst) else {
+      throw RuntimeError.error(
+        withMessage: "CGImageDestinationFinalize failed for \(dstPath)")
+    }
+
+    let sizeBytes = (try? FileManager.default.attributesOfItem(atPath: dstPath)[.size] as? Int) ?? 0
+    NSLog(
+      "DngDecoder: extracted preview JPEG %dx%d (%d bytes) to %@",
+      Int(sqrt(Double(bestPixels))), Int(sqrt(Double(bestPixels))),
+      sizeBytes, dstPath)
+    return dstPath
+  }
 }

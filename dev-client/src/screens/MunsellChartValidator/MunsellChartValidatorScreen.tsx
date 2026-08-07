@@ -104,15 +104,16 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 //     shifted-by-one fits win when they match a paper false-positive).
 
 export type MunsellChartValidatorProps = {
-  // File path to the image being analyzed. Called `dngPath` for
-  // historical reasons but with `format='photo'` it's any format
-  // CIImage can open (JPEG / HEIC / PNG).
-  dngPath: string;
+  // At least one of dngPath / jpegPath must be set.
+  //   - Fresh chart capture: BOTH set (JPEG is Apple-ISP's processed
+  //     preview extracted from the same DNG). Pipeline switcher lets
+  //     the tester A/B the two decoders on the same shutter.
+  //   - Load from file (.dng): only dngPath set → RAW pipeline only.
+  //   - Load from file (.jpg) / Load from photos: only jpegPath set
+  //     → JPEG pipeline only.
+  dngPath?: string;
+  jpegPath?: string;
   pageHue: string;
-  // Which decoder path to route through: 'raw' → CIRAWFilter (DNG),
-  // 'photo' → CIImage (JPEG / HEIC / etc.). Downstream analysis is
-  // identical for both.
-  format: 'raw' | 'photo';
   // Which registration algorithm to run against the detected holes.
   // Picked on the RAW_COLOR_TOOLS screen before capture; defaults to
   // the constrained-random pair-similarity implementation if not set.
@@ -190,11 +191,17 @@ const rgbToHex = (rgb: {r: number; g: number; b: number}): string => {
 
 export const MunsellChartValidatorScreen = ({
   dngPath,
+  jpegPath,
   pageHue,
-  format,
   algorithm = DEFAULT_REGISTRATION_ALGORITHM,
 }: MunsellChartValidatorProps) => {
   const navigation = useNavigation();
+  // Phone-side analysis ONLY runs against the DNG when one is present
+  // — the JPEG A/B is a mac batch-report concern now. The load-from-
+  // photos flow still hits the JPEG path here because it never
+  // produces a DNG.
+  const pipeline: 'raw' | 'photo' = dngPath ? 'raw' : 'photo';
+  const analysisPath = dngPath ?? jpegPath;
   const [state, setState] = useState<
     | {kind: 'analyzing'}
     | {kind: 'ready'; result: MunsellChartResult}
@@ -311,17 +318,24 @@ export const MunsellChartValidatorScreen = ({
   );
 
   useEffect(() => {
-    // Re-run when the selected page changes — analyzeMunsellChart uses
-    // page.cells to build the per-cell sample rects, so a page swap
-    // resamples the DNG at the right chip positions.
+    // Re-run when the selected page changes — analyzeMunsellChart
+    // uses page.cells to build the per-cell sample rects, so a page
+    // swap resamples the image at the right chip positions.
+    if (!analysisPath) {
+      setState({
+        kind: 'error',
+        message: 'no image path provided (missing both dngPath and jpegPath)',
+      });
+      return;
+    }
     setState({kind: 'analyzing'});
     (async () => {
       try {
         const outcome = await analyzeMunsellChart(
           DngDecoderHybrid,
-          dngPath,
+          analysisPath,
           page,
-          format,
+          pipeline,
           algorithm,
         );
         if (outcome.kind === 'success') {
@@ -334,7 +348,7 @@ export const MunsellChartValidatorScreen = ({
         setState({kind: 'error', message: String(err)});
       }
     })();
-  }, [dngPath, page, format, algorithm]);
+  }, [analysisPath, page, pipeline, algorithm]);
 
   const shareAsImage = useCallback(() => {
     const svg = exportSvgRef.current;
@@ -385,6 +399,7 @@ export const MunsellChartValidatorScreen = ({
   }, [cells, referenceNotation]);
 
   const shareDng = useCallback(async () => {
+    if (!dngPath) return;
     setSharing(true);
     try {
       await Share.open({
@@ -400,6 +415,22 @@ export const MunsellChartValidatorScreen = ({
       setSharing(false);
     }
   }, [dngPath]);
+
+  const shareJpeg = useCallback(async () => {
+    if (!jpegPath) return;
+    setSharing(true);
+    try {
+      await Share.open({
+        url: jpegPath.startsWith('file://') ? jpegPath : `file://${jpegPath}`,
+        type: 'image/jpeg',
+        failOnCancel: false,
+      });
+    } catch (err) {
+      console.error('Munsell JPEG share failed:', err);
+    } finally {
+      setSharing(false);
+    }
+  }, [jpegPath]);
 
   const shareWhiteMask = useCallback(() => {
     // Two possible sources: the ready-state export SVG (rendered when
@@ -450,14 +481,26 @@ export const MunsellChartValidatorScreen = ({
               </Text>
               <Paragraph>{state.message}</Paragraph>
               <Row space="sm">
-                <Box flex={1}>
-                  <ContainedButton
-                    label={sharing ? 'Sharing…' : 'Share DNG'}
-                    onPress={shareDng}
-                    disabled={sharing}
-                    stretchToFit
-                  />
-                </Box>
+                {dngPath && (
+                  <Box flex={1}>
+                    <ContainedButton
+                      label={sharing ? 'Sharing…' : 'Share DNG'}
+                      onPress={shareDng}
+                      disabled={sharing}
+                      stretchToFit
+                    />
+                  </Box>
+                )}
+                {jpegPath && (
+                  <Box flex={1}>
+                    <ContainedButton
+                      label={sharing ? 'Sharing…' : 'Share JPEG'}
+                      onPress={shareJpeg}
+                      disabled={sharing}
+                      stretchToFit
+                    />
+                  </Box>
+                )}
                 <Box flex={1}>
                   <ContainedButton
                     label="Back"
@@ -472,7 +515,8 @@ export const MunsellChartValidatorScreen = ({
             <FailedView
               debug={state.debug}
               sharing={sharing}
-              onShareDng={shareDng}
+              onShareDng={dngPath ? shareDng : undefined}
+              onShareJpeg={jpegPath ? shareJpeg : undefined}
               onShareWhiteMask={shareWhiteMask}
               whiteMaskExportSvgRef={failedWhiteMaskExportSvgRef}
               onBack={() => navigation.pop()}
@@ -587,14 +631,26 @@ export const MunsellChartValidatorScreen = ({
                     stretchToFit
                   />
                 </Box>
-                <Box flex={1}>
-                  <ContainedButton
-                    label={sharing ? 'Sharing…' : 'Share DNG'}
-                    onPress={shareDng}
-                    disabled={sharing}
-                    stretchToFit
-                  />
-                </Box>
+                {dngPath && (
+                  <Box flex={1}>
+                    <ContainedButton
+                      label={sharing ? 'Sharing…' : 'Share DNG'}
+                      onPress={shareDng}
+                      disabled={sharing}
+                      stretchToFit
+                    />
+                  </Box>
+                )}
+                {jpegPath && (
+                  <Box flex={1}>
+                    <ContainedButton
+                      label={sharing ? 'Sharing…' : 'Share JPEG'}
+                      onPress={shareJpeg}
+                      disabled={sharing}
+                      stretchToFit
+                    />
+                  </Box>
+                )}
               </Row>
               {/* Off-screen duplicate used only for high-res PNG export.
                  Positioned way off the visible area so RN still lays
@@ -1481,13 +1537,17 @@ const FailedView = ({
   debug,
   sharing,
   onShareDng,
+  onShareJpeg,
   onShareWhiteMask,
   whiteMaskExportSvgRef,
   onBack,
 }: {
   debug: MunsellChartFailureDebug;
   sharing: boolean;
-  onShareDng: () => void;
+  // Both share callbacks are optional — parent passes them only when
+  // the corresponding file is available in the current capture.
+  onShareDng?: () => void;
+  onShareJpeg?: () => void;
   // Parent owns the toDataURL/Share flow (needs setSharing) and hands
   // us a callback + the export SVG ref to render into. The off-screen
   // SVG is mounted below the on-screen one at preview-pixel size so
@@ -1552,14 +1612,26 @@ const FailedView = ({
         </Box>
       )}
       <Row space="sm">
-        <Box flex={1}>
-          <ContainedButton
-            label={sharing ? 'Sharing…' : 'Share DNG'}
-            onPress={onShareDng}
-            disabled={sharing}
-            stretchToFit
-          />
-        </Box>
+        {onShareDng && (
+          <Box flex={1}>
+            <ContainedButton
+              label={sharing ? 'Sharing…' : 'Share DNG'}
+              onPress={onShareDng}
+              disabled={sharing}
+              stretchToFit
+            />
+          </Box>
+        )}
+        {onShareJpeg && (
+          <Box flex={1}>
+            <ContainedButton
+              label={sharing ? 'Sharing…' : 'Share JPEG'}
+              onPress={onShareJpeg}
+              disabled={sharing}
+              stretchToFit
+            />
+          </Box>
+        )}
         <Box flex={1}>
           <ContainedButton
             label={sharing ? 'Sharing…' : 'Share white mask'}

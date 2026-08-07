@@ -240,7 +240,28 @@ const VisionCameraViewImpl = ({
           return;
         }
         if (isDngContainer(containerFormat)) {
-          onCapture(makeRawCaptureResult(rawUri, photo.width, photo.height));
+          // iOS AVCapturePhoto DNGs embed a full-resolution Apple-
+          // processed JPEG preview. Pull it out as a sibling file so
+          // downstream can offer a JPEG-pipeline analysis / Share JPEG
+          // alongside the RAW without a second shutter press. Best-
+          // effort: extraction failure (Android throws, plus the
+          // occasional weird DNG source) shouldn't block the capture.
+          let jpegPath: string | undefined;
+          if (Platform.OS === 'ios') {
+            try {
+              const p = DngDecoderHybrid.extractDngPreviewJpeg(rawUri);
+              jpegPath = p.startsWith('file://') ? p : `file://${p}`;
+            } catch (err) {
+              console.warn(
+                'RawCameraView: preview-JPEG extraction failed; ' +
+                  'continuing without companion JPEG',
+                err,
+              );
+            }
+          }
+          onCapture(
+            makeRawCaptureResult(rawUri, photo.width, photo.height, jpegPath),
+          );
           return;
         }
         // We got a RAW photo but the caller didn't ask for one. Refuse to
@@ -691,9 +712,11 @@ const makeRawCaptureResult = (
   dngPath: string,
   width: number,
   height: number,
+  jpegPath?: string,
 ): CaptureResult => ({
   kind: 'raw',
   dngPath,
+  jpegPath,
   width,
   height,
   decodeRoi: async roi => {

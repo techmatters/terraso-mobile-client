@@ -91,6 +91,13 @@ ios/
 !dev-client/modules/*/nitrogen/generated/android/**
 !dev-client/modules/*/nitrogen/generated/ios/
 !dev-client/modules/*/nitrogen/generated/ios/**
+# ...but NEVER track their gradle/cmake build junk (huge .so files,
+# per-machine paths). The generic `build/` and `.gradle` / `.cxx`
+# rules above are shadowed by the unignore lines just above, so
+# re-shadow them explicitly under the modules subtrees.
+dev-client/modules/*/android/build/
+dev-client/modules/*/android/.gradle/
+dev-client/modules/*/android/.cxx/
 
 # Build
 .buildcache/

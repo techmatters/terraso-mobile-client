@@ -144,6 +144,14 @@ namespace margelo::nitro::dngdecoder {
       auto __value = std::move(__result.value());
       return __value;
     }
+    inline std::string extractDngPreviewJpeg(const std::string& dngPath) override {
+      auto __result = _swiftPart.extractDngPreviewJpeg(dngPath);
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
 
   private:
     DngDecoder::HybridDngDecoderSpec_cxx _swiftPart;

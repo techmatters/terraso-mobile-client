@@ -111,4 +111,16 @@ export interface DngDecoder
    * variant. Same photo-pipeline caveat as readPreviewRgbPhoto.
    */
   decodePhotoRois(imagePath: string, rois: Roi[]): LinearRgb[];
+
+  /**
+   * Extract the embedded Apple-processed JPEG preview from an iOS
+   * DNG and save it as a sibling file with the same stem and `.jpg`
+   * extension. iOS DNGs from AVCapturePhoto embed a full-resolution
+   * ISP-processed JPEG in the preview IFD — pulling it out with
+   * ImageIO's CGImageSource copy is a lossless byte-for-byte extract
+   * (no re-encode), so the result is bit-identical to what a
+   * JPEG-mode capture would have produced for the same shutter.
+   * Returns the sibling JPEG's file path. iOS-only; Android throws.
+   */
+  extractDngPreviewJpeg(dngPath: string): string;
 }

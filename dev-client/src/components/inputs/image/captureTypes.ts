@@ -43,6 +43,15 @@ export type CaptureResult =
   | {
       kind: 'raw';
       dngPath: string;
+      /**
+       * Companion JPEG extracted from the DNG's embedded preview.
+       * Present when the capture pipeline was able to pull the Apple-
+       * ISP-processed preview subimage out of the RAW file (iOS DNGs
+       * from AVCapturePhoto always have one; other sources may not).
+       * Same-moment, same-alignment as the DNG — safe for direct A/B
+       * against the RAW pipeline.
+       */
+      jpegPath?: string;
       /** Full-sensor dimensions the ROI coords passed to decodeRoi live in. */
       width: number;
       height: number;

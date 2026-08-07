@@ -94,6 +94,16 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         )
     }
 
+    override fun extractDngPreviewJpeg(dngPath: String): String {
+        // Android DNGs from DngCreator do not embed a full-resolution
+        // JPEG preview the way iOS AVCapturePhoto DNGs do. When Android
+        // RAW is fully supported we'd render the preview from the raw
+        // bytes via the existing C++ decoder; today it isn't wired.
+        throw NotImplementedError(
+            "DngDecoder.extractDngPreviewJpeg is iOS-only"
+        )
+    }
+
     override fun decodeDngRois(dngPath: String, rois: Array<Roi>): Array<LinearRgb> {
         val flat = IntArray(rois.size * 4)
         for (i in rois.indices) {
