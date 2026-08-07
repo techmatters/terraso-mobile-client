@@ -633,22 +633,26 @@ export const MunsellChartValidatorScreen = ({
                 {' · '}multi-cards sampled:{' '}
                 <Text bold>{state.result.multiRefCards?.length ?? 0}</Text>
               </Paragraph>
-              {/* Test-swatch reference. Sampled from the DNG at the
-                 bottom-right corner of the 7×6 chart grid (always
-                 empty on any physical page). Compared against the
-                 picked reference's expected colour in the last cell
-                 of the result grid; tap the cell to also use it as
-                 the WB reference for every other cell. */}
-              <Select<string, false>
-                nullable={false}
-                options={availableRefs.map(r => r.id)}
-                value={testRefId}
-                onValueChange={setTestRefId}
-                renderValue={id =>
-                  availableRefs.find(r => r.id === id)?.name ?? id
-                }
-                label="Test-swatch reference"
-              />
+              {/* Test-swatch reference — hidden in multi mode: the
+                 three MULTI_CARD_POINTS slots supersede the single-
+                 slot user-picked-reference concept. Sampled from the
+                 DNG at the bottom-right corner of the 7×6 chart grid
+                 (always empty on any physical page); compared against
+                 the picked reference's expected colour in the last
+                 cell of the result grid; tap the cell to also use it
+                 as the WB reference for every other cell. */}
+              {!state.result.multiRefCards && (
+                <Select<string, false>
+                  nullable={false}
+                  options={availableRefs.map(r => r.id)}
+                  value={testRefId}
+                  onValueChange={setTestRefId}
+                  renderValue={id =>
+                    availableRefs.find(r => r.id === id)?.name ?? id
+                  }
+                  label="Test-swatch reference"
+                />
+              )}
               {/* Multi-card WB anchor picker: one button per taped
                  slot. Only visible when the fixture was captured in
                  multi mode (result.multiRefCards populated). Tapping
@@ -690,10 +694,17 @@ export const MunsellChartValidatorScreen = ({
                     page={page}
                     referenceNotation={referenceNotation}
                     onCellPress={setReferenceNotation}
-                    testRef={testRef}
+                    // Multi mode: no test-swatch cell in the grid —
+                    // the three MULTI_CARD_POINTS slots supersede the
+                    // single user-picked-reference concept. Undefined
+                    // testRef makes ResultSvg skip that cell entirely.
+                    testRef={state.result.multiRefCards ? undefined : testRef}
                     testMeasuredLinearRgb={testMeasuredCorrected}
-                    onTestSwatchPress={() =>
-                      setReferenceNotation(TEST_SWATCH_REFERENCE_NOTATION)
+                    onTestSwatchPress={
+                      state.result.multiRefCards
+                        ? undefined
+                        : () =>
+                            setReferenceNotation(TEST_SWATCH_REFERENCE_NOTATION)
                     }
                     testSwatchIsReference={
                       referenceNotation === TEST_SWATCH_REFERENCE_NOTATION
@@ -703,14 +714,16 @@ export const MunsellChartValidatorScreen = ({
               ) : (
                 <SourceOverlayView result={state.result} />
               )}
-              <TestSwatchReverseMatch
-                testRef={testRef}
-                testMeasuredCorrected={testMeasuredCorrected}
-                testSwatchIsReference={
-                  referenceNotation === TEST_SWATCH_REFERENCE_NOTATION
-                }
-                wbReferenceLabel={referenceNotation}
-              />
+              {!state.result.multiRefCards && (
+                <TestSwatchReverseMatch
+                  testRef={testRef}
+                  testMeasuredCorrected={testMeasuredCorrected}
+                  testSwatchIsReference={
+                    referenceNotation === TEST_SWATCH_REFERENCE_NOTATION
+                  }
+                  wbReferenceLabel={referenceNotation}
+                />
+              )}
               <Row space="sm">
                 <Box flex={1}>
                   <ContainedButton
@@ -1617,11 +1630,10 @@ const DebugOverlayLayers = ({
           fill="none"
         />
       ))}
-      {/* Ref-card sample rect — same red as the chip rects since it's
-         the same kind of "here's what we sampled" annotation, just at
-         the extra per-page ref position (may sit outside the chip
-         grid on fully-populated pages like GLEY1/GLEY2). */}
-      {refCardRect && (
+      {/* Legacy single-slot rect — hidden in multi mode, since the
+         three MULTI_CARD_POINTS rects below take over as the ref-
+         card sample sites. */}
+      {refCardRect && !result.multiRefCards && (
         <Rect
           key="sample-ref"
           x={refCardRect.x}
@@ -1633,8 +1645,10 @@ const DebugOverlayLayers = ({
           fill="none"
         />
       )}
-      {/* Multi-card slots: cyan-outlined rects for the three taped
-         reference cards. Absent for single-card fixtures. */}
+      {/* Multi-card slots: same red as the chip rects (they're the
+         same kind of "here's what we sampled" annotation, just at
+         the three taped-card positions). Absent for single-card
+         fixtures. */}
       {result.multiRefCards?.map(slot => (
         <Rect
           key={`multi-${slot.name}`}
@@ -1642,7 +1656,7 @@ const DebugOverlayLayers = ({
           y={slot.rect.y}
           width={slot.rect.w}
           height={slot.rect.h}
-          stroke="#00c8d0"
+          stroke="#ff2020"
           strokeWidth={2}
           fill="none"
         />
