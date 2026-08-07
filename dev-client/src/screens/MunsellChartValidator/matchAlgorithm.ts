@@ -84,7 +84,10 @@ export const TEST_SWATCH_INDEX: number = SAMPLE_GRID.length - 1;
 // coords, regardless of which Munsell page is in the shot). x=13 is
 // one chip-column-step (2) past the last chip column (x=10), plus a
 // 1.5× spacing gap so the cards visually separate from the chart
-// chips. y values match the top three chip rows. Slot order chosen
+// chips. y values match the CHIP rows (physicalRow * 3 - 1.5, per
+// pageSampleGridPoints) for the top three chip rows — so each slot
+// sits at the same vertical position as its corresponding chip row
+// once the affine registration has been applied. Slot order chosen
 // to match the physical sizes of the actual cards.
 export type MultiCardSlot = {
   readonly x: number;
@@ -92,9 +95,9 @@ export type MultiCardSlot = {
   readonly name: 'whibal' | 'postit' | 'greycard';
 };
 export const MULTI_CARD_POINTS: readonly MultiCardSlot[] = [
-  {x: 13, y: 0, name: 'whibal'},
-  {x: 13, y: 3, name: 'postit'},
-  {x: 13, y: 6, name: 'greycard'},
+  {x: 13, y: 0 * 3 - 1.5, name: 'whibal'},
+  {x: 13, y: 1 * 3 - 1.5, name: 'postit'},
+  {x: 13, y: 2 * 3 - 1.5, name: 'greycard'},
 ];
 
 // A filter runs on a candidate triplet and returns true to accept
