@@ -155,24 +155,21 @@ class NodeDecoder implements DngDecoderLike {
 
   // Not part of DngDecoderLike — dedicated helper used by the HTML
   // report to embed a display-ready image alongside the SVG overlays.
-  // Format inferred from extension (.jpg = JPEG at given quality;
-  // .png = lossless). Returns the encoded bytes + header dims.
+  // Format switch routes to the DNG or photo variant of the render
+  // subcommand; both produce a scaled JPEG with the same layout.
   renderPreviewImage(
-    dngPath: string,
+    imagePath: string,
     maxDim: number,
+    format: 'raw' | 'photo',
     quality = 85,
   ): {bytes: Buffer; ext: 'jpg' | 'png'; width: number; height: number} {
     const ext = 'jpg' as const;
     const outPath = path.join(this.tmpDir, `preview-${this.ctr++}.${ext}`);
+    const subcommand =
+      format === 'raw' ? 'render-preview' : 'render-preview-photo';
     const stdout = execFileSync(
       this.cliPath,
-      [
-        'render-preview',
-        dngPath,
-        String(maxDim),
-        outPath,
-        String(quality),
-      ],
+      [subcommand, imagePath, String(maxDim), outPath, String(quality)],
       {encoding: 'utf-8'},
     );
     const header = JSON.parse(stdout) as {width: number; height: number};
@@ -199,16 +196,33 @@ class NodeDecoder implements DngDecoderLike {
     };
   }
 
-  decodePhotoRois(_imagePath: string, _rois: Roi[]): LinearRgb[] {
-    throw new Error(
-      'decodePhotoRois not implemented in Node CLI adapter (RAW-only for now)',
+  decodePhotoRois(imagePath: string, rois: Roi[]): LinearRgb[] {
+    const out = execFileSync(
+      this.cliPath,
+      ['decode-photo-rois', imagePath, JSON.stringify(rois)],
+      {encoding: 'utf-8', maxBuffer: 32 * 1024 * 1024},
     );
+    return JSON.parse(out);
   }
 
-  readPreviewRgbPhoto(_imagePath: string, _maxDim: number): PreviewRgb {
-    throw new Error(
-      'readPreviewRgbPhoto not implemented in Node CLI adapter (RAW-only for now)',
+  readPreviewRgbPhoto(imagePath: string, maxDim: number): PreviewRgb {
+    const binPath = path.join(this.tmpDir, `preview-${this.ctr++}.bin`);
+    const out = execFileSync(
+      this.cliPath,
+      ['read-preview-rgb-photo', imagePath, String(maxDim), binPath],
+      {encoding: 'utf-8'},
     );
+    const header = JSON.parse(out) as {
+      width: number;
+      height: number;
+      sourceWidth: number;
+      sourceHeight: number;
+    };
+    const buf = fs.readFileSync(binPath);
+    fs.unlinkSync(binPath);
+    const ab = new Uint8Array(buf).buffer;
+    this.previewCache.set(`${imagePath}::${maxDim}`, header);
+    return {...header, pixels: ab};
   }
 }
 
@@ -244,6 +258,18 @@ const REFERENCE_TOKENS = new Set([
   'none',
 ]);
 const ILLUMINANT_TOKENS = new Set(['light', 'dark']);
+// Tokens the on-device chart-capture pipeline embeds in the filename
+// stem but that don't carry analysis-relevant state:
+//   - "both" — flags that the DNG has an ISP-JPEG companion (a scan
+//     concern, not a per-capture concern).
+//   - "ios" / "android" — source device; useful metadata but not a
+//     filter dimension yet.
+//   - a compact "20260808T134502" timestamp — unique per shot, not
+//     an analysis dimension either.
+// All three are dropped from the "tags" list so they don't clutter
+// the report or the filmstrip filter.
+const IGNORED_TOKENS = new Set(['both', 'ios', 'android']);
+const TIMESTAMP_RE = /^\d{8}t\d{4,6}$/;
 
 const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
   const ext = path.extname(fullPath).slice(1).toLowerCase();
@@ -279,6 +305,8 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
       illuminant_tag = t;
       continue;
     }
+    if (IGNORED_TOKENS.has(t)) continue;
+    if (TIMESTAMP_RE.test(t)) continue;
     tags.push(t);
   }
 
@@ -288,7 +316,14 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
 
 // ---- Scanner ---------------------------------------------------------------
 
-const isDng = (name: string): boolean => name.toLowerCase().endsWith('.dng');
+const isSupportedFixture = (name: string): boolean => {
+  const lower = name.toLowerCase();
+  return (
+    lower.endsWith('.dng') ||
+    lower.endsWith('.jpg') ||
+    lower.endsWith('.jpeg')
+  );
+};
 
 const scanFixtures = (root: string): ParsedFixture[] => {
   const out: ParsedFixture[] = [];
@@ -299,7 +334,7 @@ const scanFixtures = (root: string): ParsedFixture[] => {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(full);
-      } else if (entry.isFile() && isDng(entry.name)) {
+      } else if (entry.isFile() && isSupportedFixture(entry.name)) {
         const parsed = parseFixtureFilename(full);
         if (parsed) out.push(parsed);
         else skipped.push(full);
@@ -809,6 +844,7 @@ let nFailure = 0;
         const rendered = decoder.renderPreviewImage(
           fixture.path,
           REPORT_PREVIEW_MAX_DIM,
+          fixture.format,
           REPORT_PREVIEW_QUALITY,
         );
         previewImage = {

@@ -76,6 +76,10 @@ type Sample = {
   wbSource: string | null;
   wbRef: string | null;
   fixtureLabel: string;
+  // 'raw' (DNG → CIRAWFilter) or 'photo' (JPEG → CIImage). Since
+  // each shot captures both, the filmstrip filters on this field
+  // to compare pipelines head-to-head.
+  format: 'raw' | 'photo';
   deltaE: number;
   // Copied from the parent capture's registration.illumination.
   // Null when RANSAC didn't lock (no illumination stats available).
@@ -101,6 +105,7 @@ for (const cap of runDoc.captures) {
       wbSource: cap.wb_correction?.source ?? null,
       wbRef: cap.wb_correction?.reference ?? null,
       fixtureLabel: cap.label ?? '',
+      format: cap.capture_format === 'photo' ? 'photo' : 'raw',
       deltaE: cell.delta_e ?? 0,
       illumUnevenness,
     });
@@ -212,6 +217,9 @@ const html = `<!DOCTYPE html>
 <div class="split-layout">
   <div class="left-panel">
     <div id="controls">
+      <fieldset id="ctl-format">
+        <legend>Format</legend>
+      </fieldset>
       <fieldset id="ctl-illum">
         <legend>Background</legend>
       </fieldset>
@@ -353,6 +361,11 @@ function rgbHex(rgb) {
 
 const state = {
   illum: 'all',
+  // Format filter: 'all' | 'raw' | 'photo'. Since each capture pair
+  // produces two samples per chip (one from the DNG, one from the
+  // JPEG), the default 'all' shows both stacked; picking one isolates
+  // that pipeline.
+  format: 'all',
   mode: 'raw',
   // Max illumination unevenness (max-of-col-range, row-range across
   // matched-grid inliers). Samples from captures above this threshold
@@ -414,6 +427,13 @@ function makeCheckGroup(el, options, currentGetter, onToggle) {
 }
 
 function initControls() {
+  makeRadioGroup(
+    document.getElementById('ctl-format'), 'format',
+    [{value: 'all', label: 'all'},
+     {value: 'raw', label: 'raw (DNG)'},
+     {value: 'photo', label: 'jpeg (JPEG)'}],
+    () => state.format, v => { state.format = v; updateRefPageGrid(); },
+  );
   const illums = ['all', ...uniqueValues(SAMPLES, 'illuminant')];
   makeRadioGroup(
     document.getElementById('ctl-illum'), 'illum',
@@ -558,6 +578,7 @@ function availabilityMap() {
   const uMax = state.maxUneven === 100 ? Infinity : state.maxUneven;
   const m = new Map();
   for (const s of SAMPLES) {
+    if (state.format !== 'all' && s.format !== state.format) continue;
     if (state.illum !== 'all' && s.illuminant !== state.illum) continue;
     if (s.illumUnevenness !== null && s.illumUnevenness > uMax) continue;
     const k = cellKey(s.page, s.refCard);
@@ -646,6 +667,7 @@ function sampleMatchesGrid(s) {
 function filterSamples() {
   const uMax = state.maxUneven === 100 ? Infinity : state.maxUneven;
   return SAMPLES.filter(s => {
+    if (state.format !== 'all' && s.format !== state.format) return false;
     if (state.illum !== 'all' && s.illuminant !== state.illum) return false;
     // Null unevenness (RANSAC didn't lock) → let it through; the
     // underlying sample may still be diagnostic even without the

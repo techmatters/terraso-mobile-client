@@ -65,15 +65,10 @@ func configureRawFilter(_ rawFilter: CIRAWFilter) {
   rawFilter.orientation = .right
 }
 
-func decodeDngRois(dngPath: String, rois: [Roi]) throws -> [LinearRgb] {
-  let url = URL(fileURLWithPath: stripFileScheme(dngPath))
-  guard let rawFilter = CIRAWFilter(imageURL: url) else {
-    throw CliError.msg("CIRAWFilter could not open DNG at \(url.path)")
-  }
-  configureRawFilter(rawFilter)
-  guard let ciImage = rawFilter.outputImage else {
-    throw CliError.msg("CIRAWFilter produced no outputImage")
-  }
+// Given an already-loaded CIImage (from either the RAW or the photo
+// path), decode per-ROI averaged colour in the linear-sRGB working
+// space. Split out so decodeDngRois and decodePhotoRois can share it.
+func decodeCiImageRois(_ ciImage: CIImage, rois: [Roi]) throws -> [LinearRgb] {
   let extent = ciImage.extent
   guard let linearSpace = CGColorSpace(name: CGColorSpace.linearSRGB) else {
     throw CliError.msg("linearSRGB color space unavailable")
@@ -120,16 +115,7 @@ func decodeDngRois(dngPath: String, rois: [Roi]) throws -> [LinearRgb] {
   return results
 }
 
-struct PreviewRgbHeader: Encodable {
-  let width: Int
-  let height: Int
-  let sourceWidth: Int
-  let sourceHeight: Int
-}
-
-func readPreviewRgb(dngPath: String, maxDim: Double, outRgbPath: String) throws
-  -> PreviewRgbHeader
-{
+func decodeDngRois(dngPath: String, rois: [Roi]) throws -> [LinearRgb] {
   let url = URL(fileURLWithPath: stripFileScheme(dngPath))
   guard let rawFilter = CIRAWFilter(imageURL: url) else {
     throw CliError.msg("CIRAWFilter could not open DNG at \(url.path)")
@@ -138,6 +124,46 @@ func readPreviewRgb(dngPath: String, maxDim: Double, outRgbPath: String) throws
   guard let ciImage = rawFilter.outputImage else {
     throw CliError.msg("CIRAWFilter produced no outputImage")
   }
+  return try decodeCiImageRois(ciImage, rois: rois)
+}
+
+// Load a JPEG/HEIC/PNG file as a CIImage with its EXIF orientation
+// already applied — so ROI coords in the loaded-image coordinate
+// space match what a viewer would see for the same file. iOS DNG's
+// embedded-JPEG preview extracted via extractDngPreviewJpeg carries
+// an EXIF orientation tag; without applying it, the JPEG's coord
+// space is rotated 90° from the DNG's, and the analyzer's ROIs
+// (registered against a portrait preview) miss the chart.
+func loadPhotoAsCiImage(_ imagePath: String) throws -> CIImage {
+  let url = URL(fileURLWithPath: stripFileScheme(imagePath))
+  guard
+    let ciImage = CIImage(
+      contentsOf: url,
+      options: [.applyOrientationProperty: true])
+  else {
+    throw CliError.msg("CIImage could not open photo at \(url.path)")
+  }
+  return ciImage
+}
+
+func decodePhotoRois(imagePath: String, rois: [Roi]) throws -> [LinearRgb] {
+  let ciImage = try loadPhotoAsCiImage(imagePath)
+  return try decodeCiImageRois(ciImage, rois: rois)
+}
+
+struct PreviewRgbHeader: Encodable {
+  let width: Int
+  let height: Int
+  let sourceWidth: Int
+  let sourceHeight: Int
+}
+
+// Preview-writer core: given a source CIImage, scale to fit maxDim,
+// render as sRGB 8-bit RGB, and write interleaved rgb bytes to the
+// out path. Shared between the DNG and photo variants.
+func writeScaledPreviewRgb(
+  _ ciImage: CIImage, maxDim: Double, outRgbPath: String
+) throws -> PreviewRgbHeader {
   let srcW = ciImage.extent.width
   let srcH = ciImage.extent.height
   let sourceWidth = Int(srcW.rounded())
@@ -205,6 +231,29 @@ func readPreviewRgb(dngPath: String, maxDim: Double, outRgbPath: String) throws
     sourceWidth: sourceWidth, sourceHeight: sourceHeight)
 }
 
+func readPreviewRgb(dngPath: String, maxDim: Double, outRgbPath: String) throws
+  -> PreviewRgbHeader
+{
+  let url = URL(fileURLWithPath: stripFileScheme(dngPath))
+  guard let rawFilter = CIRAWFilter(imageURL: url) else {
+    throw CliError.msg("CIRAWFilter could not open DNG at \(url.path)")
+  }
+  configureRawFilter(rawFilter)
+  guard let ciImage = rawFilter.outputImage else {
+    throw CliError.msg("CIRAWFilter produced no outputImage")
+  }
+  return try writeScaledPreviewRgb(
+    ciImage, maxDim: maxDim, outRgbPath: outRgbPath)
+}
+
+func readPreviewRgbPhoto(
+  imagePath: String, maxDim: Double, outRgbPath: String
+) throws -> PreviewRgbHeader {
+  let ciImage = try loadPhotoAsCiImage(imagePath)
+  return try writeScaledPreviewRgb(
+    ciImage, maxDim: maxDim, outRgbPath: outRgbPath)
+}
+
 // Shared "decode + scale-to-fit" step used by read-preview-rgb and
 // render-preview. Returns the scaled CIImage plus the destination
 // dims (rounded) and full-sensor source dims.
@@ -242,10 +291,32 @@ func loadAndScaleDng(dngPath: String, maxDim: Double) throws -> ScaledPreview {
   )
 }
 
-func renderPreviewFile(
-  dngPath: String, maxDim: Double, outPath: String, jpegQuality: Double
+func loadAndScalePhoto(imagePath: String, maxDim: Double) throws
+  -> ScaledPreview
+{
+  let ciImage = try loadPhotoAsCiImage(imagePath)
+  let srcW = ciImage.extent.width
+  let srcH = ciImage.extent.height
+  let maxDimCG = CGFloat(maxDim)
+  let scale = min(maxDimCG / srcW, maxDimCG / srcH, 1.0)
+  let scaled: CIImage =
+    scale < 1.0
+    ? ciImage.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+    : ciImage
+  return ScaledPreview(
+    image: scaled,
+    width: Int(scaled.extent.width.rounded()),
+    height: Int(scaled.extent.height.rounded()),
+    sourceWidth: Int(srcW.rounded()),
+    sourceHeight: Int(srcH.rounded())
+  )
+}
+
+// Take a ScaledPreview (from either loadAndScaleDng or
+// loadAndScalePhoto) and write it as a jpg/png at outPath.
+func writeScaledPreviewFile(
+  _ scaled: ScaledPreview, outPath: String, jpegQuality: Double
 ) throws -> PreviewRgbHeader {
-  let scaled = try loadAndScaleDng(dngPath: dngPath, maxDim: maxDim)
   // sRGB (gamma-encoded) output space — display-ready pixels.
   guard let displaySpace = CGColorSpace(name: CGColorSpace.sRGB) else {
     throw CliError.msg("sRGB color space unavailable")
@@ -294,6 +365,22 @@ func renderPreviewFile(
     sourceWidth: scaled.sourceWidth, sourceHeight: scaled.sourceHeight)
 }
 
+func renderPreviewFile(
+  dngPath: String, maxDim: Double, outPath: String, jpegQuality: Double
+) throws -> PreviewRgbHeader {
+  let scaled = try loadAndScaleDng(dngPath: dngPath, maxDim: maxDim)
+  return try writeScaledPreviewFile(
+    scaled, outPath: outPath, jpegQuality: jpegQuality)
+}
+
+func renderPreviewPhotoFile(
+  imagePath: String, maxDim: Double, outPath: String, jpegQuality: Double
+) throws -> PreviewRgbHeader {
+  let scaled = try loadAndScalePhoto(imagePath: imagePath, maxDim: maxDim)
+  return try writeScaledPreviewFile(
+    scaled, outPath: outPath, jpegQuality: jpegQuality)
+}
+
 func die(_ msg: String) -> Never {
   FileHandle.standardError.write(Data((msg + "\n").utf8))
   exit(1)
@@ -316,8 +403,11 @@ guard args.count >= 2 else {
   die(
     "usage: dng-cli <subcommand> …\n"
       + "  decode-dng-rois <dngPath> <roisJson>\n"
+      + "  decode-photo-rois <imagePath> <roisJson>\n"
       + "  read-preview-rgb <dngPath> <maxDim> <outRgbPath>\n"
-      + "  render-preview <dngPath> <maxDim> <outPath> [<jpegQuality>]")
+      + "  read-preview-rgb-photo <imagePath> <maxDim> <outRgbPath>\n"
+      + "  render-preview <dngPath> <maxDim> <outPath> [<jpegQuality>]\n"
+      + "  render-preview-photo <imagePath> <maxDim> <outPath> [<jpegQuality>]")
 }
 let cmd = args[1]
 
@@ -364,6 +454,50 @@ case "read-preview-rgb":
   }
   writeJson(header)
 
+case "decode-photo-rois":
+  guard args.count >= 4 else {
+    die("usage: dng-cli decode-photo-rois <imagePath> <roisJson>")
+  }
+  let imagePath = args[2]
+  let roisJson = args[3]
+  let rois: [Roi]
+  do {
+    rois = try JSONDecoder().decode([Roi].self, from: Data(roisJson.utf8))
+  } catch {
+    die("failed to parse rois json: \(error.localizedDescription)")
+  }
+  let results: [LinearRgb]
+  do {
+    results = try decodePhotoRois(imagePath: imagePath, rois: rois)
+  } catch CliError.msg(let m) {
+    die(m)
+  } catch {
+    die("unexpected error: \(error.localizedDescription)")
+  }
+  writeJson(results)
+
+case "read-preview-rgb-photo":
+  guard args.count >= 5 else {
+    die(
+      "usage: dng-cli read-preview-rgb-photo <imagePath> <maxDim> <outRgbPath>"
+    )
+  }
+  let imagePath = args[2]
+  guard let maxDim = Double(args[3]) else {
+    die("maxDim must be a number, got: \(args[3])")
+  }
+  let outRgbPath = args[4]
+  let header: PreviewRgbHeader
+  do {
+    header = try readPreviewRgbPhoto(
+      imagePath: imagePath, maxDim: maxDim, outRgbPath: outRgbPath)
+  } catch CliError.msg(let m) {
+    die(m)
+  } catch {
+    die("unexpected error: \(error.localizedDescription)")
+  }
+  writeJson(header)
+
 case "render-preview":
   guard args.count >= 5 else {
     die(
@@ -388,6 +522,38 @@ case "render-preview":
   do {
     header = try renderPreviewFile(
       dngPath: dngPath, maxDim: maxDim, outPath: outPath,
+      jpegQuality: jpegQuality)
+  } catch CliError.msg(let m) {
+    die(m)
+  } catch {
+    die("unexpected error: \(error.localizedDescription)")
+  }
+  writeJson(header)
+
+case "render-preview-photo":
+  guard args.count >= 5 else {
+    die(
+      "usage: dng-cli render-preview-photo <imagePath> <maxDim> <outPath> [<jpegQuality>]"
+    )
+  }
+  let imagePath = args[2]
+  guard let maxDim = Double(args[3]) else {
+    die("maxDim must be a number, got: \(args[3])")
+  }
+  let outPath = args[4]
+  let jpegQuality: Double
+  if args.count >= 6 {
+    guard let q = Double(args[5]), q >= 1, q <= 100 else {
+      die("jpegQuality must be a number in 1..100, got: \(args[5])")
+    }
+    jpegQuality = q / 100.0
+  } else {
+    jpegQuality = 0.85
+  }
+  let header: PreviewRgbHeader
+  do {
+    header = try renderPreviewPhotoFile(
+      imagePath: imagePath, maxDim: maxDim, outPath: outPath,
       jpegQuality: jpegQuality)
   } catch CliError.msg(let m) {
     die(m)

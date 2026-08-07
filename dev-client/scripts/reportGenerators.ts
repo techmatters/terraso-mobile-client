@@ -640,14 +640,20 @@ export const renderHtmlReport = (
   meta: RunMeta,
   captures: CaptureContext[],
 ): string => {
-  // Group by fixture (source_path). Multiple captures per fixture
-  // arise when the runner sweeps several WB anchors — same DNG,
-  // same registration, different post-hoc WB correction. Rendering
-  // once-per-fixture keeps the report readable: one whitemask +
-  // metadata table + N result grids side-by-side.
+  // Group by fixture stem (source_path minus extension). Multiple
+  // captures per fixture arise when the runner sweeps several WB
+  // anchors OR when a chart-capture pair produced both a DNG and a
+  // sibling JPEG for the same shutter. Rendering once per stem keeps
+  // the report readable: one metadata table + N result grids
+  // side-by-side (WB anchors × formats).
+  const stripExt = (p: string): string => {
+    const dot = p.lastIndexOf('.');
+    const slash = Math.max(p.lastIndexOf('/'), p.lastIndexOf('\\'));
+    return dot > slash ? p.slice(0, dot) : p;
+  };
   const groups = new Map<string, CaptureContext[]>();
   for (const c of captures) {
-    const key = c.jsonEntry.source_path;
+    const key = stripExt(c.jsonEntry.source_path);
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key)!.push(c);
   }
@@ -954,11 +960,24 @@ const renderLegend = (): string => {
 };
 
 const renderFixtureSection = (variants: CaptureContext[]): string => {
-  // All variants share the same fixture / outcome / registration —
-  // use the first one for the metadata + whitemask overlay.
-  const first = variants[0];
-  const {jsonEntry} = first;
-  const isFailed = first.outcome.kind === 'failure';
+  // A section groups every capture that shares a source-path stem —
+  // so a DNG + its JPEG sibling for the same shutter land here
+  // together, potentially alongside multiple WB-anchor sweeps of
+  // each. Sort so raw comes before photo, and within each format
+  // the natural anchor ordering is preserved.
+  const sorted = [...variants].sort((a, b) => {
+    const af = a.jsonEntry.capture_format;
+    const bf = b.jsonEntry.capture_format;
+    if (af !== bf) return af === 'raw' ? -1 : 1;
+    return 0;
+  });
+  // Prefer a raw variant for the shared whitemask + registration
+  // display — a JPEG-derived preview looks the same visually (both
+  // paths end in a linear-sRGB CIImage), but the raw variant is the
+  // canonical one when both are present.
+  const anchor = sorted[0];
+  const {jsonEntry} = anchor;
+  const isFailed = sorted.every(v => v.outcome.kind === 'failure');
   const reg = jsonEntry.registration;
   const regRows = Object.entries(reg)
     .map(
@@ -966,16 +985,27 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
         `<tr><th>${esc(k)}</th><td><code>${esc(JSON.stringify(v))}</code></td></tr>`,
     )
     .join('');
-  const wbLabels = variants
-    .map(v => v.jsonEntry.wb_correction?.reference ?? '(none)')
+  const formats = Array.from(
+    new Set(sorted.map(v => v.jsonEntry.capture_format)),
+  ).join(', ');
+  const wbLabels = sorted
+    .map(v => {
+      const wb = v.jsonEntry.wb_correction?.reference ?? '(none)';
+      return `${v.jsonEntry.capture_format}:${wb}`;
+    })
     .join(' | ');
-  const resultBlocks = variants
+  const resultBlocks = sorted
     .map(v => {
       const label = v.jsonEntry.wb_correction?.reference ?? '(no WB)';
       const source = v.jsonEntry.wb_correction?.source ?? '';
+      const fmt = v.jsonEntry.capture_format;
+      const fmtBadge =
+        `<span style="background:${fmt === 'raw' ? '#e8f0ff' : '#fff4e8'};` +
+        `border:1px solid #ccc;padding:1px 6px;border-radius:3px;` +
+        `font-size:11px;color:#555;margin-right:6px;">${esc(fmt)}</span>`;
       return `
       <div>
-        <p class="variant-label"><strong>${esc(label)}</strong> <span style="color:#888">(${esc(source)})</span></p>
+        <p class="variant-label">${fmtBadge}<strong>${esc(label)}</strong> <span style="color:#888">(${esc(source)})</span></p>
         ${renderResultGridSvg(v)}
       </div>`;
     })
@@ -985,22 +1015,22 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
   <h2>${esc(jsonEntry.label)}${isFailed ? ' <span style="color:#c62828">[FAILED]</span>' : ''}</h2>
   <table class="meta">
     <tr><th>Page</th><td>${esc(jsonEntry.page)}</td></tr>
-    <tr><th>Format</th><td>${esc(jsonEntry.capture_format)}</td></tr>
+    <tr><th>Formats</th><td>${esc(formats)}</td></tr>
     <tr><th>Reference card</th><td>${esc(jsonEntry.reference_card ?? '(none)')}</td></tr>
     <tr><th>Illuminant</th><td>${esc(jsonEntry.environment.illuminant_tag ?? '(none)')}</td></tr>
     <tr><th>Tags</th><td>${esc(jsonEntry.environment.tags.join(', ') || '(none)')}</td></tr>
-    <tr><th>WB anchors</th><td>${esc(wbLabels)}</td></tr>
+    <tr><th>Variants</th><td>${esc(wbLabels)}</td></tr>
     ${regRows}
     <tr><th>Source</th><td><code>${esc(jsonEntry.source_path)}</code></td></tr>
   </table>
   <div class="images">
     <div class="whitemask-block">
-      <h3>Whitemask + overlays</h3>
-      ${renderWhitemaskOverlaySvg(first)}
-      ${renderIlluminationBlock(first)}
+      <h3>Whitemask + overlays <span style="font-weight:normal;color:#888;font-size:12px">(from ${esc(jsonEntry.capture_format)} variant)</span></h3>
+      ${renderWhitemaskOverlaySvg(anchor)}
+      ${renderIlluminationBlock(anchor)}
     </div>
     <div class="results-block">
-      <h3>Result grids (per WB anchor)</h3>
+      <h3>Result grids (per format × WB anchor)</h3>
       <div class="results-variants">${resultBlocks}
       </div>
     </div>
