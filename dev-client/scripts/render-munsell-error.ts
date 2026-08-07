@@ -19,7 +19,9 @@
 // analyze-fixtures, bakes the samples + the ~440-chip ground-truth
 // lattice into a self-contained HTML page, and emits an interactive
 // visualization: one polar disk per ground-truth Munsell value,
-// facet-filtered by ref card / illuminant / WB anchor / page.
+// facet-filtered by ref card / background / page. WB-source
+// filtering is exposed via the ref-card selector's 'self' and
+// 'card' pseudo-options.
 //
 // All rendering happens in the browser so filter changes are live.
 // This script's whole job is to marshal the two data blobs and embed
@@ -185,10 +187,7 @@ const html = `<!DOCTYPE html>
     <legend>Ref card</legend>
   </fieldset>
   <fieldset id="ctl-illum">
-    <legend>Illuminant</legend>
-  </fieldset>
-  <fieldset id="ctl-wb">
-    <legend>WB source</legend>
+    <legend>Background</legend>
   </fieldset>
   <fieldset id="ctl-page">
     <legend>Page</legend>
@@ -207,6 +206,7 @@ const html = `<!DOCTYPE html>
   <span class="legend-swatch"></span>
   <span>+2</span>
   <span style="margin-left:16px">blue = predicted too dark · red = too light</span>
+  <span style="margin-left:16px">×N label = N samples averaged into that chip's mean arrow</span>
 </div>
 
 <div id="summary"></div>
@@ -286,7 +286,6 @@ function rgbHex(rgb) {
 const state = {
   refCard: 'all',
   illum: 'all',
-  wbSource: 'ref_card', // default per user preference
   pages: new Set(),     // empty = all
   mode: 'mean',
   // Max illumination unevenness (max-of-col-range, row-range across
@@ -357,12 +356,6 @@ function initControls() {
     illums.map(v => ({value: v, label: v})),
     () => state.illum, v => state.illum = v,
   );
-  const wbs = ['all', ...uniqueValues(SAMPLES, 'wbSource')];
-  makeRadioGroup(
-    document.getElementById('ctl-wb'), 'wb',
-    wbs.map(v => ({value: v, label: v})),
-    () => state.wbSource, v => state.wbSource = v,
-  );
   const pages = uniqueValues(SAMPLES, 'page');
   makeCheckGroup(
     document.getElementById('ctl-page'),
@@ -416,7 +409,6 @@ function filterSamples() {
       return false;
     }
     if (state.illum !== 'all' && s.illuminant !== state.illum) return false;
-    if (state.wbSource !== 'all' && s.wbSource !== state.wbSource) return false;
     if (state.pages.size > 0 && !state.pages.has(s.page)) return false;
     // Null unevenness (RANSAC didn't lock) → let it through; the
     // underlying sample may still be diagnostic even without the
@@ -436,10 +428,14 @@ function renderDisk(valueBin, valueSamples) {
   // value matches (within 0.25 to catch 2 vs 2.5 bins etc.).
   const binChips = CHIPS.filter(c => Math.abs(c.value - valueBin) < 0.25);
 
-  // SVG geometry.
-  const SIZE = 320;
-  const CX = SIZE / 2;
-  const CY = SIZE / 2 + 20; // shift down slightly to leave room for hue labels
+  // SVG geometry. Wedge occupies the top of the disk (angle 0 = 12
+  // o'clock, span ±WEDGE_MAX), so the visible pixels sit *above* the
+  // centre. Place centre near the bottom of the viewport with just
+  // enough room below for the "chroma →" pointer.
+  const SIZE_W = 520;
+  const SIZE_H = 310;
+  const CX = SIZE_W / 2;
+  const CY = 280;
   const MAX_CHROMA = 8;
   const R_PER_CHROMA = 30; // 8 chroma × 30 = 240px radius
 
@@ -451,46 +447,126 @@ function renderDisk(valueBin, valueSamples) {
 
   const parts = [];
 
-  // Concentric chroma gridlines.
-  for (let c = 2; c <= MAX_CHROMA; c += 2) {
+  // Concentric chroma gridlines. Standard soil-chart chromas are
+  // {1, 2, 3, 4, 6, 8} — /5 and /7 don't appear on any card. Label
+  // every ring at both ends of the wedge so the user can read chroma
+  // from either side.
+  const CHROMA_RINGS = [1, 2, 3, 4, 6, 8];
+  for (const c of CHROMA_RINGS) {
     const r = c * R_PER_CHROMA;
-    // Draw as arc from WEDGE_MIN to WEDGE_MAX.
+    // Even chromas get a darker ring so /2, /4 read as anchor rings
+    // and /1, /3 as intermediate steps.
+    const isEven = c % 2 === 0;
     const p0 = polarToXY(CX, CY, r, WEDGE_MIN);
     const p1 = polarToXY(CX, CY, r, WEDGE_MAX);
     parts.push('<path d="M ' + p0.x + ' ' + p0.y +
       ' A ' + r + ' ' + r + ' 0 0 1 ' + p1.x + ' ' + p1.y + '"' +
-      ' fill="none" stroke="#c8c8c8" stroke-width="1.5"/>');
-    // Chroma label at wedge-max angle.
-    const lp = polarToXY(CX, CY, r, WEDGE_MAX + 2);
-    parts.push('<text x="' + lp.x + '" y="' + lp.y +
+      ' fill="none" stroke="' + (isEven ? '#b8b8b8' : '#dadada') +
+      '" stroke-width="' + (isEven ? 1.5 : 1) + '"/>');
+    // Chroma label at both ends of the arc (mirrored).
+    const lpR = polarToXY(CX, CY, r, WEDGE_MAX + 2);
+    parts.push('<text x="' + lpR.x + '" y="' + lpR.y +
       '" font-size="10" font-weight="bold" fill="#666" ' +
-      'text-anchor="start">/' + c + '</text>');
+      'text-anchor="start" alignment-baseline="middle">/' + c + '</text>');
+    const lpL = polarToXY(CX, CY, r, WEDGE_MIN - 2);
+    parts.push('<text x="' + lpL.x + '" y="' + lpL.y +
+      '" font-size="10" font-weight="bold" fill="#666" ' +
+      'text-anchor="end" alignment-baseline="middle">/' + c + '</text>');
   }
 
-  // Radial hue gridlines every 9° in the wedge.
+  // Radial hue gridlines every 2.5-hue step in the wedge (matches
+  // real chip spacing). Faint by default; the labelled steps get a
+  // darker tick.
   for (let a = Math.ceil(WEDGE_MIN / 9) * 9; a <= WEDGE_MAX; a += 9) {
     const p1 = polarToXY(CX, CY, MAX_CHROMA * R_PER_CHROMA, a);
     parts.push('<line x1="' + CX + '" y1="' + CY + '" x2="' + p1.x + '" y2="' + p1.y +
-      '" stroke="#f0f0f0" stroke-width="0.5"/>');
+      '" stroke="#eee" stroke-width="0.5"/>');
   }
 
-  // Hue labels at outer arc for well-known steps.
+  // Hue labels at outer arc — every 2.5-step hue that appears on any
+  // soil page. The whole ring is labelled so the user can read
+  // predicted-vs-expected hue directly off the wedge.
   const HUE_LABELS = [
     {name: '5R',    family: 'R',  step: 5},
+    {name: '7.5R',  family: 'R',  step: 7.5},
     {name: '10R',   family: 'R',  step: 10},
+    {name: '2.5YR', family: 'YR', step: 2.5},
     {name: '5YR',   family: 'YR', step: 5},
+    {name: '7.5YR', family: 'YR', step: 7.5},
     {name: '10YR',  family: 'YR', step: 10},
+    {name: '2.5Y',  family: 'Y',  step: 2.5},
     {name: '5Y',    family: 'Y',  step: 5},
+    {name: '7.5Y',  family: 'Y',  step: 7.5},
     {name: '10Y',   family: 'Y',  step: 10},
+    {name: '2.5GY', family: 'GY', step: 2.5},
     {name: '5GY',   family: 'GY', step: 5},
   ];
   for (const h of HUE_LABELS) {
     const a = hueAngle(h.family, h.step);
     if (a < WEDGE_MIN || a > WEDGE_MAX) continue;
-    const lp = polarToXY(CX, CY, MAX_CHROMA * R_PER_CHROMA + 12, a);
+    // Short tick at the outer arc so labels line up with a visible
+    // radial mark on the wedge boundary.
+    const tickIn = polarToXY(CX, CY, MAX_CHROMA * R_PER_CHROMA, a);
+    const tickOut = polarToXY(CX, CY, MAX_CHROMA * R_PER_CHROMA + 4, a);
+    parts.push('<line x1="' + tickIn.x + '" y1="' + tickIn.y +
+      '" x2="' + tickOut.x + '" y2="' + tickOut.y +
+      '" stroke="#888" stroke-width="1"/>');
+    // Label position further out; rotate text along the radial so
+    // adjacent labels don't overlap in the crowded top of the arc.
+    const lp = polarToXY(CX, CY, MAX_CHROMA * R_PER_CHROMA + 16, a);
     parts.push('<text x="' + lp.x + '" y="' + lp.y +
-      '" font-size="10" font-weight="bold" fill="#666" ' +
-      'text-anchor="middle" alignment-baseline="middle">' + h.name + '</text>');
+      '" font-size="10" font-weight="bold" fill="#444" ' +
+      'text-anchor="middle" alignment-baseline="middle" ' +
+      'transform="rotate(' + a + ' ' + lp.x + ' ' + lp.y + ')">' +
+      h.name + '</text>');
+  }
+
+  // Diagonal "chroma →" pointer *parallel* to the /N label column:
+  // same POINTER_ANGLE as the labels (WEDGE_MAX + 2°), then shifted
+  // perpendicularly outward by CHROMA_ARROW_OFFSET so the arrow sits
+  // below/outside the labels. Reader's eye scans /1 → /8 down the
+  // label column; the arrow runs on the parallel just outside it,
+  // labelled "chroma".
+  {
+    const POINTER_ANGLE = WEDGE_MAX + 2;
+    const START_R = 90;             // past /3
+    const END_R = MAX_CHROMA * R_PER_CHROMA + 14; // just past /8
+    const CHROMA_ARROW_OFFSET = 26; // perpendicular pixels outward
+    const TEXT_OFFSET = 15;         // further perpendicular for the label
+    const angRad = (POINTER_ANGLE * Math.PI) / 180;
+    // Radial-outward unit vector at POINTER_ANGLE (in SVG coords).
+    const ux = Math.sin(angRad);
+    const uy = -Math.cos(angRad);
+    // Perpendicular pointing outward-below the label column (rotate
+    // radial 90° CW in SVG coord system).
+    const px = -uy;
+    const py = ux;
+    const p0x = CX + START_R * ux + CHROMA_ARROW_OFFSET * px;
+    const p0y = CY + START_R * uy + CHROMA_ARROW_OFFSET * py;
+    const p1x = CX + END_R * ux + CHROMA_ARROW_OFFSET * px;
+    const p1y = CY + END_R * uy + CHROMA_ARROW_OFFSET * py;
+    const ang = Math.atan2(p1y - p0y, p1x - p0x);
+    const AH = 8;
+    const ax1 = p1x - AH * Math.cos(ang - 0.4);
+    const ay1 = p1y - AH * Math.sin(ang - 0.4);
+    const ax2 = p1x - AH * Math.cos(ang + 0.4);
+    const ay2 = p1y - AH * Math.sin(ang + 0.4);
+    parts.push('<line x1="' + p0x + '" y1="' + p0y +
+      '" x2="' + p1x + '" y2="' + p1y +
+      '" stroke="#555" stroke-width="1.5" stroke-dasharray="4 2"/>');
+    parts.push('<polygon points="' + p1x + ',' + p1y + ' ' +
+      ax1 + ',' + ay1 + ' ' + ax2 + ',' + ay2 +
+      '" fill="#555"/>');
+    // "chroma" label centred along the arrow, rotated to match its
+    // angle, offset further perpendicular so it sits below the shaft.
+    const midx = (p0x + p1x) / 2 + TEXT_OFFSET * px;
+    const midy = (p0y + p1y) / 2 + TEXT_OFFSET * py;
+    const rotDeg = (ang * 180) / Math.PI;
+    parts.push('<text x="' + midx + '" y="' + midy +
+      '" font-size="11" font-weight="bold" fill="#555" ' +
+      'text-anchor="middle" alignment-baseline="middle" ' +
+      'transform="rotate(' + rotDeg + ' ' + midx + ' ' + midy + ')">' +
+      'chroma</text>');
   }
 
   // Chip lattice dots — computed here but appended to parts AFTER
@@ -621,10 +697,11 @@ function renderDisk(valueBin, valueSamples) {
         ax1 + ',' + ay1 + ' ' + ax2 + ',' + ay2 +
         '" fill="' + col + '"/>');
     }
-    // Small "n=" label at expected point if group is big.
+    // Sample-count badge above the arrow origin when >1 sample was
+    // averaged into this chip's mean. "×3" = 3 samples averaged.
     if (n > 1) {
       parts.push('<text x="' + p0.x + '" y="' + (p0.y - 6) +
-        '" font-size="8" fill="#666" text-anchor="middle">n' + n + '</text>');
+        '" font-size="8" fill="#666" text-anchor="middle">×' + n + '</text>');
     }
     nArrows++;
   }
@@ -643,9 +720,9 @@ function renderDisk(valueBin, valueSamples) {
   }
 
   return {
-    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + SIZE + '" height="' +
-         (SIZE + 40) + '" viewBox="0 0 ' + SIZE + ' ' + (SIZE + 40) + '">' +
-         parts.join('') + '</svg>',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + SIZE_W +
+         '" height="' + SIZE_H + '" viewBox="0 0 ' + SIZE_W + ' ' +
+         SIZE_H + '">' + parts.join('') + '</svg>',
     nArrows,
     nChips: binChips.length,
     nSkippedOutOfWedge,
