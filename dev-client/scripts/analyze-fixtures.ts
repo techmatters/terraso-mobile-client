@@ -243,12 +243,20 @@ const PAGE_LOOKUP = new Map<string, MunsellPage>(
 // Ambient historical alias — kept in case old captures show up.
 PAGE_LOOKUP.set('whitepage', findMunsellPage('WHITE'));
 
-const FORMAT_TOKENS = new Map<string, 'raw' | 'photo'>([
-  ['raw', 'raw'],
-  ['dng', 'raw'],
-  ['jpeg', 'photo'],
-  ['jpg', 'photo'],
-  ['heic', 'photo'],
+// Old-style fixture filenames (pre-dual-format) embedded the format
+// as a token ("10R_RAW_light_greycard_DNG.dng") — we now derive the
+// format authoritatively from the file extension so an extracted
+// .jpg sibling doesn't inherit a "RAW"/"DNG" token from its DNG
+// parent's stem. These tokens are still recognised so they get
+// stripped from the tags list, but they no longer influence the
+// format decision.
+const FORMAT_TOKENS = new Set([
+  'raw',
+  'dng',
+  'jpeg',
+  'jpg',
+  'heic',
+  'photo',
 ]);
 const REFERENCE_TOKENS = new Set([
   'greycard',
@@ -280,7 +288,9 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
     .filter(Boolean);
 
   let page: string | null = null;
-  let format: 'raw' | 'photo' = ext === 'dng' ? 'raw' : 'photo';
+  // Format is derived from the extension only; format tokens in the
+  // filename are stripped from tags but don't override this.
+  const format: 'raw' | 'photo' = ext === 'dng' ? 'raw' : 'photo';
   let reference: string | null = null;
   let illuminant_tag: string | null = null;
   const tags: string[] = [];
@@ -292,11 +302,7 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
       page = p.name;
       continue;
     }
-    const f = FORMAT_TOKENS.get(t);
-    if (f) {
-      format = f;
-      continue;
-    }
+    if (FORMAT_TOKENS.has(t)) continue;
     if (REFERENCE_TOKENS.has(t)) {
       reference = t === 'none' ? 'nothing' : t;
       continue;
