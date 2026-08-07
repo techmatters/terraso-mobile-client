@@ -79,6 +79,24 @@ export const SAMPLE_GRID: readonly Point[] = [
 ];
 export const TEST_SWATCH_INDEX: number = SAMPLE_GRID.length - 1;
 
+// Multi-card layout: three reference cards taped to a paper strip on
+// the right side of the chart page (all pages use the same fixed
+// coords, regardless of which Munsell page is in the shot). x=13 is
+// one chip-column-step (2) past the last chip column (x=10), plus a
+// 1.5× spacing gap so the cards visually separate from the chart
+// chips. y values match the top three chip rows. Slot order chosen
+// to match the physical sizes of the actual cards.
+export type MultiCardSlot = {
+  readonly x: number;
+  readonly y: number;
+  readonly name: 'whibal' | 'postit' | 'greycard';
+};
+export const MULTI_CARD_POINTS: readonly MultiCardSlot[] = [
+  {x: 13, y: 0, name: 'whibal'},
+  {x: 13, y: 3, name: 'postit'},
+  {x: 13, y: 6, name: 'greycard'},
+];
+
 // A filter runs on a candidate triplet and returns true to accept
 // it, false to reject. Rejected triplets are skipped by the
 // iterator without being yielded to the caller — cheaper than

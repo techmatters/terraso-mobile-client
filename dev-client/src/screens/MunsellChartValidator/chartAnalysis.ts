@@ -32,6 +32,7 @@ import {
 } from 'terraso-mobile-client/screens/MunsellChartValidator/imageOps';
 import {
   DEFAULT_REGISTRATION_ALGORITHM,
+  MULTI_CARD_POINTS,
   TEST_SWATCH_POINT,
   type RegistrationAlgorithm,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
@@ -112,6 +113,15 @@ export type MunsellChartResult = {
   // alias for matchedSampleValues[last]; kept as its own field so
   // consumers don't need to hard-code the array's last index.
   testSwatchLinearRgb: {r: number; g: number; b: number} | null;
+  // Multi-card mode: raw linear-sRGB at each MULTI_CARD_POINTS slot.
+  // Null when the caller ran single-card mode (default); otherwise a
+  // 3-entry array in MULTI_CARD_POINTS declaration order (whibal,
+  // postit, greycard).
+  multiRefCards: Array<{
+    name: 'whibal' | 'postit' | 'greycard';
+    linearRgb: {r: number; g: number; b: number};
+    rect: {x: number; y: number; w: number; h: number};
+  }> | null;
 };
 
 // Everything analyzeMunsellChart managed to compute BEFORE the fatal
@@ -146,6 +156,11 @@ export const analyzeMunsellChart = async (
   page: MunsellPage = MUNSELL_PAGES[0],
   format: ChartFormat = 'raw',
   algorithm: RegistrationAlgorithm = DEFAULT_REGISTRATION_ALGORITHM,
+  // Multi-card mode: append the three MULTI_CARD_POINTS to the
+  // sample grid so the analyser also decodes the taped-alongside
+  // whibal/postit/greycard slots. When false, only the legacy
+  // single ref-card slot is sampled.
+  multiCards = false,
 ): Promise<MunsellChartOutcome> => {
   const cells = pageCells(page);
   // 1. RGB render for the CV. We need chromaticity (not just luma) to
@@ -218,7 +233,21 @@ export const analyzeMunsellChart = async (
   // (fully-populated pages like GLEY1/GLEY2), else at the default
   // bottom-right corner slot that stays empty on most pages.
   const refCardPoint = page.refCardPoint ?? TEST_SWATCH_POINT;
-  const pageSampleGrid = [...pageSampleGridPoints(page), refCardPoint];
+  // Multi mode: append the 3 fixed MULTI_CARD_POINTS AFTER the
+  // legacy single ref-card slot. Downstream (matchedSampleValues)
+  // sees the sample grid as:
+  //   [ page chips ..., legacy refCardPoint, whibal, postit, greycard ]
+  // so the legacy testSwatchLinearRgb index (length - 1) becomes the
+  // greycard slot's raw when multi is on — kept correct by taking
+  // matchedSampleValues[length - MULTI_CARD_POINTS.length - 1] in
+  // single-card mode below.
+  const pageSampleGrid = multiCards
+    ? [
+        ...pageSampleGridPoints(page),
+        refCardPoint,
+        ...MULTI_CARD_POINTS.map(p => ({x: p.x, y: p.y})),
+      ]
+    : [...pageSampleGridPoints(page), refCardPoint];
   // Paper anchor luma (rec.709) from whitemask border-ring calibration
   // — lets detectChartByRegions relax its "bright" cutoff for dim
   // captures where paper reads well below the fallback 170. Null when
@@ -426,23 +455,30 @@ export const analyzeMunsellChart = async (
       h: Math.round(halfH * 2),
     };
   });
-  // Ref card lands at the LAST entry of matchedSampleRects (chartAnalysis
-  // appends refCardPoint after pageSampleGridPoints when it builds the
-  // per-page sample grid). Kept separate from previewRects so the chip
-  // sample list stays 1-to-1 with `cells` for downstream consumers.
+  // Ref-card sample rect position within matchedSampleRects:
+  //   single mode → last entry
+  //   multi mode  → (length - MULTI_CARD_POINTS.length - 1) — i.e.,
+  //                 the legacy refCardPoint, which still sits between
+  //                 the page chips and the appended multi points.
+  const legacyRefIdx = grid.matchedSampleRects
+    ? multiCards
+      ? grid.matchedSampleRects.length - MULTI_CARD_POINTS.length - 1
+      : grid.matchedSampleRects.length - 1
+    : -1;
+  const rectAtIdx = (i: number) => {
+    const r = grid.matchedSampleRects![i];
+    const cx = r.x + r.w / 2;
+    const cy = r.y + r.h / 2;
+    return {
+      x: Math.round(cx - halfW),
+      y: Math.round(cy - halfH),
+      w: Math.round(halfW * 2),
+      h: Math.round(halfH * 2),
+    };
+  };
   const refCardRect =
-    grid.matchedSampleRects && grid.matchedSampleRects.length > 0
-      ? (() => {
-          const r = grid.matchedSampleRects[grid.matchedSampleRects.length - 1];
-          const cx = r.x + r.w / 2;
-          const cy = r.y + r.h / 2;
-          return {
-            x: Math.round(cx - halfW),
-            y: Math.round(cy - halfH),
-            w: Math.round(halfW * 2),
-            h: Math.round(halfH * 2),
-          };
-        })()
+    grid.matchedSampleRects && legacyRefIdx >= 0
+      ? rectAtIdx(legacyRefIdx)
       : null;
   const dngRois = previewRects.map(r => ({
     x: Math.round(r.x * scaleX),
@@ -500,6 +536,30 @@ export const analyzeMunsellChart = async (
         : decoder.decodePhotoRois(imagePath, sampleDngRois);
   }
 
+  // Legacy single-card index: same slot as refCardRect above. In
+  // multi mode this is NOT the last matchedSampleValues entry
+  // (those are the 3 multi slots), so index explicitly.
+  const testSwatchLinearRgb =
+    matchedSampleValues && legacyRefIdx >= 0
+      ? (matchedSampleValues[legacyRefIdx] ?? null)
+      : null;
+  // In multi mode, the last MULTI_CARD_POINTS.length entries of
+  // matchedSampleValues correspond to the 3 fixed slots in declared
+  // order. Pair each with its slot name + preview rect.
+  const multiRefCards =
+    multiCards && matchedSampleValues && grid.matchedSampleRects
+      ? MULTI_CARD_POINTS.map((slot, i) => {
+          const valueIdx =
+            matchedSampleValues.length - MULTI_CARD_POINTS.length + i;
+          const rectIdx =
+            grid.matchedSampleRects!.length - MULTI_CARD_POINTS.length + i;
+          return {
+            name: slot.name,
+            linearRgb: matchedSampleValues[valueIdx],
+            rect: rectAtIdx(rectIdx),
+          };
+        })
+      : null;
   return {
     kind: 'success',
     result: {
@@ -510,9 +570,8 @@ export const analyzeMunsellChart = async (
       refCardRect,
       detectedSwatches: grid.detected,
       matchedSampleValues,
-      testSwatchLinearRgb: matchedSampleValues
-        ? (matchedSampleValues[matchedSampleValues.length - 1] ?? null)
-        : null,
+      testSwatchLinearRgb,
+      multiRefCards,
     },
   };
 };

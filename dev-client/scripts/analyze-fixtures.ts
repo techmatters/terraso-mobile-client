@@ -258,12 +258,17 @@ const FORMAT_TOKENS = new Set([
   'heic',
   'photo',
 ]);
+// Physical ref cards recognised in filenames. 'multi' is a shorthand
+// for "all three cards taped alongside" — the analyzer samples the
+// three fixed MULTI_CARD_POINTS slots for these. 'nothing' / 'none'
+// mean no card in the shot.
 const REFERENCE_TOKENS = new Set([
   'greycard',
   'postit',
   'whibal',
   'nothing',
   'none',
+  'multi',
 ]);
 const ILLUMINANT_TOKENS = new Set(['light', 'dark']);
 // Tokens the on-device chart-capture pipeline embeds in the filename
@@ -632,11 +637,51 @@ const resolveAnchor = (
       isOnPage: false,
     };
   }
+  // Multi-mode: 'whibal' / 'postit' / 'greycard' as anchor labels
+  // resolve to the corresponding MULTI_CARD_POINTS slot on the
+  // fixture. buildMultiRefMeasurement short-circuits when the fixture
+  // isn't a multi fixture or the slot isn't in the results.
+  const multi = buildMultiRefMeasurement(label, outcome);
+  if (multi) {
+    return {
+      displayNotation: multi.cell.notation,
+      measurement: multi,
+      isOnPage: false,
+    };
+  }
   const m = measurements.find(x => x.cell.notation === label);
   return {
     displayNotation: label,
     measurement: m,
     isOnPage: m !== undefined,
+  };
+};
+
+// Build a WB-anchor measurement from one of the three MULTI_CARD_POINTS
+// slots. Only valid for fixtures whose reference === 'multi' and where
+// the outcome carries multiRefCards. Returns null in all other cases.
+const buildMultiRefMeasurement = (
+  slotName: string,
+  outcome: MunsellChartOutcome,
+): CellMeasurement | null => {
+  if (outcome.kind !== 'success') return null;
+  const cards = outcome.result.multiRefCards;
+  if (!cards) return null;
+  const slot = cards.find(c => c.name === slotName);
+  if (!slot) return null;
+  const expected = REF_CARD_EXPECTED[slotName];
+  if (!expected) return null;
+  return {
+    cell: {
+      hue: 'REF',
+      value: 0,
+      chroma: 0,
+      notation: `ref_card:${slotName}`,
+      expectedLinearRgb: expected,
+      rowIdx: -1,
+      colIdx: -1,
+    },
+    rawLinearRgb: slot.linearRgb,
   };
 };
 
@@ -689,6 +734,45 @@ const buildCaptureEntry = (
           false,
         )
       : null;
+  // Multi mode: build a per-slot block for each of the 3 taped
+  // cards, each with its OWN expected/measured/ΔE under the current
+  // WB anchor. Same shape as the legacy `ref_card` block, one per
+  // slot in MULTI_CARD_POINTS order.
+  const multiCards = outcome.result.multiRefCards;
+  const refCardsBlock = multiCards
+    ? multiCards.map(slot => {
+        const expected = REF_CARD_EXPECTED[slot.name];
+        const measurement = expected
+          ? computeArbitraryResult(
+              expected,
+              slot.linearRgb,
+              anchor.measurement,
+              false,
+            )
+          : null;
+        return {
+          name: slot.name,
+          display_name: REF_CARD_DISPLAY_NAMES[slot.name] ?? slot.name,
+          sample_rect: slot.rect,
+          raw_linear_rgb: [
+            slot.linearRgb.r,
+            slot.linearRgb.g,
+            slot.linearRgb.b,
+          ],
+          expected_linear_rgb: expected
+            ? [expected.r, expected.g, expected.b]
+            : null,
+          measured_linear_rgb: measurement
+            ? [
+                measurement.measuredLinearRgb.r,
+                measurement.measuredLinearRgb.g,
+                measurement.measuredLinearRgb.b,
+              ]
+            : null,
+          delta_e: measurement ? measurement.deltaE : null,
+        };
+      })
+    : null;
   return {
     ...common,
     wb_correction: {
@@ -726,6 +810,7 @@ const buildCaptureEntry = (
             delta_e: refCardMeasurement ? refCardMeasurement.deltaE : null,
           }
         : null,
+    ref_cards: refCardsBlock,
     cells: results.map((r, i) => ({
       physical_row: r.cell.rowIdx,
       physical_col: r.cell.colIdx,
@@ -825,6 +910,8 @@ let nFailure = 0;
         fixture.path,
         page,
         fixture.format,
+        undefined,
+        fixture.reference === 'multi',
       );
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -909,7 +996,14 @@ let nFailure = 0;
       }
     }
 
-    for (const refLabel of refNotations) {
+    // Multi fixtures replace REF_CARD in the default sweep with the
+    // three slot names, so each of whibal/postit/greycard gets its
+    // own WB-anchored capture entry alongside the AUTO one. A
+    // user-provided --refs list is used verbatim.
+    const perFixtureRefs = fixture.reference === 'multi' && !values.refs
+      ? [REF_AUTO, 'whibal', 'postit', 'greycard']
+      : refNotations;
+    for (const refLabel of perFixtureRefs) {
       const anchor = resolveAnchor(refLabel, fixture, outcome);
       if (!anchor) {
         process.stderr.write(
@@ -935,7 +1029,7 @@ let nFailure = 0;
     }
     const status = outcome.kind === 'success' ? 'ok' : 'FAIL';
     process.stderr.write(
-      `  ${path.basename(fixture.path)}  ${status} (${ms}ms × ${refNotations.length} refs)\n`,
+      `  ${path.basename(fixture.path)}  ${status} (${ms}ms × ${perFixtureRefs.length} refs)\n`,
     );
   }
 

@@ -98,6 +98,18 @@ export type CaptureJsonEntry = {
     measured_linear_rgb: [number, number, number] | null;
     delta_e: number | null;
   } | null;
+  // Multi-mode fixtures have all three cards taped alongside; each
+  // one appears as its own entry in this array (same shape as
+  // ref_card). Null for single-card fixtures.
+  ref_cards?: Array<{
+    name: string;
+    display_name: string;
+    sample_rect: {x: number; y: number; w: number; h: number};
+    raw_linear_rgb: [number, number, number];
+    expected_linear_rgb: [number, number, number] | null;
+    measured_linear_rgb: [number, number, number] | null;
+    delta_e: number | null;
+  }> | null;
   cells: CellJsonEntry[];
 };
 
@@ -959,6 +971,33 @@ const renderLegend = (): string => {
 </section>`;
 };
 
+// Multi-mode fixtures have a ref_cards[] block with per-slot ΔE
+// values that change with the WB anchor. Render a compact table row
+// listing each slot's ΔE across variants — quick visual on how well
+// each card matches its expected linear-sRGB under each WB anchor.
+// Returns empty string for single-card fixtures (no ref_cards block).
+const renderMultiRefRow = (variants: CaptureContext[]): string => {
+  const anyMulti = variants.some(v => v.jsonEntry.ref_cards);
+  if (!anyMulti) return '';
+  const rows = variants
+    .filter(v => v.jsonEntry.ref_cards)
+    .map(v => {
+      const wb = v.jsonEntry.wb_correction?.reference ?? '(none)';
+      const fmt = v.jsonEntry.capture_format;
+      const cells = (v.jsonEntry.ref_cards ?? [])
+        .map(
+          c =>
+            `<code>${esc(c.name)}: ${
+              c.delta_e != null ? c.delta_e.toFixed(1) : 'n/a'
+            }</code>`,
+        )
+        .join(' &nbsp; ');
+      return `<div>${esc(fmt)} / ${esc(wb)}: ${cells}</div>`;
+    })
+    .join('');
+  return `<tr><th>Multi refs ΔE</th><td>${rows}</td></tr>`;
+};
+
 const renderFixtureSection = (variants: CaptureContext[]): string => {
   // A section groups every capture that shares a source-path stem —
   // so a DNG + its JPEG sibling for the same shutter land here
@@ -1020,6 +1059,7 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
     <tr><th>Illuminant</th><td>${esc(jsonEntry.environment.illuminant_tag ?? '(none)')}</td></tr>
     <tr><th>Tags</th><td>${esc(jsonEntry.environment.tags.join(', ') || '(none)')}</td></tr>
     <tr><th>Variants</th><td>${esc(wbLabels)}</td></tr>
+    ${renderMultiRefRow(sorted)}
     ${regRows}
     <tr><th>Source</th><td><code>${esc(jsonEntry.source_path)}</code></td></tr>
   </table>
