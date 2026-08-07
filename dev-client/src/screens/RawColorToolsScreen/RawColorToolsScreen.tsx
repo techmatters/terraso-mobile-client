@@ -53,6 +53,27 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 //     later without touching UserSettingsScreen again.
 
 const CHART_PAGE_HUE_KEY = 'munsellChartValidator.selectedPageHue';
+const CHART_REF_MODE_KEY = 'munsellChartValidator.selectedRefMode';
+
+// Which reference card configuration the tester intends for this
+// capture. Baked into the friendly filename so the mac parser (and
+// the mac batch analyzer) can route the shot into the right pipeline.
+// Values match the REFERENCE_TOKENS set in scripts/analyze-fixtures.ts.
+type ChartRefMode = 'nothing' | 'greycard' | 'whibal' | 'postit' | 'multi';
+const CHART_REF_MODES: readonly ChartRefMode[] = [
+  'nothing',
+  'greycard',
+  'whibal',
+  'postit',
+  'multi',
+];
+const CHART_REF_MODE_LABEL: Record<ChartRefMode, string> = {
+  nothing: 'None (no card in shot)',
+  greycard: 'Grey card only',
+  whibal: 'WhiBal only',
+  postit: 'Post-it Yellow only',
+  multi: 'All three (whibal / postit / greycard)',
+};
 
 // Pick 'raw' for .dng and 'photo' for common photo formats; null for
 // anything else (we bail on unsupported extensions). Case-insensitive.
@@ -81,6 +102,7 @@ type CaptureFlow =
   | {
       kind: 'chart';
       pageHue: string;
+      refMode: ChartRefMode;
       algorithm: RegistrationAlgorithm;
     };
 
@@ -96,13 +118,21 @@ const yyyymmddThhmmss = (d: Date): string => {
   );
 };
 
-// Friendly filename stem for a chart capture: "{page}_BOTH_IOS_{ts}".
-// "BOTH" flags that the DNG has its ISP-processed JPEG companion
-// alongside (i.e. this is the mac-analysable pair). Page name is
-// used verbatim; Munsell page names are already filesystem-safe
-// ("10YR", "7.5YR", "GLEY1", "10Y-5GY").
-const friendlyStemForChartCapture = (pageHue: string, when: Date): string =>
-  `${pageHue}_BOTH_IOS_${yyyymmddThhmmss(when)}`;
+// Friendly filename stem for a chart capture:
+//   "{page}_{refMode}_BOTH_IOS_{ts}"
+// - {refMode} matches REFERENCE_TOKENS in scripts/analyze-fixtures.ts
+//   ('nothing' / 'greycard' / 'whibal' / 'postit' / 'multi') so the
+//   mac parser knows which pipeline to route the shot into without
+//   requiring a rename step.
+// - "BOTH" flags that the DNG has its ISP-processed JPEG companion
+//   alongside (i.e. this is the mac-analysable pair).
+// - Page name is used verbatim; Munsell page names are already
+//   filesystem-safe ("10YR", "7.5YR", "GLEY1", "10Y-5GY").
+const friendlyStemForChartCapture = (
+  pageHue: string,
+  refMode: ChartRefMode,
+  when: Date,
+): string => `${pageHue}_${refMode}_BOTH_IOS_${yyyymmddThhmmss(when)}`;
 
 // Rename a DNG (+ optional sibling JPEG) to a friendly stem in the
 // same directory. Returns the new file:// URIs. Uses moveAsync so
@@ -141,6 +171,20 @@ export const RawColorToolsScreen = () => {
   const setPageHue = useCallback((hue: string) => {
     kvStorage.setString(CHART_PAGE_HUE_KEY, hue);
     setPageHueState(hue);
+  }, []);
+  const [refMode, setRefModeState] = useState<ChartRefMode>(() => {
+    const persisted = kvStorage.getString(CHART_REF_MODE_KEY);
+    if (
+      persisted &&
+      (CHART_REF_MODES as readonly string[]).includes(persisted)
+    ) {
+      return persisted as ChartRefMode;
+    }
+    return 'nothing';
+  });
+  const setRefMode = useCallback((mode: ChartRefMode) => {
+    kvStorage.setString(CHART_REF_MODE_KEY, mode);
+    setRefModeState(mode);
   }, []);
   // Directed-quadrant is now the only supported registration
   // algorithm — the constrained-random path is retained in the code
@@ -224,7 +268,11 @@ export const RawColorToolsScreen = () => {
           let dngPath = result.dngPath;
           let jpegPath = result.jpegPath;
           try {
-            const stem = friendlyStemForChartCapture(flow.pageHue, new Date());
+            const stem = friendlyStemForChartCapture(
+              flow.pageHue,
+              flow.refMode,
+              new Date(),
+            );
             const renamed = await renamePairToFriendlyStem(
               dngPath,
               jpegPath,
@@ -311,12 +359,21 @@ export const RawColorToolsScreen = () => {
             renderValue={hue => `Munsell ${hue} page`}
             label="Chart page"
           />
+          <Select<ChartRefMode, false>
+            nullable={false}
+            options={CHART_REF_MODES}
+            value={refMode}
+            onValueChange={setRefMode}
+            renderValue={mode => CHART_REF_MODE_LABEL[mode]}
+            label="Reference cards in the shot"
+          />
           <ContainedButton
             label="Capture (DNG + JPEG)"
             onPress={() =>
               setCaptureFlow({
                 kind: 'chart',
                 pageHue,
+                refMode,
                 algorithm,
               })
             }

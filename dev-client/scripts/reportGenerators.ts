@@ -395,6 +395,27 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
         `<rect x="${refRect.x}" y="${refRect.y}" width="${refRect.w}" height="${refRect.h}" stroke="#ff2020" stroke-width="2" fill="none"/>`,
       );
     }
+
+    // Multi-mode: 3 extra rects for the taped whibal/postit/greycard
+    // slots. Cyan outline + a small text label so they visually
+    // distinguish from chip/ref-card rects. Absent for single-card
+    // fixtures.
+    const multi = cap.outcome.result.multiRefCards;
+    if (multi) {
+      for (const slot of multi) {
+        const {x, y, w, h} = slot.rect;
+        parts.push(
+          `<rect x="${x}" y="${y}" width="${w}" height="${h}" ` +
+            `stroke="#00c8d0" stroke-width="2" fill="none"/>`,
+        );
+        parts.push(
+          `<text x="${x + w + 4}" y="${y + h / 2 + 4}" ` +
+            `font-family="sans-serif" font-size="14" ` +
+            `fill="#00c8d0" stroke="#003b40" stroke-width="0.5">` +
+            `${esc(slot.name)}</text>`,
+        );
+      }
+    }
   }
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="whitemask-svg">${parts.join('')}</svg>`;
