@@ -117,6 +117,11 @@ export type MunsellChartValidatorProps = {
   dngPath?: string;
   jpegPath?: string;
   pageHue: string;
+  // Reference-card configuration the tester intends. Passed
+  // explicitly from RawColorToolsScreen's picker (authoritative);
+  // falls back to filename-token parsing for load-from-file flows.
+  // Drives multi-card mode in the analyzer.
+  refMode?: 'nothing' | 'greycard' | 'whibal' | 'postit' | 'multi';
   // Which registration algorithm to run against the detected holes.
   // Picked on the RAW_COLOR_TOOLS screen before capture; defaults to
   // the constrained-random pair-similarity implementation if not set.
@@ -245,6 +250,7 @@ export const MunsellChartValidatorScreen = ({
   dngPath,
   jpegPath,
   pageHue,
+  refMode,
   algorithm = DEFAULT_REGISTRATION_ALGORITHM,
 }: MunsellChartValidatorProps) => {
   const navigation = useNavigation();
@@ -254,17 +260,16 @@ export const MunsellChartValidatorScreen = ({
   // produces a DNG.
   const pipeline: 'raw' | 'photo' = dngPath ? 'raw' : 'photo';
   const analysisPath = dngPath ?? jpegPath;
-  // Multi-card mode: detected from the friendly filename produced by
-  // the chart-capture rename, e.g. "10YR_multi_BOTH_IOS_...dng". When
-  // true, the analyzer samples the three MULTI_CARD_POINTS slots and
-  // returns their raw linear-sRGB in result.multiRefCards; the debug
-  // overlay draws those rects, and the ref-cell picker exposes the
-  // three slots as WB-anchor choices.
+  // Multi-card mode: prefer the explicit refMode nav param when the
+  // caller passed one (fresh chart captures always do); fall back to
+  // parsing the friendly filename token for load-from-file flows.
   const multiCards = useMemo(() => {
+    if (refMode === 'multi') return true;
+    if (refMode) return false;
     const p = analysisPath ?? '';
     const base = p.slice(p.lastIndexOf('/') + 1).toLowerCase();
     return /(^|_)multi(_|\.)/.test(base);
-  }, [analysisPath]);
+  }, [refMode, analysisPath]);
   const [state, setState] = useState<
     | {kind: 'analyzing'}
     | {kind: 'ready'; result: MunsellChartResult}
@@ -622,6 +627,11 @@ export const MunsellChartValidatorScreen = ({
                 {state.result.measurements.length} swatches. Reference:{' '}
                 {referenceNotation ?? 'none (raw uncorrected)'}. Tap any cell to
                 change reference.
+              </Paragraph>
+              <Paragraph>
+                Ref mode: <Text bold>{refMode ?? 'auto-detect'}</Text>
+                {' · '}multi-cards sampled:{' '}
+                <Text bold>{state.result.multiRefCards?.length ?? 0}</Text>
               </Paragraph>
               {/* Test-swatch reference. Sampled from the DNG at the
                  bottom-right corner of the 7×6 chart grid (always

@@ -291,6 +291,7 @@ export const RawColorToolsScreen = () => {
             dngPath,
             jpegPath,
             pageHue: flow.pageHue,
+            refMode: flow.refMode,
             algorithm: flow.algorithm,
           });
         })();
