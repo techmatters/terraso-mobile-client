@@ -165,6 +165,12 @@ const html = `<!DOCTYPE html>
   #controls legend { padding: 0 4px; font-weight: 600; font-size: 12px;
                      color: #555; }
   #controls label { display: block; padding: 1px 0; cursor: pointer; }
+  #view-switcher { display: flex; gap: 14px; align-items: center;
+                   padding: 8px 16px; background: #fff;
+                   border: 1px solid #ddd; border-radius: 6px;
+                   margin-bottom: 12px; font-size: 13px; }
+  #view-switcher .vs-label { font-weight: 600; color: #555; margin-right: 4px; }
+  #view-switcher label { cursor: pointer; }
   #summary { font-size: 13px; color: #444; margin-bottom: 8px; }
   #filmstrip { display: flex; flex-wrap: wrap; gap: 12px; }
   .disk { background: #fff; border: 1px solid #ddd; border-radius: 6px;
@@ -215,21 +221,33 @@ const html = `<!DOCTYPE html>
   <span style="margin-left:16px">×N label = N samples averaged into that chip's mean arrow</span>
 </div>
 
-<div id="summary"></div>
-<div id="filmstrip"></div>
-
-<h2 style="margin: 32px 0 6px 0; font-size: 16px;">
-  3D stacked view — values from V=1 (bottom) to V=10 (top)
-</h2>
-<div style="font-size: 12px; color: #666; margin-bottom: 8px;">
-  Drag to rotate · scroll to zoom · shift-drag (or right-drag) to pan.
-  Chip spheres are the ground-truth Munsell lattice at each value
-  level; lines run from expected → measured, coloured by ΔValue.
-  Filters above apply.
+<div id="view-switcher">
+  <span class="vs-label">View:</span>
+  <label><input type="radio" name="view" value="per-level" checked>
+    Per-level (2D disks)</label>
+  <label><input type="radio" name="view" value="3d">
+    3D stacked</label>
 </div>
-<div id="viz3d" style="width: 100%; height: 720px;
-  background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px;
-  overflow: hidden;"></div>
+
+<div id="summary"></div>
+
+<div id="view-per-level" class="view-panel">
+  <div id="filmstrip"></div>
+</div>
+
+<div id="view-3d" class="view-panel" style="display: none;">
+  <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
+    Values stack V=1 (bottom) → V=10 (top).
+    Drag to rotate · scroll to zoom · shift-drag (or right-drag) to pan.
+    Chip spheres are the ground-truth Munsell lattice at each value
+    level; lines run from expected → measured, coloured by ΔValue.
+    Filters above apply.
+  </div>
+  <div id="viz3d" style="width: 100%;
+    height: calc(100vh - 240px); min-height: 500px;
+    background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px;
+    overflow: hidden;"></div>
+</div>
 
 <script>
 const SAMPLES = ${JSON.stringify(samples)};
@@ -898,15 +916,15 @@ function setup3D() {
 
   buildChipLattice3D();
 
-  window.addEventListener('resize', () => {
-    const wNew = container.clientWidth;
-    camera3D.aspect = wNew / h;
-    camera3D.updateProjectionMatrix();
-    renderer3D.setSize(wNew, h);
-  });
+  window.addEventListener('resize', resize3D);
 
   function animate() {
     requestAnimationFrame(animate);
+    // Skip GPU work when the 3D panel is hidden (per-level view
+    // selected). The rAF loop itself keeps running so we resume
+    // seamlessly on re-activation.
+    const panel = document.getElementById('view-3d');
+    if (!panel || panel.style.display === 'none') return;
     controls3D.update();
     renderer3D.render(scene3D, camera3D);
   }
@@ -965,16 +983,60 @@ function buildArrows3D() {
   scene3D.add(arrowLines3D);
 }
 
+function resize3D() {
+  const container = document.getElementById('viz3d');
+  if (!container || !renderer3D) return;
+  const wNew = container.clientWidth;
+  const hNew = container.clientHeight;
+  if (wNew === 0 || hNew === 0) return;
+  camera3D.aspect = wNew / hNew;
+  camera3D.updateProjectionMatrix();
+  renderer3D.setSize(wNew, hNew);
+}
+
+// View switcher — mounts 3D lazily on first activation. Extensible:
+// add new radio options with matching view-panel divs (id="view-X"
+// value="X") and, if the view needs runtime setup, register it in
+// VIEW_MOUNTS below.
+const VIEW_MOUNTS = {
+  '3d': () => {
+    if (!scene3D) {
+      setup3D();
+      buildArrows3D();
+    } else {
+      // Second+ activation: container was display:none while hidden
+      // so its width/height may have drifted from the last resize.
+      resize3D();
+    }
+  },
+};
+
+function activateView(name) {
+  const panels = document.querySelectorAll('.view-panel');
+  panels.forEach(el => {
+    el.style.display = el.id === 'view-' + name ? 'block' : 'none';
+  });
+  const mount = VIEW_MOUNTS[name];
+  if (mount) mount();
+}
+
+function initViewSwitcher() {
+  document.querySelectorAll('input[name="view"]').forEach(inp => {
+    inp.addEventListener('change', e => activateView(e.target.value));
+  });
+}
+
 // Original render() is called on every filter change; hook the 3D
-// arrows rebuild onto the same trigger so 2D + 3D stay in sync.
+// arrows rebuild onto the same trigger so 2D + 3D stay in sync
+// (no-op if 3D hasn't been mounted yet).
 const _origRender = render;
 render = function() {
   _origRender();
-  buildArrows3D();
+  if (scene3D) buildArrows3D();
 };
 
 initControls();
-setup3D();
+initViewSwitcher();
 render();
 </script>
 </body>
