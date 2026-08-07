@@ -628,15 +628,15 @@ class HybridDngDecoder: HybridDngDecoderSpec {
         withMessage: "DNG has no images: \(srcPath)")
     }
 
-    // AVCapturePhoto lays out an iOS RAW DNG as:
-    //   image 0: RAW Bayer data (huge, not JPEG)
-    //   image 1+: full-resolution Apple-processed JPEG preview(s)
-    // Pick the largest image that ImageIO actually reports as a
-    // JPEG-flavoured UTI — safer than blind index 1 in case an
-    // iOS release rearranges the layout.
+    // iOS AVCapturePhoto DNG layout: index 0 is the RAW Bayer
+    // subimage (CGImageSource can't decode it without CIRAWFilter);
+    // indices 1+ are the JPEG preview(s). Pick the largest non-
+    // index-0 by pixel count so we grab a full-resolution preview
+    // even if there are several thumbnails alongside it.
     var bestIdx = -1
     var bestPixels = 0
-    for i in 0..<count {
+    let startIdx = count > 1 ? 1 : 0
+    for i in startIdx..<count {
       guard
         let props = CGImageSourceCopyPropertiesAtIndex(src, i, nil)
           as? [CFString: Any]
@@ -644,13 +644,6 @@ class HybridDngDecoder: HybridDngDecoderSpec {
       let w = (props[kCGImagePropertyPixelWidth] as? Int) ?? 0
       let h = (props[kCGImagePropertyPixelHeight] as? Int) ?? 0
       let pixels = w * h
-      // ImageIO reports subimage UTIs via CGImageSourceGetType on the
-      // subsource, but the per-index API takes a different shape.
-      // Instead check that the sub-image is NOT raw — RAW subimages
-      // are flagged in the properties dict.
-      let isRaw =
-        (props[kCGImagePropertyIsRawImage] as? Bool) ?? false
-      if isRaw { continue }
       if pixels > bestPixels {
         bestPixels = pixels
         bestIdx = i

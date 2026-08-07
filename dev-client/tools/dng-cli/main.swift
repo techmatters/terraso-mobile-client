@@ -151,6 +151,72 @@ func decodePhotoRois(imagePath: String, rois: [Roi]) throws -> [LinearRgb] {
   return try decodeCiImageRois(ciImage, rois: rois)
 }
 
+// Extract the Apple-ISP-processed JPEG preview embedded in an iOS
+// DNG. Every AVCapturePhoto DNG carries a full-resolution JPEG as
+// one of its subimages; ImageIO's CGImageDestinationAddImageFromSource
+// copies it out byte-for-byte (no re-encode) to a sibling .jpg file.
+// Returns the output path, or throws if no non-RAW preview subimage
+// is found (rare for iOS DNGs; possible for DNGs from other sources).
+func extractDngPreviewJpeg(dngPath: String, outPath: String?) throws
+  -> String
+{
+  let srcPath = stripFileScheme(dngPath)
+  let srcUrl = URL(fileURLWithPath: srcPath)
+  guard
+    let src = CGImageSourceCreateWithURL(srcUrl as CFURL, nil)
+  else {
+    throw CliError.msg(
+      "CGImageSourceCreateWithURL failed for \(srcPath)")
+  }
+  let count = CGImageSourceGetCount(src)
+  guard count > 0 else {
+    throw CliError.msg("DNG has no images: \(srcPath)")
+  }
+  // iOS AVCapturePhoto DNG layout: index 0 is the RAW Bayer subimage
+  // (CGImageSource can't decode it without CIRAWFilter); indices 1+
+  // are the JPEG preview(s). Pick the largest non-index-0 by pixel
+  // count so we grab a full-resolution preview even if there are
+  // several thumbnails alongside it.
+  var bestIdx = -1
+  var bestPixels = 0
+  let startIdx = count > 1 ? 1 : 0
+  for i in startIdx..<count {
+    guard
+      let props = CGImageSourceCopyPropertiesAtIndex(src, i, nil)
+        as? [CFString: Any]
+    else { continue }
+    let w = (props[kCGImagePropertyPixelWidth] as? Int) ?? 0
+    let h = (props[kCGImagePropertyPixelHeight] as? Int) ?? 0
+    let pixels = w * h
+    if pixels > bestPixels {
+      bestPixels = pixels
+      bestIdx = i
+    }
+  }
+  guard bestIdx >= 0 else {
+    throw CliError.msg(
+      "no non-RAW preview subimage in DNG (\(count) subimages)")
+  }
+  let dstPath =
+    outPath.map(stripFileScheme)
+    ?? ((srcPath as NSString).deletingPathExtension + ".jpg")
+  let dstUrl = URL(fileURLWithPath: dstPath)
+  try? FileManager.default.removeItem(at: dstUrl)
+  guard
+    let dst = CGImageDestinationCreateWithURL(
+      dstUrl as CFURL, "public.jpeg" as CFString, 1, nil)
+  else {
+    throw CliError.msg(
+      "CGImageDestinationCreateWithURL failed for \(dstPath)")
+  }
+  CGImageDestinationAddImageFromSource(dst, src, bestIdx, nil)
+  guard CGImageDestinationFinalize(dst) else {
+    throw CliError.msg(
+      "CGImageDestinationFinalize failed for \(dstPath)")
+  }
+  return dstPath
+}
+
 struct PreviewRgbHeader: Encodable {
   let width: Int
   let height: Int
@@ -407,7 +473,8 @@ guard args.count >= 2 else {
       + "  read-preview-rgb <dngPath> <maxDim> <outRgbPath>\n"
       + "  read-preview-rgb-photo <imagePath> <maxDim> <outRgbPath>\n"
       + "  render-preview <dngPath> <maxDim> <outPath> [<jpegQuality>]\n"
-      + "  render-preview-photo <imagePath> <maxDim> <outPath> [<jpegQuality>]")
+      + "  render-preview-photo <imagePath> <maxDim> <outPath> [<jpegQuality>]\n"
+      + "  extract-dng-preview-jpeg <dngPath> [<outJpegPath>]")
 }
 let cmd = args[1]
 
@@ -529,6 +596,27 @@ case "render-preview":
     die("unexpected error: \(error.localizedDescription)")
   }
   writeJson(header)
+
+case "extract-dng-preview-jpeg":
+  guard args.count >= 3 else {
+    die(
+      "usage: dng-cli extract-dng-preview-jpeg <dngPath> [<outJpegPath>]"
+    )
+  }
+  let dngPath = args[2]
+  let outPath: String? = args.count >= 4 ? args[3] : nil
+  let written: String
+  do {
+    written = try extractDngPreviewJpeg(dngPath: dngPath, outPath: outPath)
+  } catch CliError.msg(let m) {
+    die(m)
+  } catch {
+    die("unexpected error: \(error.localizedDescription)")
+  }
+  // Emit the resulting path as raw text so shell callers can pipe it
+  // straight into other commands, matching the Node adapter's
+  // extractDngPreviewJpeg convention.
+  print(written)
 
 case "render-preview-photo":
   guard args.count >= 5 else {

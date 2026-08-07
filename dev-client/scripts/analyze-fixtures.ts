@@ -325,9 +325,49 @@ const isSupportedFixture = (name: string): boolean => {
   );
 };
 
-const scanFixtures = (root: string): ParsedFixture[] => {
+// Every iOS AVCapturePhoto DNG carries an Apple-ISP-processed JPEG
+// preview in a subimage. When a DNG doesn't have a sibling .jpg on
+// disk yet, extract it once (byte-for-byte copy via CGImageSource,
+// no re-encode) so both pipelines can be analysed side-by-side.
+// Skipped if the sibling already exists, or if the source has no
+// preview subimage (rare for iOS DNGs; possible for DNGs from other
+// sources — logged but not fatal).
+const ensureDngJpegSibling = (dngPath: string, cli: string): void => {
+  const jpgPath = dngPath.replace(/\.dng$/i, '.jpg');
+  if (fs.existsSync(jpgPath)) return;
+  try {
+    execFileSync(cli, ['extract-dng-preview-jpeg', dngPath, jpgPath], {
+      encoding: 'utf-8',
+    });
+    process.stderr.write(
+      `  extracted preview JPEG: ${path.basename(jpgPath)}\n`,
+    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(
+      `  preview-JPEG extraction skipped for ${path.basename(dngPath)}: ${msg.split('\n')[0]}\n`,
+    );
+  }
+};
+
+const scanFixtures = (root: string, cli: string): ParsedFixture[] => {
   const out: ParsedFixture[] = [];
   const skipped: string[] = [];
+  // First pass: extract JPEG siblings for any DNGs that don't have
+  // one yet. Doing this before the ParsedFixture walk means the
+  // second pass sees the freshly-extracted .jpg files as normal
+  // fixtures.
+  const walkExtract = (dir: string): void => {
+    for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+      if (entry.name.startsWith('.')) continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walkExtract(full);
+      else if (entry.isFile() && entry.name.toLowerCase().endsWith('.dng')) {
+        ensureDngJpegSibling(full, cli);
+      }
+    }
+  };
+  walkExtract(root);
   const walk = (dir: string): void => {
     for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
       if (entry.name.startsWith('.')) continue;
@@ -742,7 +782,7 @@ const refNotations = values.refs
   : [REF_AUTO, REF_CARD];
 
 process.stderr.write(`scanning ${fixturesDir}\n`);
-const allFixtures = scanFixtures(fixturesDir!);
+const allFixtures = scanFixtures(fixturesDir!, DNG_CLI);
 const pageFilter = values.pages
   ? new Set(
       values.pages

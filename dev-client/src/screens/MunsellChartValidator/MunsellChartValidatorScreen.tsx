@@ -37,6 +37,8 @@ import Svg, {
 
 import {
   cacheDirectory,
+  copyAsync,
+  deleteAsync,
   EncodingType,
   writeAsStringAsync,
 } from 'expo-file-system/legacy';
@@ -187,6 +189,36 @@ const rgbToHex = (rgb: {r: number; g: number; b: number}): string => {
     return byte.toString(16).padStart(2, '0');
   };
   return `#${c(rgb.r)}${c(rgb.g)}${c(rgb.b)}`;
+};
+
+// Prepare a file for sharing with a mac-friendly name. If the source
+// already has a friendly-looking basename (page prefix + a T-shaped
+// timestamp token — the shape our chart-capture rename produces),
+// share as-is; otherwise copy to a sibling in the cache dir named
+// "{page}_{yyyymmddThhmmss}.{ext}" and share that. Kept as a copy
+// rather than an in-place move so re-sharing works.
+const FRIENDLY_NAME_RE = /^[0-9A-Z][^_]*_.*_\d{8}T\d{4,6}\.(dng|jpg|jpeg)$/i;
+const yyyymmddThhmmss = (d: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return (
+    `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
+    `T${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`
+  );
+};
+const prepareFriendlyShare = async (
+  sourcePath: string,
+  pageName: string,
+  ext: 'dng' | 'jpg',
+): Promise<string> => {
+  const withScheme = (p: string) =>
+    p.startsWith('file://') ? p : `file://${p}`;
+  const basename = sourcePath.slice(sourcePath.lastIndexOf('/') + 1);
+  if (FRIENDLY_NAME_RE.test(basename)) return withScheme(sourcePath);
+  const friendly = `${pageName}_${yyyymmddThhmmss(new Date())}.${ext}`;
+  const dstPath = `${cacheDirectory}${friendly}`;
+  await deleteAsync(dstPath, {idempotent: true});
+  await copyAsync({from: withScheme(sourcePath), to: dstPath});
+  return dstPath.startsWith('file://') ? dstPath : `file://${dstPath}`;
 };
 
 export const MunsellChartValidatorScreen = ({
@@ -402,8 +434,9 @@ export const MunsellChartValidatorScreen = ({
     if (!dngPath) return;
     setSharing(true);
     try {
+      const shareUrl = await prepareFriendlyShare(dngPath, page.name, 'dng');
       await Share.open({
-        url: dngPath.startsWith('file://') ? dngPath : `file://${dngPath}`,
+        url: shareUrl,
         // DNG has no universal MIME type; image/x-adobe-dng is the
         // closest, and Share honours it for AirDrop / Files / mail.
         type: 'image/x-adobe-dng',
@@ -414,14 +447,15 @@ export const MunsellChartValidatorScreen = ({
     } finally {
       setSharing(false);
     }
-  }, [dngPath]);
+  }, [dngPath, page.name]);
 
   const shareJpeg = useCallback(async () => {
     if (!jpegPath) return;
     setSharing(true);
     try {
+      const shareUrl = await prepareFriendlyShare(jpegPath, page.name, 'jpg');
       await Share.open({
-        url: jpegPath.startsWith('file://') ? jpegPath : `file://${jpegPath}`,
+        url: shareUrl,
         type: 'image/jpeg',
         failOnCancel: false,
       });
@@ -430,7 +464,7 @@ export const MunsellChartValidatorScreen = ({
     } finally {
       setSharing(false);
     }
-  }, [jpegPath]);
+  }, [jpegPath, page.name]);
 
   const shareWhiteMask = useCallback(() => {
     // Two possible sources: the ready-state export SVG (rendered when
