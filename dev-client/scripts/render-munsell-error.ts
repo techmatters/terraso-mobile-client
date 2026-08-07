@@ -146,6 +146,12 @@ const html = `<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <title>Munsell error filmstrip — ${runDoc.generated_at ?? ''}</title>
+<!-- three.js + OrbitControls for the 3D stacked view. Pinned to
+     r147 — the last release before examples/js was removed, so the
+     non-ESM UMD builds still expose THREE and THREE.OrbitControls
+     as globals for the inline <script> below to consume. -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
          margin: 20px; color: #222; background: #fafafa; }
@@ -211,6 +217,19 @@ const html = `<!DOCTYPE html>
 
 <div id="summary"></div>
 <div id="filmstrip"></div>
+
+<h2 style="margin: 32px 0 6px 0; font-size: 16px;">
+  3D stacked view — values from V=1 (bottom) to V=10 (top)
+</h2>
+<div style="font-size: 12px; color: #666; margin-bottom: 8px;">
+  Drag to rotate · scroll to zoom · shift-drag (or right-drag) to pan.
+  Chip spheres are the ground-truth Munsell lattice at each value
+  level; lines run from expected → measured, coloured by ΔValue.
+  Filters above apply.
+</div>
+<div id="viz3d" style="width: 100%; height: 720px;
+  background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px;
+  overflow: hidden;"></div>
 
 <script>
 const SAMPLES = ${JSON.stringify(samples)};
@@ -762,7 +781,200 @@ function render() {
   }
 }
 
+// ---- 3D stacked view (Three.js) ----------------------------------------
+
+// Same radial + angular scale as the 2D disks; Y is value * VSCALE.
+// Value scaling loosely matches chroma scale so the stack has roughly
+// isometric proportions.
+const R_PER_CHROMA_3D = 30;
+const VSCALE = 60;
+
+let scene3D, camera3D, renderer3D, controls3D;
+let chipMesh3D = null;
+let arrowLines3D = null;
+
+// Munsell chip → 3D world position. Angle uses the same hueAngle()
+// as the 2D view; Y = value * VSCALE (value = height axis, up).
+function chipTo3D(hueStr, value, chroma) {
+  let angleDeg = 0, r = 0;
+  if (hueStr === 'N') {
+    angleDeg = 0;
+    r = 0;
+  } else {
+    const fam = hueStr.replace(/^\\d+(?:\\.\\d+)?/, '');
+    const stp = parseFloat(hueStr) || 10;
+    angleDeg = hueAngle(fam, stp);
+    r = chroma * R_PER_CHROMA_3D;
+  }
+  const a = angleDeg * Math.PI / 180;
+  return {x: r * Math.sin(a), y: value * VSCALE, z: -r * Math.cos(a)};
+}
+
+// Parsed-notation → 3D. parseNotation returns family/step/value/chroma
+// directly, so we synthesise the hue string the same way chipTo3D
+// wants it.
+function parsedTo3D(p) {
+  const hueStr = p.family === 'N' ? 'N' : (p.step + p.family);
+  return chipTo3D(hueStr, p.value, p.chroma);
+}
+
+// Linear sRGB → THREE.Color (gamma-encoded 0..1 sRGB).
+function linearRgbToTHREE(rgb) {
+  const gam = v => {
+    const c = Math.max(0, Math.min(1, v));
+    return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1/2.4) - 0.055;
+  };
+  return new THREE.Color(gam(rgb[0]), gam(rgb[1]), gam(rgb[2]));
+}
+
+// Match deltaValueColor's diverging palette but return a THREE.Color.
+function deltaValueColorTHREE(dv) {
+  const s = deltaValueColor(dv);
+  const m = /rgb\\((\\d+),(\\d+),(\\d+)\\)/.exec(s);
+  if (!m) return new THREE.Color(0.5, 0.5, 0.5);
+  return new THREE.Color(+m[1]/255, +m[2]/255, +m[3]/255);
+}
+
+function setup3D() {
+  const container = document.getElementById('viz3d');
+  if (!container) return;
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+
+  scene3D = new THREE.Scene();
+  scene3D.background = new THREE.Color(0xf0f0f0);
+
+  camera3D = new THREE.PerspectiveCamera(45, w / h, 1, 5000);
+  camera3D.position.set(600, 700, 600);
+
+  renderer3D = new THREE.WebGLRenderer({antialias: true});
+  renderer3D.setPixelRatio(window.devicePixelRatio);
+  renderer3D.setSize(w, h);
+  container.appendChild(renderer3D.domElement);
+
+  controls3D = new THREE.OrbitControls(camera3D, renderer3D.domElement);
+  controls3D.target.set(0, 5.5 * VSCALE, 0); // ~middle of value stack
+  controls3D.enableDamping = true;
+  controls3D.dampingFactor = 0.08;
+  controls3D.update();
+
+  // Cheap lighting so the chip spheres get subtle shading and read
+  // as spheres, not flat dots. Ambient keeps every side visible;
+  // one directional adds the sphere-shading gradient.
+  scene3D.add(new THREE.AmbientLight(0xffffff, 0.65));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.55);
+  dl.position.set(1, 2, 1);
+  scene3D.add(dl);
+
+  // Central value axis so the reader can see "up = value" even
+  // before we add value tick labels.
+  const axisPositions = [0, 0, 0, 0, 10 * VSCALE, 0];
+  const axisGeom = new THREE.BufferGeometry();
+  axisGeom.setAttribute('position',
+    new THREE.Float32BufferAttribute(axisPositions, 3));
+  scene3D.add(new THREE.Line(axisGeom,
+    new THREE.LineBasicMaterial({color: 0x999999})));
+
+  // Faint chroma-8 rings at each value level to hint at the disk
+  // planes. Shared geometry, translated per value.
+  const N = 96;
+  const ringPositions = [];
+  for (let i = 0; i <= N; i++) {
+    const a = (i / N) * Math.PI * 2;
+    ringPositions.push(
+      Math.cos(a) * 8 * R_PER_CHROMA_3D, 0,
+      Math.sin(a) * 8 * R_PER_CHROMA_3D);
+  }
+  const ringGeom = new THREE.BufferGeometry();
+  ringGeom.setAttribute('position',
+    new THREE.Float32BufferAttribute(ringPositions, 3));
+  const ringMat = new THREE.LineBasicMaterial(
+    {color: 0xbbbbbb, transparent: true, opacity: 0.35});
+  for (let v = 2; v <= 9; v++) {
+    const ring = new THREE.Line(ringGeom, ringMat);
+    ring.position.y = v * VSCALE;
+    scene3D.add(ring);
+  }
+
+  buildChipLattice3D();
+
+  window.addEventListener('resize', () => {
+    const wNew = container.clientWidth;
+    camera3D.aspect = wNew / h;
+    camera3D.updateProjectionMatrix();
+    renderer3D.setSize(wNew, h);
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls3D.update();
+    renderer3D.render(scene3D, camera3D);
+  }
+  animate();
+}
+
+function buildChipLattice3D() {
+  const geom = new THREE.SphereGeometry(4.5, 12, 8);
+  // Lambert so each sphere gets shading; instanceColor supplies the
+  // per-chip fill.
+  const mat = new THREE.MeshLambertMaterial();
+  chipMesh3D = new THREE.InstancedMesh(geom, mat, CHIPS.length);
+  const dummy = new THREE.Object3D();
+  for (let i = 0; i < CHIPS.length; i++) {
+    const chip = CHIPS[i];
+    const p = chipTo3D(chip.hue, chip.value, chip.chroma);
+    dummy.position.set(p.x, p.y, p.z);
+    dummy.updateMatrix();
+    chipMesh3D.setMatrixAt(i, dummy.matrix);
+    chipMesh3D.setColorAt(i, linearRgbToTHREE(chip.rgb));
+  }
+  chipMesh3D.instanceMatrix.needsUpdate = true;
+  if (chipMesh3D.instanceColor) chipMesh3D.instanceColor.needsUpdate = true;
+  scene3D.add(chipMesh3D);
+}
+
+function buildArrows3D() {
+  if (!scene3D) return;
+  if (arrowLines3D) {
+    scene3D.remove(arrowLines3D);
+    arrowLines3D.geometry.dispose();
+    arrowLines3D.material.dispose();
+    arrowLines3D = null;
+  }
+  const filtered = filterSamples();
+  const positions = [];
+  const colors = [];
+  for (const s of filtered) {
+    const exp = parseNotation(s.expected);
+    const mea = parseNotation(s.measured);
+    if (!exp || !mea) continue;
+    const p0 = parsedTo3D(exp);
+    const p1 = parsedTo3D(mea);
+    positions.push(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z);
+    const col = deltaValueColorTHREE(mea.value - exp.value);
+    colors.push(col.r, col.g, col.b, col.r, col.g, col.b);
+  }
+  const geom = new THREE.BufferGeometry();
+  geom.setAttribute('position',
+    new THREE.Float32BufferAttribute(positions, 3));
+  geom.setAttribute('color',
+    new THREE.Float32BufferAttribute(colors, 3));
+  const mat = new THREE.LineBasicMaterial(
+    {vertexColors: true, transparent: true, opacity: 0.7});
+  arrowLines3D = new THREE.LineSegments(geom, mat);
+  scene3D.add(arrowLines3D);
+}
+
+// Original render() is called on every filter change; hook the 3D
+// arrows rebuild onto the same trigger so 2D + 3D stay in sync.
+const _origRender = render;
+render = function() {
+  _origRender();
+  buildArrows3D();
+};
+
 initControls();
+setup3D();
 render();
 </script>
 </body>
