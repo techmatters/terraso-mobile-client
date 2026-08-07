@@ -235,19 +235,69 @@ export const analyzeMunsellChart = async (
           maskResult.borderMedianB,
         )
       : null;
-  const grid = detectChartByRegions(
-    grayImage,
-    mask,
-    pageRefGrid,
-    algorithm,
-    pageSampleGrid,
-    paperLuma,
-    // Reuse the same guide rect the whitemask calibrated against —
-    // classifyRegion uses it to reject circles whose centres fall
-    // outside the framing box (paper-shell noise near the frame edge,
-    // common on dark-background captures).
-    guideRect,
-  );
+  // RANSAC is stochastic — its random-triplet iterator can converge
+  // to different transforms on different invocations if the search
+  // space has multiple local optima. On some fixtures the wrong
+  // one-column-shifted transform is a plausible-looking local optimum
+  // that RANSAC sometimes lands on. Retry up to MAX_REGISTRATION_
+  // ATTEMPTS times, checking the centroid shift after each attempt
+  // and keeping the best-scoring one. Only give up if all attempts
+  // drifted beyond the reject threshold — that usually means the
+  // capture is genuinely misframed, not just that RANSAC drifted.
+  //
+  // findFlatCircles + classification is deterministic given the same
+  // mask, so we're only retrying the RANSAC-and-downstream steps;
+  // findFlatCircles' ~30-50ms cost gets repeated per attempt but the
+  // absolute wall-clock is still small.
+  const CENTROID_SHIFT_REJECT_FRAC = 0.5;
+  const MAX_REGISTRATION_ATTEMPTS = 5;
+  let grid: GridDetection | null = null;
+  let bestGrid: GridDetection | null = null;
+  let bestMaxOff = Infinity;
+  let attemptsSummary: string[] = [];
+  for (let attempt = 1; attempt <= MAX_REGISTRATION_ATTEMPTS; attempt++) {
+    const g = detectChartByRegions(
+      grayImage,
+      mask,
+      pageRefGrid,
+      algorithm,
+      pageSampleGrid,
+      paperLuma,
+      // Reuse the same guide rect the whitemask calibrated against —
+      // classifyRegion uses it to reject circles whose centres fall
+      // outside the framing box (paper-shell noise near the frame
+      // edge, common on dark-background captures).
+      guideRect,
+    );
+    if (!g) {
+      // Deterministic failure — no circles or no clusters. Retrying
+      // won't help because the same mask feeds findFlatCircles the
+      // same way.
+      attemptsSummary.push(`#${attempt}=NULL`);
+      break;
+    }
+    const h = g.maxHOffsetFrac ?? 0;
+    const v = g.maxVOffsetFrac ?? 0;
+    const maxOff = Math.max(h, v);
+    attemptsSummary.push(`#${attempt}=(h=${h.toFixed(2)},v=${v.toFixed(2)})`);
+    if (maxOff < bestMaxOff) {
+      bestMaxOff = maxOff;
+      bestGrid = g;
+    }
+    if (maxOff <= CENTROID_SHIFT_REJECT_FRAC) {
+      grid = g;
+      break;
+    }
+  }
+  if (!grid && bestGrid && bestMaxOff <= CENTROID_SHIFT_REJECT_FRAC) {
+    grid = bestGrid;
+  }
+  if (attemptsSummary.length > 1) {
+    console.log(
+      `[chartAnalysis] RANSAC attempts (${attemptsSummary.length}): ` +
+        attemptsSummary.join(' '),
+    );
+  }
   if (!grid) {
     // For failure debug — RAW gets the CIRAWFilter-rendered preview
     // PNG; PHOTO reuses the source file directly (it's already a
@@ -269,12 +319,18 @@ export const analyzeMunsellChart = async (
             width: rgbPreview.width,
             height: rgbPreview.height,
           };
-    // Populate a minimal GridDetection with just the whiteMask spans
-    // so the debug view can render the mask overlay (blue) and the
-    // dashed guide rect. Everything else is null/empty — enough for
-    // the debug UI to bind to; the "detected/matched" layers just
-    // don't render.
-    const partialGrid: GridDetection = {
+    // Two failure sub-modes:
+    //   (a) bestGrid == null — findFlatCircles / clustering returned
+    //       nothing in every attempt (deterministic; retry doesn't
+    //       help). Show a minimal-grid overlay with just the whitemask
+    //       spans so the debug view can still render the blue overlay
+    //       and the dashed guide rect.
+    //   (b) bestGrid != null — every attempt found candidates but the
+    //       centroid shift exceeded the reject threshold every time.
+    //       The chart is probably genuinely mis-framed (rotated, off-
+    //       centre, or with the wrong crop). Show the BEST-attempt
+    //       grid so the misalignment is visible in the debug overlay.
+    const partialGrid: GridDetection = bestGrid ?? {
       centers: [],
       cellW: 0,
       cellH: 0,
@@ -300,11 +356,20 @@ export const analyzeMunsellChart = async (
         touches_edge: 0,
         outside_guide: 0,
       },
+      maxHOffsetFrac: null,
+      maxVOffsetFrac: null,
     };
+    const reason = bestGrid
+      ? `RANSAC fits all rejected — best attempt centroid shift ` +
+        `(h=${bestGrid.maxHOffsetFrac?.toFixed(2) ?? '?'}, ` +
+        `v=${bestGrid.maxVOffsetFrac?.toFixed(2) ?? '?'}) ` +
+        `exceeded reject threshold ${CENTROID_SHIFT_REJECT_FRAC} on all ` +
+        `${MAX_REGISTRATION_ATTEMPTS} attempts. Chart is probably ` +
+        `misframed — try reframing centred in the guide.`
+      : 'detectChartByRegions returned null — too few detected candidates ' +
+        'or clustering failed. Preview and white mask are still available.';
     const debug: MunsellChartFailureDebug = {
-      reason:
-        'detectChartByRegions returned null — too few detected candidates ' +
-        'or clustering failed. Preview and white mask are still available.',
+      reason,
       lumaAnchor,
       lumaCutoff,
       preview: {
@@ -314,11 +379,6 @@ export const analyzeMunsellChart = async (
       },
       grid: partialGrid,
     };
-    // Dump the debug object to Metro so a dev can copy-paste the
-    // structured reason + counts even without an IDE debugger attached.
-    // Preview URI is elided — it's a local cache path that's noisy in
-    // the console and unhelpful once the file is gone. Mask-span
-    // count is a proxy for "did the whiteMask find any paper at all."
     console.log(
       `[chartAnalysis] FAILURE reason="${debug.reason}" ` +
         `lumaAnchor=${lumaAnchor} lumaCutoff=${lumaCutoff} ` +

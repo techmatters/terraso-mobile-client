@@ -731,6 +731,8 @@ const renderRegistrationTable = (groups: CaptureContext[][]): string => {
     paperGap: number | null;
     direction: string | null;
     unevenness: number | null;
+    hOffset: number | null;
+    vOffset: number | null;
     valid: boolean;
   };
   const rows: Row[] = groups.map(g => {
@@ -742,6 +744,8 @@ const renderRegistrationTable = (groups: CaptureContext[][]): string => {
       paper_gap?: number | null;
       direction?: string | null;
       illumination?: {unevenness?: number} | null;
+      max_h_offset_frac?: number | null;
+      max_v_offset_frac?: number | null;
     };
     const total = reg.match_total ?? 0;
     const inl = reg.inliers ?? 0;
@@ -754,6 +758,8 @@ const renderRegistrationTable = (groups: CaptureContext[][]): string => {
       paperGap: reg.paper_gap ?? null,
       direction: reg.direction ?? null,
       unevenness: reg.illumination?.unevenness ?? null,
+      hOffset: reg.max_h_offset_frac ?? null,
+      vOffset: reg.max_v_offset_frac ?? null,
       valid: reg.mode === 'auto',
     };
   });
@@ -788,6 +794,15 @@ const renderRegistrationTable = (groups: CaptureContext[][]): string => {
     if (u > 40) return 'reg-bad';
     return 'reg-warn';
   };
+  // Guide-alignment offsets. Provisional thresholds until we look at
+  // the distribution — 0.5 cell-step feels like a natural yellow, 1.0
+  // is a whole cell-step off and definitely wrong.
+  const offsetClass = (o: number | null): string => {
+    if (o === null) return '';
+    if (o < 0.5) return 'reg-good';
+    if (o >= 0.75) return 'reg-bad';
+    return 'reg-warn';
+  };
 
   const trs = rows
     .map(r => {
@@ -798,6 +813,10 @@ const renderRegistrationTable = (groups: CaptureContext[][]): string => {
       const dirText = r.direction === 'fallback' ? '' : r.direction ?? '';
       const unevenText =
         r.unevenness === null ? '—' : r.unevenness.toFixed(0);
+      const hOffText =
+        r.hOffset === null ? '—' : r.hOffset.toFixed(2);
+      const vOffText =
+        r.vOffset === null ? '—' : r.vOffset.toFixed(2);
       return `
       <tr>
         <td><a href="#${fixtureSectionId(r.label)}">${esc(r.label)}</a></td>
@@ -805,6 +824,8 @@ const renderRegistrationTable = (groups: CaptureContext[][]): string => {
         <td class="num ${missesClass(r.misses, r.valid)}">${missesText}</td>
         <td class="num ${gapClass(r.paperGap)}">${gapText}</td>
         <td class="num ${unevennessClass(r.unevenness)}">${unevenText}</td>
+        <td class="num ${offsetClass(r.hOffset)}">${hOffText}</td>
+        <td class="num ${offsetClass(r.vOffset)}">${vOffText}</td>
         <td>${esc(dirText)}</td>
       </tr>`;
     })
@@ -824,7 +845,10 @@ const renderRegistrationTable = (groups: CaptureContext[][]): string => {
     <span class="reg-bad" style="padding:1px 6px">&lt;30</span>;
     illum unevenness: <span class="reg-good" style="padding:1px 6px">&lt;20</span>
     <span class="reg-warn" style="padding:1px 6px">20-40</span>
-    <span class="reg-bad" style="padding:1px 6px">&gt;40</span>.
+    <span class="reg-bad" style="padding:1px 6px">&gt;40</span>;
+    h/v offset: <span class="reg-good" style="padding:1px 6px">&lt;0.50</span>
+    <span class="reg-warn" style="padding:1px 6px">0.50-0.74</span>
+    <span class="reg-bad" style="padding:1px 6px">&ge;0.75</span> (of a cell-step).
   </p>
   <table>
     <thead><tr>
@@ -833,6 +857,8 @@ const renderRegistrationTable = (groups: CaptureContext[][]): string => {
       <th>misses / total</th>
       <th>paper gap</th>
       <th>illum unevenness</th>
+      <th>h offset</th>
+      <th>v offset</th>
       <th>direction</th>
     </tr></thead>
     <tbody>${trs}

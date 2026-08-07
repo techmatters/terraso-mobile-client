@@ -232,6 +232,17 @@ export type GridDetection = {
     touches_edge: number;
     outside_guide: number;
   };
+  // Max per-ref-point horizontal / vertical displacement from the
+  // "ideal" guide-aligned position, expressed as a fraction of the
+  // ideal cell spacing. Diagnostic for "did RANSAC land the chart
+  // one column too far right?". Computed against the same
+  // fullChartBounds (0..10, 0..15) the RANSAC uses, mapped uniformly
+  // to guideRect. A translation shift shows as constant Δ across
+  // all points; a scale mismatch grows with distance from centre.
+  // 0.0 = perfect alignment; 1.0 = a whole column/row-step off;
+  // null when guideRect or matchedGrid is unavailable.
+  maxHOffsetFrac: number | null;
+  maxVOffsetFrac: number | null;
 };
 
 // -----------------------------------------------------------------
@@ -606,6 +617,8 @@ export const detectChartByRegions = (
     | {x: number; y: number; w: number; h: number}[]
     | null = null;
   let matchedGridBrightness: number[] | null = null;
+  let maxHOffsetFrac: number | null = null;
+  let maxVOffsetFrac: number | null = null;
   if (detectedPoints.length >= 3) {
     // Tightened from 0.4 to 0.2 of cellH — 0.4 was roughly half a
     // row-step which is bigger than one whole hole, so many wrong
@@ -828,6 +841,42 @@ export const detectChartByRegions = (
         }
         return img.pixels[yi * img.width + xi];
       });
+      // How much is the winning transform translation-shifted from
+      // "chart centred in guide"? Compare centroids only — the
+      // matched-grid centroid should land at the position the refGrid
+      // centroid would land at if the chip rectangle filled the
+      // guide proportionally. Doesn't try to catch scale errors
+      // (chart margin vs guide margin varies fixture-to-fixture),
+      // just translation. A one-column shift shows as ≈ 1.0;
+      // well-placed charts stay under ~0.3.
+      if (guideRect) {
+        const FULL_MAX_X = 10;
+        const FULL_MAX_Y = 15;
+        const idealColSpacing = (2 * guideRect.w) / FULL_MAX_X;
+        const idealRowSpacing = (3 * guideRect.h) / FULL_MAX_Y;
+        let refSumX = 0;
+        let refSumY = 0;
+        let matchedSumX = 0;
+        let matchedSumY = 0;
+        for (let i = 0; i < refGrid.length; i++) {
+          refSumX += refGrid[i].x;
+          refSumY += refGrid[i].y;
+          matchedSumX += matchedGrid[i].x;
+          matchedSumY += matchedGrid[i].y;
+        }
+        const refCentroidX = refSumX / refGrid.length;
+        const refCentroidY = refSumY / refGrid.length;
+        const idealCentroidX =
+          guideRect.x + (refCentroidX * guideRect.w) / FULL_MAX_X;
+        const idealCentroidY =
+          guideRect.y + (refCentroidY * guideRect.h) / FULL_MAX_Y;
+        const matchedCentroidX = matchedSumX / matchedGrid.length;
+        const matchedCentroidY = matchedSumY / matchedGrid.length;
+        const shiftX = Math.abs(matchedCentroidX - idealCentroidX);
+        const shiftY = Math.abs(matchedCentroidY - idealCentroidY);
+        maxHOffsetFrac = idealColSpacing > 0 ? shiftX / idealColSpacing : null;
+        maxVOffsetFrac = idealRowSpacing > 0 ? shiftY / idealRowSpacing : null;
+      }
       // Compute which ref points were inliers under the winning
       // transform — mirrors scoreTransform's greedy unique-assignment
       // logic so the display matches what scored. A ref point is an
@@ -920,6 +969,8 @@ export const detectChartByRegions = (
       touches_edge: statusCounts.reject_touches_edge ?? 0,
       outside_guide: statusCounts.reject_outside_guide ?? 0,
     },
+    maxHOffsetFrac,
+    maxVOffsetFrac,
   };
 };
 

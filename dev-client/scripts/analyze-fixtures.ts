@@ -442,6 +442,18 @@ const buildRegistrationBlock = (
           : 'dark_paper',
     cell_size_px: {w: g.cellW, h: g.cellH},
     chart_body_bounds: g.chartBodyBounds,
+    // How far the winning affine displaced each ref point from the
+    // "chart perfectly fills the guide" position, normalized by the
+    // ideal cell spacing. 0.0 = perfect; 1.0 = a whole cell-step
+    // off (definite col or row shift error).
+    max_h_offset_frac:
+      g.maxHOffsetFrac !== null
+        ? Math.round(g.maxHOffsetFrac * 100) / 100
+        : null,
+    max_v_offset_frac:
+      g.maxVOffsetFrac !== null
+        ? Math.round(g.maxVOffsetFrac * 100) / 100
+        : null,
     illumination,
   };
 };
@@ -771,6 +783,8 @@ let nFailure = 0;
               touches_edge: 0,
               outside_guide: 0,
             },
+            maxHOffsetFrac: null,
+            maxVOffsetFrac: null,
           },
         },
       };

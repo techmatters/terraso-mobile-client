@@ -73,6 +73,9 @@ type Sample = {
   wbRef: string | null;
   fixtureLabel: string;
   deltaE: number;
+  // Copied from the parent capture's registration.illumination.
+  // Null when RANSAC didn't lock (no illumination stats available).
+  illumUnevenness: number | null;
 };
 
 const runDoc = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
@@ -80,6 +83,8 @@ const samples: Sample[] = [];
 for (const cap of runDoc.captures) {
   const cells = cap.cells;
   if (!Array.isArray(cells)) continue;
+  const illumUnevenness =
+    cap.registration?.illumination?.unevenness ?? null;
   for (const cell of cells) {
     if (!cell.expected_notation || !cell.measured_notation) continue;
     samples.push({
@@ -93,6 +98,7 @@ for (const cap of runDoc.captures) {
       wbRef: cap.wb_correction?.reference ?? null,
       fixtureLabel: cap.label ?? '',
       deltaE: cell.delta_e ?? 0,
+      illumUnevenness,
     });
   }
 }
@@ -190,6 +196,9 @@ const html = `<!DOCTYPE html>
   <fieldset id="ctl-mode">
     <legend>Arrow mode</legend>
   </fieldset>
+  <fieldset id="ctl-uneven">
+    <legend>Max illum unevenness</legend>
+  </fieldset>
 </div>
 
 <div class="legend-row">
@@ -280,6 +289,11 @@ const state = {
   wbSource: 'ref_card', // default per user preference
   pages: new Set(),     // empty = all
   mode: 'mean',
+  // Max illumination unevenness (max-of-col-range, row-range across
+  // matched-grid inliers). Samples from captures above this threshold
+  // are hidden. Slider max = 999 = show all. Default 20 = only
+  // evenly-lit captures.
+  maxUneven: 20,
 };
 
 function uniqueValues(arr, key) {
@@ -324,7 +338,14 @@ function makeCheckGroup(el, options, currentGetter, onToggle) {
 }
 
 function initControls() {
-  const refCards = ['all', ...uniqueValues(SAMPLES, 'refCard')];
+  // Ref card selector — physical cards (greycard / whibal / postit /
+  // nothing) plus two WB-anchor pseudo-options at the top:
+  //   self = WB source was 'auto' (a chip on the chart itself)
+  //   card = WB source was 'ref_card' (the physical card sampled)
+  // Physical-card entries filter by which card was in the shot;
+  // self/card entries filter by which anchor was used for WB.
+  const physicalCards = uniqueValues(SAMPLES, 'refCard');
+  const refCards = ['all', 'self', 'card', ...physicalCards];
   makeRadioGroup(
     document.getElementById('ctl-refcard'), 'refcard',
     refCards.map(v => ({value: v, label: v})),
@@ -355,14 +376,52 @@ function initControls() {
      {value: 'raw',  label: 'Raw per-sample arrows'}],
     () => state.mode, v => state.mode = v,
   );
+  // Illumination-unevenness slider. Range 0..100 with a max-position
+  // treated as "no filter" (so users don't have to know that "999
+  // means all"). Live value shown next to the slider.
+  const unevenEl = document.getElementById('ctl-uneven');
+  unevenEl.innerHTML =
+    '<legend>' + unevenEl.querySelector('legend').textContent + '</legend>' +
+    '<label style="min-width:200px">' +
+    '  <input type="range" id="uneven-slider" min="0" max="100" step="1" ' +
+    '   value="' + state.maxUneven + '" style="width:150px; vertical-align:middle">' +
+    '  <span id="uneven-val" style="display:inline-block; min-width:36px; ' +
+    '   text-align:right; font-variant-numeric:tabular-nums">' + state.maxUneven +
+    '</span>' +
+    '</label>' +
+    '<div style="font-size:11px; color:#888; margin-top:2px">' +
+    '  Hide samples from captures with unevenness &gt; slider. ' +
+    '  100 = show all.' +
+    '</div>';
+  const slider = document.getElementById('uneven-slider');
+  const label = document.getElementById('uneven-val');
+  slider.addEventListener('input', e => {
+    state.maxUneven = parseInt(e.target.value, 10);
+    label.textContent = state.maxUneven === 100 ? 'all' : state.maxUneven;
+    render();
+  });
 }
 
 function filterSamples() {
+  const uMax = state.maxUneven === 100 ? Infinity : state.maxUneven;
   return SAMPLES.filter(s => {
-    if (state.refCard !== 'all' && s.refCard !== state.refCard) return false;
+    // Ref card selector doubles as a WB-anchor shortcut: 'self' →
+    // wbSource=auto, 'card' → wbSource=ref_card. Physical card names
+    // filter by which card was physically in the shot.
+    if (state.refCard === 'self') {
+      if (s.wbSource !== 'auto') return false;
+    } else if (state.refCard === 'card') {
+      if (s.wbSource !== 'ref_card') return false;
+    } else if (state.refCard !== 'all' && s.refCard !== state.refCard) {
+      return false;
+    }
     if (state.illum !== 'all' && s.illuminant !== state.illum) return false;
     if (state.wbSource !== 'all' && s.wbSource !== state.wbSource) return false;
     if (state.pages.size > 0 && !state.pages.has(s.page)) return false;
+    // Null unevenness (RANSAC didn't lock) → let it through; the
+    // underlying sample may still be diagnostic even without the
+    // per-fixture illum metric.
+    if (s.illumUnevenness !== null && s.illumUnevenness > uMax) return false;
     return true;
   });
 }
