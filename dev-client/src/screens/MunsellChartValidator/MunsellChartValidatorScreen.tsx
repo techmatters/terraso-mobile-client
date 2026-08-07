@@ -59,6 +59,7 @@ import {
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {useCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
 import {
+  LINEAR_REFERENCES,
   listAvailableReferences,
   type AvailableReference,
 } from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
@@ -198,6 +199,25 @@ const rgbToHex = (rgb: {r: number; g: number; b: number}): string => {
 // "{page}_{yyyymmddThhmmss}.{ext}" and share that. Kept as a copy
 // rather than an in-place move so re-sharing works.
 const FRIENDLY_NAME_RE = /^[0-9A-Z][^_]*_.*_\d{8}T\d{4,6}\.(dng|jpg|jpeg)$/i;
+
+// WB-anchor sentinel for multi-card slots: referenceNotation strings
+// of the form "multi:{slotName}" pick that taped card as the WB
+// anchor. Expected linear-sRGB per slot is fixed — greycard = 18%
+// neutral, whibal = 40% neutral, postit = the calibrated 3M yellow.
+const MULTI_REF_PREFIX = 'multi:';
+const MULTI_SLOT_EXPECTED: Record<
+  'whibal' | 'postit' | 'greycard',
+  {r: number; g: number; b: number}
+> = {
+  whibal: LINEAR_REFERENCES.WHIBAL_G7,
+  postit: LINEAR_REFERENCES.POST_IT_YELLOW,
+  greycard: LINEAR_REFERENCES.GRAY_CARD_18PCT,
+};
+const MULTI_SLOT_LABEL: Record<'whibal' | 'postit' | 'greycard', string> = {
+  whibal: 'WhiBal (WB)',
+  postit: 'Post-it (WB)',
+  greycard: 'Grey card (WB)',
+};
 const yyyymmddThhmmss = (d: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');
   return (
@@ -234,6 +254,17 @@ export const MunsellChartValidatorScreen = ({
   // produces a DNG.
   const pipeline: 'raw' | 'photo' = dngPath ? 'raw' : 'photo';
   const analysisPath = dngPath ?? jpegPath;
+  // Multi-card mode: detected from the friendly filename produced by
+  // the chart-capture rename, e.g. "10YR_multi_BOTH_IOS_...dng". When
+  // true, the analyzer samples the three MULTI_CARD_POINTS slots and
+  // returns their raw linear-sRGB in result.multiRefCards; the debug
+  // overlay draws those rects, and the ref-cell picker exposes the
+  // three slots as WB-anchor choices.
+  const multiCards = useMemo(() => {
+    const p = analysisPath ?? '';
+    const base = p.slice(p.lastIndexOf('/') + 1).toLowerCase();
+    return /(^|_)multi(_|\.)/.test(base);
+  }, [analysisPath]);
   const [state, setState] = useState<
     | {kind: 'analyzing'}
     | {kind: 'ready'; result: MunsellChartResult}
@@ -323,6 +354,33 @@ export const MunsellChartValidatorScreen = ({
         rawLinearRgb: testMeasuredRaw,
       };
     }
+    // Multi-mode WB anchor: notation of the form "multi:{slotName}"
+    // resolves to that slot's raw linear-sRGB paired with its known
+    // expected reflectance from LINEAR_REFERENCES. Lets the tester
+    // A/B all three taped cards as WB anchors without leaving the
+    // results view.
+    if (
+      referenceNotation?.startsWith(MULTI_REF_PREFIX) &&
+      state.result.multiRefCards
+    ) {
+      const slotName = referenceNotation.slice(MULTI_REF_PREFIX.length);
+      const slot = state.result.multiRefCards.find(s => s.name === slotName);
+      const expected = slot && MULTI_SLOT_EXPECTED[slot.name];
+      if (slot && expected) {
+        return {
+          cell: {
+            hue: 'MULTI',
+            value: 0,
+            chroma: 0,
+            notation: referenceNotation,
+            expectedLinearRgb: expected,
+            rowIdx: -1,
+            colIdx: -1,
+          },
+          rawLinearRgb: slot.linearRgb,
+        };
+      }
+    }
     if (referenceNotation != null) {
       return state.result.measurements.find(
         m => m.cell.notation === referenceNotation,
@@ -369,6 +427,7 @@ export const MunsellChartValidatorScreen = ({
           page,
           pipeline,
           algorithm,
+          multiCards,
         );
         if (outcome.kind === 'success') {
           setState({kind: 'ready', result: outcome.result});
@@ -380,7 +439,7 @@ export const MunsellChartValidatorScreen = ({
         setState({kind: 'error', message: String(err)});
       }
     })();
-  }, [analysisPath, page, pipeline, algorithm]);
+  }, [analysisPath, page, pipeline, algorithm, multiCards]);
 
   const shareAsImage = useCallback(() => {
     const svg = exportSvgRef.current;
@@ -580,6 +639,27 @@ export const MunsellChartValidatorScreen = ({
                 }
                 label="Test-swatch reference"
               />
+              {/* Multi-card WB anchor picker: one button per taped
+                 slot. Only visible when the fixture was captured in
+                 multi mode (result.multiRefCards populated). Tapping
+                 sets referenceNotation to "multi:{slotName}", which
+                 the ref useMemo resolves to that slot's linear-sRGB
+                 + expected reflectance. */}
+              {state.result.multiRefCards && (
+                <Row space="sm">
+                  {state.result.multiRefCards.map(slot => {
+                    const notation = `${MULTI_REF_PREFIX}${slot.name}`;
+                    return (
+                      <ViewToggleButton
+                        key={notation}
+                        label={MULTI_SLOT_LABEL[slot.name]}
+                        selected={referenceNotation === notation}
+                        onPress={() => setReferenceNotation(notation)}
+                      />
+                    );
+                  })}
+                </Row>
+              )}
               <Row space="sm">
                 <ViewToggleButton
                   label="Result grid"
@@ -1543,6 +1623,20 @@ const DebugOverlayLayers = ({
           fill="none"
         />
       )}
+      {/* Multi-card slots: cyan-outlined rects for the three taped
+         reference cards. Absent for single-card fixtures. */}
+      {result.multiRefCards?.map(slot => (
+        <Rect
+          key={`multi-${slot.name}`}
+          x={slot.rect.x}
+          y={slot.rect.y}
+          width={slot.rect.w}
+          height={slot.rect.h}
+          stroke="#00c8d0"
+          strokeWidth={2}
+          fill="none"
+        />
+      ))}
       {/* Filled green dots — swatch centroids from the OLD cluster
          fit. Hidden when the RANSAC match ran. */}
       {!grid.matchedGrid &&
