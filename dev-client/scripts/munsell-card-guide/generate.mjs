@@ -291,36 +291,20 @@ function cornerTicks(inset = 0.25, len = 0.2) {
 // Build the document
 // ---------------------------------------------------------------------------
 
-function buildSvg() {
+// Vertical labels for the top three reference-card slots, drawn to
+// the right of each box. Boxes 1-3 also get the ACTUAL colour of
+// the reference they represent as their fill (WhiBal grey, Post-It
+// yellow, 18% grey) so the printed template previews what card
+// goes in each slot. Slots 4-7 stay numeric-only with the default
+// red fill. Shared between the main (chart-side) and back
+// (ref-card-holder) templates.
+const RIGHT_CARD_LABELS = ['WhiBal', 'Post-It', 'Gray'];
+function rightBoxesElements() {
   const els = [];
-
-  // Page background (white paper).
-  els.push(
-    `<rect x="0" y="0" width="${PAGE.w}" height="${PAGE.h}" fill="#ffffff"/>`,
-  );
-
-  els.push(cornerTicks());
-
-  // Cuts FIRST so the dashed chip/hole guides below draw ON TOP of
-  // the light-red fill (otherwise the fill hides the chip rectangles
-  // and viewing-hole circles).
-  els.push(cutRect(window_));
-
-  els.push(cutRect(label));
-  els.push(text(label.x + label.w / 2, label.y - 0.1, 'hue label'));
-
-  // Vertical labels for the top three reference-card slots, drawn to
-  // the right of each box. Boxes 1-3 also get the ACTUAL colour of
-  // the reference they represent as their fill (WhiBal grey, Post-It
-  // yellow, 18% grey) so the printed template previews what card
-  // goes in each slot. Slots 4-7 stay numeric-only with the default
-  // red fill.
-  const RIGHT_CARD_LABELS = ['WhiBal', 'Post-It', 'Gray'];
   for (const sq of squares) {
     const idx = sq.n - 1;
-    const named = idx < RIGHT_CARD_LABELS.length
-      ? RIGHT_CARD_LABELS[idx]
-      : null;
+    const named =
+      idx < RIGHT_CARD_LABELS.length ? RIGHT_CARD_LABELS[idx] : null;
     const fill = named ? NAMED_CARD_FILLS[named] : STYLE.cut.fill;
     els.push(cutRect(sq, STYLE.cut.rx, fill));
     // Numeric badge — white on the dark Gray fill, else default grey.
@@ -343,6 +327,62 @@ function buildSvg() {
       );
     }
   }
+  return els;
+}
+
+function svgDocument(bodyElements) {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="${PAGE.w}in" height="${PAGE.h}in"
+     viewBox="0 0 ${PAGE.w} ${PAGE.h}">
+  <g>
+    ${bodyElements.join('\n    ')}
+  </g>
+</svg>
+`;
+}
+
+// Back-side / ref-card-holder template: dashed card outline + the 7
+// right-side boxes + the top title (so orientation is obvious).
+// EVERYTHING INSIDE the card outline is intentionally blank — this
+// sheet is meant to sit behind (or opposite) the chart and just
+// register the ref-card slots.
+function buildBackSvg() {
+  const els = [];
+  els.push(
+    `<rect x="0" y="0" width="${PAGE.w}" height="${PAGE.h}" fill="#ffffff"/>`,
+  );
+  els.push(cornerTicks());
+  els.push(
+    guideRect({x: CARD.x, y: CARD.y, w: CARD.nominalW, h: CARD.nominalH}),
+  );
+  const pageCenterX = PAGE.w / 2;
+  els.push(text(pageCenterX, CARD.y - 1.1, 'Munsell Soil-Color Chart'));
+  els.push(text(pageCenterX, CARD.y - 0.35, '(reference-card side)'));
+  els.push(...rightBoxesElements());
+  els.push(scaleBar(0.5, PAGE.h - 0.5));
+  return svgDocument(els);
+}
+
+function buildSvg() {
+  const els = [];
+
+  // Page background (white paper).
+  els.push(
+    `<rect x="0" y="0" width="${PAGE.w}" height="${PAGE.h}" fill="#ffffff"/>`,
+  );
+
+  els.push(cornerTicks());
+
+  // Cuts FIRST so the dashed chip/hole guides below draw ON TOP of
+  // the light-red fill (otherwise the fill hides the chip rectangles
+  // and viewing-hole circles).
+  els.push(cutRect(window_));
+
+  els.push(cutRect(label));
+  els.push(text(label.x + label.w / 2, label.y - 0.1, 'hue label'));
+
+  els.push(...rightBoxesElements());
 
   // Dashed guides drawn AFTER cuts so they sit on top of the red fill.
   els.push(
@@ -352,7 +392,7 @@ function buildSvg() {
   // (not the card centre-line — the card has an asymmetric window
   // shift so its centre isn't the visual page centre).
   const pageCenterX = PAGE.w / 2;
-  els.push(text(pageCenterX, CARD.y - 0.6, 'Munsell Soil-Color Chart'));
+  els.push(text(pageCenterX, CARD.y - 1.1, 'Munsell Soil-Color Chart'));
   els.push(text(pageCenterX, CARD.y - 0.35, 'Cut out all shaded areas'));
 
   if (GRID.showGuide) {
@@ -362,15 +402,7 @@ function buildSvg() {
 
   els.push(scaleBar(0.5, PAGE.h - 0.5));
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg"
-     width="${PAGE.w}in" height="${PAGE.h}in"
-     viewBox="0 0 ${PAGE.w} ${PAGE.h}">
-  <g>
-    ${els.join('\n    ')}
-  </g>
-</svg>
-`;
+  return svgDocument(els);
 }
 
 // ---------------------------------------------------------------------------
@@ -407,19 +439,24 @@ function toPdf(svgPath, pdfPath) {
 
 function main() {
   mkdirSync(OUT_DIR, {recursive: true});
-  const svgPath = join(OUT_DIR, 'munsell-card-guide.svg');
-  const pdfPath = join(OUT_DIR, 'munsell-card-guide.pdf');
 
-  writeFileSync(svgPath, buildSvg());
-  console.log(`SVG  -> ${svgPath}`);
-
-  const tool = toPdf(svgPath, pdfPath);
-  if (tool) console.log(`PDF  -> ${pdfPath}  (via ${tool})`);
-  else
-    console.log(
-      'PDF  -> skipped (install rsvg-convert, inkscape, or cairosvg).\n' +
-        `       e.g.  rsvg-convert -f pdf -o "${pdfPath}" "${svgPath}"`,
-    );
+  const outputs = [
+    {name: 'munsell-card-guide', svg: buildSvg()},
+    {name: 'munsell-card-guide-back', svg: buildBackSvg()},
+  ];
+  for (const {name, svg} of outputs) {
+    const svgPath = join(OUT_DIR, `${name}.svg`);
+    const pdfPath = join(OUT_DIR, `${name}.pdf`);
+    writeFileSync(svgPath, svg);
+    console.log(`SVG  -> ${svgPath}`);
+    const tool = toPdf(svgPath, pdfPath);
+    if (tool) console.log(`PDF  -> ${pdfPath}  (via ${tool})`);
+    else
+      console.log(
+        'PDF  -> skipped (install rsvg-convert, inkscape, or cairosvg).\n' +
+          `       e.g.  rsvg-convert -f pdf -o "${pdfPath}" "${svgPath}"`,
+      );
+  }
 
   // Geometry summary so the numbers are easy to sanity-check.
   console.log('\nGeometry (inches):');
