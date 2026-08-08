@@ -106,7 +106,9 @@ const LABEL_CUTOUT = {
 };
 
 const STYLE = {
-  cut: {stroke: '#000000', width: 0.012, rx: 0}, // square corners
+  // Light yellow fill inside every cut rectangle so the reader can
+  // instantly see which regions are cutouts vs. paper.
+  cut: {stroke: '#000000', width: 0.012, rx: 0, fill: '#fff9c4'},
   guide: {stroke: '#b3b3b3', width: 0.008, dash: '0.06,0.05'},
   label: {color: '#8a8a8a', size: 0.12, family: 'Helvetica, Arial, sans-serif'},
 };
@@ -190,9 +192,9 @@ const f = n => Number(n.toFixed(4)); // trim float noise
 function cutRect({x, y, w, h}, rx = STYLE.cut.rx) {
   return `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" rx="${f(
     rx,
-  )}" ry="${f(rx)}" fill="none" stroke="${STYLE.cut.stroke}" stroke-width="${
-    STYLE.cut.width
-  }"/>`;
+  )}" ry="${f(rx)}" fill="${STYLE.cut.fill}" stroke="${
+    STYLE.cut.stroke
+  }" stroke-width="${STYLE.cut.width}"/>`;
 }
 
 function guideRect({x, y, w, h}) {
@@ -278,7 +280,7 @@ function buildSvg() {
   els.push(
     text(
       cardCenterX,
-      CARD.y - 0.12,
+      CARD.y - 0.5,
       `WhiBal card ${CARD.nominalW}″ × ${CARD.nominalH}″  (overlap ${CARD.overlap}″ each side)`,
     ),
   );
