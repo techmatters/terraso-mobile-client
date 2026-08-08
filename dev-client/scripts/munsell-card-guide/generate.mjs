@@ -98,17 +98,17 @@ const RIGHT = {
   rows: [0, 1, 2, 3, 4, 5, 6], // one per chip row on the physical chart
 };
 
-// Hue-notation window ("10YR"): just above the main window, over cols 2–3.
+// Hue-notation window ("10YR"): sits between the window's top edge
+// and the dotted card top edge (i.e., inside the paper overlap band
+// above the window). Height auto-derived to exactly span that gap.
 const LABEL_CUTOUT = {
-  h: 0.3, // small
-  gapAboveWindow: 0.0, // 0 => flush against the window's top edge
   spanCols: [2, 3], // 1-based column indices it should span
 };
 
 const STYLE = {
-  // Light yellow fill inside every cut rectangle so the reader can
+  // Light red fill inside every cut rectangle so the reader can
   // instantly see which regions are cutouts vs. paper.
-  cut: {stroke: '#000000', width: 0.012, rx: 0, fill: '#fff9c4'},
+  cut: {stroke: '#000000', width: 0.012, rx: 0, fill: '#ffd6d6'},
   guide: {stroke: '#b3b3b3', width: 0.008, dash: '0.06,0.05'},
   label: {color: '#8a8a8a', size: 0.12, family: 'Helvetica, Arial, sans-serif'},
 };
@@ -176,11 +176,14 @@ const squares = RIGHT.rows.slice(0, RIGHT.count).map((r, i) => ({
 const [spanA, spanB] = LABEL_CUTOUT.spanCols;
 const labelLeft = colX(spanA - 1) - GRID.chipW / 2;
 const labelRight = colX(spanB - 1) + GRID.chipW / 2;
+// Label cutout fills the paper overlap band above the window: top
+// edge on the dotted card top line, bottom edge on the window top
+// line. Height = window_.y - CARD.y = CARD.overlap.
 const label = {
   x: labelLeft,
   w: labelRight - labelLeft,
-  h: LABEL_CUTOUT.h,
-  y: window_.y - LABEL_CUTOUT.gapAboveWindow - LABEL_CUTOUT.h,
+  y: CARD.y,
+  h: window_.y - CARD.y,
 };
 
 // ---------------------------------------------------------------------------
@@ -273,7 +276,39 @@ function buildSvg() {
 
   els.push(cornerTicks());
 
-  // Guides (dashed, light): where the card sits behind the paper.
+  // Cuts FIRST so the dashed chip/hole guides below draw ON TOP of
+  // the light-red fill (otherwise the fill hides the chip rectangles
+  // and viewing-hole circles).
+  els.push(cutRect(window_));
+  els.push(text(cardCenterX, window_.y + window_.h + 0.22, 'CUT — main window'));
+
+  els.push(cutRect(label));
+  els.push(text(label.x + label.w / 2, label.y - 0.1, 'hue label'));
+
+  // Vertical labels for the top three reference-card slots, drawn to
+  // the right of each box. Slots 4-7 stay numeric-only.
+  const RIGHT_CARD_LABELS = ['WhiBal', 'Post-It', 'Gray'];
+  for (const sq of squares) {
+    els.push(cutRect(sq));
+    els.push(
+      text(sq.x + sq.w / 2, sq.y + sq.h / 2 + 0.05, String(sq.n), {size: 0.14}),
+    );
+    const idx = sq.n - 1;
+    if (idx < RIGHT_CARD_LABELS.length) {
+      const tx = sq.x + sq.w + 0.15;
+      const ty = sq.y + sq.h / 2;
+      // rotate(-90) around (tx,ty) makes text run bottom-to-top from
+      // the anchor, reading upward when the paper is right-side-up.
+      els.push(
+        `<text x="${f(tx)}" y="${f(ty)}" font-family="${STYLE.label.family}" ` +
+          `font-size="${STYLE.label.size}" fill="${STYLE.label.color}" ` +
+          `text-anchor="middle" transform="rotate(-90 ${f(tx)} ${f(ty)})">` +
+          `${RIGHT_CARD_LABELS[idx]}</text>`,
+      );
+    }
+  }
+
+  // Dashed guides drawn AFTER cuts so they sit on top of the red fill.
   els.push(
     guideRect({x: CARD.x, y: CARD.y, w: CARD.nominalW, h: CARD.nominalH}),
   );
@@ -281,29 +316,13 @@ function buildSvg() {
     text(
       cardCenterX,
       CARD.y - 0.5,
-      `WhiBal card ${CARD.nominalW}″ × ${CARD.nominalH}″  (overlap ${CARD.overlap}″ each side)`,
+      `WhiBal card ${CARD.nominalW}″ × ${CARD.nominalH}″`,
     ),
   );
 
-  // Munsell hole/chip grid (dashed) — chip rectangles + viewing holes, where
-  // the chart is assumed to sit, so label/right cutouts align to it.
   if (GRID.showGuide) {
     for (const cell of gridChips) els.push(guideRect(cell));
     for (const hole of gridHoles) els.push(guideCircle(hole));
-  }
-
-  // Cuts (solid): main window, hue-label window, right-hand cutouts.
-  els.push(cutRect(window_));
-  els.push(text(cardCenterX, window_.y + window_.h + 0.22, 'CUT — main window'));
-
-  els.push(cutRect(label));
-  els.push(text(label.x + label.w / 2, label.y - 0.1, 'CUT — hue label (10YR)'));
-
-  for (const sq of squares) {
-    els.push(cutRect(sq));
-    els.push(
-      text(sq.x + sq.w / 2, sq.y + sq.h / 2 + 0.05, String(sq.n), {size: 0.14}),
-    );
   }
 
   els.push(scaleBar(0.5, PAGE.h - 0.5));
@@ -386,7 +405,7 @@ function main() {
     )}  rowPitch ${f(rowPitch)} (=1.5×)  hole r=${GRID.holeR}`,
   );
   console.log(
-    `  label window    ${f(label.w)} x ${label.h}  at (${f(label.x)}, ${f(
+    `  label window    ${f(label.w)} x ${f(label.h)}  at (${f(label.x)}, ${f(
       label.y,
     )})  (above cols ${LABEL_CUTOUT.spanCols.join('–')})`,
   );
