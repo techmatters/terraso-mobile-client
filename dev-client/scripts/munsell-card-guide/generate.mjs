@@ -42,10 +42,13 @@ const CARD = {
   // Paper laps over the card edge by this much on EVERY side, so the
   // window opening is smaller than the card and keeps it secure.
   overlap: 0.25,
-  // Top-left of the nominal card footprint: centered on the page. Everything
-  // else (window, grid, label, right cutouts) derives from this, so the whole
-  // layout shifts with it.
-  x: (PAGE.w - 4.4) / 2,
+  // Top-left of the nominal card footprint: centred on the page +
+  // a 0.125" nudge right so the main window sits slightly off the
+  // page centre-line (the card's chip grid isn't perfectly centred
+  // on the card, and the ref-card cutouts to the right of the chart
+  // need a bit more clearance). Everything else (window, grid, label,
+  // right cutouts) derives from this, so the whole layout shifts.
+  x: (PAGE.w - 4.4) / 2 + 0.125,
   y: (PAGE.h - 7.23) / 2,
 };
 
