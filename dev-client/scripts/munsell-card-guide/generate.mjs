@@ -305,7 +305,6 @@ function buildSvg() {
   // the light-red fill (otherwise the fill hides the chip rectangles
   // and viewing-hole circles).
   els.push(cutRect(window_));
-  els.push(text(cardCenterX, window_.y + window_.h + 0.22, 'CUT — main window'));
 
   els.push(cutRect(label));
   els.push(text(label.x + label.w / 2, label.y - 0.1, 'hue label'));
@@ -349,13 +348,12 @@ function buildSvg() {
   els.push(
     guideRect({x: CARD.x, y: CARD.y, w: CARD.nominalW, h: CARD.nominalH}),
   );
-  els.push(
-    text(
-      cardCenterX,
-      CARD.y - 0.5,
-      `WhiBal card ${CARD.nominalW}″ × ${CARD.nominalH}″`,
-    ),
-  );
+  // Page title + one-line instruction. Both centred on the page
+  // (not the card centre-line — the card has an asymmetric window
+  // shift so its centre isn't the visual page centre).
+  const pageCenterX = PAGE.w / 2;
+  els.push(text(pageCenterX, CARD.y - 0.6, 'Munsell Soil-Color Chart'));
+  els.push(text(pageCenterX, CARD.y - 0.35, 'Cut out all shaded areas'));
 
   if (GRID.showGuide) {
     for (const cell of gridChips) els.push(guideRect(cell));
