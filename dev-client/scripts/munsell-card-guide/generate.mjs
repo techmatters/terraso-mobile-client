@@ -380,7 +380,7 @@ function buildSvg() {
   els.push(cutRect(window_));
 
   els.push(cutRect(label));
-  els.push(text(label.x + label.w / 2, label.y - 0.1, 'hue label'));
+  els.push(text(label.x + label.w / 2, label.y - 0.1, 'card name'));
 
   els.push(...rightBoxesElements());
 
