@@ -192,13 +192,38 @@ const label = {
 
 const f = n => Number(n.toFixed(4)); // trim float noise
 
-function cutRect({x, y, w, h}, rx = STYLE.cut.rx) {
+function cutRect({x, y, w, h}, rx = STYLE.cut.rx, fill = STYLE.cut.fill) {
   return `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" rx="${f(
     rx,
-  )}" ry="${f(rx)}" fill="${STYLE.cut.fill}" stroke="${
+  )}" ry="${f(rx)}" fill="${fill}" stroke="${
     STYLE.cut.stroke
   }" stroke-width="${STYLE.cut.width}"/>`;
 }
+
+// Gamma-encode a linear-sRGB triple to a display hex string. Duplicates
+// the same math as the phone-side rgbToHex — kept here so this script
+// stays self-contained without dragging in any RN-adjacent code.
+function linearRgbToHex(r, g, b) {
+  const enc = v => {
+    const c = Math.max(0, Math.min(1, v));
+    const srgb =
+      c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055;
+    return Math.round(Math.max(0, Math.min(1, srgb)) * 255)
+      .toString(16)
+      .padStart(2, '0');
+  };
+  return `#${enc(r)}${enc(g)}${enc(b)}`;
+}
+
+// Fill colours for the three named right-side cards, gamma-encoded
+// from the linear-sRGB values the mac runner uses (REF_CARD_EXPECTED
+// in scripts/analyze-fixtures.ts). WhiBal ~40% grey, greycard 18%
+// grey, Post-It calibrated yellow.
+const NAMED_CARD_FILLS = {
+  WhiBal: linearRgbToHex(0.4, 0.4, 0.4),
+  'Post-It': linearRgbToHex(0.9542, 0.887, 0.362),
+  Gray: linearRgbToHex(0.18, 0.18, 0.18),
+};
 
 function guideRect({x, y, w, h}) {
   return `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(
@@ -286,15 +311,27 @@ function buildSvg() {
   els.push(text(label.x + label.w / 2, label.y - 0.1, 'hue label'));
 
   // Vertical labels for the top three reference-card slots, drawn to
-  // the right of each box. Slots 4-7 stay numeric-only.
+  // the right of each box. Boxes 1-3 also get the ACTUAL colour of
+  // the reference they represent as their fill (WhiBal grey, Post-It
+  // yellow, 18% grey) so the printed template previews what card
+  // goes in each slot. Slots 4-7 stay numeric-only with the default
+  // red fill.
   const RIGHT_CARD_LABELS = ['WhiBal', 'Post-It', 'Gray'];
   for (const sq of squares) {
-    els.push(cutRect(sq));
-    els.push(
-      text(sq.x + sq.w / 2, sq.y + sq.h / 2 + 0.05, String(sq.n), {size: 0.14}),
-    );
     const idx = sq.n - 1;
-    if (idx < RIGHT_CARD_LABELS.length) {
+    const named = idx < RIGHT_CARD_LABELS.length
+      ? RIGHT_CARD_LABELS[idx]
+      : null;
+    const fill = named ? NAMED_CARD_FILLS[named] : STYLE.cut.fill;
+    els.push(cutRect(sq, STYLE.cut.rx, fill));
+    // Numeric badge — white on the dark Gray fill, else default grey.
+    const badgeColor = named === 'Gray' ? '#ffffff' : STYLE.label.color;
+    els.push(
+      `<text x="${f(sq.x + sq.w / 2)}" y="${f(sq.y + sq.h / 2 + 0.05)}" ` +
+        `font-family="${STYLE.label.family}" font-size="0.14" ` +
+        `fill="${badgeColor}" text-anchor="middle">${sq.n}</text>`,
+    );
+    if (named) {
       const tx = sq.x + sq.w + 0.15;
       const ty = sq.y + sq.h / 2;
       // rotate(-90) around (tx,ty) makes text run bottom-to-top from
@@ -303,7 +340,7 @@ function buildSvg() {
         `<text x="${f(tx)}" y="${f(ty)}" font-family="${STYLE.label.family}" ` +
           `font-size="${STYLE.label.size}" fill="${STYLE.label.color}" ` +
           `text-anchor="middle" transform="rotate(-90 ${f(tx)} ${f(ty)})">` +
-          `${RIGHT_CARD_LABELS[idx]}</text>`,
+          `${named}</text>`,
       );
     }
   }
