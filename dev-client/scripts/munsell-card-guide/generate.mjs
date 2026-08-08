@@ -42,14 +42,16 @@ const CARD = {
   // Paper laps over the card edge by this much on EVERY side, so the
   // window opening is smaller than the card and keeps it secure.
   overlap: 0.25,
-  // Top-left of the nominal card footprint: centred on the page +
-  // a 0.125" nudge right so the main window sits slightly off the
-  // page centre-line (the card's chip grid isn't perfectly centred
-  // on the card, and the ref-card cutouts to the right of the chart
-  // need a bit more clearance). Everything else (window, grid, label,
-  // right cutouts) derives from this, so the whole layout shifts.
-  x: (PAGE.w - 4.4) / 2 + 0.125,
+  // Top-left of the nominal card footprint: centred on the page.
+  // Everything else (window, grid, label, right cutouts) derives
+  // from this, so the whole layout shifts with it.
+  x: (PAGE.w - 4.4) / 2,
   y: (PAGE.h - 7.23) / 2,
+  // Extra horizontal shift applied ONLY to the main window cutout
+  // (the big solid-black rectangle). The dotted card/chip guides
+  // and the numbered right-side boxes stay put — this is a paper-
+  // mask trim, not a layout shift.
+  windowShiftX: 0.125,
 };
 
 // The shared physical Munsell hole/chip grid, straight from munsellPages.ts:
@@ -114,7 +116,7 @@ const STYLE = {
 // ---------------------------------------------------------------------------
 
 const window_ = {
-  x: CARD.x + CARD.overlap,
+  x: CARD.x + CARD.overlap + CARD.windowShiftX,
   y: CARD.y + CARD.overlap,
   w: CARD.nominalW - 2 * CARD.overlap,
   h: CARD.nominalH - 2 * CARD.overlap,
