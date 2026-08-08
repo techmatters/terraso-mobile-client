@@ -36,17 +36,17 @@ const OUT_DIR = join(HERE, 'out');
 const PAGE = {w: 8.5, h: 11};
 
 const CARD = {
-  // Nominal footprint of the WhiBal card the template holds in place.
-  nominalW: 4.5,
-  nominalH: 7.0,
+  // Measured footprint of the Munsell soil-colour-chart card.
+  nominalW: 4.4,
+  nominalH: 7.23,
   // Paper laps over the card edge by this much on EVERY side, so the
   // window opening is smaller than the card and keeps it secure.
   overlap: 0.25,
   // Top-left of the nominal card footprint: centered on the page. Everything
   // else (window, grid, label, right cutouts) derives from this, so the whole
   // layout shifts with it.
-  x: (PAGE.w - 4.5) / 2,
-  y: (PAGE.h - 7.0) / 2,
+  x: (PAGE.w - 4.4) / 2,
+  y: (PAGE.h - 7.23) / 2,
 };
 
 // The shared physical Munsell hole/chip grid, straight from munsellPages.ts:
@@ -64,19 +64,21 @@ const GRID = {
   colStep: 2, // reference-grid units between columns (munsellPages.ts)
   rowStep: 3, // reference-grid units between rows
   chipDy: -1.5, // chip center offset (units) from its hole row
-  // colPitch is the ONE calibration knob — center-to-center between chip
-  // columns, in inches. rowPitch is locked to 1.5× (from the reference-
-  // grid ratio in munsellPages.ts). ~15mm ≈ 0.59" is a typical Munsell
-  // soil-color-chart pitch; measure your card and adjust.
-  colPitch: 0.59,
+  // Measured colPitch (chip col center-to-center) on the physical
+  // card. rowPitch is locked to 1.5× (= 0.918", matches the measured
+  // 0.92" within measurement noise).
+  colPitch: 0.612,
   chipW: 0.47, // chip rectangle width (inches) — nearly square on real charts
   chipH: 0.59, // chip rectangle height (excluding the viewing hole above)
-  holeR: 0.16, // viewing-hole radius (inches)
-  // Vertical offset from the window's top edge to the FIRST chip's top
-  // edge. Set to 0 to auto-centre the grid inside the window; use a
-  // positive value to push the grid down (past a title / hue-label band
-  // near the top of the chart page).
-  gridTopOffset: 0.6,
+  // Viewing-hole radius — measured hole diameter = 0.5".
+  holeR: 0.25,
+  // Absolute placement of hole (0,0) CENTRE, measured from the card's
+  // top-left corner. The whole hole/chip grid pins off this: the code
+  // no longer auto-centres inside the window. Derived from user's
+  // measurements: LEFT of leftmost hole 0.62" + 0.25" radius, TOP of
+  // first hole row 1.06" + 0.25" radius.
+  hole00X: 0.87,
+  hole00Y: 1.31,
   showGuide: true, // draw chip rectangles + holes dashed, for alignment
 };
 
@@ -121,20 +123,12 @@ const cardCenterX = CARD.x + CARD.nominalW / 2;
 const unit = GRID.colPitch / GRID.colStep;
 const rowPitch = GRID.rowStep * unit;
 
-// Centre the physical grid horizontally inside the main window. Vertically:
-// when GRID.gridTopOffset > 0, pin the FIRST chip's top edge that many
-// inches below the window top (useful for cards with a title / hue-label
-// band that sits above the chip grid); when 0, centre the chip block
-// (top-chip-top-edge to bottom-chip-bottom-edge) inside the window.
-const colCentersSpan = (GRID.cols - 1) * GRID.colStep * unit;
-const gridOriginX = window_.x + (window_.w - colCentersSpan) / 2;
-const chipTopRel = GRID.chipDy * unit - GRID.chipH / 2;
-const chipBotRel =
-  ((GRID.rows - 1) * GRID.rowStep + GRID.chipDy) * unit + GRID.chipH / 2;
-const gridOriginY =
-  GRID.gridTopOffset > 0
-    ? window_.y + GRID.gridTopOffset - chipTopRel
-    : window_.y + window_.h / 2 - (chipTopRel + chipBotRel) / 2;
+// Absolute placement: the reference-grid origin (hole (0,0) centre)
+// lands at CARD.{x,y} + GRID.hole00{X,Y}. All chip / hole positions
+// then follow from the ref-grid unit math below. No centering — the
+// physical measurements pin the grid to the card exactly.
+const gridOriginX = CARD.x + GRID.hole00X;
+const gridOriginY = CARD.y + GRID.hole00Y;
 
 // Physical (0-based col, row) -> page inches. Chips and holes share a column
 // x; a chip's y sits chipDy units above its hole row.
@@ -397,3 +391,4 @@ function main() {
 }
 
 main();
+ 
