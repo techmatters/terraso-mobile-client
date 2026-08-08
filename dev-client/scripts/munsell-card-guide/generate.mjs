@@ -96,6 +96,10 @@ const RIGHT = {
   // Right-box centres sit 1.75 × colPitch past the last chip column
   // centre — a bit further than "one and a half" gives more breathing
   // room between the chart's rightmost chips and the ref-card slots.
+  //
+  // MUST stay in lock-step with MULTI_CARD_OFFSET_PITCHES in
+  // src/screens/MunsellChartValidator/matchAlgorithm.ts — that's
+  // where the app samples the physical cards this printout positions.
   offsetPitches: 1.75,
   rows: [0, 1, 2, 3, 4, 5, 6], // one per chip row on the physical chart
 };

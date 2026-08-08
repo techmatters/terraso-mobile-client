@@ -81,23 +81,30 @@ export const TEST_SWATCH_INDEX: number = SAMPLE_GRID.length - 1;
 
 // Multi-card layout: three reference cards taped to a paper strip on
 // the right side of the chart page (all pages use the same fixed
-// coords, regardless of which Munsell page is in the shot). x=13 is
-// one chip-column-step (2) past the last chip column (x=10), plus a
-// 1.5× spacing gap so the cards visually separate from the chart
-// chips. y values match the CHIP rows (physicalRow * 3 - 1.5, per
-// pageSampleGridPoints) for the top three chip rows — so each slot
-// sits at the same vertical position as its corresponding chip row
-// once the affine registration has been applied. Slot order chosen
-// to match the physical sizes of the actual cards.
+// coords, regardless of which Munsell page is in the shot). Slot
+// x sits MULTI_CARD_OFFSET_PITCHES × chip-column-step (2) past the
+// last chip column (x=10). y values match the CHIP rows (
+// physicalRow * 3 - 1.5, per pageSampleGridPoints) for the top three
+// chip rows — so each slot sits at the same vertical position as
+// its corresponding chip row once the affine registration has been
+// applied. Slot order chosen to match the physical sizes of the
+// actual cards.
+//
+// MULTI_CARD_OFFSET_PITCHES MUST stay in lock-step with RIGHT.
+// offsetPitches in scripts/munsell-card-guide/generate.mjs — that's
+// the printout that positions the physical cards. When one moves,
+// move the other.
+export const MULTI_CARD_OFFSET_PITCHES = 1.75;
+const MULTI_CARD_X = 10 + MULTI_CARD_OFFSET_PITCHES * 2;
 export type MultiCardSlot = {
   readonly x: number;
   readonly y: number;
   readonly name: 'whibal' | 'postit' | 'greycard';
 };
 export const MULTI_CARD_POINTS: readonly MultiCardSlot[] = [
-  {x: 13, y: 0 * 3 - 1.5, name: 'whibal'},
-  {x: 13, y: 1 * 3 - 1.5, name: 'postit'},
-  {x: 13, y: 2 * 3 - 1.5, name: 'greycard'},
+  {x: MULTI_CARD_X, y: 0 * 3 - 1.5, name: 'whibal'},
+  {x: MULTI_CARD_X, y: 1 * 3 - 1.5, name: 'postit'},
+  {x: MULTI_CARD_X, y: 2 * 3 - 1.5, name: 'greycard'},
 ];
 
 // A filter runs on a candidate triplet and returns true to accept
