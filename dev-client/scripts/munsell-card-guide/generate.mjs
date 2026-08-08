@@ -194,6 +194,19 @@ const label = {
 
 const f = n => Number(n.toFixed(4)); // trim float noise
 
+// Local-time "YYYY-MM-DD HH:MM" — printed under the title so a
+// tester can tell at a glance whether they're holding the latest
+// generated copy. Local time (not ISO/UTC) reads more naturally
+// on a physical print.
+function generatedStamp() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return (
+    `generated ${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
+    ` ${pad(d.getHours())}:${pad(d.getMinutes())}`
+  );
+}
+
 function cutRect({x, y, w, h}, rx = STYLE.cut.rx, fill = STYLE.cut.fill) {
   return `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" rx="${f(
     rx,
@@ -360,6 +373,9 @@ function buildBackSvg() {
   );
   const pageCenterX = PAGE.w / 2;
   els.push(text(pageCenterX, CARD.y - 1.1, 'Munsell Soil-Color Chart'));
+  els.push(
+    text(pageCenterX, CARD.y - 0.9, generatedStamp(), {size: 0.1}),
+  );
   els.push(text(pageCenterX, CARD.y - 0.35, '(background)'));
   els.push(...rightBoxesElements());
   // Ruler horizontally centred on the page (default 4" long, so
@@ -397,6 +413,9 @@ function buildSvg() {
   // shift so its centre isn't the visual page centre).
   const pageCenterX = PAGE.w / 2;
   els.push(text(pageCenterX, CARD.y - 1.1, 'Munsell Soil-Color Chart'));
+  els.push(
+    text(pageCenterX, CARD.y - 0.9, generatedStamp(), {size: 0.1}),
+  );
   els.push(text(pageCenterX, CARD.y - 0.35, 'Cut out all shaded areas'));
 
   if (GRID.showGuide) {
