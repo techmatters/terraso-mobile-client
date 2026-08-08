@@ -358,7 +358,7 @@ function buildBackSvg() {
   );
   const pageCenterX = PAGE.w / 2;
   els.push(text(pageCenterX, CARD.y - 1.1, 'Munsell Soil-Color Chart'));
-  els.push(text(pageCenterX, CARD.y - 0.35, '(reference-card side)'));
+  els.push(text(pageCenterX, CARD.y - 0.35, '(background)'));
   els.push(...rightBoxesElements());
   els.push(scaleBar(0.5, PAGE.h - 0.5));
   return svgDocument(els);
