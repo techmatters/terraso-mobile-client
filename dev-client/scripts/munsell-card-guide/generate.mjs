@@ -92,9 +92,11 @@ const GRID = {
 // every chip row on the physical chart has a reference patch beside it.
 const RIGHT = {
   count: 7,
-  // Horizontal offset from the last column center, in colPitch units
-  // ("1 1/2 times over from the color patches").
-  offsetPitches: 1.5,
+  // Horizontal offset from the last column center, in colPitch units.
+  // Right-box centres sit 1.75 × colPitch past the last chip column
+  // centre — a bit further than "one and a half" gives more breathing
+  // room between the chart's rightmost chips and the ref-card slots.
+  offsetPitches: 1.75,
   rows: [0, 1, 2, 3, 4, 5, 6], // one per chip row on the physical chart
 };
 
@@ -360,7 +362,9 @@ function buildBackSvg() {
   els.push(text(pageCenterX, CARD.y - 1.1, 'Munsell Soil-Color Chart'));
   els.push(text(pageCenterX, CARD.y - 0.35, '(background)'));
   els.push(...rightBoxesElements());
-  els.push(scaleBar(0.5, PAGE.h - 0.5));
+  // Ruler horizontally centred on the page (default 4" long, so
+  // x0 = (8.5 - 4) / 2 = 2.25).
+  els.push(scaleBar((PAGE.w - 4) / 2, PAGE.h - 0.5));
   return svgDocument(els);
 }
 
@@ -400,7 +404,9 @@ function buildSvg() {
     for (const hole of gridHoles) els.push(guideCircle(hole));
   }
 
-  els.push(scaleBar(0.5, PAGE.h - 0.5));
+  // Ruler horizontally centred on the page (default 4" long, so
+  // x0 = (8.5 - 4) / 2 = 2.25).
+  els.push(scaleBar((PAGE.w - 4) / 2, PAGE.h - 0.5));
 
   return svgDocument(els);
 }
