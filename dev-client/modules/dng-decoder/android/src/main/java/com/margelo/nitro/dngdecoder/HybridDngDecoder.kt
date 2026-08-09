@@ -73,17 +73,23 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
     }
 
     override fun readPreviewRgb(dngPath: String, maxDim: Double): PreviewRgb {
-        // 1) Full-sensor source dims — the chart validator uses these to
-        //    map preview-space ROIs back to full-res coords for the
-        //    decodeDngRois follow-up pass.
+        // 1) Full-sensor dims. nativeReadMetadata returns SENSOR-native
+        //    dims (landscape on most phones) — but the preview from
+        //    nativeRenderPreview is already display-oriented (rotated
+        //    per the DNG's orientation tag). Callers expect the
+        //    sourceWidth/sourceHeight to be in the SAME orientation as
+        //    the preview so a scale factor preview→source is correct;
+        //    otherwise ROIs computed on the preview map to out-of-
+        //    bounds positions on the full-res image when aspects
+        //    disagree.
         val metaDims = IntArray(3)
         val metaOut = DoubleArray(3)
         val metaCfa = IntArray(4)
         val metaErr = arrayOfNulls<String>(1)
         val okMeta = nativeReadMetadata(dngPath, metaDims, metaCfa, metaOut, metaErr)
         if (!okMeta) throw RuntimeException(metaErr[0] ?: "DNG parse failed")
-        val sourceWidth = metaDims[0]
-        val sourceHeight = metaDims[1]
+        val sensorWidth = metaDims[0]
+        val sensorHeight = metaDims[1]
 
         // 2) Downscaled RGB preview via the same C++ decoder path
         //    renderPreview uses (nativeRenderPreview → ARGB8888 IntArray),
@@ -96,6 +102,17 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         val w = previewDims[0]
         val h = previewDims[1]
         val nPix = w * h
+
+        // 3) Align source dims to the preview's orientation. If preview
+        //    is portrait but sensor is landscape (or vice versa), the
+        //    orientation tag rotated 90° — swap sensor dims so the
+        //    reported "source" matches. Detection: preview and sensor
+        //    have opposite landscape-ness.
+        val previewIsPortrait = h > w
+        val sensorIsPortrait = sensorHeight > sensorWidth
+        val swap = previewIsPortrait != sensorIsPortrait
+        val sourceWidth = if (swap) sensorHeight else sensorWidth
+        val sourceHeight = if (swap) sensorWidth else sensorHeight
 
         // ARGB IntArray (0xFFRRGGBB per pixel) → 3-bytes-per-pixel
         // interleaved RGB. Same conversion as tools/dng-cli-cpp/main.cpp
