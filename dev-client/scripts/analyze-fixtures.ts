@@ -939,18 +939,24 @@ process.stderr.write(
 // (CIRAWFilter, matches the on-device iOS decoder). Photo methods
 // go through the Swift CLI regardless — JPEG decode is universal.
 const iosDecoder = new NodeDecoder(DNG_CLI);
-const androidDecoder = fs.existsSync(DNG_CLI_CPP)
-  ? new NodeDecoder(DNG_CLI_CPP, DNG_CLI)
-  : null;
-if (!androidDecoder) {
-  process.stderr.write(
-    `note: dng-cli-cpp not built at ${DNG_CLI_CPP} — Android DNGs will ` +
-      `fall back to the Swift CLI (CIRAWFilter). Run ` +
-      `\`npm run build:dng-cli-cpp\` for byte-accurate on-device parity.\n`,
+// If ANY fixture in this run is Android, dng-cli-cpp MUST be built.
+// We refuse to silently fall back to the Swift CLI (CIRAWFilter) for
+// Android DNGs — that would give "Apple decoding an Android
+// capture" results and invalidate the raw-vs-jpeg A/B measurement
+// that this whole pipeline exists to make.
+const hasAndroidFixture = fixtures.some(f => f.platform === 'android');
+if (hasAndroidFixture && !fs.existsSync(DNG_CLI_CPP)) {
+  die(
+    `Android fixtures detected but dng-cli-cpp not built at\n` +
+      `  ${DNG_CLI_CPP}\n` +
+      `Run: npm run build:dng-cli-cpp`,
   );
 }
+const androidDecoder = hasAndroidFixture
+  ? new NodeDecoder(DNG_CLI_CPP, DNG_CLI)
+  : null;
 const decoderFor = (f: ParsedFixture) =>
-  f.platform === 'android' && androidDecoder ? androidDecoder : iosDecoder;
+  f.platform === 'android' ? androidDecoder! : iosDecoder;
 const captures: CaptureJsonEntry[] = [];
 const captureContexts: CaptureContext[] = [];
 let nSuccess = 0;
