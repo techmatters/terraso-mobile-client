@@ -73,10 +73,47 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
     }
 
     override fun readPreviewRgb(dngPath: String, maxDim: Double): PreviewRgb {
-        // Not yet implemented on Android — same rationale as
-        // readPreviewGrayscale above.
-        throw NotImplementedError(
-            "DngDecoder.readPreviewRgb is not yet implemented on Android"
+        // 1) Full-sensor source dims — the chart validator uses these to
+        //    map preview-space ROIs back to full-res coords for the
+        //    decodeDngRois follow-up pass.
+        val metaDims = IntArray(3)
+        val metaOut = DoubleArray(3)
+        val metaCfa = IntArray(4)
+        val metaErr = arrayOfNulls<String>(1)
+        val okMeta = nativeReadMetadata(dngPath, metaDims, metaCfa, metaOut, metaErr)
+        if (!okMeta) throw RuntimeException(metaErr[0] ?: "DNG parse failed")
+        val sourceWidth = metaDims[0]
+        val sourceHeight = metaDims[1]
+
+        // 2) Downscaled RGB preview via the same C++ decoder path
+        //    renderPreview uses (nativeRenderPreview → ARGB8888 IntArray),
+        //    then pack ARGB → interleaved RGB bytes for the JS side.
+        //    Same layout iOS's readPreviewRgb writes.
+        val previewDims = IntArray(2)
+        val err = arrayOfNulls<String>(1)
+        val argb = nativeRenderPreview(dngPath, maxDim.toInt(), previewDims, err)
+            ?: throw RuntimeException(err[0] ?: "renderPreview failed")
+        val w = previewDims[0]
+        val h = previewDims[1]
+        val nPix = w * h
+
+        // ARGB IntArray (0xFFRRGGBB per pixel) → 3-bytes-per-pixel
+        // interleaved RGB. Same conversion as tools/dng-cli-cpp/main.cpp
+        // read-preview-rgb.
+        val rgb = ByteArray(nPix * 3)
+        for (i in 0 until nPix) {
+            val px = argb[i]
+            rgb[i * 3] = ((px shr 16) and 0xFF).toByte()
+            rgb[i * 3 + 1] = ((px shr 8) and 0xFF).toByte()
+            rgb[i * 3 + 2] = (px and 0xFF).toByte()
+        }
+
+        return PreviewRgb(
+            width = w.toDouble(),
+            height = h.toDouble(),
+            pixels = com.margelo.nitro.core.ArrayBuffer.copy(rgb),
+            sourceWidth = sourceWidth.toDouble(),
+            sourceHeight = sourceHeight.toDouble(),
         )
     }
 

@@ -137,7 +137,10 @@ export const AndroidRawCaptureScreen = () => {
   return (
     <ScreenScaffold AppBar={<AppBar title="Android RAW capture" />}>
       <View style={styles.container}>
-        <RawCameraAndroidView style={StyleSheet.absoluteFill} />
+        <RawCameraAndroidView
+          style={StyleSheet.absoluteFill}
+          showRoiOverlay={!chartGuide}
+        />
         {chartGuide && <ChartGuideOverlay guide={chartGuide} />}
         <View style={styles.bottomBar}>
           <Pressable
