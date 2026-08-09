@@ -97,6 +97,14 @@ const REF_CARD_DISPLAY_NAMES: Record<string, string> = {
   postit: '3M Post-it Yellow',
 };
 const DNG_CLI = path.resolve(__dirname, '../tools/dng-cli/build/dng-cli');
+// Parallel C++ CLI wrapping modules/dng-decoder/cpp/. Used for
+// Android DNGs so mac analysis mirrors the on-device decoder byte-
+// for-byte instead of routing through Apple's CIRAWFilter. See
+// docs/android-raw-path.md for the "same-code-path invariant".
+const DNG_CLI_CPP = path.resolve(
+  __dirname,
+  '../tools/dng-cli-cpp/build/dng-cli-cpp',
+);
 
 // ---- Node adapter for DngDecoderLike --------------------------------------
 
@@ -105,7 +113,14 @@ const DNG_CLI = path.resolve(__dirname, '../tools/dng-cli/build/dng-cli');
 // (RN screen) use the returned URI to display; Node consumers include
 // it in the JSON output but don't dereference it.
 class NodeDecoder implements DngDecoderLike {
-  private cliPath: string;
+  // Two CLIs, one for DNG methods and one for photo methods. iOS
+  // fixtures use the Swift CLI (CIRAWFilter for DNG, CIImage for
+  // photo) for both. Android fixtures use the C++ CLI for DNG (byte-
+  // for-byte match with the on-device Android decoder in
+  // modules/dng-decoder/cpp/) but still the Swift CLI for photo —
+  // JPEG decode is universal, and the C++ CLI doesn't implement it.
+  private dngCliPath: string;
+  private photoCliPath: string;
   private tmpDir: string;
   private ctr = 0;
   private previewCache = new Map<
@@ -113,8 +128,9 @@ class NodeDecoder implements DngDecoderLike {
     {width: number; height: number; sourceWidth: number; sourceHeight: number}
   >();
 
-  constructor(cliPath: string) {
-    this.cliPath = cliPath;
+  constructor(dngCliPath: string, photoCliPath: string = dngCliPath) {
+    this.dngCliPath = dngCliPath;
+    this.photoCliPath = photoCliPath;
     this.tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dng-cli-'));
   }
 
@@ -124,7 +140,7 @@ class NodeDecoder implements DngDecoderLike {
 
   decodeDngRois(dngPath: string, rois: Roi[]): LinearRgb[] {
     const out = execFileSync(
-      this.cliPath,
+      this.dngCliPath,
       ['decode-dng-rois', dngPath, JSON.stringify(rois)],
       {encoding: 'utf-8', maxBuffer: 32 * 1024 * 1024},
     );
@@ -134,7 +150,7 @@ class NodeDecoder implements DngDecoderLike {
   readPreviewRgb(dngPath: string, maxDim: number): PreviewRgb {
     const binPath = path.join(this.tmpDir, `preview-${this.ctr++}.bin`);
     const out = execFileSync(
-      this.cliPath,
+      this.dngCliPath,
       ['read-preview-rgb', dngPath, String(maxDim), binPath],
       {encoding: 'utf-8'},
     );
@@ -167,8 +183,13 @@ class NodeDecoder implements DngDecoderLike {
     const outPath = path.join(this.tmpDir, `preview-${this.ctr++}.${ext}`);
     const subcommand =
       format === 'raw' ? 'render-preview' : 'render-preview-photo';
+    // Display-only preview for the HTML report — always routed
+    // through the Swift CLI regardless of platform. The analysis
+    // pixels for Android DNGs still come from the C++ CLI via
+    // decodeDngRois / readPreviewRgb above; this rendering is just
+    // for the report's "here's what the shot looked like" panel.
     const stdout = execFileSync(
-      this.cliPath,
+      this.photoCliPath,
       [subcommand, imagePath, String(maxDim), outPath, String(quality)],
       {encoding: 'utf-8'},
     );
@@ -197,8 +218,10 @@ class NodeDecoder implements DngDecoderLike {
   }
 
   decodePhotoRois(imagePath: string, rois: Roi[]): LinearRgb[] {
+    // JPEG decode is universal — always routes through the Swift CLI
+    // (CIImage). Correct for both iOS and Android JPEG fixtures.
     const out = execFileSync(
-      this.cliPath,
+      this.photoCliPath,
       ['decode-photo-rois', imagePath, JSON.stringify(rois)],
       {encoding: 'utf-8', maxBuffer: 32 * 1024 * 1024},
     );
@@ -208,7 +231,7 @@ class NodeDecoder implements DngDecoderLike {
   readPreviewRgbPhoto(imagePath: string, maxDim: number): PreviewRgb {
     const binPath = path.join(this.tmpDir, `preview-${this.ctr++}.bin`);
     const out = execFileSync(
-      this.cliPath,
+      this.photoCliPath,
       ['read-preview-rgb-photo', imagePath, String(maxDim), binPath],
       {encoding: 'utf-8'},
     );
@@ -232,6 +255,11 @@ type ParsedFixture = {
   path: string;
   page: string;
   format: 'raw' | 'photo';
+  // Which phone platform produced the capture — routes DNG decoding
+  // through the CLI that mirrors that platform's on-device decoder.
+  // 'unknown' when no platform token appeared in the filename; we
+  // default to iOS for those (historical fixtures were all iOS).
+  platform: 'ios' | 'android' | 'unknown';
   reference: string | null;
   illuminant_tag: string | null;
   tags: string[];
@@ -281,7 +309,12 @@ const ILLUMINANT_TOKENS = new Set(['light', 'dark']);
 //     an analysis dimension either.
 // All three are dropped from the "tags" list so they don't clutter
 // the report or the filmstrip filter.
-const IGNORED_TOKENS = new Set(['both', 'ios', 'android']);
+// 'both' = paired DNG+JPEG capture flag; per-platform tokens 'ios' /
+// 'android' get pulled out into ParsedFixture.platform below (they
+// route the DNG decoder). Timestamps and everything else fall
+// through into the free-form tags list.
+const BOTH_TOKEN = 'both';
+const PLATFORM_TOKENS = new Set<'ios' | 'android'>(['ios', 'android']);
 const TIMESTAMP_RE = /^\d{8}t\d{4,6}$/;
 
 const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
@@ -296,6 +329,7 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
   // Format is derived from the extension only; format tokens in the
   // filename are stripped from tags but don't override this.
   const format: 'raw' | 'photo' = ext === 'dng' ? 'raw' : 'photo';
+  let platform: 'ios' | 'android' | 'unknown' = 'unknown';
   let reference: string | null = null;
   let illuminant_tag: string | null = null;
   const tags: string[] = [];
@@ -316,13 +350,19 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
       illuminant_tag = t;
       continue;
     }
-    if (IGNORED_TOKENS.has(t)) continue;
+    if (PLATFORM_TOKENS.has(t as 'ios' | 'android')) {
+      platform = t as 'ios' | 'android';
+      continue;
+    }
+    if (t === BOTH_TOKEN) continue;
     if (TIMESTAMP_RE.test(t)) continue;
     tags.push(t);
   }
 
   if (!page) return null;
-  return {path: fullPath, page, format, reference, illuminant_tag, tags};
+  return {
+    path: fullPath, page, format, platform, reference, illuminant_tag, tags,
+  };
 };
 
 // ---- Scanner ---------------------------------------------------------------
@@ -893,7 +933,24 @@ process.stderr.write(
     `; refs=[${refNotations.join(', ')}]\n`,
 );
 
-const decoder = new NodeDecoder(DNG_CLI);
+// Two decoders — Android fixtures route their DNG methods through
+// the C++ CLI (byte-for-byte match with the on-device Android
+// decoder); iOS + unknown-platform fixtures use the Swift CLI
+// (CIRAWFilter, matches the on-device iOS decoder). Photo methods
+// go through the Swift CLI regardless — JPEG decode is universal.
+const iosDecoder = new NodeDecoder(DNG_CLI);
+const androidDecoder = fs.existsSync(DNG_CLI_CPP)
+  ? new NodeDecoder(DNG_CLI_CPP, DNG_CLI)
+  : null;
+if (!androidDecoder) {
+  process.stderr.write(
+    `note: dng-cli-cpp not built at ${DNG_CLI_CPP} — Android DNGs will ` +
+      `fall back to the Swift CLI (CIRAWFilter). Run ` +
+      `\`npm run build:dng-cli-cpp\` for byte-accurate on-device parity.\n`,
+  );
+}
+const decoderFor = (f: ParsedFixture) =>
+  f.platform === 'android' && androidDecoder ? androidDecoder : iosDecoder;
 const captures: CaptureJsonEntry[] = [];
 const captureContexts: CaptureContext[] = [];
 let nSuccess = 0;
@@ -902,6 +959,7 @@ let nFailure = 0;
 (async () => {
   for (const fixture of fixtures) {
     const page = findMunsellPage(fixture.page);
+    const decoder = decoderFor(fixture);
     const t0 = Date.now();
     let outcome: MunsellChartOutcome;
     try {
@@ -1033,7 +1091,8 @@ let nFailure = 0;
     );
   }
 
-  decoder.cleanup();
+  iosDecoder.cleanup();
+  androidDecoder?.cleanup();
 
   const runMeta = {
     schema_version: SCHEMA_VERSION,
@@ -1069,6 +1128,7 @@ let nFailure = 0;
     );
   }
 })().catch(err => {
-  decoder.cleanup();
+  iosDecoder.cleanup();
+  androidDecoder?.cleanup();
   die(`fatal: ${err instanceof Error ? err.stack ?? err.message : String(err)}`);
 });

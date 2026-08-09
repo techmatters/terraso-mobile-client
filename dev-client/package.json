@@ -25,6 +25,7 @@
     "check-ts": "tsc --noEmit",
     "check-modules": "depcheck",
     "build:dng-cli": "./tools/dng-cli/build.sh",
+    "build:dng-cli-cpp": "./tools/dng-cli-cpp/build.sh",
     "analyze-fixtures": "node -r ts-node/register/transpile-only -r tsconfig-paths/register scripts/analyze-fixtures.ts",
     "render-munsell-error": "node -r ts-node/register/transpile-only -r tsconfig-paths/register scripts/render-munsell-error.ts",
     "prebuild": "expo prebuild",
