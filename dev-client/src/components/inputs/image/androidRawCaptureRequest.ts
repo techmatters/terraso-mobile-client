@@ -16,6 +16,7 @@
  */
 
 import type {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import type {ChartGuide} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
 
 // Module-scope bridge for the Android RAW capture flow. The
 // RawCameraView JS wrapper stashes onCapture / onCancel callbacks here,
@@ -28,6 +29,10 @@ import type {CaptureResult} from 'terraso-mobile-client/components/inputs/image/
 export type AndroidRawCaptureCallbacks = {
   onCapture: (result: CaptureResult) => void;
   onCancel: () => void;
+  // Optional chart-guide overlay — set by the RawCameraView wrapper
+  // when the parent passed `chartGuide`. Same aspectW / aspectH /
+  // marginFrac shape iOS's Vision Camera path consumes.
+  chartGuide?: ChartGuide;
 };
 
 let pending: AndroidRawCaptureCallbacks | null = null;

@@ -28,8 +28,10 @@ import {
   consumeAndroidRawCaptureCallbacks,
 } from 'terraso-mobile-client/components/inputs/image/androidRawCaptureRequest';
 import type {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import {ChartGuideOverlay} from 'terraso-mobile-client/components/inputs/image/RawCameraView';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import type {ChartGuide} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 // Full-screen React Navigation route for Android RAW capture. Owns the
@@ -58,6 +60,7 @@ export const AndroidRawCaptureScreen = () => {
   // through RawCameraView — treat that as an error UI.
   const callbacksRef = useRef<AndroidRawCaptureCallbacks | null>(null);
   const [noCallbacks, setNoCallbacks] = useState(false);
+  const [chartGuide, setChartGuide] = useState<ChartGuide | null>(null);
   useEffect(() => {
     const cb = consumeAndroidRawCaptureCallbacks();
     if (cb == null) {
@@ -65,6 +68,7 @@ export const AndroidRawCaptureScreen = () => {
       setNoCallbacks(true);
     }
     callbacksRef.current = cb;
+    setChartGuide(cb?.chartGuide ?? null);
   }, []);
 
   const [isCapturing, setIsCapturing] = useState(false);
@@ -134,6 +138,7 @@ export const AndroidRawCaptureScreen = () => {
     <ScreenScaffold AppBar={<AppBar title="Android RAW capture" />}>
       <View style={styles.container}>
         <RawCameraAndroidView style={StyleSheet.absoluteFill} />
+        {chartGuide && <ChartGuideOverlay guide={chartGuide} />}
         <View style={styles.bottomBar}>
           <Pressable
             onPress={shutter}

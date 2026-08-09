@@ -510,6 +510,7 @@ const AndroidRawViewImpl = ({
   onCapture,
   onCancel,
   onRawPhotoDevOnly,
+  chartGuide,
 }: Props) => {
   const navigation = useNavigation();
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -537,6 +538,7 @@ const AndroidRawViewImpl = ({
         onCapture(result);
       },
       onCancel,
+      chartGuide,
     });
     navigation.navigate('ANDROID_RAW_CAPTURE');
     // Only trigger on the visible→true transition. Re-firing on
@@ -794,7 +796,7 @@ const SensorAspectFrame = ({
 // fraction of the frame as margin; the other axis gets whatever's
 // left). pointerEvents: 'none' so it never intercepts touches — the
 // shutter and tap-to-focus still work through it.
-const ChartGuideOverlay = ({
+export const ChartGuideOverlay = ({
   guide,
 }: {
   guide: {aspectW: number; aspectH: number; marginFrac: number};
