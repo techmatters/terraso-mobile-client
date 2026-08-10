@@ -448,25 +448,55 @@ object CameraSessionManager {
         val viewPort = ViewPort.Builder(Rational(3, 4), Surface.ROTATION_0)
             .setScaleType(ViewPort.FILL_CENTER)
             .build()
-        val useCaseGroupBuilder = UseCaseGroup.Builder().setViewPort(viewPort)
-        useCaseGroupBuilder.addUseCase(imageCapture)
-        useCaseGroupBuilder.addUseCase(jpegCapture)
-        useCaseGroupBuilder.addUseCase(analysis)
-        if (preview != null) useCaseGroupBuilder.addUseCase(preview)
-        val useCaseGroup = useCaseGroupBuilder.build()
-
-        Log.i(
-            TAG,
-            "ensureBound: binding use case group (preview=${preview != null}, analysis=true, viewport=3:4 portrait)"
-        )
+        // Try binding Preview + Analysis + RAW + JPEG (4 streams) first
+        // — LEVEL_3 Camera2 devices are supposed to support this combo,
+        // but in practice not all do (Pixel 6a errors with "No supported
+        // surface combination"). If that fails, retry without Analysis
+        // (Preview provides the repeating-request keep-alive; the phase-8
+        // real-time overlay just won't have per-frame data). In blind
+        // mode (no Preview surface) Analysis stays in as the keep-alive.
+        val buildGroup = { includeAnalysis: Boolean ->
+            val b = UseCaseGroup.Builder().setViewPort(viewPort)
+            b.addUseCase(imageCapture)
+            b.addUseCase(jpegCapture)
+            if (includeAnalysis) b.addUseCase(analysis)
+            if (preview != null) b.addUseCase(preview)
+            b.build()
+        }
+        val analysisBoundRef = arrayOf(false)
         val camera =
             withContext(Dispatchers.Main) {
-                provider.bindToLifecycle(
-                    ProcessLifecycleOwner.get(),
-                    CameraSelector.DEFAULT_BACK_CAMERA,
-                    useCaseGroup,
+                val fullGroup = buildGroup(true)
+                Log.i(
+                    TAG,
+                    "ensureBound: binding preview=${preview != null} analysis=true jpeg=true raw=true (viewport 3:4 portrait)"
                 )
+                try {
+                    val c = provider.bindToLifecycle(
+                        ProcessLifecycleOwner.get(),
+                        CameraSelector.DEFAULT_BACK_CAMERA,
+                        fullGroup,
+                    )
+                    analysisBoundRef[0] = true
+                    c
+                } catch (e: IllegalArgumentException) {
+                    // Preview-mode fallback only — in blind mode Analysis
+                    // is the keep-alive and we must not drop it.
+                    if (preview == null) throw e
+                    Log.w(
+                        TAG,
+                        "4-stream bind failed on this device, retrying without ImageAnalysis (phase-8 overlay will be inactive)",
+                        e,
+                    )
+                    val fallbackGroup = buildGroup(false)
+                    provider.bindToLifecycle(
+                        ProcessLifecycleOwner.get(),
+                        CameraSelector.DEFAULT_BACK_CAMERA,
+                        fallbackGroup,
+                    )
+                }
             }
+        val analysisWasBound = analysisBoundRef[0]
         val cameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
         val characteristics = fetchCharacteristics(cameraInfo)
 
@@ -526,7 +556,7 @@ object CameraSessionManager {
         boundImageCapture = imageCapture
         boundJpegCapture = jpegCapture
         boundPreview = preview
-        boundAnalysis = analysis
+        boundAnalysis = if (analysisWasBound) analysis else null
         boundCharacteristics = characteristics
         return BoundSession(imageCapture, jpegCapture, characteristics)
     }
