@@ -15,6 +15,7 @@ namespace margelo::nitro::rawcameraandroid { struct CapturedPhoto; }
 #include <NitroModules/JPromise.hpp>
 #include "JCapturedPhoto.hpp"
 #include <string>
+#include <optional>
 
 namespace margelo::nitro::rawcameraandroid {
 

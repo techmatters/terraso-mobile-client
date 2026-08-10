@@ -40,6 +40,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -99,6 +101,22 @@ object CameraSessionManager {
     private val mutex = Mutex()
 
     private var boundImageCapture: ImageCapture? = null
+    // Companion JPEG capture bound alongside the RAW ImageCapture. Fires
+    // on the same shutter press so the RAW and JPEG represent the SAME
+    // instant (identical sensor state, framing, timing). The JPEG stream
+    // deliberately does NOT get applyWysiwygRequestOptions — it uses the
+    // HAL's default photo processing pipeline (HDR+ / distortion
+    // correction / tone map / sharpening / etc.) so the JPEG matches
+    // what the stock camera app would produce for the same scene.
+    // Useful for A/B-ing our RAW colour pipeline against the HAL's
+    // normal photo output.
+    //
+    // TODO: consider switching to ImageCapture.OUTPUT_FORMAT_RAW_JPEG
+    // (single use case, one shutter, both files) when we require
+    // CameraX >= 1.4 unconditionally. That would remove the two-stream
+    // stream-combination pressure and drop the parallel-await complexity
+    // in capture().
+    private var boundJpegCapture: ImageCapture? = null
     private var boundPreview: Preview? = null
     private var boundAnalysis: ImageAnalysis? = null
     private var boundCharacteristics: CameraCharacteristics? = null
@@ -169,55 +187,99 @@ object CameraSessionManager {
         mutex.withLock {
             Log.i(TAG, "capture: entered")
             requireCameraPermission()
-            val (imageCapture, characteristics) = ensureBoundLocked()
+            val (imageCapture, jpegCapture, characteristics) = ensureBoundLocked()
 
             val resultDeferred = CompletableDeferred<TotalCaptureResult>()
             pendingResult = resultDeferred
-            Log.i(TAG, "capture: triggering takePicture…")
+            Log.i(TAG, "capture: triggering takePicture (raw + jpeg)…")
 
-            val image: ImageProxy =
-                try {
-                    withTimeout(TAKE_PICTURE_TIMEOUT_MS) {
-                        takePictureSuspending(imageCapture)
+            // Fire both captures on the same shutter so RAW and JPEG
+            // represent the same instant. CameraX serialises still-
+            // capture requests on the underlying CameraCaptureSession,
+            // so "parallel" here means we hand both requests off without
+            // waiting between them; the HAL queues them tightly.
+            //
+            // The JPEG file is created up front so we control the path
+            // (matched stem to the DNG lets downstream tooling pair the
+            // two by filename).
+            val jpegFile =
+                File.createTempFile("RawCameraAndroid_", ".jpg", context.cacheDir)
+            val executor = ContextCompat.getMainExecutor(context)
+
+            coroutineScope {
+                val rawJob = async(Dispatchers.Main) {
+                    takePictureSuspending(imageCapture)
+                }
+                val jpegJob = async(Dispatchers.Main) {
+                    takePictureToFileSuspending(jpegCapture, jpegFile, executor)
+                }
+
+                val image: ImageProxy =
+                    try {
+                        withTimeout(TAKE_PICTURE_TIMEOUT_MS) { rawJob.await() }
+                    } catch (e: Throwable) {
+                        pendingResult = null
+                        jpegJob.cancel()
+                        Log.e(TAG, "capture: RAW takePicture failed", e)
+                        throw RuntimeException(
+                            "takePicture failed (or timed out after ${TAKE_PICTURE_TIMEOUT_MS}ms)",
+                            e,
+                        )
                     }
-                } catch (e: Throwable) {
-                    pendingResult = null
-                    Log.e(TAG, "capture: takePicture failed", e)
-                    throw RuntimeException(
-                        "takePicture failed (or timed out after ${TAKE_PICTURE_TIMEOUT_MS}ms)",
-                        e,
-                    )
+                Log.i(
+                    TAG,
+                    "capture: takePicture returned image ${image.width}x${image.height}"
+                )
+
+                val totalResult: TotalCaptureResult =
+                    try {
+                        withTimeout(CAPTURE_RESULT_TIMEOUT_MS) { resultDeferred.await() }
+                    } catch (e: Throwable) {
+                        image.close()
+                        jpegJob.cancel()
+                        throw RuntimeException(
+                            "Timed out waiting for TotalCaptureResult (${CAPTURE_RESULT_TIMEOUT_MS}ms)",
+                            e,
+                        )
+                    } finally {
+                        pendingResult = null
+                    }
+
+                // JPEG is a companion — don't fail the whole capture if
+                // only it errors. RAW is the primary output; jpegPath
+                // going null just means the caller can't A/B against a
+                // HAL-processed photo.
+                val jpegPath: String? =
+                    try {
+                        withTimeout(TAKE_PICTURE_TIMEOUT_MS) { jpegJob.await() }
+                        Log.i(
+                            TAG,
+                            "capture: JPEG written to ${jpegFile.absolutePath}"
+                        )
+                        "file://${jpegFile.absolutePath}"
+                    } catch (e: Throwable) {
+                        Log.w(
+                            TAG,
+                            "capture: JPEG capture failed (continuing with RAW only)",
+                            e,
+                        )
+                        jpegFile.delete()
+                        null
+                    }
+
+                val result = writeDngFile(image, characteristics, totalResult, jpegPath)
+                image.close()
+
+                // In blind mode (no attached view) release the session so
+                // libgcam doesn't spam metering-error logs on every frame.
+                // In view-attached mode leave it bound — the view still
+                // needs the preview stream.
+                if (currentSurfaceProvider == null) {
+                    Log.i(TAG, "capture: no attached view, releasing session")
+                    unbindAllLocked()
                 }
-            Log.i(
-                TAG,
-                "capture: takePicture returned image ${image.width}x${image.height}"
-            )
-
-            val totalResult: TotalCaptureResult =
-                try {
-                    withTimeout(CAPTURE_RESULT_TIMEOUT_MS) { resultDeferred.await() }
-                } catch (e: Throwable) {
-                    image.close()
-                    throw RuntimeException(
-                        "Timed out waiting for TotalCaptureResult (${CAPTURE_RESULT_TIMEOUT_MS}ms)",
-                        e,
-                    )
-                } finally {
-                    pendingResult = null
-                }
-
-            val result = writeDngFile(image, characteristics, totalResult)
-            image.close()
-
-            // In blind mode (no attached view) release the session so
-            // libgcam doesn't spam metering-error logs on every frame.
-            // In view-attached mode leave it bound — the view still
-            // needs the preview stream.
-            if (currentSurfaceProvider == null) {
-                Log.i(TAG, "capture: no attached view, releasing session")
-                unbindAllLocked()
+                result
             }
-            result
         }
 
     // Applies the WYSIWYG-guaranteeing capture request options to any
@@ -260,9 +322,19 @@ object CameraSessionManager {
         }
     }
 
-    private suspend fun ensureBoundLocked(): Pair<ImageCapture, CameraCharacteristics> {
+    private data class BoundSession(
+        val rawCapture: ImageCapture,
+        val jpegCapture: ImageCapture,
+        val characteristics: CameraCharacteristics,
+    )
+
+    private suspend fun ensureBoundLocked(): BoundSession {
         boundImageCapture?.let { ic ->
-            boundCharacteristics?.let { chars -> return ic to chars }
+            boundJpegCapture?.let { jc ->
+                boundCharacteristics?.let { chars ->
+                    return BoundSession(ic, jc, chars)
+                }
+            }
         }
         Log.i(TAG, "ensureBound: initializing session…")
 
@@ -303,6 +375,18 @@ object CameraSessionManager {
                 }
             )
         val imageCapture = builder.build()
+
+        // Companion JPEG ImageCapture. Uses HAL default processing
+        // (CAPTURE_MODE_MINIMIZE_LATENCY yields the same pipeline the
+        // stock camera app uses for a normal photo: HDR+ / distortion
+        // correction / tone map / sharpening / white balance).
+        // Deliberately does NOT get applyWysiwygRequestOptions so the
+        // JPEG reflects "what a normal photo looks like" — the whole
+        // point of capturing it alongside the RAW.
+        val jpegBuilder = ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+        val jpegCapture = jpegBuilder.build()
 
         // Keep-alive stream + phase-8 analyzer.
         //   - Blind mode (no surface): ImageAnalysis with a discard-only
@@ -366,6 +450,7 @@ object CameraSessionManager {
             .build()
         val useCaseGroupBuilder = UseCaseGroup.Builder().setViewPort(viewPort)
         useCaseGroupBuilder.addUseCase(imageCapture)
+        useCaseGroupBuilder.addUseCase(jpegCapture)
         useCaseGroupBuilder.addUseCase(analysis)
         if (preview != null) useCaseGroupBuilder.addUseCase(preview)
         val useCaseGroup = useCaseGroupBuilder.build()
@@ -439,15 +524,17 @@ object CameraSessionManager {
 
         boundCamera = camera
         boundImageCapture = imageCapture
+        boundJpegCapture = jpegCapture
         boundPreview = preview
         boundAnalysis = analysis
         boundCharacteristics = characteristics
-        return imageCapture to characteristics
+        return BoundSession(imageCapture, jpegCapture, characteristics)
     }
 
     // Must be called with mutex held.
     private suspend fun unbindAllLocked() {
-        if (boundImageCapture == null && boundPreview == null && boundAnalysis == null) {
+        if (boundImageCapture == null && boundJpegCapture == null &&
+            boundPreview == null && boundAnalysis == null) {
             return
         }
         withContext(Dispatchers.Main) {
@@ -456,6 +543,7 @@ object CameraSessionManager {
         }
         boundCamera = null
         boundImageCapture = null
+        boundJpegCapture = null
         boundPreview = null
         boundAnalysis = null
         boundCharacteristics = null
@@ -486,10 +574,38 @@ object CameraSessionManager {
         }
     }
 
+    // JPEG variant: hands takePicture an OutputFileOptions target so
+    // CameraX writes the encoded JPEG to disk itself (no ImageProxy
+    // decode + re-encode round-trip). Resumes once the file is closed.
+    private suspend fun takePictureToFileSuspending(
+        imageCapture: ImageCapture,
+        outFile: File,
+        executor: java.util.concurrent.Executor,
+    ): Unit {
+        val outputFileOptions =
+            ImageCapture.OutputFileOptions.Builder(outFile).build()
+        return suspendCancellableCoroutine { cont ->
+            imageCapture.takePicture(
+                outputFileOptions,
+                executor,
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                        cont.resume(Unit)
+                    }
+
+                    override fun onError(exception: ImageCaptureException) {
+                        cont.resumeWithException(exception)
+                    }
+                },
+            )
+        }
+    }
+
     private fun writeDngFile(
         image: ImageProxy,
         characteristics: CameraCharacteristics,
         result: TotalCaptureResult,
+        jpegPath: String?,
     ): CapturedPhoto {
         val underlyingImage =
             image.image
@@ -528,6 +644,7 @@ object CameraSessionManager {
         )
         return CapturedPhoto(
             dngPath = "file://${tempFile.absolutePath}",
+            jpegPath = jpegPath,
             width = image.width.toDouble(),
             height = image.height.toDouble(),
         )

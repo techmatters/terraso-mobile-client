@@ -23,6 +23,9 @@ data class CapturedPhoto(
   val dngPath: String,
   @DoNotStrip
   @Keep
+  val jpegPath: String?,
+  @DoNotStrip
+  @Keep
   val width: Double,
   @DoNotStrip
   @Keep
@@ -34,6 +37,7 @@ data class CapturedPhoto(
     if (this === other) return true
     if (other !is CapturedPhoto) return false
     return Objects.deepEquals(this.dngPath, other.dngPath)
+      && Objects.deepEquals(this.jpegPath, other.jpegPath)
       && Objects.deepEquals(this.width, other.width)
       && Objects.deepEquals(this.height, other.height)
   }
@@ -41,6 +45,7 @@ data class CapturedPhoto(
   override fun hashCode(): Int {
     return arrayOf<Any?>(
       dngPath,
+      jpegPath,
       width,
       height
     ).contentDeepHashCode()
@@ -54,8 +59,8 @@ data class CapturedPhoto(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(dngPath: String, width: Double, height: Double): CapturedPhoto {
-      return CapturedPhoto(dngPath, width, height)
+    private fun fromCpp(dngPath: String, jpegPath: String?, width: Double, height: Double): CapturedPhoto {
+      return CapturedPhoto(dngPath, jpegPath, width, height)
     }
   }
 }

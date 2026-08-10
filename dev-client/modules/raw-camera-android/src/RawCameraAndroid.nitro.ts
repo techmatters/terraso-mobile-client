@@ -1,12 +1,16 @@
 import type {HybridObject} from 'react-native-nitro-modules';
 
-// Result of a single DNG capture. `dngPath` is a file:// URI to the
-// on-disk DNG written via android.hardware.camera2.DngCreator. `width`
-// and `height` are the sensor's active array dimensions (pre-orientation
-// tag) — the caller may need to swap them depending on the EXIF
-// Orientation tag CameraX embeds. See docs/raw-camera-plan.md phase 7.
+// Result of a single dual-target capture. `dngPath` is a file:// URI
+// to the on-disk DNG (via android.hardware.camera2.DngCreator);
+// `jpegPath`, when present, is a file:// URI to a companion JPEG
+// written by CameraX's normal photo pipeline for the SAME shutter
+// press — HAL-processed (HDR+ / distortion correction / tone map /
+// sharpening / white balance), so it looks like a normal camera-app
+// photo and shares the same field of view / instant as the RAW.
+// See docs/raw-camera-plan.md phase 7.
 export type CapturedPhoto = {
   dngPath: string;
+  jpegPath?: string;
   width: number;
   height: number;
 };

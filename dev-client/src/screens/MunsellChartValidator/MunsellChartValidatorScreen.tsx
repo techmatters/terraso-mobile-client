@@ -494,41 +494,42 @@ export const MunsellChartValidatorScreen = ({
     }
   }, [cells, referenceNotation]);
 
-  const shareDng = useCallback(async () => {
+  // Combined share: sends the DNG and (when present) the companion
+  // JPEG as a matched pair, one share sheet, so receivers get both
+  // files in the same message/email/upload. Falls back to a DNG-only
+  // share when no JPEG is available (e.g. iOS DNGs missing the
+  // embedded preview, or a device where the CameraX JPEG capture
+  // failed and we continued with RAW only). react-native-share's
+  // `urls` (plural) triggers Android's ACTION_SEND_MULTIPLE.
+  const shareDngAndJpeg = useCallback(async () => {
     if (!dngPath) return;
     setSharing(true);
     try {
-      const shareUrl = await prepareFriendlyShare(dngPath, page.name, 'dng');
-      await Share.open({
-        url: shareUrl,
-        // DNG has no universal MIME type; image/x-adobe-dng is the
-        // closest, and Share honours it for AirDrop / Files / mail.
-        type: 'image/x-adobe-dng',
-        failOnCancel: false,
-      });
+      const dngShareUrl = await prepareFriendlyShare(dngPath, page.name, 'dng');
+      if (jpegPath) {
+        const jpegShareUrl = await prepareFriendlyShare(
+          jpegPath,
+          page.name,
+          'jpg',
+        );
+        await Share.open({
+          urls: [dngShareUrl, jpegShareUrl],
+          type: 'image/*',
+          failOnCancel: false,
+        });
+      } else {
+        await Share.open({
+          url: dngShareUrl,
+          type: 'image/x-adobe-dng',
+          failOnCancel: false,
+        });
+      }
     } catch (err) {
-      console.error('Munsell DNG share failed:', err);
+      console.error('Munsell DNG+JPEG share failed:', err);
     } finally {
       setSharing(false);
     }
-  }, [dngPath, page.name]);
-
-  const shareJpeg = useCallback(async () => {
-    if (!jpegPath) return;
-    setSharing(true);
-    try {
-      const shareUrl = await prepareFriendlyShare(jpegPath, page.name, 'jpg');
-      await Share.open({
-        url: shareUrl,
-        type: 'image/jpeg',
-        failOnCancel: false,
-      });
-    } catch (err) {
-      console.error('Munsell JPEG share failed:', err);
-    } finally {
-      setSharing(false);
-    }
-  }, [jpegPath, page.name]);
+  }, [dngPath, jpegPath, page.name]);
 
   const shareWhiteMask = useCallback(() => {
     // Two possible sources: the ready-state export SVG (rendered when
@@ -582,18 +583,14 @@ export const MunsellChartValidatorScreen = ({
                 {dngPath && (
                   <Box flex={1}>
                     <ContainedButton
-                      label={sharing ? 'Sharing…' : 'Share DNG'}
-                      onPress={shareDng}
-                      disabled={sharing}
-                      stretchToFit
-                    />
-                  </Box>
-                )}
-                {jpegPath && (
-                  <Box flex={1}>
-                    <ContainedButton
-                      label={sharing ? 'Sharing…' : 'Share JPEG'}
-                      onPress={shareJpeg}
+                      label={
+                        sharing
+                          ? 'Sharing…'
+                          : jpegPath
+                            ? 'Share DNG + JPEG'
+                            : 'Share DNG'
+                      }
+                      onPress={shareDngAndJpeg}
                       disabled={sharing}
                       stretchToFit
                     />
@@ -613,8 +610,8 @@ export const MunsellChartValidatorScreen = ({
             <FailedView
               debug={state.debug}
               sharing={sharing}
-              onShareDng={dngPath ? shareDng : undefined}
-              onShareJpeg={jpegPath ? shareJpeg : undefined}
+              onShareDngAndJpeg={dngPath ? shareDngAndJpeg : undefined}
+              hasJpeg={!!jpegPath}
               onShareWhiteMask={shareWhiteMask}
               whiteMaskExportSvgRef={failedWhiteMaskExportSvgRef}
               onBack={() => navigation.pop()}
@@ -771,18 +768,14 @@ export const MunsellChartValidatorScreen = ({
                 {dngPath && (
                   <Box flex={1}>
                     <ContainedButton
-                      label={sharing ? 'Sharing…' : 'Share DNG'}
-                      onPress={shareDng}
-                      disabled={sharing}
-                      stretchToFit
-                    />
-                  </Box>
-                )}
-                {jpegPath && (
-                  <Box flex={1}>
-                    <ContainedButton
-                      label={sharing ? 'Sharing…' : 'Share JPEG'}
-                      onPress={shareJpeg}
+                      label={
+                        sharing
+                          ? 'Sharing…'
+                          : jpegPath
+                            ? 'Share DNG + JPEG'
+                            : 'Share DNG'
+                      }
+                      onPress={shareDngAndJpeg}
                       disabled={sharing}
                       stretchToFit
                     />
@@ -1692,18 +1685,19 @@ const DebugOverlayLayers = ({
 const FailedView = ({
   debug,
   sharing,
-  onShareDng,
-  onShareJpeg,
+  onShareDngAndJpeg,
+  hasJpeg,
   onShareWhiteMask,
   whiteMaskExportSvgRef,
   onBack,
 }: {
   debug: MunsellChartFailureDebug;
   sharing: boolean;
-  // Both share callbacks are optional — parent passes them only when
-  // the corresponding file is available in the current capture.
-  onShareDng?: () => void;
-  onShareJpeg?: () => void;
+  // Combined DNG + JPEG share callback. Parent passes undefined when
+  // no DNG is available; passes hasJpeg=true when the companion JPEG
+  // is also present so the button label can reflect it.
+  onShareDngAndJpeg?: () => void;
+  hasJpeg: boolean;
   // Parent owns the toDataURL/Share flow (needs setSharing) and hands
   // us a callback + the export SVG ref to render into. The off-screen
   // SVG is mounted below the on-screen one at preview-pixel size so
@@ -1768,21 +1762,17 @@ const FailedView = ({
         </Box>
       )}
       <Row space="sm">
-        {onShareDng && (
+        {onShareDngAndJpeg && (
           <Box flex={1}>
             <ContainedButton
-              label={sharing ? 'Sharing…' : 'Share DNG'}
-              onPress={onShareDng}
-              disabled={sharing}
-              stretchToFit
-            />
-          </Box>
-        )}
-        {onShareJpeg && (
-          <Box flex={1}>
-            <ContainedButton
-              label={sharing ? 'Sharing…' : 'Share JPEG'}
-              onPress={onShareJpeg}
+              label={
+                sharing
+                  ? 'Sharing…'
+                  : hasJpeg
+                    ? 'Share DNG + JPEG'
+                    : 'Share DNG'
+              }
+              onPress={onShareDngAndJpeg}
               disabled={sharing}
               stretchToFit
             />

@@ -96,7 +96,7 @@ export const AndroidRawCaptureScreen = () => {
     if (isCapturing) return;
     setIsCapturing(true);
     try {
-      const {dngPath, width, height} =
+      const {dngPath, jpegPath, width, height} =
         await RawCameraAndroidHybrid.capturePhoto();
       // Diagnostic: DNG's raw pixel dims. If these are much bigger
       // (as a fraction of sensor) than the on-screen Preview stream
@@ -105,11 +105,13 @@ export const AndroidRawCaptureScreen = () => {
       // WYSIWYG break.
       console.log(
         `[AndroidRawCaptureScreen] DNG captured: ${width}x${height}` +
-          ` (aspect=${(width / height).toFixed(3)})`,
+          ` (aspect=${(width / height).toFixed(3)})` +
+          ` jpeg=${jpegPath ? 'yes' : 'no'}`,
       );
       const result: CaptureResult = {
         kind: 'raw',
         dngPath,
+        jpegPath,
         width,
         height,
         decodeRoi: async roi => {
