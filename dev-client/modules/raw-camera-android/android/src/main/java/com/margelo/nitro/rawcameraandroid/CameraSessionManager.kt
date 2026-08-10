@@ -6,14 +6,19 @@ import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
+import android.hardware.camera2.CaptureResult
 import android.hardware.camera2.DngCreator
 import android.hardware.camera2.TotalCaptureResult
 import android.util.Log
+import android.util.Rational
+import android.view.Surface
 import androidx.annotation.OptIn as AndroidXOptIn
 import androidx.camera.camera2.interop.Camera2CameraInfo
 import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
@@ -22,6 +27,8 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.UseCaseGroup
+import androidx.camera.core.ViewPort
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -213,6 +220,35 @@ object CameraSessionManager {
             result
         }
 
+    // Applies the WYSIWYG-guaranteeing capture request options to any
+    // use case's Camera2Interop.Extender. Called on Preview, ImageCapture,
+    // and ImageAnalysis so all three streams share the same
+    // uncorrected FoV.
+    //
+    //   DISTORTION_CORRECTION_MODE = OFF: some Camera2 HALs (notably
+    //     Pixel devices) apply digital lens distortion correction to
+    //     YUV/Preview/JPEG streams but not to RAW_SENSOR. The corrected
+    //     streams end up showing a narrower FoV than RAW (corners shaved
+    //     off), so what the user frames on-screen doesn't match the DNG.
+    //     Turning this off makes Preview show the raw sensor FoV. If a
+    //     device doesn't support OFF the HAL silently ignores it.
+    //
+    //   CONTROL_VIDEO_STABILIZATION_MODE = OFF: preview stabilization
+    //     usually applies an inward crop to have room to stabilize.
+    //     Same FoV-shaving effect as distortion correction. Off by
+    //     default on most devices but not all — set explicitly for
+    //     safety.
+    private fun applyWysiwygRequestOptions(ext: Camera2Interop.Extender<*>) {
+        ext.setCaptureRequestOption(
+            CaptureRequest.DISTORTION_CORRECTION_MODE,
+            CameraMetadata.DISTORTION_CORRECTION_MODE_OFF,
+        )
+        ext.setCaptureRequestOption(
+            CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE,
+            CameraMetadata.CONTROL_VIDEO_STABILIZATION_MODE_OFF,
+        )
+    }
+
     private fun requireCameraPermission() {
         if (
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) !=
@@ -230,9 +266,20 @@ object CameraSessionManager {
         }
         Log.i(TAG, "ensureBound: initializing session…")
 
-        val builder = ImageCapture.Builder().setBufferFormat(ImageFormat.RAW_SENSOR)
-        Camera2Interop.Extender(builder)
-            .setSessionCaptureCallback(
+        val builder = ImageCapture.Builder()
+            .setBufferFormat(ImageFormat.RAW_SENSOR)
+            // Sensor's native aspect on the Pixel 6a (and virtually every
+            // Android phone) is 4:3 landscape → 3:4 portrait after
+            // rotation. Force it here so the RAW capture matches the
+            // Preview use case's FoV — without an explicit ratio,
+            // CameraX may independently negotiate different aspects for
+            // Preview vs Capture, which desyncs on-screen framing from
+            // what actually lands in the DNG (chart validator relies on
+            // WYSIWYG).
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+        val imageCaptureExt = Camera2Interop.Extender(builder)
+        applyWysiwygRequestOptions(imageCaptureExt)
+        imageCaptureExt.setSessionCaptureCallback(
                 object : CameraCaptureSession.CaptureCallback() {
                     override fun onCaptureCompleted(
                         session: CameraCaptureSession,
@@ -273,38 +320,66 @@ object CameraSessionManager {
         val surface = currentSurfaceProvider
         val preview: Preview? =
             if (surface != null) {
-                Preview.Builder().build().also { p ->
+                val previewBuilder = Preview.Builder()
+                    // Match ImageCapture's aspect (see above) so the on-
+                    // screen preview shows the same FoV as the captured
+                    // DNG. Without this Preview defaults to something
+                    // near the display aspect (9:16-ish on tall phones),
+                    // which is a narrow vertical strip of the 4:3
+                    // sensor — the user frames tight but the DNG has
+                    // ~2× the horizontal FoV.
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                applyWysiwygRequestOptions(Camera2Interop.Extender(previewBuilder))
+                previewBuilder.build().also { p ->
                     withContext(Dispatchers.Main) { p.setSurfaceProvider(surface) }
                 }
             } else {
                 null
             }
+        val analysisBuilder = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+        applyWysiwygRequestOptions(Camera2Interop.Extender(analysisBuilder))
         val analysis: ImageAnalysis =
-            ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also { a ->
-                    a.setAnalyzer(analysisExecutor) { proxy ->
-                        try {
-                            analyzeFrame(proxy)
-                        } finally {
-                            proxy.close()
-                        }
+            analysisBuilder.build().also { a ->
+                a.setAnalyzer(analysisExecutor) { proxy ->
+                    try {
+                        analyzeFrame(proxy)
+                    } finally {
+                        proxy.close()
                     }
                 }
+            }
 
-        val useCases = listOfNotNull(preview, analysis, imageCapture).toTypedArray()
+        // Wrap the use cases in a UseCaseGroup with a ViewPort so
+        // CameraX crops Preview + ImageCapture + ImageAnalysis to the
+        // SAME rectangle on the sensor. Without this the crops can
+        // diverge even when target aspects match — WYSIWYG for the
+        // chart validator depends on the on-screen preview and the
+        // captured DNG covering the exact same field of view.
+        // Rational(3, 4) = width:height in DISPLAY orientation (i.e.
+        // portrait 3:4 to match SENSOR_ASPECT_PORTRAIT on the JS side).
+        // ROTATION_0 = display-portrait; if we ever add landscape UI
+        // this needs to become the current display rotation.
+        val viewPort = ViewPort.Builder(Rational(3, 4), Surface.ROTATION_0)
+            .setScaleType(ViewPort.FILL_CENTER)
+            .build()
+        val useCaseGroupBuilder = UseCaseGroup.Builder().setViewPort(viewPort)
+        useCaseGroupBuilder.addUseCase(imageCapture)
+        useCaseGroupBuilder.addUseCase(analysis)
+        if (preview != null) useCaseGroupBuilder.addUseCase(preview)
+        val useCaseGroup = useCaseGroupBuilder.build()
 
         Log.i(
             TAG,
-            "ensureBound: binding ${useCases.size} use cases (preview=${preview != null}, analysis=true)"
+            "ensureBound: binding use case group (preview=${preview != null}, analysis=true, viewport=3:4 portrait)"
         )
         val camera =
             withContext(Dispatchers.Main) {
                 provider.bindToLifecycle(
                     ProcessLifecycleOwner.get(),
                     CameraSelector.DEFAULT_BACK_CAMERA,
-                    *useCases,
+                    useCaseGroup,
                 )
             }
         val cameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
@@ -325,6 +400,43 @@ object CameraSessionManager {
         }
 
         Log.i(TAG, "ensureBound: camera=${cameraInfo.cameraId} RAW capable")
+
+        // Diagnostic dump: sensor's physical vs "active" (post-crop)
+        // dims, plus the actual resolution each use case negotiated.
+        // Chart-validator WYSIWYG requires Preview's angular FoV to
+        // match ImageCapture's — if Preview shows a NARROWER FoV than
+        // RAW captures, the user frames tight but the DNG contains
+        // more area than what was on-screen.
+        val pixelArraySize =
+            characteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE)
+        val activeArraySize =
+            characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE)
+        val preCorrectionActiveArraySize =
+            characteristics.get(
+                CameraCharacteristics.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE
+            )
+        val rawSize =
+            characteristics
+                .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+                ?.getOutputSizes(ImageFormat.RAW_SENSOR)
+                ?.maxByOrNull { it.width * it.height }
+        val distortionModes =
+            characteristics.get(CameraCharacteristics.DISTORTION_CORRECTION_AVAILABLE_MODES)
+                ?.toList()
+        val stabilizationModes =
+            characteristics.get(
+                CameraCharacteristics.CONTROL_AVAILABLE_VIDEO_STABILIZATION_MODES
+            )?.toList()
+        Log.i(
+            TAG,
+            "SENSOR: pixelArray=${pixelArraySize} activeArray=${activeArraySize} " +
+                "preCorrectionActiveArray=${preCorrectionActiveArraySize} maxRawSize=${rawSize} " +
+                "distortionModes=${distortionModes} stabilizationModes=${stabilizationModes}"
+        )
+        Log.i(TAG, "PREVIEW resolutionInfo=${preview?.resolutionInfo}")
+        Log.i(TAG, "CAPTURE resolutionInfo=${imageCapture.resolutionInfo}")
+        Log.i(TAG, "ANALYSIS resolutionInfo=${analysis.resolutionInfo}")
+
         boundCamera = camera
         boundImageCapture = imageCapture
         boundPreview = preview
@@ -384,6 +496,21 @@ object CameraSessionManager {
                 ?: throw RuntimeException(
                     "ImageProxy has no underlying android.media.Image"
                 )
+        // Diagnostic: the actual sensor crop the HAL used for this still
+        // capture. If this rect is SMALLER than SENSOR_INFO_ACTIVE_ARRAY_SIZE,
+        // the RAW covers a narrower FoV than the full sensor. If it MATCHES
+        // active array but Preview showed a smaller FoV on-screen, the
+        // HAL is applying an implicit crop to preview that isn't reflected
+        // in the still-capture result.
+        val cropRegion = result.get(CaptureResult.SCALER_CROP_REGION)
+        val distortionMode = result.get(CaptureResult.DISTORTION_CORRECTION_MODE)
+        val stabilizationMode =
+            result.get(CaptureResult.CONTROL_VIDEO_STABILIZATION_MODE)
+        Log.i(
+            TAG,
+            "CAPTURE result: sensorCropRegion=${cropRegion} " +
+                "distortionMode=${distortionMode} stabilizationMode=${stabilizationMode}"
+        )
         val cacheDir = context.cacheDir
         val tempFile = File.createTempFile("RawCameraAndroid_", ".dng", cacheDir)
         DngCreator(characteristics, result).use { creator ->

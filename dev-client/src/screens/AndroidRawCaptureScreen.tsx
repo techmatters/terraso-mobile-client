@@ -28,7 +28,11 @@ import {
   consumeAndroidRawCaptureCallbacks,
 } from 'terraso-mobile-client/components/inputs/image/androidRawCaptureRequest';
 import type {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
-import {ChartGuideOverlay} from 'terraso-mobile-client/components/inputs/image/RawCameraView';
+import {
+  ChartGuideOverlay,
+  SENSOR_ASPECT_PORTRAIT,
+  SensorAspectFrame,
+} from 'terraso-mobile-client/components/inputs/image/RawCameraView';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import type {ChartGuide} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
@@ -94,6 +98,15 @@ export const AndroidRawCaptureScreen = () => {
     try {
       const {dngPath, width, height} =
         await RawCameraAndroidHybrid.capturePhoto();
+      // Diagnostic: DNG's raw pixel dims. If these are much bigger
+      // (as a fraction of sensor) than the on-screen Preview stream
+      // dims, the RAW capture has a wider field of view than what
+      // the user framed to — that's the Android chart-validator's
+      // WYSIWYG break.
+      console.log(
+        `[AndroidRawCaptureScreen] DNG captured: ${width}x${height}` +
+          ` (aspect=${(width / height).toFixed(3)})`,
+      );
       const result: CaptureResult = {
         kind: 'raw',
         dngPath,
@@ -129,19 +142,38 @@ export const AndroidRawCaptureScreen = () => {
     }
   }, [isCapturing, navigation]);
 
-  // Matches the exact structure of the earlier RawCameraAndroidTestScreen
-  // that we know worked — ScreenScaffold + AppBar chrome, view inside a
-  // plain flex:1 container with absoluteFill for the preview. Deviating
-  // from that (e.g. StatusBar hidden + bare View) somehow leaves
-  // CameraX in a bad state where takePicture times out.
+  // Structure kept close to the earlier RawCameraAndroidTestScreen that
+  // we know worked — ScreenScaffold + AppBar chrome, view inside a
+  // plain flex:1 container. Deviating from that (e.g. StatusBar hidden
+  // + bare View) somehow leaves CameraX in a bad state where
+  // takePicture times out. In chart-guide mode we wrap the preview in
+  // SensorAspectFrame so screen ↔ DNG coords match; in soil-colour
+  // mode we keep the old absoluteFill (WYSIWYG isn't required — the
+  // ROI picker is post-capture).
   return (
     <ScreenScaffold AppBar={<AppBar title="Android RAW capture" />}>
       <View style={styles.container}>
+        {/*
+         * Native view stays flat/fullscreen — nesting it inside a
+         * fixed-size wrapper leaves CameraX in a bad state where
+         * takePicture times out. In chart-guide mode we instead ask
+         * the PreviewView to FIT_CENTER (letterbox the 3:4 preview
+         * inside the tall view), and wrap only the JS ChartGuideOverlay
+         * in a matching SensorAspectFrame so it lands on the same
+         * letterboxed region. Result: the on-screen guide covers the
+         * same fraction of the sensor image as the analyser's guide
+         * covers of the captured DNG.
+         */}
         <RawCameraAndroidView
           style={StyleSheet.absoluteFill}
           showRoiOverlay={!chartGuide}
+          previewFitCenter={!!chartGuide}
         />
-        {chartGuide && <ChartGuideOverlay guide={chartGuide} />}
+        {chartGuide && (
+          <SensorAspectFrame aspect={SENSOR_ASPECT_PORTRAIT}>
+            <ChartGuideOverlay guide={chartGuide} />
+          </SensorAspectFrame>
+        )}
         <View style={styles.bottomBar}>
           <Pressable
             onPress={shutter}

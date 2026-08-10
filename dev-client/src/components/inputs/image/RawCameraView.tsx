@@ -755,7 +755,9 @@ const SENSOR_ASPECT = 3 / 4; // width / height, portrait
 // space overlay (like the chart guide) map 1:1 to a DNG-space
 // region. Uses onLayout instead of aspectRatio-style so behaviour
 // is predictable across RN versions.
-const SensorAspectFrame = ({
+export const SENSOR_ASPECT_PORTRAIT = SENSOR_ASPECT;
+
+export const SensorAspectFrame = ({
   aspect,
   children,
 }: {
@@ -818,12 +820,28 @@ export const ChartGuideOverlay = ({
     <View
       style={styles.guideContainer}
       pointerEvents="none"
-      onLayout={e =>
-        setLayout({
-          w: e.nativeEvent.layout.width,
-          h: e.nativeEvent.layout.height,
-        })
-      }>
+      onLayout={e => {
+        const w = e.nativeEvent.layout.width;
+        const h = e.nativeEvent.layout.height;
+        setLayout({w, h});
+        // Diagnostic: on iOS this container should match the sensor-
+        // aspect frame (3:4 portrait). On Android without the aspect
+        // frame it fills the whole tall screen — the tell-tale sign
+        // that the on-screen guide will not correspond to the same
+        // fraction of the captured image.
+        const containerAspect = w / h;
+        const {aspectW: aW, aspectH: aH, marginFrac: mf} = guide;
+        const maxW = w * (1 - 2 * mf);
+        const maxH = h * (1 - 2 * mf);
+        const boxW = Math.min(maxW, (maxH * aW) / aH);
+        const boxH = (boxW * aH) / aW;
+        console.log(
+          `[ChartGuideOverlay] container=${w.toFixed(0)}x${h.toFixed(0)}` +
+            ` (aspect=${containerAspect.toFixed(3)})` +
+            ` guideRect=${boxW.toFixed(0)}x${boxH.toFixed(0)}` +
+            ` fracOfContainer=${(boxW / w).toFixed(3)}x${(boxH / h).toFixed(3)}`,
+        );
+      }}>
       {rectStyle && <View style={[styles.guideRect, rectStyle]} />}
     </View>
   );

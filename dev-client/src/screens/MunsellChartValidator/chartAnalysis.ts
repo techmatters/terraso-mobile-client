@@ -186,6 +186,17 @@ export const analyzeMunsellChart = async (
   // internally to the old percentile-anchor path if the border ring
   // has too few samples.
   const guideRect = computeChartGuideRect(rgbImage.width, rgbImage.height);
+  // Diagnostic: log the analyser's guide rect as a fraction of the
+  // preview. Should MATCH the ChartGuideOverlay's fracOfContainer
+  // logged at capture time — if it doesn't, the on-screen guide the
+  // user framed to did not correspond to this analyser rect, and
+  // registration will search for chips at the wrong scale.
+  console.log(
+    `[chartAnalysis] guideRect in preview: ${guideRect.w.toFixed(0)}x${guideRect.h.toFixed(0)}` +
+      ` at (${guideRect.x.toFixed(0)},${guideRect.y.toFixed(0)})` +
+      ` fracOfPreview=${(guideRect.w / rgbImage.width).toFixed(3)}x${(guideRect.h / rgbImage.height).toFixed(3)}` +
+      ` (preview aspect=${(rgbImage.width / rgbImage.height).toFixed(3)})`,
+  );
   const maskResult = whiteMask(rgbImage, undefined, guideRect);
   const {mask, lumaAnchor, lumaCutoff} = maskResult;
   const tAfterWhiteMask = Date.now();

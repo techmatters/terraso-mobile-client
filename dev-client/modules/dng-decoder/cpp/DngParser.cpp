@@ -41,6 +41,15 @@ constexpr uint16_t TAG_AS_SHOT_NEUTRAL = 50728;
 constexpr uint16_t TAG_FORWARD_MATRIX_1 = 50964;
 constexpr uint16_t TAG_FORWARD_MATRIX_2 = 50965;
 constexpr uint16_t TAG_CFA_PATTERN_DNG = 50711;
+// DNG DefaultCropOrigin (50719) + DefaultCropSize (50720): the rect on
+// the raw image describing the "intended visible area". Written by
+// DngCreator when the HAL provides a crop-related capture result.
+// ActiveArea (50829) is a fallback: (top, left, bottom, right) of the
+// area that contains actual image data (as opposed to optical-black
+// borders). All are on the raw sub-IFD.
+constexpr uint16_t TAG_DEFAULT_CROP_ORIGIN = 50719;
+constexpr uint16_t TAG_DEFAULT_CROP_SIZE = 50720;
+constexpr uint16_t TAG_ACTIVE_AREA = 50829;
 
 constexpr uint16_t PHOTOMETRIC_CFA = 32803;
 constexpr uint16_t PHOTOMETRIC_LINEAR_RAW = 34892;
@@ -353,6 +362,51 @@ ParsedDng parseDng(const std::string& path) {
       static_cast<uint16_t>(readOneScalar(TAG_ORIENTATION, 1));
   if (out.width == 0 || out.height == 0) {
     throw std::runtime_error("DNG parser: missing image dimensions");
+  }
+
+  // Crop rect: default to full image, then override with
+  // DefaultCropOrigin/Size or ActiveArea if either is present.
+  // See ParsedDng::cropRect comment for rationale.
+  out.cropRect = {0, 0, out.width, out.height};
+  {
+    auto readVec = [&](uint16_t tag) -> std::vector<double> {
+      std::vector<double> v;
+      size_t off = 0;
+      if (auto* e = raw.find(tag, &off)) {
+        readScalars(r, *e, off, v);
+      } else if (auto* e2 = root.find(tag, &off)) {
+        readScalars(r, *e2, off, v);
+      }
+      return v;
+    };
+    const auto origin = readVec(TAG_DEFAULT_CROP_ORIGIN);
+    const auto size = readVec(TAG_DEFAULT_CROP_SIZE);
+    auto clip = [](double v, uint32_t lo, uint32_t hi) -> uint32_t {
+      if (v <= double(lo)) return lo;
+      if (v >= double(hi)) return hi;
+      return static_cast<uint32_t>(v);
+    };
+    if (origin.size() >= 2 && size.size() >= 2 &&
+        size[0] > 0 && size[1] > 0) {
+      const uint32_t x = clip(origin[0], 0, out.width - 1);
+      const uint32_t y = clip(origin[1], 0, out.height - 1);
+      const uint32_t w = clip(size[0], 1, out.width - x);
+      const uint32_t h = clip(size[1], 1, out.height - y);
+      out.cropRect = {x, y, w, h};
+    } else {
+      // ActiveArea: (top, left, bottom, right) per DNG spec.
+      const auto aa = readVec(TAG_ACTIVE_AREA);
+      if (aa.size() >= 4) {
+        const uint32_t top = static_cast<uint32_t>(aa[0]);
+        const uint32_t left = static_cast<uint32_t>(aa[1]);
+        const uint32_t bottom = static_cast<uint32_t>(aa[2]);
+        const uint32_t right = static_cast<uint32_t>(aa[3]);
+        if (bottom > top && right > left && right <= out.width &&
+            bottom <= out.height) {
+          out.cropRect = {left, top, right - left, bottom - top};
+        }
+      }
+    }
   }
 
   // Compression must be 1 (uncompressed). Compressed lossless JPEG (7) or

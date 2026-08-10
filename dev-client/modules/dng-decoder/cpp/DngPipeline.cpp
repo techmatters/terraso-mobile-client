@@ -136,28 +136,41 @@ namespace {
 // space (matching what renderPreviewRgba emits) back to sensor-native
 // coords for reading pixels. Mirror of the write-side rotation in
 // renderPreviewRgba. The caller (JS side) picks ROIs on the preview,
-// which is post-rotation; the decoder reads the sensor RAW, which is
-// pre-rotation. Without this, ROIs land in the wrong sensor pixels
-// whenever orientation != 1.
+// which is post-rotation AND post-crop; the decoder reads the sensor
+// RAW, which is pre-rotation. Without this, ROIs land in the wrong
+// sensor pixels whenever orientation != 1.
+//
+// crop = the rect on the sensor that the preview represents (from
+// ParsedDng::cropRect). Rotation math uses crop.w/crop.h; then we add
+// crop.x/crop.y to translate to full-sensor coords.
 RoiPx rotateRoiToSensor(const RoiPx& roi, uint16_t orientation,
-                        uint32_t srcW, uint32_t srcH) {
+                        const CropRect& crop) {
+  RoiPx r;
   switch (orientation) {
-    case 3:  // 180°: display(x, y) = landscape(srcW-1-x, srcH-1-y)
-      return {srcW - roi.x - roi.w, srcH - roi.y - roi.h, roi.w, roi.h};
-    case 6:  // 90° CW to display: landscape(x, y) → display(srcH-1-y, x)
-      // Inverse pixel mapping: display(px, py) reads landscape(py, srcH-1-px)
+    case 3:  // 180°: display(x, y) = landscape(crop.w-1-x, crop.h-1-y)
+      r = {crop.w - roi.x - roi.w, crop.h - roi.y - roi.h, roi.w, roi.h};
+      break;
+    case 6:  // 90° CW to display: landscape(x, y) → display(crop.h-1-y, x)
+      // Inverse pixel mapping: display(px, py) reads landscape(py, crop.h-1-px)
       // For a display-space ROI (rx, ry, rw, rh), the covered landscape
-      // rectangle is landscape.x = ry, landscape.y = srcH-rx-rw, and
+      // rectangle is landscape.x = ry, landscape.y = crop.h-rx-rw, and
       // widths swap.
-      return {roi.y, srcH - roi.x - roi.w, roi.h, roi.w};
-    case 8:  // 90° CCW to display: landscape(x, y) → display(y, srcW-1-x)
-      // Inverse: display(px, py) reads landscape(srcW-1-py, px). ROI covers
-      // landscape.x = srcW-ry-rh, landscape.y = rx.
-      return {srcW - roi.y - roi.h, roi.x, roi.h, roi.w};
+      r = {roi.y, crop.h - roi.x - roi.w, roi.h, roi.w};
+      break;
+    case 8:  // 90° CCW to display: landscape(x, y) → display(y, crop.w-1-x)
+      // Inverse: display(px, py) reads landscape(crop.w-1-py, px). ROI covers
+      // landscape.x = crop.w-ry-rh, landscape.y = rx.
+      r = {crop.w - roi.y - roi.h, roi.x, roi.h, roi.w};
+      break;
     case 1:
     default:
-      return roi;
+      r = roi;
+      break;
   }
+  // Translate from crop-local to full-sensor coords.
+  r.x += crop.x;
+  r.y += crop.y;
+  return r;
 }
 
 }  // namespace
@@ -167,7 +180,7 @@ LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roiIn) {
     throw std::runtime_error("DNG pipeline: empty ROI");
   }
   const RoiPx roi =
-      rotateRoiToSensor(roiIn, dng.orientation, dng.width, dng.height);
+      rotateRoiToSensor(roiIn, dng.orientation, dng.cropRect);
   if (roi.x + roi.w > dng.width || roi.y + roi.h > dng.height) {
     throw std::runtime_error("DNG pipeline: ROI out of image bounds");
   }
@@ -334,14 +347,18 @@ PreviewRgba renderPreviewRgba(const ParsedDng& dng, uint32_t maxDim) {
   }
 
   // Intermediate (sensor-oriented) output dimensions. Scale the larger
-  // side to maxDim, preserve aspect. Integer scale factor rounded to at
-  // least 1; scale=1 falls through as a per-pixel render (rare for
-  // 12MP+ sensors).
-  const uint32_t largerSide = std::max(dng.width, dng.height);
+  // side of the CROP rect to maxDim, preserve aspect. Iteration bounds
+  // and pixel indexing are cropped to dng.cropRect so the preview shows
+  // the same "intended visible area" as the HAL's YUV/Preview streams
+  // (which may be distortion-corrected and inset from the full sensor).
+  // On DNGs without crop tags, cropRect defaults to the full image and
+  // this is a no-op.
+  const CropRect& crop = dng.cropRect;
+  const uint32_t largerSide = std::max(crop.w, crop.h);
   const double scaleD = static_cast<double>(largerSide) / static_cast<double>(maxDim);
   const uint32_t scale = std::max(1u, static_cast<uint32_t>(scaleD));
-  const uint32_t midW = std::max(1u, dng.width / scale);
-  const uint32_t midH = std::max(1u, dng.height / scale);
+  const uint32_t midW = std::max(1u, crop.w / scale);
+  const uint32_t midH = std::max(1u, crop.h / scale);
 
   // Post-rotation output dims. Orientations 5–8 all swap axes; 1–4 keep
   // them. Only 1, 3, 6, 8 are seen in practice from phone cameras; 2/4/5/7
@@ -370,15 +387,17 @@ PreviewRgba renderPreviewRgba(const ParsedDng& dng, uint32_t maxDim) {
   const uint32_t subsampleStride =
       (dng.layout == PixelLayout::LinearRaw && scale >= 4) ? 2u : 1u;
 
-  // Iterate sensor-space blocks (mx, my) and write each computed ARGB
-  // pixel to its rotated position in the output buffer. Single pass,
-  // no double-buffer.
+  // Iterate crop-space blocks (mx, my) and write each computed ARGB
+  // pixel to its rotated position in the output buffer. Sensor pixel
+  // coords are (crop.x + mx*scale + dx, crop.y + my*scale + dy) so we
+  // always read from within the visible crop area of the sensor.
+  // Single pass, no double-buffer.
   for (uint32_t my = 0; my < midH; ++my) {
-    const uint32_t y0 = my * scale;
-    const uint32_t y1 = std::min(dng.height, y0 + scale);
+    const uint32_t y0 = crop.y + my * scale;
+    const uint32_t y1 = std::min(crop.y + crop.h, y0 + scale);
     for (uint32_t mx = 0; mx < midW; ++mx) {
-      const uint32_t x0 = mx * scale;
-      const uint32_t x1 = std::min(dng.width, x0 + scale);
+      const uint32_t x0 = crop.x + mx * scale;
+      const uint32_t x1 = std::min(crop.x + crop.w, x0 + scale);
 
       std::array<double, 3> chSum{0, 0, 0};
       std::array<uint32_t, 3> chCount{0, 0, 0};

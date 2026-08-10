@@ -41,6 +41,16 @@ enum class PixelLayout : uint8_t {
   LinearRaw = 1,
 };
 
+// A rectangle in sensor-native (pre-rotation) coordinates. Used to
+// express the DNG's "intended visible area" from DefaultCropOrigin/Size
+// or ActiveArea tags. When absent, defaults to the full image.
+struct CropRect {
+  uint32_t x{0};
+  uint32_t y{0};
+  uint32_t w{0};
+  uint32_t h{0};
+};
+
 struct ParsedDng {
   uint32_t width{0};
   uint32_t height{0};
@@ -53,6 +63,19 @@ struct ParsedDng {
   // time; iOS handles it internally in CIRAWFilter. Applied by
   // renderPreviewRgba so the preview shows upright to the user.
   uint16_t orientation{1};
+
+  // Intended visible area on the sensor, from DefaultCropOrigin
+  // (50719) + DefaultCropSize (50720), or ActiveArea (50829) as
+  // fallback. Defaults to (0, 0, width, height) — the whole image —
+  // when no crop tags are present. The pipeline (renderPreviewRgba,
+  // decodeRoi) honors this rect so callers see only the "canonical"
+  // visible area. Rationale: some HAL pipelines (notably Google Pixel)
+  // apply lens-distortion correction to YUV/JPEG/Preview streams that
+  // crops them inward, but leave RAW captures at the full sensor
+  // extent. The DNG's crop tags describe where the visible area sits
+  // in the RAW; honoring them keeps the on-screen preview and the
+  // decoded RAW in the same coordinate system (WYSIWYG).
+  CropRect cropRect;
 
   // Only meaningful when layout == Cfa.
   CfaPattern cfa{{{0, 1}, {1, 2}}};  // default RGGB

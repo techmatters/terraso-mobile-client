@@ -109,6 +109,11 @@ constructor(
         scope.cancel()
     }
 
+    // Called by the ViewManager @ReactProp("previewFitCenter") setter.
+    fun setPreviewScaleType(scaleType: PreviewView.ScaleType) {
+        previewView.scaleType = scaleType
+    }
+
     companion object {
         private const val TAG = "RawCameraAndroid.View"
     }

@@ -1,6 +1,7 @@
 package com.margelo.nitro.rawcameraandroid
 
 import android.view.View
+import androidx.camera.view.PreviewView
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
@@ -28,6 +29,21 @@ class RawCameraAndroidViewManager : SimpleViewManager<RawCameraAndroidView>() {
     @ReactProp(name = "showRoiOverlay", defaultBoolean = true)
     fun setShowRoiOverlay(view: RawCameraAndroidView, show: Boolean) {
         view.overlay.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    // JS-controllable preview scale: FILL_CENTER (default) crops the
+    // preview to fill the fullscreen native view — good for cinematic
+    // soil-colour capture but breaks WYSIWYG for the chart validator
+    // (on-screen guide would cover ~50% of what's actually captured).
+    // FIT_CENTER letterboxes the 3:4 preview inside the tall view so
+    // the sensor image is shown 1:1 with the DNG. Chart-guide flow
+    // sets this true; the JS-side SensorAspectFrame around the chart
+    // overlay lines up with the letterboxed preview.
+    @ReactProp(name = "previewFitCenter", defaultBoolean = false)
+    fun setPreviewFitCenter(view: RawCameraAndroidView, fit: Boolean) {
+        view.setPreviewScaleType(
+            if (fit) PreviewView.ScaleType.FIT_CENTER else PreviewView.ScaleType.FILL_CENTER,
+        )
     }
 
     companion object {
