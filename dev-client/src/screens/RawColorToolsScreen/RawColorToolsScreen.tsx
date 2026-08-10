@@ -16,6 +16,7 @@
  */
 
 import {useCallback, useState} from 'react';
+import {Platform} from 'react-native';
 import Share from 'react-native-share';
 
 import * as DocumentPicker from 'expo-document-picker';
@@ -119,20 +120,31 @@ const yyyymmddThhmmss = (d: Date): string => {
 };
 
 // Friendly filename stem for a chart capture:
-//   "{page}_{refMode}_BOTH_IOS_{ts}"
+//   "{page}_{refMode}_[BOTH_]{PLATFORM}_{ts}"
 // - {refMode} matches REFERENCE_TOKENS in scripts/analyze-fixtures.ts
 //   ('nothing' / 'greycard' / 'whibal' / 'postit' / 'multi') so the
 //   mac parser knows which pipeline to route the shot into without
 //   requiring a rename step.
 // - "BOTH" flags that the DNG has its ISP-processed JPEG companion
-//   alongside (i.e. this is the mac-analysable pair).
+//   alongside. Included only when hasJpeg=true; dropped otherwise so
+//   the token isn't misleading.
+// - {PLATFORM} = "IOS" or "ANDROID". Analyze-fixtures reads this to
+//   route through the platform-matching decoder CLI (dng-cli for
+//   iOS, dng-cli-cpp for Android) — the same-code-path invariant
+//   requires the mac's analysis to use the same decoder that runs
+//   on-device for that platform.
 // - Page name is used verbatim; Munsell page names are already
 //   filesystem-safe ("10YR", "7.5YR", "GLEY1", "10Y-5GY").
 const friendlyStemForChartCapture = (
   pageHue: string,
   refMode: ChartRefMode,
+  hasJpeg: boolean,
   when: Date,
-): string => `${pageHue}_${refMode}_BOTH_IOS_${yyyymmddThhmmss(when)}`;
+): string => {
+  const platform = Platform.OS === 'android' ? 'ANDROID' : 'IOS';
+  const bothToken = hasJpeg ? 'BOTH_' : '';
+  return `${pageHue}_${refMode}_${bothToken}${platform}_${yyyymmddThhmmss(when)}`;
+};
 
 // Rename a DNG (+ optional sibling JPEG) to a friendly stem in the
 // same directory. Returns the new file:// URIs. Uses moveAsync so
@@ -271,6 +283,7 @@ export const RawColorToolsScreen = () => {
             const stem = friendlyStemForChartCapture(
               flow.pageHue,
               flow.refMode,
+              jpegPath != null,
               new Date(),
             );
             const renamed = await renamePairToFriendlyStem(
