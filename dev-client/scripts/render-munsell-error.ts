@@ -95,15 +95,30 @@ for (const cap of runDoc.captures) {
     cap.registration?.illumination?.unevenness ?? null;
   for (const cell of cells) {
     if (!cell.expected_notation || !cell.measured_notation) continue;
+    // refCard column comes from the actual WB reference used, not the
+    // physical card that happened to be in the shot. A "multi" shot
+    // (whibal + postit + greycard taped alongside) gets analysed once
+    // per WB source — the report should be able to compare those side
+    // by side, so each analysis run gets its own column. Physical-card
+    // grouping ('multi' as a single column) hid that distinction.
+    // Auto-WB samples still route via the 'self' pseudo-column below
+    // (see availabilityMap).
+    const wbRef = cap.wb_correction?.reference ?? null;
+    let refCardCol: string;
+    if (typeof wbRef === 'string' && wbRef.startsWith('ref_card:')) {
+      refCardCol = wbRef.slice('ref_card:'.length);
+    } else {
+      refCardCol = cap.reference_card ?? 'none';
+    }
     samples.push({
       expected: cell.expected_notation,
       measured: cell.measured_notation,
       page: cap.page,
-      refCard: cap.reference_card ?? 'none',
+      refCard: refCardCol,
       illuminant: cap.environment?.illuminant_tag ?? null,
       tags: cap.environment?.tags ?? [],
       wbSource: cap.wb_correction?.source ?? null,
-      wbRef: cap.wb_correction?.reference ?? null,
+      wbRef,
       fixtureLabel: cap.label ?? '',
       format: cap.capture_format === 'photo' ? 'photo' : 'raw',
       deltaE: cell.delta_e ?? 0,
@@ -241,8 +256,9 @@ const html = `<!DOCTYPE html>
         </div>
         <table id="ref-page-grid" style="border-collapse: collapse; font-size: 12px;"></table>
         <div style="font-size: 10px; color: #888; margin-top: 4px;">
-          <b>self</b> column = WB was derived from a chart chip (regardless of physical card in shot).
-          Other columns = the physical ref card that was in the shot.
+          <b>self</b> column = WB was derived from a chart chip (auto).
+          Other columns = the ref card (whibal / postit / greycard / ...)
+          the analysis used as the WB anchor.
         </div>
       </fieldset>
     </div>
@@ -475,11 +491,20 @@ function initControls() {
   initRefPageGrid();
 }
 
-// Grid columns: leading 'self' pseudo-column (WB anchor = auto,
-// regardless of physical card in shot) followed by the physical
-// ref-card columns discovered in the samples.
+// Grid columns: leading 'self' column (WB anchor derived from a chart
+// chip, no ref card) followed by the ref-card slots discovered in the
+// samples ('whibal', 'postit', 'greycard', or any other explicit
+// reference the analysis used). Dedupes so 'self' appears once even
+// when SAMPLES already have refCard='self' from auto-WB captures.
 function gridColumns() {
-  return ['self', ...uniqueValues(SAMPLES, 'refCard')];
+  const seen = new Set(['self']);
+  const cols = ['self'];
+  for (const rc of uniqueValues(SAMPLES, 'refCard')) {
+    if (seen.has(rc)) continue;
+    seen.add(rc);
+    cols.push(rc);
+  }
+  return cols;
 }
 
 // Ref card × Page grid. Built once at init; cell availability + row
@@ -572,8 +597,9 @@ function initRefPageGrid() {
 // affect availability (Background + Max illum). The Ref-card × Page
 // grid itself does not filter its own availability — otherwise
 // turning off a cell would make it "unavailable" and unrecoverable.
-// Each sample contributes to its (page, physical-refCard) cell and,
-// when wbSource='auto', ALSO to the (page, 'self') pseudo-cell.
+// refCard now encodes the WB anchor used ('self' for auto WB from a
+// chart chip; slot name for explicit WB from a ref card), so each
+// sample contributes to exactly one (page, refCard) cell.
 function availabilityMap() {
   const uMax = state.maxUneven === 100 ? Infinity : state.maxUneven;
   const m = new Map();
@@ -583,10 +609,6 @@ function availabilityMap() {
     if (s.illumUnevenness !== null && s.illumUnevenness > uMax) continue;
     const k = cellKey(s.page, s.refCard);
     m.set(k, (m.get(k) || 0) + 1);
-    if (s.wbSource === 'auto') {
-      const kSelf = cellKey(s.page, 'self');
-      m.set(kSelf, (m.get(kSelf) || 0) + 1);
-    }
   }
   return m;
 }
@@ -654,14 +676,11 @@ function updateRefPageGrid() {
   }
 }
 
-// A sample matches the grid if EITHER its (page, refCard) cell OR
-// — when wbSource='auto' — its (page, 'self') cell is enabled. The
-// 'self' column is a pseudo-column layered on top of the physical
-// ref-card columns.
+// A sample matches the grid iff its (page, refCard) cell is enabled.
+// refCard already encodes the WB anchor ('self' for auto WB, slot name
+// for explicit ref-card WB), so no OR-pseudo-column logic is needed.
 function sampleMatchesGrid(s) {
-  if (isCellEnabled(s.page, s.refCard)) return true;
-  if (s.wbSource === 'auto' && isCellEnabled(s.page, 'self')) return true;
-  return false;
+  return isCellEnabled(s.page, s.refCard);
 }
 
 function filterSamples() {
