@@ -1376,7 +1376,11 @@ const DebugOverlayLayers = ({
       {/* Mask overlay (opaque blue for the bright mask so the tester
          can see exactly which pixels the mask includes; magenta for
          the chart body mask). Toggled below so we can see one at a
-         time without them stacking into mush. */}
+         time without them stacking into mush.
+         Height is bumped by +1 preview pixel so adjacent row-stride
+         tiles from maskToSpans overlap slightly, hiding the sub-pixel
+         anti-aliasing seam that otherwise renders as thin horizontal
+         lines every rowStride pixels. */}
       {maskView === 'bright' &&
         grid.brightMaskSpans.map((s, i) => (
           <Rect
@@ -1384,7 +1388,7 @@ const DebugOverlayLayers = ({
             x={s.x}
             y={s.y}
             width={s.w}
-            height={s.h}
+            height={s.h + 1}
             fill="rgb(0,180,255)"
           />
         ))}
@@ -1395,7 +1399,7 @@ const DebugOverlayLayers = ({
             x={s.x}
             y={s.y}
             width={s.w}
-            height={s.h}
+            height={s.h + 1}
             fill="rgba(255,0,255,0.35)"
           />
         ))}
