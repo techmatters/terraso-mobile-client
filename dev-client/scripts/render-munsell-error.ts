@@ -99,13 +99,20 @@ for (const cap of runDoc.captures) {
     // physical card that happened to be in the shot. A "multi" shot
     // (whibal + postit + greycard taped alongside) gets analysed once
     // per WB source — the report should be able to compare those side
-    // by side, so each analysis run gets its own column. Physical-card
-    // grouping ('multi' as a single column) hid that distinction.
-    // Auto-WB samples still route via the 'self' pseudo-column below
-    // (see availabilityMap).
+    // by side, so each analysis run gets its own column.
+    //   - auto WB (wb.source='auto', wb.ref usually a Munsell notation
+    //     like '10YR 5/1') → 'self' column, meaning the WB anchor came
+    //     from a chart chip, no physical ref card involved.
+    //   - explicit WB via ref card (wb.ref='ref_card:{slot}') →
+    //     '{slot}' column (whibal / postit / greycard / ...).
+    //   - explicit WB with anything else → the physical reference_card
+    //     as a fallback (rare in current data).
+    const wbSource = cap.wb_correction?.source ?? null;
     const wbRef = cap.wb_correction?.reference ?? null;
     let refCardCol: string;
-    if (typeof wbRef === 'string' && wbRef.startsWith('ref_card:')) {
+    if (wbSource === 'auto') {
+      refCardCol = 'self';
+    } else if (typeof wbRef === 'string' && wbRef.startsWith('ref_card:')) {
       refCardCol = wbRef.slice('ref_card:'.length);
     } else {
       refCardCol = cap.reference_card ?? 'none';
@@ -117,7 +124,7 @@ for (const cap of runDoc.captures) {
       refCard: refCardCol,
       illuminant: cap.environment?.illuminant_tag ?? null,
       tags: cap.environment?.tags ?? [],
-      wbSource: cap.wb_correction?.source ?? null,
+      wbSource,
       wbRef,
       fixtureLabel: cap.label ?? '',
       format: cap.capture_format === 'photo' ? 'photo' : 'raw',
