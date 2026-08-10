@@ -544,9 +544,40 @@ export const renderResultGridSvg = (cap: CaptureContext): string => {
     }
   }
 
-  // REF row below the grid.
-  if (jsonEntry.ref_card) {
-    const refY = WB_BANNER_H + HEADER_H + CELL_H * nRows;
+  // REF row below the grid. Two modes:
+  //   - multi capture (jsonEntry.ref_cards populated): one cell per
+  //     slot (whibal / postit / greycard / ...), each highlighted with
+  //     the red anchor border when the current WB anchor matches
+  //     "ref_card:{slot}".
+  //   - single-card capture (jsonEntry.ref_card populated): one cell
+  //     using the physical card's data, red-bordered when wbSource
+  //     === 'ref_card'.
+  // The multi block takes precedence so the "multi" placeholder in
+  // ref_card (empty measured/expected, always grey) isn't shown when
+  // richer per-slot data is available.
+  const refY = WB_BANNER_H + HEADER_H + CELL_H * nRows;
+  const wbRef = jsonEntry.wb_correction?.reference ?? '';
+  const wbAnchorSlot = wbRef.startsWith('ref_card:')
+    ? wbRef.slice('ref_card:'.length)
+    : null;
+  if (jsonEntry.ref_cards && jsonEntry.ref_cards.length > 0) {
+    el.push(
+      `<text x="${LABEL_W - 10}" y="${refY + REF_ROW_H / 2 + 6}" text-anchor="end" font-family="sans-serif" font-size="18" font-weight="bold">REF</text>`,
+    );
+    jsonEntry.ref_cards.forEach((slot, i) => {
+      const cellX = LABEL_W + CELL_W * i + CELL_GAP / 2;
+      el.push(
+        renderRefCardCell(
+          cellX,
+          refY + CELL_GAP / 2,
+          CELL_W - CELL_GAP,
+          REF_ROW_H - CELL_GAP,
+          slot,
+          wbAnchorSlot === slot.name,
+        ),
+      );
+    });
+  } else if (jsonEntry.ref_card) {
     el.push(
       `<text x="${LABEL_W - 10}" y="${refY + REF_ROW_H / 2 + 6}" text-anchor="end" font-family="sans-serif" font-size="18" font-weight="bold">REF</text>`,
     );
