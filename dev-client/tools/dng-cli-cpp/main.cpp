@@ -212,8 +212,6 @@ int cmdReadPreviewRgb(int argc, char** argv) {
     die(std::string("dngDecoderReadMetadata failed: ") +
         (meta.errorMessage ? meta.errorMessage : "unknown"));
   }
-  const int32_t sourceWidth = meta.width;
-  const int32_t sourceHeight = meta.height;
 
   int32_t w = 0, h = 0, byteCount = 0;
   uint32_t* rgba = nullptr;
@@ -223,6 +221,21 @@ int cmdReadPreviewRgb(int argc, char** argv) {
     die(std::string("dngDecoderRenderPreviewRgba failed: ") +
         (err ? err : "unknown"));
   }
+
+  // Report source dims in the SAME orientation as the preview we just
+  // rendered. metadata.width/height come from the raw sensor (usually
+  // landscape); renderPreview applies the DNG's Orientation tag so its
+  // output is display-oriented (portrait for phone captures). Callers
+  // scale ROIs by (source / preview) and expect uniform scaling on
+  // both axes — feeding sensor-landscape source with portrait preview
+  // gives non-uniform scaling and ROIs land out of bounds.
+  // Detection: preview and sensor have opposite landscape-ness.
+  // Mirrors HybridDngDecoder.kt readPreviewRgb's swap logic.
+  const bool previewIsPortrait = h > w;
+  const bool sensorIsPortrait = meta.height > meta.width;
+  const bool swap = previewIsPortrait != sensorIsPortrait;
+  const int32_t sourceWidth = swap ? meta.height : meta.width;
+  const int32_t sourceHeight = swap ? meta.width : meta.height;
 
   // Convert ARGB8888 (0xFFRRGGBB) → interleaved RGB bytes to match
   // the Swift CLI's read-preview-rgb layout.
