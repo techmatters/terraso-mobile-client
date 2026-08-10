@@ -486,10 +486,48 @@ export const analyzeMunsellChart = async (
     w: Math.round(r.w * scaleX),
     h: Math.round(r.h * scaleY),
   }));
-  const measured =
-    format === 'raw'
-      ? decoder.decodeDngRois(imagePath, dngRois)
-      : decoder.decodePhotoRois(imagePath, dngRois);
+  // Decode can fail if registration was so bad that one or more ROIs
+  // project outside the sensor bounds. Fall through to the failure
+  // state with the preview + grid we already have, so the debug view
+  // renders instead of the plain error text. Users can then eyeball
+  // what went wrong (chart mis-framed, poor focus, etc.).
+  let measured: {r: number; g: number; b: number}[];
+  try {
+    measured =
+      format === 'raw'
+        ? decoder.decodeDngRois(imagePath, dngRois)
+        : decoder.decodePhotoRois(imagePath, dngRois);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    const failurePreview =
+      format === 'raw'
+        ? decoder.renderPreview(imagePath, PREVIEW_MAX_DIM)
+        : {
+            uri: imagePath.startsWith('file://')
+              ? imagePath
+              : `file://${imagePath}`,
+            width: rgbPreview.width,
+            height: rgbPreview.height,
+          };
+    console.log(
+      `[chartAnalysis] FAILURE decode-threw reason="${msg}" ` +
+        `previewSize=${failurePreview.width}x${failurePreview.height}`,
+    );
+    return {
+      kind: 'failure',
+      debug: {
+        reason: `decode failed after registration: ${msg}`,
+        lumaAnchor,
+        lumaCutoff,
+        preview: {
+          uri: failurePreview.uri,
+          width: failurePreview.width,
+          height: failurePreview.height,
+        },
+        grid,
+      },
+    };
+  }
 
   // 4. Bundle each cell with its raw measurement. Munsell notation
   //    and ΔE come later — the screen recomputes them any time the
@@ -530,10 +568,20 @@ export const analyzeMunsellChart = async (
       w: Math.round(r.w * scaleX),
       h: Math.round(r.h * scaleY),
     }));
-    matchedSampleValues =
-      format === 'raw'
-        ? decoder.decodeDngRois(imagePath, sampleDngRois)
-        : decoder.decodePhotoRois(imagePath, sampleDngRois);
+    try {
+      matchedSampleValues =
+        format === 'raw'
+          ? decoder.decodeDngRois(imagePath, sampleDngRois)
+          : decoder.decodePhotoRois(imagePath, sampleDngRois);
+    } catch (err) {
+      // Match-rect decode is optional (falls back to grid.centers via
+      // the null check on matchedSampleValues elsewhere). Log and
+      // continue so a marginal match doesn't kill the whole run.
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(
+        `[chartAnalysis] matched-rect decode threw; skipping (${msg})`,
+      );
+    }
   }
 
   // Legacy single-card index: same slot as refCardRect above. In
