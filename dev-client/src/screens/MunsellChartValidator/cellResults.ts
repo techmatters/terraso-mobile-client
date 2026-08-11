@@ -15,13 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import DeltaE from 'delta-e';
 import {labToMunsell, munsellToLab} from 'munsell';
 // `munsell`'s index only re-exports a subset of its colorspace helpers.
 // Deep-import the two we need — linear-sRGB → XYZ and XYZ → Lab —
 // rather than re-implement them here.
 import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
 
+import {
+  deltaEFromLab,
+  deltaEFromLinearRgb,
+} from 'terraso-mobile-client/model/color/deltaE';
 import {CHART_HUE} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellChart10YR';
 import type {MunsellPageCell} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 
@@ -119,22 +122,7 @@ export const computeArbitraryResult = (
   deltaE: number;
 } => {
   const measuredLinearRgb = applyWbCorrection(rawLinearRgb, ref, useBradford);
-  const [X, Y, Z] = linearRgbToXyz(
-    measuredLinearRgb.r,
-    measuredLinearRgb.g,
-    measuredLinearRgb.b,
-  );
-  const measuredLab = xyzToLab(X, Y, Z);
-  const [eX, eY, eZ] = linearRgbToXyz(
-    expectedLinearRgb.r,
-    expectedLinearRgb.g,
-    expectedLinearRgb.b,
-  );
-  const expectedLab = xyzToLab(eX, eY, eZ);
-  const deltaE = DeltaE.getDeltaE00(
-    {L: measuredLab[0], A: measuredLab[1], B: measuredLab[2]},
-    {L: expectedLab[0], A: expectedLab[1], B: expectedLab[2]},
-  );
+  const deltaE = deltaEFromLinearRgb(measuredLinearRgb, expectedLinearRgb);
   return {measuredLinearRgb, deltaE};
 };
 
@@ -151,16 +139,18 @@ export const computeCellResults = (
 ): MunsellCellResult[] => {
   return measurements.map(({cell, rawLinearRgb}) => {
     const measuredLinearRgb = applyWbCorrection(rawLinearRgb, ref, useBradford);
+    // measuredLab kept as a local so it can feed both the ΔE call and
+    // safeLabToMunsell without re-doing the XYZ+Lab conversion.
     const [X, Y, Z] = linearRgbToXyz(
       measuredLinearRgb.r,
       measuredLinearRgb.g,
       measuredLinearRgb.b,
     );
     const measuredLab = xyzToLab(X, Y, Z);
-    const expectedLab = munsellToLab(cell.notation);
-    const deltaE = DeltaE.getDeltaE00(
+    const [eL, ea, eb] = munsellToLab(cell.notation);
+    const deltaE = deltaEFromLab(
       {L: measuredLab[0], A: measuredLab[1], B: measuredLab[2]},
-      {L: expectedLab[0], A: expectedLab[1], B: expectedLab[2]},
+      {L: eL, A: ea, B: eb},
     );
     const measuredMunsell = safeLabToMunsell(measuredLab, cell.notation);
     return {cell, measuredLinearRgb, measuredMunsell, deltaE};

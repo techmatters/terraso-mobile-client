@@ -15,7 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {getDeltaE00} from 'delta-e';
 import {mhvcToLab, rgb255ToMhvc} from 'munsell';
 
 import {
@@ -24,6 +23,7 @@ import {
   nearestSoilColor,
   SOIL_COLOR_MATCH_THRESHOLD,
 } from 'terraso-mobile-client/model/color/colorDetection';
+import {deltaEFromLab} from 'terraso-mobile-client/model/color/deltaE';
 import {ColorResult} from 'terraso-mobile-client/model/color/types';
 
 // Ground-truth linear-sRGB values for known reference cards. Derived by
@@ -171,7 +171,7 @@ export const rankReferences = (
   const ranked = listAvailableReferences(customRefs).map(
     (ref): RankedReference => {
       const expectedLab = linearRgbToLab(ref.linearRgb);
-      const deltaE = getDeltaE00(measuredLab, expectedLab);
+      const deltaE = deltaEFromLab(measuredLab, expectedLab);
       return {
         ...ref,
         deltaE,

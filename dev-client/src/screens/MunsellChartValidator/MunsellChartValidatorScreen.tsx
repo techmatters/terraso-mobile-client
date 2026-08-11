@@ -43,9 +43,7 @@ import {
   writeAsStringAsync,
 } from 'expo-file-system/legacy';
 
-import DeltaE from 'delta-e';
 import {DngDecoderHybrid} from 'dng-decoder';
-import {linearRgbToXyz, xyzToLab} from 'munsell/dist/src/colorspace';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Select} from 'terraso-mobile-client/components/inputs/Select';
@@ -58,6 +56,7 @@ import {
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {useCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
+import {deltaEFromLinearRgb} from 'terraso-mobile-client/model/color/deltaE';
 import {
   LINEAR_REFERENCES,
   listAvailableReferences,
@@ -1193,25 +1192,10 @@ const TestSwatchCell = ({
   onPress?: () => void;
   isReference: boolean;
 }) => {
-  // Simple ΔE computed on the fly — reuses the same linearRgb→XYZ→Lab
-  // chain the chart cells use, kept inline so this cell stays self-
-  // contained (no new export from chartAnalysis).
-  const [eX, eY, eZ] = linearRgbToXyz(
-    testRef.linearRgb.r,
-    testRef.linearRgb.g,
-    testRef.linearRgb.b,
-  );
-  const [mX, mY, mZ] = linearRgbToXyz(
-    measuredLinearRgb.r,
-    measuredLinearRgb.g,
-    measuredLinearRgb.b,
-  );
-  const [eL, ea, eb] = xyzToLab(eX, eY, eZ);
-  const [mL, ma, mb] = xyzToLab(mX, mY, mZ);
-  const deltaE = DeltaE.getDeltaE00(
-    {L: mL, A: ma, B: mb},
-    {L: eL, A: ea, B: eb},
-  );
+  // Simple ΔE computed on the fly — reuses the shared helper so this
+  // cell's number matches what chart cells compute for the same
+  // linear-RGB pair.
+  const deltaE = deltaEFromLinearRgb(measuredLinearRgb, testRef.linearRgb);
   const bg = deltaEColor(deltaE);
   const expHex = rgbToHex(testRef.linearRgb);
   const measHex = rgbToHex(measuredLinearRgb);

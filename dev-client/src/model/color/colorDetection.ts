@@ -17,7 +17,6 @@
 
 import {Buffer} from '@craftzdog/react-native-buffer';
 import * as Sentry from '@sentry/react-native';
-import {getDeltaE00} from 'delta-e';
 import {rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
 
@@ -29,6 +28,7 @@ import {
   PhotoWithBase64,
 } from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {munsellHVCToLAB} from 'terraso-mobile-client/model/color/colorConversions';
+import {deltaEFromLab} from 'terraso-mobile-client/model/color/deltaE';
 import {SOIL_COLORS} from 'terraso-mobile-client/model/color/soilColors';
 import {
   ColorResult,
@@ -212,7 +212,7 @@ export const nearestSoilColor = (color: MunsellHVC) =>
   );
 
 export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
-  getDeltaE00(munsellHVCToLAB(a), munsellHVCToLAB(b));
+  deltaEFromLab(munsellHVCToLAB(a), munsellHVCToLAB(b));
 
 // Same threshold used inside getColorFromPixels — exported for shared use
 // by getColorFromLinearRgb (the RAW-path equivalent).
