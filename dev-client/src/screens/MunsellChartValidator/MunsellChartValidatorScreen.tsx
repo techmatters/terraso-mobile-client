@@ -19,6 +19,8 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
+  PixelRatio,
+  Platform,
   Text as RNText,
   StyleSheet,
   View,
@@ -166,10 +168,43 @@ const FONT_DELTAE = 20;
 // EXPORT_CSS_WIDTH is in CSS points; the actual PNG comes back at
 // EXPORT_CSS_WIDTH × [UIScreen.mainScreen.scale] pixels (2× or 3×
 // on retina). 1600pt → ~3200-4800px, plenty for pinch-zoom.
+//
+// Android has a hard-ish ~100 MB per-Canvas bitmap cap (throws
+// "Canvas: trying to draw too large" from RecordingCanvas). Off-
+// screen SVG containers still walk the display-list, so a container
+// sized in DP × device density that exceeds the cap crashes the
+// whole activity even though the user never sees the view.
+// clampCssDimsForExport shrinks the DP dims proportionally on
+// Android when needed to keep the resulting bitmap under the cap
+// (with headroom); iOS keeps the requested dims verbatim. The SVG
+// uses viewBox for coord scaling so shrinking the raster doesn't
+// distort the vector content — just lowers the PNG resolution.
 const EXPORT_CSS_WIDTH = 1600;
 const EXPORT_CSS_HEIGHT = Math.round(
   EXPORT_CSS_WIDTH * (SVG_HEIGHT / SVG_WIDTH),
 );
+
+// Cap: 90 MB out of Android's ~100 MB canvas budget so we leave
+// headroom for the surrounding view tree and any padding the
+// renderer adds. 4 bytes per pixel (ARGB_8888).
+const ANDROID_MAX_EXPORT_BITMAP_BYTES = 90 * 1024 * 1024;
+
+const clampCssDimsForExport = (
+  cssWidth: number,
+  cssHeight: number,
+): {width: number; height: number} => {
+  if (Platform.OS !== 'android') return {width: cssWidth, height: cssHeight};
+  const density = PixelRatio.get();
+  const desiredBytes = cssWidth * cssHeight * density * density * 4;
+  if (desiredBytes <= ANDROID_MAX_EXPORT_BITMAP_BYTES) {
+    return {width: cssWidth, height: cssHeight};
+  }
+  const scale = Math.sqrt(ANDROID_MAX_EXPORT_BITMAP_BYTES / desiredBytes);
+  return {
+    width: Math.floor(cssWidth * scale),
+    height: Math.floor(cssHeight * scale),
+  };
+};
 
 // Colour a cell's background by ΔE. Rough visual quality gate:
 // < 3 excellent, < 6 acceptable, < 12 noticeable, >= 12 bad.
@@ -785,7 +820,12 @@ export const MunsellChartValidatorScreen = ({
                  Positioned way off the visible area so RN still lays
                  it out (needed for toDataURL to render pixels), but
                  the user never sees it. */}
-              <View style={styles.exportContainer} pointerEvents="none">
+              <View
+                style={[
+                  styles.exportContainer,
+                  clampCssDimsForExport(EXPORT_CSS_WIDTH, EXPORT_CSS_HEIGHT),
+                ]}
+                pointerEvents="none">
                 <ResultSvg
                   ref={exportSvgRef}
                   cells={cells}
@@ -812,10 +852,10 @@ export const MunsellChartValidatorScreen = ({
               <View
                 style={[
                   styles.exportContainer,
-                  {
-                    width: state.result.preview.width,
-                    height: state.result.preview.height,
-                  },
+                  clampCssDimsForExport(
+                    state.result.preview.width,
+                    state.result.preview.height,
+                  ),
                 ]}
                 pointerEvents="none">
                 <Svg
@@ -1781,7 +1821,7 @@ const FailedView = ({
         <View
           style={[
             styles.exportContainer,
-            {width: preview.width, height: preview.height},
+            clampCssDimsForExport(preview.width, preview.height),
           ]}
           pointerEvents="none">
           <Svg
