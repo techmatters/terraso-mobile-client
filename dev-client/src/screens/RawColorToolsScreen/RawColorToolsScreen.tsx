@@ -38,6 +38,7 @@ import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScro
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
+import {type AnalysisMode} from 'terraso-mobile-client/screens/MunsellChartValidator/chartAnalysis';
 import {CHART_GUIDE} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
 import {type RegistrationAlgorithm} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {MUNSELL_PAGES} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
@@ -55,6 +56,22 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 const CHART_PAGE_HUE_KEY = 'munsellChartValidator.selectedPageHue';
 const CHART_REF_MODE_KEY = 'munsellChartValidator.selectedRefMode';
+const CHART_ANALYSIS_MODE_KEY = 'munsellChartValidator.analysisMode';
+
+// How far to run the chart analysis pipeline. Backup for when full
+// analysis errors on a new device — the tester can drop back to just
+// the capture (share raw files for offline inspection) or the
+// registration stage (share raw + white-mask overlay).
+const CHART_ANALYSIS_MODES: readonly AnalysisMode[] = [
+  'capture',
+  'register',
+  'full',
+];
+const CHART_ANALYSIS_MODE_LABEL: Record<AnalysisMode, string> = {
+  capture: 'Take picture only',
+  register: 'Take picture + register',
+  full: 'Full analysis (default)',
+};
 
 // Which reference card configuration the tester intends for this
 // capture. Baked into the friendly filename so the mac parser (and
@@ -105,6 +122,7 @@ type CaptureFlow =
       pageHue: string;
       refMode: ChartRefMode;
       algorithm: RegistrationAlgorithm;
+      analysisMode: AnalysisMode;
     };
 
 // Timestamp for chart-capture filenames — yyyymmddThhmmss (seconds
@@ -197,6 +215,20 @@ export const RawColorToolsScreen = () => {
   const setRefMode = useCallback((mode: ChartRefMode) => {
     kvStorage.setString(CHART_REF_MODE_KEY, mode);
     setRefModeState(mode);
+  }, []);
+  const [analysisMode, setAnalysisModeState] = useState<AnalysisMode>(() => {
+    const persisted = kvStorage.getString(CHART_ANALYSIS_MODE_KEY);
+    if (
+      persisted &&
+      (CHART_ANALYSIS_MODES as readonly string[]).includes(persisted)
+    ) {
+      return persisted as AnalysisMode;
+    }
+    return 'full';
+  });
+  const setAnalysisMode = useCallback((mode: AnalysisMode) => {
+    kvStorage.setString(CHART_ANALYSIS_MODE_KEY, mode);
+    setAnalysisModeState(mode);
   }, []);
   // Directed-quadrant is now the only supported registration
   // algorithm — the constrained-random path is retained in the code
@@ -306,6 +338,7 @@ export const RawColorToolsScreen = () => {
             pageHue: flow.pageHue,
             refMode: flow.refMode,
             algorithm: flow.algorithm,
+            analysisMode: flow.analysisMode,
           });
         })();
       }
@@ -381,6 +414,14 @@ export const RawColorToolsScreen = () => {
             renderValue={mode => CHART_REF_MODE_LABEL[mode]}
             label="Reference cards in the shot"
           />
+          <Select<AnalysisMode, false>
+            nullable={false}
+            options={CHART_ANALYSIS_MODES}
+            value={analysisMode}
+            onValueChange={setAnalysisMode}
+            renderValue={mode => CHART_ANALYSIS_MODE_LABEL[mode]}
+            label="Analysis depth"
+          />
           <ContainedButton
             label="Capture (DNG + JPEG)"
             onPress={() =>
@@ -389,6 +430,7 @@ export const RawColorToolsScreen = () => {
                 pageHue,
                 refMode,
                 algorithm,
+                analysisMode,
               })
             }
           />
@@ -427,6 +469,7 @@ export const RawColorToolsScreen = () => {
                 jpegPath: format === 'photo' ? path : undefined,
                 pageHue,
                 algorithm,
+                analysisMode,
               });
             }}
           />
@@ -460,6 +503,7 @@ export const RawColorToolsScreen = () => {
                 jpegPath: path,
                 pageHue,
                 algorithm,
+                analysisMode,
               });
             }}
           />

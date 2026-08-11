@@ -140,7 +140,23 @@ export type MunsellChartFailureDebug = {
 
 export type MunsellChartOutcome =
   | {kind: 'success'; result: MunsellChartResult}
-  | {kind: 'failure'; debug: MunsellChartFailureDebug};
+  | {kind: 'failure'; debug: MunsellChartFailureDebug}
+  // Registration succeeded but the caller asked to stop before the
+  // per-ROI decode (register-only mode). Same debug payload as
+  // failure — preview + grid + white-mask spans — so the UI can render
+  // the same "here's what registration produced" view with just a
+  // different heading. No `result` because no measurements were made.
+  | {kind: 'registered'; debug: MunsellChartFailureDebug};
+
+// How far to run the chart analysis pipeline. Threaded through from
+// the RawColorToolsScreen setting so the tester can pick between a
+// bare capture (no analysis at all — screen just shows the JPEG /
+// preview + share), a registration-only run (chart-guide detection +
+// RANSAC + white-mask overlay, stop before per-ROI decode), and the
+// full analysis (registration + decode + Munsell match). Handy
+// backup when full analysis errors on a new device and you still
+// want to inspect what the earlier stages saw.
+export type AnalysisMode = 'capture' | 'register' | 'full';
 
 // 'raw' → route through CIRAWFilter (readPreviewRgb / decodeDngRois),
 // 'photo' → route through CIImage (readPreviewRgbPhoto /
@@ -161,6 +177,12 @@ export const analyzeMunsellChart = async (
   // whibal/postit/greycard slots. When false, only the legacy
   // single ref-card slot is sampled.
   multiCards = false,
+  // When true, run registration (chart-guide detection + RANSAC +
+  // white-mask overlay) and then return with a 'registered' outcome
+  // BEFORE the per-ROI decode. Used by the register-only analysis
+  // mode as a fallback when the full decode path errors on a new
+  // device — the tester still gets to see what registration produced.
+  stopAfterRegistration = false,
 ): Promise<MunsellChartOutcome> => {
   const cells = pageCells(page);
   // 1. RGB render for the CV. We need chromaticity (not just luma) to
@@ -497,6 +519,41 @@ export const analyzeMunsellChart = async (
     w: Math.round(r.w * scaleX),
     h: Math.round(r.h * scaleY),
   }));
+
+  // Register-only mode: stop here, return the same debug payload the
+  // failure UI renders. Skip the per-ROI decode (which is the
+  // expensive + failure-prone step) and let the user inspect what
+  // registration produced without running into decode issues.
+  if (stopAfterRegistration) {
+    const registeredPreview =
+      format === 'raw'
+        ? decoder.renderPreview(imagePath, PREVIEW_MAX_DIM)
+        : {
+            uri: imagePath.startsWith('file://')
+              ? imagePath
+              : `file://${imagePath}`,
+            width: rgbPreview.width,
+            height: rgbPreview.height,
+          };
+    console.log(
+      `[chartAnalysis] REGISTERED (register-only mode) previewSize=${registeredPreview.width}x${registeredPreview.height}`,
+    );
+    return {
+      kind: 'registered',
+      debug: {
+        reason: 'registration-only mode (decode skipped)',
+        lumaAnchor,
+        lumaCutoff,
+        preview: {
+          uri: registeredPreview.uri,
+          width: registeredPreview.width,
+          height: registeredPreview.height,
+        },
+        grid,
+      },
+    };
+  }
+
   // Decode can fail if registration was so bad that one or more ROIs
   // project outside the sensor bounds. Fall through to the failure
   // state with the preview + grid we already have, so the debug view

@@ -73,6 +73,7 @@ import {
   csvFromCells,
   DEFAULT_REFERENCE_NOTATION,
   TEST_SWATCH_REFERENCE_NOTATION,
+  type AnalysisMode,
   type CellMeasurement,
   type MunsellCellResult,
   type MunsellChartFailureDebug,
@@ -127,6 +128,10 @@ export type MunsellChartValidatorProps = {
   // Picked on the RAW_COLOR_TOOLS screen before capture; defaults to
   // the constrained-random pair-similarity implementation if not set.
   algorithm?: RegistrationAlgorithm;
+  // How far to run the pipeline (capture-only / register-only / full).
+  // Backup for when full analysis errors on a new device. Defaults to
+  // 'full' when the caller doesn't pass it.
+  analysisMode?: AnalysisMode;
 };
 
 // SVG layout (fixed-pixel viewBox — easier to reason about text sizing
@@ -286,6 +291,7 @@ export const MunsellChartValidatorScreen = ({
   pageHue,
   refMode,
   algorithm = DEFAULT_REGISTRATION_ALGORITHM,
+  analysisMode = 'full',
 }: MunsellChartValidatorProps) => {
   const navigation = useNavigation();
   // Phone-side analysis ONLY runs against the DNG when one is present
@@ -312,6 +318,15 @@ export const MunsellChartValidatorScreen = ({
     // overlay as the success path plus the failure reason, alongside
     // Share DNG / Share white mask buttons.
     | {kind: 'failed'; debug: MunsellChartFailureDebug}
+    // 'registered' is the register-only mode's successful outcome —
+    // same debug payload as 'failed' (preview + grid + share) so the
+    // UI can reuse FailedView with a different heading. Only reached
+    // when analysisMode === 'register'.
+    | {kind: 'registered'; debug: MunsellChartFailureDebug}
+    // 'captured' is the capture-only mode's outcome. No analyzer call
+    // made — the tester just wants the raw files. Renders a minimal
+    // preview + share UI.
+    | {kind: 'captured'}
     // 'error' is the truly-unexpected exception path (native decoder
     // crash, out-of-memory, etc.) — no partial data, just the message.
     | {kind: 'error'; message: string}
@@ -457,6 +472,12 @@ export const MunsellChartValidatorScreen = ({
       });
       return;
     }
+    // Capture-only short-circuit: no analyzer call at all. Screen
+    // just renders the JPEG (or DNG preview) + share buttons.
+    if (analysisMode === 'capture') {
+      setState({kind: 'captured'});
+      return;
+    }
     setState({kind: 'analyzing'});
     (async () => {
       try {
@@ -467,9 +488,12 @@ export const MunsellChartValidatorScreen = ({
           pipeline,
           algorithm,
           multiCards,
+          analysisMode === 'register',
         );
         if (outcome.kind === 'success') {
           setState({kind: 'ready', result: outcome.result});
+        } else if (outcome.kind === 'registered') {
+          setState({kind: 'registered', debug: outcome.debug});
         } else {
           setState({kind: 'failed', debug: outcome.debug});
         }
@@ -478,7 +502,7 @@ export const MunsellChartValidatorScreen = ({
         setState({kind: 'error', message: String(err)});
       }
     })();
-  }, [analysisPath, page, pipeline, algorithm, multiCards]);
+  }, [analysisPath, page, pipeline, algorithm, multiCards, analysisMode]);
 
   const shareAsImage = useCallback(() => {
     const svg = exportSvgRef.current;
@@ -650,6 +674,72 @@ export const MunsellChartValidatorScreen = ({
               whiteMaskExportSvgRef={failedWhiteMaskExportSvgRef}
               onBack={() => navigation.pop()}
             />
+          )}
+          {/* Register-only mode: same debug view as failure but a
+             deliberately-different heading so it doesn't read like
+             something went wrong. */}
+          {state.kind === 'registered' && (
+            <FailedView
+              debug={state.debug}
+              sharing={sharing}
+              title="Registration complete"
+              onShareDngAndJpeg={dngPath ? shareDngAndJpeg : undefined}
+              hasJpeg={!!jpegPath}
+              onShareWhiteMask={shareWhiteMask}
+              whiteMaskExportSvgRef={failedWhiteMaskExportSvgRef}
+              onBack={() => navigation.pop()}
+            />
+          )}
+          {/* Capture-only mode: no analyzer ran. Show the JPEG (if
+             present — much cheaper than decoding the DNG on-device),
+             plus Share DNG + JPEG and Back. */}
+          {state.kind === 'captured' && (
+            <Column space="sm">
+              <Text variant="body1" bold>
+                Capture complete
+              </Text>
+              <Paragraph>
+                Analysis skipped (capture-only mode). Share the raw files for
+                offline inspection.
+              </Paragraph>
+              {jpegPath && (
+                <Box
+                  width="100%"
+                  aspectRatio={3 / 4}
+                  backgroundColor="grey.900">
+                  <Image
+                    source={{uri: jpegPath}}
+                    style={StyleSheet.absoluteFill}
+                    resizeMode="contain"
+                  />
+                </Box>
+              )}
+              <Row space="sm">
+                {dngPath && (
+                  <Box flex={1}>
+                    <ContainedButton
+                      label={
+                        sharing
+                          ? 'Sharing…'
+                          : jpegPath
+                            ? 'Share DNG + JPEG'
+                            : 'Share DNG'
+                      }
+                      onPress={shareDngAndJpeg}
+                      disabled={sharing}
+                      stretchToFit
+                    />
+                  </Box>
+                )}
+                <Box flex={1}>
+                  <ContainedButton
+                    label="Back"
+                    onPress={() => navigation.pop()}
+                    stretchToFit
+                  />
+                </Box>
+              </Row>
+            </Column>
           )}
           {state.kind === 'ready' && (
             <>
@@ -1709,6 +1799,7 @@ const DebugOverlayLayers = ({
 const FailedView = ({
   debug,
   sharing,
+  title,
   onShareDngAndJpeg,
   hasJpeg,
   onShareWhiteMask,
@@ -1717,6 +1808,11 @@ const FailedView = ({
 }: {
   debug: MunsellChartFailureDebug;
   sharing: boolean;
+  // Heading text. Defaults to "Analysis failed" for the failure path;
+  // register-only mode overrides to "Registration complete" (same
+  // debug payload, different framing — the tester intentionally
+  // stopped here vs. hitting an error).
+  title?: string;
   // Combined DNG + JPEG share callback. Parent passes undefined when
   // no DNG is available; passes hasJpeg=true when the companion JPEG
   // is also present so the button label can reflect it.
@@ -1751,7 +1847,7 @@ const FailedView = ({
   return (
     <Column space="sm">
       <Text variant="body1" bold>
-        Analysis failed
+        {title ?? 'Analysis failed'}
       </Text>
       <Paragraph>{debug.reason}</Paragraph>
       <Text variant="body2">
