@@ -1240,11 +1240,15 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
       </div>
       ${renderIlluminationBlock(anchor)}
     </div>
-    <div class="results-block">
+    ${
+      isFailed
+        ? ''
+        : `<div class="results-block">
       <h3>Result grids (per format × WB anchor)</h3>
       <div class="results-variants">${resultBlocks}
       </div>
-    </div>
+    </div>`
+    }
   </div>
 </section>`;
 };
