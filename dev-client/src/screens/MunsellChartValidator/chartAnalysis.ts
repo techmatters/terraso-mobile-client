@@ -365,7 +365,7 @@ export const analyzeMunsellChart = async (
   // for the calculation. Bumped from 0.5 after most-of-a-batch
   // failures on Pixel captures scored h=0.6-0.8 due to slight user
   // framing error, not analyzer error.
-  const CENTROID_SHIFT_REJECT_FRAC = 0.8;
+  const CENTROID_SHIFT_REJECT_FRAC = 0.85;
   const MAX_REGISTRATION_ATTEMPTS = 5;
   let grid: GridDetection | null = null;
   let bestGrid: GridDetection | null = null;
