@@ -254,7 +254,7 @@ const renderBrightnessBarChart = (
 
 export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   if (!cap.previewImage) {
-    return '<div class="no-preview">(no preview available — analysis failed)</div>';
+    return '<div class="no-preview">(no preview available — analysis failed before preview render)</div>';
   }
   const {
     base64,
@@ -262,6 +262,20 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
     coordWidth: W,
     coordHeight: H,
   } = cap.previewImage;
+  // Overlays draw from EITHER outcome.result.grid (success) OR
+  // outcome.debug.grid (failure / registered). Same shape, so the
+  // downstream drawing code is identical. `result` is the full
+  // MunsellChartResult (only set on success) — some layers use its
+  // extra fields (previewRects, refCardRect, multiRefCards) that
+  // debug.grid doesn't have.
+  const grid =
+    cap.outcome.kind === 'success'
+      ? cap.outcome.result.grid
+      : cap.outcome.kind === 'failure' || cap.outcome.kind === 'registered'
+        ? cap.outcome.debug.grid
+        : null;
+  const result =
+    cap.outcome.kind === 'success' ? cap.outcome.result : null;
   const parts: string[] = [];
   parts.push(
     `<image href="data:image/${ext};base64,${base64}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`,
@@ -272,12 +286,18 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   // covers the surroundings + paper-visible-through-hole regions; on
   // dark-paper it covers only the dark surroundings. Drawn as
   // semi-transparent blue so the preview stays visible underneath.
-  if (cap.outcome.kind === 'success') {
-    for (const s of cap.outcome.result.grid.brightMaskSpans) {
+  // Wrapped in a <g class="layer-mask"> group so the report's per-
+  // capture "show mask" toggle can hide/show it via CSS.
+  if (grid && grid.brightMaskSpans.length > 0) {
+    parts.push('<g class="layer-mask">');
+    for (const s of grid.brightMaskSpans) {
+      // +1 on height to hide sub-pixel AA seams between adjacent
+      // row-stride tiles (matches the on-screen mask rendering).
       parts.push(
-        `<rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" fill="rgba(0,180,255,0.55)"/>`,
+        `<rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h + 1}" fill="rgba(0,180,255,0.55)"/>`,
       );
     }
+    parts.push('</g>');
   }
 
   // Chart guide rectangle — where the on-screen framing guide sits in
@@ -288,8 +308,8 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   // sample area (outer = image minus outerMargin, inner = guide plus
   // innerBuf). Uses an SVG <pattern> with an explicit slanted line
   // (three overlapping segments so the diagonal is continuous across
-  // pattern tile edges). Drawn BEFORE the guide rect so the dashed
-  // yellow outline stays visible on top of the hash.
+  // pattern tile edges). Part of the mask-layer group so it hides in
+  // the "Original" and "+ Registration" view modes.
   const shortDim = Math.min(W, H);
   const innerBuf =
     shortDim * DEFAULT_WHITE_MASK_PARAMS.borderInnerBufferFrac;
@@ -315,17 +335,27 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
       `</pattern></defs>`,
   );
   parts.push(
-    `<path d="${annulusPath}" fill="url(#${patternId})" fill-rule="evenodd"/>`,
+    `<g class="layer-mask">` +
+      `<path d="${annulusPath}" fill="url(#${patternId})" fill-rule="evenodd"/>` +
+      `</g>`,
   );
 
   // Yellow dashed chart guide rectangle — where the tester was framing
-  // the chart in the viewfinder.
+  // the chart in the viewfinder. Always shown (all overlay modes) so
+  // the tester can see "where the card should be" even on the raw
+  // "Original" view. Wrapped in its own group anyway for future
+  // toggling.
+  parts.push('<g class="layer-guide">');
   parts.push(
     `<rect x="${guideRect.x}" y="${guideRect.y}" width="${guideRect.w}" height="${guideRect.h}" stroke="#ffeb3b" stroke-width="2" stroke-dasharray="8,6" fill="none"/>`,
   );
+  parts.push('</g>');
 
-  if (cap.outcome.kind === 'success') {
-    const grid = cap.outcome.result.grid;
+  // Registration overlays: drawn from `grid` (available on both
+  // success + failure/registered), plus a few success-only layers
+  // (previewRects, refCardRect, multiRefCards from `result`).
+  if (grid) {
+    parts.push('<g class="layer-registration">');
 
     // Magenta boxes for REJECTED candidates — makes visible which
     // blobs the classifier tossed and why. Same color for all reject
@@ -381,41 +411,45 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
       }
     }
 
-    // Red rects on per-cell sample positions.
-    for (const r of cap.outcome.result.previewRects) {
-      parts.push(
-        `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" stroke="#ff2020" stroke-width="2" fill="none"/>`,
-      );
-    }
-
-    // Ref-card sample rect (same red as chip rects).
-    const refRect = cap.outcome.result.refCardRect;
-    if (refRect) {
-      parts.push(
-        `<rect x="${refRect.x}" y="${refRect.y}" width="${refRect.w}" height="${refRect.h}" stroke="#ff2020" stroke-width="2" fill="none"/>`,
-      );
-    }
-
-    // Multi-mode: 3 extra rects for the taped whibal/postit/greycard
-    // slots. Cyan outline + a small text label so they visually
-    // distinguish from chip/ref-card rects. Absent for single-card
-    // fixtures.
-    const multi = cap.outcome.result.multiRefCards;
-    if (multi) {
-      for (const slot of multi) {
-        const {x, y, w, h} = slot.rect;
+    if (result) {
+      // Red rects on per-cell sample positions.
+      for (const r of result.previewRects) {
         parts.push(
-          `<rect x="${x}" y="${y}" width="${w}" height="${h}" ` +
-            `stroke="#00c8d0" stroke-width="2" fill="none"/>`,
-        );
-        parts.push(
-          `<text x="${x + w + 4}" y="${y + h / 2 + 4}" ` +
-            `font-family="sans-serif" font-size="14" ` +
-            `fill="#00c8d0" stroke="#003b40" stroke-width="0.5">` +
-            `${esc(slot.name)}</text>`,
+          `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" stroke="#ff2020" stroke-width="2" fill="none"/>`,
         );
       }
+
+      // Ref-card sample rect (same red as chip rects).
+      const refRect = result.refCardRect;
+      if (refRect) {
+        parts.push(
+          `<rect x="${refRect.x}" y="${refRect.y}" width="${refRect.w}" height="${refRect.h}" stroke="#ff2020" stroke-width="2" fill="none"/>`,
+        );
+      }
+
+      // Multi-mode: 3 extra rects for the taped whibal/postit/greycard
+      // slots. Cyan outline + a small text label so they visually
+      // distinguish from chip/ref-card rects. Absent for single-card
+      // fixtures.
+      const multi = result.multiRefCards;
+      if (multi) {
+        for (const slot of multi) {
+          const {x, y, w, h} = slot.rect;
+          parts.push(
+            `<rect x="${x}" y="${y}" width="${w}" height="${h}" ` +
+              `stroke="#00c8d0" stroke-width="2" fill="none"/>`,
+          );
+          parts.push(
+            `<text x="${x + w + 4}" y="${y + h / 2 + 4}" ` +
+              `font-family="sans-serif" font-size="14" ` +
+              `fill="#00c8d0" stroke="#003b40" stroke-width="0.5">` +
+              `${esc(slot.name)}</text>`,
+          );
+        }
+      }
     }
+
+    parts.push('</g>');
   }
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="whitemask-svg">${parts.join('')}</svg>`;
@@ -766,6 +800,24 @@ export const renderHtmlReport = (
     .reg-good { background: #c8f5c8; }
     .reg-warn { background: #f5e6c8; }
     .reg-bad { background: #f5c8c8; }
+    /* Per-fixture preview controls + panel visibility.
+       data-fmt on the container drives which panel is visible;
+       data-mode drives which SVG layer groups are hidden. */
+    .preview-controls { margin: 6px 0 8px 0; font-size: 13px; color: #444;
+                        display: flex; flex-wrap: wrap; gap: 4px 12px;
+                        align-items: center; }
+    .preview-controls .control-label { font-weight: 600; margin-right: 2px; }
+    .preview-controls .control-sep { color: #bbb; margin: 0 4px; }
+    .preview-controls label { cursor: pointer; user-select: none; }
+    .preview-controls input[type=radio] { margin-right: 3px; vertical-align: -1px; }
+    .preview-container .preview-panel { display: none; }
+    .preview-container[data-fmt=raw]   .preview-panel[data-fmt=raw]   { display: block; }
+    .preview-container[data-fmt=photo] .preview-panel[data-fmt=photo] { display: block; }
+    /* Mode: original hides registration + mask; +registration hides
+       only mask; +mask shows everything. Guide is always shown. */
+    .preview-container[data-mode=original]     .layer-registration { display: none; }
+    .preview-container[data-mode=original]     .layer-mask         { display: none; }
+    .preview-container[data-mode=registration] .layer-mask         { display: none; }
   </style>
 </head>
 <body>
@@ -781,6 +833,27 @@ export const renderHtmlReport = (
   ${toc}
   ${renderLegend()}
   ${sections}
+  <script>
+    // Per-fixture preview toggles. Each .preview-controls wraps two
+    // radio groups (format + mode); on change, the sibling
+    // .preview-container's data-fmt / data-mode attributes update,
+    // which CSS then uses to show/hide the right panel and layer
+    // groups. Single delegated handler at document level so the
+    // number of listeners stays O(1) regardless of fixture count.
+    document.addEventListener('change', function (e) {
+      var target = e.target;
+      if (!target || !target.name) return;
+      var isFmt = target.name.indexOf('fmt-') === 0;
+      var isMode = target.name.indexOf('mode-') === 0;
+      if (!isFmt && !isMode) return;
+      var controls = target.closest('.preview-controls');
+      if (!controls) return;
+      var container = controls.parentElement.querySelector('.preview-container');
+      if (!container) return;
+      if (isFmt) container.dataset.fmt = target.value;
+      if (isMode) container.dataset.mode = target.value;
+    });
+  </script>
 </body>
 </html>
 `;
@@ -1062,10 +1135,18 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
     if (af !== bf) return af === 'raw' ? -1 : 1;
     return 0;
   });
-  // Prefer a raw variant for the shared whitemask + registration
-  // display — a JPEG-derived preview looks the same visually (both
-  // paths end in a linear-sRGB CIImage), but the raw variant is the
-  // canonical one when both are present.
+  // One variant per format is enough for the whitemask display — all
+  // variants of the same format share the same preview image + grid
+  // (only the WB anchor differs between them).
+  const formatAnchors = new Map<'raw' | 'photo', CaptureContext>();
+  for (const v of sorted) {
+    const f = v.jsonEntry.capture_format;
+    if (!formatAnchors.has(f)) formatAnchors.set(f, v);
+  }
+  const formatList = Array.from(formatAnchors.keys());
+  const initialFmt = formatList[0];
+  // "Anchor" for legacy blocks (metadata table, ref-card row, etc.)
+  // — always the first sorted variant (raw when present).
   const anchor = sorted[0];
   const {jsonEntry} = anchor;
   const isFailed = sorted.every(v => v.outcome.kind === 'failure');
@@ -1101,8 +1182,43 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
       </div>`;
     })
     .join('');
+  const idBase = fixtureSectionId(jsonEntry.label);
+  const showFmtToggle = formatList.length > 1;
+
+  // Per-fixture controls: format switch (raw vs jpg) + overlay-mode
+  // switch (original / +registration / +mask). See CSS at the top of
+  // the report — data-fmt + data-mode on the preview-container drive
+  // the visibility of layer groups and per-format panels.
+  const fmtLabelFor = (f: string) => (f === 'raw' ? 'RAW (DNG)' : 'JPEG');
+  const controlsHtml = `
+    <div class="preview-controls" data-id="${idBase}">
+      ${
+        showFmtToggle
+          ? `<span class="control-label">Format:</span>
+             ${formatList
+               .map(
+                 f => `<label><input type="radio" name="fmt-${idBase}" value="${f}" ${
+                   f === initialFmt ? 'checked' : ''
+                 }> ${fmtLabelFor(f)}</label>`,
+               )
+               .join(' ')} <span class="control-sep">·</span> `
+          : ''
+      }
+      <span class="control-label">Overlay:</span>
+      <label><input type="radio" name="mode-${idBase}" value="original"> Original</label>
+      <label><input type="radio" name="mode-${idBase}" value="registration" checked> + Registration</label>
+      <label><input type="radio" name="mode-${idBase}" value="mask"> + Registration + Mask (blue)</label>
+    </div>`;
+
+  const panelsHtml = formatList
+    .map(fmt => {
+      const capForFmt = formatAnchors.get(fmt)!;
+      return `<div class="preview-panel" data-fmt="${fmt}">${renderWhitemaskOverlaySvg(capForFmt)}</div>`;
+    })
+    .join('');
+
   return `
-<section class="capture ${isFailed ? 'failed' : 'ok'}" id="${fixtureSectionId(jsonEntry.label)}">
+<section class="capture ${isFailed ? 'failed' : 'ok'}" id="${idBase}">
   <h2>${esc(jsonEntry.label)}${isFailed ? ' <span style="color:#c62828">[FAILED]</span>' : ''}</h2>
   <table class="meta">
     <tr><th>Page</th><td>${esc(jsonEntry.page)}</td></tr>
@@ -1117,8 +1233,11 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
   </table>
   <div class="images">
     <div class="whitemask-block">
-      <h3>Whitemask + overlays <span style="font-weight:normal;color:#888;font-size:12px">(from ${esc(jsonEntry.capture_format)} variant)</span></h3>
-      ${renderWhitemaskOverlaySvg(anchor)}
+      <h3>Preview + overlays</h3>
+      ${controlsHtml}
+      <div class="preview-container" data-id="${idBase}" data-fmt="${initialFmt ?? ''}" data-mode="registration">
+        ${panelsHtml}
+      </div>
       ${renderIlluminationBlock(anchor)}
     </div>
     <div class="results-block">

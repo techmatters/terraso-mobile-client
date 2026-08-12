@@ -1074,8 +1074,29 @@ let nFailure = 0;
     // torpedo the whole run. Skipped entirely under --no-html since
     // JPEG encoding is the biggest per-fixture cost we can drop when
     // the caller only wants the JSON.
+    // Preview coord dims — the analyzer's preview-space size, used by
+    // the whitemask overlay SVG to align its rects with the encoded
+    // preview image. Available on success (outcome.result.preview) AND
+    // on failure/registered outcomes (outcome.debug.preview) so the
+    // report can still show the source image + guide rect + any partial
+    // overlays even when analysis didn't run to completion.
+    let previewCoord: {width: number; height: number} | null = null;
+    if (outcome.kind === 'success') {
+      previewCoord = {
+        width: outcome.result.preview.width,
+        height: outcome.result.preview.height,
+      };
+    } else if (
+      (outcome.kind === 'failure' || outcome.kind === 'registered') &&
+      outcome.debug.preview
+    ) {
+      previewCoord = {
+        width: outcome.debug.preview.width,
+        height: outcome.debug.preview.height,
+      };
+    }
     let previewImage: CaptureContext['previewImage'] | undefined;
-    if (outcome.kind === 'success' && emitHtml) {
+    if (emitHtml && previewCoord) {
       try {
         const rendered = decoder.renderPreviewImage(
           fixture.path,
@@ -1088,8 +1109,8 @@ let nFailure = 0;
           ext: rendered.ext,
           encodedWidth: rendered.width,
           encodedHeight: rendered.height,
-          coordWidth: outcome.result.preview.width,
-          coordHeight: outcome.result.preview.height,
+          coordWidth: previewCoord.width,
+          coordHeight: previewCoord.height,
         };
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
