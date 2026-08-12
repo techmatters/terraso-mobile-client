@@ -357,7 +357,15 @@ export const analyzeMunsellChart = async (
   // mask, so we're only retrying the RANSAC-and-downstream steps;
   // findFlatCircles' ~30-50ms cost gets repeated per attempt but the
   // absolute wall-clock is still small.
-  const CENTROID_SHIFT_REJECT_FRAC = 0.5;
+  // Reject the fit if its centroid drifted more than this fraction
+  // of ONE column-spacing off from where the guide expected the
+  // chart center. Set at 0.8 (was 0.5) to accept moderately off-
+  // centre framings — real one-column-shifted mis-registrations
+  // still show as ≈1.0 and get caught. See gridRegistration.ts:855
+  // for the calculation. Bumped from 0.5 after most-of-a-batch
+  // failures on Pixel captures scored h=0.6-0.8 due to slight user
+  // framing error, not analyzer error.
+  const CENTROID_SHIFT_REJECT_FRAC = 0.8;
   const MAX_REGISTRATION_ATTEMPTS = 5;
   let grid: GridDetection | null = null;
   let bestGrid: GridDetection | null = null;
