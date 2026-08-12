@@ -894,6 +894,16 @@ const {values} = parseArgs({
     refs: {type: 'string'},
     pages: {type: 'string'},
     'no-html': {type: 'boolean'},
+    // Rescue knobs applied uniformly to every fixture's analyzer
+    // guide rect. Fractions of preview width/height for the shifts;
+    // multiplicative for the scale. See GuideAdjustment in
+    // chartAnalysis.ts for rationale. Useful when a batch of shots
+    // is systematically off-frame (Pixel devices that don't support
+    // DISTORTION_CORRECTION_MODE_OFF, or fixtures captured before a
+    // WYSIWYG fix landed on the phone).
+    'guide-shift-x': {type: 'string'},
+    'guide-shift-y': {type: 'string'},
+    'guide-scale': {type: 'string'},
   },
 });
 
@@ -911,6 +921,33 @@ if (!outPath) die('missing --out <path>');
 const refNotations = values.refs
   ? values.refs.split(',').map(s => s.trim()).filter(Boolean)
   : [REF_AUTO, REF_CARD];
+
+// Assemble the GuideAdjustment from the three cmdline knobs. Any of
+// them being set produces an object; all missing → undefined (no
+// adjustment).
+const parseNum = (name: string, raw: string | undefined): number | undefined => {
+  if (raw === undefined) return undefined;
+  const n = Number(raw);
+  if (!Number.isFinite(n)) die(`invalid ${name}: ${raw}`);
+  return n;
+};
+const guideAdjustment =
+  values['guide-shift-x'] !== undefined ||
+  values['guide-shift-y'] !== undefined ||
+  values['guide-scale'] !== undefined
+    ? {
+        shiftX: parseNum('--guide-shift-x', values['guide-shift-x']),
+        shiftY: parseNum('--guide-shift-y', values['guide-shift-y']),
+        scale: parseNum('--guide-scale', values['guide-scale']),
+      }
+    : undefined;
+if (guideAdjustment) {
+  process.stderr.write(
+    `guideAdjustment: shiftX=${guideAdjustment.shiftX ?? 0} ` +
+      `shiftY=${guideAdjustment.shiftY ?? 0} ` +
+      `scale=${guideAdjustment.scale ?? 1}\n`,
+  );
+}
 
 process.stderr.write(`scanning ${fixturesDir}\n`);
 const allFixtures = scanFixtures(fixturesDir!, DNG_CLI);
@@ -976,6 +1013,8 @@ let nFailure = 0;
         fixture.format,
         undefined,
         fixture.reference === 'multi',
+        false,
+        guideAdjustment,
       );
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);

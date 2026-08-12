@@ -158,6 +158,28 @@ export type MunsellChartOutcome =
 // want to inspect what the earlier stages saw.
 export type AnalysisMode = 'capture' | 'register' | 'full';
 
+// Post-hoc shift + scale applied to the analyzer's chart-guide rect
+// before whiteMask calibration + chart detection. Rescues captures
+// where the chart is systematically off-guide relative to what the
+// on-screen framing implied (typical on Pixel devices that don't
+// support DISTORTION_CORRECTION_MODE_OFF — the HAL corrects the
+// Preview stream inward, so what looks framed on-screen lands
+// mis-framed in the DNG/JPEG). All fields optional; defaults are
+// identity (shiftX=0, shiftY=0, scale=1).
+//
+//   shiftX / shiftY: fraction of PREVIEW width/height to shift the
+//                    guide center by. E.g. shiftX=0.1 moves the
+//                    guide 10% of preview width to the right.
+//   scale:           multiplied into the guide's width AND height
+//                    (isotropic — anisotropic would need shape drift
+//                    modelling we don't do yet). scale=0.8 shrinks
+//                    the expected chart footprint to 80%.
+export type GuideAdjustment = {
+  shiftX?: number;
+  shiftY?: number;
+  scale?: number;
+};
+
 // 'raw' → route through CIRAWFilter (readPreviewRgb / decodeDngRois),
 // 'photo' → route through CIImage (readPreviewRgbPhoto /
 // decodePhotoRois). Everything downstream is identical — both paths
@@ -183,6 +205,10 @@ export const analyzeMunsellChart = async (
   // mode as a fallback when the full decode path errors on a new
   // device — the tester still gets to see what registration produced.
   stopAfterRegistration = false,
+  // Rescue knob for captures where the chart is systematically off-
+  // guide (see GuideAdjustment doc). Applied AFTER computeChartGuideRect
+  // and BEFORE the guide rect flows into whiteMask + detectChartByRegions.
+  guideAdjustment?: GuideAdjustment,
 ): Promise<MunsellChartOutcome> => {
   const cells = pageCells(page);
   // 1. RGB render for the CV. We need chromaticity (not just luma) to
@@ -207,7 +233,27 @@ export const analyzeMunsellChart = async (
   // now — computeChartGuideRect works on any image dims). Falls back
   // internally to the old percentile-anchor path if the border ring
   // has too few samples.
-  const guideRect = computeChartGuideRect(rgbImage.width, rgbImage.height);
+  let guideRect = computeChartGuideRect(rgbImage.width, rgbImage.height);
+  // Rescue knob: shift+scale the analyzer's guide rect (fraction of
+  // preview dims for shifts; multiplicative for scale). See
+  // GuideAdjustment docs for why this exists (systematic HAL FoV
+  // mismatch on some Android devices). Identity by default.
+  if (guideAdjustment) {
+    const {shiftX = 0, shiftY = 0, scale = 1} = guideAdjustment;
+    const cx = guideRect.x + guideRect.w / 2 + shiftX * rgbImage.width;
+    const cy = guideRect.y + guideRect.h / 2 + shiftY * rgbImage.height;
+    const w = guideRect.w * scale;
+    const h = guideRect.h * scale;
+    guideRect = {
+      x: Math.round(cx - w / 2),
+      y: Math.round(cy - h / 2),
+      w: Math.round(w),
+      h: Math.round(h),
+    };
+    console.log(
+      `[chartAnalysis] guideAdjustment applied: shift=(${shiftX},${shiftY}) scale=${scale}`,
+    );
+  }
   // Diagnostic: log the analyser's guide rect as a fraction of the
   // preview. Should MATCH the ChartGuideOverlay's fracOfContainer
   // logged at capture time — if it doesn't, the on-screen guide the
