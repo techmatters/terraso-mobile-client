@@ -689,6 +689,19 @@ const resolveAnchor = (
       isOnPage: false,
     };
   }
+  // Multi lookup failed for a known slot name — likely the multi
+  // slot wasn't detected on this specific capture (e.g. bad
+  // registration in that corner). Emit the normalized "ref_card:{slot}"
+  // notation anyway so downstream (delta-e-analysis, munsell-error
+  // filmstrip) doesn't fall back to the physical reference_card and
+  // display "multi" as a fake WB anchor.
+  if (label === 'whibal' || label === 'postit' || label === 'greycard') {
+    return {
+      displayNotation: `ref_card:${label}`,
+      measurement: undefined,
+      isOnPage: false,
+    };
+  }
   const m = measurements.find(x => x.cell.notation === label);
   return {
     displayNotation: label,

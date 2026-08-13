@@ -107,6 +107,12 @@ for (const cap of runDoc.captures) {
     //     '{slot}' column (whibal / postit / greycard / ...).
     //   - explicit WB with anything else → the physical reference_card
     //     as a fallback (rare in current data).
+    // Slots the multi-mode sweep can produce. If wb.reference is a
+    // bare slot name (analyze-fixtures didn't prefix it with
+    // "ref_card:" because the multi lookup fell through to the generic
+    // notation-match branch), recognise it here so it doesn't leak
+    // through as "multi" from the physical reference_card fallback.
+    const KNOWN_SLOTS = new Set(['whibal', 'postit', 'greycard']);
     const wbSource = cap.wb_correction?.source ?? null;
     const wbRef = cap.wb_correction?.reference ?? null;
     let refCardCol: string;
@@ -114,6 +120,8 @@ for (const cap of runDoc.captures) {
       refCardCol = 'self';
     } else if (typeof wbRef === 'string' && wbRef.startsWith('ref_card:')) {
       refCardCol = wbRef.slice('ref_card:'.length);
+    } else if (typeof wbRef === 'string' && KNOWN_SLOTS.has(wbRef)) {
+      refCardCol = wbRef;
     } else {
       refCardCol = cap.reference_card ?? 'none';
     }

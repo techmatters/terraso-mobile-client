@@ -84,6 +84,8 @@ def platform_of(device: str) -> str:
     return 'ios' if device.startswith('iPhone') else 'android'
 
 
+_KNOWN_SLOTS = frozenset({'whibal', 'postit', 'greycard'})
+
 def wb_anchor_of(cap: dict) -> str:
     wb = cap.get('wb_correction') or {}
     if wb.get('source') == 'auto':
@@ -91,6 +93,11 @@ def wb_anchor_of(cap: dict) -> str:
     ref = wb.get('reference') or ''
     if ref.startswith('ref_card:'):
         return ref.split(':', 1)[1]
+    # analyze-fixtures sometimes writes a bare slot name when the multi
+    # lookup fell through — accept those too so they don't leak as the
+    # physical reference_card fallback (e.g. "multi").
+    if ref in _KNOWN_SLOTS:
+        return ref
     return ref or '(none)'
 
 
