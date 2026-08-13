@@ -64,6 +64,32 @@ npm run render-munsell-error -- \
   --json "$OUT/run.json" \
   --out "$OUT/munsell-error.html"
 
+# Post-analysis Python scripts (stdlib-only, no extra deps). Each
+# reads the JSON we just wrote and emits its own self-contained HTML.
+echo
+echo "==> delta-e-summary (group means + bootstrap CIs) …"
+python3 "$SCRIPT_DIR/delta-e-summary.py" \
+  --json "$OUT/run.json" \
+  --out "$OUT/delta-e-summary.html"
+
+echo
+echo "==> delta-e-heatmap (Value × Chroma per WB anchor) …"
+python3 "$SCRIPT_DIR/delta-e-heatmap.py" \
+  --json "$OUT/run.json" \
+  --out "$OUT/delta-e-heatmap.html"
+
+echo
+echo "==> delta-e-normalized (within-fixture WB anchor comparison) …"
+python3 "$SCRIPT_DIR/delta-e-normalized.py" \
+  --json "$OUT/run.json" \
+  --out "$OUT/delta-e-normalized.html"
+
+echo
+echo "==> delta-e-regression (multi-way OLS) …"
+python3 "$SCRIPT_DIR/delta-e-regression.py" \
+  --json "$OUT/run.json" \
+  --out "$OUT/delta-e-regression.html"
+
 echo
 echo "==> outputs:"
 ls -lh "$OUT"
@@ -72,3 +98,7 @@ echo
 echo "==> opening reports …"
 open "$OUT/run.html"
 open "$OUT/munsell-error.html"
+open "$OUT/delta-e-summary.html"
+open "$OUT/delta-e-heatmap.html"
+open "$OUT/delta-e-normalized.html"
+open "$OUT/delta-e-regression.html"
