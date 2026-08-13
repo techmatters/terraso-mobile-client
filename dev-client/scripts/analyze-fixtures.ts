@@ -904,6 +904,14 @@ const {values} = parseArgs({
     'guide-shift-x': {type: 'string'},
     'guide-shift-y': {type: 'string'},
     'guide-scale': {type: 'string'},
+    // Force the reference-mode on every fixture, ignoring the token
+    // in the filename. Useful when a batch was captured with the wrong
+    // ref-mode in the friendly stem (e.g. app defaulted to 'nothing'
+    // even though all shots had 3 cards taped alongside) AND the
+    // fixture files can't be renamed at rest (gdrive-hosted, mostly).
+    // Value must be one of REFERENCE_TOKENS (multi / whibal / postit /
+    // greycard / nothing / none).
+    'override-ref': {type: 'string'},
   },
 });
 
@@ -949,8 +957,32 @@ if (guideAdjustment) {
   );
 }
 
+const overrideRef = values['override-ref'];
+if (overrideRef !== undefined) {
+  if (!REFERENCE_TOKENS.has(overrideRef.toLowerCase())) {
+    die(
+      `invalid --override-ref "${overrideRef}"; must be one of: ` +
+        Array.from(REFERENCE_TOKENS).join(', '),
+    );
+  }
+  process.stderr.write(
+    `override-ref: forcing every fixture's reference to "${overrideRef.toLowerCase()}"\n`,
+  );
+}
+
 process.stderr.write(`scanning ${fixturesDir}\n`);
 const allFixtures = scanFixtures(fixturesDir!, DNG_CLI);
+// Apply --override-ref post-scan so every fixture takes the same
+// reference regardless of its filename token. reference_card in the
+// JSON + which per-fixture WB sweep runs (multi expands to 4 refs)
+// both key off this field, so we mutate here rather than at fixture
+// consumption sites.
+if (overrideRef !== undefined) {
+  const forced = overrideRef.toLowerCase();
+  for (const f of allFixtures) {
+    f.reference = forced;
+  }
+}
 const pageFilter = values.pages
   ? new Set(
       values.pages
