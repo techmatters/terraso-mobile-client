@@ -121,11 +121,21 @@ export type DebugBlob = {
 
 export type GridDetection = {
   centers: CellCenters;
-  // Approximate swatch pixel size (typical spacing between adjacent
-  // cells, along each axis after the affine fit). Used by callers to
-  // compute the sampling window without any further shape detection.
+  // Approximate swatch pixel size from the CLUSTERING-based affine
+  // (early stage — before RANSAC). Kept for the fallback path when
+  // RANSAC couldn't lock a match. Downstream sizing (sample rects)
+  // should prefer matchedColStepPx / matchedRowStepPx below when
+  // available — those come from the RANSAC affine which is more
+  // reliable and can differ significantly from the cluster fit on
+  // sparse pages / warped layouts.
   cellW: number;
   cellH: number;
+  // Per-axis chip spacing in preview pixels from the RANSAC affine
+  // (`Math.hypot(a*2, d*2)` for cols, `Math.hypot(b*3, e*3)` for
+  // rows — the "2" and "3" match the chart's ref-grid unit spacing).
+  // Null when the RANSAC step didn't lock a match.
+  matchedColStepPx: number | null;
+  matchedRowStepPx: number | null;
   // Diagnostic: which grid positions were directly detected (as
   // opposed to affine-extrapolated). Rendered as dots on the "Source
   // + ROIs" validation view.
@@ -610,6 +620,8 @@ export const detectChartByRegions = (
   const tAfterCircles = Date.now();
   let matchedGrid: {x: number; y: number}[] | null = null;
   let matchedGridInliers: boolean[] | null = null;
+  let matchedColStepPx: number | null = null;
+  let matchedRowStepPx: number | null = null;
   let matchedScore: number | null = null;
   let matchedRefCount: number | null = null;
   let matchedTripletDetected: {x: number; y: number}[] | null = null;
@@ -920,6 +932,13 @@ export const detectChartByRegions = (
         match.transform.b * 3,
         match.transform.e * 3,
       );
+      // Expose to callers so downstream sample-rect sizing uses the
+      // RANSAC affine's own scale (matches where the yellow rings +
+      // matched sample-rect centres land) rather than the cluster
+      // fit's cellW/cellH, which can be off by 2× on the sparse pages
+      // where cluster misidentifies row spacing.
+      matchedColStepPx = colStepPx;
+      matchedRowStepPx = rowStepPx;
       // Half-side = 0.1875 × min(colStepPx, rowStepPx) — 25% smaller
       // than the previous 0.25 so the ROI stays comfortably inside a
       // swatch even when the fit has slight residual drift near the
@@ -953,6 +972,8 @@ export const detectChartByRegions = (
     chartBodyMaskSpans: [],
     matchedGrid,
     matchedGridInliers,
+    matchedColStepPx,
+    matchedRowStepPx,
     matchedScore,
     matchedRefCount,
     matchedTripletDetected,

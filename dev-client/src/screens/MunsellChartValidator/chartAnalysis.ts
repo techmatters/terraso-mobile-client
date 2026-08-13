@@ -457,6 +457,8 @@ export const analyzeMunsellChart = async (
       chartBodyMaskSpans: [],
       matchedGrid: null,
       matchedGridInliers: null,
+      matchedColStepPx: null,
+      matchedRowStepPx: null,
       matchedScore: null,
       matchedRefCount: null,
       matchedTripletDetected: null,
@@ -513,8 +515,19 @@ export const analyzeMunsellChart = async (
   //    match. The RANSAC-based positions correctly handle sparse
   //    pages like 10Y-5GY where cluster-fit's row-assignment scoring
   //    picks the wrong template-row alignment.
-  const halfW = grid.cellW * SAMPLE_HALF_W_FRAC;
-  const halfH = grid.cellH * SAMPLE_HALF_H_FRAC;
+  //
+  //    SIZING: when RANSAC locked, use matchedColStepPx/matchedRowStepPx
+  //    (the RANSAC affine's own step sizes) for halfW / halfH. Cluster-
+  //    fit cellW/cellH can be 2× too large on sparse pages even when
+  //    RANSAC lands correctly — same fit produces correctly-placed
+  //    yellow rings but wildly-wide red sample rects if we sourced size
+  //    from the cluster fit.
+  const useMatchedSteps =
+    grid.matchedColStepPx !== null && grid.matchedRowStepPx !== null;
+  const baseW = useMatchedSteps ? grid.matchedColStepPx! : grid.cellW;
+  const baseH = useMatchedSteps ? grid.matchedRowStepPx! : grid.cellH;
+  const halfW = baseW * SAMPLE_HALF_W_FRAC;
+  const halfH = baseH * SAMPLE_HALF_H_FRAC;
   const scaleX = rgbPreview.sourceWidth / rgbPreview.width;
   const scaleY = rgbPreview.sourceHeight / rgbPreview.height;
   // matchedSampleRects has one extra entry at the end for
