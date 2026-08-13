@@ -294,7 +294,7 @@ def render_heatmap(df: pd.DataFrame) -> str:
                     cells.append('<td class="empty"></td>')
             body.append(f'<tr>{"".join(cells)}</tr>')
         return (
-            f'<div class="panel"><h3>{escape(anchor)}</h3>'
+            f'<div class="heatmap-panel"><h3>{escape(anchor)}</h3>'
             f'<table class="heat">{header}{"".join(body)}</table></div>'
         )
 
@@ -639,7 +639,7 @@ html = f'''<!DOCTYPE html>
 
   /* Heatmap */
   .panels {{ display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }}
-  .panel h3 {{ margin: 0 0 6px; }}
+  .heatmap-panel h3 {{ margin: 0 0 6px; }}
   table.heat {{ border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }}
   table.heat th, table.heat td {{ border: 1px solid #ccc; padding: 2px 6px; text-align: center; }}
   table.heat th {{ background: #f5f5f5; font-weight: 600; color: #444; }}
