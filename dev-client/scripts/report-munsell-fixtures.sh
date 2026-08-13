@@ -17,8 +17,16 @@ set -euo pipefail
 
 DEFAULT_FIXTURES="$HOME/Library/CloudStorage/GoogleDrive-johannes@terraso.org/My Drive/Munsell/Multi Ref Device"
 
-FIXTURES="${1:-$DEFAULT_FIXTURES}"
-shift || true  # drop first arg; rest forwarded to analyze-fixtures
+# First arg is the fixtures dir UNLESS it starts with "--" (in which
+# case it's an analyze-fixtures flag and we use the default dir).
+# Lets `scripts/report-munsell-fixtures.sh --override-ref multi` work
+# against the gdrive default without repeating the long path.
+if [ $# -gt 0 ] && [[ "$1" != --* ]]; then
+  FIXTURES="$1"
+  shift
+else
+  FIXTURES="$DEFAULT_FIXTURES"
+fi
 
 if [ ! -d "$FIXTURES" ]; then
   echo "error: fixtures dir not found: $FIXTURES" >&2
