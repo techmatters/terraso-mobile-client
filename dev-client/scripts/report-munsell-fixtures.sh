@@ -64,31 +64,20 @@ npm run render-munsell-error -- \
   --json "$OUT/run.json" \
   --out "$OUT/munsell-error.html"
 
-# Post-analysis Python scripts (stdlib-only, no extra deps). Each
-# reads the JSON we just wrote and emits its own self-contained HTML.
+# Consolidated ΔE analysis. Uses the .venv-analysis Python environment
+# with pandas / numpy / statsmodels (see scripts/setup-analysis-venv.sh
+# if you haven't set it up yet — the script self-heals below).
+VENV_PY="$DEV_CLIENT/.venv-analysis/bin/python"
+if [ ! -x "$VENV_PY" ]; then
+  echo "==> setting up .venv-analysis (first run) …"
+  python3.13 -m venv "$DEV_CLIENT/.venv-analysis"
+  "$DEV_CLIENT/.venv-analysis/bin/pip" install --quiet numpy pandas statsmodels
+fi
 echo
-echo "==> delta-e-summary (group means + bootstrap CIs) …"
-python3 "$SCRIPT_DIR/delta-e-summary.py" \
+echo "==> delta-e-analysis (summary / heatmap / head-to-head / OLS / mixed) …"
+"$VENV_PY" "$SCRIPT_DIR/delta-e-analysis.py" \
   --json "$OUT/run.json" \
-  --out "$OUT/delta-e-summary.html"
-
-echo
-echo "==> delta-e-heatmap (Value × Chroma per WB anchor) …"
-python3 "$SCRIPT_DIR/delta-e-heatmap.py" \
-  --json "$OUT/run.json" \
-  --out "$OUT/delta-e-heatmap.html"
-
-echo
-echo "==> delta-e-normalized (within-fixture WB anchor comparison) …"
-python3 "$SCRIPT_DIR/delta-e-normalized.py" \
-  --json "$OUT/run.json" \
-  --out "$OUT/delta-e-normalized.html"
-
-echo
-echo "==> delta-e-regression (multi-way OLS) …"
-python3 "$SCRIPT_DIR/delta-e-regression.py" \
-  --json "$OUT/run.json" \
-  --out "$OUT/delta-e-regression.html"
+  --out "$OUT/delta-e-analysis.html"
 
 echo
 echo "==> outputs:"
@@ -98,7 +87,4 @@ echo
 echo "==> opening reports …"
 open "$OUT/run.html"
 open "$OUT/munsell-error.html"
-open "$OUT/delta-e-summary.html"
-open "$OUT/delta-e-heatmap.html"
-open "$OUT/delta-e-normalized.html"
-open "$OUT/delta-e-regression.html"
+open "$OUT/delta-e-analysis.html"
