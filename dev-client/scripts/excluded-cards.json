@@ -1,0 +1,9 @@
+{
+  "//": "List of fixture labels to exclude from analysis (poor registration, mis-framed shot, chart damage, etc.). Matched against the capture's `label` field (source_path basename minus extension). Both raw + photo variants of the same shutter are excluded. Rerun analyze-fixtures + render-munsell-error to pick up changes.",
+  "cards": [
+    {
+      "label": "GLEY2_multi_BOTH_ANDROID_20260812T140322",
+      "reason": "Poor registration — chip lookup lands in wrong positions."
+    }
+  ]
+}

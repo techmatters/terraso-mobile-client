@@ -4,7 +4,14 @@ import {NitroModules} from 'react-native-nitro-modules';
 
 import type {RawCameraAndroid} from './RawCameraAndroid.nitro';
 
-export type {RawCameraAndroid, CapturedPhoto} from './RawCameraAndroid.nitro';
+export type {
+  CaptureCapabilities,
+  CaptureOptions,
+  CaptureSessionRequest,
+  CapturedPhoto,
+  RawCameraAndroid,
+  SessionShot,
+} from './RawCameraAndroid.nitro';
 export {RawCameraAndroidView} from './RawCameraAndroidView';
 export type {RawCameraAndroidViewProps} from './RawCameraAndroidView';
 

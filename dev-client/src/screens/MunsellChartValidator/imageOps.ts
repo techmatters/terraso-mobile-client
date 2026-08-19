@@ -144,6 +144,14 @@ export type WhiteMaskParams = {
   // chips) while still accepting shadowed paper (equal darkening
   // across channels → all three deltas move together → spread ≈ 0).
   borderChromaSpreadTolerance: number;
+  // When true, drop the right slab of the ring (x >= dead.maxX) from
+  // calibration. In our capture guide the ref cards (whibal / postit /
+  // greycard) sit to the right of the chart and land on top of the
+  // right-side ring pixels — sampling them pulls the paper anchor
+  // toward the card colours instead of the physical background paper.
+  // Top/left/bottom of the ring stay in play, which is enough sample
+  // volume to hit borderMinSamples on all real captures.
+  borderExcludeRightSide: boolean;
 };
 
 export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
@@ -190,6 +198,7 @@ export const DEFAULT_WHITE_MASK_PARAMS: WhiteMaskParams = {
   // fill in more completely (currently only ~50% of each hole passes
   // the gate). Revert to 10 once the experiment concludes.
   borderChromaSpreadTolerance: 20,
+  borderExcludeRightSide: true,
 };
 
 export type WhiteMaskResult = {
@@ -286,12 +295,18 @@ export const whiteMask = (
     // Pass 1 (ring luma) — build a luma histogram of ring pixels so
     // we can trim away the bottom (borderLumaKeepFrac) fraction before
     // computing calibration stats. Kills shadow contamination.
+    // When borderExcludeRightSide, drop the right slab entirely (any
+    // pixel with x >= dead.maxX): the ref cards sit there in our
+    // capture guide and contaminate paper stats.
+    const skipRight = params.borderExcludeRightSide;
+    const rightCutX = skipRight ? dead.maxX : outer.maxX + 1;
     const ringLumaHist = new Uint32Array(256);
     let ringSampleCount = 0;
     for (let y = outer.minY; y < outer.maxY; y++) {
       const insideDeadY = y >= dead.minY && y < dead.maxY;
       for (let x = outer.minX; x < outer.maxX; x++) {
         if (insideDeadY && x >= dead.minX && x < dead.maxX) continue;
+        if (x >= rightCutX) continue;
         ringLumaHist[luma[y * width + x]]++;
         ringSampleCount++;
       }
@@ -324,6 +339,7 @@ export const whiteMask = (
         const insideDeadY = y >= dead.minY && y < dead.maxY;
         for (let x = outer.minX; x < outer.maxX; x++) {
           if (insideDeadY && x >= dead.minX && x < dead.maxX) continue;
+          if (x >= rightCutX) continue;
           const i = y * width + x;
           if (luma[i] < lumaKeepCutoff) continue;
           rHist[pixels[i * 3]]++;
@@ -347,6 +363,7 @@ export const whiteMask = (
           const insideDeadY = y >= dead.minY && y < dead.maxY;
           for (let x = outer.minX; x < outer.maxX; x++) {
             if (insideDeadY && x >= dead.minX && x < dead.maxX) continue;
+            if (x >= rightCutX) continue;
             const i = y * width + x;
             if (luma[i] < lumaKeepCutoff) continue;
             rDevHist[Math.abs(pixels[i * 3] - medR)]++;

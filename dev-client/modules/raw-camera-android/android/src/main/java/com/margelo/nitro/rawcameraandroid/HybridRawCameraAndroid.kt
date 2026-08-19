@@ -13,7 +13,24 @@ import com.margelo.nitro.core.Promise
 @DoNotStrip
 @Keep
 class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
-    override fun capturePhoto(): Promise<CapturedPhoto> {
-        return Promise.async { CameraSessionManager.capture() }
+    override fun capturePhoto(options: CaptureOptions): Promise<CapturedPhoto> {
+        return Promise.async { CameraSessionManager.capture(options) }
+    }
+
+    override fun captureBurst(
+        count: Double,
+        options: CaptureOptions,
+    ): Promise<Array<CapturedPhoto>> {
+        return Promise.async { CameraSessionManager.captureBurst(count.toInt(), options) }
+    }
+
+    override fun getCaptureCapabilities(): Promise<CaptureCapabilities> {
+        return Promise.async { CameraSessionManager.getCapabilities() }
+    }
+
+    override fun captureSession(
+        request: CaptureSessionRequest,
+    ): Promise<Array<CapturedPhoto>> {
+        return Promise.async { CameraSessionManager.captureSession(request) }
     }
 }

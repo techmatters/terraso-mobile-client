@@ -9,6 +9,14 @@
 
 // Forward declaration of `CapturedPhoto` to properly resolve imports.
 namespace margelo::nitro::rawcameraandroid { struct CapturedPhoto; }
+// Forward declaration of `CaptureCapabilities` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct CaptureCapabilities; }
+// Forward declaration of `CaptureOptions` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct CaptureOptions; }
+// Forward declaration of `CaptureSessionRequest` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct CaptureSessionRequest; }
+// Forward declaration of `SessionShot` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct SessionShot; }
 
 #include "CapturedPhoto.hpp"
 #include <NitroModules/Promise.hpp>
@@ -16,6 +24,15 @@ namespace margelo::nitro::rawcameraandroid { struct CapturedPhoto; }
 #include "JCapturedPhoto.hpp"
 #include <string>
 #include <optional>
+#include <vector>
+#include "CaptureCapabilities.hpp"
+#include "JCaptureCapabilities.hpp"
+#include "CaptureOptions.hpp"
+#include "JCaptureOptions.hpp"
+#include "CaptureSessionRequest.hpp"
+#include "JCaptureSessionRequest.hpp"
+#include "SessionShot.hpp"
+#include "JSessionShot.hpp"
 
 namespace margelo::nitro::rawcameraandroid {
 
@@ -50,14 +67,80 @@ namespace margelo::nitro::rawcameraandroid {
   
 
   // Methods
-  std::shared_ptr<Promise<CapturedPhoto>> JHybridRawCameraAndroidSpec::capturePhoto() {
-    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>()>("capturePhoto");
-    auto __result = method(_javaPart);
+  std::shared_ptr<Promise<CapturedPhoto>> JHybridRawCameraAndroidSpec::capturePhoto(const CaptureOptions& options) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<JCaptureOptions> /* options */)>("capturePhoto");
+    auto __result = method(_javaPart, JCaptureOptions::fromCpp(options));
     return [&]() {
       auto __promise = Promise<CapturedPhoto>::create();
       __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
         auto __result = jni::static_ref_cast<JCapturedPhoto>(__boxedResult);
         __promise->resolve(__result->toCpp());
+      });
+      __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
+        jni::JniException __jniError(__throwable);
+        __promise->reject(std::make_exception_ptr(__jniError));
+      });
+      return __promise;
+    }();
+  }
+  std::shared_ptr<Promise<std::vector<CapturedPhoto>>> JHybridRawCameraAndroidSpec::captureBurst(double count, const CaptureOptions& options) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(double /* count */, jni::alias_ref<JCaptureOptions> /* options */)>("captureBurst");
+    auto __result = method(_javaPart, count, JCaptureOptions::fromCpp(options));
+    return [&]() {
+      auto __promise = Promise<std::vector<CapturedPhoto>>::create();
+      __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
+        auto __result = jni::static_ref_cast<jni::JArrayClass<JCapturedPhoto>>(__boxedResult);
+        __promise->resolve([&](auto&& __input) {
+          size_t __size = __input->size();
+          std::vector<CapturedPhoto> __vector;
+          __vector.reserve(__size);
+          for (size_t __i = 0; __i < __size; __i++) {
+            auto __element = __input->getElement(__i);
+            __vector.push_back(__element->toCpp());
+          }
+          return __vector;
+        }(__result));
+      });
+      __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
+        jni::JniException __jniError(__throwable);
+        __promise->reject(std::make_exception_ptr(__jniError));
+      });
+      return __promise;
+    }();
+  }
+  std::shared_ptr<Promise<CaptureCapabilities>> JHybridRawCameraAndroidSpec::getCaptureCapabilities() {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>()>("getCaptureCapabilities");
+    auto __result = method(_javaPart);
+    return [&]() {
+      auto __promise = Promise<CaptureCapabilities>::create();
+      __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
+        auto __result = jni::static_ref_cast<JCaptureCapabilities>(__boxedResult);
+        __promise->resolve(__result->toCpp());
+      });
+      __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
+        jni::JniException __jniError(__throwable);
+        __promise->reject(std::make_exception_ptr(__jniError));
+      });
+      return __promise;
+    }();
+  }
+  std::shared_ptr<Promise<std::vector<CapturedPhoto>>> JHybridRawCameraAndroidSpec::captureSession(const CaptureSessionRequest& request) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<JCaptureSessionRequest> /* request */)>("captureSession");
+    auto __result = method(_javaPart, JCaptureSessionRequest::fromCpp(request));
+    return [&]() {
+      auto __promise = Promise<std::vector<CapturedPhoto>>::create();
+      __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
+        auto __result = jni::static_ref_cast<jni::JArrayClass<JCapturedPhoto>>(__boxedResult);
+        __promise->resolve([&](auto&& __input) {
+          size_t __size = __input->size();
+          std::vector<CapturedPhoto> __vector;
+          __vector.reserve(__size);
+          for (size_t __i = 0; __i < __size; __i++) {
+            auto __element = __input->getElement(__i);
+            __vector.push_back(__element->toCpp());
+          }
+          return __vector;
+        }(__result));
       });
       __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
         jni::JniException __jniError(__throwable);

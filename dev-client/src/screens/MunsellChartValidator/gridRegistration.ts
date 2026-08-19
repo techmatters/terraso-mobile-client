@@ -224,6 +224,16 @@ export type GridDetection = {
   // when the ring didn't yield enough samples and whiteMask fell back
   // to the percentile path).
   paperLuma: number | null;
+  // Median per-channel R/G/B of the whiteMask border ring, in
+  // preview-image space (gamma-encoded sRGB, 0–255). Same source as
+  // paperLuma. Null when the ring calibration didn't run. Used by
+  // analyze-fixtures to synthesise a 'paper' ref card for LIGHT BG
+  // captures — the surrounding paper is a known-neutral reflector,
+  // so its measured colour becomes a WB reference point alongside
+  // whibal / postit / greycard.
+  paperMedianR: number | null;
+  paperMedianG: number | null;
+  paperMedianB: number | null;
   // True when paperLuma > avgLuma (chart paper is brighter than the
   // surroundings). False in the flipped case (paper darker than
   // surroundings, e.g. chart on a bright table). Null when paperLuma
@@ -981,6 +991,12 @@ export const detectChartByRegions = (
     matchedGridBrightness,
     avgLuma,
     paperLuma,
+    // Populated by chartAnalysis.ts after this function returns, from
+    // whiteMask.borderMedianR/G/B — we don't have the mask result in
+    // scope here, so the caller patches these in.
+    paperMedianR: null,
+    paperMedianG: null,
+    paperMedianB: null,
     brightPaperOnDark:
       paperLuma === null ? null : paperLuma > avgLuma ? true : false,
     nKept: statusCounts.kept ?? 0,

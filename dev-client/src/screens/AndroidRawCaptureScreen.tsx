@@ -15,12 +15,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, Pressable, StyleSheet, View} from 'react-native';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
+import Share from 'react-native-share';
 
 import {useKeepAwake} from 'expo-keep-awake';
 
 import {DngDecoderHybrid} from 'dng-decoder';
+import type {
+  CaptureCapabilities,
+  CapturedPhoto,
+  CaptureOptions,
+} from 'raw-camera-android';
 import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
 
 import {
@@ -37,6 +43,51 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import type {ChartGuide} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+
+// Fixed burst size when burst mode is enabled. See
+// docs/munsell-dark-sensor.md option #3 — 5 frames give ~2.2× shot-noise
+// reduction (Poisson √N), which is the sweet spot before capture
+// latency becomes annoying.
+const BURST_COUNT = 5;
+
+// Preset ISO values shown by the manual-exposure stepper. Native clamps
+// to the sensor's advertised range so an out-of-range value is silently
+// coerced — we don't need to filter here.
+const ISO_PRESETS = [50, 100, 200, 400, 800, 1600, 3200, 6400] as const;
+
+// Preset shutter times in nanoseconds. Common photographic stops from
+// 1/2000s to 1s. Displayed as fractions in the UI.
+const SHUTTER_PRESETS_NS = [
+  500_000, // 1/2000
+  1_000_000, // 1/1000
+  2_000_000, // 1/500
+  4_000_000, // 1/250
+  8_000_000, // 1/125
+  16_667_000, // 1/60
+  33_333_000, // 1/30
+  66_667_000, // 1/15
+  125_000_000, // 1/8
+  250_000_000, // 1/4
+  500_000_000, // 1/2
+  1_000_000_000, // 1s
+] as const;
+
+// Fixed sweep for MULTI (research-data collection) sessions. See
+// docs/munsell-multishot.md for rationale on each row.
+//   1. (1/30, ISO 100) — 2× shutter vs the burst's implicit auto baseline
+//   2. (1/15, ISO 100) — 4× shutter, characterises clipping onset
+//   3. (1/60, ISO 400) — same brightness as row 2 via ISO instead of shutter
+//   4. (1/30, ISO 200) — mid-point handheld tradeoff
+const MULTI_SESSION_BURST_COUNT = 5;
+const MULTI_SESSION_MANUAL_SHOTS: readonly {iso: number; shutterNs: number}[] =
+  [
+    {iso: 100, shutterNs: 33_333_000}, // 1/30
+    {iso: 100, shutterNs: 66_667_000}, // 1/15
+    {iso: 400, shutterNs: 16_667_000}, // 1/60
+    {iso: 200, shutterNs: 33_333_000}, // 1/30
+  ];
+const MULTI_SESSION_TOTAL =
+  MULTI_SESSION_BURST_COUNT + MULTI_SESSION_MANUAL_SHOTS.length;
 
 // Full-screen React Navigation route for Android RAW capture. Owns the
 // native RawCameraAndroidView (which drives CameraSessionManager via
@@ -76,6 +127,64 @@ export const AndroidRawCaptureScreen = () => {
   }, []);
 
   const [isCapturing, setIsCapturing] = useState(false);
+  const [caps, setCaps] = useState<CaptureCapabilities | null>(null);
+  const [evIndex, setEvIndex] = useState(0);
+  const [burstOn, setBurstOn] = useState(false);
+  const [manualOn, setManualOn] = useState(false);
+  // Indices into the preset arrays; start at ISO 100 and 1/60s (both
+  // familiar defaults). Native clamps to the sensor range, so if the
+  // preset is out-of-range the HAL sees the nearest legal value.
+  const [isoIdx, setIsoIdx] = useState(ISO_PRESETS.indexOf(100));
+  const [shutIdx, setShutIdx] = useState(
+    SHUTTER_PRESETS_NS.indexOf(16_667_000),
+  );
+
+  // Fetch capabilities once the native session binds. getCaptureCapabilities
+  // triggers ensureBound if needed, which is safe from JS but can race
+  // with the view's own attach on the very first frame — a single retry
+  // covers that. If the whole thing fails (no camera / no RAW support)
+  // we surface the error rather than silently hiding the controls.
+  useEffect(() => {
+    let cancelled = false;
+    const attempt = async (retryLeft: number): Promise<void> => {
+      try {
+        const c = await RawCameraAndroidHybrid.getCaptureCapabilities();
+        if (!cancelled) setCaps(c);
+      } catch (err) {
+        if (retryLeft > 0) {
+          await new Promise<void>(r => setTimeout(() => r(), 300));
+          if (!cancelled) return attempt(retryLeft - 1);
+        }
+        console.warn(
+          'AndroidRawCaptureScreen: getCaptureCapabilities failed',
+          err,
+        );
+      }
+    };
+    attempt(2);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const evLabel = useMemo(
+    () => (caps ? formatEvLabel(evIndex, caps) : formatEvLabel(evIndex, null)),
+    [evIndex, caps],
+  );
+  const canDecEv = caps ? evIndex > caps.aeCompensationMin : true;
+  const canIncEv = caps ? evIndex < caps.aeCompensationMax : true;
+
+  const buildOptions = useCallback((): CaptureOptions => {
+    return {
+      aeCompensation: evIndex,
+      ...(manualOn
+        ? {
+            sensorSensitivity: ISO_PRESETS[isoIdx],
+            sensorExposureTimeNs: SHUTTER_PRESETS_NS[shutIdx],
+          }
+        : {}),
+    };
+  }, [evIndex, manualOn, isoIdx, shutIdx]);
 
   // Fire onCancel if the user pops via the AppBar back button (or
   // Android system back) without going through shutter. Won't fire on
@@ -96,17 +205,50 @@ export const AndroidRawCaptureScreen = () => {
     if (isCapturing) return;
     setIsCapturing(true);
     try {
-      const {dngPath, jpegPath, width, height} =
-        await RawCameraAndroidHybrid.capturePhoto();
-      // Diagnostic: DNG's raw pixel dims. If these are much bigger
-      // (as a fraction of sensor) than the on-screen Preview stream
-      // dims, the RAW capture has a wider field of view than what
-      // the user framed to — that's the Android chart-validator's
-      // WYSIWYG break.
+      const options = buildOptions();
+      let primary: CapturedPhoto;
+      if (burstOn) {
+        console.log(
+          `[AndroidRawCaptureScreen] captureBurst(${BURST_COUNT}, ${JSON.stringify(options)})`,
+        );
+        const frames = await RawCameraAndroidHybrid.captureBurst(
+          BURST_COUNT,
+          options,
+        );
+        // Downstream analysis consumes a single frame — use the first.
+        // The other frames are for offline averaging experiments, so
+        // pop the share sheet with all N DNGs before continuing to
+        // analysis. failOnCancel:false so a dismissed sheet still lets
+        // the analysis flow proceed with frame 0.
+        primary = frames[0];
+        console.log(
+          '[AndroidRawCaptureScreen] burst frames written:',
+          frames.map(f => f.dngPath),
+        );
+        try {
+          await Share.open({
+            urls: frames.map(f => f.dngPath),
+            type: 'image/x-adobe-dng',
+            failOnCancel: false,
+          });
+        } catch (err) {
+          console.warn(
+            '[AndroidRawCaptureScreen] burst share failed (continuing)',
+            err,
+          );
+        }
+      } else {
+        console.log(
+          `[AndroidRawCaptureScreen] capturePhoto(${JSON.stringify(options)})`,
+        );
+        primary = await RawCameraAndroidHybrid.capturePhoto(options);
+      }
+      const {dngPath, jpegPath, width, height} = primary;
       console.log(
         `[AndroidRawCaptureScreen] DNG captured: ${width}x${height}` +
           ` (aspect=${(width / height).toFixed(3)})` +
-          ` jpeg=${jpegPath ? 'yes' : 'no'}`,
+          ` jpeg=${jpegPath ? 'yes' : 'no'}` +
+          ` path=${dngPath}`,
       );
       const result: CaptureResult = {
         kind: 'raw',
@@ -139,6 +281,46 @@ export const AndroidRawCaptureScreen = () => {
       Alert.alert('Capture failed', String(err), [
         {text: 'OK', onPress: () => navigation.pop()},
       ]);
+    } finally {
+      setIsCapturing(false);
+    }
+  }, [isCapturing, buildOptions, burstOn, navigation]);
+
+  // MULTI-session shutter. Fires the full research-collection sweep
+  // (5 burst @ auto + 4 manual iso/shutter combos) via captureSession,
+  // which writes to MediaStore.Downloads/soilcap/session_<ts>/. On
+  // completion pops back one screen (to the page picker) so the user
+  // can select the next Munsell card without re-navigating. Does NOT
+  // invoke the analysis callback — this is a data-collection flow, all
+  // analysis happens offline.
+  const runMultiSession = useCallback(async () => {
+    if (isCapturing) return;
+    setIsCapturing(true);
+    try {
+      console.log(
+        `[AndroidRawCaptureScreen] captureSession start ` +
+          `(${MULTI_SESSION_BURST_COUNT} burst + ${MULTI_SESSION_MANUAL_SHOTS.length} manual)`,
+      );
+      const frames = await RawCameraAndroidHybrid.captureSession({
+        burstCount: MULTI_SESSION_BURST_COUNT,
+        manualShots: MULTI_SESSION_MANUAL_SHOTS.map(m => ({
+          sensorSensitivity: m.iso,
+          sensorExposureTimeNs: m.shutterNs,
+        })),
+      });
+      console.log(
+        `[AndroidRawCaptureScreen] captureSession ok, ${frames.length} shots:`,
+        frames.map(f => f.dngPath),
+      );
+      // Skip the analysis callback and go straight back to the page
+      // picker. Set cancelledRef so the beforeRemove listener doesn't
+      // fire onCancel on our way out.
+      cancelledRef.current = true;
+      callbacksRef.current = null;
+      navigation.pop();
+    } catch (err) {
+      console.error('[AndroidRawCaptureScreen] captureSession failed:', err);
+      Alert.alert('Multi-shot session failed', String(err));
     } finally {
       setIsCapturing(false);
     }
@@ -176,6 +358,54 @@ export const AndroidRawCaptureScreen = () => {
             <ChartGuideOverlay guide={chartGuide} />
           </SensorAspectFrame>
         )}
+        <View style={styles.controlsPanel} pointerEvents="box-none">
+          <Stepper
+            label="EV"
+            value={evLabel}
+            onDec={() => setEvIndex(i => i - 1)}
+            onInc={() => setEvIndex(i => i + 1)}
+            canDec={canDecEv && !isCapturing}
+            canInc={canIncEv && !isCapturing}
+          />
+          <Toggle
+            label={`Burst ${BURST_COUNT}×`}
+            on={burstOn}
+            onToggle={() => setBurstOn(v => !v)}
+            disabled={isCapturing}
+          />
+          <Toggle
+            label="Manual"
+            on={manualOn}
+            onToggle={() => setManualOn(v => !v)}
+            disabled={isCapturing}
+          />
+          {manualOn && (
+            <>
+              <Stepper
+                label="ISO"
+                value={String(ISO_PRESETS[isoIdx])}
+                onDec={() => setIsoIdx(i => Math.max(0, i - 1))}
+                onInc={() =>
+                  setIsoIdx(i => Math.min(ISO_PRESETS.length - 1, i + 1))
+                }
+                canDec={isoIdx > 0 && !isCapturing}
+                canInc={isoIdx < ISO_PRESETS.length - 1 && !isCapturing}
+              />
+              <Stepper
+                label="Shutter"
+                value={formatShutterLabel(SHUTTER_PRESETS_NS[shutIdx])}
+                onDec={() => setShutIdx(i => Math.max(0, i - 1))}
+                onInc={() =>
+                  setShutIdx(i =>
+                    Math.min(SHUTTER_PRESETS_NS.length - 1, i + 1),
+                  )
+                }
+                canDec={shutIdx > 0 && !isCapturing}
+                canInc={shutIdx < SHUTTER_PRESETS_NS.length - 1 && !isCapturing}
+              />
+            </>
+          )}
+        </View>
         <View style={styles.bottomBar}>
           <Pressable
             onPress={shutter}
@@ -188,10 +418,134 @@ export const AndroidRawCaptureScreen = () => {
             ]}>
             <View style={styles.shutterInner} />
           </Pressable>
+          <Pressable
+            onPress={runMultiSession}
+            disabled={isCapturing}
+            accessibilityRole="button"
+            accessibilityLabel={`Multi-shot session (${MULTI_SESSION_TOTAL} shots)`}
+            style={({pressed}) => [
+              styles.multiButton,
+              (pressed || isCapturing) && styles.multiButtonPressed,
+            ]}>
+            <Text style={styles.multiButtonText}>MULTI</Text>
+            <Text style={styles.multiButtonSubtext}>
+              {MULTI_SESSION_TOTAL}× shots
+            </Text>
+          </Pressable>
         </View>
+        {isCapturing && (
+          <View style={styles.progressOverlay} pointerEvents="auto">
+            <View style={styles.progressBox}>
+              <Text style={styles.progressTitle}>Capturing…</Text>
+              <Text style={styles.progressSubtitle}>Hold the phone still.</Text>
+            </View>
+          </View>
+        )}
       </View>
     </ScreenScaffold>
   );
+};
+
+// A row with a label, a value, and [-] / [+] buttons that clamp
+// against caller-supplied canDec/canInc.
+const Stepper = ({
+  label,
+  value,
+  onDec,
+  onInc,
+  canDec,
+  canInc,
+}: {
+  label: string;
+  value: string;
+  onDec: () => void;
+  onInc: () => void;
+  canDec: boolean;
+  canInc: boolean;
+}) => (
+  <View style={styles.stepperRow}>
+    <Text style={styles.stepperLabel}>{label}</Text>
+    <Pressable
+      onPress={onDec}
+      disabled={!canDec}
+      style={({pressed}) => [
+        styles.stepperBtn,
+        !canDec && styles.stepperBtnDisabled,
+        pressed && canDec && styles.stepperBtnPressed,
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel={`Decrease ${label}`}>
+      <Text style={styles.stepperBtnText}>−</Text>
+    </Pressable>
+    <Text style={styles.stepperValue}>{value}</Text>
+    <Pressable
+      onPress={onInc}
+      disabled={!canInc}
+      style={({pressed}) => [
+        styles.stepperBtn,
+        !canInc && styles.stepperBtnDisabled,
+        pressed && canInc && styles.stepperBtnPressed,
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel={`Increase ${label}`}>
+      <Text style={styles.stepperBtnText}>+</Text>
+    </Pressable>
+  </View>
+);
+
+const Toggle = ({
+  label,
+  on,
+  onToggle,
+  disabled,
+}: {
+  label: string;
+  on: boolean;
+  onToggle: () => void;
+  disabled: boolean;
+}) => (
+  <Pressable
+    onPress={onToggle}
+    disabled={disabled}
+    accessibilityRole="switch"
+    accessibilityState={{checked: on, disabled}}
+    style={({pressed}) => [
+      styles.toggle,
+      on && styles.toggleOn,
+      pressed && styles.togglePressed,
+      disabled && styles.toggleDisabled,
+    ]}>
+    <Text style={[styles.toggleText, on && styles.toggleTextOn]}>
+      {on ? '☑' : '☐'} {label}
+    </Text>
+  </Pressable>
+);
+
+// Format the current AE compensation index as an EV string. Mirrors
+// the native buildFileStem/formatEv logic so the on-screen label
+// matches what's baked into the filename. When caps are null (still
+// loading), fall back to showing the raw index so the widget isn't
+// stuck on "0" while the ranges resolve.
+const formatEvLabel = (
+  idx: number,
+  caps: CaptureCapabilities | null,
+): string => {
+  if (idx === 0) return '0';
+  if (caps == null || caps.aeCompensationStepDen === 0) {
+    return `${idx > 0 ? '+' : ''}${idx}`;
+  }
+  const ev = (idx * caps.aeCompensationStepNum) / caps.aeCompensationStepDen;
+  const rounded = Math.round(ev * 100) / 100;
+  const body = Number.isInteger(rounded)
+    ? String(rounded)
+    : rounded.toFixed(2).replace(/\.?0+$/, '');
+  return rounded > 0 ? `+${body}` : body;
+};
+
+const formatShutterLabel = (ns: number): string => {
+  if (ns >= 1_000_000_000) return `${Math.round(ns / 1_000_000_000)}s`;
+  const denom = Math.round(1_000_000_000 / ns);
+  return `1/${denom}s`;
 };
 
 const styles = StyleSheet.create({
@@ -199,12 +553,87 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
   },
+  controlsPanel: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    right: 8,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    gap: 6,
+  },
+  stepperRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  stepperLabel: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    minWidth: 64,
+  },
+  stepperBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.20)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepperBtnPressed: {
+    backgroundColor: 'rgba(255,255,255,0.40)',
+  },
+  stepperBtnDisabled: {
+    opacity: 0.3,
+  },
+  stepperBtnText: {
+    color: 'white',
+    fontSize: 22,
+    fontWeight: '700',
+    lineHeight: 24,
+  },
+  stepperValue: {
+    color: 'white',
+    fontSize: 15,
+    fontVariant: ['tabular-nums'],
+    minWidth: 72,
+    textAlign: 'center',
+  },
+  toggle: {
+    alignSelf: 'flex-start',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.10)',
+  },
+  toggleOn: {
+    backgroundColor: 'rgba(90,180,120,0.55)',
+  },
+  togglePressed: {
+    opacity: 0.7,
+  },
+  toggleDisabled: {
+    opacity: 0.4,
+  },
+  toggleText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  toggleTextOn: {
+    color: 'white',
+  },
   bottomBar: {
     position: 'absolute',
     bottom: 24,
     left: 0,
     right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    gap: 32,
     paddingBottom: 24,
   },
   shutter: {
@@ -224,5 +653,59 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 28,
     backgroundColor: 'white',
+  },
+  multiButton: {
+    minWidth: 88,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: 'white',
+    backgroundColor: 'rgba(255,200,60,0.85)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  multiButtonPressed: {
+    opacity: 0.7,
+  },
+  multiButtonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  multiButtonSubtext: {
+    color: 'black',
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  progressOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  progressBox: {
+    paddingVertical: 20,
+    paddingHorizontal: 28,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    alignItems: 'center',
+  },
+  progressTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 6,
+  },
+  progressSubtitle: {
+    color: 'white',
+    fontSize: 14,
+    opacity: 0.85,
   },
 });

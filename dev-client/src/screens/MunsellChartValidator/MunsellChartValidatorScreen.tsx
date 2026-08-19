@@ -250,17 +250,22 @@ const FRIENDLY_NAME_RE = /^[0-9A-Z][^_]*_.*_\d{8}T\d{4,6}\.(dng|jpg|jpeg)$/i;
 // neutral, whibal = 40% neutral, postit = the calibrated 3M yellow.
 const MULTI_REF_PREFIX = 'multi:';
 const MULTI_SLOT_EXPECTED: Record<
-  'whibal' | 'postit' | 'greycard',
+  'whibal' | 'postit' | 'greycard' | 'white',
   {r: number; g: number; b: number}
 > = {
   whibal: LINEAR_REFERENCES.WHIBAL_G7,
   postit: LINEAR_REFERENCES.POST_IT_YELLOW,
   greycard: LINEAR_REFERENCES.GRAY_CARD_18PCT,
+  white: LINEAR_REFERENCES.WHITE_PAPER,
 };
-const MULTI_SLOT_LABEL: Record<'whibal' | 'postit' | 'greycard', string> = {
+const MULTI_SLOT_LABEL: Record<
+  'whibal' | 'postit' | 'greycard' | 'white',
+  string
+> = {
   whibal: 'WhiBal (WB)',
   postit: 'Post-it (WB)',
   greycard: 'Grey card (WB)',
+  white: 'White paper (WB)',
 };
 const yyyymmddThhmmss = (d: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');

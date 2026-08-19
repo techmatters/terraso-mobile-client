@@ -36,7 +36,7 @@ export const CaptureAndroidRawItem = () => {
     try {
       console.log('CaptureAndroidRawItem: triggering capturePhoto…');
       const {dngPath, width, height} =
-        await RawCameraAndroidHybrid.capturePhoto();
+        await RawCameraAndroidHybrid.capturePhoto({});
       console.log(
         `CaptureAndroidRawItem: captured DNG at ${dngPath} (${width}x${height})`,
       );

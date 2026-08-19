@@ -127,23 +127,26 @@ func decodeDngRois(dngPath: String, rois: [Roi]) throws -> [LinearRgb] {
   return try decodeCiImageRois(ciImage, rois: rois)
 }
 
-// Load a JPEG/HEIC/PNG file as a CIImage with its EXIF orientation
-// already applied — so ROI coords in the loaded-image coordinate
-// space match what a viewer would see for the same file. iOS DNG's
-// embedded-JPEG preview extracted via extractDngPreviewJpeg carries
-// an EXIF orientation tag; without applying it, the JPEG's coord
-// space is rotated 90° from the DNG's, and the analyzer's ROIs
-// (registered against a portrait preview) miss the chart.
+// Load a JPEG/HEIC/PNG file as a CIImage in the same fixed orientation
+// the DNG path produces: sensor-native pixels rotated 90° CW. The DNG
+// decoder forces `rawFilter.orientation = .right` unconditionally
+// (see decodeDng below and HybridDngDecoder on the mobile side), so
+// its output orientation is invariant regardless of how the phone was
+// held at capture. To keep raw + photo of the same shutter registered
+// identically, this path must not apply the file's EXIF Orientation
+// (which varies by phone attitude and would rotate 90°-1 JPEGs out of
+// alignment with the DNG). Instead: decode pixels without EXIF then
+// apply the same fixed .right rotation.
 func loadPhotoAsCiImage(_ imagePath: String) throws -> CIImage {
   let url = URL(fileURLWithPath: stripFileScheme(imagePath))
   guard
     let ciImage = CIImage(
       contentsOf: url,
-      options: [.applyOrientationProperty: true])
+      options: [.applyOrientationProperty: false])
   else {
     throw CliError.msg("CIImage could not open photo at \(url.path)")
   }
-  return ciImage
+  return ciImage.oriented(.right)
 }
 
 func decodePhotoRois(imagePath: String, rois: [Roi]) throws -> [LinearRgb] {

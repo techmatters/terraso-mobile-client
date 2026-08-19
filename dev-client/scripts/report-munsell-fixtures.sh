@@ -74,7 +74,7 @@ if [ ! -x "$VENV_PY" ]; then
   "$DEV_CLIENT/.venv-analysis/bin/pip" install --quiet numpy pandas statsmodels
 fi
 echo
-echo "==> delta-e-analysis (summary / heatmap / head-to-head / OLS / mixed) …"
+echo "==> delta-e-analysis (regression: OLS + mixed-effects) …"
 "$VENV_PY" "$SCRIPT_DIR/delta-e-analysis.py" \
   --json "$OUT/run.json" \
   --out "$OUT/delta-e-analysis.html"

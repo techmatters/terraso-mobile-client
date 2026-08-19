@@ -242,6 +242,8 @@ const NAMED_CARD_FILLS = {
   WhiBal: linearRgbToHex(0.4, 0.4, 0.4),
   'Post-It': linearRgbToHex(0.9542, 0.887, 0.362),
   Gray: linearRgbToHex(0.18, 0.18, 0.18),
+  White: '#ffffff',
+  White: linearRgbToHex(0.85, 0.85, 0.85),
 };
 
 function guideRect({x, y, w, h}) {
@@ -317,7 +319,7 @@ function cornerTicks(inset = 0.25, len = 0.2) {
 // goes in each slot. Slots 4-7 stay numeric-only with the default
 // red fill. Shared between the main (chart-side) and back
 // (ref-card-holder) templates.
-const RIGHT_CARD_LABELS = ['WhiBal', 'Post-It', 'Gray'];
+const RIGHT_CARD_LABELS = ['WhiBal', 'Post-It', 'Gray', 'White'];
 function rightBoxesElements() {
   const els = [];
   for (const sq of squares) {
@@ -434,6 +436,56 @@ function buildSvg() {
   return svgDocument(els);
 }
 
+// Cricut-ready cut file. ONLY the cutout contours — no fills, guides,
+// text, scale bar, or corner ticks (Design Space would try to cut those
+// too). The whole mask is a SINGLE compound path: the 8.5×11 outer
+// boundary minus every cutout (window, hue label, right-side boxes),
+// with fill-rule="evenodd" so the cutouts import as holes. That lands in
+// Design Space as one cut layer = the finished mask. Sized in real inches
+// (width/height + viewBox) so it imports at 1:1 and overlays the printed
+// guide exactly.
+// includeBorder=true  -> full mask: 8.5×11 outer boundary minus every
+//   cutout (even-odd), for cutting the finished matboard mask to size.
+// includeBorder=false -> holes only, no perimeter cut. For test-cutting
+//   into an existing 8.5×11 sheet (no unreliable edge cut) — then overlay
+//   the result on the printed guide to check registration.
+// Anchor square for the holes-only file: a small square cut placed INSET
+// from the page origin by ~the machine's edge safety margin. It becomes the
+// design's top-left corner, so when you push the design into the mat corner
+// (where the machine stops it at that same margin), the net shift cancels
+// and the real cutouts stay at their true page positions — letting you seat
+// the paper precisely on the corner gridlines. Set `inset` to your machine's
+// actual edge margin: in review-artwork, note how far from the corner the
+// design stops — that's it. size 0 = off.
+const ANCHOR_SQUARE = {
+  size: 0.2, // ≈ 0.5 cm
+  inset: 0.25, // machine edge safety margin (≈ 1/4"), read off the Make-It red cut-line
+};
+
+function buildCutSvg({includeBorder = true} = {}) {
+  const rectPath = ({x, y, w, h}) =>
+    `M ${f(x)} ${f(y)} H ${f(x + w)} V ${f(y + h)} H ${f(x)} Z`;
+  const cutouts = [window_, label, ...squares];
+  const shapes = [...cutouts];
+  if (includeBorder) {
+    // Bordered file: full-page outline (even-odd) trims the mask to size.
+    shapes.unshift({x: 0, y: 0, w: PAGE.w, h: PAGE.h});
+  } else if (ANCHOR_SQUARE.size > 0) {
+    // Holes-only file: inset locating square becomes the top-left corner so
+    // push-to-corner cancels the safety-margin shift.
+    shapes.push({
+      x: ANCHOR_SQUARE.inset,
+      y: ANCHOR_SQUARE.inset,
+      w: ANCHOR_SQUARE.size,
+      h: ANCHOR_SQUARE.size,
+    });
+  }
+  const d = shapes.map(rectPath).join(' ');
+  return svgDocument([
+    `<path d="${d}" fill="#000000" fill-rule="evenodd" stroke="none"/>`,
+  ]);
+}
+
 // ---------------------------------------------------------------------------
 // Emit + convert
 // ---------------------------------------------------------------------------
@@ -487,6 +539,19 @@ function main() {
       );
   }
 
+  // Cricut cut files — SVG only (Design Space imports SVG, not PDF).
+  {
+    const cutPath = join(OUT_DIR, 'munsell-card-guide.cut.svg');
+    writeFileSync(cutPath, buildCutSvg({includeBorder: true}));
+    console.log(`CUT  -> ${cutPath}  (full mask w/ border — cut matboard to size)`);
+
+    const testPath = join(OUT_DIR, 'munsell-card-guide.cut-test.svg');
+    writeFileSync(testPath, buildCutSvg({includeBorder: false}));
+    console.log(
+      `TEST -> ${testPath}  (holes only, no border — paper registration test)`,
+    );
+  }
+
   // Geometry summary so the numbers are easy to sanity-check.
   console.log('\nGeometry (inches):');
   console.log(`  page            ${PAGE.w} x ${PAGE.h}`);
@@ -515,6 +580,33 @@ function main() {
       squares[0].x,
     )}  y=${f(squares[0].y)}..${f(squares.at(-1).y + squares.at(-1).h)}`,
   );
+
+  // Bounding box of the holes-only cut (cut-test.svg). In Cricut Design
+  // Space the imported design snaps to the mat's top-left, so to land the
+  // holes at their true spot on an 8.5×11 sheet, set the design's
+  // Position to this (X,Y) with the sheet in the mat's top-left corner.
+  const cuts = [window_, label, ...squares];
+  const bx = Math.min(...cuts.map(c => c.x));
+  const by = Math.min(...cuts.map(c => c.y));
+  const bw = Math.max(...cuts.map(c => c.x + c.w)) - bx;
+  const bh = Math.max(...cuts.map(c => c.y + c.h)) - by;
+  if (ANCHOR_SQUARE.size > 0) {
+    console.log(
+      `  cut-test        holes bbox ${f(bw)}x${f(bh)} at (${f(bx)},${f(by)})`,
+    );
+    console.log(
+      `                  anchor square ${ANCHOR_SQUARE.size}" inset ${ANCHOR_SQUARE.inset}" (set inset = machine edge margin)`,
+    );
+    console.log(
+      `                  -> push design into mat corner; seat paper on corner gridlines; cutouts land true`,
+    );
+  } else {
+    console.log(
+      `  cut-test bbox   ${f(bw)} x ${f(bh)}  -> Design Space Position X=${f(
+        bx,
+      )}" Y=${f(by)}" (sheet in mat top-left corner)`,
+    );
+  }
 }
 
 main();

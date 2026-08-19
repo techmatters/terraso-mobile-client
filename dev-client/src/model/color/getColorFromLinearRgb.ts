@@ -53,6 +53,13 @@ export const LINEAR_REFERENCES = {
   // run it through the phase-6 calibration flow to get a per-card
   // measurement and use that entry instead of this builtin.
   WHIBAL_G7: {r: 0.4, g: 0.4, b: 0.4},
+  // Plain office printer paper — used as a fourth taped patch on the
+  // multi-ref card, below the greycard slot. Placeholder value of ~85%
+  // grey (r = g = b = 0.85); refine with a per-batch measurement once
+  // we characterise the specific paper stock in use. Note: this is a
+  // DIFFERENT thing from the analyzer's "paper" pseudo-ref (which is
+  // derived from the whitemask border ring on LIGHT BG shots).
+  WHITE_PAPER: {r: 0.85, g: 0.85, b: 0.85},
 } as const satisfies Record<string, LinearRgb>;
 
 export type LinearReferenceKey = keyof typeof LINEAR_REFERENCES;
@@ -63,6 +70,7 @@ export const LINEAR_REFERENCE_NAMES: Record<LinearReferenceKey, string> = {
   POST_IT_YELLOW: '3M Post-it Yellow (canary)',
   GRAY_CARD_18PCT: '18% Neutral Gray Card',
   WHIBAL_G7: 'WhiBal G7 (Certified Neutral)',
+  WHITE_PAPER: 'White Printer Paper',
 };
 
 // Ordered list version of LINEAR_REFERENCES for the confidence-picker
@@ -71,6 +79,7 @@ export const LINEAR_REFERENCE_KEYS: LinearReferenceKey[] = [
   'POST_IT_YELLOW',
   'GRAY_CARD_18PCT',
   'WHIBAL_G7',
+  'WHITE_PAPER',
 ];
 
 // Common shape for anything that acts as a reference in the picker —

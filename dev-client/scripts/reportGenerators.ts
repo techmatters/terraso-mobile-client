@@ -110,6 +110,29 @@ export type CaptureJsonEntry = {
     measured_linear_rgb: [number, number, number] | null;
     delta_e: number | null;
   }> | null;
+  // exiftool-derived camera + DNG-tag summary (see analyze-fixtures
+  // extractImageMetadata for exact fields). Null when the prefetch
+  // failed for this fixture.
+  image_metadata?: {
+    make: string | null;
+    model: string | null;
+    unique_camera_model: string | null;
+    iso: number | null;
+    exposure_time: string | null;
+    f_number: number | null;
+    orientation: string | null;
+    white_balance: string | null;
+    color_space: string | null;
+    bits_per_sample: number | null;
+    black_level: number[] | null;
+    white_level: number | null;
+    as_shot_neutral: number[] | null;
+    color_matrix_1: number[] | null;
+    color_matrix_2: number[] | null;
+    calibration_illuminant_1: string | null;
+    calibration_illuminant_2: string | null;
+    dng_version: string | null;
+  } | null;
   cells: CellJsonEntry[];
 };
 
@@ -153,6 +176,101 @@ const deltaEColor = (deltaE: number): string => {
   if (deltaE < 6) return '#e6f5c8';
   if (deltaE < 12) return '#f5e6c8';
   return '#f5c8c8';
+};
+
+// ---- Lab + ΔE2000 breakdown --------------------------------------------
+// Standalone implementations so renderResultCell can compute per-cell
+// L / C / h contributions to the total ΔE without touching the RN
+// colour modules. Numerically compatible with the analyzer's
+// linearRgbToXyz + xyzToLab + delta-e npm package to within display
+// precision.
+const _labE = 216 / 24389;
+const _labK = 24389 / 27;
+const _labF = (t: number): number =>
+  t > _labE ? Math.cbrt(t) : (_labK * t + 16) / 116;
+export const rgbToLab = (rgb: readonly [number, number, number]): [number, number, number] => {
+  const [r, g, b] = rgb;
+  const X = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b;
+  const Y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
+  const Z = 0.0193339 * r + 0.1191920 * g + 0.9503041 * b;
+  const fx = _labF(X / 0.95047);
+  const fy = _labF(Y / 1.0);
+  const fz = _labF(Z / 1.08883);
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+};
+// CIE ΔE2000, Sharma 2005 formulation. Returns total AND per-term
+// contributions so the hover tooltip can attribute "how much of the
+// error was lightness vs chroma vs hue." Sub-terms are the SQUARED
+// weighted diffs (so lTerm² + cTerm² + hTerm² + cross ≈ total²) —
+// yields intuitive percentage contributions.
+type DeltaEBreakdown = {
+  total: number;
+  dL: number; // signed L2-L1 (before weighting)
+  dC: number; // signed C'2-C'1 (before weighting)
+  dh: number; // signed hue diff in degrees (before H'/2 chord thing)
+  lTerm: number; // (ΔL' / S_L)² — squared lightness contribution
+  cTerm: number; // (ΔC' / S_C)² — squared chroma contribution
+  hTerm: number; // (ΔH' / S_H)² — squared hue contribution
+  cross: number; // R_T · (ΔC'/S_C) · (ΔH'/S_H) — cross-term (signed)
+};
+export const deltaE2000Breakdown = (
+  labA: readonly [number, number, number],
+  labB: readonly [number, number, number],
+): DeltaEBreakdown => {
+  const [L1, a1, b1] = labA;
+  const [L2, a2, b2] = labB;
+  const C1s = Math.sqrt(a1 * a1 + b1 * b1);
+  const C2s = Math.sqrt(a2 * a2 + b2 * b2);
+  const Cbar = (C1s + C2s) / 2;
+  const Cbar7 = Math.pow(Cbar, 7);
+  const G = 0.5 * (1 - Math.sqrt(Cbar7 / (Cbar7 + Math.pow(25, 7))));
+  const a1p = (1 + G) * a1;
+  const a2p = (1 + G) * a2;
+  const C1p = Math.sqrt(a1p * a1p + b1 * b1);
+  const C2p = Math.sqrt(a2p * a2p + b2 * b2);
+  const h1p = (Math.atan2(b1, a1p) * 180 / Math.PI + 360) % 360;
+  const h2p = (Math.atan2(b2, a2p) * 180 / Math.PI + 360) % 360;
+  const dLp = L2 - L1;
+  const dCp = C2p - C1p;
+  let dhp;
+  if (C1p * C2p === 0) dhp = 0;
+  else if (Math.abs(h2p - h1p) <= 180) dhp = h2p - h1p;
+  else if (h2p - h1p > 180) dhp = h2p - h1p - 360;
+  else dhp = h2p - h1p + 360;
+  const dHp = 2 * Math.sqrt(C1p * C2p) * Math.sin((dhp * Math.PI / 180) / 2);
+  const Lbar = (L1 + L2) / 2;
+  const Cbarp = (C1p + C2p) / 2;
+  let hbarp;
+  if (C1p * C2p === 0) hbarp = h1p + h2p;
+  else if (Math.abs(h1p - h2p) <= 180) hbarp = (h1p + h2p) / 2;
+  else if (h1p + h2p < 360) hbarp = (h1p + h2p + 360) / 2;
+  else hbarp = (h1p + h2p - 360) / 2;
+  const T = 1
+    - 0.17 * Math.cos((hbarp - 30) * Math.PI / 180)
+    + 0.24 * Math.cos((2 * hbarp) * Math.PI / 180)
+    + 0.32 * Math.cos((3 * hbarp + 6) * Math.PI / 180)
+    - 0.20 * Math.cos((4 * hbarp - 63) * Math.PI / 180);
+  const dTh = 30 * Math.exp(-Math.pow((hbarp - 275) / 25, 2));
+  const RC = 2 * Math.sqrt(Math.pow(Cbarp, 7) / (Math.pow(Cbarp, 7) + Math.pow(25, 7)));
+  const SL = 1 + (0.015 * Math.pow(Lbar - 50, 2)) / Math.sqrt(20 + Math.pow(Lbar - 50, 2));
+  const SC = 1 + 0.045 * Cbarp;
+  const SH = 1 + 0.015 * Cbarp * T;
+  const RT = -Math.sin(2 * dTh * Math.PI / 180) * RC;
+  const wL = dLp / SL;
+  const wC = dCp / SC;
+  const wH = dHp / SH;
+  const cross = RT * wC * wH;
+  const total = Math.sqrt(wL * wL + wC * wC + wH * wH + cross);
+  return {
+    total,
+    dL: dLp,
+    dC: dCp,
+    dh: dhp,
+    lTerm: wL * wL,
+    cTerm: wC * wC,
+    hTerm: wH * wH,
+    cross,
+  };
 };
 
 // Poor-man's SVG text wrap. Assumes ~0.55×font-size per average
@@ -310,6 +428,10 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   // (three overlapping segments so the diagonal is continuous across
   // pattern tile edges). Part of the mask-layer group so it hides in
   // the "Original" and "+ Registration" view modes.
+  // When borderExcludeRightSide is on, shrink the outer's right edge
+  // to the inner's right edge so the hash covers only top / left /
+  // bottom — matches what whiteMask actually samples now that the
+  // ref-card slab on the right is excluded.
   const shortDim = Math.min(W, H);
   const innerBuf =
     shortDim * DEFAULT_WHITE_MASK_PARAMS.borderInnerBufferFrac;
@@ -321,7 +443,10 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   const innerH = guideRect.h + 2 * innerBuf;
   const outerX = outerMargin;
   const outerY = outerMargin;
-  const outerW = W - 2 * outerMargin;
+  const outerRightEdge = DEFAULT_WHITE_MASK_PARAMS.borderExcludeRightSide
+    ? innerX + innerW
+    : W - outerMargin;
+  const outerW = outerRightEdge - outerX;
   const outerH = H - 2 * outerMargin;
   const annulusPath =
     `M${outerX},${outerY} h${outerW} v${outerH} h${-outerW} Z ` +
@@ -419,9 +544,13 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
         );
       }
 
-      // Ref-card sample rect (same red as chip rects).
+      // Ref-card sample rect (same red as chip rects). Skipped in
+      // multi mode — the 3 cyan multiRefCards rects below already
+      // show every ref-card position, so the legacy single-slot
+      // refCardRect just adds a mystery red square at an empty
+      // chart-body position.
       const refRect = result.refCardRect;
-      if (refRect) {
+      if (refRect && !result.multiRefCards) {
         parts.push(
           `<rect x="${refRect.x}" y="${refRect.y}" width="${refRect.w}" height="${refRect.h}" stroke="#ff2020" stroke-width="2" fill="none"/>`,
         );
@@ -461,7 +590,10 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
 // cols = data-space cols. Each cell shows expected/measured swatches
 // and text. Empty grid slots (physical position with no cell) render
 // as a light-gray placeholder. REF row below the grid.
-export const renderResultGridSvg = (cap: CaptureContext): string => {
+export const renderResultGridSvg = (
+  cap: CaptureContext,
+  excludedSet: Set<string> = new Set(),
+): string => {
   const {page, jsonEntry, referenceNotation} = cap;
   const layout = page.layout ?? 'standard';
   const firstCol = page.firstChipCol ?? 0;
@@ -573,6 +705,7 @@ export const renderResultGridSvg = (cap: CaptureContext): string => {
           CELL_H - CELL_GAP,
           cell,
           referenceNotation,
+          excludedSet,
         ),
       );
     }
@@ -637,6 +770,7 @@ const renderResultCell = (
   h: number,
   cell: CellJsonEntry,
   referenceNotation: string,
+  excludedSet: Set<string> = new Set(),
 ): string => {
   const bg = deltaEColor(cell.delta_e);
   const expHex = linearToHex(cell.expected_linear_rgb);
@@ -645,6 +779,7 @@ const renderResultCell = (
   const swatchW = (w - 6) / 2;
   const textY = y + swatchH + 8;
   const isRef = cell.expected_notation === referenceNotation;
+  const isExcluded = excludedSet.has(cell.expected_notation);
   const parts = [
     `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${bg}"/>`,
     `<rect x="${x + 2}" y="${y + 2}" width="${swatchW}" height="${swatchH}" fill="${expHex}"/>`,
@@ -659,7 +794,44 @@ const renderResultCell = (
       `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#ff2020" stroke-width="4"/>`,
     );
   }
-  return parts.join('');
+  if (isExcluded) {
+    // Thick red diagonal strike marks chips flagged as physically
+    // defective (see scripts/excluded-chips.json). Drawn on top of
+    // everything so it's visible against dark bg fills; two lines for
+    // better legibility.
+    parts.push(
+      `<line x1="${x}" y1="${y}" x2="${x + w}" y2="${y + h}" ` +
+        `stroke="#ff2020" stroke-width="3" opacity="0.85"/>`,
+      `<line x1="${x + w}" y1="${y}" x2="${x}" y2="${y + h}" ` +
+        `stroke="#ff2020" stroke-width="3" opacity="0.85"/>`,
+    );
+  }
+  // Native SVG <title> — browser shows on hover after ~1s delay.
+  // Breaks the ΔE2000 total into lightness / chroma / hue / cross
+  // contributions with signed raw diffs so a reader can attribute
+  // where the miss came from (e.g. "80% chroma, chip is under-
+  // saturated by 4 units").
+  const labExp = rgbToLab(cell.expected_linear_rgb);
+  const labMea = rgbToLab(cell.measured_linear_rgb);
+  const bd = deltaE2000Breakdown(labExp, labMea);
+  const t2 = bd.total * bd.total;
+  const pct = (v: number) => (t2 > 0 ? Math.round((v / t2) * 100) : 0);
+  const titleText =
+    `${cell.expected_notation} → ${cell.measured_notation}\n` +
+    `ΔE₀₀ total: ${bd.total.toFixed(2)}\n` +
+    `  from lightness (L): ${Math.sqrt(bd.lTerm).toFixed(2)}  (${pct(bd.lTerm)}%)\n` +
+    `  from chroma (C):    ${Math.sqrt(bd.cTerm).toFixed(2)}  (${pct(bd.cTerm)}%)\n` +
+    `  from hue (H):       ${Math.sqrt(bd.hTerm).toFixed(2)}  (${pct(bd.hTerm)}%)\n` +
+    (Math.abs(bd.cross) > 0.05
+      ? `  blue-region cross: ${bd.cross >= 0 ? '+' : ''}${bd.cross.toFixed(2)}\n`
+      : '') +
+    `\nSigned diffs (measured − expected):\n` +
+    `  ΔL* = ${bd.dL >= 0 ? '+' : ''}${bd.dL.toFixed(1)}  ` +
+      `(${bd.dL >= 0 ? 'lighter' : 'darker'})\n` +
+    `  ΔC* = ${bd.dC >= 0 ? '+' : ''}${bd.dC.toFixed(1)}  ` +
+      `(${bd.dC >= 0 ? 'more chromatic' : 'more neutral'})\n` +
+    `  Δh  = ${bd.dh >= 0 ? '+' : ''}${bd.dh.toFixed(1)}°`;
+  return `<g><title>${esc(titleText)}</title>${parts.join('')}</g>`;
 };
 
 // Same visual layout as renderResultCell (background coloured by ΔE,
@@ -732,6 +904,15 @@ export type RunMeta = {
   n_fixtures: number;
   n_success: number;
   n_failure: number;
+  // Munsell notations flagged as physically defective (loaded from
+  // scripts/excluded-chips.json). Rendered as red diagonal strikes in
+  // the results grid; filmstrip has a checkbox to filter them out.
+  excluded_chips: string[];
+  // Fixture labels flagged as bad (poor registration, mis-framed
+  // shot, etc.). Greycard ranking table renders them with
+  // strikethrough; filmstrip has a default-on checkbox to filter
+  // them out. Loaded from scripts/excluded-cards.json.
+  excluded_cards: string[];
 };
 
 export const renderHtmlReport = (
@@ -756,7 +937,10 @@ export const renderHtmlReport = (
     groups.get(key)!.push(c);
   }
   const groupList = Array.from(groups.values());
-  const sections = groupList.map(g => renderFixtureSection(g)).join('\n');
+  const excludedSet = new Set(meta.excluded_chips ?? []);
+  const sections = groupList
+    .map(g => renderFixtureSection(g, excludedSet))
+    .join('\n');
   const toc = renderToc(groupList);
   return `<!DOCTYPE html>
 <html lang="en">
@@ -778,8 +962,23 @@ export const renderHtmlReport = (
        flex row. */
     .whitemask-block { flex: 1 1 100%; }
     .results-block { flex: 1 1 100%; }
-    .results-variants { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
-    .results-variants > div { flex: 1 1 400px; min-width: 340px; }
+    /* CSS grid keeps every variant tile the same width regardless of
+       how many land on the final row — flex-wrap would balloon the
+       leftovers to fill remaining space. auto-fill picks as many
+       340px+ columns as fit; minmax stretches them to equal 1fr. */
+    .results-variants { display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px; align-items: start; }
+    .results-variants > div { min-width: 0; }
+    .format-header { margin: 20px 0 6px 0; font-size: 15px;
+      font-weight: 700; letter-spacing: 0.05em; color: #333;
+      text-transform: uppercase; padding-bottom: 4px;
+      border-bottom: 2px solid #ccc; }
+    .format-header .fmt-badge { display: inline-block;
+      padding: 2px 10px; border-radius: 3px; margin-right: 8px;
+      font-size: 13px; }
+    .format-header.raw   .fmt-badge { background: #e8f0ff; color: #244; }
+    .format-header.photo .fmt-badge { background: #fff4e8; color: #542; }
     .images { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
     svg.whitemask-svg { width: 100%; height: auto; max-width: 1400px; background: #000; }
     svg.results-svg { width: 100%; height: auto; max-width: 800px; }
@@ -829,6 +1028,7 @@ export const renderHtmlReport = (
     <tr><th>Fixtures</th><td>${meta.n_fixtures} (${meta.n_success} ok, ${meta.n_failure} failed)</td></tr>
     <tr><th>Captures</th><td>${captures.length}</td></tr>
   </table>
+  ${renderGreycardRanking(captures, new Set(meta.excluded_cards ?? []))}
   ${renderRegistrationTable(groupList)}
   ${toc}
   ${renderLegend()}
@@ -857,6 +1057,149 @@ export const renderHtmlReport = (
 </body>
 </html>
 `;
+};
+
+// Greycard-anchored fixture ranking. One row per (fixture stem,
+// capture format) whose WB anchor was the greycard ref card, so raw
+// + photo of the same shutter get separate rows (the ΔE distribution
+// is often very different between pipelines). Sorted ascending on
+// WORST ΔE — the worst cell tends to be the best signal for "is this
+// capture broken vs just noisy": one bad chip is usually a broken
+// registration or lighting issue, whereas mean can hide that under
+// good cells. Registration columns beside ΔE let the eye correlate
+// low inlier ratios / high miss counts with poor ΔE.
+const renderGreycardRanking = (
+  captures: CaptureContext[],
+  excludedCards: Set<string> = new Set(),
+): string => {
+  const isGreycard = (c: CaptureContext) =>
+    c.jsonEntry.wb_correction?.reference === 'ref_card:greycard';
+  const rows = captures
+    .filter(isGreycard)
+    .map(c => {
+      const cells = c.jsonEntry.cells ?? [];
+      const des = cells
+        .map(x => x.delta_e)
+        .filter((x): x is number => typeof x === 'number');
+      if (des.length === 0) return null;
+      const mean = des.reduce((a, b) => a + b, 0) / des.length;
+      const worst = Math.max(...des);
+      const reg = c.jsonEntry.registration as {
+        match_total?: number | null;
+        inliers?: number | null;
+      };
+      const total = reg?.match_total ?? 0;
+      const inl = reg?.inliers ?? 0;
+      const inlierRatio = total > 0 ? inl / total : null;
+      const missesRatio = total > 0 ? (total - inl) / total : null;
+      // Signal strength — min(R,G,B) of greycard raw. Catches the
+      // "one channel starved" case that dim-shot filtering can miss.
+      // Since the row is already greycard-anchored, ref_cards is
+      // guaranteed to have a greycard entry.
+      const gc = (c.jsonEntry.ref_cards ?? []).find(r => r.name === 'greycard');
+      const signal = gc?.raw_linear_rgb
+        ? Math.min(gc.raw_linear_rgb[0], gc.raw_linear_rgb[1], gc.raw_linear_rgb[2])
+        : null;
+      return {
+        label: c.jsonEntry.label,
+        format: c.jsonEntry.capture_format,
+        mean,
+        worst,
+        n: des.length,
+        inliers: inl,
+        matchTotal: total,
+        inlierRatio,
+        missesRatio,
+        signal,
+        sectionId: fixtureSectionId(c.jsonEntry.label),
+      };
+    })
+    .filter((r): r is NonNullable<typeof r> => r !== null);
+  if (rows.length === 0) return '';
+  // Sort by worst ΔE descending? Or ascending? User wants best→worst
+  // i.e. small worst-ΔE first. Ascending on worst.
+  rows.sort((a, b) => a.worst - b.worst);
+
+  // Two colour classifiers reused across cells. deClass tuned for the
+  // ΔE scale (green ≤ 6, red > 12); ratioClass for [0,1] fractions
+  // where "high inliers" and "low misses" are both good.
+  const deClass = (v: number) => {
+    if (v <= 6) return 'reg-good';
+    if (v > 12) return 'reg-bad';
+    return '';
+  };
+  const inlierClass = (v: number | null) => {
+    if (v == null) return 'reg-bad';
+    if (v >= 0.9) return 'reg-good';
+    if (v < 0.7) return 'reg-bad';
+    return '';
+  };
+  const missClass = (v: number | null) => {
+    if (v == null) return 'reg-bad';
+    if (v <= 0.1) return 'reg-good';
+    if (v > 0.3) return 'reg-bad';
+    return '';
+  };
+  // Signal thresholds: greycard's nominal reflectance is 0.18, so a
+  // well-lit shot reads ≈ 0.15+ across every channel; < 0.08 lands
+  // in the "one channel starved" territory that produces the
+  // per-chip jumpiness we've been chasing.
+  const signalClass = (v: number | null) => {
+    if (v == null) return 'reg-bad';
+    if (v >= 0.15) return 'reg-good';
+    if (v < 0.08) return 'reg-bad';
+    return '';
+  };
+  const fmtRatio = (v: number | null) =>
+    v == null ? '—' : (100 * v).toFixed(0) + '%';
+
+  const trs = rows
+    .map((r, i) => {
+      const isExcluded = excludedCards.has(r.label);
+      // Strikethrough via row-level style so every cell strikes,
+      // plus muted opacity so the eye reads it as "not counted."
+      // Row still clickable so the user can jump to the section
+      // and eyeball what got excluded and why.
+      const rowStyle = isExcluded
+        ? ' style="text-decoration: line-through; opacity: 0.45;"'
+        : '';
+      const exclTag = isExcluded
+        ? ' <span style="text-decoration:none;font-size:10px;color:#c62828;font-weight:600;" title="in excluded-cards.json">(EXCLUDED)</span>'
+        : '';
+      return (
+        `<tr${rowStyle}>` +
+        `<td class="num">${i + 1}</td>` +
+        `<td><a href="#${r.sectionId}">${esc(r.label)}</a> ` +
+        `<span style="color:#888">(${esc(r.format)})</span>${exclTag}</td>` +
+        `<td class="num ${deClass(r.mean)}">${r.mean.toFixed(2)}</td>` +
+        `<td class="num ${deClass(r.worst)}">${r.worst.toFixed(2)}</td>` +
+        `<td class="num">${r.n}</td>` +
+        `<td class="num ${inlierClass(r.inlierRatio)}">${fmtRatio(r.inlierRatio)}` +
+          ` <span style="color:#888;font-size:11px">(${r.inliers}/${r.matchTotal})</span></td>` +
+        `<td class="num ${missClass(r.missesRatio)}">${fmtRatio(r.missesRatio)}` +
+          ` <span style="color:#888;font-size:11px">(${r.matchTotal - r.inliers}/${r.matchTotal})</span></td>` +
+        `<td class="num ${signalClass(r.signal)}">${r.signal == null ? '—' : r.signal.toFixed(3)}</td>` +
+        `</tr>`
+      );
+    })
+    .join('');
+  return `
+  <h2 id="greycard-ranking" style="margin-top:24px">Greycard ranking — sorted by worst ΔE (best → worst)</h2>
+  <p style="font-size:12px;color:#666;margin:4px 0 8px">
+    Only captures whose WB anchor was <code>ref_card:greycard</code>.
+    Raw + photo of the same shutter get separate rows so pipeline-specific
+    problems don't average away. Sorted by <b>worst</b> per-cell ΔE — one
+    bad chip is often a broken registration or an over-exposed chip, more
+    diagnostic than the mean. Registration columns let you correlate low
+    inlier ratios / high misses with bad ΔE. Click a fixture to jump to
+    its section.
+  </p>
+  <table class="reg-table"><thead><tr>
+    <th>#</th><th>Fixture</th>
+    <th>mean ΔE</th><th>worst ΔE</th><th>n cells</th>
+    <th>inliers</th><th>misses</th>
+    <th title="min(R,G,B) of greycard raw — proxy for sensor signal strength on the weakest channel">signal</th>
+  </tr></thead><tbody>${trs}</tbody></table>`;
 };
 
 // Temporary diagnostic: one row per fixture with the registration
@@ -1101,6 +1444,52 @@ const renderLegend = (): string => {
 // listing each slot's ΔE across variants — quick visual on how well
 // each card matches its expected linear-sRGB under each WB anchor.
 // Returns empty string for single-card fixtures (no ref_cards block).
+// Compact per-fixture EXIF / DNG-tag summary. Groups fields into a
+// shot-settings line + a DNG-color-pipeline line (only when a DNG
+// variant is present). Nothing rendered when metadata isn't available
+// (e.g. exiftool prefetch failed for the run).
+const renderImageMetadataRow = (variants: CaptureContext[]): string => {
+  const meta = variants.find(v => v.jsonEntry.image_metadata)?.jsonEntry
+    .image_metadata;
+  if (!meta) return '';
+  const fmt = (arr: number[] | null, digits: number) =>
+    arr ? '[' + arr.map(v => v.toFixed(digits)).join(', ') + ']' : null;
+  const shot = [
+    meta.model ? `<b>${esc(meta.model)}</b>` : null,
+    meta.iso != null ? `ISO ${meta.iso}` : null,
+    meta.exposure_time ? `${esc(meta.exposure_time)} s` : null,
+    meta.f_number != null ? `f/${meta.f_number}` : null,
+    meta.white_balance ? `WB=${esc(meta.white_balance)}` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
+  const dng = [
+    meta.bits_per_sample != null ? `${meta.bits_per_sample}-bit` : null,
+    fmt(meta.black_level, 2) != null ? `black=${fmt(meta.black_level, 2)}` : null,
+    meta.white_level != null ? `white=${meta.white_level}` : null,
+    fmt(meta.as_shot_neutral, 3) != null
+      ? `asShotNeutral=${fmt(meta.as_shot_neutral, 3)}`
+      : null,
+    meta.calibration_illuminant_2
+      ? `illum2=${esc(meta.calibration_illuminant_2)}`
+      : null,
+    meta.dng_version ? `DNG ${esc(meta.dng_version)}` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
+  const rows = [
+    shot
+      ? `<tr><th>Shot</th><td style="font-size:12px">${shot}</td></tr>`
+      : '',
+    dng
+      ? `<tr><th>DNG color</th><td style="font-size:12px;font-family:ui-monospace,monospace">${dng}</td></tr>`
+      : '',
+  ]
+    .filter(Boolean)
+    .join('');
+  return rows;
+};
+
 const renderMultiRefRow = (variants: CaptureContext[]): string => {
   const anyMulti = variants.some(v => v.jsonEntry.ref_cards);
   if (!anyMulti) return '';
@@ -1123,7 +1512,10 @@ const renderMultiRefRow = (variants: CaptureContext[]): string => {
   return `<tr><th>Multi refs ΔE</th><td>${rows}</td></tr>`;
 };
 
-const renderFixtureSection = (variants: CaptureContext[]): string => {
+const renderFixtureSection = (
+  variants: CaptureContext[],
+  excludedSet: Set<string>,
+): string => {
   // A section groups every capture that shares a source-path stem —
   // so a DNG + its JPEG sibling for the same shutter land here
   // together, potentially alongside multiple WB-anchor sweeps of
@@ -1166,21 +1558,43 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
       return `${v.jsonEntry.capture_format}:${wb}`;
     })
     .join(' | ');
-  const resultBlocks = sorted
-    .map(v => {
-      const label = v.jsonEntry.wb_correction?.reference ?? '(no WB)';
-      const source = v.jsonEntry.wb_correction?.source ?? '';
-      const fmt = v.jsonEntry.capture_format;
-      const fmtBadge =
-        `<span style="background:${fmt === 'raw' ? '#e8f0ff' : '#fff4e8'};` +
-        `border:1px solid #ccc;padding:1px 6px;border-radius:3px;` +
-        `font-size:11px;color:#555;margin-right:6px;">${esc(fmt)}</span>`;
-      return `
+  // Group variants by capture format so raw and photo get their own
+  // labelled block and don't share a row. Each block uses a CSS grid
+  // with fixed-width columns so tile size stays consistent regardless
+  // of how many variants that format has.
+  const renderVariantTile = (v: CaptureContext): string => {
+    const label = v.jsonEntry.wb_correction?.reference ?? '(no WB)';
+    const source = v.jsonEntry.wb_correction?.source ?? '';
+    const fmt = v.jsonEntry.capture_format;
+    const fmtBadge =
+      `<span style="background:${fmt === 'raw' ? '#e8f0ff' : '#fff4e8'};` +
+      `border:1px solid #ccc;padding:1px 6px;border-radius:3px;` +
+      `font-size:11px;color:#555;margin-right:6px;">${esc(fmt)}</span>`;
+    return `
       <div>
         <p class="variant-label">${fmtBadge}<strong>${esc(label)}</strong> <span style="color:#888">(${esc(source)})</span></p>
-        ${renderResultGridSvg(v)}
+        ${renderResultGridSvg(v, excludedSet)}
       </div>`;
-    })
+  };
+  const fmtGroups: {fmt: 'raw' | 'photo'; label: string; items: CaptureContext[]}[] = [];
+  for (const fmt of ['raw', 'photo'] as const) {
+    const items = sorted.filter(v => v.jsonEntry.capture_format === fmt);
+    if (items.length === 0) continue;
+    fmtGroups.push({
+      fmt,
+      label: fmt === 'raw' ? 'RAW (DNG)' : 'JPEG (photo)',
+      items,
+    });
+  }
+  const resultBlocks = fmtGroups
+    .map(g =>
+      `<h3 class="format-header ${g.fmt}">` +
+        `<span class="fmt-badge">${esc(g.fmt)}</span>${esc(g.label)}` +
+        ` <span style="font-size:11px;color:#888;font-weight:400;text-transform:none;">` +
+        `(${g.items.length} WB variant${g.items.length === 1 ? '' : 's'})</span>` +
+      `</h3>` +
+      `<div class="results-variants">${g.items.map(renderVariantTile).join('')}</div>`,
+    )
     .join('');
   const idBase = fixtureSectionId(jsonEntry.label);
   const showFmtToggle = formatList.length > 1;
@@ -1228,6 +1642,7 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
     <tr><th>Tags</th><td>${esc(jsonEntry.environment.tags.join(', ') || '(none)')}</td></tr>
     <tr><th>Variants</th><td>${esc(wbLabels)}</td></tr>
     ${renderMultiRefRow(sorted)}
+    ${renderImageMetadataRow(sorted)}
     ${regRows}
     <tr><th>Source</th><td><code>${esc(jsonEntry.source_path)}</code></td></tr>
   </table>
@@ -1245,8 +1660,7 @@ const renderFixtureSection = (variants: CaptureContext[]): string => {
         ? ''
         : `<div class="results-block">
       <h3>Result grids (per format × WB anchor)</h3>
-      <div class="results-variants">${resultBlocks}
-      </div>
+      ${resultBlocks}
     </div>`
     }
   </div>

@@ -59,7 +59,9 @@ import {
 } from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 
 import {
+  deltaE2000Breakdown,
   renderHtmlReport,
+  rgbToLab,
   type CaptureContext,
   type CaptureJsonEntry,
 } from './reportGenerators';
@@ -85,6 +87,135 @@ const REF_CARD_EXPECTED: Record<string, {r: number; g: number; b: number}> = {
   greycard: {r: 0.18, g: 0.18, b: 0.18},
   whibal: {r: 0.4, g: 0.4, b: 0.4},
   postit: {r: 0.9542, g: 0.887, b: 0.362},
+  // Plain printer paper taped into the 4th slot below greycard.
+  // Placeholder value; refine once we have a per-batch measurement.
+  white: {r: 0.85, g: 0.85, b: 0.85},
+};
+
+// Expected linear-sRGB for the "paper" pseudo ref — the light-coloured
+// background paper the chart sits on for LIGHT BG captures. Placeholder
+// until we characterise the actual paper; 0.85 is a reasonable stand-in
+// for typical printer paper reflectance.
+const PAPER_EXPECTED = {r: 0.85, g: 0.85, b: 0.85};
+
+// True when the fixture was shot on the light-background paper — used
+// to gate the 'paper' ref-card synthesis. Detected from folder name so
+// dark-background shots (where the whiteMask border ring samples a
+// dark surface, not the paper) don't get a misleading paper entry.
+const isLightBgPath = (p: string): boolean => p.includes('LIGHT BG');
+
+// Standard sRGB inverse gamma. Input in [0, 1] gamma-encoded space,
+// output in [0, 1] linear space. Used to convert whiteMask border
+// medians (preview-image gamma-sRGB 0–255) into the same linear-sRGB
+// domain the per-cell / per-ref-card raw_linear_rgb values live in.
+const srgbGammaInverse = (c: number): number =>
+  c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+
+// Parse exiftool's space-separated numeric strings ("63.92 63.92 63.95 63.95")
+// into arrays of numbers; returns [] on empty / non-numeric input.
+const parseNumList = (v: unknown): number[] => {
+  if (typeof v === 'number') return [v];
+  if (typeof v !== 'string') return [];
+  return v.split(/\s+/).map(Number).filter(n => !isNaN(n));
+};
+
+// Pull the useful diagnostic fields out of an exiftool JSON blob into
+// a shape the filmstrip / offline analysis can consume. DNG fixtures
+// yield the color-pipeline math (black/white level, AsShotNeutral,
+// ColorMatrix1/2, calibration illuminants, bit depth) plus shot
+// settings (ISO, exposure, aperture). JPEG fixtures skip the DNG-
+// specific tags and just carry shot settings + orientation/WB. Any
+// fixture also gets Make/Model/UniqueCameraModel so per-device
+// grouping is stable even with per-fixture path variance.
+type CaptureImageMetadata = {
+  make: string | null;
+  model: string | null;
+  unique_camera_model: string | null;
+  iso: number | null;
+  exposure_time: string | null;
+  f_number: number | null;
+  orientation: string | null;
+  white_balance: string | null;
+  color_space: string | null;
+  // DNG-only tags. Null on JPEG / when the tag isn't stored.
+  bits_per_sample: number | null;
+  black_level: number[] | null;
+  white_level: number | null;
+  as_shot_neutral: number[] | null;
+  color_matrix_1: number[] | null;
+  color_matrix_2: number[] | null;
+  calibration_illuminant_1: string | null;
+  calibration_illuminant_2: string | null;
+  dng_version: string | null;
+};
+const extractImageMetadata = (raw: any): CaptureImageMetadata => {
+  const num = (v: unknown) => (typeof v === 'number' ? v : null);
+  const str = (v: unknown) => (typeof v === 'string' ? v : null);
+  const list = (v: unknown) => {
+    const arr = parseNumList(v);
+    return arr.length ? arr : null;
+  };
+  const wl = list(raw?.WhiteLevel);
+  return {
+    make: str(raw?.Make),
+    model: str(raw?.Model),
+    unique_camera_model: str(raw?.UniqueCameraModel),
+    iso: num(raw?.ISO),
+    exposure_time: str(raw?.ExposureTime) ?? (typeof raw?.ExposureTime === 'number' ? String(raw.ExposureTime) : null),
+    f_number: num(raw?.FNumber),
+    orientation: str(raw?.Orientation),
+    white_balance: str(raw?.WhiteBalance),
+    color_space: str(raw?.ColorSpace),
+    bits_per_sample: num(raw?.BitsPerSample) ?? (list(raw?.BitsPerSample)?.[0] ?? null),
+    black_level: list(raw?.BlackLevel),
+    // WhiteLevel is usually a scalar but can be a per-channel list; keep
+    // as scalar when uniform, else store the first element.
+    white_level: wl ? wl[0] : null,
+    as_shot_neutral: list(raw?.AsShotNeutral),
+    color_matrix_1: list(raw?.ColorMatrix1),
+    color_matrix_2: list(raw?.ColorMatrix2),
+    calibration_illuminant_1: str(raw?.CalibrationIlluminant1),
+    calibration_illuminant_2: str(raw?.CalibrationIlluminant2),
+    dng_version: str(raw?.DNGVersion),
+  };
+};
+
+// Batch-read metadata for every fixture in one exiftool invocation.
+// One shell-out for the whole run instead of one per capture (~500 ×
+// 150 ms saved). Returns a source_path → metadata map; missing entries
+// silently drop through as nulls in the emitted JSON.
+const prefetchImageMetadata = (paths: string[]): Map<string, CaptureImageMetadata> => {
+  const map = new Map<string, CaptureImageMetadata>();
+  if (paths.length === 0) return map;
+  const TAGS = [
+    '-Make', '-Model', '-UniqueCameraModel',
+    '-ISO', '-ExposureTime', '-FNumber', '-Orientation',
+    '-WhiteBalance', '-ColorSpace',
+    '-BitsPerSample', '-BlackLevel', '-WhiteLevel', '-AsShotNeutral',
+    '-ColorMatrix1', '-ColorMatrix2',
+    '-CalibrationIlluminant1', '-CalibrationIlluminant2', '-DNGVersion',
+  ];
+  try {
+    const out = execFileSync(
+      'exiftool',
+      ['-j', ...TAGS, ...paths],
+      {encoding: 'utf-8', maxBuffer: 128 * 1024 * 1024},
+    );
+    const arr = JSON.parse(out);
+    if (Array.isArray(arr)) {
+      for (const entry of arr) {
+        if (entry?.SourceFile) {
+          map.set(entry.SourceFile, extractImageMetadata(entry));
+        }
+      }
+    }
+  } catch (e) {
+    process.stderr.write(
+      `warning: exiftool prefetch failed (${(e as Error).message}); ` +
+        `per-capture metadata will be null\n`,
+    );
+  }
+  return map;
 };
 
 // Human-facing labels — condensed versions of LINEAR_REFERENCE_NAMES
@@ -95,6 +226,7 @@ const REF_CARD_DISPLAY_NAMES: Record<string, string> = {
   greycard: '18% Neutral Gray Card',
   whibal: 'WhiBal G7',
   postit: '3M Post-it Yellow',
+  white: 'White Printer Paper',
 };
 const DNG_CLI = path.resolve(__dirname, '../tools/dng-cli/build/dng-cli');
 // Parallel C++ CLI wrapping modules/dng-decoder/cpp/. Used for
@@ -249,6 +381,16 @@ class NodeDecoder implements DngDecoderLike {
   }
 }
 
+// Burst averaging is done POST-analysis on the finished capture
+// entries (see buildBurstAverageCaptures below), not by wrapping the
+// decoder. An earlier attempt at raw-pixel averaging with a shared
+// AveragingDecoder was abandoned because it samples fixed sensor
+// coords across all N frames, so any chart movement between frames
+// causes it to mix pixels from different physical chips. Averaging
+// per-cell values from each frame's OWN chart detection is
+// alignment-invariant — the phone can drift a few pixels and the
+// answer stays correct.
+
 // ---- Filename parser -------------------------------------------------------
 
 type ParsedFixture = {
@@ -400,6 +542,12 @@ const ensureDngJpegSibling = (dngPath: string, cli: string): void => {
     );
   }
 };
+
+// Matches the `_burstNofM` filename token emitted by the on-device
+// burst capture (see modules/raw-camera-android/…/CameraSessionManager.kt
+// buildFileStem). Case-insensitive because parseFixtureFilename lowercases
+// all tokens before regex matches.
+const BURST_TAG_RE = /^burst(\d+)of(\d+)$/;
 
 const scanFixtures = (root: string, cli: string): ParsedFixture[] => {
   const out: ParsedFixture[] = [];
@@ -677,6 +825,19 @@ const resolveAnchor = (
       isOnPage: false,
     };
   }
+  // Paper: synthetic ref derived from the whitemask border-ring
+  // median. Only valid on LIGHT BG shots (the ring is actually paper
+  // there). Falls through to null when unavailable so the sweep
+  // silently skips it on dark-bg fixtures.
+  if (label === 'paper') {
+    const paper = buildPaperMeasurement(fixture, outcome);
+    if (!paper) return null;
+    return {
+      displayNotation: paper.cell.notation,
+      measurement: paper,
+      isOnPage: false,
+    };
+  }
   // Multi-mode: 'whibal' / 'postit' / 'greycard' as anchor labels
   // resolve to the corresponding MULTI_CARD_POINTS slot on the
   // fixture. buildMultiRefMeasurement short-circuits when the fixture
@@ -695,7 +856,12 @@ const resolveAnchor = (
   // notation anyway so downstream (delta-e-analysis, munsell-error
   // filmstrip) doesn't fall back to the physical reference_card and
   // display "multi" as a fake WB anchor.
-  if (label === 'whibal' || label === 'postit' || label === 'greycard') {
+  if (
+    label === 'whibal' ||
+    label === 'postit' ||
+    label === 'greycard' ||
+    label === 'white'
+  ) {
     return {
       displayNotation: `ref_card:${label}`,
       measurement: undefined,
@@ -738,6 +904,41 @@ const buildMultiRefMeasurement = (
   };
 };
 
+// Build a WB-anchor measurement from the whitemask border ring's
+// paper reading. Only valid for LIGHT BG shots (border ring is
+// actually paper); dark-bg shots would anchor to the tabletop.
+// Reads grid.paperMedianR/G/B (preview-image gamma-sRGB 0-255) and
+// inverse-gammas to the linear-sRGB domain the analyzer's other WB
+// anchors live in. Returns null when either condition fails.
+const buildPaperMeasurement = (
+  fixture: ParsedFixture,
+  outcome: MunsellChartOutcome,
+): CellMeasurement | null => {
+  if (outcome.kind !== 'success') return null;
+  if (!isLightBgPath(fixture.path)) return null;
+  const g = outcome.result.grid;
+  const r = g?.paperMedianR;
+  const gg = g?.paperMedianG;
+  const b = g?.paperMedianB;
+  if (r == null || gg == null || b == null) return null;
+  return {
+    cell: {
+      hue: 'REF',
+      value: 0,
+      chroma: 0,
+      notation: 'ref_card:paper',
+      expectedLinearRgb: PAPER_EXPECTED,
+      rowIdx: -1,
+      colIdx: -1,
+    },
+    rawLinearRgb: {
+      r: srgbGammaInverse(r / 255),
+      g: srgbGammaInverse(gg / 255),
+      b: srgbGammaInverse(b / 255),
+    },
+  };
+};
+
 const buildCaptureEntry = (
   fixture: ParsedFixture,
   anchorLabel: string,
@@ -763,6 +964,7 @@ const buildCaptureEntry = (
       tags: fixture.tags,
     },
     registration: buildRegistrationBlock(outcome, page),
+    image_metadata: imageMetadataByPath.get(fixture.path) ?? null,
   };
   if (outcome.kind === 'failure') {
     return {...common, wb_correction: null, cells: [], ref_card: null};
@@ -787,6 +989,33 @@ const buildCaptureEntry = (
           false,
         )
       : null;
+  // Synthesise a 'paper' ref card from the whiteMask border-ring
+  // median, but only for LIGHT BG shots — the ring on a dark table
+  // isn't the paper we claim it is. Values are in preview-image
+  // gamma-sRGB (0–255); convert to linear-sRGB via inverse gamma so
+  // it lives in the same domain as the other ref cards' raw values.
+  const grid = outcome.result.grid;
+  const paperRefEntry = (() => {
+    if (!isLightBgPath(fixture.path)) return null;
+    const r = grid?.paperMedianR;
+    const g = grid?.paperMedianG;
+    const b = grid?.paperMedianB;
+    if (r == null || g == null || b == null) return null;
+    return {
+      name: 'paper',
+      display_name: 'Background paper',
+      sample_rect: null,
+      raw_linear_rgb: [
+        srgbGammaInverse(r / 255),
+        srgbGammaInverse(g / 255),
+        srgbGammaInverse(b / 255),
+      ],
+      expected_linear_rgb: [PAPER_EXPECTED.r, PAPER_EXPECTED.g, PAPER_EXPECTED.b],
+      measured_linear_rgb: null,
+      delta_e: null,
+    };
+  })();
+
   // Multi mode: build a per-slot block for each of the 3 taped
   // cards, each with its OWN expected/measured/ΔE under the current
   // WB anchor. Same shape as the legacy `ref_card` block, one per
@@ -826,6 +1055,12 @@ const buildCaptureEntry = (
         };
       })
     : null;
+  // Append the paper pseudo-ref to whichever base list was built —
+  // either the multi-card block or (when the shot wasn't multi-mode)
+  // a fresh list. Filmstrip client-side picks any name up automatically.
+  const refCardsWithPaper = paperRefEntry
+    ? [...(refCardsBlock ?? []), paperRefEntry]
+    : refCardsBlock;
   return {
     ...common,
     wb_correction: {
@@ -863,7 +1098,7 @@ const buildCaptureEntry = (
             delta_e: refCardMeasurement ? refCardMeasurement.deltaE : null,
           }
         : null,
-    ref_cards: refCardsBlock,
+    ref_cards: refCardsWithPaper,
     cells: results.map((r, i) => ({
       physical_row: r.cell.rowIdx,
       physical_col: r.cell.colIdx,
@@ -891,6 +1126,245 @@ const buildCaptureEntry = (
         r.cell.notation === anchor.displayNotation,
     })),
   };
+};
+
+// ---- Burst averaging (docs/munsell-dark-sensor.md option #3) --------------
+
+// Compute per-cell / per-refcard averaged raw values across a group
+// of burst frames, then rebuild the measured + ΔE downstream. Uses
+// each frame's OWN chart detection (baked into the per-frame
+// raw_linear_rgb), so this is alignment-invariant — the phone can
+// drift a few pixels between frames without corrupting the average.
+//
+// Grouping key: (dir, capture_format, page, platform, reference,
+// illuminant, non-burst tags, WB anchor). All frames sharing that
+// key are averaged into one synthetic capture.
+const buildBurstAverageCaptures = (
+  captures: readonly CaptureJsonEntry[],
+  contexts: readonly CaptureContext[],
+): {captures: CaptureJsonEntry[]; contexts: CaptureContext[]} => {
+  type Frame = {cap: CaptureJsonEntry; ctx: CaptureContext; idx: number};
+  const groups = new Map<string, Frame[]>();
+  const outCaptures: CaptureJsonEntry[] = [];
+  const outContexts: CaptureContext[] = [];
+  for (let i = 0; i < captures.length; i++) {
+    const cap = captures[i];
+    const ctx = contexts[i];
+    if (!ctx) continue;
+    // Skip failed captures (empty cells) — averaging needs data.
+    if (!cap.cells || cap.cells.length === 0) continue;
+    // Look for a `_burstNofM` token in the tags list. parseFixtureFilename
+    // lowercases + puts unrecognised tokens into environment.tags.
+    const burstTag = cap.environment.tags.find(t => BURST_TAG_RE.test(t));
+    if (!burstTag) continue;
+    const m = BURST_TAG_RE.exec(burstTag)!;
+    const frameIdx = parseInt(m[1], 10);
+    const total = parseInt(m[2], 10);
+    if (total < 2) continue;
+    const otherTags = cap.environment.tags
+      .filter(t => !BURST_TAG_RE.test(t))
+      .sort();
+    // WB anchor is baked into the second half of capture_id. Same
+    // anchor across frames is essential — different anchors would
+    // scale the raws differently and averaging becomes meaningless.
+    const anchorKey = cap.capture_id.split('__', 2)[1] ?? '';
+    const key = [
+      path.dirname(cap.source_path),
+      cap.capture_format,
+      cap.page,
+      cap.reference_card ?? '',
+      cap.environment.illuminant_tag ?? '',
+      otherTags.join(','),
+      anchorKey,
+    ].join('|');
+    let bucket = groups.get(key);
+    if (!bucket) {
+      bucket = [];
+      groups.set(key, bucket);
+    }
+    bucket.push({cap, ctx, idx: frameIdx});
+  }
+  for (const frames of groups.values()) {
+    if (frames.length < 2) continue;
+    frames.sort((a, b) => a.idx - b.idx);
+    const template = frames[0].cap;
+    const templateCtx = frames[0].ctx;
+    const n = frames.length;
+
+    // Sanity: all frames must have the same cell layout — same count,
+    // same physical positions. If a frame's chart detection dropped
+    // cells or reordered them, skip this group to avoid mixing
+    // measurements from different chips.
+    const cellCount = template.cells.length;
+    const layoutMatches = frames.every(
+      f =>
+        f.cap.cells.length === cellCount &&
+        f.cap.cells.every(
+          (c, i) =>
+            c.physical_row === template.cells[i].physical_row &&
+            c.physical_col === template.cells[i].physical_col,
+        ),
+    );
+    if (!layoutMatches) {
+      process.stderr.write(
+        `burst-avg: skipping group ${path.basename(template.source_path)} ` +
+          `(N=${n}): cell layouts differ across frames\n`,
+      );
+      continue;
+    }
+
+    // Average per-cell raw_linear_rgb across frames.
+    const avgCells = template.cells.map((tCell, i) => {
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      for (const f of frames) {
+        const c = f.cap.cells[i];
+        r += c.raw_linear_rgb[0];
+        g += c.raw_linear_rgb[1];
+        b += c.raw_linear_rgb[2];
+      }
+      return {
+        ...tCell,
+        raw_linear_rgb: [r / n, g / n, b / n] as [number, number, number],
+      };
+    });
+
+    // Average per-refcard raw_linear_rgb across frames (multi mode).
+    const templateRefCards = template.ref_cards;
+    let avgRefCards: typeof templateRefCards = null;
+    if (templateRefCards && templateRefCards.length > 0) {
+      avgRefCards = templateRefCards.map((tRc, i) => {
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        for (const f of frames) {
+          const rc = f.cap.ref_cards?.[i];
+          if (!rc) return tRc; // schema drift; keep template as-is
+          r += rc.raw_linear_rgb[0];
+          g += rc.raw_linear_rgb[1];
+          b += rc.raw_linear_rgb[2];
+        }
+        return {
+          ...tRc,
+          raw_linear_rgb: [r / n, g / n, b / n] as [number, number, number],
+        };
+      });
+    }
+
+    // Locate the WB anchor's averaged (raw, expected) so we can
+    // recompute the per-channel gain. Anchor is either a Munsell
+    // notation (find matching cell) or a ref_card:<name> sentinel
+    // (find matching card in avgRefCards).
+    const wbRef = template.wb_correction?.reference ?? '';
+    let anchorRaw: [number, number, number] | null = null;
+    let anchorExpected: [number, number, number] | null = null;
+    if (wbRef.startsWith('ref_card:')) {
+      const cardName = wbRef.slice('ref_card:'.length);
+      const rc = avgRefCards?.find(x => x.name === cardName);
+      if (rc?.expected_linear_rgb) {
+        anchorRaw = rc.raw_linear_rgb;
+        anchorExpected = rc.expected_linear_rgb;
+      }
+    } else if (wbRef) {
+      const c = avgCells.find(x => x.expected_notation === wbRef);
+      if (c) {
+        anchorRaw = c.raw_linear_rgb;
+        anchorExpected = c.expected_linear_rgb;
+      }
+    }
+    // Fall through to identity gain if we couldn't find the anchor —
+    // measured will equal raw, ΔE will look terrible, but we don't
+    // silently pretend the average worked.
+    const MIN = 1e-4;
+    const gain: [number, number, number] = anchorRaw && anchorExpected
+      ? [
+          anchorRaw[0] > MIN ? anchorExpected[0] / anchorRaw[0] : 1,
+          anchorRaw[1] > MIN ? anchorExpected[1] / anchorRaw[1] : 1,
+          anchorRaw[2] > MIN ? anchorExpected[2] / anchorRaw[2] : 1,
+        ]
+      : [1, 1, 1];
+
+    // Apply gain to each averaged cell raw → measured. Recompute ΔE
+    // in Lab (D65) using the same deltaE2000 the report uses so avg
+    // and single-frame numbers are directly comparable.
+    for (const cell of avgCells) {
+      const meas: [number, number, number] = [
+        cell.raw_linear_rgb[0] * gain[0],
+        cell.raw_linear_rgb[1] * gain[1],
+        cell.raw_linear_rgb[2] * gain[2],
+      ];
+      cell.measured_linear_rgb = meas;
+      cell.delta_e = deltaE2000Breakdown(
+        rgbToLab(cell.expected_linear_rgb),
+        rgbToLab(meas),
+      ).total;
+      // measured_notation is derived from measured Lab → nearest
+      // Munsell notation; recomputing it needs the munsell library.
+      // For the averaged view we leave it as the template's value —
+      // the raw+measured+ΔE fields are the ones that actually drive
+      // downstream analysis.
+    }
+    if (avgRefCards) {
+      for (const rc of avgRefCards) {
+        if (!rc.expected_linear_rgb) continue;
+        const meas: [number, number, number] = [
+          rc.raw_linear_rgb[0] * gain[0],
+          rc.raw_linear_rgb[1] * gain[1],
+          rc.raw_linear_rgb[2] * gain[2],
+        ];
+        rc.measured_linear_rgb = meas;
+        rc.delta_e = deltaE2000Breakdown(
+          rgbToLab(rc.expected_linear_rgb),
+          rgbToLab(meas),
+        ).total;
+      }
+    }
+
+    // Rewrite label, source_path, capture_id with a burstavgofN
+    // suffix so downstream tools (filmstrip, ranking, etc.) can
+    // filter / distinguish it from individual frames.
+    const avgTag = `burstavgof${n}`;
+    const newLabel = template.label.replace(/_burst\d+of\d+/i, `_${avgTag}`);
+    // Replace the burst token in the source_path with the burstavg
+    // token. Uses a token-body match (no anchor on the extension) so
+    // we cope with the `_burstNofM_auto.dng` naming that session-mode
+    // captures produce. Absolute correctness matters here: the
+    // filmstrip dedupes samples by (sourcePath × cell × format), so
+    // a synthetic burstavg entry that keeps the same source_path as
+    // frame 1 gets silently dropped as a duplicate.
+    const newSourcePath = template.source_path.replace(
+      /_burst\d+of\d+/i,
+      `_${avgTag}`,
+    );
+    const newTags = template.environment.tags
+      .filter(t => !BURST_TAG_RE.test(t))
+      .concat([avgTag]);
+    const newCaptureId = template.capture_id.replace(
+      /_burst\d+of\d+/i,
+      `_${avgTag}`,
+    );
+    const avgCapture: CaptureJsonEntry = {
+      ...template,
+      capture_id: newCaptureId,
+      label: newLabel,
+      source_path: newSourcePath,
+      environment: {...template.environment, tags: newTags},
+      cells: avgCells,
+      ref_cards: avgRefCards ?? null,
+      // Ref_card (single) is stale for the averaged case if present;
+      // the fixtures we care about use ref_cards (multi). Recomputing
+      // it would require the same anchor logic as avgRefCards but for
+      // a single card — skipping until we have a single-ref burst
+      // fixture that needs it.
+    };
+    outCaptures.push(avgCapture);
+    outContexts.push({
+      ...templateCtx,
+      jsonEntry: avgCapture,
+    });
+  }
+  return {captures: outCaptures, contexts: outContexts};
 };
 
 // ---- Main ------------------------------------------------------------------
@@ -1014,6 +1488,15 @@ process.stderr.write(
       : '') +
     `; refs=[${refNotations.join(', ')}]\n`,
 );
+
+// One-shot exiftool call for every fixture path so per-capture
+// buildCaptureJson can attach camera / DNG-tag metadata without
+// spawning per capture.
+const uniqueFixturePaths = Array.from(new Set(fixtures.map(f => f.path)));
+process.stderr.write(
+  `prefetching metadata for ${uniqueFixturePaths.length} fixture file(s) via exiftool…\n`,
+);
+const imageMetadataByPath = prefetchImageMetadata(uniqueFixturePaths);
 
 // Two decoders — Android fixtures route their DNG methods through
 // the C++ CLI (byte-for-byte match with the on-device Android
@@ -1167,10 +1650,14 @@ let nFailure = 0;
 
     // Multi fixtures replace REF_CARD in the default sweep with the
     // three slot names, so each of whibal/postit/greycard gets its
-    // own WB-anchored capture entry alongside the AUTO one. A
-    // user-provided --refs list is used verbatim.
+    // own WB-anchored capture entry alongside the AUTO one. Paper
+    // joins the sweep on LIGHT BG shots (it's derived from the
+    // whitemask border ring, which only samples paper there).
+    // A user-provided --refs list is used verbatim.
     const perFixtureRefs = fixture.reference === 'multi' && !values.refs
-      ? [REF_AUTO, 'whibal', 'postit', 'greycard']
+      ? (isLightBgPath(fixture.path)
+          ? [REF_AUTO, 'whibal', 'postit', 'greycard', 'white', 'paper']
+          : [REF_AUTO, 'whibal', 'postit', 'greycard', 'white'])
       : refNotations;
     for (const refLabel of perFixtureRefs) {
       const anchor = resolveAnchor(refLabel, fixture, outcome);
@@ -1205,6 +1692,77 @@ let nFailure = 0;
   iosDecoder.cleanup();
   androidDecoder?.cleanup();
 
+  // Burst averaging (docs/munsell-dark-sensor.md option #3). Detect
+  // groups of `_burstNofM` captures sharing the same fixture context
+  // and WB anchor. For each group, emit a synthetic averaged capture
+  // computed by taking each frame's per-cell raw_linear_rgb (from that
+  // frame's own chart detection — chart alignment is baked in) and
+  // averaging. Then re-derive WB gain from the averaged anchor raw,
+  // apply per-channel to each averaged cell raw → measured, and
+  // recompute ΔE2000 vs expected in Lab. Individual frame captures are
+  // preserved so the report shows both.
+  const {captures: burstAvgCaptures, contexts: burstAvgContexts} =
+    buildBurstAverageCaptures(captures, captureContexts);
+  if (burstAvgCaptures.length > 0) {
+    process.stderr.write(
+      `burst averaging: emitting ${burstAvgCaptures.length} synthetic burstavg capture(s)\n`,
+    );
+    captures.push(...burstAvgCaptures);
+    captureContexts.push(...burstAvgContexts);
+    nSuccess += burstAvgCaptures.length;
+  }
+
+  // Excluded-chips list — chips flagged as physically defective /
+  // drifted from spec. Filmstrip + run.html read this to hide / mark
+  // affected cells. Missing file is treated as "no exclusions" so
+  // developers who haven't done the calibration analysis get sensible
+  // defaults.
+  const excludedChipsPath = path.resolve(__dirname, 'excluded-chips.json');
+  let excludedChips: string[] = [];
+  if (fs.existsSync(excludedChipsPath)) {
+    try {
+      const raw = JSON.parse(fs.readFileSync(excludedChipsPath, 'utf-8'));
+      if (Array.isArray(raw?.chips)) {
+        excludedChips = raw.chips
+          .map((c: any) => (typeof c === 'string' ? c : c?.notation))
+          .filter((n: unknown): n is string => typeof n === 'string');
+      }
+    } catch (e) {
+      process.stderr.write(
+        `warning: failed to parse ${excludedChipsPath} (${(e as Error).message})\n`,
+      );
+    }
+  }
+  process.stderr.write(
+    `excluded chips: ${excludedChips.length ? excludedChips.join(', ') : '(none)'}\n`,
+  );
+
+  // Excluded-cards list — whole fixtures (raw + photo of the same
+  // shutter) flagged as having bad registration, mis-framing, chart
+  // damage, etc. Same schema as excluded-chips.json but keyed on
+  // fixture label (source_path basename minus extension). Consumed
+  // by the greycard ranking table (strikethrough) and the filmstrip
+  // (default-on checkbox to filter them out).
+  const excludedCardsPath = path.resolve(__dirname, 'excluded-cards.json');
+  let excludedCards: string[] = [];
+  if (fs.existsSync(excludedCardsPath)) {
+    try {
+      const raw = JSON.parse(fs.readFileSync(excludedCardsPath, 'utf-8'));
+      if (Array.isArray(raw?.cards)) {
+        excludedCards = raw.cards
+          .map((c: any) => (typeof c === 'string' ? c : c?.label))
+          .filter((n: unknown): n is string => typeof n === 'string');
+      }
+    } catch (e) {
+      process.stderr.write(
+        `warning: failed to parse ${excludedCardsPath} (${(e as Error).message})\n`,
+      );
+    }
+  }
+  process.stderr.write(
+    `excluded cards: ${excludedCards.length ? excludedCards.join(', ') : '(none)'}\n`,
+  );
+
   const runMeta = {
     schema_version: SCHEMA_VERSION,
     generated_at: new Date().toISOString(),
@@ -1212,6 +1770,8 @@ let nFailure = 0;
     n_fixtures: fixtures.length,
     n_success: nSuccess,
     n_failure: nFailure,
+    excluded_chips: excludedChips,
+    excluded_cards: excludedCards,
   };
   const output = {...runMeta, captures};
 

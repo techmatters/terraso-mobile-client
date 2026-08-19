@@ -99,12 +99,17 @@ const MULTI_CARD_X = 10 + MULTI_CARD_OFFSET_PITCHES * 2;
 export type MultiCardSlot = {
   readonly x: number;
   readonly y: number;
-  readonly name: 'whibal' | 'postit' | 'greycard';
+  readonly name: 'whibal' | 'postit' | 'greycard' | 'white';
 };
 export const MULTI_CARD_POINTS: readonly MultiCardSlot[] = [
   {x: MULTI_CARD_X, y: 0 * 3 - 1.5, name: 'whibal'},
   {x: MULTI_CARD_X, y: 1 * 3 - 1.5, name: 'postit'},
   {x: MULTI_CARD_X, y: 2 * 3 - 1.5, name: 'greycard'},
+  // 'white' = plain printer paper glued into the 4th slot below the
+  // greycard. Placeholder expected linear-sRGB is 0.85 across all
+  // channels (typical office paper reflectance); replace with a
+  // characterised value once we have per-batch measurements.
+  {x: MULTI_CARD_X, y: 3 * 3 - 1.5, name: 'white'},
 ];
 
 // A filter runs on a candidate triplet and returns true to accept

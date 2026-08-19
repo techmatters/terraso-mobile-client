@@ -31,7 +31,19 @@ abstract class HybridRawCameraAndroidSpec: HybridObject() {
   // Methods
   @DoNotStrip
   @Keep
-  abstract fun capturePhoto(): Promise<CapturedPhoto>
+  abstract fun capturePhoto(options: CaptureOptions): Promise<CapturedPhoto>
+  
+  @DoNotStrip
+  @Keep
+  abstract fun captureBurst(count: Double, options: CaptureOptions): Promise<Array<CapturedPhoto>>
+  
+  @DoNotStrip
+  @Keep
+  abstract fun getCaptureCapabilities(): Promise<CaptureCapabilities>
+  
+  @DoNotStrip
+  @Keep
+  abstract fun captureSession(request: CaptureSessionRequest): Promise<Array<CapturedPhoto>>
 
   // Default implementation of `HybridObject.toString()`
   override fun toString(): String {

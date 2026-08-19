@@ -1,11 +1,13 @@
 package com.margelo.nitro.rawcameraandroid
 
 import android.content.Context
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.camera.view.PreviewView
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -64,6 +66,20 @@ constructor(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var currentJob: Job? = null
 
+    // Diagnostic listener for the black-preview race: PreviewView exposes
+    // a StreamState LiveData that transitions IDLE → STREAMING once the
+    // producer starts pushing frames. When "3-4 retries usually works,"
+    // logging the state timeline of both a good and a bad attach makes
+    // it possible to spot which stage stalls (surface never requested,
+    // requested but never accepted, accepted but frames never arrive).
+    // Not a fix — just instrumentation. See docs/munsell-multishot.md
+    // "Black-preview bug" section for context.
+    private var attachStartMs: Long = 0
+    private val streamStateObserver = Observer<PreviewView.StreamState> { s ->
+        val dtMs = SystemClock.elapsedRealtime() - attachStartMs
+        Log.i(TAG, "previewStreamState → $s (+${dtMs}ms since attach)")
+    }
+
     init {
         addView(previewView)
         addView(overlay) // draw order: overlay after preview → drawn on top
@@ -71,12 +87,27 @@ constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        Log.i(TAG, "onAttachedToWindow: view size=${width}x${height}")
+        attachStartMs = SystemClock.elapsedRealtime()
+        Log.i(
+            TAG,
+            "onAttachedToWindow: view size=${width}x${height} " +
+                "surfaceProvider=${previewView.surfaceProvider}",
+        )
+        // Observe the preview stream state transitions from IDLE (waiting
+        // for the producer) to STREAMING (frames arriving). Registered
+        // observeForever because this view has no LifecycleOwner.
+        previewView.previewStreamState.observeForever(streamStateObserver)
         currentJob?.cancel()
         currentJob =
             scope.launch {
-                Log.i(TAG, "onAttachedToWindow: attaching surface provider")
+                val t0 = SystemClock.elapsedRealtime()
+                Log.i(TAG, "onAttachedToWindow: attaching surface provider (+0ms)")
                 CameraSessionManager.attachSurfaceProvider(previewView.surfaceProvider)
+                Log.i(
+                    TAG,
+                    "onAttachedToWindow: attach complete " +
+                        "(+${SystemClock.elapsedRealtime() - t0}ms)",
+                )
             }
         // Subscribe the phase-8 overlay to per-frame analysis results.
         // The listener fires on the analysisExecutor background thread;
@@ -95,6 +126,7 @@ constructor(
     }
 
     override fun onDetachedFromWindow() {
+        previewView.previewStreamState.removeObserver(streamStateObserver)
         CameraSessionManager.setFrameColorListener(null)
         currentJob?.cancel()
         currentJob =

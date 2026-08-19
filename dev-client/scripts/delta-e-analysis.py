@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 """
-Consolidated ΔE analysis — one HTML with tabbed sections.
+Regression-only ΔE analysis — one HTML with two regression tabs.
 
 Reads a run.json from analyze-fixtures, flattens to per-chip rows,
-and produces a single self-contained HTML page:
+fits two models, and produces a single self-contained HTML page:
 
-  1. Summary — bootstrap group means with 95 % CI bars, faceted by
-     WB anchor, device, format, background, page, and their crosses.
-  2. Heatmap — per-chip Value × Chroma × WB anchor. Reveals which
-     colour regions each WB anchor is good/bad at.
-  3. Head-to-head — within-fixture WB anchor ranking. Removes
-     capture-quality as a confounder.
-  4. Regression (OLS) — multi-way linear fit. Shows each factor's
-     marginal effect on ΔE holding others constant.
-  5. Regression (Mixed-Effects) — same fit with a random intercept
+  1. Regression (OLS) — multi-way linear fit. Shows each factor's
+     marginal effect on ΔE holding others constant. p-values are
+     optimistic because chips within a capture are correlated.
+  2. Regression (Mixed-Effects) — same fit with a random intercept
      per capture, which properly accounts for chip-within-capture
      correlation. This is the statistically correct model — trust
      these p-values.
-  6. Notes — methodology reminders and how to interpret.
+  3. Notes — methodology reminders and how to interpret.
+
+The Summary / Heatmap / Head-to-head tabs that used to live here
+have been replaced by the interactive explorer in
+scripts/render-munsell-error.ts (open munsell-error.html and pick
+"chart = heatmap" in the left panel).
 
 Requires numpy + pandas + statsmodels; run via the venv:
   dev-client/.venv-analysis/bin/python scripts/delta-e-analysis.py \\
@@ -40,7 +40,6 @@ from html import escape
 import numpy as np
 import pandas as pd
 import statsmodels.formula.api as smf
-import statsmodels.api as sm
 
 
 # ---- CLI --------------------------------------------------------------------
@@ -48,12 +47,6 @@ import statsmodels.api as sm
 ap = argparse.ArgumentParser()
 ap.add_argument('--json', required=True, help='run.json from analyze-fixtures')
 ap.add_argument('--out', required=True, help='output HTML path')
-ap.add_argument('--n-bootstrap', type=int, default=1000,
-                help='bootstrap resamples per group for the summary CIs')
-ap.add_argument('--min-n', type=int, default=5,
-                help='hide summary groups with fewer than this many chips')
-ap.add_argument('--min-heatmap-n', type=int, default=3,
-                help='hide heatmap cells with fewer than this many chips')
 args = ap.parse_args()
 
 
@@ -165,248 +158,7 @@ print(f'loaded {len(df)} chip measurements from {df["capture_id"].nunique()} cap
       file=sys.stderr)
 
 
-# ---- Section 1: bootstrap-CI summary tables --------------------------------
-
-def bootstrap_ci(vals: np.ndarray, n: int, rng: np.random.Generator) -> tuple[float, float, float]:
-    if len(vals) == 0:
-        return (float('nan'), float('nan'), float('nan'))
-    mean = float(vals.mean())
-    if len(vals) < 2:
-        return (mean, mean, mean)
-    idx = rng.integers(0, len(vals), size=(n, len(vals)))
-    means = vals[idx].mean(axis=1)
-    lo, hi = float(np.percentile(means, 2.5)), float(np.percentile(means, 97.5))
-    return (mean, lo, hi)
-
-
-def summary_table(df: pd.DataFrame, keys: list[str], title: str) -> str:
-    rng = np.random.default_rng(42)
-    grouped = df.groupby(keys)['delta_e']
-    entries = []
-    for key, series in grouped:
-        vals = series.to_numpy()
-        if len(vals) < args.min_n:
-            continue
-        mean, lo, hi = bootstrap_ci(vals, args.n_bootstrap, rng)
-        entries.append((mean, lo, hi, len(vals), key if isinstance(key, tuple) else (key,)))
-    entries.sort(key=lambda e: e[0])
-    if not entries:
-        return f'<h3>{escape(title)}</h3><p><em>(no groups above n≥{args.min_n})</em></p>'
-    global_lo = min(e[1] for e in entries)
-    global_hi = max(e[2] for e in entries)
-    span = max(global_hi - global_lo, 1e-6)
-    header = (
-        ''.join(f'<th>{escape(k)}</th>' for k in keys)
-        + '<th>n</th><th>mean ΔE</th><th>95 % CI</th><th></th>'
-    )
-    tr = []
-    for mean, lo, hi, n, key in entries:
-        key_cells = ''.join(f'<td>{escape(str(k))}</td>' for k in key)
-        left = (lo - global_lo) / span * 100
-        width = (hi - lo) / span * 100
-        mean_pct = (mean - global_lo) / span * 100
-        bar = (
-            f'<div class="ci-bar">'
-            f'<div class="ci-range" style="left:{left:.1f}%; width:{width:.1f}%"></div>'
-            f'<div class="ci-mean" style="left:{mean_pct:.1f}%"></div>'
-            f'</div>'
-        )
-        tr.append(
-            f'<tr>{key_cells}<td class="num">{n}</td>'
-            f'<td class="num">{mean:.2f}</td>'
-            f'<td class="num">{lo:.2f}–{hi:.2f}</td>'
-            f'<td class="bar-cell">{bar}</td></tr>'
-        )
-    return (
-        f'<h3>{escape(title)}</h3>'
-        f'<table><thead><tr>{header}</tr></thead>'
-        f'<tbody>{"".join(tr)}</tbody></table>'
-    )
-
-
-def render_summary(df: pd.DataFrame) -> str:
-    tabs = [
-        (['wb_anchor'], 'By WB anchor'),
-        (['device'], 'By device'),
-        (['platform'], 'By platform (iOS / Android)'),
-        (['format'], 'By format (raw / photo)'),
-        (['bg'], 'By background'),
-        (['page'], 'By page'),
-        (['device', 'format'], 'Device × format'),
-        (['device', 'wb_anchor'], 'Device × WB anchor'),
-        (['format', 'wb_anchor'], 'Format × WB anchor'),
-        (['platform', 'wb_anchor'], 'Platform × WB anchor'),
-        (['bg', 'wb_anchor'], 'Background × WB anchor'),
-        (['device', 'format', 'wb_anchor'], 'Device × format × WB anchor'),
-    ]
-    parts = [
-        '<p class="note">Each row: mean ΔE across chips in that group, '
-        f'sorted ascending (best first). Bootstrap n = {args.n_bootstrap}. '
-        'Non-overlapping CIs indicate a real difference.</p>'
-    ]
-    for keys, title in tabs:
-        parts.append(summary_table(df, keys, title))
-    return '\n'.join(parts)
-
-
-# ---- Section 2: heatmap Value × Chroma per WB anchor -----------------------
-
-def render_heatmap(df: pd.DataFrame) -> str:
-    sub = df.dropna(subset=['value', 'chroma'])
-    grid = (
-        sub.groupby(['wb_anchor', 'value', 'chroma'])['delta_e']
-        .agg(['mean', 'count'])
-        .reset_index()
-    )
-    grid = grid[grid['count'] >= args.min_heatmap_n]
-    if grid.empty:
-        return '<p>(no heatmap data — no chips at ≥ min-n bins)</p>'
-    global_min = float(grid['mean'].min())
-    global_max = float(grid['mean'].max())
-    anchors = sorted(grid['wb_anchor'].unique())
-    values = sorted(sub['value'].unique(), reverse=True)
-    chromas = sorted(sub['chroma'].unique())
-
-    def color(de: float) -> str:
-        t = 0 if global_max == global_min else max(
-            0.0, min(1.0, (de - global_min) / (global_max - global_min)))
-        hue = 120 * (1 - t)
-        return f'hsl({hue:.0f}, 65%, 55%)'
-
-    def panel(anchor: str) -> str:
-        d = grid[grid['wb_anchor'] == anchor].set_index(['value', 'chroma'])
-        header = ('<tr><th class="corner">V \\ C</th>'
-                  + ''.join(f'<th>/{c:g}</th>' for c in chromas)
-                  + '</tr>')
-        body = []
-        for v in values:
-            cells = [f'<th>{v:g}/</th>']
-            for c in chromas:
-                key = (v, c)
-                if key in d.index:
-                    m = float(d.loc[key, 'mean'])
-                    n = int(d.loc[key, 'count'])
-                    cells.append(
-                        f'<td class="cell" style="background:{color(m)}" '
-                        f'title="ΔE {m:.1f}, n={n}">{m:.1f}</td>'
-                    )
-                else:
-                    cells.append('<td class="empty"></td>')
-            body.append(f'<tr>{"".join(cells)}</tr>')
-        return (
-            f'<div class="heatmap-panel"><h3>{escape(anchor)}</h3>'
-            f'<table class="heat">{header}{"".join(body)}</table></div>'
-        )
-
-    legend_cells = ''
-    for i in range(11):
-        de = global_min + (global_max - global_min) * i / 10
-        legend_cells += (
-            f'<div class="legend-cell" style="background:{color(de)}">'
-            f'{de:.1f}</div>'
-        )
-    legend = f'<div class="legend"><span>ΔE scale:</span>{legend_cells}</div>'
-
-    return (
-        '<p class="note">Rows = Munsell Value (top = light). '
-        'Columns = Chroma (left = neutral). One panel per WB anchor. '
-        f'Shared colour scale {global_min:.1f}–{global_max:.1f}. '
-        f'Cells with fewer than {args.min_heatmap_n} chips are blank.</p>'
-        + legend
-        + '<div class="panels">'
-        + ''.join(panel(a) for a in anchors)
-        + '</div>'
-    )
-
-
-# ---- Section 3: head-to-head within fixture --------------------------------
-
-def render_head_to_head(df: pd.DataFrame) -> str:
-    # Per (label, format) fixture: mean ΔE per WB anchor.
-    per_variant = (
-        df.groupby(['label', 'format', 'device', 'wb_anchor'])['delta_e']
-        .mean()
-        .reset_index()
-    )
-    # Fixtures with ≥ 2 anchors
-    fixture_counts = per_variant.groupby(['label', 'format']).size()
-    multi = fixture_counts[fixture_counts >= 2].index
-    per_variant = per_variant.set_index(['label', 'format']).loc[multi].reset_index()
-    if per_variant.empty:
-        return '<p>(no fixtures with ≥ 2 WB anchors)</p>'
-
-    # For each fixture (label × format), compute the best-variant ΔE
-    # then per-row penalty + is_best flag. transform() keeps the
-    # original index so we don't lose the grouping columns.
-    best_per_fixture = per_variant.groupby(['label', 'format'])['delta_e'].transform('min')
-    per_variant['penalty'] = per_variant['delta_e'] - best_per_fixture
-    per_variant['is_best'] = per_variant['delta_e'] == best_per_fixture
-
-    # Anchor-level summary
-    anchor_sum = per_variant.groupby('wb_anchor').agg(
-        appearances=('penalty', 'size'),
-        wins=('is_best', 'sum'),
-        mean_penalty=('penalty', 'mean'),
-    ).reset_index()
-    anchor_sum['win_pct'] = 100 * anchor_sum['wins'] / anchor_sum['appearances']
-    anchor_sum = anchor_sum.sort_values('mean_penalty')
-
-    anchor_table_rows = ''.join(
-        f'<tr><td>{escape(r.wb_anchor)}</td>'
-        f'<td class="num">{r.appearances}</td>'
-        f'<td class="num">{r.win_pct:.1f} %</td>'
-        f'<td class="num">{r.mean_penalty:.2f}</td></tr>'
-        for r in anchor_sum.itertuples()
-    )
-    anchor_table = (
-        '<h3>WB anchor: within-fixture summary</h3>'
-        '<table><thead><tr>'
-        '<th>WB anchor</th><th>fixtures</th><th>win rate</th>'
-        '<th>mean ΔE penalty vs. best</th>'
-        '</tr></thead><tbody>' + anchor_table_rows + '</tbody></table>'
-    )
-
-    # Head-to-head matrix (row beats col in what fraction of shared fixtures)
-    anchors = sorted(per_variant['wb_anchor'].unique())
-    pivot = per_variant.pivot_table(
-        index=['label', 'format'], columns='wb_anchor', values='delta_e')
-    matrix_rows = ''
-    for a in anchors:
-        cells = [f'<th>{escape(a)}</th>']
-        for b in anchors:
-            if a == b:
-                cells.append('<td class="diag">—</td>')
-                continue
-            both = pivot[[a, b]].dropna()
-            if both.empty:
-                cells.append('<td class="num">·</td>')
-                continue
-            a_wins = int((both[a] < both[b]).sum())
-            total = len(both)
-            pct = 100 * a_wins / total
-            hue = 120 if pct >= 50 else 0
-            lightness = 100 - abs(pct - 50) * 0.6
-            cells.append(
-                f'<td class="h2h" '
-                f'style="background:hsl({hue},70%,{lightness:.0f}%)">'
-                f'{pct:.0f} %<br><small>({a_wins}/{total})</small></td>'
-            )
-        matrix_rows += f'<tr>{"".join(cells)}</tr>'
-    matrix_html = (
-        '<h3>Head-to-head win rate</h3>'
-        '<p class="note">Cell = fraction of shared fixtures where the ROW '
-        'anchor beat the COLUMN. Green &gt; 50 %, red &lt; 50 %.</p>'
-        '<table><tr><th></th>'
-        + ''.join(f'<th>vs {escape(a)}</th>' for a in anchors)
-        + '</tr>'
-        + matrix_rows
-        + '</table>'
-    )
-
-    return anchor_table + matrix_html
-
-
-# ---- Section 4/5: regression -----------------------------------------------
+# ---- Regression -------------------------------------------------------------
 
 def build_reg_df(df: pd.DataFrame) -> pd.DataFrame:
     d = df.dropna(subset=['unevenness', 'value', 'chroma']).copy()
@@ -526,21 +278,12 @@ def pretty_coef(name: str) -> str:
     return name
 
 
-# ---- Section: methodology notes --------------------------------------------
+# ---- Methodology notes ------------------------------------------------------
 
 def render_notes() -> str:
     return '''
     <h3>What each tab tells you</h3>
     <ul>
-      <li><b>Summary</b> — group means with bootstrap 95 % CIs. Best for
-        quick "which level is best on average" questions.
-        Non-overlapping CIs = real difference. Ignores interactions.</li>
-      <li><b>Heatmap</b> — which colour regions each WB anchor is
-        good/bad at. Answers "is postit bad everywhere, or just on
-        yellows?".</li>
-      <li><b>Head-to-head</b> — within-fixture ranking. Removes
-        capture-quality (framing / focus / lighting) as a confounder.
-        Two anchors on the SAME shutter get directly compared.</li>
       <li><b>Regression (OLS)</b> — coefficient magnitudes. Read
         cautiously: chips within a capture are correlated so p-values
         are too optimistic.</li>
@@ -548,6 +291,15 @@ def render_notes() -> str:
         Trust these p-values. If a coefficient is significant here, you
         can believe it.</li>
     </ul>
+    <h3>Descriptive views live in the filmstrip explorer</h3>
+    <p>Group means, per-cell heatmaps, and head-to-head comparisons all
+    moved to the interactive explorer in <code>munsell-error.html</code>.
+    Open that page, pick <b>chart = heatmap</b> in the left panel, and
+    choose any pair of row/col axes (WB anchor × device, Munsell value ×
+    chroma, format × page, etc.). Filters (device, background paper,
+    illuminant, format, max unevenness, ref-card × page grid) apply to
+    both the polar-disk and heatmap views, so you can drill into a
+    subset before summarising it.</p>
     <h3>How to read a regression coefficient</h3>
     <p>Each factor has one <b>reference level</b> absorbed into the
     intercept (defaults: WB = <code>self</code>, format = <code>photo</code>,
@@ -575,7 +327,6 @@ def render_notes() -> str:
 
 def tab_html(sections: list[tuple[str, str]]) -> str:
     """Radio-driven tabs — no JS."""
-    n = len(sections)
     inputs = []
     labels = []
     panels = []
@@ -595,9 +346,6 @@ def tab_html(sections: list[tuple[str, str]]) -> str:
 
 
 sections = [
-    ('Summary', render_summary(df)),
-    ('Heatmap', render_heatmap(df)),
-    ('Head-to-head', render_head_to_head(df)),
     ('Regression (OLS)', render_ols(df)),
     ('Regression (Mixed-Effects)', render_mixed(df)),
     ('Notes', render_notes()),
@@ -618,7 +366,7 @@ html = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>ΔE analysis</title>
+<title>ΔE regression</title>
 <style>
   body {{ font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; margin: 24px; color: #222; }}
   h1 {{ margin: 0 0 4px; font-size: 22px; }}
@@ -630,28 +378,8 @@ html = f'''<!DOCTYPE html>
   th, td {{ border: 1px solid #ddd; padding: 3px 10px; text-align: left; }}
   th {{ background: #f7f7f7; font-weight: 600; font-size: 12px; }}
   td.num {{ text-align: right; font-variant-numeric: tabular-nums; }}
-  td.bar-cell {{ min-width: 220px; padding: 0 8px; }}
-  .ci-bar {{ position: relative; height: 14px; background: #f0f0f0; border-radius: 2px; }}
-  .ci-range {{ position: absolute; top: 3px; height: 8px; background: #90c8ff; border-radius: 2px; }}
-  .ci-mean {{ position: absolute; top: 0; width: 2px; height: 14px; background: #0a58ca; }}
   code {{ font-family: ui-monospace, SFMono-Regular, monospace; font-size: 12px; background: #f4f4f4; padding: 1px 4px; border-radius: 2px; }}
   ul {{ font-size: 13px; line-height: 1.5; }}
-
-  /* Heatmap */
-  .panels {{ display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }}
-  .heatmap-panel h3 {{ margin: 0 0 6px; }}
-  table.heat {{ border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }}
-  table.heat th, table.heat td {{ border: 1px solid #ccc; padding: 2px 6px; text-align: center; }}
-  table.heat th {{ background: #f5f5f5; font-weight: 600; color: #444; }}
-  table.heat td.cell {{ min-width: 34px; color: #111; text-shadow: 0 0 2px rgba(255,255,255,.7); }}
-  table.heat td.empty {{ background: #fafafa; }}
-  .legend {{ display: flex; gap: 0; align-items: center; margin: 16px 0; font-size: 11px; }}
-  .legend span {{ margin-right: 12px; font-weight: 600; }}
-  .legend-cell {{ padding: 3px 6px; min-width: 34px; text-align: center; border: 1px solid #ccc; color: #111; text-shadow: 0 0 2px rgba(255,255,255,.7); font-variant-numeric: tabular-nums; }}
-
-  /* h2h */
-  td.h2h {{ text-align: center; min-width: 80px; font-variant-numeric: tabular-nums; }}
-  td.diag {{ background: #f0f0f0; text-align: center; color: #999; }}
 
   /* Tabs */
   .tabs {{ margin-top: 16px; }}
@@ -667,11 +395,14 @@ html = f'''<!DOCTYPE html>
 </style>
 </head>
 <body>
-<h1>ΔE analysis</h1>
+<h1>ΔE regression</h1>
 <p class="meta">
   Source: <code>{escape(os.path.abspath(args.json))}</code><br>
   {len(df)} chip measurements across {df["capture_id"].nunique()} captures ·
-  {df["label"].nunique()} unique fixtures · devices: {escape(", ".join(sorted(df["device"].unique())))}.
+  {df["label"].nunique()} unique fixtures · devices: {escape(", ".join(sorted(df["device"].unique())))}.<br>
+  Descriptive summaries / heatmaps / head-to-head are now in
+  <code>munsell-error.html</code> — pick <b>chart = heatmap</b> in the
+  left panel.
 </p>
 {tab_html(sections)}
 </body>

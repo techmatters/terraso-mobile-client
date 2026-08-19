@@ -15,9 +15,19 @@
 
 // Forward declaration of `CapturedPhoto` to properly resolve imports.
 namespace margelo::nitro::rawcameraandroid { struct CapturedPhoto; }
+// Forward declaration of `CaptureOptions` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct CaptureOptions; }
+// Forward declaration of `CaptureCapabilities` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct CaptureCapabilities; }
+// Forward declaration of `CaptureSessionRequest` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct CaptureSessionRequest; }
 
 #include "CapturedPhoto.hpp"
 #include <NitroModules/Promise.hpp>
+#include "CaptureOptions.hpp"
+#include <vector>
+#include "CaptureCapabilities.hpp"
+#include "CaptureSessionRequest.hpp"
 
 namespace margelo::nitro::rawcameraandroid {
 
@@ -50,7 +60,10 @@ namespace margelo::nitro::rawcameraandroid {
 
     public:
       // Methods
-      virtual std::shared_ptr<Promise<CapturedPhoto>> capturePhoto() = 0;
+      virtual std::shared_ptr<Promise<CapturedPhoto>> capturePhoto(const CaptureOptions& options) = 0;
+      virtual std::shared_ptr<Promise<std::vector<CapturedPhoto>>> captureBurst(double count, const CaptureOptions& options) = 0;
+      virtual std::shared_ptr<Promise<CaptureCapabilities>> getCaptureCapabilities() = 0;
+      virtual std::shared_ptr<Promise<std::vector<CapturedPhoto>>> captureSession(const CaptureSessionRequest& request) = 0;
 
     protected:
       // Hybrid Setup

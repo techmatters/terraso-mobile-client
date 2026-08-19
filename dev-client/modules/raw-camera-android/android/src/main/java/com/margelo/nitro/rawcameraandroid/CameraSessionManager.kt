@@ -1,6 +1,8 @@
 package com.margelo.nitro.rawcameraandroid
 
 import android.Manifest
+import android.content.ContentUris
+import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
@@ -11,12 +13,18 @@ import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.CaptureResult
 import android.hardware.camera2.DngCreator
 import android.hardware.camera2.TotalCaptureResult
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.util.Rational
 import android.view.Surface
 import androidx.annotation.OptIn as AndroidXOptIn
+import androidx.camera.camera2.interop.Camera2CameraControl
 import androidx.camera.camera2.interop.Camera2CameraInfo
 import androidx.camera.camera2.interop.Camera2Interop
+import androidx.camera.camera2.interop.CaptureRequestOptions
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
@@ -32,9 +40,13 @@ import androidx.camera.core.ViewPort
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.google.common.util.concurrent.ListenableFuture
 import com.margelo.nitro.NitroModules
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -75,6 +87,14 @@ object CameraSessionManager {
     // never fires the OnImageCapturedCallback). Bail out and surface
     // the failure so the mutex releases and the JS side sees an error.
     private const val TAKE_PICTURE_TIMEOUT_MS = 8_000L
+    // Camera-state overrides (exposure comp, manual sensor settings,
+    // AE/AWB locks) return a ListenableFuture that COMPLETES when the
+    // options land in the current CameraCaptureSession. When the HAL
+    // silently rejects an option (typical: SENSOR_EXPOSURE_TIME >
+    // SENSOR_FRAME_DURATION so the request breaks preview), the future
+    // never fires and we'd deadlock the capture path. Time out and
+    // proceed with whatever state the camera actually converged to.
+    private const val APPLY_OPTIONS_TIMEOUT_MS = 3_000L
 
     private val context: Context
         get() =
@@ -183,35 +203,239 @@ object CameraSessionManager {
     // Imperative capture. Reuses the currently-bound session if one is
     // already up (view-attached case), or binds a headless session with
     // an ImageAnalysis keep-alive (blind mode).
-    suspend fun capture(): CapturedPhoto =
+    //
+    // `options` may set AE compensation index and/or a manual (ISO,
+    // shutter) override. Both are applied to the camera-control state
+    // before the capture is triggered. State is reset after each capture
+    // so the next call starts from a known baseline — see resetCameraStateLocked.
+    suspend fun capture(options: CaptureOptions): CapturedPhoto =
         mutex.withLock {
-            Log.i(TAG, "capture: entered")
+            captureLocked(
+                options,
+                burstStamp = null,
+                burstIdx = 0,
+                burstTotal = 0,
+                sessionSubdir = null,
+            )
+        }
+
+    // Capture N frames in rapid succession with AE + AWB locked so all
+    // frames share identical sensor state. If `options` sets manual
+    // (ISO, shutter), locking is redundant (AE is off already) but the
+    // manual override is applied once before the burst rather than per
+    // frame. All frames share a burst timestamp and get frame-index
+    // suffixes in their filenames.
+    suspend fun captureBurst(
+        count: Int,
+        options: CaptureOptions,
+    ): Array<CapturedPhoto> =
+        mutex.withLock {
+            require(count in 1..20) { "captureBurst: count must be 1..20, got $count" }
+            val burstStamp = timestampNowCompact()
+            val results = ArrayList<CapturedPhoto>(count)
+            try {
+                for (i in 1..count) {
+                    Log.i(TAG, "captureBurst: frame $i/$count")
+                    results.add(
+                        captureLocked(
+                            options,
+                            burstStamp = burstStamp,
+                            burstIdx = i,
+                            burstTotal = count,
+                            sessionSubdir = null,
+                        )
+                    )
+                }
+            } finally {
+                // captureLocked resets between frames anyway, but be
+                // explicit in case the loop threw partway.
+                resetCameraStateLocked()
+            }
+            results.toTypedArray()
+        }
+
+    // Research data-collection shutter: fires the burst then the
+    // manual sweep in one shot-of-the-user's-time. All files land in
+    // MediaStore.Downloads/soilcap/session_<ts>/ so `adb pull` grabs
+    // the whole session in one go. See docs/munsell-multishot.md.
+    //
+    // Filename format:
+    //   burst<i>of<N>_auto.dng      (auto-AE burst frames)
+    //   burst<i>of<N>_auto.jpg
+    //   manual_iso<n>_shut<X>ms.dng (manual sweep, one per iso/shutter combo)
+    //   manual_iso<n>_shut<X>ms.jpg
+    suspend fun captureSession(
+        request: CaptureSessionRequest,
+    ): Array<CapturedPhoto> =
+        mutex.withLock {
+            val burstCount = request.burstCount.toInt()
+            val manualShots = request.manualShots
+            require(burstCount in 0..20) { "captureSession: burstCount must be 0..20, got $burstCount" }
+            require(manualShots.size <= 20) { "captureSession: too many manual shots (max 20)" }
+            require(burstCount > 0 || manualShots.isNotEmpty()) {
+                "captureSession: nothing to shoot"
+            }
+            val sessionStamp = timestampNowCompact()
+            val sessionSubdir = "session_$sessionStamp"
+            Log.i(
+                TAG,
+                "captureSession: starting subdir=$sessionSubdir burst=$burstCount manual=${manualShots.size}",
+            )
+            val results = ArrayList<CapturedPhoto>(burstCount + manualShots.size)
+            try {
+                // Auto-AE burst first.
+                for (i in 1..burstCount) {
+                    Log.i(TAG, "captureSession: burst frame $i/$burstCount")
+                    results.add(
+                        captureLocked(
+                            options = CaptureOptions(null, null, null),
+                            burstStamp = sessionStamp,
+                            burstIdx = i,
+                            burstTotal = burstCount,
+                            sessionSubdir = sessionSubdir,
+                        )
+                    )
+                }
+                // Manual sweep. Each entry gets its own timestamp within
+                // the session dir so filenames are unique + human-sortable.
+                for ((mIdx, shot) in manualShots.withIndex()) {
+                    Log.i(
+                        TAG,
+                        "captureSession: manual ${mIdx + 1}/${manualShots.size} " +
+                            "iso=${shot.sensorSensitivity?.toInt()} " +
+                            "shutterNs=${shot.sensorExposureTimeNs?.toLong()}",
+                    )
+                    val opts = CaptureOptions(
+                        aeCompensation = null,
+                        sensorExposureTimeNs = shot.sensorExposureTimeNs,
+                        sensorSensitivity = shot.sensorSensitivity,
+                    )
+                    results.add(
+                        captureLocked(
+                            options = opts,
+                            burstStamp = sessionStamp,
+                            burstIdx = 0, // 0 = not a burst frame; distinguishes manual shots
+                            burstTotal = 0,
+                            sessionSubdir = sessionSubdir,
+                        )
+                    )
+                }
+            } finally {
+                resetCameraStateLocked()
+            }
+            Log.i(TAG, "captureSession: complete, ${results.size} shots in $sessionSubdir")
+            results.toTypedArray()
+        }
+
+    // Fetch the currently-bound back camera's exposure-control ranges.
+    // Binds the session if needed (so a UI that just mounted can query
+    // this before the user has ever pressed shutter).
+    suspend fun getCapabilities(): CaptureCapabilities =
+        mutex.withLock {
             requireCameraPermission()
-            val (imageCapture, jpegCapture, characteristics) = ensureBoundLocked()
+            val (_, _, characteristics) = ensureBoundLocked()
+            val evRange = characteristics.get(
+                CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE
+            ) ?: android.util.Range(0, 0)
+            val evStep = characteristics.get(
+                CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP
+            ) ?: Rational(0, 1)
+            val expRange = characteristics.get(
+                CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE
+            ) ?: android.util.Range(0L, 0L)
+            val isoRange = characteristics.get(
+                CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE
+            ) ?: android.util.Range(0, 0)
+            CaptureCapabilities(
+                aeCompensationMin = evRange.lower.toDouble(),
+                aeCompensationMax = evRange.upper.toDouble(),
+                aeCompensationStepNum = evStep.numerator.toDouble(),
+                aeCompensationStepDen = evStep.denominator.toDouble(),
+                sensorExposureTimeMinNs = expRange.lower.toDouble(),
+                sensorExposureTimeMaxNs = expRange.upper.toDouble(),
+                sensorSensitivityMin = isoRange.lower.toDouble(),
+                sensorSensitivityMax = isoRange.upper.toDouble(),
+            )
+        }
 
-            val resultDeferred = CompletableDeferred<TotalCaptureResult>()
-            pendingResult = resultDeferred
-            Log.i(TAG, "capture: triggering takePicture (raw + jpeg)…")
+    // Shared capture body used by capture() and captureBurst(). Assumes
+    // the mutex is held. When burstStamp is null the shot is a single
+    // (non-burst) capture; when non-null, all frames in a burst share
+    // the same timestamp string and burstIdx/burstTotal drive the
+    // filename suffix.
+    private suspend fun captureLocked(
+        options: CaptureOptions,
+        burstStamp: String?,
+        burstIdx: Int,
+        burstTotal: Int,
+        sessionSubdir: String?,
+    ): CapturedPhoto {
+        Log.i(
+            TAG,
+            "captureLocked: entered opts=$options burst=$burstIdx/$burstTotal session=$sessionSubdir",
+        )
+        requireCameraPermission()
+        val (imageCapture, jpegCapture, characteristics) = ensureBoundLocked()
 
-            // Fire both captures on the same shutter so RAW and JPEG
-            // represent the same instant. CameraX serialises still-
-            // capture requests on the underlying CameraCaptureSession,
-            // so "parallel" here means we hand both requests off without
-            // waiting between them; the HAL queues them tightly.
-            //
-            // The JPEG file is created up front so we control the path
-            // (matched stem to the DNG lets downstream tooling pair the
-            // two by filename).
-            val jpegFile =
-                File.createTempFile("RawCameraAndroid_", ".jpg", context.cacheDir)
-            val executor = ContextCompat.getMainExecutor(context)
+        val evStep = characteristics.get(
+            CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP
+        ) ?: Rational(1, 1)
+        val effectiveOptions = clampOptions(options, characteristics)
+        val stamp = burstStamp ?: timestampNowCompact()
+        val stem =
+            if (sessionSubdir != null) {
+                buildSessionShotStem(
+                    options = effectiveOptions,
+                    burstIdx = burstIdx,
+                    burstTotal = burstTotal,
+                )
+            } else {
+                buildFileStem(
+                    stamp = stamp,
+                    options = effectiveOptions,
+                    evStepNum = evStep.numerator,
+                    evStepDen = evStep.denominator,
+                    burstIdx = burstIdx,
+                    burstTotal = burstTotal,
+                )
+            }
 
-            coroutineScope {
+        applyCaptureOptionsLocked(effectiveOptions, lockAeAwbForBurst = burstTotal > 1)
+
+        val resultDeferred = CompletableDeferred<TotalCaptureResult>()
+        pendingResult = resultDeferred
+        Log.i(TAG, "captureLocked: triggering takePicture (raw + jpeg)…")
+
+        // Two output paths depending on whether we're in session mode:
+        //   sessionSubdir=null → cacheDir (single-shot / plain burst path,
+        //     for the built-in analyzer + share-sheet flow)
+        //   sessionSubdir!=null → MediaStore.Downloads/soilcap/$sessionSubdir/
+        //     (research data-collection path, visible to Files/Drive apps
+        //     and accessible via `adb pull /sdcard/Download/soilcap/…`)
+        val useMediaStore = sessionSubdir != null
+        val jpegOptions: ImageCapture.OutputFileOptions
+        val jpegDisplayPath: String
+        val jpegCleanup: () -> Unit
+        if (useMediaStore) {
+            val opened = openJpegMediaStoreOutput(sessionSubdir!!, stem)
+            jpegOptions = opened.options
+            jpegDisplayPath = opened.displayPath
+            jpegCleanup = { deleteMediaStoreUri(opened.uri) }
+        } else {
+            val jpegFile = File(context.cacheDir, "$stem.jpg")
+            jpegOptions = ImageCapture.OutputFileOptions.Builder(jpegFile).build()
+            jpegDisplayPath = "file://${jpegFile.absolutePath}"
+            jpegCleanup = { jpegFile.delete() }
+        }
+        val executor = ContextCompat.getMainExecutor(context)
+
+        try {
+            return coroutineScope {
                 val rawJob = async(Dispatchers.Main) {
                     takePictureSuspending(imageCapture)
                 }
                 val jpegJob = async(Dispatchers.Main) {
-                    takePictureToFileSuspending(jpegCapture, jpegFile, executor)
+                    takePictureWithOptionsSuspending(jpegCapture, jpegOptions, executor)
                 }
 
                 val image: ImageProxy =
@@ -220,7 +444,8 @@ object CameraSessionManager {
                     } catch (e: Throwable) {
                         pendingResult = null
                         jpegJob.cancel()
-                        Log.e(TAG, "capture: RAW takePicture failed", e)
+                        jpegCleanup()
+                        Log.e(TAG, "captureLocked: RAW takePicture failed", e)
                         throw RuntimeException(
                             "takePicture failed (or timed out after ${TAKE_PICTURE_TIMEOUT_MS}ms)",
                             e,
@@ -228,7 +453,7 @@ object CameraSessionManager {
                     }
                 Log.i(
                     TAG,
-                    "capture: takePicture returned image ${image.width}x${image.height}"
+                    "captureLocked: takePicture returned image ${image.width}x${image.height}"
                 )
 
                 val totalResult: TotalCaptureResult =
@@ -237,6 +462,7 @@ object CameraSessionManager {
                     } catch (e: Throwable) {
                         image.close()
                         jpegJob.cancel()
+                        jpegCleanup()
                         throw RuntimeException(
                             "Timed out waiting for TotalCaptureResult (${CAPTURE_RESULT_TIMEOUT_MS}ms)",
                             e,
@@ -245,41 +471,201 @@ object CameraSessionManager {
                         pendingResult = null
                     }
 
-                // JPEG is a companion — don't fail the whole capture if
-                // only it errors. RAW is the primary output; jpegPath
-                // going null just means the caller can't A/B against a
-                // HAL-processed photo.
                 val jpegPath: String? =
                     try {
                         withTimeout(TAKE_PICTURE_TIMEOUT_MS) { jpegJob.await() }
-                        Log.i(
-                            TAG,
-                            "capture: JPEG written to ${jpegFile.absolutePath}"
-                        )
-                        "file://${jpegFile.absolutePath}"
+                        Log.i(TAG, "captureLocked: JPEG written to $jpegDisplayPath")
+                        jpegDisplayPath
                     } catch (e: Throwable) {
                         Log.w(
                             TAG,
-                            "capture: JPEG capture failed (continuing with RAW only)",
+                            "captureLocked: JPEG capture failed (continuing with RAW only)",
                             e,
                         )
-                        jpegFile.delete()
+                        jpegCleanup()
                         null
                     }
 
-                val result = writeDngFile(image, characteristics, totalResult, jpegPath)
+                val result =
+                    if (useMediaStore) {
+                        writeDngMediaStore(image, characteristics, totalResult, sessionSubdir!!, stem, jpegPath)
+                    } else {
+                        val dngFile = File(context.cacheDir, "$stem.dng")
+                        writeDngFile(image, characteristics, totalResult, dngFile, jpegPath)
+                    }
                 image.close()
-
-                // In blind mode (no attached view) release the session so
-                // libgcam doesn't spam metering-error logs on every frame.
-                // In view-attached mode leave it bound — the view still
-                // needs the preview stream.
-                if (currentSurfaceProvider == null) {
-                    Log.i(TAG, "capture: no attached view, releasing session")
-                    unbindAllLocked()
-                }
                 result
             }
+        } finally {
+            // For a single capture, reset overrides so the next call
+            // starts clean. For a burst, only reset at the end of the
+            // sequence (last frame OR captureBurst catch-all).
+            if (burstTotal <= 1 || burstIdx == burstTotal) {
+                resetCameraStateLocked()
+                // In blind mode (no attached view) release the session so
+                // libgcam doesn't spam metering-error logs on every frame.
+                if (currentSurfaceProvider == null) {
+                    Log.i(TAG, "captureLocked: no attached view, releasing session")
+                    unbindAllLocked()
+                }
+            }
+        }
+    }
+
+    // Applies AE compensation + optional manual (ISO, shutter) via
+    // CameraX CameraControl + Camera2Interop. Waits (with a bounded
+    // timeout) for the futures so the next takePicture actually
+    // reflects the new state. On timeout we log and proceed rather
+    // than hang — a hung applyCaptureOptions is worse than a shot
+    // taken with slightly stale AE.
+    private suspend fun applyCaptureOptionsLocked(
+        options: CaptureOptions,
+        lockAeAwbForBurst: Boolean,
+    ) {
+        val camera = boundCamera ?: return
+        val cc = camera.cameraControl
+        val c2cc = Camera2CameraControl.from(cc)
+
+        val evIndex = options.aeCompensation?.toInt() ?: 0
+        Log.i(TAG, "applyCaptureOptions: setting AE comp index=$evIndex")
+        awaitFutureWithTimeout("setExposureCompensationIndex($evIndex)") {
+            cc.setExposureCompensationIndex(evIndex)
+        }
+
+        val builder = CaptureRequestOptions.Builder()
+        val manualShutter = options.sensorExposureTimeNs
+        val manualIso = options.sensorSensitivity
+        val hasManual = manualShutter != null && manualIso != null
+        if (hasManual) {
+            // SENSOR_FRAME_DURATION MUST be >= SENSOR_EXPOSURE_TIME
+            // per the Camera2 HAL contract; otherwise the HAL silently
+            // rejects the whole options bundle and setCaptureRequestOptions'
+            // future never completes. Match them exactly so preview
+            // slows down as needed to fit the exposure — the fps ceiling
+            // is a soft target, not a hard one.
+            val shutterNs = manualShutter!!.toLong()
+            val frameDurationNs = shutterNs
+            Log.i(
+                TAG,
+                "applyCaptureOptions: manual iso=${manualIso!!.toInt()} " +
+                    "shutterNs=$shutterNs frameDurationNs=$frameDurationNs",
+            )
+            builder
+                .setCaptureRequestOption(
+                    CaptureRequest.CONTROL_AE_MODE,
+                    CameraMetadata.CONTROL_AE_MODE_OFF,
+                )
+                .setCaptureRequestOption(
+                    CaptureRequest.SENSOR_EXPOSURE_TIME,
+                    shutterNs,
+                )
+                .setCaptureRequestOption(
+                    CaptureRequest.SENSOR_SENSITIVITY,
+                    manualIso.toInt(),
+                )
+                .setCaptureRequestOption(
+                    CaptureRequest.SENSOR_FRAME_DURATION,
+                    frameDurationNs,
+                )
+        } else if (lockAeAwbForBurst) {
+            // Auto-exposure burst: lock so each frame in the sequence
+            // sees identical sensor settings. Meaningless if manual is
+            // on (AE off already).
+            Log.i(TAG, "applyCaptureOptions: locking AE + AWB for burst")
+            builder
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AE_LOCK, true)
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_LOCK, true)
+        }
+        awaitFutureWithTimeout("setCaptureRequestOptions") {
+            c2cc.setCaptureRequestOptions(builder.build())
+        }
+    }
+
+    // Undo everything applyCaptureOptionsLocked did — restore AE mode,
+    // zero EV, drop AE/AWB locks. Runs after every terminal capture so
+    // the next call starts clean and doesn't inherit stale manual
+    // settings that could crush or blow out an unrelated shot.
+    private suspend fun resetCameraStateLocked() {
+        val camera = boundCamera ?: return
+        val cc = camera.cameraControl
+        val c2cc = Camera2CameraControl.from(cc)
+        awaitFutureWithTimeout("reset:setExposureCompensationIndex(0)") {
+            cc.setExposureCompensationIndex(0)
+        }
+        awaitFutureWithTimeout("reset:clearCaptureRequestOptions") {
+            c2cc.clearCaptureRequestOptions()
+        }
+    }
+
+    // Wraps awaitFuture with a bounded timeout + catch, so any single
+    // camera-state adjustment that hangs (HAL rejects request → future
+    // never fires) or throws doesn't deadlock the capture path. We
+    // always proceed — a shot taken with slightly stale state is
+    // better than a totally frozen UI.
+    private suspend fun <T> awaitFutureWithTimeout(
+        label: String,
+        producer: () -> ListenableFuture<T>,
+    ) {
+        try {
+            withTimeout(APPLY_OPTIONS_TIMEOUT_MS) { awaitFuture(producer()) }
+        } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+            Log.w(TAG, "applyCaptureOptions: $label timed out — proceeding")
+        } catch (e: Throwable) {
+            Log.w(TAG, "applyCaptureOptions: $label failed — proceeding", e)
+        }
+    }
+
+    // Clamp options against the current camera characteristics so we
+    // never hand the HAL a value outside its advertised range. Returns
+    // a new CaptureOptions with clamped values (or nulls preserved).
+    private fun clampOptions(
+        options: CaptureOptions,
+        characteristics: CameraCharacteristics,
+    ): CaptureOptions {
+        val evRange = characteristics.get(
+            CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE
+        )
+        val evClamped = options.aeCompensation?.let { raw ->
+            if (evRange != null) {
+                raw.toInt().coerceIn(evRange.lower, evRange.upper).toDouble()
+            } else raw
+        }
+        val expRange = characteristics.get(
+            CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE
+        )
+        val shutterClamped = options.sensorExposureTimeNs?.let { raw ->
+            if (expRange != null) {
+                raw.toLong().coerceIn(expRange.lower, expRange.upper).toDouble()
+            } else raw
+        }
+        val isoRange = characteristics.get(
+            CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE
+        )
+        val isoClamped = options.sensorSensitivity?.let { raw ->
+            if (isoRange != null) {
+                raw.toInt().coerceIn(isoRange.lower, isoRange.upper).toDouble()
+            } else raw
+        }
+        return CaptureOptions(
+            aeCompensation = evClamped,
+            sensorExposureTimeNs = shutterClamped,
+            sensorSensitivity = isoClamped,
+        )
+    }
+
+    private suspend fun <T> awaitFuture(future: ListenableFuture<T>): T =
+        suspendCancellableCoroutine { cont ->
+            val exec = ContextCompat.getMainExecutor(context)
+            future.addListener(
+                {
+                    try {
+                        cont.resume(future.get())
+                    } catch (e: Throwable) {
+                        cont.resumeWithException(e)
+                    }
+                },
+                exec,
+            )
         }
 
     // Applies the WYSIWYG-guaranteeing capture request options to any
@@ -605,16 +991,15 @@ object CameraSessionManager {
     }
 
     // JPEG variant: hands takePicture an OutputFileOptions target so
-    // CameraX writes the encoded JPEG to disk itself (no ImageProxy
-    // decode + re-encode round-trip). Resumes once the file is closed.
-    private suspend fun takePictureToFileSuspending(
+    // CameraX writes the encoded JPEG to disk (or to a MediaStore Uri
+    // opened via ContentResolver) itself, no ImageProxy decode +
+    // re-encode round-trip. Resumes once the file / stream is closed.
+    private suspend fun takePictureWithOptionsSuspending(
         imageCapture: ImageCapture,
-        outFile: File,
+        outputFileOptions: ImageCapture.OutputFileOptions,
         executor: java.util.concurrent.Executor,
-    ): Unit {
-        val outputFileOptions =
-            ImageCapture.OutputFileOptions.Builder(outFile).build()
-        return suspendCancellableCoroutine { cont ->
+    ): Unit =
+        suspendCancellableCoroutine { cont ->
             imageCapture.takePicture(
                 outputFileOptions,
                 executor,
@@ -629,12 +1014,12 @@ object CameraSessionManager {
                 },
             )
         }
-    }
 
     private fun writeDngFile(
         image: ImageProxy,
         characteristics: CameraCharacteristics,
         result: TotalCaptureResult,
+        outFile: File,
         jpegPath: String?,
     ): CapturedPhoto {
         val underlyingImage =
@@ -657,28 +1042,239 @@ object CameraSessionManager {
             "CAPTURE result: sensorCropRegion=${cropRegion} " +
                 "distortionMode=${distortionMode} stabilizationMode=${stabilizationMode}"
         )
-        val cacheDir = context.cacheDir
-        val tempFile = File.createTempFile("RawCameraAndroid_", ".dng", cacheDir)
         DngCreator(characteristics, result).use { creator ->
             val sensorOrientation =
                 characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
             creator.setOrientation(exifOrientationForRotation(sensorOrientation))
-            FileOutputStream(tempFile).use { stream ->
+            FileOutputStream(outFile).use { stream ->
                 creator.writeImage(stream, underlyingImage)
             }
         }
         Log.i(
             TAG,
-            "DNG written: path=${tempFile.absolutePath} size=${tempFile.length()} " +
+            "DNG written: path=${outFile.absolutePath} size=${outFile.length()} " +
                 "width=${image.width} height=${image.height}"
         )
         return CapturedPhoto(
-            dngPath = "file://${tempFile.absolutePath}",
+            dngPath = "file://${outFile.absolutePath}",
             jpegPath = jpegPath,
             width = image.width.toDouble(),
             height = image.height.toDouble(),
         )
     }
+
+    // ------------------------------------------------------------------
+    // MediaStore session output (research data-collection path)
+    // ------------------------------------------------------------------
+
+    // Base subdirectory under the phone's public Downloads folder where
+    // every research-data-collection session lands. Chosen so the shared
+    // location is discoverable via Files / Drive apps and pullable via
+    // `adb pull /sdcard/Download/soilcap` in one shot.
+    private const val SOILCAP_ROOT = "Download/soilcap"
+
+    private data class MediaStoreJpegOutput(
+        val options: ImageCapture.OutputFileOptions,
+        val uri: Uri,
+        val displayPath: String,
+    )
+
+    // Insert a MediaStore.Downloads row for a JPEG under $SOILCAP_ROOT/
+    // <sessionSubdir>/, get back a Uri + OutputFileOptions the JPEG
+    // ImageCapture can write to directly. displayPath is the sdcard
+    // path the file will end up at, for logs + the JS-side result.
+    private fun openJpegMediaStoreOutput(
+        sessionSubdir: String,
+        stem: String,
+    ): MediaStoreJpegOutput {
+        val displayName = "$stem.jpg"
+        val relativePath = "$SOILCAP_ROOT/$sessionSubdir"
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
+        }
+        val collection = downloadsCollection()
+        val options = ImageCapture.OutputFileOptions.Builder(
+            context.contentResolver, collection, values,
+        ).build()
+        // The Uri from OutputFileOptions isn't exposed; CameraX inserts
+        // its own row when it saves. We insert an extra placeholder here
+        // just for tracking + cleanup on error. Actually CameraX'
+        // OutputFileOptions.Builder(contentResolver, collection, values)
+        // handles insertion internally and returns the row Uri in
+        // OnImageSavedCallback. So we can't clean up on cancellation
+        // without waiting for the callback. Best-effort: rely on the
+        // catch in captureLocked to have already fired.
+        val displayPath = "/sdcard/$relativePath/$displayName"
+        return MediaStoreJpegOutput(options, Uri.EMPTY, displayPath)
+    }
+
+    // Delete a MediaStore row by Uri. Best-effort — swallow errors.
+    // Uri.EMPTY is a no-op (we don't always have a concrete Uri).
+    private fun deleteMediaStoreUri(uri: Uri) {
+        if (uri == Uri.EMPTY) return
+        try {
+            context.contentResolver.delete(uri, null, null)
+        } catch (e: Throwable) {
+            Log.w(TAG, "deleteMediaStoreUri: failed for $uri", e)
+        }
+    }
+
+    // Insert a MediaStore.Downloads row for a DNG, write the DNG bytes
+    // via DngCreator into the ContentResolver's OutputStream, and
+    // finalize the row (clear IS_PENDING) so other apps can see it.
+    private fun writeDngMediaStore(
+        image: ImageProxy,
+        characteristics: CameraCharacteristics,
+        result: TotalCaptureResult,
+        sessionSubdir: String,
+        stem: String,
+        jpegPath: String?,
+    ): CapturedPhoto {
+        val underlyingImage =
+            image.image
+                ?: throw RuntimeException(
+                    "ImageProxy has no underlying android.media.Image"
+                )
+        val displayName = "$stem.dng"
+        val relativePath = "$SOILCAP_ROOT/$sessionSubdir"
+        val cropRegion = result.get(CaptureResult.SCALER_CROP_REGION)
+        Log.i(TAG, "CAPTURE result (mediastore): sensorCropRegion=$cropRegion")
+
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/x-adobe-dng")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
+        }
+        val resolver = context.contentResolver
+        val uri = resolver.insert(downloadsCollection(), values)
+            ?: throw RuntimeException("MediaStore.insert returned null for $displayName")
+        try {
+            resolver.openOutputStream(uri, "w")?.use { stream ->
+                DngCreator(characteristics, result).use { creator ->
+                    val sensorOrientation =
+                        characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
+                    creator.setOrientation(exifOrientationForRotation(sensorOrientation))
+                    creator.writeImage(stream, underlyingImage)
+                }
+            } ?: throw RuntimeException("openOutputStream returned null for $uri")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val finalize = ContentValues().apply {
+                    put(MediaStore.MediaColumns.IS_PENDING, 0)
+                }
+                resolver.update(uri, finalize, null, null)
+            }
+        } catch (e: Throwable) {
+            deleteMediaStoreUri(uri)
+            throw e
+        }
+        val displayPath = "/sdcard/$relativePath/$displayName"
+        Log.i(TAG, "DNG written (mediastore): path=$displayPath uri=$uri")
+        return CapturedPhoto(
+            dngPath = "file://$displayPath",
+            jpegPath = jpegPath,
+            width = image.width.toDouble(),
+            height = image.height.toDouble(),
+        )
+    }
+
+    // MediaStore.Downloads collection URI. Only available on API 29+
+    // (the app's minSdk is 26). On older devices we fall back to legacy
+    // external media collection — captureSession callers should still
+    // see something usable, though the sdcard/Download/ path may not be
+    // enforced.
+    private fun downloadsCollection(): Uri =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        } else {
+            MediaStore.Files.getContentUri("external")
+        }
+
+    // Compact timestamp for shared use across burst frames + filename
+    // stems. Sortable, no colons/slashes/etc. that would need escaping
+    // in a file path. Example: "20260817T143052-123".
+    private fun timestampNowCompact(): String =
+        SimpleDateFormat("yyyyMMdd'T'HHmmss-SSS", Locale.US).format(Date())
+
+    // Build the filename stem (no extension) encoding this capture's
+    // parameters so we can reconstruct the settings from the on-disk
+    // filename during offline analysis. Example results:
+    //   "RawCameraAndroid_20260817T143052-123_ev0"
+    //   "RawCameraAndroid_20260817T143052-123_ev+1.5_burst3of5"
+    //   "RawCameraAndroid_20260817T143052-123_ev0_iso100_shut67ms"
+    private fun buildFileStem(
+        stamp: String,
+        options: CaptureOptions,
+        evStepNum: Int,
+        evStepDen: Int,
+        burstIdx: Int,
+        burstTotal: Int,
+    ): String {
+        val parts = mutableListOf("RawCameraAndroid", stamp)
+        val evIndex = options.aeCompensation?.toInt() ?: 0
+        parts.add("ev" + formatEv(evIndex, evStepNum, evStepDen))
+        options.sensorSensitivity?.let { parts.add("iso${it.toInt()}") }
+        options.sensorExposureTimeNs?.let { parts.add("shut${formatShutter(it.toLong())}") }
+        if (burstTotal > 1) parts.add("burst${burstIdx}of${burstTotal}")
+        return parts.joinToString("_")
+    }
+
+    // Session-mode stem — used when the file lands inside a
+    // session_<ts>/ directory, so the timestamp + fixed "RawCameraAndroid"
+    // prefix are redundant. Emits shorter, more legible names:
+    //   burstIdx>0  → "burst<i>of<N>_auto"
+    //   burstIdx==0 → "manual_iso<n>_shut<X>" (options must set both)
+    //   otherwise   → "auto" (single-shot in session — rare)
+    private fun buildSessionShotStem(
+        options: CaptureOptions,
+        burstIdx: Int,
+        burstTotal: Int,
+    ): String {
+        if (burstTotal > 1) return "burst${burstIdx}of${burstTotal}_auto"
+        val iso = options.sensorSensitivity?.toInt()
+        val shutterNs = options.sensorExposureTimeNs?.toLong()
+        if (iso != null && shutterNs != null) {
+            return "manual_iso${iso}_shut${formatShutter(shutterNs)}"
+        }
+        return "auto"
+    }
+
+    // Format an AE compensation index as an EV string with sign, up to
+    // two decimal places, trailing zeros dropped. Examples (step 1/3):
+    //   idx  0 → "0"
+    //   idx +1 → "+0.33"
+    //   idx +3 → "+1"
+    //   idx -3 → "-1"
+    private fun formatEv(idx: Int, stepNum: Int, stepDen: Int): String {
+        if (idx == 0) return "0"
+        val evStops = idx.toDouble() * stepNum / stepDen
+        val rounded = Math.round(evStops * 100.0) / 100.0
+        val body =
+            if (rounded == rounded.toLong().toDouble()) {
+                rounded.toLong().toString()
+            } else {
+                "%.2f".format(Locale.US, rounded).trimEnd('0').trimEnd('.')
+            }
+        return if (rounded > 0) "+$body" else body
+    }
+
+    // Format a sensor exposure time (nanoseconds) as a compact
+    // human-legible token. Rounds to the nearest useful unit so the
+    // filename stays short. Examples: 1e9→"1s", 6.67e7→"67ms", 5e5→"500us".
+    private fun formatShutter(ns: Long): String =
+        when {
+            ns >= 1_000_000_000L -> "${(ns + 500_000_000L) / 1_000_000_000L}s"
+            ns >= 1_000_000L -> "${(ns + 500_000L) / 1_000_000L}ms"
+            ns >= 1_000L -> "${(ns + 500L) / 1_000L}us"
+            else -> "${ns}ns"
+        }
 
     private fun exifOrientationForRotation(degrees: Int): Int =
         when ((degrees % 360 + 360) % 360) {

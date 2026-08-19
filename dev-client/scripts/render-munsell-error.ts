@@ -66,83 +66,127 @@ const outPath = values.out ?? './results/munsell-error.html';
 
 type Sample = {
   expected: string;
-  measured: string;
   page: string;
-  // 'none' when no physical ref card was in the shot; keeps the
-  // client-side grid model uniformly string-keyed.
-  refCard: string;
-  illuminant: string | null;
   tags: string[];
-  wbSource: string | null;
-  wbRef: string | null;
   fixtureLabel: string;
   // 'raw' (DNG → CIRAWFilter) or 'photo' (JPEG → CIImage). Since
   // each shot captures both, the filmstrip filters on this field
   // to compare pipelines head-to-head.
   format: 'raw' | 'photo';
-  deltaE: number;
+  device: string;
+  bg: string;
   // Copied from the parent capture's registration.illumination.
   // Null when RANSAC didn't lock (no illumination stats available).
   illumUnevenness: number | null;
+  // Ground-truth chip colour (D65 linear-sRGB) and the sensor's
+  // pre-WB read of this cell. WB is applied client-side per render
+  // using the user-picked reference cards, so we no longer carry
+  // the analyzer's baked-in measured_linear_rgb / measured_notation
+  // / delta_e — they'd be inconsistent with a live WB choice.
+  expectedRgb: [number, number, number];
+  rawRgb: [number, number, number];
+  // Physical-card measurements from THIS shutter, keyed by card
+  // name ('whibal' | 'postit' | 'greycard'). Used as reference
+  // points for the client-side WB fit; missing entries just mean
+  // that card wasn't visible in this capture and can't be picked.
+  refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]}};
+};
+
+const deviceOf = (p: string): string => {
+  if (p.includes('iPhone')) return 'iPhone';
+  if (p.includes('Pixel 4')) return 'Pixel 4';
+  if (p.includes('Pixel 6a')) return 'Pixel 6a';
+  if (p.includes('Pixel 7')) return 'Pixel 7';
+  return 'other';
+};
+const bgOf = (p: string): string => {
+  if (p.includes('LIGHT BG')) return 'light';
+  if (p.includes('DARK BG')) return 'dark';
+  return 'unknown';
 };
 
 const runDoc = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-const samples: Sample[] = [];
+
+// Analyze-fixtures emits one capture entry per WB anchor (self,
+// whibal, postit, greycard), but the underlying sensor data (per-cell
+// raw_linear_rgb, per-ref-card raw_linear_rgb) is identical across
+// them — only the analyzer's baked-in WB math differs. Since the
+// filmstrip now recomputes WB client-side from the user-picked ref
+// cards, we only need one representative sample per (source_path ×
+// cell × format). Dedup here so the HTML doesn't ship 4x redundant
+// data.
+// Per-source refOptions accumulator. Physical ref cards
+// (whibal / postit / greycard) come from every variant's ref_cards.
+// 'self' comes from the auto-WB variant only — cap.wb_correction
+// picks a chart chip as anchor, so we look that chip up in the
+// same capture's cells to get its raw + expected linear RGB.
+// Samples of the same source share the same object by reference,
+// so a self added later becomes visible on samples added earlier.
+const refOptionsBySource = new Map<string, Sample['refOptions']>();
+const sampleByKey = new Map<string, Sample>();
 for (const cap of runDoc.captures) {
   const cells = cap.cells;
   if (!Array.isArray(cells)) continue;
+  const sourcePath = cap.source_path ?? '';
+  let refOptions = refOptionsBySource.get(sourcePath);
+  if (!refOptions) {
+    refOptions = {};
+    refOptionsBySource.set(sourcePath, refOptions);
+  }
+  for (const rc of cap.ref_cards ?? []) {
+    if (rc?.name && rc.raw_linear_rgb && rc.expected_linear_rgb &&
+        !refOptions[rc.name]) {
+      refOptions[rc.name] = {
+        expected: rc.expected_linear_rgb,
+        raw: rc.raw_linear_rgb,
+      };
+    }
+  }
+  // Self reference: only the auto-WB variant records its anchor
+  // chip's notation. Match it against the capture's own cells to
+  // recover raw + expected RGB. First auto variant encountered wins
+  // (all auto variants of the same source pick the same anchor).
+  if (cap.wb_correction?.source === 'auto' && !refOptions.self) {
+    const anchorNotation = cap.wb_correction?.reference;
+    if (typeof anchorNotation === 'string') {
+      const anchorCell = cells.find(
+        (c: any) => c.expected_notation === anchorNotation,
+      );
+      if (anchorCell?.raw_linear_rgb && anchorCell?.expected_linear_rgb) {
+        refOptions.self = {
+          expected: anchorCell.expected_linear_rgb,
+          raw: anchorCell.raw_linear_rgb,
+        };
+      }
+    }
+  }
   const illumUnevenness =
     cap.registration?.illumination?.unevenness ?? null;
+  const format: 'raw' | 'photo' =
+    cap.capture_format === 'photo' ? 'photo' : 'raw';
   for (const cell of cells) {
-    if (!cell.expected_notation || !cell.measured_notation) continue;
-    // refCard column comes from the actual WB reference used, not the
-    // physical card that happened to be in the shot. A "multi" shot
-    // (whibal + postit + greycard taped alongside) gets analysed once
-    // per WB source — the report should be able to compare those side
-    // by side, so each analysis run gets its own column.
-    //   - auto WB (wb.source='auto', wb.ref usually a Munsell notation
-    //     like '10YR 5/1') → 'self' column, meaning the WB anchor came
-    //     from a chart chip, no physical ref card involved.
-    //   - explicit WB via ref card (wb.ref='ref_card:{slot}') →
-    //     '{slot}' column (whibal / postit / greycard / ...).
-    //   - explicit WB with anything else → the physical reference_card
-    //     as a fallback (rare in current data).
-    // Slots the multi-mode sweep can produce. If wb.reference is a
-    // bare slot name (analyze-fixtures didn't prefix it with
-    // "ref_card:" because the multi lookup fell through to the generic
-    // notation-match branch), recognise it here so it doesn't leak
-    // through as "multi" from the physical reference_card fallback.
-    const KNOWN_SLOTS = new Set(['whibal', 'postit', 'greycard']);
-    const wbSource = cap.wb_correction?.source ?? null;
-    const wbRef = cap.wb_correction?.reference ?? null;
-    let refCardCol: string;
-    if (wbSource === 'auto') {
-      refCardCol = 'self';
-    } else if (typeof wbRef === 'string' && wbRef.startsWith('ref_card:')) {
-      refCardCol = wbRef.slice('ref_card:'.length);
-    } else if (typeof wbRef === 'string' && KNOWN_SLOTS.has(wbRef)) {
-      refCardCol = wbRef;
-    } else {
-      refCardCol = cap.reference_card ?? 'none';
-    }
-    samples.push({
+    if (!cell.expected_notation || !cell.raw_linear_rgb) continue;
+    const key = sourcePath + '|' + cell.physical_row +
+      '|' + cell.physical_col + '|' + format;
+    if (sampleByKey.has(key)) continue;
+    sampleByKey.set(key, {
       expected: cell.expected_notation,
-      measured: cell.measured_notation,
       page: cap.page,
-      refCard: refCardCol,
-      illuminant: cap.environment?.illuminant_tag ?? null,
       tags: cap.environment?.tags ?? [],
-      wbSource,
-      wbRef,
       fixtureLabel: cap.label ?? '',
-      format: cap.capture_format === 'photo' ? 'photo' : 'raw',
-      deltaE: cell.delta_e ?? 0,
+      format,
+      device: deviceOf(sourcePath),
+      bg: bgOf(sourcePath),
       illumUnevenness,
+      expectedRgb: cell.expected_linear_rgb,
+      rawRgb: cell.raw_linear_rgb,
+      refOptions,
     });
   }
 }
+const samples: Sample[] = Array.from(sampleByKey.values());
 process.stderr.write(
-  `loaded ${samples.length} samples from ${jsonPath} ` +
+  `loaded ${samples.length} deduped samples from ${jsonPath} ` +
     `(${runDoc.captures.length} captures)\n`,
 );
 
@@ -206,23 +250,31 @@ const html = `<!DOCTYPE html>
   #controls fieldset { border: 1px solid #ddd; padding: 6px 10px; margin: 0;
                        border-radius: 4px; font-size: 13px; width: 100%;
                        box-sizing: border-box; }
-  #ctl-grid { overflow-x: auto; }
   #controls legend { padding: 0 4px; font-weight: 600; font-size: 12px;
                      color: #555; }
   #controls label { display: block; padding: 1px 0; cursor: pointer; }
+  #ctl-heatmap-axes { display: flex; flex-wrap: wrap; gap: 6px 14px;
+    align-items: center; padding: 8px 16px; background: #fff;
+    border: 1px solid #ddd; border-radius: 6px; margin-bottom: 12px;
+    font-size: 13px; }
+  #ctl-heatmap-axes legend { padding: 0 6px; font-weight: 600;
+    font-size: 12px; color: #555; }
+  #ctl-heatmap-axes label { display: inline-flex; align-items: center;
+    gap: 4px; cursor: default; color: #555; }
+  #ctl-heatmap-axes select { font-size: 12px; padding: 2px 4px; }
   #view-switcher { display: flex; gap: 14px; align-items: center;
                    padding: 8px 16px; background: #fff;
                    border: 1px solid #ddd; border-radius: 6px;
                    margin-bottom: 12px; font-size: 13px; }
   #view-switcher .vs-label { font-weight: 600; color: #555; margin-right: 4px; }
   #view-switcher label { cursor: pointer; }
-  #ref-page-grid { border-collapse: collapse; }
-  #ref-page-grid th, #ref-page-grid td { border: 1px solid #eee; }
-  #ref-page-grid input[type="checkbox"] { cursor: pointer; margin: 0; }
-  #ref-page-grid input[type="checkbox"]:disabled { cursor: not-allowed; opacity: 0.3; }
-  #ref-page-grid .cell-toggle:not(:checked) { opacity: 0.55; }
   #summary { font-size: 13px; color: #444; margin-bottom: 8px; }
-  #filmstrip { display: flex; flex-wrap: wrap; gap: 12px; }
+  #filmstrip { display: flex; flex-direction: column; gap: 16px; }
+  .polar-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .polar-facet-title { font-size: 13px; color: #444;
+    padding: 4px 0 0; border-top: 1px solid #eee; }
+  .polar-facet-title .n { color: #888; font-size: 11px;
+    font-weight: 400; margin-left: 4px; }
   .disk { background: #fff; border: 1px solid #ddd; border-radius: 6px;
           padding: 8px; }
   .disk h3 { margin: 0 0 4px 0; font-size: 13px; color: #444; text-align: center; }
@@ -232,6 +284,43 @@ const html = `<!DOCTYPE html>
   .legend-swatch { width: 220px; height: 12px;
     background: linear-gradient(to right,
       #0055aa, #4488cc, #99bbdd, #eeeeee, #ddaa88, #cc6644, #aa2211); }
+  .heatmap-table { border-collapse: collapse; font-size: 12px;
+    background: #fff; }
+  .heatmap-table th, .heatmap-table td {
+    border: 1px solid #ddd; padding: 6px 8px; text-align: center;
+    min-width: 54px; }
+  .heatmap-table thead th, .heatmap-table tbody th {
+    background: #f4f4f4; color: #444; font-weight: 600;
+    font-variant-numeric: tabular-nums; }
+  .heatmap-table td.empty { background: #fafafa; color: #ccc; }
+  .heatmap-table td .n { display: block; font-size: 10px;
+    color: rgba(0,0,0,0.55); font-weight: 400; }
+  #heatmap-body, #bar-body, #xy-body, #channels-body {
+    display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  .xy-hint { padding: 20px; background: #fff8e1; border: 1px solid #f0d060;
+    border-radius: 4px; color: #6a4a00; font-size: 12px; max-width: 640px;
+    line-height: 1.5; }
+  .xy-hint code { background: #ffedb0; padding: 1px 4px; border-radius: 2px; }
+  .heat-facet { background: #fff; border: 1px solid #ddd;
+    border-radius: 6px; padding: 8px 10px; }
+  .heat-facet-title { font-size: 12px; font-weight: 600;
+    color: #444; margin-bottom: 6px; }
+  .heat-facet-title .n { font-weight: 400; color: #888; }
+  .bar-table { border-collapse: collapse; font-size: 12px; }
+  .bar-table th, .bar-table td { padding: 3px 8px; text-align: left;
+    border-bottom: 1px solid #eee; }
+  .bar-table th { font-weight: 600; color: #444; background: #f7f7f7; }
+  .bar-table td.axis { font-variant-numeric: tabular-nums;
+    white-space: nowrap; }
+  .bar-table td.bar-cell { min-width: 220px; padding: 4px 8px; }
+  .bar-track { position: relative; height: 14px; background: #f2f2f2;
+    border-radius: 3px; }
+  .bar-fill { position: absolute; top: 0; left: 0; height: 14px;
+    border-radius: 3px; }
+  .bar-num { display: inline-block; min-width: 34px; text-align: right;
+    font-variant-numeric: tabular-nums; margin-left: 8px; }
+  .bar-n { color: #888; font-size: 10px; margin-left: 6px;
+    font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
@@ -247,54 +336,103 @@ const html = `<!DOCTYPE html>
 <div class="split-layout">
   <div class="left-panel">
     <div id="controls">
+      <fieldset id="ctl-chart-type">
+        <legend>Chart</legend>
+      </fieldset>
       <fieldset id="ctl-format">
         <legend>Format</legend>
       </fieldset>
-      <fieldset id="ctl-illum">
-        <legend>Background</legend>
+      <fieldset id="ctl-first-ref">
+        <legend>First reference (WB anchor)</legend>
+        <div style="font-size: 10px; color: #888; margin-top: 4px;">
+          Anchors <code>measured = raw × gain</code> per channel.
+        </div>
       </fieldset>
-      <fieldset id="ctl-mode">
-        <legend>Arrow mode</legend>
+      <fieldset id="ctl-second-ref">
+        <legend>Second reference (optional)</legend>
+        <div style="font-size: 10px; color: #888; margin-top: 4px;">
+          Adds a second calibration point — WB becomes
+          <code>measured = raw × gain + offset</code> per channel,
+          which corrects sensor offset that a one-ref fit can't see.
+          Options exclude the first ref.
+        </div>
+      </fieldset>
+      <fieldset id="ctl-device">
+        <legend>Device</legend>
+      </fieldset>
+      <fieldset id="ctl-bg">
+        <legend>Background paper</legend>
       </fieldset>
       <fieldset id="ctl-uneven">
         <legend>Max illum unevenness</legend>
       </fieldset>
-      <fieldset id="ctl-grid">
-        <legend>Ref card × Page (availability updates with Background + Max illum)</legend>
-        <div style="margin-bottom: 6px; display: flex; gap: 8px;">
-          <button type="button" id="grid-select-all"
-            style="font-size: 11px; padding: 3px 8px; cursor: pointer;">
-            Select all available</button>
-          <button type="button" id="grid-deselect-all"
-            style="font-size: 11px; padding: 3px 8px; cursor: pointer;">
-            Deselect all</button>
-        </div>
-        <table id="ref-page-grid" style="border-collapse: collapse; font-size: 12px;"></table>
-        <div style="font-size: 10px; color: #888; margin-top: 4px;">
-          <b>self</b> column = WB was derived from a chart chip (auto).
-          Other columns = the ref card (whibal / postit / greycard / ...)
-          the analysis used as the WB anchor.
-        </div>
+      <fieldset id="ctl-worst-de">
+        <legend>Max fixture worst ΔE</legend>
+      </fieldset>
+      <fieldset id="ctl-min-signal">
+        <legend>Min signal (greycard min RGB)</legend>
+      </fieldset>
+      <fieldset id="ctl-excluded">
+        <legend>Excluded chips</legend>
+      </fieldset>
+      <fieldset id="ctl-excluded-cards">
+        <legend>Excluded fixtures</legend>
+      </fieldset>
+      <fieldset id="ctl-card">
+        <legend>Card (Munsell page)</legend>
+      </fieldset>
+      <fieldset id="ctl-fixture">
+        <legend>Fixture (narrowed by card / device / format / bg)</legend>
       </fieldset>
     </div>
   </div>
 
   <div class="right-panel">
+    <fieldset id="ctl-heatmap-axes" style="display: none;">
+      <legend>Axes</legend>
+      <label>heatmaps
+        <select id="heat-facet-axis"></select></label>
+      <label>rows
+        <select id="heat-row-axis"></select></label>
+      <label>cols
+        <select id="heat-col-axis"></select></label>
+      <label>metric
+        <select id="heat-metric">
+          <option value="deltaE">ΔE</option>
+          <option value="meaValue">measured value</option>
+          <option value="meaChroma">measured chroma</option>
+          <option value="meaHueAngle">measured hue angle</option>
+        </select></label>
+      <label>agg
+        <select id="heat-agg">
+          <option value="mean">mean</option>
+          <option value="median">median</option>
+        </select></label>
+      <label id="heat-chan-src-label" style="display:none;">channels source
+        <select id="heat-chan-src">
+          <option value="measured">measured (post-WB)</option>
+          <option value="raw">raw (pre-WB)</option>
+        </select></label>
+    </fieldset>
     <div id="view-switcher">
-      <span class="vs-label">View:</span>
+      <span class="vs-label">Polar view:</span>
       <label><input type="radio" name="view" value="per-level" checked>
         Per-level (2D disks)</label>
       <label><input type="radio" name="view" value="3d">
-        3D stacked</label>
+        3D stacked (Munsell)</label>
+      <label><input type="radio" name="view" value="lab-3d">
+        3D scatter (Lab; distance = ΔE)</label>
+      <span style="margin-left:8px;font-size:11px;color:#888;">
+        (only shown when chart = polar disks)
+      </span>
     </div>
 
-    <div class="legend-row">
+    <div class="legend-row" id="polar-legend">
       <span>ΔValue color:</span>
       <span>−2</span>
       <span class="legend-swatch"></span>
       <span>+2</span>
       <span style="margin-left:16px">blue = predicted too dark · red = too light</span>
-      <span style="margin-left:16px">×N label = N samples averaged into that chip's mean arrow</span>
     </div>
 
     <div id="summary"></div>
@@ -316,12 +454,210 @@ const html = `<!DOCTYPE html>
         background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px;
         overflow: hidden;"></div>
     </div>
+
+    <div id="view-lab-3d" class="view-panel" style="display: none;">
+      <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
+        CIE Lab space — chips positioned at (a*, L*, b*). Central
+        vertical axis = neutrals (L* 0→100). Chips fan out around it
+        by chroma and hue direction. Distance in this view <b>directly
+        equals ΔE₀₀</b> (well, ΔE₇₆; within ~10% of ΔE₀₀ for most
+        chips). Drag to rotate, scroll to zoom, shift-drag to pan.
+      </div>
+      <div id="vizLab3d" style="width: 100%;
+        height: calc(100vh - 240px); min-height: 500px;
+        background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px;
+        overflow: hidden;"></div>
+    </div>
+
+    <div id="view-heatmap" class="view-panel" style="display: none;">
+      <div id="heatmap-title" style="font-size: 12px; color: #666;
+        margin-bottom: 8px;"></div>
+      <div id="heatmap-body" style="overflow: auto;"></div>
+    </div>
+
+    <div id="view-bar" class="view-panel" style="display: none;">
+      <div id="bar-title" style="font-size: 12px; color: #666;
+        margin-bottom: 8px;"></div>
+      <div id="bar-body" style="overflow: auto;"></div>
+    </div>
+
+    <div id="view-xy" class="view-panel" style="display: none;">
+      <div id="xy-title" style="font-size: 12px; color: #666;
+        margin-bottom: 8px;"></div>
+      <div id="xy-body" style="overflow: auto;"></div>
+    </div>
+
+    <div id="view-channels" class="view-panel" style="display: none;">
+      <div id="channels-title" style="font-size: 12px; color: #666;
+        margin-bottom: 8px;"></div>
+      <div id="channels-body" style="overflow: auto;"></div>
+    </div>
   </div>
 </div>
 
 <script>
 const SAMPLES = ${JSON.stringify(samples)};
 const CHIPS = ${JSON.stringify(chips)};
+// Chip notations flagged in scripts/excluded-chips.json — surfaced
+// to the filmstrip so users can hide known-defective chips from
+// every chart (heatmap, bar, xy, polar) with one checkbox.
+const EXCLUDED_CHIPS = new Set(${JSON.stringify(runDoc.excluded_chips ?? [])});
+// Fixture labels flagged in scripts/excluded-cards.json — bad
+// registration / mis-framed shots that should be filtered out of
+// analyses by default. Match against sample.fixtureLabel.
+const EXCLUDED_CARDS = new Set(${JSON.stringify(runDoc.excluded_cards ?? [])});
+
+// Lookup: hue string ("10YR", "5R", …) → representative Chip. Used
+// by the hue-mode XY chart to draw a swatch strip below the delta
+// panel. Ranking prefers chroma ~6 (visibly saturated but typical
+// for soils) with a small tiebreaker toward value 5 (mid-lightness,
+// good visual anchor). Falls back to closest available if the
+// preferred slot doesn't exist for that hue.
+const chipsByHue = new Map();
+for (const c of CHIPS) {
+  if (!chipsByHue.has(c.hue)) chipsByHue.set(c.hue, []);
+  chipsByHue.get(c.hue).push(c);
+}
+for (const list of chipsByHue.values()) {
+  list.sort((a, b) => {
+    const sa = -Math.abs(a.chroma - 6) - 0.4 * Math.abs(a.value - 5);
+    const sb = -Math.abs(b.chroma - 6) - 0.4 * Math.abs(b.value - 5);
+    return sb - sa;
+  });
+}
+function representativeChipFor(hueStr) {
+  const list = chipsByHue.get(hueStr);
+  return list && list.length ? list[0] : null;
+}
+
+// ---- Colour math (linear sRGB → Lab → ΔE2000) --------------------------
+// Standalone client-side implementations so the filmstrip can
+// recompute WB per-render without needing the analyzer's Node-only
+// helpers. Numerically compatible with the analyzer's linearRgbToXyz
+// + xyzToLab + ΔE2000 to within display precision.
+const _labE = 216 / 24389;
+const _labK = 24389 / 27;
+function _labF(t) { return t > _labE ? Math.cbrt(t) : (_labK * t + 16) / 116; }
+function rgbToLab(rgb) {
+  const r = rgb[0], g = rgb[1], b = rgb[2];
+  const X = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b;
+  const Y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
+  const Z = 0.0193339 * r + 0.1191920 * g + 0.9503041 * b;
+  const fx = _labF(X / 0.95047);
+  const fy = _labF(Y / 1.0);
+  const fz = _labF(Z / 1.08883);
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+}
+// CIE ΔE2000 — Sharma 2005 formulation. Reference points: pass A
+// then B; symmetric.
+function deltaE2000(labA, labB) {
+  const L1 = labA[0], a1 = labA[1], b1 = labA[2];
+  const L2 = labB[0], a2 = labB[1], b2 = labB[2];
+  const kL = 1, kC = 1, kH = 1;
+  const C1s = Math.sqrt(a1 * a1 + b1 * b1);
+  const C2s = Math.sqrt(a2 * a2 + b2 * b2);
+  const Cbar = (C1s + C2s) / 2;
+  const Cbar7 = Math.pow(Cbar, 7);
+  const G = 0.5 * (1 - Math.sqrt(Cbar7 / (Cbar7 + Math.pow(25, 7))));
+  const a1p = (1 + G) * a1;
+  const a2p = (1 + G) * a2;
+  const C1p = Math.sqrt(a1p * a1p + b1 * b1);
+  const C2p = Math.sqrt(a2p * a2p + b2 * b2);
+  const h1p = (Math.atan2(b1, a1p) * 180 / Math.PI + 360) % 360;
+  const h2p = (Math.atan2(b2, a2p) * 180 / Math.PI + 360) % 360;
+  const dLp = L2 - L1;
+  const dCp = C2p - C1p;
+  let dhp;
+  if (C1p * C2p === 0) dhp = 0;
+  else if (Math.abs(h2p - h1p) <= 180) dhp = h2p - h1p;
+  else if (h2p - h1p > 180) dhp = h2p - h1p - 360;
+  else dhp = h2p - h1p + 360;
+  const dHp = 2 * Math.sqrt(C1p * C2p) * Math.sin((dhp * Math.PI / 180) / 2);
+  const Lbar = (L1 + L2) / 2;
+  const Cbarp = (C1p + C2p) / 2;
+  let hbarp;
+  if (C1p * C2p === 0) hbarp = h1p + h2p;
+  else if (Math.abs(h1p - h2p) <= 180) hbarp = (h1p + h2p) / 2;
+  else if (h1p + h2p < 360) hbarp = (h1p + h2p + 360) / 2;
+  else hbarp = (h1p + h2p - 360) / 2;
+  const T = 1
+    - 0.17 * Math.cos((hbarp - 30) * Math.PI / 180)
+    + 0.24 * Math.cos((2 * hbarp) * Math.PI / 180)
+    + 0.32 * Math.cos((3 * hbarp + 6) * Math.PI / 180)
+    - 0.20 * Math.cos((4 * hbarp - 63) * Math.PI / 180);
+  const dTh = 30 * Math.exp(-Math.pow((hbarp - 275) / 25, 2));
+  const RC = 2 * Math.sqrt(Math.pow(Cbarp, 7) / (Math.pow(Cbarp, 7) + Math.pow(25, 7)));
+  const SL = 1 + (0.015 * Math.pow(Lbar - 50, 2)) / Math.sqrt(20 + Math.pow(Lbar - 50, 2));
+  const SC = 1 + 0.045 * Cbarp;
+  const SH = 1 + 0.015 * Cbarp * T;
+  const RT = -Math.sin(2 * dTh * Math.PI / 180) * RC;
+  const dLterm = dLp / (kL * SL);
+  const dCterm = dCp / (kC * SC);
+  const dHterm = dHp / (kH * SH);
+  return Math.sqrt(dLterm * dLterm + dCterm * dCterm + dHterm * dHterm +
+    RT * dCterm * dHterm);
+}
+
+// Precompute chip Lab once — nearest-chip lookup runs per sample per
+// render, so this saves ~440 conversions * 17k samples = a lot.
+const CHIP_LABS = CHIPS.map(c => rgbToLab(c.rgb));
+function nearestChipNotation(measRgb) {
+  const measLab = rgbToLab(measRgb);
+  let bestIdx = 0;
+  let bestDist = Infinity;
+  for (let i = 0; i < CHIPS.length; i++) {
+    const cl = CHIP_LABS[i];
+    const dL = measLab[0] - cl[0];
+    const da = measLab[1] - cl[1];
+    const db = measLab[2] - cl[2];
+    const d = dL * dL + da * da + db * db;
+    if (d < bestDist) { bestDist = d; bestIdx = i; }
+  }
+  return CHIPS[bestIdx].notation;
+}
+
+// Client-side WB fit. Two modes: single-ref (gain-only, forced
+// through origin) and two-ref (gain + offset). Per-channel — computed
+// independently for R, G, B. Returns null if the refs aren't
+// available in this sample's shot (missing card, etc.); caller
+// drops the sample.
+function computeWB(refOptions, firstRef, secondRef) {
+  const ref1 = refOptions[firstRef];
+  if (!ref1) return null;
+  if (secondRef === 'none' || !refOptions[secondRef]) {
+    return {
+      gain: [
+        ref1.raw[0] > 0 ? ref1.expected[0] / ref1.raw[0] : 1,
+        ref1.raw[1] > 0 ? ref1.expected[1] / ref1.raw[1] : 1,
+        ref1.raw[2] > 0 ? ref1.expected[2] / ref1.raw[2] : 1,
+      ],
+      offset: [0, 0, 0],
+    };
+  }
+  const ref2 = refOptions[secondRef];
+  const gain = [0, 0, 0];
+  const offset = [0, 0, 0];
+  for (let k = 0; k < 3; k++) {
+    const dRaw = ref1.raw[k] - ref2.raw[k];
+    // Degenerate: both refs read the same on this channel. Fall
+    // back to single-ref gain — better than divide-by-zero.
+    if (Math.abs(dRaw) < 1e-6) {
+      gain[k] = ref1.raw[k] > 0 ? ref1.expected[k] / ref1.raw[k] : 1;
+      offset[k] = 0;
+    } else {
+      gain[k] = (ref1.expected[k] - ref2.expected[k]) / dRaw;
+      offset[k] = ref1.expected[k] - ref1.raw[k] * gain[k];
+    }
+  }
+  return {gain, offset};
+}
+function applyWB(rgb, wb) {
+  return [
+    Math.max(0, rgb[0] * wb.gain[0] + wb.offset[0]),
+    Math.max(0, rgb[1] * wb.gain[1] + wb.offset[1]),
+    Math.max(0, rgb[2] * wb.gain[2] + wb.offset[2]),
+  ];
+}
 
 // ---- Munsell notation parser --------------------------------------------
 // Standard chip:   "10YR 5/4"   "2.5YR 7.5/2"
@@ -391,29 +727,162 @@ function rgbHex(rgb) {
 // ---- Filter UI ----------------------------------------------------------
 
 const state = {
-  illum: 'all',
   // Format filter: 'all' | 'raw' | 'photo'. Since each capture pair
   // produces two samples per chip (one from the DNG, one from the
   // JPEG), the default 'all' shows both stacked; picking one isolates
   // that pipeline.
   format: 'all',
-  mode: 'raw',
   // Max illumination unevenness (max-of-col-range, row-range across
   // matched-grid inliers). Samples from captures above this threshold
   // are hidden. Slider max = 100 = show all. Default 20 = only
   // evenly-lit captures.
   maxUneven: 20,
-  // Ref card × Page grid: Map<"page|refcard", boolean>. Missing key
-  // means enabled (default). Falsy means user turned that cell off.
-  cellEnabled: new Map(),
+  // Excluded-chips filter (checkbox). Defaults to ON when the
+  // excluded list is non-empty so users see the "cleanest" view by
+  // default; uncheck to bring them back in.
+  excludeFlaggedChips: EXCLUDED_CHIPS.size > 0,
+  // Excluded-cards filter — drops all samples whose fixtureLabel is
+  // in the excluded-cards list (poor registration, mis-framed, etc.).
+  // Same "default on when list non-empty" convention.
+  excludeFlaggedCards: EXCLUDED_CARDS.size > 0,
+  // Max fixture worst-ΔE gate. 50 = "off" (no fixture excluded).
+  // Below that, samples from fixtures whose max-per-cell ΔE exceeds
+  // the slider are dropped entirely — good for surfacing only the
+  // captures we trust when eyeballing calibration signals.
+  maxWorstDe: 50,
+  // Min signal strength (greycard min-R/G/B, 0..0.35+). 0 = off.
+  // Drops fixtures where the sensor's weakest channel didn't collect
+  // enough signal to distinguish chip content from noise floor —
+  // the exact failure mode we saw in the dim Pixel 7 red shot.
+  minSignal: 0,
+  // Multi-select filters. Empty set = "no filter" (all values pass);
+  // any values in the set are the allowed values. Populated by
+  // initControls once SAMPLES is available.
+  device: new Set(),
+  bg: new Set(),
+  // card = Munsell page (10YR, 5R, …).
+  card: new Set(),
+  // Fixture (shutter) multi-select. Narrows to specific captures so
+  // the user can tell whether jumpy per-chip data across an axis
+  // comes from one messy fixture or the average of many. Options
+  // list is dynamically reduced to fixtures matching the current
+  // card / device / format / bg selection.
+  fixture: new Set(),
+  // Client-side WB reference cards. First is required (default =
+  // greycard, the most-trusted anchor); second is optional (default
+  // = 'none' → single-ref gain-only fit). Picking a second enables
+  // the two-ref gain+offset fit.
+  firstRef: 'greycard',
+  secondRef: 'none',
+  // Chart type: 'polar' (existing 2D/3D disks) | 'heatmap' | 'bar'.
+  chartType: 'polar',
+  // Heatmap axes + aggregation. Defaults: rows = expected value, cols
+  // = expected chroma (matches the classic "how does ΔE vary across
+  // the chip lattice?" view). facetAxis = 'all' means one heatmap
+  // over all filtered samples; any other value emits one heatmap per
+  // distinct value of that dimension (e.g. facetAxis='device' → one
+  // heatmap per device).
+  facetAxis: 'all',
+  rowAxis: 'expValue',
+  colAxis: 'expChroma',
+  // metric = what per-sample number to aggregate: ΔE (default, colour
+  // = error), measured Munsell value, or measured Munsell chroma.
+  // Non-ΔE metrics let the heatmap show whether the algorithm's
+  // measured values track expected linearly across the chart lattice.
+  metric: 'deltaE',
+  aggFn: 'mean',
+  // Channels chart: pick which linear-sRGB triple the Y axis reads.
+  // 'measured' = post-WB (what the app actually produces); 'raw' =
+  // pre-WB (native sensor read, useful to isolate WB miscalibration
+  // from a sensor offset / stray-light issue).
+  channelSource: 'measured',
 };
 
-function cellKey(page, refCard) { return page + '|' + refCard; }
-function isCellEnabled(page, refCard) {
-  return state.cellEnabled.get(cellKey(page, refCard)) !== false;
+// Options for the heatmap row/col axis pickers. Any Sample-derived
+// (or notation-derived) categorical dimension can be a heatmap axis.
+// Value / chroma / hue are split into expected (from the ground-truth
+// chip notation) and measured (from what the algorithm read) so the
+// heatmap can compare the two directly — e.g. rows = expected hue,
+// cols = measured hue → diagonal = perfect, off-diagonal = confusion.
+const HEATMAP_AXIS_OPTIONS = [
+  {value: 'expValue',    label: 'value (expected)'},
+  {value: 'meaValue',    label: 'value (measured)'},
+  {value: 'expChroma',   label: 'chroma (expected)'},
+  {value: 'meaChroma',   label: 'chroma (measured)'},
+  {value: 'expHue',      label: 'hue angle (expected, 10° bins)'},
+  {value: 'meaHue',      label: 'hue angle (measured, 10° bins)'},
+  {value: 'page',        label: 'card'},
+  {value: 'format',      label: 'format (raw / photo)'},
+  {value: 'device',      label: 'device'},
+  {value: 'bg',          label: 'background paper'},
+  // Individual capture (one row per DNG/JPG shot). Useful for spotting
+  // "is this drift real across shots or is one bad shot pulling the
+  // average" — pair with the fixture multi-select above to focus on a
+  // handful of related captures.
+  {value: 'fixture',     label: 'fixture (individual photo)'},
+  {value: 'unevenness',  label: 'illum unevenness (2-wide buckets)'},
+  {value: 'signal',      label: 'signal (greycard min R/G/B, 0.05 buckets)'},
+];
+
+// Signal strength — proxy for "how much light the sensor saw" in
+// this shutter. min(raw R, raw G, raw B) from the greycard ref
+// specifically catches the "one channel under-exposed" case that
+// magnitude-based metrics can hide. Bucketed to 0.05 for facet /
+// axis use, and gated by the "min signal" slider. Null when the
+// shutter didn't detect greycard (falls out of the sample).
+function signalStrengthOf(s) {
+  const gc = s.refOptions?.greycard;
+  if (!gc) return null;
+  return Math.min(gc.raw[0], gc.raw[1], gc.raw[2]);
 }
-function setCellEnabled(page, refCard, enabled) {
-  state.cellEnabled.set(cellKey(page, refCard), enabled);
+
+// Bucket a continuous angle to width-w bands, labelled by the lower
+// edge with a trailing '°' so sortAxisValues' leading-numeric prefix
+// sort orders '-30°' before '-20°' before '0°' before '10°'.
+function bucketAngle(deg, w) {
+  const lo = Math.floor(deg / w) * w;
+  return lo + '°';
+}
+
+// Extract the axis value for one sample. Returns null when the
+// sample doesn't have that dimension (e.g. GLEY notation → no
+// value/chroma/hue) so the caller can drop it from the bin.
+function axisValueOf(s, axis) {
+  const exp = parseNotation(s.expected);
+  const mea = parseNotation(s.measured);
+  switch (axis) {
+    case 'page':       return s.page;
+    case 'format':     return s.format;
+    case 'device':     return s.device;
+    case 'bg':         return s.bg;
+    case 'fixture':    return s.fixtureLabel;
+    case 'expValue':   return exp ? exp.value : null;
+    case 'meaValue':   return mea ? mea.value : null;
+    case 'expChroma':  return exp ? exp.chroma : null;
+    case 'meaChroma':  return mea ? mea.chroma : null;
+    case 'expHue':     return exp ? bucketAngle(hueAngle(exp.family, exp.step), 10) : null;
+    case 'meaHue':     return mea ? bucketAngle(hueAngle(mea.family, mea.step), 10) : null;
+    case 'unevenness': {
+      // Bucket into width-2 bands so scattered continuous values
+      // aggregate into meaningful cells. Null unevenness (RANSAC
+      // didn't lock) → dropped from the heatmap. Anything >= 20
+      // collapses into the '20+' bucket — beyond the default
+      // maxUneven filter the exact value stops mattering.
+      const u = s.illumUnevenness;
+      if (u == null) return null;
+      if (u >= 20) return '20+';
+      const lo = Math.floor(u / 2) * 2;
+      return lo + '–' + (lo + 2);
+    }
+    case 'signal': {
+      const v = signalStrengthOf(s);
+      if (v == null) return null;
+      if (v >= 0.35) return '0.35+';
+      const lo = Math.floor(v * 20) / 20;
+      return lo.toFixed(2) + '–' + (lo + 0.05).toFixed(2);
+    }
+    default:           return null;
+  }
 }
 
 function uniqueValues(arr, key) {
@@ -457,26 +926,252 @@ function makeCheckGroup(el, options, currentGetter, onToggle) {
   }
 }
 
+// ---- URL state persistence ---------------------------------------------
+// Serialize the parts of state that meaningfully change the view into
+// the URL's query string, so a link like ?chart=heatmap&device=iPhone
+// &facet=bg&row=value&col=chroma reproduces the same view. Scalars go
+// verbatim; Set-valued multi-selects go as comma-separated (empty = no
+// filter, i.e. omitted from the URL).
+
+// (state key, URL param name, kind)
+const URL_STATE_SPEC = [
+  ['chartType',  'chart',  'scalar'],
+  ['format',     'format', 'scalar'],
+  ['maxUneven',           'uneven',   'scalar'],
+  ['maxWorstDe',          'worstde',  'scalar'],
+  ['minSignal',           'minsig',   'scalar'],
+  ['excludeFlaggedChips', 'exclchip', 'scalar'],
+  ['excludeFlaggedCards', 'exclcard', 'scalar'],
+  ['facetAxis',  'facet',  'scalar'],
+  ['rowAxis',    'row',    'scalar'],
+  ['colAxis',    'col',    'scalar'],
+  ['metric',       'metric', 'scalar'],
+  ['aggFn',        'agg',    'scalar'],
+  ['channelSource','chan',   'scalar'],
+  ['device',     'device', 'set'],
+  ['bg',         'bg',     'set'],
+  ['card',       'card',   'set'],
+  ['fixture',    'fixture','set'],
+  ['firstRef',   'ref1',   'scalar'],
+  ['secondRef',  'ref2',   'scalar'],
+];
+
+function hydrateStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  for (const [key, param, kind] of URL_STATE_SPEC) {
+    const raw = params.get(param);
+    if (raw === null) continue;
+    if (kind === 'set') {
+      state[key] = new Set(raw ? raw.split(',') : []);
+    } else if (key === 'maxUneven' || key === 'maxWorstDe') {
+      const n = parseInt(raw, 10);
+      if (!isNaN(n)) state[key] = n;
+    } else if (key === 'minSignal') {
+      const n = parseFloat(raw);
+      if (!isNaN(n)) state[key] = n;
+    } else if (key === 'excludeFlaggedChips' || key === 'excludeFlaggedCards') {
+      state[key] = raw === 'true' || raw === '1';
+    } else {
+      state[key] = raw;
+    }
+  }
+}
+
+// Suppress URL writes during initial hydration + control wiring so the
+// first render() doesn't rewrite the URL from partially-defaulted
+// state. Flipped true at the tail of the init block.
+let urlWriteEnabled = false;
+function writeStateToUrl() {
+  if (!urlWriteEnabled) return;
+  const params = new URLSearchParams();
+  for (const [key, param, kind] of URL_STATE_SPEC) {
+    const v = state[key];
+    if (kind === 'set') {
+      if (v.size > 0) params.set(param, [...v].join(','));
+    } else {
+      params.set(param, String(v));
+    }
+  }
+  const qs = params.toString();
+  const url = window.location.pathname + (qs ? '?' + qs : '');
+  window.history.replaceState(null, '', url);
+}
+
 function initControls() {
+  // Chart-type radio. When user picks 'heatmap' we hide the polar
+  // view-switcher (2D/3D) and show the heatmap axis controls; polar
+  // does the reverse.
+  makeRadioGroup(
+    document.getElementById('ctl-chart-type'), 'chart-type',
+    [{value: 'polar',    label: 'polar disks'},
+     {value: 'heatmap',  label: 'heatmap'},
+     {value: 'bar',      label: 'bar chart'},
+     {value: 'xy',       label: 'xy (expected vs measured)'},
+     {value: 'channels', label: 'channels (R/G/B expected vs measured)'}],
+    () => state.chartType, v => {
+      state.chartType = v;
+      applyChartTypeVisibility();
+    },
+  );
+  // Heatmap axis + aggregation controls. Bind now so the initial
+  // render() sees the defaults; they only appear when chartType
+  // = 'heatmap'.
+  const facetSel = document.getElementById('heat-facet-axis');
+  const rowSel = document.getElementById('heat-row-axis');
+  const colSel = document.getElementById('heat-col-axis');
+  const metricSel = document.getElementById('heat-metric');
+  const aggSel = document.getElementById('heat-agg');
+  const chanSrcSel = document.getElementById('heat-chan-src');
+  const fillAxisSelect = (sel, current, options) => {
+    sel.innerHTML = '';
+    for (const opt of options) {
+      const o = document.createElement('option');
+      o.value = opt.value;
+      o.textContent = opt.label;
+      if (opt.value === current) o.selected = true;
+      sel.appendChild(o);
+    }
+  };
+  // Facet has an extra "all" pseudo-value that means "one heatmap
+  // for the whole filtered set". Rows/cols reuse the plain axis list.
+  const facetOptions = [{value: 'all', label: '(single heatmap)'}, ...HEATMAP_AXIS_OPTIONS];
+  fillAxisSelect(facetSel, state.facetAxis, facetOptions);
+  fillAxisSelect(rowSel, state.rowAxis, HEATMAP_AXIS_OPTIONS);
+  fillAxisSelect(colSel, state.colAxis, HEATMAP_AXIS_OPTIONS);
+  metricSel.value = state.metric;
+  aggSel.value = state.aggFn;
+  chanSrcSel.value = state.channelSource;
+  facetSel.addEventListener('change', e => { state.facetAxis = e.target.value; render(); });
+  rowSel.addEventListener('change', e => { state.rowAxis = e.target.value; render(); });
+  colSel.addEventListener('change', e => { state.colAxis = e.target.value; render(); });
+  metricSel.addEventListener('change', e => { state.metric = e.target.value; render(); });
+  aggSel.addEventListener('change', e => { state.aggFn = e.target.value; render(); });
+  chanSrcSel.addEventListener('change', e => { state.channelSource = e.target.value; render(); });
+
   makeRadioGroup(
     document.getElementById('ctl-format'), 'format',
     [{value: 'all', label: 'all'},
      {value: 'raw', label: 'raw (DNG)'},
      {value: 'photo', label: 'jpeg (JPEG)'}],
-    () => state.format, v => { state.format = v; updateRefPageGrid(); },
+    () => state.format,
+    v => { state.format = v; rebuildFixtureControl(); },
   );
-  const illums = ['all', ...uniqueValues(SAMPLES, 'illuminant')];
-  makeRadioGroup(
-    document.getElementById('ctl-illum'), 'illum',
-    illums.map(v => ({value: v, label: v})),
-    () => state.illum, v => { state.illum = v; updateRefPageGrid(); },
-  );
-  makeRadioGroup(
-    document.getElementById('ctl-mode'), 'mode',
-    [{value: 'raw',  label: 'Raw per-sample arrows'},
-     {value: 'mean', label: 'Mean per chip (quiver)'}],
-    () => state.mode, v => state.mode = v,
-  );
+  // Multi-select filters. Empty set = no filter (all pass). On first
+  // uncheck we expand the set to the full list so the box we just
+  // unchecked is actually removed; on re-check-of-all we collapse
+  // back to empty so filterSamples() short-circuits.
+  const bindMultiSelect = (elId, key, all, afterToggle) => {
+    makeCheckGroup(
+      document.getElementById(elId),
+      all.map(v => ({value: v, label: v})),
+      () => state[key],
+      (v, on) => {
+        if (state[key].size === 0) for (const x of all) state[key].add(x);
+        if (on) state[key].add(v); else state[key].delete(v);
+        if (state[key].size === all.length) state[key].clear();
+        if (afterToggle) afterToggle();
+      },
+    );
+  };
+  // device / bg / card toggles narrow the fixture list (implemented
+  // by rebuildFixtureControl below). Rebuild after each toggle so
+  // the picker never shows fixtures that don't match current primary
+  // filters.
+  bindMultiSelect('ctl-device', 'device', uniqueValues(SAMPLES, 'device'),
+    () => rebuildFixtureControl());
+  bindMultiSelect('ctl-bg',     'bg',     uniqueValues(SAMPLES, 'bg'),
+    () => rebuildFixtureControl());
+  bindMultiSelect('ctl-card',   'card',   uniqueValues(SAMPLES, 'page'),
+    () => rebuildFixtureControl());
+
+  // Fixture picker. Options list is dynamically reduced to fixtures
+  // matching current device / bg / card / format filters. Rebuilt on
+  // every primary-filter change (above). Also cleared of stale
+  // entries (fixtures no longer in the reduced list) each rebuild so
+  // narrowing the primary filters doesn't leave a fixture selection
+  // that filters to zero. Uses a bounded-height scroll box for the
+  // rare case of a wide dataset with many matching fixtures.
+  function rebuildFixtureControl() {
+    const el = document.getElementById('ctl-fixture');
+    if (!el) return;
+    const allowed = new Set();
+    for (const s of SAMPLES) {
+      if (state.format !== 'all' && s.format !== state.format) continue;
+      if (state.device.size > 0 && !state.device.has(s.device)) continue;
+      if (state.bg.size > 0     && !state.bg.has(s.bg))         continue;
+      if (state.card.size > 0   && !state.card.has(s.page))     continue;
+      allowed.add(s.fixtureLabel);
+    }
+    const opts = [...allowed].sort();
+    // Purge stale fixture selections.
+    for (const chosen of [...state.fixture]) {
+      if (!allowed.has(chosen)) state.fixture.delete(chosen);
+    }
+    const legend = el.querySelector('legend').textContent;
+    if (opts.length === 0) {
+      el.innerHTML = '<legend>' + legend + '</legend>' +
+        '<div style="font-size:11px;color:#888">' +
+        'No fixtures match the current primary filters.</div>';
+      return;
+    }
+    const showCount = ' <span style="font-weight:400;color:#888;font-size:11px">(' +
+      opts.length + ' available)</span>';
+    let html = '<legend>' + legend + showCount + '</legend>' +
+      '<div style="max-height:200px; overflow-y:auto; padding-right:6px;">';
+    const current = state.fixture;
+    for (const opt of opts) {
+      const checked = current.size === 0 || current.has(opt) ? 'checked' : '';
+      const id = 'fixt_' + opt.replace(/[^a-z0-9]/gi, '_');
+      html += '<label style="font-size:11px; word-break:break-all;">' +
+        '<input type="checkbox" data-fixture="' + opt + '" ' + checked + '> ' +
+        opt + '</label>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+    el.querySelectorAll('input[data-fixture]').forEach(inp => {
+      inp.addEventListener('change', e => {
+        const v = e.target.dataset.fixture;
+        if (state.fixture.size === 0) for (const x of opts) state.fixture.add(x);
+        if (e.target.checked) state.fixture.add(v); else state.fixture.delete(v);
+        if (state.fixture.size === opts.length) state.fixture.clear();
+        render();
+      });
+    });
+  }
+  rebuildFixtureControl();
+
+  // First / second reference pickers. Options are the union of ref
+  // cards actually present in the loaded samples (usually {whibal,
+  // postit, greycard}). Second-ref option list re-renders whenever
+  // the first-ref choice changes, so the current first choice is
+  // excluded from second's options. Picking a second ref that would
+  // duplicate the first auto-resets second to 'none'.
+  const refOptionSet = new Set();
+  for (const s of SAMPLES) {
+    for (const k of Object.keys(s.refOptions)) refOptionSet.add(k);
+  }
+  const refOpts = Array.from(refOptionSet).sort();
+  const rebuildRefControls = () => {
+    makeRadioGroup(
+      document.getElementById('ctl-first-ref'), 'first-ref',
+      refOpts.map(v => ({value: v, label: v})),
+      () => state.firstRef,
+      v => {
+        state.firstRef = v;
+        if (state.secondRef === v) state.secondRef = 'none';
+        rebuildRefControls();
+      },
+    );
+    const secondOpts = [{value: 'none', label: 'none (single-ref)'}]
+      .concat(refOpts.filter(v => v !== state.firstRef).map(v => ({value: v, label: v})));
+    makeRadioGroup(
+      document.getElementById('ctl-second-ref'), 'second-ref',
+      secondOpts,
+      () => state.secondRef,
+      v => { state.secondRef = v; },
+    );
+  };
+  rebuildRefControls();
   // Illumination-unevenness slider. Range 0..100 with a max-position
   // treated as "no filter" (so users don't have to know that "999
   // means all"). Live value shown next to the slider.
@@ -499,216 +1194,175 @@ function initControls() {
   slider.addEventListener('input', e => {
     state.maxUneven = parseInt(e.target.value, 10);
     label.textContent = state.maxUneven === 100 ? 'all' : state.maxUneven;
-    updateRefPageGrid();
     render();
   });
 
-  initRefPageGrid();
-}
-
-// Grid columns: leading 'self' column (WB anchor derived from a chart
-// chip, no ref card) followed by the ref-card slots discovered in the
-// samples ('whibal', 'postit', 'greycard', or any other explicit
-// reference the analysis used). Dedupes so 'self' appears once even
-// when SAMPLES already have refCard='self' from auto-WB captures.
-function gridColumns() {
-  const seen = new Set(['self']);
-  const cols = ['self'];
-  for (const rc of uniqueValues(SAMPLES, 'refCard')) {
-    if (seen.has(rc)) continue;
-    seen.add(rc);
-    cols.push(rc);
-  }
-  return cols;
-}
-
-// Ref card × Page grid. Built once at init; cell availability + row
-// and column header states re-evaluated on every filter change that
-// could affect availability (Background, Max illum unevenness) or on
-// any change to state.cellEnabled.
-function initRefPageGrid() {
-  const pages = uniqueValues(SAMPLES, 'page');
-  const refCards = gridColumns();
-  const table = document.getElementById('ref-page-grid');
-  if (!table) return;
-  let html = '<thead><tr>';
-  html += '<th style="padding: 4px 6px; text-align: left; font-weight: 600; color: #555;">page \\ card</th>';
-  for (const rc of refCards) {
-    html += '<th style="padding: 4px 6px; text-align: center; font-weight: 400; color: #555; border-bottom: 1px solid #eee;">' +
-      '<div style="font-size: 11px;">' + rc + '</div>' +
-      '<input type="checkbox" class="col-toggle" data-refcard="' + rc + '" title="toggle whole column">' +
-      '</th>';
-  }
-  html += '</tr></thead><tbody>';
-  for (const p of pages) {
-    html += '<tr>';
-    html += '<th style="padding: 2px 6px; text-align: left; font-weight: 400; color: #555; border-right: 1px solid #eee; white-space: nowrap;">' +
-      '<input type="checkbox" class="row-toggle" data-page="' + p + '" title="toggle whole row"> ' +
-      p + '</th>';
-    for (const rc of refCards) {
-      html += '<td class="grid-cell" data-page="' + p + '" data-refcard="' + rc + '" ' +
-        'style="text-align: center; padding: 2px 6px;"></td>';
-    }
-    html += '</tr>';
-  }
-  html += '</tbody>';
-  table.innerHTML = html;
-
-  // Row / column toggles: click sets every cell in that dimension to
-  // the checkbox's new state (indeterminate → checked). Only affects
-  // AVAILABLE cells — unavailable cells stay '/'.
-  table.querySelectorAll('.row-toggle').forEach(cb => {
-    cb.addEventListener('change', e => {
-      const p = e.target.dataset.page;
-      const avail = availabilityMap();
-      for (const rc of refCards) {
-        if ((avail.get(cellKey(p, rc)) || 0) > 0) {
-          setCellEnabled(p, rc, e.target.checked);
-        }
-      }
-      updateRefPageGrid();
-      render();
-    });
-  });
-  table.querySelectorAll('.col-toggle').forEach(cb => {
-    cb.addEventListener('change', e => {
-      const rc = e.target.dataset.refcard;
-      const avail = availabilityMap();
-      for (const p of pages) {
-        if ((avail.get(cellKey(p, rc)) || 0) > 0) {
-          setCellEnabled(p, rc, e.target.checked);
-        }
-      }
-      updateRefPageGrid();
-      render();
-    });
-  });
-
-  // Bulk-select buttons: "Select all available" flips every
-  // currently-available cell on (leaves the '/' cells alone).
-  // "Deselect all" flips every cell off, available or not.
-  document.getElementById('grid-select-all').addEventListener('click', () => {
-    const avail = availabilityMap();
-    for (const p of pages) for (const rc of refCards) {
-      if ((avail.get(cellKey(p, rc)) || 0) > 0) {
-        setCellEnabled(p, rc, true);
-      }
-    }
-    updateRefPageGrid();
-    render();
-  });
-  document.getElementById('grid-deselect-all').addEventListener('click', () => {
-    for (const p of pages) for (const rc of refCards) {
-      setCellEnabled(p, rc, false);
-    }
-    updateRefPageGrid();
+  // Max fixture-worst-ΔE slider. Fixture-level filter: drop every
+  // cell of a shutter × format whose max-per-cell ΔE exceeds this
+  // (the same "worst ΔE" column shown in the run.html greycard
+  // ranking table). Range 0..50; 50 = show everything.
+  const worstEl = document.getElementById('ctl-worst-de');
+  worstEl.innerHTML =
+    '<legend>' + worstEl.querySelector('legend').textContent + '</legend>' +
+    '<label style="min-width:200px">' +
+    '  <input type="range" id="worst-de-slider" min="1" max="50" step="1" ' +
+    '   value="' + state.maxWorstDe + '" style="width:150px; vertical-align:middle">' +
+    '  <span id="worst-de-val" style="display:inline-block; min-width:36px; ' +
+    '   text-align:right; font-variant-numeric:tabular-nums">' + state.maxWorstDe +
+    '</span>' +
+    '</label>' +
+    '<div style="font-size:11px; color:#888; margin-top:2px">' +
+    '  Hide entire fixtures whose worst per-cell ΔE &gt; slider. ' +
+    '  50 = show all.' +
+    '</div>';
+  const worstSlider = document.getElementById('worst-de-slider');
+  const worstLabel = document.getElementById('worst-de-val');
+  worstSlider.addEventListener('input', e => {
+    state.maxWorstDe = parseInt(e.target.value, 10);
+    worstLabel.textContent = state.maxWorstDe === 50 ? 'all' : state.maxWorstDe;
     render();
   });
 
-  updateRefPageGrid();
-}
-
-// Count samples per (page, refCard) respecting only the filters that
-// affect availability (Background + Max illum). The Ref-card × Page
-// grid itself does not filter its own availability — otherwise
-// turning off a cell would make it "unavailable" and unrecoverable.
-// refCard now encodes the WB anchor used ('self' for auto WB from a
-// chart chip; slot name for explicit WB from a ref card), so each
-// sample contributes to exactly one (page, refCard) cell.
-function availabilityMap() {
-  const uMax = state.maxUneven === 100 ? Infinity : state.maxUneven;
-  const m = new Map();
-  for (const s of SAMPLES) {
-    if (state.format !== 'all' && s.format !== state.format) continue;
-    if (state.illum !== 'all' && s.illuminant !== state.illum) continue;
-    if (s.illumUnevenness !== null && s.illumUnevenness > uMax) continue;
-    const k = cellKey(s.page, s.refCard);
-    m.set(k, (m.get(k) || 0) + 1);
-  }
-  return m;
-}
-
-function updateRefPageGrid() {
-  const pages = uniqueValues(SAMPLES, 'page');
-  const refCards = gridColumns();
-  const avail = availabilityMap();
-
-  // Cell contents: checkbox if available, muted '/' if not.
-  for (const p of pages) {
-    for (const rc of refCards) {
-      const cell = document.querySelector(
-        '.grid-cell[data-page="' + p + '"][data-refcard="' + rc + '"]');
-      if (!cell) continue;
-      const n = avail.get(cellKey(p, rc)) || 0;
-      if (n === 0) {
-        cell.innerHTML = '<span style="color: #ccc;" title="no samples for this combination">/</span>';
-      } else {
-        const checked = isCellEnabled(p, rc) ? 'checked' : '';
-        cell.innerHTML = '<input type="checkbox" class="cell-toggle" ' +
-          'data-page="' + p + '" data-refcard="' + rc + '" ' +
-          checked + ' title="' + n + ' samples">';
-      }
-    }
-  }
-  // Re-bind cell toggles (innerHTML replaced them).
-  document.querySelectorAll('#ref-page-grid .cell-toggle').forEach(cb => {
-    cb.addEventListener('change', e => {
-      setCellEnabled(e.target.dataset.page, e.target.dataset.refcard, e.target.checked);
-      updateRefPageGrid();
-      render();
-    });
+  // Min signal-strength slider. Step 0.01 so users can dial in the
+  // boundary near the noise floor (~0.05–0.10). 0 = show all.
+  const signalEl = document.getElementById('ctl-min-signal');
+  signalEl.innerHTML =
+    '<legend>' + signalEl.querySelector('legend').textContent + '</legend>' +
+    '<label style="min-width:200px">' +
+    '  <input type="range" id="min-signal-slider" min="0" max="0.35" step="0.01" ' +
+    '   value="' + state.minSignal + '" style="width:150px; vertical-align:middle">' +
+    '  <span id="min-signal-val" style="display:inline-block; min-width:40px; ' +
+    '   text-align:right; font-variant-numeric:tabular-nums">' +
+    state.minSignal.toFixed(2) + '</span>' +
+    '</label>' +
+    '<div style="font-size:11px; color:#888; margin-top:2px">' +
+    '  Hide fixtures whose greycard raw min(R,G,B) &lt; slider. ' +
+    '  Nominal well-lit ≈ 0.15. 0 = show all.' +
+    '</div>';
+  const signalSlider = document.getElementById('min-signal-slider');
+  const signalLabel = document.getElementById('min-signal-val');
+  signalSlider.addEventListener('input', e => {
+    state.minSignal = parseFloat(e.target.value);
+    signalLabel.textContent = state.minSignal.toFixed(2);
+    render();
   });
 
-  // Row/col header tri-state: checked if all available cells in that
-  // line are enabled, indeterminate if some but not all, disabled if
-  // no available cells.
-  const setHeader = (cb, availCount, checkedCount) => {
-    cb.disabled = availCount === 0;
-    cb.checked = availCount > 0 && checkedCount === availCount;
-    cb.indeterminate = checkedCount > 0 && checkedCount < availCount;
-  };
-  for (const p of pages) {
-    const cb = document.querySelector('.row-toggle[data-page="' + p + '"]');
-    if (!cb) continue;
-    let a = 0, c = 0;
-    for (const rc of refCards) {
-      if ((avail.get(cellKey(p, rc)) || 0) === 0) continue;
-      a++;
-      if (isCellEnabled(p, rc)) c++;
-    }
-    setHeader(cb, a, c);
+  // Excluded-chips filter. Single checkbox; disabled with an
+  // informative note when the exclusion list is empty (nothing to
+  // hide, so the control is a no-op).
+  const excludedEl = document.getElementById('ctl-excluded');
+  const listHtml = EXCLUDED_CHIPS.size === 0
+    ? '<div style="font-size:11px;color:#888">' +
+        'No chips flagged. Edit <code>scripts/excluded-chips.json</code> ' +
+        'and rerun analyze-fixtures.</div>'
+    : '<label><input type="checkbox" id="excluded-toggle" ' +
+        (state.excludeFlaggedChips ? 'checked' : '') + '>' +
+        ' Exclude ' + EXCLUDED_CHIPS.size + ' flagged chip' +
+        (EXCLUDED_CHIPS.size === 1 ? '' : 's') + '</label>' +
+        '<div style="font-size:11px; color:#888; margin-top:2px">' +
+        [...EXCLUDED_CHIPS].map(n => '<code>' + n + '</code>').join(', ') +
+        '</div>';
+  excludedEl.innerHTML =
+    '<legend>' + excludedEl.querySelector('legend').textContent + '</legend>' +
+    listHtml;
+  const excludedToggle = document.getElementById('excluded-toggle');
+  if (excludedToggle) {
+    excludedToggle.addEventListener('change', e => {
+      state.excludeFlaggedChips = e.target.checked;
+      render();
+    });
   }
-  for (const rc of refCards) {
-    const cb = document.querySelector('.col-toggle[data-refcard="' + rc + '"]');
-    if (!cb) continue;
-    let a = 0, c = 0;
-    for (const p of pages) {
-      if ((avail.get(cellKey(p, rc)) || 0) === 0) continue;
-      a++;
-      if (isCellEnabled(p, rc)) c++;
-    }
-    setHeader(cb, a, c);
+
+  // Excluded-cards checkbox. Same "empty list → informative note"
+  // shape as excluded-chips. Truncates the list preview at 8 entries
+  // to avoid a huge wall of text when the exclusion list grows.
+  const excludedCardsEl = document.getElementById('ctl-excluded-cards');
+  const cardsList = [...EXCLUDED_CARDS];
+  const cardsPreview = cardsList.length <= 8
+    ? cardsList
+    : cardsList.slice(0, 8).concat(['+ ' + (cardsList.length - 8) + ' more']);
+  const cardsListHtml = EXCLUDED_CARDS.size === 0
+    ? '<div style="font-size:11px;color:#888">' +
+        'No fixtures flagged. Edit <code>scripts/excluded-cards.json</code> ' +
+        'and rerun analyze-fixtures.</div>'
+    : '<label><input type="checkbox" id="excluded-cards-toggle" ' +
+        (state.excludeFlaggedCards ? 'checked' : '') + '>' +
+        ' Exclude ' + EXCLUDED_CARDS.size + ' flagged fixture' +
+        (EXCLUDED_CARDS.size === 1 ? '' : 's') + '</label>' +
+        '<div style="font-size:11px; color:#888; margin-top:2px; ' +
+        'word-break:break-all;">' +
+        cardsPreview.map(n => '<code>' + n + '</code>').join(', ') +
+        '</div>';
+  excludedCardsEl.innerHTML =
+    '<legend>' + excludedCardsEl.querySelector('legend').textContent + '</legend>' +
+    cardsListHtml;
+  const excludedCardsToggle = document.getElementById('excluded-cards-toggle');
+  if (excludedCardsToggle) {
+    excludedCardsToggle.addEventListener('change', e => {
+      state.excludeFlaggedCards = e.target.checked;
+      render();
+    });
   }
 }
 
-// A sample matches the grid iff its (page, refCard) cell is enabled.
-// refCard already encodes the WB anchor ('self' for auto WB, slot name
-// for explicit ref-card WB), so no OR-pseudo-column logic is needed.
-function sampleMatchesGrid(s) {
-  return isCellEnabled(s.page, s.refCard);
-}
-
+// Returns the filtered samples with WB-derived fields recomputed
+// from the currently-selected first / second refs:
+//   .measured        — nearest chip's notation (client-side lookup)
+//   .measuredRgb     — post-WB linear-sRGB
+//   .deltaE          — ΔE2000 between measured and expected in Lab
+// The three fields let downstream charts (polar, heatmap, bar, xy,
+// channels) all reflect the user's WB choice with no per-chart
+// changes. Samples whose parent shot lacks the picked ref card(s)
+// are dropped from the returned list.
 function filterSamples() {
   const uMax = state.maxUneven === 100 ? Infinity : state.maxUneven;
-  return SAMPLES.filter(s => {
-    if (state.format !== 'all' && s.format !== state.format) return false;
-    if (state.illum !== 'all' && s.illuminant !== state.illum) return false;
-    // Null unevenness (RANSAC didn't lock) → let it through; the
-    // underlying sample may still be diagnostic even without the
-    // per-fixture illum metric.
-    if (s.illumUnevenness !== null && s.illumUnevenness > uMax) return false;
-    if (!sampleMatchesGrid(s)) return false;
-    return true;
+  const worstMax = state.maxWorstDe >= 50 ? Infinity : state.maxWorstDe;
+  const excludeFlagged = state.excludeFlaggedChips && EXCLUDED_CHIPS.size > 0;
+  const excludeFlaggedFixtures =
+    state.excludeFlaggedCards && EXCLUDED_CARDS.size > 0;
+  const {firstRef, secondRef} = state;
+
+  // First pass — apply per-sample filters (format, device, bg, card,
+  // uneven), recompute WB-derived measured / ΔE. Skip excluded-chip
+  // samples HERE (before the worst-ΔE stat) so a defective chip's
+  // high ΔE doesn't disqualify the whole fixture. Stash for
+  // the second pass.
+  const passed = [];
+  for (const s of SAMPLES) {
+    if (state.format !== 'all' && s.format !== state.format) continue;
+    if (state.device.size > 0 && !state.device.has(s.device)) continue;
+    if (state.bg.size > 0     && !state.bg.has(s.bg))         continue;
+    if (state.card.size > 0   && !state.card.has(s.page))     continue;
+    if (state.fixture.size > 0 && !state.fixture.has(s.fixtureLabel)) continue;
+    if (s.illumUnevenness !== null && s.illumUnevenness > uMax) continue;
+    if (state.minSignal > 0) {
+      const sig = signalStrengthOf(s);
+      if (sig == null || sig < state.minSignal) continue;
+    }
+    if (excludeFlagged && EXCLUDED_CHIPS.has(s.expected)) continue;
+    if (excludeFlaggedFixtures && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
+    const wb = computeWB(s.refOptions, firstRef, secondRef);
+    if (!wb) continue;
+    const measuredRgb = applyWB(s.rawRgb, wb);
+    const measured = nearestChipNotation(measuredRgb);
+    const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
+    passed.push({...s, measured, measuredRgb, deltaE});
+  }
+
+  // Second pass — worst-ΔE-per-fixture gate. Key by fixtureLabel +
+  // format (a shutter × format); each such fixture's max ΔE across
+  // its cells is compared against the slider. All cells of an
+  // exceeding fixture are dropped.
+  if (worstMax === Infinity) return passed;
+  const worstByFixture = new Map();
+  for (const s of passed) {
+    const k = s.fixtureLabel + '|' + s.format;
+    const prev = worstByFixture.get(k) ?? 0;
+    if (s.deltaE > prev) worstByFixture.set(k, s.deltaE);
+  }
+  return passed.filter(s => {
+    const k = s.fixtureLabel + '|' + s.format;
+    return (worstByFixture.get(k) ?? 0) <= worstMax;
   });
 }
 
@@ -910,94 +1564,32 @@ function renderDisk(valueBin, valueSamples) {
       continue;
     }
     sampledNotations.add(notation);
-    let sumDA = 0, sumDR = 0, sumDV = 0, n = 0;
-    // Also draw raw scatter if mode = raw.
-    const rawSegs = [];
+    const expAngle = hueAngle(exp.family, exp.step);
     for (const s of group) {
       const mea = parseNotation(s.measured);
       if (!mea) continue;
-      const expAngle = hueAngle(exp.family, exp.step);
       const meaAngle = hueAngle(mea.family, mea.step);
       // Signed angular delta, clipped to [-180, 180].
       let dA = meaAngle - expAngle;
       while (dA > 180) dA -= 360;
       while (dA < -180) dA += 360;
-      const dR = mea.chroma - exp.chroma;
       const dV = mea.value - exp.value;
-      sumDA += dA; sumDR += dR; sumDV += dV; n++;
-      if (state.mode === 'raw') {
-        const p0 = polarToXY(CX, CY, exp.chroma * R_PER_CHROMA, expAngle);
-        // Same clamping as mean-mode: keep endpoint inside the disk.
-        const rawR = Math.max(0,
-          Math.min(MAX_CHROMA + 0.5, mea.chroma)) * R_PER_CHROMA;
-        const rawAngle = Math.max(WEDGE_MIN,
-          Math.min(WEDGE_MAX, expAngle + dA));
-        const p1 = polarToXY(CX, CY, rawR, rawAngle);
-        rawSegs.push({p0, p1, dv: dV});
-      }
-    }
-    if (n === 0) continue;
-    if (state.mode === 'raw') {
-      for (const seg of rawSegs) {
-        parts.push('<line x1="' + seg.p0.x + '" y1="' + seg.p0.y +
-          '" x2="' + seg.p1.x + '" y2="' + seg.p1.y +
-          '" stroke="' + deltaValueColor(seg.dv) +
-          '" stroke-width="2" opacity="0.7"/>');
-      }
-      nArrows += rawSegs.length;
-      continue;
-    }
-    const mDA = sumDA / n;
-    const mDR = sumDR / n;
-    const mDV = sumDV / n;
-    const expAngle = hueAngle(exp.family, exp.step);
-    // Clamp arrow endpoint so it stays inside the visible disk:
-    //   - chroma ∈ [0, MAX_CHROMA + 0.5] — prevents polarToXY from
-    //     flipping through the origin when predicted chroma is
-    //     negative (arrow-through-neutral), and stops runaway arrows
-    //     at high chroma.
-    //   - angle ∈ [WEDGE_MIN, WEDGE_MAX] — keeps huge hue-family
-    //     jumps from flying off the plot into empty space.
-    const p0 = polarToXY(CX, CY, exp.chroma * R_PER_CHROMA, expAngle);
-    const measuredR = Math.max(0,
-      Math.min(MAX_CHROMA + 0.5, exp.chroma + mDR)) * R_PER_CHROMA;
-    const measuredAngle = Math.max(WEDGE_MIN,
-      Math.min(WEDGE_MAX, expAngle + mDA));
-    const p1 = polarToXY(CX, CY, measuredR, measuredAngle);
-    const col = deltaValueColor(mDV);
-    // Distance p0→p1 in pixels — used to guard against sub-pixel
-    // arrows: when the mean shift is tiny, draw a filled dot at the
-    // chip so we still see the color (= ΔValue) even though there's
-    // no meaningful direction to show.
-    const dpx = Math.hypot(p1.x - p0.x, p1.y - p0.y);
-    if (dpx < 4) {
-      parts.push('<circle cx="' + p0.x + '" cy="' + p0.y +
-        '" r="4" fill="' + col +
-        '" stroke="black" stroke-width="0.5"/>');
-    } else {
-      // Draw arrow shaft (thick, dark outline for visibility).
+      const p0 = polarToXY(CX, CY, exp.chroma * R_PER_CHROMA, expAngle);
+      // Clamp endpoint so it stays inside the visible disk:
+      // chroma ∈ [0, MAX_CHROMA + 0.5] prevents polarToXY from
+      // flipping through the origin at extreme values; angle stays
+      // inside the wedge.
+      const rawR = Math.max(0,
+        Math.min(MAX_CHROMA + 0.5, mea.chroma)) * R_PER_CHROMA;
+      const rawAngle = Math.max(WEDGE_MIN,
+        Math.min(WEDGE_MAX, expAngle + dA));
+      const p1 = polarToXY(CX, CY, rawR, rawAngle);
       parts.push('<line x1="' + p0.x + '" y1="' + p0.y +
         '" x2="' + p1.x + '" y2="' + p1.y +
-        '" stroke="' + col + '" stroke-width="3.5" ' +
-        'stroke-linecap="round"/>');
-      // Arrowhead — triangle at p1.
-      const ang = Math.atan2(p1.y - p0.y, p1.x - p0.x);
-      const AH = 8;
-      const ax1 = p1.x - AH * Math.cos(ang - 0.4);
-      const ay1 = p1.y - AH * Math.sin(ang - 0.4);
-      const ax2 = p1.x - AH * Math.cos(ang + 0.4);
-      const ay2 = p1.y - AH * Math.sin(ang + 0.4);
-      parts.push('<polygon points="' + p1.x + ',' + p1.y + ' ' +
-        ax1 + ',' + ay1 + ' ' + ax2 + ',' + ay2 +
-        '" fill="' + col + '"/>');
+        '" stroke="' + deltaValueColor(dV) +
+        '" stroke-width="2" opacity="0.7"/>');
+      nArrows++;
     }
-    // Sample-count badge above the arrow origin when >1 sample was
-    // averaged into this chip's mean. "×3" = 3 samples averaged.
-    if (n > 1) {
-      parts.push('<text x="' + p0.x + '" y="' + (p0.y - 6) +
-        '" font-size="8" fill="#666" text-anchor="middle">×' + n + '</text>');
-    }
-    nArrows++;
   }
 
   // Chip lattice on TOP of arrows. Sampled chips (those an arrow
@@ -1027,38 +1619,1068 @@ function renderDisk(valueBin, valueSamples) {
   };
 }
 
-function render() {
-  const filtered = filterSamples();
-  lastFiltered = filtered; // cache for hover tooltips (2D + 3D)
+function renderPolar(filtered) {
   const summary = document.getElementById('summary');
+  const {facetAxis} = state;
 
-  // Bin samples by ground-truth value.
-  const byValue = new Map();
-  for (const s of filtered) {
-    const exp = parseNotation(s.expected);
-    if (!exp) continue;
-    const v = exp.value;
-    if (!byValue.has(v)) byValue.set(v, []);
-    byValue.get(v).push(s);
+  // Partition samples by facet (single group when facet='all').
+  const facetGroups = new Map();
+  if (facetAxis === 'all') {
+    facetGroups.set('(all)', filtered);
+  } else {
+    for (const s of filtered) {
+      const f = axisValueOf(s, facetAxis);
+      if (f == null) continue;
+      const key = String(f);
+      if (!facetGroups.has(key)) facetGroups.set(key, []);
+      facetGroups.get(key).push(s);
+    }
   }
-  const values = Array.from(byValue.keys()).sort((a, b) => b - a); // top disk = high value
-
-  summary.textContent = 'showing ' + filtered.length + ' samples across ' +
-    values.length + ' value bins';
+  const facetKeys = sortAxisValues([...facetGroups.keys()]);
 
   const strip = document.getElementById('filmstrip');
   strip.innerHTML = '';
-  for (const v of values) {
-    const vs = byValue.get(v);
-    const {svg, nArrows, nSkippedOutOfWedge} = renderDisk(v, vs);
-    const div = document.createElement('div');
-    div.className = 'disk';
-    const skippedTag = nSkippedOutOfWedge > 0
-      ? ', skipped ' + nSkippedOutOfWedge + ' GLEY' : '';
-    div.innerHTML = '<h3>Value ' + v + '  (n=' + vs.length +
-      ', arrows=' + nArrows + skippedTag + ')</h3>' + svg;
-    strip.appendChild(div);
+
+  const buildDisksFor = (samples) => {
+    const byValue = new Map();
+    for (const s of samples) {
+      const exp = parseNotation(s.expected);
+      if (!exp) continue;
+      if (!byValue.has(exp.value)) byValue.set(exp.value, []);
+      byValue.get(exp.value).push(s);
+    }
+    const values = Array.from(byValue.keys()).sort((a, b) => b - a);
+    const wrap = document.createElement('div');
+    wrap.className = 'polar-row';
+    for (const v of values) {
+      const vs = byValue.get(v);
+      const {svg, nArrows, nSkippedOutOfWedge} = renderDisk(v, vs);
+      const div = document.createElement('div');
+      div.className = 'disk';
+      const skippedTag = nSkippedOutOfWedge > 0
+        ? ', skipped ' + nSkippedOutOfWedge + ' GLEY' : '';
+      div.innerHTML = '<h3>Value ' + v + '  (n=' + vs.length +
+        ', arrows=' + nArrows + skippedTag + ')</h3>' + svg;
+      wrap.appendChild(div);
+    }
+    return {wrap, valueCount: values.length};
+  };
+
+  let totalValues = 0;
+  for (const k of facetKeys) {
+    const samples = facetGroups.get(k);
+    const {wrap, valueCount} = buildDisksFor(samples);
+    totalValues += valueCount;
+    if (facetAxis !== 'all') {
+      const header = document.createElement('div');
+      header.className = 'polar-facet-title';
+      header.innerHTML = escapeHtml(facetAxis) + ' = <b>' + escapeHtml(k) +
+        '</b>  <span class="n">(' + samples.length + ' samples · ' +
+        valueCount + ' value bins)</span>';
+      strip.appendChild(header);
+    }
+    strip.appendChild(wrap);
   }
+
+  const facetLabel = facetAxis === 'all' ? '' : ' across ' +
+    facetKeys.length + ' ' + facetAxis + ' facets';
+  summary.textContent = 'showing ' + filtered.length + ' samples' +
+    facetLabel + ' (' + totalValues + ' value bins total)';
+}
+
+// Numeric-aware axis sort — falls back to string compare when either
+// side isn't numeric (e.g. 'raw' vs 'photo'). Also parses a leading
+// numeric prefix so bucket labels like '2–4' and '20+' sort by their
+// low bound instead of lexicographically ('10–12' < '2–4' would be
+// wrong; both parse-float to 10 and 2, which sorts correctly).
+function sortAxisValues(arr) {
+  return arr.slice().sort((a, b) => {
+    const na = Number(a), nb = Number(b);
+    if (!isNaN(na) && !isNaN(nb)) return na - nb;
+    const pa = parseFloat(String(a));
+    const pb = parseFloat(String(b));
+    const pna = isNaN(pa), pnb = isNaN(pb);
+    if (!pna && !pnb && pa !== pb) return pa - pb;
+    if (pna !== pnb) return pna ? 1 : -1; // put pure-string after numeric-prefixed
+    return String(a).localeCompare(String(b));
+  });
+}
+
+function aggregateNums(vs) {
+  if (state.aggFn === 'median') {
+    const sorted = vs.slice().sort((a, b) => a - b);
+    const m = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[m] : 0.5 * (sorted[m - 1] + sorted[m]);
+  }
+  return vs.reduce((a, b) => a + b, 0) / vs.length;
+}
+
+// Extract the per-sample scalar the heatmap/bar aggregates. Returns
+// null when the metric isn't defined for this sample (e.g. GLEY
+// notation → no measured value). Callers must skip null.
+function metricOf(s, metric) {
+  if (metric === 'deltaE') return s.deltaE;
+  const mea = parseNotation(s.measured);
+  if (!mea) return null;
+  if (metric === 'meaValue')    return mea.value;
+  if (metric === 'meaChroma')   return mea.chroma;
+  if (metric === 'meaHueAngle') return hueAngle(mea.family, mea.step);
+  return null;
+}
+
+// Per-metric colour scale + display range. Scale is {min, max, ramp}.
+// ΔE and measured value/chroma are sequential (min=0). Hue angle is
+// diverging around 0° since angles are signed and 0 = perfect for a
+// mean-error-in-angle interpretation.
+function metricScale(metric) {
+  if (metric === 'deltaE')      return {min: 0,   max: 20, label: 'ΔE',                 ramp: rampErr};
+  if (metric === 'meaValue')    return {min: 0,   max: 10, label: 'measured value',     ramp: rampTeal};
+  if (metric === 'meaChroma')   return {min: 0,   max: 10, label: 'measured chroma',    ramp: rampTeal};
+  return                               {min: -90, max: 90, label: 'measured hue angle', ramp: rampDiv};
+}
+// All ramps take (v, min, max) and normalize the same way so callers
+// can hand any metric's scale in without special-casing min.
+function normalize(v, min, max) {
+  return Math.min(1, Math.max(0, (v - min) / (max - min)));
+}
+function rampErr(v, min, max) {
+  const t = normalize(v, min, max);
+  let r, g, b;
+  if (t < 0.5) {
+    const u = t * 2;
+    r = Math.round(60  + (240 - 60)  * u);
+    g = Math.round(180 + (220 - 180) * u);
+    b = 90;
+  } else {
+    const u = (t - 0.5) * 2;
+    r = Math.round(240 + (200 - 240) * u);
+    g = Math.round(220 + (60  - 220) * u);
+    b = Math.round(90  + (60  - 90)  * u);
+  }
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+function rampTeal(v, min, max) {
+  // Light grey (t=0, ~#e8e8e8) → dark teal (t=1, ~#005766).
+  const t = normalize(v, min, max);
+  const r = Math.round(232 + (0   - 232) * t);
+  const g = Math.round(232 + (87  - 232) * t);
+  const b = Math.round(232 + (102 - 232) * t);
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+function rampDiv(v, min, max) {
+  // Diverging cool → white → warm centred at (min+max)/2. Used for
+  // signed metrics (hue angle) where 0 means "correct" and both
+  // sides deserve their own colour.
+  const mid = (min + max) / 2;
+  const half = (max - min) / 2;
+  const t = Math.min(1, Math.max(-1, (v - mid) / half));
+  const cool = [0x30, 0x60, 0xa8];
+  const white = [0xf5, 0xf5, 0xf5];
+  const warm = [0xc0, 0x40, 0x30];
+  const [a, b] = t < 0 ? [white, cool] : [white, warm];
+  const u = Math.abs(t);
+  const r = Math.round(a[0] + (b[0] - a[0]) * u);
+  const g = Math.round(a[1] + (b[1] - a[1]) * u);
+  const bl = Math.round(a[2] + (b[2] - a[2]) * u);
+  return 'rgb(' + r + ',' + g + ',' + bl + ')';
+}
+
+const escapeHtml = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+// Build the (r,c) → {vals} table for one subset of samples. Vals
+// contain the per-sample values of the currently selected metric;
+// samples with a null metric (e.g. GLEY notation on meaValue) are
+// dropped from the bin.
+function heatmapBins(samples, rowAxis, colAxis, metric) {
+  const groups = new Map();
+  const rowsSet = new Set();
+  const colsSet = new Set();
+  for (const s of samples) {
+    const r = axisValueOf(s, rowAxis);
+    const c = axisValueOf(s, colAxis);
+    if (r == null || c == null) continue;
+    const m = metricOf(s, metric);
+    if (m == null) continue;
+    rowsSet.add(r);
+    colsSet.add(c);
+    const k = String(r) + '||' + String(c);
+    let g = groups.get(k);
+    if (!g) { g = {r, c, vals: []}; groups.set(k, g); }
+    g.vals.push(m);
+  }
+  return {groups, rows: sortAxisValues([...rowsSet]), cols: sortAxisValues([...colsSet])};
+}
+
+// Render a single heatmap table given prebuilt bins and a shared
+// colour cap. Returns HTML.
+function heatmapTableHtml(bins, rowAxis, colAxis, scale) {
+  const {groups, rows, cols} = bins;
+  let html = '<table class="heatmap-table"><thead><tr>';
+  html += '<th>' + escapeHtml(rowAxis) + ' \\\\ ' + escapeHtml(colAxis) + '</th>';
+  for (const c of cols) html += '<th>' + escapeHtml(c) + '</th>';
+  html += '</tr></thead><tbody>';
+  for (const r of rows) {
+    html += '<tr><th>' + escapeHtml(r) + '</th>';
+    for (const c of cols) {
+      const g = groups.get(String(r) + '||' + String(c));
+      if (!g) { html += '<td class="empty">·</td>'; continue; }
+      const v = aggregateNums(g.vals);
+      const min = Math.min.apply(null, g.vals).toFixed(1);
+      const max = Math.max.apply(null, g.vals).toFixed(1);
+      html += '<td style="background:' + scale.ramp(v, scale.min, scale.max) + ';" title="' +
+        g.vals.length + ' samples · ' + scale.label + ' range ' + min + '–' + max + '">' +
+        v.toFixed(1) + '<span class="n">n=' + g.vals.length + '</span></td>';
+    }
+    html += '</tr>';
+  }
+  return html + '</tbody></table>';
+}
+
+// Heatmap renderer. Groups filtered samples by (rowAxis, colAxis).
+// When state.facetAxis !== 'all' we further partition by that
+// dimension and emit one heatmap per facet value — all panels share
+// the same colour scale (per-metric max) so they're directly
+// comparable across facets.
+function renderHeatmap(filtered) {
+  const {rowAxis, colAxis, facetAxis, metric} = state;
+  const scale = metricScale(metric);
+
+  // Partition samples by facet (single group when facet='all').
+  const facetGroups = new Map();
+  if (facetAxis === 'all') {
+    facetGroups.set('(all)', filtered);
+  } else {
+    for (const s of filtered) {
+      const f = axisValueOf(s, facetAxis);
+      if (f == null) continue;
+      const key = String(f);
+      if (!facetGroups.has(key)) facetGroups.set(key, []);
+      facetGroups.get(key).push(s);
+    }
+  }
+  const facetKeys = sortAxisValues([...facetGroups.keys()]);
+
+  const panels = facetKeys.map(k => ({
+    key: k,
+    samples: facetGroups.get(k),
+    bins: heatmapBins(facetGroups.get(k), rowAxis, colAxis, metric),
+  }));
+
+  const totalCells = panels.reduce((a, p) => a + p.bins.groups.size, 0);
+  const body = panels.map(p => {
+    const title = facetAxis === 'all'
+      ? ''
+      : '<div class="heat-facet-title">' + escapeHtml(facetAxis) +
+        ' = ' + escapeHtml(p.key) + '  <span class="n">(' +
+        p.samples.length + ' samples)</span></div>';
+    return '<div class="heat-facet">' + title +
+      heatmapTableHtml(p.bins, rowAxis, colAxis, scale) + '</div>';
+  }).join('');
+
+  const summary = document.getElementById('summary');
+  const aggLabel = state.aggFn === 'median' ? 'median' : 'mean';
+  summary.textContent = 'showing ' + filtered.length + ' samples in ' +
+    panels.length + ' heatmap' + (panels.length === 1 ? '' : 's') +
+    ' (' + totalCells + ' cells total)';
+  const facetLabel = facetAxis === 'all' ? '' : ' · facet = ' + facetAxis;
+  document.getElementById('heatmap-title').textContent =
+    aggLabel + ' ' + scale.label + ' · rows = ' + rowAxis +
+    ' · cols = ' + colAxis + facetLabel +
+    ' · shared scale ' + scale.min + '–' + scale.max;
+  document.getElementById('heatmap-body').innerHTML = body;
+}
+
+// Bar chart. Reuses the row-axis picker as its categorical axis. One
+// bar per row-axis value, faceted like the heatmap. Bar length + fill
+// colour track the selected metric against its per-metric max scale
+// (ΔE cap 20, measured value/chroma cap 10) so panels are comparable
+// within a metric.
+function renderBar(filtered) {
+  const {rowAxis, facetAxis, metric} = state;
+  const scale = metricScale(metric);
+
+  const facetGroups = new Map();
+  if (facetAxis === 'all') {
+    facetGroups.set('(all)', filtered);
+  } else {
+    for (const s of filtered) {
+      const f = axisValueOf(s, facetAxis);
+      if (f == null) continue;
+      const key = String(f);
+      if (!facetGroups.has(key)) facetGroups.set(key, []);
+      facetGroups.get(key).push(s);
+    }
+  }
+  const facetKeys = sortAxisValues([...facetGroups.keys()]);
+
+  const panels = facetKeys.map(k => {
+    const samples = facetGroups.get(k);
+    const byRow = new Map();
+    for (const s of samples) {
+      const r = axisValueOf(s, rowAxis);
+      if (r == null) continue;
+      const m = metricOf(s, metric);
+      if (m == null) continue;
+      const rk = String(r);
+      let arr = byRow.get(rk);
+      if (!arr) { arr = []; byRow.set(rk, arr); }
+      arr.push(m);
+    }
+    const rowKeys = sortAxisValues([...byRow.keys()]);
+    const rows = rowKeys.map(rk => {
+      const vs = byRow.get(rk);
+      return {row: rk, vals: vs, agg: aggregateNums(vs), n: vs.length};
+    });
+    return {key: k, samples, rows};
+  });
+
+  const totalBars = panels.reduce((a, p) => a + p.rows.length, 0);
+  const aggLabel = state.aggFn === 'median' ? 'median' : 'mean';
+
+  const body = panels.map(p => {
+    const title = facetAxis === 'all'
+      ? ''
+      : '<div class="heat-facet-title">' + escapeHtml(facetAxis) +
+        ' = ' + escapeHtml(p.key) + '  <span class="n">(' +
+        p.samples.length + ' samples)</span></div>';
+    let rowsHtml = '<table class="bar-table"><thead><tr>' +
+      '<th>' + escapeHtml(rowAxis) + '</th>' +
+      '<th>' + aggLabel + ' ' + scale.label + '</th>' +
+      '</tr></thead><tbody>';
+    for (const r of p.rows) {
+      const pct = 100 * normalize(r.agg, scale.min, scale.max);
+      rowsHtml += '<tr>' +
+        '<td class="axis">' + escapeHtml(r.row) +
+          '<span class="bar-n">n=' + r.n + '</span></td>' +
+        '<td class="bar-cell">' +
+          '<div class="bar-track">' +
+            '<div class="bar-fill" style="width:' + pct.toFixed(1) +
+              '%; background:' + scale.ramp(r.agg, scale.min, scale.max) + '"></div>' +
+          '</div>' +
+          '<span class="bar-num">' + r.agg.toFixed(1) + '</span>' +
+        '</td>' +
+      '</tr>';
+    }
+    rowsHtml += '</tbody></table>';
+    return '<div class="heat-facet">' + title + rowsHtml + '</div>';
+  }).join('');
+
+  const summary = document.getElementById('summary');
+  summary.textContent = 'showing ' + filtered.length + ' samples in ' +
+    panels.length + ' bar chart' + (panels.length === 1 ? '' : 's') +
+    ' (' + totalBars + ' bars total)';
+  const facetLabel = facetAxis === 'all' ? '' : ' · facet = ' + facetAxis;
+  document.getElementById('bar-title').textContent =
+    aggLabel + ' ' + scale.label + ' · axis = ' + rowAxis + facetLabel +
+    ' · shared scale 0–' + scale.max;
+  document.getElementById('bar-body').innerHTML = body;
+}
+
+// Show/hide the polar view-switcher + axis controls based on chart
+// type, then activate the matching view-panel. Bar chart reuses the
+// row-axis picker (as the categorical axis) and hides col-axis; polar
+// hides the whole axes fieldset.
+function applyChartTypeVisibility() {
+  const ct = state.chartType;
+  const isPolar = ct === 'polar';
+  const isChan  = ct === 'channels';
+  document.getElementById('view-switcher').style.display = isPolar ? '' : 'none';
+  document.getElementById('polar-legend').style.display = isPolar ? '' : 'none';
+  document.getElementById('ctl-heatmap-axes').style.display = isPolar ? 'none' : '';
+  // col-axis only applies to heatmap; hide its label row for bar + xy.
+  const colLabel = document.getElementById('heat-col-axis').closest('label');
+  if (colLabel) colLabel.style.display = ct === 'heatmap' ? '' : 'none';
+  // Channels chart doesn't use row/metric — its axes are fixed R/G/B.
+  // Hide those pickers to reduce noise; show the channels-source
+  // picker (measured vs raw) which is channels-only.
+  const rowLabel    = document.getElementById('heat-row-axis').closest('label');
+  const metricLabel = document.getElementById('heat-metric').closest('label');
+  if (rowLabel)    rowLabel.style.display    = isChan ? 'none' : '';
+  if (metricLabel) metricLabel.style.display = isChan ? 'none' : '';
+  document.getElementById('heat-chan-src-label').style.display = isChan ? '' : 'none';
+  if (ct === 'polar') {
+    const checked = document.querySelector('input[name="view"]:checked');
+    activateView(checked ? checked.value : 'per-level');
+  } else {
+    activateView(ct);
+  }
+  render();
+}
+
+function render() {
+  const filtered = filterSamples();
+  lastFiltered = filtered; // cache for hover tooltips (2D + 3D)
+  if (state.chartType === 'heatmap') {
+    renderHeatmap(filtered);
+  } else if (state.chartType === 'bar') {
+    renderBar(filtered);
+  } else if (state.chartType === 'xy') {
+    renderXY(filtered);
+  } else if (state.chartType === 'channels') {
+    renderChannels(filtered);
+  } else {
+    renderPolar(filtered);
+  }
+}
+
+// Channels chart. Three vertically-stacked XY panels (R, G, B) per
+// facet — X = expected linear-sRGB channel value, Y = either measured
+// (post-WB) or raw (pre-WB) linear-sRGB, chosen via state.channelSource.
+// Same y=x diagonal reference on each; per-panel points aggregated per
+// unique X value (mean/median).
+//
+// Debug story: fit a line per channel and read off slope + intercept.
+// slope 1 + intercept 0 = perfect. Non-zero intercept common to all
+// three channels = sensor black-point / stray-light offset (see the
+// user's chroma-compression case). Slopes differing across channels =
+// WB gain miscalibration.
+function renderChannels(filtered) {
+  const {facetAxis, channelSource} = state;
+  const srcLabel = channelSource === 'raw' ? 'raw (pre-WB)' : 'measured (post-WB)';
+
+  // Partition by facet.
+  const facetGroups = new Map();
+  if (facetAxis === 'all') {
+    facetGroups.set('(all)', filtered);
+  } else {
+    for (const s of filtered) {
+      const f = axisValueOf(s, facetAxis);
+      if (f == null) continue;
+      const key = String(f);
+      if (!facetGroups.has(key)) facetGroups.set(key, []);
+      facetGroups.get(key).push(s);
+    }
+  }
+  const facetKeys = sortAxisValues([...facetGroups.keys()]);
+
+  const CHANNELS = [
+    {idx: 0, name: 'R', stroke: '#c62828'},
+    {idx: 1, name: 'G', stroke: '#2e7d32'},
+    {idx: 2, name: 'B', stroke: '#1565c0'},
+  ];
+
+  // Per-panel per-channel bin: X value → {ys: []}. X = expected
+  // linear-sRGB rounded to 3 decimals so tiny float differences from
+  // the analyzer don't split logical bins. That gives ~10-30 unique
+  // X values per channel per facet — enough dots to see a slope,
+  // few enough to render fast.
+  const panels = facetKeys.map(k => {
+    const samples = facetGroups.get(k);
+    const perChannel = CHANNELS.map(() => new Map());
+    for (const s of samples) {
+      const src = channelSource === 'raw' ? s.rawRgb : s.measuredRgb;
+      if (!s.expectedRgb || !src) continue;
+      for (const c of CHANNELS) {
+        const x = Math.round(s.expectedRgb[c.idx] * 1000) / 1000;
+        const y = src[c.idx];
+        let arr = perChannel[c.idx].get(x);
+        if (!arr) { arr = []; perChannel[c.idx].set(x, arr); }
+        arr.push(y);
+      }
+    }
+    const channelPoints = perChannel.map(bins => {
+      const xs = [...bins.keys()].sort((a, b) => a - b);
+      return xs.map(x => ({x, y: aggregateNums(bins.get(x)), n: bins.get(x).length}));
+    });
+
+    // Per-facet ref-card aggregation. For each ref card present in
+    // this facet's samples, compute the mean raw + mean measured
+    // (post-current-WB) across all UNIQUE shutters. Deduped by
+    // refOptions object identity — samples of the same shutter share
+    // the same refOptions reference, so we only process each shutter
+    // once. Expected is a constant per ref card (from REF_CARD_EXPECTED
+    // — same across shutters), so we just take the first non-null.
+    const refStats = new Map();
+    const seenRef = new Set();
+    for (const s of samples) {
+      if (seenRef.has(s.refOptions)) continue;
+      seenRef.add(s.refOptions);
+      const wb = computeWB(s.refOptions, state.firstRef, state.secondRef);
+      for (const [name, ref] of Object.entries(s.refOptions)) {
+        let e = refStats.get(name);
+        if (!e) {
+          e = {expected: ref.expected, rawSum: [0, 0, 0],
+               meaSum: [0, 0, 0], n: 0};
+          refStats.set(name, e);
+        }
+        for (let k = 0; k < 3; k++) e.rawSum[k] += ref.raw[k];
+        if (wb) {
+          const m = applyWB(ref.raw, wb);
+          for (let k = 0; k < 3; k++) e.meaSum[k] += m[k];
+        }
+        e.n++;
+      }
+    }
+    const refData = [];
+    for (const [name, e] of refStats) {
+      refData.push({
+        name,
+        expected: e.expected,
+        raw: e.rawSum.map(x => x / e.n),
+        measured: e.meaSum.map(x => x / e.n),
+      });
+    }
+    return {key: k, samples, channelPoints, refData};
+  });
+
+  // Axis bounds computed independently for X and Y across all panels
+  // + channels. X (expected) is data-bounded (typically 0–~0.9 for
+  // the Munsell chip lattice); Y (measured or raw) can overshoot
+  // considerably when WB is miscalibrated — decoupled bounds keep
+  // X readable when Y blows up. Include ref-card points in the
+  // bounds so their overlay stays inside the frame even when a card
+  // (e.g. postit's R at 0.95) exceeds any cell's expected.
+  let xMax = 0;
+  let yMax = 0;
+  for (const p of panels) for (const pts of p.channelPoints) for (const pt of pts) {
+    if (pt.x > xMax) xMax = pt.x;
+    if (pt.y > yMax) yMax = pt.y;
+  }
+  for (const p of panels) for (const r of p.refData) {
+    for (let k = 0; k < 3; k++) {
+      if (r.expected[k] > xMax) xMax = r.expected[k];
+      const y = channelSource === 'raw' ? r.raw[k] : r.measured[k];
+      if (y > yMax) yMax = y;
+    }
+  }
+  xMax = Math.max(0.05, Math.ceil(xMax * 20) / 20);
+  yMax = Math.max(0.05, Math.ceil(yMax * 20) / 20);
+  const totalPoints = panels.reduce(
+    (a, p) => a + p.channelPoints.reduce((b, c) => b + c.length, 0),
+    0,
+  );
+  const aggLabel = state.aggFn === 'median' ? 'median' : 'mean';
+
+  const body = panels.map(p => {
+    const title = facetAxis === 'all'
+      ? ''
+      : '<div class="heat-facet-title">' + escapeHtml(facetAxis) +
+        ' = ' + escapeHtml(p.key) + '  <span class="n">(' +
+        p.samples.length + ' samples)</span></div>';
+    return '<div class="heat-facet">' + title +
+      channelsSvg(p.channelPoints, p.refData, xMax, yMax, CHANNELS,
+        srcLabel, channelSource, state.firstRef, state.secondRef) + '</div>';
+  }).join('');
+
+  document.getElementById('summary').textContent =
+    'showing ' + filtered.length + ' samples across ' +
+    panels.length + ' panel' + (panels.length === 1 ? '' : 's') +
+    ' (' + totalPoints + ' points total)';
+  const facetLabel = facetAxis === 'all' ? '' : ' · facet = ' + facetAxis;
+  document.getElementById('channels-title').textContent =
+    aggLabel + ' per expected value · y = ' + srcLabel + facetLabel +
+    ' · x 0–' + xMax.toFixed(2) + ', y 0–' + yMax.toFixed(2);
+  document.getElementById('channels-body').innerHTML = body;
+}
+
+// Three stacked XY panels (R, G, B) in one SVG. Shared X axis at the
+// bottom, per-panel Y axis on the left. X and Y bounds are independent
+// so an overshooting measured Y doesn't crush the expected-X resolution.
+// The y=x diagonal is still drawn as the true line — it just won't be
+// at a 45° pixel angle when xMax != yMax (which is normal here since
+// expected caps near 1 and measured can overshoot).
+//
+// Ref-card overlay: each panel gets one dot per ref card at (expected,
+// y) where y matches the panel's source (raw or measured). The two
+// currently-selected refs are highlighted; a dotted line through them
+// (or through the origin + single ref in one-ref mode) shows the
+// linear transform the WB is applying to correct raw → measured.
+function channelsSvg(channelPoints, refData, xMax, yMax, channels,
+    srcLabel, channelSource, firstRef, secondRef) {
+  const W = 540;
+  const PAD_L = 46;
+  const PAD_R = 12;
+  const PAD_TOP = 10;
+  const PAD_MID = 18;
+  const PAD_BOT = 26;
+  const PANEL_H = 150;
+  const H = PAD_TOP + 3 * PANEL_H + 2 * PAD_MID + PAD_BOT;
+  const chartW = W - PAD_L - PAD_R;
+
+  const niceStep = span => {
+    const raw = span / 5;
+    const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+    const norm = raw / pow;
+    const nice = norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10;
+    return nice * pow;
+  };
+  const ticks = (min, max, step) => {
+    const out = [];
+    const start = Math.ceil(min / step) * step;
+    for (let v = start; v <= max + 1e-9; v += step) out.push(Math.round(v * 1e4) / 1e4);
+    return out;
+  };
+  const xStep = niceStep(xMax);
+  const yStep = niceStep(yMax);
+  // Cap the diagonal at whichever axis runs out first so it stays in
+  // frame — y=x reaches the top of the panel at y=yMax (if yMax<xMax)
+  // or the right edge at x=xMax (if xMax<yMax).
+  const diagEnd = Math.min(xMax, yMax);
+
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const xPx = x => PAD_L + (clamp(x, 0, xMax) / xMax) * chartW;
+
+  const parts = [];
+  for (let i = 0; i < channels.length; i++) {
+    const ch = channels[i];
+    const points = channelPoints[ch.idx];
+    const top = PAD_TOP + i * (PANEL_H + PAD_MID);
+    const bot = top + PANEL_H;
+    const yPx = y => bot - (clamp(y, 0, yMax) / yMax) * PANEL_H;
+
+    parts.push('<rect x="' + PAD_L + '" y="' + top +
+      '" width="' + chartW + '" height="' + PANEL_H +
+      '" fill="#fafafa" stroke="#ddd"/>');
+    for (const v of ticks(0, xMax, xStep)) {
+      parts.push('<line x1="' + xPx(v) + '" y1="' + top +
+        '" x2="' + xPx(v) + '" y2="' + bot +
+        '" stroke="#ddd" stroke-width="0.5"/>');
+    }
+    for (const v of ticks(0, yMax, yStep)) {
+      parts.push('<line x1="' + PAD_L + '" y1="' + yPx(v) +
+        '" x2="' + (PAD_L + chartW) + '" y2="' + yPx(v) +
+        '" stroke="#ddd" stroke-width="0.5"/>');
+      parts.push('<text x="' + (PAD_L - 4) + '" y="' + (yPx(v) + 3) +
+        '" text-anchor="end" font-size="10" fill="#555">' + v + '</text>');
+    }
+    // Diagonal y=x reference (in data space, not pixel space).
+    parts.push('<line x1="' + xPx(0) + '" y1="' + yPx(0) +
+      '" x2="' + xPx(diagEnd) + '" y2="' + yPx(diagEnd) +
+      '" stroke="#999" stroke-width="1" stroke-dasharray="4,3"/>');
+    // Points + line.
+    if (points.length > 0) {
+      const dPath = points
+        .map((p, j) => (j === 0 ? 'M' : 'L') + xPx(p.x) + ',' + yPx(p.y))
+        .join(' ');
+      parts.push('<path d="' + dPath +
+        '" fill="none" stroke="' + ch.stroke + '" stroke-width="2"/>');
+      for (const p of points) {
+        parts.push('<circle cx="' + xPx(p.x) + '" cy="' + yPx(p.y) +
+          '" r="3" fill="' + ch.stroke + '"><title>expected=' +
+          p.x.toFixed(3) + ', mean=' + p.y.toFixed(3) + ', n=' + p.n +
+          '</title></circle>');
+      }
+    }
+
+    // Ref-card overlay + fit line. Each ref lands at (expected[k],
+    // y[k]) where y matches the panel's channelSource. Non-selected
+    // refs = small hollow grey circles. Selected first/second = large
+    // filled dark circles with a coloured ring. Fit line = dashed
+    // black through the selected pair (or through origin + first ref
+    // if second is 'none'), extrapolated to panel bounds so the eye
+    // reads the slope + intercept of the WB transform directly.
+    const yOfRef = r => channelSource === 'raw' ? r.raw[ch.idx] : r.measured[ch.idx];
+    let firstPt = null, secondPt = null;
+    for (const r of refData) {
+      const cx = xPx(r.expected[ch.idx]);
+      const cy = yPx(yOfRef(r));
+      const isFirst = r.name === firstRef;
+      const isSecond = r.name === secondRef;
+      if (isFirst) firstPt = {x: r.expected[ch.idx], y: yOfRef(r)};
+      if (isSecond) secondPt = {x: r.expected[ch.idx], y: yOfRef(r)};
+      const isSel = isFirst || isSecond;
+      const ringColor = isFirst ? '#1565c0' : isSecond ? '#7b1fa2' : '#666';
+      const fill = isSel ? '#222' : 'none';
+      const rr = isSel ? 6 : 4;
+      const sw = isSel ? 2 : 1;
+      parts.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + rr +
+        '" fill="' + fill + '" stroke="' + ringColor +
+        '" stroke-width="' + sw + '"><title>' + escapeHtml(r.name) +
+        ': expected=' + r.expected[ch.idx].toFixed(3) +
+        ', ' + channelSource + '=' + yOfRef(r).toFixed(3) +
+        '</title></circle>');
+      parts.push('<text x="' + (cx + 8) + '" y="' + (cy + 3) +
+        '" font-size="10" fill="' + ringColor +
+        '" font-weight="' + (isSel ? '600' : '400') + '">' +
+        escapeHtml(r.name) + '</text>');
+    }
+    // Fit line — extrapolate through selected refs to the panel edges.
+    // Two refs: line through both. One ref: line through origin + it
+    // (slope-only, no offset). None: no line.
+    if (firstPt) {
+      let x0 = 0, y0 = 0, x1 = xMax, y1 = 0;
+      if (secondPt) {
+        const dx = firstPt.x - secondPt.x;
+        if (Math.abs(dx) > 1e-9) {
+          const slope = (firstPt.y - secondPt.y) / dx;
+          const yInt = firstPt.y - slope * firstPt.x;
+          y0 = yInt;
+          y1 = slope * xMax + yInt;
+        }
+      } else {
+        // Single ref: through origin and firstPt.
+        const slope = firstPt.x > 0 ? firstPt.y / firstPt.x : 0;
+        y0 = 0;
+        y1 = slope * xMax;
+      }
+      parts.push('<line x1="' + xPx(x0) + '" y1="' + yPx(y0) +
+        '" x2="' + xPx(x1) + '" y2="' + yPx(y1) +
+        '" stroke="#111" stroke-width="1" stroke-dasharray="3,3" opacity="0.7"/>');
+    }
+
+    // Channel label (top-left of panel).
+    parts.push('<text x="' + (PAD_L + 6) + '" y="' + (top + 14) +
+      '" font-size="12" font-weight="bold" fill="' + ch.stroke + '">' +
+      ch.name + '</text>');
+  }
+
+  // Shared X-axis labels (below bottom panel).
+  const bottomBot = PAD_TOP + 3 * PANEL_H + 2 * PAD_MID;
+  for (const v of ticks(0, xMax, xStep)) {
+    parts.push('<text x="' + xPx(v) + '" y="' + (bottomBot + 12) +
+      '" text-anchor="middle" font-size="10" fill="#555">' + v + '</text>');
+  }
+  parts.push('<text x="' + (PAD_L + chartW / 2) + '" y="' + (bottomBot + 22) +
+    '" text-anchor="middle" font-size="11" fill="#333">expected linear-sRGB</text>');
+  parts.push('<text transform="translate(' + (PAD_L - 32) +
+    ',' + (PAD_TOP + (3 * PANEL_H + 2 * PAD_MID) / 2) +
+    ') rotate(-90)" text-anchor="middle" font-size="11" fill="#333">' +
+    escapeHtml(srcLabel) + '</text>');
+
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W +
+    '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
+    parts.join('') + '</svg>';
+}
+
+// XY chart. Two vertically-stacked panels sharing the same X axis
+// (expected value or expected chroma). Top panel: measured value/
+// chroma with a y=x diagonal reference (perfect linearity). Bottom
+// panel: mean measured/expected ratio with a y=1 reference (perfect
+// scaling). Points are per-X-bin aggregates (mean or median), lines
+// connect consecutive bins.
+//
+// Only meaningful when rowAxis is an expected dimension and metric is
+// the matching measured dimension. Anything else prints a hint and
+// bails — everything else in the picker (device, format, ΔE, etc.)
+// doesn't map to a linearity story on the same-unit axes.
+function renderXY(filtered) {
+  const {rowAxis, facetAxis, metric} = state;
+  // Recognised triples: (rowAxis, metric, dimension). Dimension
+  // controls axis units and whether the second panel is a ratio
+  // (unsigned) or a delta (signed, appropriate for hue).
+  let dim = null;
+  if (rowAxis === 'expValue'  && metric === 'meaValue')    dim = 'value';
+  if (rowAxis === 'expChroma' && metric === 'meaChroma')   dim = 'chroma';
+  if (rowAxis === 'expHue'    && metric === 'meaHueAngle') dim = 'hue';
+  if (!dim) {
+    document.getElementById('xy-title').textContent =
+      'XY needs matched expected + measured axes';
+    document.getElementById('xy-body').innerHTML =
+      '<div class="xy-hint">Pick a matched pair — <b>rows = value (expected)</b> ' +
+      'with <b>metric = measured value</b>, <b>rows = chroma (expected)</b> ' +
+      'with <b>metric = measured chroma</b>, or <b>rows = hue angle (expected)</b> ' +
+      'with <b>metric = measured hue angle</b>. Diagonal on top = perfect ' +
+      'linearity. Bottom panel = ratio (value/chroma; ideal 1) or angular ' +
+      'delta (hue; ideal 0°).</div>';
+    document.getElementById('summary').textContent =
+      'XY chart — select matched axes above';
+    return;
+  }
+
+  const xLabel = dim === 'hue' ? 'expected hue (°)'
+              : dim === 'chroma' ? 'expected chroma'
+              : 'expected value';
+  const yLabel = dim === 'hue' ? 'measured hue (°)'
+              : dim === 'chroma' ? 'measured chroma'
+              : 'measured value';
+  // Second panel: ratio (unsigned, ideal 1) for value/chroma; delta
+  // (signed, ideal 0) for hue.
+  const isDelta = dim === 'hue';
+  const secRef = isDelta ? 0 : 1;
+  const secLabel = isDelta ? 'delta (°)' : 'ratio';
+
+  // Partition by facet.
+  const facetGroups = new Map();
+  if (facetAxis === 'all') {
+    facetGroups.set('(all)', filtered);
+  } else {
+    for (const s of filtered) {
+      const f = axisValueOf(s, facetAxis);
+      if (f == null) continue;
+      const key = String(f);
+      if (!facetGroups.has(key)) facetGroups.set(key, []);
+      facetGroups.get(key).push(s);
+    }
+  }
+  const facetKeys = sortAxisValues([...facetGroups.keys()]);
+
+  const xyOf = (exp, mea) => {
+    if (dim === 'value')  return {x: exp.value,  y: mea.value,  hueStr: null};
+    if (dim === 'chroma') return {x: exp.chroma, y: mea.chroma, hueStr: null};
+    return {
+      x: hueAngle(exp.family, exp.step),
+      y: hueAngle(mea.family, mea.step),
+      hueStr: String(exp.step) + exp.family,
+    };
+  };
+
+  const panels = facetKeys.map(k => {
+    const samples = facetGroups.get(k);
+    const byX = new Map();
+    for (const s of samples) {
+      const exp = parseNotation(s.expected);
+      const mea = parseNotation(s.measured);
+      if (!exp || !mea) continue;
+      const {x, y, hueStr} = xyOf(exp, mea);
+      if (!isDelta && x === 0) continue; // ratio undefined at 0
+      const sec = isDelta ? (y - x) : (y / x);
+      let bin = byX.get(x);
+      if (!bin) { bin = {ys: [], secs: [], hueStr}; byX.set(x, bin); }
+      bin.ys.push(y);
+      bin.secs.push(sec);
+    }
+    const xs = [...byX.keys()].sort((a, b) => a - b);
+    const points = xs.map(x => {
+      const bin = byX.get(x);
+      return {
+        x,
+        y: aggregateNums(bin.ys),
+        sec: aggregateNums(bin.secs),
+        n: bin.ys.length,
+        hueStr: bin.hueStr,
+      };
+    });
+    // Colour swatch per point — hue mode only. Uses the representative
+    // (~chroma 6, value 5) chip's linear-sRGB, gamma-encoded via
+    // rgbHex. null for points without a matching chip (rare — mostly
+    // GLEY hues far outside the wedge that aren't in the lattice).
+    const swatches = dim === 'hue'
+      ? points.map(p => {
+          const c = p.hueStr ? representativeChipFor(p.hueStr) : null;
+          return c ? {hex: rgbHex(c.rgb), title: c.notation} : null;
+        })
+      : null;
+    return {key: k, samples, points, swatches};
+  });
+
+  const totalPoints = panels.reduce((a, p) => a + p.points.length, 0);
+  const aggLabel = state.aggFn === 'median' ? 'median' : 'mean';
+
+  // Axis bounds. Value / chroma are Munsell-bounded so [0, 10] is
+  // fixed. Hue can range past the wedge (family G/BG/B/PB/P/RP push
+  // hueAngle() up to ~240°) — fit main-panel min/max and delta min/
+  // max to actual data across ALL facets so panels remain comparable,
+  // then pad out to a "nice" 30° / 10° step so the axis reads cleanly.
+  const roundUp = (v, step) => Math.ceil(v / step) * step;
+  const roundDn = (v, step) => Math.floor(v / step) * step;
+  let axisMin, axisMax, secMin, secMax;
+  if (dim === 'hue') {
+    let mn = Infinity, mx = -Infinity;
+    let smn = Infinity, smx = -Infinity;
+    for (const p of panels) for (const pt of p.points) {
+      if (pt.x < mn) mn = pt.x;
+      if (pt.x > mx) mx = pt.x;
+      if (pt.y < mn) mn = pt.y;
+      if (pt.y > mx) mx = pt.y;
+      if (pt.sec < smn) smn = pt.sec;
+      if (pt.sec > smx) smx = pt.sec;
+    }
+    if (!isFinite(mn)) { mn = -90; mx = 90; smn = -30; smx = 30; }
+    axisMin = Math.min(0, roundDn(mn, 30));
+    axisMax = Math.max(0, roundUp(mx, 30));
+    // Delta panel: pad by ~5° so points don't touch the frame; keep
+    // symmetric so the y=0 reference sits centred when data straddles.
+    const sbound = Math.max(Math.abs(smn), Math.abs(smx), 5);
+    secMax = roundUp(sbound, 10);
+    secMin = -secMax;
+  } else {
+    axisMin = 0;
+    axisMax = 10;
+    secMin = 0;
+    secMax = 2;
+  }
+
+  const body = panels.map(p => {
+    const title = facetAxis === 'all'
+      ? ''
+      : '<div class="heat-facet-title">' + escapeHtml(facetAxis) +
+        ' = ' + escapeHtml(p.key) + '  <span class="n">(' +
+        p.samples.length + ' samples · ' + p.points.length +
+        ' bins)</span></div>';
+    return '<div class="heat-facet">' + title +
+      xySvg(p.points, {axisMin, axisMax, secMin, secMax, secRef, secLabel},
+        xLabel, yLabel, p.swatches) + '</div>';
+  }).join('');
+
+  document.getElementById('summary').textContent =
+    'showing ' + filtered.length + ' samples across ' +
+    panels.length + ' panel' + (panels.length === 1 ? '' : 's') +
+    ' (' + totalPoints + ' X bins total)';
+  const facetLabel = facetAxis === 'all' ? '' : ' · facet = ' + facetAxis;
+  document.getElementById('xy-title').textContent =
+    aggLabel + ' per bin · x = ' + xLabel + ' · y-top = ' + yLabel +
+    ' · y-bot = ' + secLabel + facetLabel + ' · axes ' + axisMin +
+    '–' + axisMax + ', ' + secLabel + ' ' + secMin + '–' + secMax;
+  document.getElementById('xy-body').innerHTML = body;
+}
+
+// Build a stacked-panel SVG. Top: (x, y) with y=x diagonal reference.
+// Bottom: (x, sec) with a horizontal reference at cfg.secRef — sec is
+// either the ratio (value/chroma) or the delta in ° (hue). Shared X
+// axis. Numeric ticks on both axes, spacing chosen to give ~6 major
+// ticks across each range.
+function xySvg(points, cfg, xLabel, yLabel, swatches) {
+  const {axisMin, axisMax, secMin, secMax, secRef, secLabel} = cfg;
+  const W = 540;
+  const PAD_L = 46;
+  const PAD_R = 12;
+  const PAD_TOP = 10;
+  const PAD_MID = 30;
+  const PAD_BOT = 26;
+  const MAIN_H = 220;
+  const SEC_H = 100;
+  // Colour swatch strip sits between the delta panel and the X axis
+  // labels — only present when the caller passed a swatches array
+  // (currently just hue mode). Width per swatch is derived from the
+  // narrowest x-gap so adjacent swatches don't overlap.
+  const SWATCH_H = swatches ? 22 : 0;
+  const SWATCH_GAP = swatches ? 6 : 0;
+  const H = PAD_TOP + MAIN_H + PAD_MID + SEC_H + SWATCH_GAP + SWATCH_H + PAD_BOT;
+  const chartW = W - PAD_L - PAD_R;
+  const mainTop = PAD_TOP;
+  const mainBot = PAD_TOP + MAIN_H;
+  const secTop = mainBot + PAD_MID;
+  const secBot = secTop + SEC_H;
+  const swatchTop = secBot + SWATCH_GAP;
+  const swatchBot = swatchTop + SWATCH_H;
+  const xAxisLabelsY = (swatches ? swatchBot : secBot) + 12;
+  const xAxisTitleY  = (swatches ? swatchBot : secBot) + 22;
+
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const xPx = x => PAD_L + ((clamp(x, axisMin, axisMax) - axisMin) /
+    (axisMax - axisMin)) * chartW;
+  const yPx = y => mainBot - ((clamp(y, axisMin, axisMax) - axisMin) /
+    (axisMax - axisMin)) * MAIN_H;
+  const sPx = s => secBot - ((clamp(s, secMin, secMax) - secMin) /
+    (secMax - secMin)) * SEC_H;
+
+  // Choose a "nice" tick step: aim for ~6 major ticks across the range.
+  const niceStep = span => {
+    const raw = span / 6;
+    const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+    const norm = raw / pow;
+    const nice = norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10;
+    return nice * pow;
+  };
+  const majorX = niceStep(axisMax - axisMin);
+  const majorY = majorX;
+  const majorS = niceStep(secMax - secMin);
+  const ticks = (min, max, step) => {
+    const out = [];
+    const start = Math.ceil(min / step) * step;
+    for (let v = start; v <= max + 1e-9; v += step) out.push(Math.round(v * 1e4) / 1e4);
+    return out;
+  };
+
+  const parts = [];
+
+  // --- Main panel (measured vs expected) --------------------------------
+  parts.push('<rect x="' + PAD_L + '" y="' + mainTop +
+    '" width="' + chartW + '" height="' + MAIN_H +
+    '" fill="#fafafa" stroke="#ddd"/>');
+  for (const v of ticks(axisMin, axisMax, majorX)) {
+    const px = xPx(v);
+    parts.push('<line x1="' + px + '" y1="' + mainTop +
+      '" x2="' + px + '" y2="' + mainBot +
+      '" stroke="#ddd" stroke-width="0.5"/>');
+  }
+  for (const v of ticks(axisMin, axisMax, majorY)) {
+    const py = yPx(v);
+    parts.push('<line x1="' + PAD_L + '" y1="' + py +
+      '" x2="' + (PAD_L + chartW) + '" y2="' + py +
+      '" stroke="#ddd" stroke-width="0.5"/>');
+    parts.push('<text x="' + (PAD_L - 4) + '" y="' + (py + 3) +
+      '" text-anchor="end" font-size="10" fill="#555">' + v + '</text>');
+  }
+  // Diagonal y=x reference.
+  parts.push('<line x1="' + xPx(axisMin) + '" y1="' + yPx(axisMin) +
+    '" x2="' + xPx(axisMax) + '" y2="' + yPx(axisMax) +
+    '" stroke="#999" stroke-width="1" stroke-dasharray="4,3"/>');
+  if (points.length > 0) {
+    const dPath = points
+      .map((p, i) => (i === 0 ? 'M' : 'L') + xPx(p.x) + ',' + yPx(p.y))
+      .join(' ');
+    parts.push('<path d="' + dPath +
+      '" fill="none" stroke="#005766" stroke-width="2"/>');
+    for (const p of points) {
+      parts.push('<circle cx="' + xPx(p.x) + '" cy="' + yPx(p.y) +
+        '" r="3.5" fill="#005766"><title>x=' + p.x +
+        ', mean y=' + p.y.toFixed(2) + ', n=' + p.n + '</title></circle>');
+    }
+  }
+  parts.push('<text transform="translate(' + (PAD_L - 32) +
+    ',' + (mainTop + MAIN_H / 2) + ') rotate(-90)" text-anchor="middle" ' +
+    'font-size="11" fill="#333">' + escapeHtml(yLabel) + '</text>');
+
+  // --- Secondary panel (ratio or delta vs expected) ---------------------
+  parts.push('<rect x="' + PAD_L + '" y="' + secTop +
+    '" width="' + chartW + '" height="' + SEC_H +
+    '" fill="#fafafa" stroke="#ddd"/>');
+  for (const v of ticks(axisMin, axisMax, majorX)) {
+    const px = xPx(v);
+    parts.push('<line x1="' + px + '" y1="' + secTop +
+      '" x2="' + px + '" y2="' + secBot +
+      '" stroke="#ddd" stroke-width="0.5"/>');
+    parts.push('<text x="' + px + '" y="' + xAxisLabelsY +
+      '" text-anchor="middle" font-size="10" fill="#555">' + v + '</text>');
+  }
+  for (const s of ticks(secMin, secMax, majorS)) {
+    const py = sPx(s);
+    const isRef = Math.abs(s - secRef) < 1e-9;
+    parts.push('<line x1="' + PAD_L + '" y1="' + py +
+      '" x2="' + (PAD_L + chartW) + '" y2="' + py +
+      '" stroke="' + (isRef ? '#999' : '#eee') +
+      '" stroke-width="' + (isRef ? 1 : 0.5) +
+      '" stroke-dasharray="' + (isRef ? '4,3' : '') + '"/>');
+    parts.push('<text x="' + (PAD_L - 4) + '" y="' + (py + 3) +
+      '" text-anchor="end" font-size="10" fill="#555">' + s + '</text>');
+  }
+  if (points.length > 0) {
+    const dPath = points
+      .map((p, i) => (i === 0 ? 'M' : 'L') + xPx(p.x) + ',' + sPx(p.sec))
+      .join(' ');
+    parts.push('<path d="' + dPath +
+      '" fill="none" stroke="#c62828" stroke-width="2"/>');
+    for (const p of points) {
+      parts.push('<circle cx="' + xPx(p.x) + '" cy="' + sPx(p.sec) +
+        '" r="3.5" fill="#c62828"><title>x=' + p.x +
+        ', ' + secLabel + '=' + p.sec.toFixed(3) + ', n=' + p.n +
+        '</title></circle>');
+    }
+  }
+  parts.push('<text transform="translate(' + (PAD_L - 32) +
+    ',' + (secTop + SEC_H / 2) + ') rotate(-90)" text-anchor="middle" ' +
+    'font-size="11" fill="#333">' + escapeHtml(secLabel) + '</text>');
+
+  // --- Colour swatch strip (hue mode only) ------------------------------
+  // One rect per point, centred on xPx(p.x). Swatch width is capped
+  // so adjacent bins don't overlap when data is dense; a dim outline
+  // keeps swatches distinguishable against white/near-white fills.
+  if (swatches) {
+    let minGap = axisMax - axisMin;
+    for (let i = 1; i < points.length; i++) {
+      const gap = xPx(points[i].x) - xPx(points[i - 1].x);
+      if (gap < minGap) minGap = gap;
+    }
+    const swatchW = Math.max(6, Math.min(20, minGap - 2));
+    for (let i = 0; i < points.length; i++) {
+      const sw = swatches[i];
+      if (!sw) continue;
+      const cx = xPx(points[i].x);
+      parts.push('<rect x="' + (cx - swatchW / 2) + '" y="' + swatchTop +
+        '" width="' + swatchW + '" height="' + SWATCH_H +
+        '" fill="' + sw.hex + '" stroke="rgba(0,0,0,0.35)" stroke-width="0.5">' +
+        '<title>' + escapeHtml(sw.title) + '</title></rect>');
+    }
+  }
+
+  parts.push('<text x="' + (PAD_L + chartW / 2) + '" y="' + xAxisTitleY +
+    '" text-anchor="middle" font-size="11" fill="#333">' +
+    escapeHtml(xLabel) + '</text>');
+
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W +
+    '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
+    parts.join('') + '</svg>';
 }
 
 // ---- 3D stacked view (Three.js) ----------------------------------------
@@ -1503,6 +3125,187 @@ function resize3D() {
   renderer3D.setSize(wNew, hNew);
 }
 
+// ---- Lab 3D scatter view -------------------------------------------------
+// Chips positioned at (a*, L*, b*) so Euclidean 3D pixel distance =
+// ΔE₇₆ (which tracks ΔE₀₀ within ~10% for most soil chips). No polar
+// wrapping — the Munsell hue circle unfolds naturally around the
+// central neutral axis as chips fan out by their a*/b* projections.
+// Scene state lives in its own trio of globals so it doesn't fight
+// the existing Munsell 3D view.
+let sceneLab3D, cameraLab3D, rendererLab3D, controlsLab3D;
+let chipMeshLab3D = null;
+let arrowLinesLab3D = null;
+
+function setupLab3D() {
+  const container = document.getElementById('vizLab3d');
+  if (!container) return;
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+
+  sceneLab3D = new THREE.Scene();
+  sceneLab3D.background = new THREE.Color(0xf0f0f0);
+
+  // Lab bounds: L* ∈ [0, 100], a* ∈ ~[-60, +60], b* ∈ ~[-60, +80].
+  // Camera positioned looking down and outward so the L* axis
+  // (vertical) is prominent and the a*-b* plane spreads horizontally.
+  cameraLab3D = new THREE.PerspectiveCamera(45, w / h, 1, 1000);
+  cameraLab3D.position.set(120, 100, 120);
+
+  rendererLab3D = new THREE.WebGLRenderer({antialias: true});
+  rendererLab3D.setPixelRatio(window.devicePixelRatio);
+  rendererLab3D.setSize(w, h);
+  container.appendChild(rendererLab3D.domElement);
+
+  controlsLab3D = new THREE.OrbitControls(cameraLab3D, rendererLab3D.domElement);
+  controlsLab3D.target.set(0, 50, 0); // centre of L* axis
+  controlsLab3D.enableDamping = true;
+  controlsLab3D.dampingFactor = 0.08;
+  controlsLab3D.update();
+
+  sceneLab3D.add(new THREE.AmbientLight(0xffffff, 0.75));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.7);
+  dl.position.set(1, 2, 1);
+  sceneLab3D.add(dl);
+
+  // Central L* axis (neutrals, a=b=0). Runs 0→100.
+  const axisGeom = new THREE.BufferGeometry();
+  axisGeom.setAttribute('position',
+    new THREE.Float32BufferAttribute([0, 0, 0, 0, 100, 0], 3));
+  sceneLab3D.add(new THREE.Line(axisGeom,
+    new THREE.LineBasicMaterial({color: 0x999999})));
+
+  // a* and b* reference axes at L*=50 (mid-plane) so orientation is
+  // clear. Red arrow along +a (red direction), yellow along +b (yellow).
+  const abAxisAt = (dir, color) => {
+    const g = new THREE.BufferGeometry();
+    const pts = dir === 'a'
+      ? [-50, 50, 0, 50, 50, 0]
+      : [0, 50, -50, 0, 50, 50];
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    sceneLab3D.add(new THREE.Line(g, new THREE.LineBasicMaterial({
+      color, transparent: true, opacity: 0.5,
+    })));
+  };
+  abAxisAt('a', 0xc62828); // reddish for a-axis
+  abAxisAt('b', 0xe0b800); // yellow-ish for b-axis
+
+  // L* tick labels every 20 units (0, 20, 40, 60, 80, 100).
+  for (let l = 0; l <= 100; l += 20) {
+    const sp = makeTextSprite('L*=' + l, {fontSize: 30, worldSize: 6});
+    sp.position.set(8, l, 0);
+    sceneLab3D.add(sp);
+    labelSprites.push(sp);
+  }
+  // Axis-direction labels on the mid-plane.
+  const lblA = makeTextSprite('+a (red)', {fontSize: 28, worldSize: 8, color: '#c62828'});
+  lblA.position.set(58, 50, 0);
+  sceneLab3D.add(lblA);
+  labelSprites.push(lblA);
+  const lblAn = makeTextSprite('−a (green)', {fontSize: 28, worldSize: 8, color: '#2e7d32'});
+  lblAn.position.set(-58, 50, 0);
+  sceneLab3D.add(lblAn);
+  labelSprites.push(lblAn);
+  const lblB = makeTextSprite('+b (yellow)', {fontSize: 28, worldSize: 8, color: '#e0b800'});
+  lblB.position.set(0, 50, 58);
+  sceneLab3D.add(lblB);
+  labelSprites.push(lblB);
+  const lblBn = makeTextSprite('−b (blue)', {fontSize: 28, worldSize: 8, color: '#1565c0'});
+  lblBn.position.set(0, 50, -58);
+  sceneLab3D.add(lblBn);
+  labelSprites.push(lblBn);
+
+  buildChipLatticeLab3D();
+
+  const animate = () => {
+    requestAnimationFrame(animate);
+    controlsLab3D.update();
+    rendererLab3D.render(sceneLab3D, cameraLab3D);
+  };
+  animate();
+}
+
+function buildChipLatticeLab3D() {
+  // Sphere per chip at its Lab coord; colour = chip's own linear-sRGB
+  // (matches the Munsell 3D view). Chip Labs are already cached in
+  // CHIP_LABS (built by the client-side WB code at load time).
+  // Uses InstancedMesh.setColorAt (via linearRgbToTHREE which
+  // handles the gamma encoding + colour-space conversion Three.js
+  // needs). setColorAt allocates the internal instanceColor buffer
+  // on first call — much more reliable than building the buffer
+  // manually.
+  // Dot radius 0.8 (Lab units) — small enough that a typical arrow of
+  // ΔE 5-10 sticks out clearly past the dot edge, and neighbouring
+  // chips at min-spacing (~4 units) don't overlap. Bumping this up
+  // makes the lattice a solid ball with arrows invisible inside.
+  const geom = new THREE.SphereGeometry(0.8, 10, 8);
+  const mat = new THREE.MeshLambertMaterial();
+  const mesh = new THREE.InstancedMesh(geom, mat, CHIPS.length);
+  const dummy = new THREE.Object3D();
+  for (let i = 0; i < CHIPS.length; i++) {
+    const [L, a, b] = CHIP_LABS[i];
+    dummy.position.set(a, L, b);
+    dummy.updateMatrix();
+    mesh.setMatrixAt(i, dummy.matrix);
+    mesh.setColorAt(i, linearRgbToTHREE(CHIPS[i].rgb));
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  sceneLab3D.add(mesh);
+  chipMeshLab3D = mesh;
+}
+
+function buildArrowsLab3D() {
+  if (!sceneLab3D) return;
+  if (arrowLinesLab3D) {
+    sceneLab3D.remove(arrowLinesLab3D);
+    arrowLinesLab3D.geometry.dispose();
+    arrowLinesLab3D.material.dispose();
+    arrowLinesLab3D = null;
+  }
+  const positions = [];
+  const colours = [];
+  for (const s of lastFiltered) {
+    if (!s.measuredRgb || !s.expectedRgb) continue;
+    const labExp = rgbToLab(s.expectedRgb);
+    const labMea = rgbToLab(s.measuredRgb);
+    positions.push(labExp[1], labExp[0], labExp[2]); // (a, L, b)
+    positions.push(labMea[1], labMea[0], labMea[2]);
+    // Colour by ΔL* — blue = measured darker, red = lighter,
+    // matches the 2D disk convention (same deltaValueColor rules).
+    const dL = labMea[0] - labExp[0];
+    const t = Math.max(-1, Math.min(1, dL / 15));
+    let r, g, b;
+    if (t < 0) {
+      const u = -t;
+      r = (1 - u) * 238 + u * 0x00; g = (1 - u) * 238 + u * 0x55; b = (1 - u) * 238 + u * 0xaa;
+    } else {
+      const u = t;
+      r = (1 - u) * 238 + u * 0xaa; g = (1 - u) * 238 + u * 0x22; b = (1 - u) * 238 + u * 0x11;
+    }
+    for (let k = 0; k < 2; k++) {
+      colours.push(r / 255, g / 255, b / 255);
+    }
+  }
+  if (positions.length === 0) return;
+  const geom = new THREE.BufferGeometry();
+  geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geom.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
+  const mat = new THREE.LineBasicMaterial({vertexColors: true, transparent: true, opacity: 0.7});
+  arrowLinesLab3D = new THREE.LineSegments(geom, mat);
+  sceneLab3D.add(arrowLinesLab3D);
+}
+
+function resizeLab3D() {
+  const container = document.getElementById('vizLab3d');
+  if (!container || !rendererLab3D) return;
+  const wNew = container.clientWidth;
+  const hNew = container.clientHeight;
+  if (wNew === 0 || hNew === 0) return;
+  cameraLab3D.aspect = wNew / hNew;
+  cameraLab3D.updateProjectionMatrix();
+  rendererLab3D.setSize(wNew, hNew);
+}
+
 // View switcher — mounts 3D lazily on first activation. Extensible:
 // add new radio options with matching view-panel divs (id="view-X"
 // value="X") and, if the view needs runtime setup, register it in
@@ -1516,6 +3319,14 @@ const VIEW_MOUNTS = {
       // Second+ activation: container was display:none while hidden
       // so its width/height may have drifted from the last resize.
       resize3D();
+    }
+  },
+  'lab-3d': () => {
+    if (!sceneLab3D) {
+      setupLab3D();
+      buildArrowsLab3D();
+    } else {
+      resizeLab3D();
     }
   },
 };
@@ -1536,17 +3347,26 @@ function initViewSwitcher() {
 }
 
 // Original render() is called on every filter change; hook the 3D
-// arrows rebuild onto the same trigger so 2D + 3D stay in sync
-// (no-op if 3D hasn't been mounted yet).
+// arrows rebuild and the URL-state writeback onto the same trigger so
+// the browser back/forward + shareable-link machinery stays in sync
+// with the visible view (both no-ops if not yet mounted / enabled).
 const _origRender = render;
 render = function() {
   _origRender();
   if (scene3D) buildArrows3D();
+  if (sceneLab3D) buildArrowsLab3D();
+  writeStateToUrl();
 };
 
+hydrateStateFromUrl();
 initControls();
 initViewSwitcher();
 setup2DChipHover();
+// Chart type may have been hydrated from URL; sync UI visibility to
+// match before the initial render so users don't briefly see the wrong
+// panels on load.
+applyChartTypeVisibility();
+urlWriteEnabled = true;
 render();
 </script>
 </body>

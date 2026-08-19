@@ -115,10 +115,10 @@ export type MunsellChartResult = {
   testSwatchLinearRgb: {r: number; g: number; b: number} | null;
   // Multi-card mode: raw linear-sRGB at each MULTI_CARD_POINTS slot.
   // Null when the caller ran single-card mode (default); otherwise a
-  // 3-entry array in MULTI_CARD_POINTS declaration order (whibal,
-  // postit, greycard).
+  // per-slot array in MULTI_CARD_POINTS declaration order (whibal,
+  // postit, greycard, white).
   multiRefCards: Array<{
-    name: 'whibal' | 'postit' | 'greycard';
+    name: 'whibal' | 'postit' | 'greycard' | 'white';
     linearRgb: {r: number; g: number; b: number};
     rect: {x: number; y: number; w: number; h: number};
   }> | null;
@@ -408,6 +408,18 @@ export const analyzeMunsellChart = async (
   if (!grid && bestGrid && bestMaxOff <= CENTROID_SHIFT_REJECT_FRAC) {
     grid = bestGrid;
   }
+  // Copy the whiteMask border-ring RGB medians onto the grid so
+  // downstream (analyze-fixtures) can synthesise a 'paper' ref card.
+  // Patched here rather than passed through detectChartByRegions since
+  // the values come from maskResult, which sits in this scope.
+  const patchPaperMedians = (g: GridDetection | null) => {
+    if (!g) return;
+    g.paperMedianR = maskResult.borderMedianR;
+    g.paperMedianG = maskResult.borderMedianG;
+    g.paperMedianB = maskResult.borderMedianB;
+  };
+  patchPaperMedians(grid);
+  patchPaperMedians(bestGrid);
   if (attemptsSummary.length > 1) {
     console.log(
       `[chartAnalysis] RANSAC attempts (${attemptsSummary.length}): ` +
@@ -466,6 +478,9 @@ export const analyzeMunsellChart = async (
       matchedGridBrightness: null,
       avgLuma: 0,
       paperLuma: null,
+      paperMedianR: null,
+      paperMedianG: null,
+      paperMedianB: null,
       brightPaperOnDark: null,
       nKept: 0,
       rejectCounts: {
