@@ -3905,6 +3905,7 @@ exports[`renders correctly 1`] = `
                                               onChange={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
+                                              onTintColor="#ABD9BE"
                                               style={
                                                 {
                                                   "alignSelf": "flex-start",
@@ -3976,6 +3977,7 @@ exports[`renders correctly 1`] = `
                                               onChange={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
+                                              onTintColor="#ABD9BE"
                                               style={
                                                 {
                                                   "alignSelf": "flex-start",
@@ -4021,6 +4023,7 @@ exports[`renders correctly 1`] = `
                                               onChange={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
+                                              onTintColor="#ABD9BE"
                                               style={
                                                 {
                                                   "alignSelf": "flex-start",
@@ -4092,6 +4095,7 @@ exports[`renders correctly 1`] = `
                                               onChange={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
+                                              onTintColor="#ABD9BE"
                                               style={
                                                 {
                                                   "alignSelf": "flex-start",
@@ -4137,6 +4141,7 @@ exports[`renders correctly 1`] = `
                                               onChange={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
+                                              onTintColor="#ABD9BE"
                                               style={
                                                 {
                                                   "alignSelf": "flex-start",

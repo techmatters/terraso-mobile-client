@@ -107,6 +107,16 @@ export const theme = extendTheme({
         hoverFill: '#E9E9E9',
       },
     },
+    /* Every color a Switch renders, kept together so the control can be retuned in one place. There is no off-track color: iOS exposes no way to fill it, so both platforms keep the platform default there and the dark thumb carries the contrast.
+     * The Disabled variants are Android-only — iOS fades a disabled switch itself and would fade these a second time. Each is its enabled counterpart composited at 50% over white, approximating what iOS's fade produces. */
+    switch: {
+      trackOn: '#ABD9BE',
+      trackOnDisabled: '#D5ECDF',
+      thumbOn: '#028843',
+      thumbOnDisabled: '#80C4A1',
+      thumbOff: '#616161',
+      thumbOffDisabled: '#B0B0B0',
+    },
     transparent: '#00000000',
   },
   radii: {
