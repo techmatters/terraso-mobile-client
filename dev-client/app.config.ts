@@ -93,7 +93,7 @@ if (typeof APP_BUILD === 'string') {
 const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
   slug: 'landpks',
-  version: '1.4.7',
+  version: '1.4.8',
   // newArchEnabled removed as of SDK 55 — new arch is always on now.
   orientation: 'portrait',
   splash: {
