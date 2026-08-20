@@ -17,10 +17,8 @@
 
 import React from 'react';
 import {useTranslation} from 'react-i18next';
-import {Switch} from 'react-native';
 
-import {useTheme} from 'native-base';
-
+import {Switch} from 'terraso-mobile-client/components/inputs/Switch';
 import {
   Box,
   Row,
@@ -45,7 +43,6 @@ export const RequiredDataSettings = ({
   const {t, i18n} = useTranslation();
   const settings = useProjectSoilSettings(projectId);
   const dispatch = useDispatch();
-  const {colors} = useTheme();
 
   return (
     <Box p={4}>
@@ -56,6 +53,7 @@ export const RequiredDataSettings = ({
         const description = descriptionExists
           ? t(`soil.collection_method_description.${method}`)
           : '';
+        const label = t(`soil.collection_method.${method}`);
         return (
           <React.Fragment key={method}>
             <Row
@@ -66,11 +64,7 @@ export const RequiredDataSettings = ({
               <Switch
                 disabled={!enabled}
                 value={settings[methodRequired(method)]}
-                thumbColor={
-                  settings[methodRequired(method)]
-                    ? colors.primary.main
-                    : colors.primary.contrast
-                }
+                accessibilityLabel={label}
                 onValueChange={value => {
                   dispatch(
                     updateProjectSoilSettings({
@@ -81,7 +75,7 @@ export const RequiredDataSettings = ({
                 }}
               />
               <Text variant="body1" bold pl={SWITCH_PADDING}>
-                {t(`soil.collection_method.${method}`)}
+                {label}
               </Text>
             </Row>
             {description && (

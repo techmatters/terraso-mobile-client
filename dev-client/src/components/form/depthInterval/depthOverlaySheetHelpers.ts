@@ -57,14 +57,20 @@ export const getDepthOverlaySheetSchema = (
 
 export const getInitialValuesForSiteEdit = (
   thisInterval: AggregatedInterval,
+  requiredInputs: SoilPitMethod[],
 ) => {
   const thisDepthInterval = thisInterval.interval.depthInterval;
+  /* Required methods render as on and can't be toggled off, so the form has to carry them as true. A project can mark a method required after a depth was saved with it off, and without this the sheet would show "on" while submitting false. */
+  const requiredMethodsEnabled = fromEntries(
+    requiredInputs.map(method => [methodEnabled(method), true]),
+  );
   return {
     start: String(thisDepthInterval.start),
     end: String(thisDepthInterval.end),
     applyToAll: false,
     // Includes label and required methods
     ...thisInterval.interval,
+    ...requiredMethodsEnabled,
   };
 };
 

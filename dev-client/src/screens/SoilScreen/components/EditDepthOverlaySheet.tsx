@@ -126,7 +126,10 @@ export const EditDepthOverlaySheet = ({
       heading={<TranslatedHeading i18nKey="soil.depth.edit_title" />}>
       <Formik<SiteDepthFormInput>
         validationSchema={schema}
-        initialValues={getInitialValuesForSiteEdit(thisInterval)}
+        initialValues={getInitialValuesForSiteEdit(
+          thisInterval,
+          requiredInputs,
+        )}
         onSubmit={onSubmit}>
         {({handleSubmit, isValid, isSubmitting, dirty}) => {
           return (

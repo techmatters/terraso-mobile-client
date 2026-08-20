@@ -15,13 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {useCallback, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {SiteDepthFormInput} from 'terraso-mobile-client/components/form/depthInterval/depthOverlaySheetHelpers';
 import {FormCheckbox} from 'terraso-mobile-client/components/form/FormCheckbox';
 import {FormLabel} from 'terraso-mobile-client/components/form/FormLabel';
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
-import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
 import {
   Column,
   Heading,
@@ -36,6 +36,7 @@ import {
 import {
   SWITCH_PADDING,
   SWITCH_VERTICAL_PADDING,
+  theme,
 } from 'terraso-mobile-client/theme';
 
 type SoilMethodTogglesProps = {
@@ -87,12 +88,12 @@ export const EnabledInputToggles = ({
   );
 };
 
-type SwitchProps = {
+type InputFormSwitchProps = {
   method: SoilPitMethod;
   isRequired: boolean;
-} & React.ComponentProps<typeof FormSwitch>;
+};
 
-const InputFormSwitch = ({method, isRequired, ...props}: SwitchProps) => {
+const InputFormSwitch = ({method, isRequired}: InputFormSwitchProps) => {
   const {t} = useTranslation();
 
   const label = useMemo(() => {
@@ -102,25 +103,20 @@ const InputFormSwitch = ({method, isRequired, ...props}: SwitchProps) => {
       : methodDescriber;
   }, [t, method, isRequired]);
 
-  const {onChange} = useFieldContext<boolean>(methodEnabled(method));
-
-  const formSwitchChange = useCallback(
-    (newValue: boolean) => {
-      if (onChange) {
-        onChange(newValue);
-      }
-    },
-    [onChange],
-  );
-
   return (
-    <FormSwitch
-      {...props}
-      value={isRequired ? true : undefined}
-      name={methodEnabled(method)}
-      disabled={isRequired}
-      onChange={formSwitchChange}
-      label={label}
-    />
+    <Row alignItems="center">
+      <FormSwitch<SiteDepthFormInput>
+        name={methodEnabled(method)}
+        disabled={isRequired}
+        accessibilityLabel={label}
+      />
+      <Text
+        ml={SWITCH_PADDING}
+        color={
+          isRequired ? theme.colors.text.disabled : theme.colors.text.primary
+        }>
+        {label}
+      </Text>
+    </Row>
   );
 };
