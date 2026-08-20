@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Switch as RNSwitch, StyleProp, ViewStyle} from 'react-native';
+import {Platform, Switch as RNSwitch} from 'react-native';
 
 import {theme} from 'terraso-mobile-client/theme';
 
@@ -35,12 +35,49 @@ export type SharedSwitchProps = {
   accessibilityLabel: string;
   disabled?: boolean;
   testID?: string;
-  style?: StyleProp<ViewStyle>;
 };
 
 export type SwitchProps = SharedSwitchProps & {
   value: boolean;
   onValueChange: (value: boolean) => void;
+};
+
+/* Our palette as a grid: [on | off] × [normal | faded]. */
+const THUMB = {
+  on: {
+    normal: theme.colors.switch.thumbOn,
+    faded: theme.colors.switch.thumbOnDisabled,
+  },
+  off: {
+    normal: theme.colors.switch.thumbOff,
+    faded: theme.colors.switch.thumbOffDisabled,
+  },
+};
+
+const TRACK_ON = {
+  normal: theme.colors.switch.trackOn,
+  faded: theme.colors.switch.trackOnDisabled,
+};
+
+/* The color props React Native wants, which is why the shape is uneven: RN takes a single thumb color, so on/off is resolved here, but takes the track as a per-state map it resolves itself.
+ *
+ * Only Android needs the faded tone when disabled: it applies our colors as a color filter, which takes precedence over the drawable's own disabled tint, so anything we color would otherwise stay at full strength. iOS renders a disabled switch translucent itself and would fade these a second time. */
+export const switchColorProps = (
+  value: boolean,
+  platform: typeof Platform.OS,
+  disabled?: boolean,
+) => {
+  const tone = disabled && platform === 'android' ? 'faded' : 'normal';
+
+  return {
+    thumbColor: THUMB[value ? 'on' : 'off'][tone],
+    trackColor: {
+      /* Supplied even while the switch is off: the toggle animates natively before React re-renders, so resolving this by `value` would flash the default track color mid-animation. */
+      true: TRACK_ON[tone],
+      /* Left to the platform on purpose. iOS offers no way to fill the off track — `trackColor.false` maps to `tintColor`, the outline iOS 13+ stopped drawing — so the dark thumb supplies the contrast instead. */
+      false: undefined,
+    },
+  };
 };
 
 export const Switch = ({
@@ -49,7 +86,6 @@ export const Switch = ({
   disabled,
   accessibilityLabel,
   testID,
-  style,
 }: SwitchProps) => (
   <RNSwitch
     value={value}
@@ -57,18 +93,6 @@ export const Switch = ({
     disabled={disabled}
     accessibilityLabel={accessibilityLabel}
     testID={testID}
-    style={style}
-    thumbColor={value ? theme.colors.primary.main : theme.colors.grey[700]}
-    /* The platform's default off-state grey is nearly invisible on our white
-     * background, so we set it. Disabled switches keep that platform grey —
-     * being hard to see is the point when the control can't be used. */
-    trackColor={{
-      true: disabled ? undefined : theme.colors.primary.lighter,
-      // false: disabled ? undefined : theme.colors.grey[300],
-    }}
-    // TODO-cknipe: Finalize colors
-    /* The only prop that tints the off track on iOS: trackColor.false maps to
-     * `tintColor`, which iOS 13+ ignores for the track fill. */
-    // ios_backgroundColor={theme.colors.gray[400]}
+    {...switchColorProps(value, Platform.OS, disabled)}
   />
 );
