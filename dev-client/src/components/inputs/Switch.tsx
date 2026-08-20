@@ -66,6 +66,7 @@ export const Switch = ({
       true: disabled ? undefined : theme.colors.primary.lighter,
       // false: disabled ? undefined : theme.colors.grey[300],
     }}
+    // TODO-cknipe: Finalize colors
     /* The only prop that tints the off track on iOS: trackColor.false maps to
      * `tintColor`, which iOS 13+ ignores for the track fill. */
     // ios_backgroundColor={theme.colors.gray[400]}
