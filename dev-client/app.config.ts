@@ -184,7 +184,7 @@ const withPostHogSwiftInterfaceFix = (modConfig: ExpoConfig): ExpoConfig =>
 const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
   slug: 'landpks',
-  version: '1.4.7',
+  version: '1.4.8',
   newArchEnabled: true,
   orientation: 'portrait',
   splash: {
