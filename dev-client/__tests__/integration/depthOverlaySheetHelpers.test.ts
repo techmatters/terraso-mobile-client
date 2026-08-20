@@ -14,8 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {getInitialValuesForSiteAdd} from 'terraso-mobile-client/components/form/depthInterval/depthOverlaySheetHelpers';
-import {SoilPitMethod} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {
+  getInitialValuesForSiteAdd,
+  getInitialValuesForSiteEdit,
+} from 'terraso-mobile-client/components/form/depthInterval/depthOverlaySheetHelpers';
+import {
+  SoilDataDepthInterval,
+  SoilPitMethod,
+} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {AggregatedInterval} from 'terraso-mobile-client/store/depthIntervalHelpers';
 
 // This is causing errors, and we should not need to use any async thunks in this test, so can just mock it
 jest.mock('terraso-client-shared/store/utils', () => ({
@@ -81,6 +88,42 @@ describe('getInitialValuesForSiteAdd', () => {
     );
 
     expect(initialValues.soilColorEnabled).toEqual(false);
+    expect(initialValues.soilTextureEnabled).toEqual(false);
+  });
+});
+
+describe('getInitialValuesForSiteEdit', () => {
+  const intervalWith = (
+    enabledInputs: Partial<SoilDataDepthInterval>,
+  ): AggregatedInterval => ({
+    isFromPreset: false,
+    interval: {
+      label: '',
+      depthInterval: {start: 0, end: 10},
+      ...enabledInputs,
+    } as SoilDataDepthInterval,
+  });
+
+  test('should keep stored values for methods the project does not require', () => {
+    const initialValues = getInitialValuesForSiteEdit(
+      intervalWith({soilColorEnabled: false, soilTextureEnabled: true}),
+      [],
+    );
+
+    expect(initialValues.start).toEqual('0');
+    expect(initialValues.end).toEqual('10');
+    expect(initialValues.soilColorEnabled).toEqual(false);
+    expect(initialValues.soilTextureEnabled).toEqual(true);
+  });
+
+  // A project can require a method after a depth was saved with it off; the sheet shows required methods as on, so the form has to submit them as on too.
+  test('should enable required methods that were stored as disabled', () => {
+    const initialValues = getInitialValuesForSiteEdit(
+      intervalWith({soilColorEnabled: false, soilTextureEnabled: false}),
+      ['soilColor'] as SoilPitMethod[],
+    );
+
+    expect(initialValues.soilColorEnabled).toEqual(true);
     expect(initialValues.soilTextureEnabled).toEqual(false);
   });
 });

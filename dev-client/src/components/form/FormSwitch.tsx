@@ -14,49 +14,62 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import {memo} from 'react';
-import {Switch} from 'react-native';
+
+import {FormikValues, useFormikContext} from 'formik';
 
 import {
-  FormFieldWrapper,
-  Props as FormFieldWrapperProps,
-} from 'terraso-mobile-client/components/form/FormFieldWrapper';
-import {useFieldContext} from 'terraso-mobile-client/components/form/hooks/useFieldContext';
-import {Row, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {
-  SWITCH_PADDING,
-  SWITCH_VERTICAL_PADDING,
-  theme,
-} from 'terraso-mobile-client/theme';
+  SharedSwitchProps,
+  Switch,
+} from 'terraso-mobile-client/components/inputs/Switch';
 
-type Props = FormFieldWrapperProps &
-  Omit<React.ComponentProps<typeof Switch>, 'onChange' | 'onValueChange'> & {
-    onChange?: (_: boolean) => void;
+/* FormSwitch — use instead of Switch when in a Formik form.
+ *
+ * Formik state is the only source of truth for the switch position; there is
+ * no display-only override. A switch that must show "on" regardless of user
+ * input belongs in the form's initial values. */
+
+/* Picks keys of T whose value type is assignable to boolean (after stripping
+ * undefined / null). Used to constrain `name` so a caller can't accidentally
+ * point FormSwitch at a string, number, or array field. */
+type BooleanFieldKeys<TValues> = {
+  [K in keyof TValues]-?: NonNullable<TValues[K]> extends boolean
+    ? K & string
+    : never;
+}[keyof TValues];
+
+/* Composed from the same SharedSwitchProps as Switch, so every display prop is
+ * inherited automatically. */
+export type FormSwitchProps<TValues extends FormikValues> =
+  SharedSwitchProps & {
+    name: BooleanFieldKeys<TValues>;
+
+    // Optional onValueChange runs after FormSwitch has already updated Formik state for `name` — callers should NOT call setFieldValue(name, ...) themselves.
+    onValueChange?: (value: boolean) => void;
   };
 
-export const FormSwitch = memo(
-  ({onChange: onValueChange, label, value: propsValue, ...props}: Props) => {
-    const {value: fieldValue, onChange} = useFieldContext<boolean>(props.name);
-    return (
-      <FormFieldWrapper errorMessage={null} {...props}>
-        <Row justifyContent="flex-start">
-          <Switch
-            value={propsValue ?? fieldValue}
-            onValueChange={onValueChange ?? onChange}
-            {...props}
-          />
-          <Text
-            ml={SWITCH_PADDING}
-            mt={SWITCH_VERTICAL_PADDING}
-            color={
-              props.disabled
-                ? theme.colors.text.disabled
-                : theme.colors.text.primary
-            }>
-            {label}
-          </Text>
-        </Row>
-      </FormFieldWrapper>
-    );
-  },
-);
+/* Generic over the surrounding Formik form's values shape. Callers must
+ * specify TValues at the call site (or via a typed alias) so `name` can be
+ * checked against their actual field types. */
+export const FormSwitch = <TValues extends FormikValues>({
+  name,
+  onValueChange,
+  ...rest
+}: FormSwitchProps<TValues>) => {
+  const formik = useFormikContext<TValues>();
+  if (!formik) {
+    throw new Error('FormSwitch must be rendered inside a Formik provider.');
+  }
+
+  const handleValueChange = (next: boolean) => {
+    formik.setFieldValue(name, next);
+    onValueChange?.(next);
+  };
+
+  return (
+    <Switch
+      {...rest}
+      value={Boolean(formik.values[name])}
+      onValueChange={handleValueChange}
+    />
+  );
+};
