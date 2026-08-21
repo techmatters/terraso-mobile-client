@@ -16,7 +16,7 @@
  */
 
 import {useCallback, useState} from 'react';
-import {Platform} from 'react-native';
+import {Platform, StyleSheet, TextInput} from 'react-native';
 import Share from 'react-native-share';
 
 import * as DocumentPicker from 'expo-document-picker';
@@ -57,6 +57,50 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 const CHART_PAGE_HUE_KEY = 'munsellChartValidator.selectedPageHue';
 const CHART_REF_MODE_KEY = 'munsellChartValidator.selectedRefMode';
 const CHART_ANALYSIS_MODE_KEY = 'munsellChartValidator.analysisMode';
+
+// MMKV keys for the multi-shot session context panel. See
+// docs/munsell-multishot.md "Session context". These values are
+// user-set metadata that gets baked into MULTI session filenames and
+// session.json — none of them influence what's captured, only the
+// naming and downstream analysis routing.
+const SESSION_ILLUMINANT_KEY = 'munsellSession.illuminant';
+const SESSION_BACKGROUND_KEY = 'munsellSession.background';
+const SESSION_NOTE_KEY = 'munsellSession.note';
+
+// Illuminant type — free-form slug baked into filenames as `light<slug>`.
+// Ordered rough-warm-to-cool.
+const ILLUMINANT_OPTIONS: readonly string[] = [
+  'unknown',
+  'tungsten',
+  'led3000k',
+  'led5000k',
+  'shade',
+  'sun',
+  'canopy',
+  'flash',
+  'mixed',
+];
+const ILLUMINANT_LABEL: Record<string, string> = {
+  unknown: '(unknown / skip)',
+  tungsten: 'Tungsten (~3000K)',
+  led3000k: 'LED warm (~3000K)',
+  led5000k: 'LED daylight (~5000K)',
+  shade: 'Open shade',
+  sun: 'Direct sun',
+  canopy: 'Tree canopy',
+  flash: 'Flash / strobe',
+  mixed: 'Mixed light',
+};
+
+// Background paper choice — baked into filename as bare token
+// (`light` / `dark`) to match the existing scripts/analyze-fixtures.ts
+// bg-token convention.
+const BACKGROUND_OPTIONS: readonly string[] = ['unknown', 'light', 'dark'];
+const BACKGROUND_LABEL: Record<string, string> = {
+  unknown: '(unknown / skip)',
+  light: 'Light background (white paper)',
+  dark: 'Dark background',
+};
 
 // How far to run the chart analysis pipeline. Backup for when full
 // analysis errors on a new device — the tester can drop back to just
@@ -229,6 +273,34 @@ export const RawColorToolsScreen = () => {
   const setAnalysisMode = useCallback((mode: AnalysisMode) => {
     kvStorage.setString(CHART_ANALYSIS_MODE_KEY, mode);
     setAnalysisModeState(mode);
+  }, []);
+  // Session-context fields for the MULTI research flow. All optional
+  // (the on-device capture works whether these are set or not).
+  // Setting them bakes tokens into filenames + populates session.json.
+  // Persisted so the tester doesn't re-enter the same context across
+  // consecutive shoots of the same setup.
+  const [illuminant, setIlluminantState] = useState<string>(() => {
+    const v = kvStorage.getString(SESSION_ILLUMINANT_KEY);
+    return v && ILLUMINANT_OPTIONS.includes(v) ? v : 'unknown';
+  });
+  const setIlluminant = useCallback((v: string) => {
+    kvStorage.setString(SESSION_ILLUMINANT_KEY, v);
+    setIlluminantState(v);
+  }, []);
+  const [backgroundKind, setBackgroundKindState] = useState<string>(() => {
+    const v = kvStorage.getString(SESSION_BACKGROUND_KEY);
+    return v && BACKGROUND_OPTIONS.includes(v) ? v : 'unknown';
+  });
+  const setBackgroundKind = useCallback((v: string) => {
+    kvStorage.setString(SESSION_BACKGROUND_KEY, v);
+    setBackgroundKindState(v);
+  }, []);
+  const [note, setNoteState] = useState<string>(
+    () => kvStorage.getString(SESSION_NOTE_KEY) ?? '',
+  );
+  const setNote = useCallback((v: string) => {
+    kvStorage.setString(SESSION_NOTE_KEY, v);
+    setNoteState(v);
   }, []);
   // Directed-quadrant is now the only supported registration
   // algorithm — the constrained-random path is retained in the code
@@ -414,6 +486,37 @@ export const RawColorToolsScreen = () => {
             renderValue={mode => CHART_REF_MODE_LABEL[mode]}
             label="Reference cards in the shot"
           />
+          <Text variant="body1" bold>
+            Session context (MULTI research capture)
+          </Text>
+          <Paragraph>
+            Metadata baked into filenames + session.json when you use the MULTI
+            shutter. Doesn't affect what gets captured. Persists across sessions
+            — set once per setup and forget.
+          </Paragraph>
+          <Select<string, false>
+            nullable={false}
+            options={BACKGROUND_OPTIONS}
+            value={backgroundKind}
+            onValueChange={setBackgroundKind}
+            renderValue={v => BACKGROUND_LABEL[v] ?? v}
+            label="Background paper"
+          />
+          <Select<string, false>
+            nullable={false}
+            options={ILLUMINANT_OPTIONS}
+            value={illuminant}
+            onValueChange={setIlluminant}
+            renderValue={v => ILLUMINANT_LABEL[v] ?? v}
+            label="Illuminant type"
+          />
+          {/*
+           * Note field is a plain multiline text input; when non-empty
+           * it's written as note.txt in the session dir + included in
+           * session.json. Kept simple — no persistence unusualness,
+           * just a session-level annotation.
+           */}
+          <SessionNoteInput value={note} onChange={setNote} />
           <Select<AnalysisMode, false>
             nullable={false}
             options={CHART_ANALYSIS_MODES}
@@ -525,3 +628,75 @@ export const RawColorToolsScreen = () => {
     </ScreenScaffold>
   );
 };
+
+// Snapshot of the user-set session context, read from the MMKV keys
+// this screen writes. Callers OUTSIDE this component (like the
+// AndroidRawCaptureScreen MULTI shutter) use this to bake the same
+// tokens into filenames without needing to re-derive them.
+//
+// Also uses the chart-page + ref-mode fields already persisted at the
+// top of this file, so the session context ends up with every user-
+// visible field on the RawColorToolsScreen.
+export type MultishotSessionContext = {
+  page?: string;
+  background?: string;
+  refCard?: string;
+  illuminant?: string;
+  note?: string;
+};
+
+// Read the currently-persisted session context. Fields not set (blank
+// / 'unknown' / 'nothing') come back undefined so the native side's
+// filename builder can skip them cleanly rather than emit "unknown"
+// tokens.
+export const getMultishotSessionContext = (): MultishotSessionContext => {
+  const norm = (v: string | undefined, unset: readonly string[]) =>
+    v && !unset.includes(v) ? v : undefined;
+  const page = kvStorage.getString(CHART_PAGE_HUE_KEY);
+  const bg = norm(kvStorage.getString(SESSION_BACKGROUND_KEY), ['unknown']);
+  const ref = norm(kvStorage.getString(CHART_REF_MODE_KEY), ['nothing']);
+  const light = norm(kvStorage.getString(SESSION_ILLUMINANT_KEY), ['unknown']);
+  const note = kvStorage.getString(SESSION_NOTE_KEY)?.trim();
+  return {
+    page: page || undefined,
+    background: bg,
+    refCard: ref,
+    illuminant: light,
+    note: note ? note : undefined,
+  };
+};
+
+// Small helper component: a labelled multi-line text input, wired to
+// the parent's session-note MMKV state. Kept inline in this file
+// because it's the only consumer and doesn't warrant its own module.
+const SessionNoteInput = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) => (
+  <>
+    <Text variant="body1">Session note (optional)</Text>
+    <TextInput
+      style={sessionNoteStyles.input}
+      value={value}
+      onChangeText={onChange}
+      placeholder="Free-form note written to session dir's note.txt"
+      multiline
+      numberOfLines={2}
+    />
+  </>
+);
+
+const sessionNoteStyles = StyleSheet.create({
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    padding: 6,
+    minHeight: 44,
+    fontSize: 13,
+    textAlignVertical: 'top',
+  },
+});

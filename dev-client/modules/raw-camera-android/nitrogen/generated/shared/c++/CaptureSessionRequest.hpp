@@ -30,9 +30,13 @@
 
 // Forward declaration of `SessionShot` to properly resolve imports.
 namespace margelo::nitro::rawcameraandroid { struct SessionShot; }
+// Forward declaration of `SessionContext` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct SessionContext; }
 
 #include "SessionShot.hpp"
 #include <vector>
+#include "SessionContext.hpp"
+#include <optional>
 
 namespace margelo::nitro::rawcameraandroid {
 
@@ -43,10 +47,11 @@ namespace margelo::nitro::rawcameraandroid {
   public:
     double burstCount     SWIFT_PRIVATE;
     std::vector<SessionShot> manualShots     SWIFT_PRIVATE;
+    std::optional<SessionContext> context     SWIFT_PRIVATE;
 
   public:
     CaptureSessionRequest() = default;
-    explicit CaptureSessionRequest(double burstCount, std::vector<SessionShot> manualShots): burstCount(burstCount), manualShots(manualShots) {}
+    explicit CaptureSessionRequest(double burstCount, std::vector<SessionShot> manualShots, std::optional<SessionContext> context): burstCount(burstCount), manualShots(manualShots), context(context) {}
 
   public:
     friend bool operator==(const CaptureSessionRequest& lhs, const CaptureSessionRequest& rhs) = default;
@@ -63,13 +68,15 @@ namespace margelo::nitro {
       jsi::Object obj = arg.asObject(runtime);
       return margelo::nitro::rawcameraandroid::CaptureSessionRequest(
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "burstCount"))),
-        JSIConverter<std::vector<margelo::nitro::rawcameraandroid::SessionShot>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "manualShots")))
+        JSIConverter<std::vector<margelo::nitro::rawcameraandroid::SessionShot>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "manualShots"))),
+        JSIConverter<std::optional<margelo::nitro::rawcameraandroid::SessionContext>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "context")))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::rawcameraandroid::CaptureSessionRequest& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "burstCount"), JSIConverter<double>::toJSI(runtime, arg.burstCount));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "manualShots"), JSIConverter<std::vector<margelo::nitro::rawcameraandroid::SessionShot>>::toJSI(runtime, arg.manualShots));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "context"), JSIConverter<std::optional<margelo::nitro::rawcameraandroid::SessionContext>>::toJSI(runtime, arg.context));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -82,6 +89,7 @@ namespace margelo::nitro {
       }
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "burstCount")))) return false;
       if (!JSIConverter<std::vector<margelo::nitro::rawcameraandroid::SessionShot>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "manualShots")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::rawcameraandroid::SessionContext>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "context")))) return false;
       return true;
     }
   };

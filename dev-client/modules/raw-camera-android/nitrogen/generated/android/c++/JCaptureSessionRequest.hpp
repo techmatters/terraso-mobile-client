@@ -10,9 +10,12 @@
 #include <fbjni/fbjni.h>
 #include "CaptureSessionRequest.hpp"
 
+#include "JSessionContext.hpp"
 #include "JSessionShot.hpp"
+#include "SessionContext.hpp"
 #include "SessionShot.hpp"
 #include <optional>
+#include <string>
 #include <vector>
 
 namespace margelo::nitro::rawcameraandroid {
@@ -38,6 +41,8 @@ namespace margelo::nitro::rawcameraandroid {
       double burstCount = this->getFieldValue(fieldBurstCount);
       static const auto fieldManualShots = clazz->getField<jni::JArrayClass<JSessionShot>>("manualShots");
       jni::local_ref<jni::JArrayClass<JSessionShot>> manualShots = this->getFieldValue(fieldManualShots);
+      static const auto fieldContext = clazz->getField<JSessionContext>("context");
+      jni::local_ref<JSessionContext> context = this->getFieldValue(fieldContext);
       return CaptureSessionRequest(
         burstCount,
         [&](auto&& __input) {
@@ -49,7 +54,8 @@ namespace margelo::nitro::rawcameraandroid {
             __vector.push_back(__element->toCpp());
           }
           return __vector;
-        }(manualShots)
+        }(manualShots),
+        context != nullptr ? std::make_optional(context->toCpp()) : std::nullopt
       );
     }
 
@@ -59,7 +65,7 @@ namespace margelo::nitro::rawcameraandroid {
      */
     [[maybe_unused]]
     static jni::local_ref<JCaptureSessionRequest::javaobject> fromCpp(const CaptureSessionRequest& value) {
-      using JSignature = JCaptureSessionRequest(double, jni::alias_ref<jni::JArrayClass<JSessionShot>>);
+      using JSignature = JCaptureSessionRequest(double, jni::alias_ref<jni::JArrayClass<JSessionShot>>, jni::alias_ref<JSessionContext>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
@@ -74,7 +80,8 @@ namespace margelo::nitro::rawcameraandroid {
             __array->setElement(__i, *__elementJni);
           }
           return __array;
-        }(value.manualShots)
+        }(value.manualShots),
+        value.context.has_value() ? JSessionContext::fromCpp(value.context.value()) : nullptr
       );
     }
   };

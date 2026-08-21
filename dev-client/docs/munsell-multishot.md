@@ -61,29 +61,68 @@ and transfer" below for batching guidance.
 ## Where the files land
 
 MULTI writes to the phone's public `Download/` folder under a
-per-session subdir:
+per-session subdir. Filenames are ENRICHED: they self-encode the
+device, the user-supplied session context (page / bg / ref card /
+illuminant), the shot kind, and the ACTUAL sensor iso/shutter that
+the HAL used for that shot (not just what was requested).
 
 ```
 /sdcard/Download/soilcap/
-  session_20260819T143022-704/
-    burst1of5_auto.dng
-    burst1of5_auto.jpg
-    burst2of5_auto.dng
-    burst2of5_auto.jpg
+  session_20260821T144215-317/
+    01_pixel6a_10YR_dark_refmulti_lightsun_auto_iso61_shut25ms_burst1of5_awblock.dng
+    01_pixel6a_10YR_dark_refmulti_lightsun_auto_iso61_shut25ms_burst1of5_awblock.jpg
+    02_pixel6a_10YR_dark_refmulti_lightsun_auto_iso61_shut25ms_burst2of5_awblock.dng
+    02_pixel6a_10YR_dark_refmulti_lightsun_auto_iso61_shut25ms_burst2of5_awblock.jpg
     …
-    burst5of5_auto.dng
-    burst5of5_auto.jpg
-    manual_iso100_shut33ms.dng
-    manual_iso100_shut33ms.jpg
-    manual_iso100_shut67ms.dng
-    manual_iso100_shut67ms.jpg
-    manual_iso400_shut16ms.dng
-    manual_iso400_shut16ms.jpg
-    manual_iso200_shut33ms.dng
-    manual_iso200_shut33ms.jpg
-  session_20260819T143145-812/
+    05_pixel6a_10YR_dark_refmulti_lightsun_auto_iso61_shut25ms_burst5of5_awblock.dng
+    05_pixel6a_10YR_dark_refmulti_lightsun_auto_iso61_shut25ms_burst5of5_awblock.jpg
+    06_pixel6a_10YR_dark_refmulti_lightsun_manual_iso100_shut33ms.dng
+    06_pixel6a_10YR_dark_refmulti_lightsun_manual_iso100_shut33ms.jpg
+    07_pixel6a_10YR_dark_refmulti_lightsun_manual_iso100_shut67ms.dng
+    07_pixel6a_10YR_dark_refmulti_lightsun_manual_iso100_shut67ms.jpg
+    08_pixel6a_10YR_dark_refmulti_lightsun_manual_iso400_shut17ms.dng
+    08_pixel6a_10YR_dark_refmulti_lightsun_manual_iso400_shut17ms.jpg
+    09_pixel6a_10YR_dark_refmulti_lightsun_manual_iso200_shut33ms.dng
+    09_pixel6a_10YR_dark_refmulti_lightsun_manual_iso200_shut33ms.jpg
+    session.json    ← structured metadata (see "Session sidecar" below)
+    note.txt        ← only present when the session-note field is non-empty
+  session_20260821T144425-511/
     …
 ```
+
+### Filename token schema
+
+```
+<seq>_<device>[_<page>][_<bg>][_ref<card>][_light<slug>]_<kind>_iso<n>_shut<X>[_burst<i>of<N>][_awblock].<ext>
+```
+
+| Token | Source | Optional? | Example |
+|---|---|---|---|
+| `<seq>` | 1-based capture index, zero-padded to session size | required | `01`, `09` |
+| `<device>` | `Build.MODEL` slugified (lowercase, alnum only) | required | `pixel6a`, `pixel7`, `iphone14pro` |
+| `<page>` | Munsell chart page from Session context | if set | `10YR`, `5R`, `2.5YR` |
+| `<bg>` | Background paper from Session context | if set (`light` / `dark`) | `light`, `dark` |
+| `ref<card>` | Reference-card layout from Session context | if set | `refmulti`, `refgreycard`, `refwhibal`, `refpostit`, `refwhite`, `refnone` |
+| `light<slug>` | Illuminant type from Session context | if set | `lightsun`, `lightshade`, `lightled3000k`, `lightflash` |
+| `<kind>` | `auto` (burst frame, no manual override) or `manual` (iso+shutter forced) | required | `auto`, `manual` |
+| `iso<n>` | **Actual** ISO from `TotalCaptureResult.SENSOR_SENSITIVITY` (post-AE) | required | `iso61`, `iso199`, `iso395` |
+| `shut<X>` | **Actual** shutter from `TotalCaptureResult.SENSOR_EXPOSURE_TIME`, rounded human-readable | required | `shut25ms`, `shut67ms`, `shut500us` |
+| `burst<i>of<N>` | Position within auto burst (auto shots only) | for burst frames | `burst3of5` |
+| `awblock` | AWB was locked (i.e. burst locked so frames are consistent) | when true | `awblock` |
+| `.<ext>` | `.dng` or `.jpg` | required | |
+
+Tokens the user hasn't set (page / bg / refCard / illuminant) are
+simply omitted, giving shorter but still-unique filenames. Minimal
+example (no context set, single manual shot):
+
+```
+01_pixel6a_manual_iso100_shut33ms.dng
+```
+
+The `Session context` panel on the "RAW & color tools (dev)" screen
+is where the user fills in page / bg / ref-card / illuminant / note.
+Values persist across app launches (MMKV-backed) so you set them
+once per setup and they stick.
 
 Written via `MediaStore.Downloads` (Android 10+), so the files are:
 - Fully visible in the **Files** and **Google Drive** apps (browse
@@ -99,6 +138,69 @@ The **single-shot** shutter (the round button, not MULTI) still
 writes to the app's private cache dir — unchanged from before,
 because that path is optimised for the built-in analyser + share-
 sheet flow, not for accumulating batches.
+
+## Session sidecar (`session.json` + optional `note.txt`)
+
+Alongside the image files, MULTI drops a `session.json` in the session
+directory with structured metadata for programmatic consumption. It's
+redundant with the filename tokens for the essentials but adds things
+that don't fit safely in filenames — precise numeric values, device
+OS version, per-shot requested-vs-actual comparison, and free-form
+user notes.
+
+Sample:
+
+```json
+{
+  "session_id": "20260821T144215-317",
+  "schema_version": "1",
+  "device": {
+    "make": "Google",
+    "model": "Pixel 6a",
+    "slug": "pixel6a",
+    "android_release": "14",
+    "android_sdk_int": 34
+  },
+  "context": {
+    "page": "10YR",
+    "background": "dark",
+    "ref_card": "multi",
+    "illuminant": "sun",
+    "note": ""
+  },
+  "shots": [
+    {
+      "filename": "01_pixel6a_10YR_dark_refmulti_lightsun_auto_iso61_shut25ms_burst1of5_awblock",
+      "kind": "auto_burst",
+      "burst_idx": 1,
+      "burst_total": 5,
+      "requested": {"ae_lock": true, "awb_lock": true},
+      "actual": {"iso": 61, "shutter_ns": 25000000, "ae_mode": 1, "awb_mode": 1, "ae_locked": true, "awb_locked": true}
+    },
+    {
+      "filename": "06_pixel6a_10YR_dark_refmulti_lightsun_manual_iso100_shut33ms",
+      "kind": "manual",
+      "requested": {"iso": 100, "shutter_ns": 33333000, "ae_lock": false, "awb_lock": false},
+      "actual": {"iso": 100, "shutter_ns": 33333000, "ae_mode": 0, "awb_mode": 1, "ae_locked": false, "awb_locked": false}
+    }
+  ]
+}
+```
+
+Notes:
+- `shots[].filename` is the stem (no extension) — both `.dng` and
+  `.jpg` share it.
+- `shots[].requested` shows what we asked the camera to do; `actual`
+  shows what the HAL reported doing (`SENSOR_SENSITIVITY` and
+  `SENSOR_EXPOSURE_TIME` from `TotalCaptureResult`, plus AE/AWB state).
+  These diverge whenever AE was on and picked its own values.
+- `ae_mode` values match Camera2 constants: 0 = OFF, 1 = ON, etc.
+- Best-effort write: if the sidecar fails, the shot files are still
+  fully usable (redundant with filename tokens).
+
+If the user typed a session note, it lands in `note.txt` next to
+`session.json` — plain text, whatever they wrote. Doesn't affect
+anything else.
 
 ## Pulling data off the phone
 

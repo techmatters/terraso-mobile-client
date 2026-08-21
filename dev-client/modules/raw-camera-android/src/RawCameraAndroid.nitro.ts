@@ -41,6 +41,28 @@ export type SessionShot = {
   sensorSensitivity?: number;
 };
 
+// User-supplied metadata that gets baked into the session filenames
+// AND written into session.json. All fields optional — omit any that
+// the user hasn't set. See docs/munsell-multishot.md "Session context"
+// for values.
+export type SessionContext = {
+  // Munsell page identifier (e.g. "10YR", "5R", "2.5YR"). Used to
+  // reconstruct the fixture context after the files leave the phone.
+  page?: string;
+  // Background paper: "light" or "dark". Determines whether the
+  // whiteMask paper-ring calibration is trustworthy in the analyzer.
+  background?: string;
+  // Reference-card layout token: "multi" (all four slots), "greycard"
+  // (single), "whibal", "postit", "white", "none".
+  refCard?: string;
+  // Illuminant type — free-form slug like "sun", "shade", "canopy",
+  // "led3000k", "led5000k", "tungsten", "mixed". Not enforced.
+  illuminant?: string;
+  // Optional free-form note written to note.txt in the session dir
+  // and included in session.json. Not baked into filenames (unsafe).
+  note?: string;
+};
+
 // Request payload for captureSession(). See its docstring below.
 export type CaptureSessionRequest = {
   // How many auto-AE frames to shoot in rapid succession at the head
@@ -52,6 +74,11 @@ export type CaptureSessionRequest = {
   // shot's (iso, shutterNs) are applied together. Empty list is OK
   // (burst-only session).
   manualShots: SessionShot[];
+  // Optional user-set metadata baked into filenames + session.json.
+  // All context fields optional; whatever's set becomes part of the
+  // filename tokens. When omitted, filenames fall back to the minimal
+  // (device + shot params) form.
+  context?: SessionContext;
 };
 
 // Static caps of the currently-bound back camera. Query once at UI

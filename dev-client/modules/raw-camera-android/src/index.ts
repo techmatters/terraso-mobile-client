@@ -10,6 +10,7 @@ export type {
   CaptureSessionRequest,
   CapturedPhoto,
   RawCameraAndroid,
+  SessionContext,
   SessionShot,
 } from './RawCameraAndroid.nitro';
 export {RawCameraAndroidView} from './RawCameraAndroidView';

@@ -42,6 +42,7 @@ import {
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import type {ChartGuide} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
+import {getMultishotSessionContext} from 'terraso-mobile-client/screens/RawColorToolsScreen/RawColorToolsScreen';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 // Fixed burst size when burst mode is enabled. See
@@ -297,9 +298,14 @@ export const AndroidRawCaptureScreen = () => {
     if (isCapturing) return;
     setIsCapturing(true);
     try {
+      // Pull the current session context (page / bg / refcard /
+      // illuminant / note) from the RawColorToolsScreen persistence.
+      // Empty fields skip cleanly in the native filename builder.
+      const context = getMultishotSessionContext();
       console.log(
         `[AndroidRawCaptureScreen] captureSession start ` +
-          `(${MULTI_SESSION_BURST_COUNT} burst + ${MULTI_SESSION_MANUAL_SHOTS.length} manual)`,
+          `(${MULTI_SESSION_BURST_COUNT} burst + ${MULTI_SESSION_MANUAL_SHOTS.length} manual) ` +
+          `context=${JSON.stringify(context)}`,
       );
       const frames = await RawCameraAndroidHybrid.captureSession({
         burstCount: MULTI_SESSION_BURST_COUNT,
@@ -307,6 +313,7 @@ export const AndroidRawCaptureScreen = () => {
           sensorSensitivity: m.iso,
           sensorExposureTimeNs: m.shutterNs,
         })),
+        context,
       });
       console.log(
         `[AndroidRawCaptureScreen] captureSession ok, ${frames.length} shots:`,

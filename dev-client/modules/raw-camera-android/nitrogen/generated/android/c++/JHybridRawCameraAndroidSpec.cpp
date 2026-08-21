@@ -17,6 +17,8 @@ namespace margelo::nitro::rawcameraandroid { struct CaptureOptions; }
 namespace margelo::nitro::rawcameraandroid { struct CaptureSessionRequest; }
 // Forward declaration of `SessionShot` to properly resolve imports.
 namespace margelo::nitro::rawcameraandroid { struct SessionShot; }
+// Forward declaration of `SessionContext` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct SessionContext; }
 
 #include "CapturedPhoto.hpp"
 #include <NitroModules/Promise.hpp>
@@ -33,6 +35,8 @@ namespace margelo::nitro::rawcameraandroid { struct SessionShot; }
 #include "JCaptureSessionRequest.hpp"
 #include "SessionShot.hpp"
 #include "JSessionShot.hpp"
+#include "SessionContext.hpp"
+#include "JSessionContext.hpp"
 
 namespace margelo::nitro::rawcameraandroid {
 

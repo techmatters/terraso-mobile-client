@@ -486,6 +486,49 @@ function buildCutSvg({includeBorder = true} = {}) {
   ]);
 }
 
+// Path helpers shared by the mask / card-holder cut files below.
+const rectPathD = ({x, y, w, h}) =>
+  `M ${f(x)} ${f(y)} H ${f(x + w)} V ${f(y + h)} H ${f(x)} Z`;
+const circlePathD = (cx, cy, r) =>
+  `M ${f(cx - r)} ${f(cy)} a ${f(r)} ${f(r)} 0 1 0 ${f(2 * r)} 0 ` +
+  `a ${f(r)} ${f(r)} 0 1 0 ${f(-2 * r)} 0 Z`;
+// The inset locating square (same as cut-test) so every piece registers
+// with the push-to-corner / seat-on-gridline workflow.
+const anchorSquareRect = () => ({
+  x: ANCHOR_SQUARE.inset,
+  y: ANCHOR_SQUARE.inset,
+  w: ANCHOR_SQUARE.size,
+  h: ANCHOR_SQUARE.size,
+});
+
+// "mask": ONLY the 36 viewing holes, each 10% larger in diameter (same
+// centres), + the anchor square. One compound path = one Cricut layer.
+function buildMaskSvg() {
+  const r = GRID.holeR * 1.1;
+  const parts = gridHoles.map(h => circlePathD(h.cx, h.cy, r));
+  if (ANCHOR_SQUARE.size > 0) parts.push(rectPathD(anchorSquareRect()));
+  return svgDocument([
+    `<path d="${parts.join(' ')}" fill="#000000" fill-rule="evenodd" stroke="none"/>`,
+  ]);
+}
+
+// "card-holder": one rectangular opening at the dotted card outline, grown
+// 1 mm on every side and an extra 0.3" on the right; no right-side boxes.
+const MM = 1 / 25.4; // inches per millimetre
+const cardHolder = {
+  x: CARD.x - MM,
+  y: CARD.y - MM,
+  w: CARD.nominalW + 2 * MM + 0.3, // +1mm each side, +0.3" more on the right
+  h: CARD.nominalH + 2 * MM,
+};
+function buildCardHolderSvg() {
+  const parts = [rectPathD(cardHolder)];
+  if (ANCHOR_SQUARE.size > 0) parts.push(rectPathD(anchorSquareRect()));
+  return svgDocument([
+    `<path d="${parts.join(' ')}" fill="#000000" fill-rule="evenodd" stroke="none"/>`,
+  ]);
+}
+
 // ---------------------------------------------------------------------------
 // Emit + convert
 // ---------------------------------------------------------------------------
@@ -549,6 +592,18 @@ function main() {
     writeFileSync(testPath, buildCutSvg({includeBorder: false}));
     console.log(
       `TEST -> ${testPath}  (holes only, no border — paper registration test)`,
+    );
+
+    const maskPath = join(OUT_DIR, 'munsell-card-guide.mask.svg');
+    writeFileSync(maskPath, buildMaskSvg());
+    console.log(
+      `MASK -> ${maskPath}  (36 viewing holes only, +10% diameter)`,
+    );
+
+    const holderPath = join(OUT_DIR, 'munsell-card-guide.card-holder.svg');
+    writeFileSync(holderPath, buildCardHolderSvg());
+    console.log(
+      `HOLD -> ${holderPath}  (card opening, +1mm/side, +0.3" on right, no boxes)`,
     );
   }
 

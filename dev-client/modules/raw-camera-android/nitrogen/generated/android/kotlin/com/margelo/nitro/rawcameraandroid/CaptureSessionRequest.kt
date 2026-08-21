@@ -23,7 +23,10 @@ data class CaptureSessionRequest(
   val burstCount: Double,
   @DoNotStrip
   @Keep
-  val manualShots: Array<SessionShot>
+  val manualShots: Array<SessionShot>,
+  @DoNotStrip
+  @Keep
+  val context: SessionContext?
 ) {
   /* primary constructor */
 
@@ -32,12 +35,14 @@ data class CaptureSessionRequest(
     if (other !is CaptureSessionRequest) return false
     return Objects.deepEquals(this.burstCount, other.burstCount)
       && Objects.deepEquals(this.manualShots, other.manualShots)
+      && Objects.deepEquals(this.context, other.context)
   }
 
   override fun hashCode(): Int {
     return arrayOf<Any?>(
       burstCount,
-      manualShots
+      manualShots,
+      context
     ).contentDeepHashCode()
   }
 
@@ -49,8 +54,8 @@ data class CaptureSessionRequest(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(burstCount: Double, manualShots: Array<SessionShot>): CaptureSessionRequest {
-      return CaptureSessionRequest(burstCount, manualShots)
+    private fun fromCpp(burstCount: Double, manualShots: Array<SessionShot>, context: SessionContext?): CaptureSessionRequest {
+      return CaptureSessionRequest(burstCount, manualShots, context)
     }
   }
 }

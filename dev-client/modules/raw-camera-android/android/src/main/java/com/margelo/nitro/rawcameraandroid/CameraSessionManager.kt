@@ -216,7 +216,11 @@ object CameraSessionManager {
                 burstIdx = 0,
                 burstTotal = 0,
                 sessionSubdir = null,
-            )
+                sessionSeq = 0,
+                sessionTotal = 0,
+                deviceSlug = deviceSlug(),
+                contextTokens = emptyList(),
+            ).first
         }
 
     // Capture N frames in rapid succession with AE + AWB locked so all
@@ -233,6 +237,7 @@ object CameraSessionManager {
             require(count in 1..20) { "captureBurst: count must be 1..20, got $count" }
             val burstStamp = timestampNowCompact()
             val results = ArrayList<CapturedPhoto>(count)
+            val device = deviceSlug()
             try {
                 for (i in 1..count) {
                     Log.i(TAG, "captureBurst: frame $i/$count")
@@ -243,7 +248,11 @@ object CameraSessionManager {
                             burstIdx = i,
                             burstTotal = count,
                             sessionSubdir = null,
-                        )
+                            sessionSeq = 0,
+                            sessionTotal = 0,
+                            deviceSlug = device,
+                            contextTokens = emptyList(),
+                        ).first
                     )
                 }
             } finally {
@@ -259,11 +268,20 @@ object CameraSessionManager {
     // MediaStore.Downloads/soilcap/session_<ts>/ so `adb pull` grabs
     // the whole session in one go. See docs/munsell-multishot.md.
     //
-    // Filename format:
-    //   burst<i>of<N>_auto.dng      (auto-AE burst frames)
-    //   burst<i>of<N>_auto.jpg
-    //   manual_iso<n>_shut<X>ms.dng (manual sweep, one per iso/shutter combo)
-    //   manual_iso<n>_shut<X>ms.jpg
+    // Filename format (enriched):
+    //   <seq>_<device>[_<ctx tokens>]_<kind>[_burst<i>of<N>]_iso<n>_shut<X>[_ev<v>][_awblock].<ext>
+    // e.g.:
+    //   01_pixel6a_10YR_dark_multi_sun_auto_iso61_shut25ms_burst1of5_awblock.dng
+    //   06_pixel6a_10YR_dark_multi_sun_manual_iso100_shut33ms.jpg
+    // Context tokens (page, bg, refcard, illuminant) come from
+    // request.context (may be omitted). Actual sensor iso/shutter come
+    // from TotalCaptureResult (not the requested values) so filenames
+    // reflect what the sensor actually saw.
+    //
+    // Additionally writes session.json in the session dir with
+    // structured metadata for each shot (requested + actual sensor
+    // params, filename, kind). If context.note is non-empty, also
+    // writes note.txt with the plain-text note.
     suspend fun captureSession(
         request: CaptureSessionRequest,
     ): Array<CapturedPhoto> =
@@ -277,27 +295,42 @@ object CameraSessionManager {
             }
             val sessionStamp = timestampNowCompact()
             val sessionSubdir = "session_$sessionStamp"
+            val context = request.context
+            val device = deviceSlug()
+            val contextTokens = buildSessionContextTokens(context)
+            val totalShots = burstCount + manualShots.size
             Log.i(
                 TAG,
-                "captureSession: starting subdir=$sessionSubdir burst=$burstCount manual=${manualShots.size}",
+                "captureSession: starting subdir=$sessionSubdir burst=$burstCount manual=${manualShots.size} " +
+                    "device=$device ctx=$contextTokens",
             )
-            val results = ArrayList<CapturedPhoto>(burstCount + manualShots.size)
+            val results = ArrayList<CapturedPhoto>(totalShots)
+            // Per-shot structured metadata accumulator for session.json.
+            val shotJsonEntries = StringBuilder()
+            fun appendShotJson(json: String) {
+                if (shotJsonEntries.isNotEmpty()) shotJsonEntries.append(",\n")
+                shotJsonEntries.append(json)
+            }
             try {
                 // Auto-AE burst first.
                 for (i in 1..burstCount) {
                     Log.i(TAG, "captureSession: burst frame $i/$burstCount")
-                    results.add(
-                        captureLocked(
-                            options = CaptureOptions(null, null, null),
-                            burstStamp = sessionStamp,
-                            burstIdx = i,
-                            burstTotal = burstCount,
-                            sessionSubdir = sessionSubdir,
-                        )
+                    val seq = i
+                    val (photo, shotJson) = captureLocked(
+                        options = CaptureOptions(null, null, null),
+                        burstStamp = sessionStamp,
+                        burstIdx = i,
+                        burstTotal = burstCount,
+                        sessionSubdir = sessionSubdir,
+                        sessionSeq = seq,
+                        sessionTotal = totalShots,
+                        deviceSlug = device,
+                        contextTokens = contextTokens,
                     )
+                    results.add(photo)
+                    appendShotJson(shotJson)
                 }
-                // Manual sweep. Each entry gets its own timestamp within
-                // the session dir so filenames are unique + human-sortable.
+                // Manual sweep.
                 for ((mIdx, shot) in manualShots.withIndex()) {
                     Log.i(
                         TAG,
@@ -310,18 +343,37 @@ object CameraSessionManager {
                         sensorExposureTimeNs = shot.sensorExposureTimeNs,
                         sensorSensitivity = shot.sensorSensitivity,
                     )
-                    results.add(
-                        captureLocked(
-                            options = opts,
-                            burstStamp = sessionStamp,
-                            burstIdx = 0, // 0 = not a burst frame; distinguishes manual shots
-                            burstTotal = 0,
-                            sessionSubdir = sessionSubdir,
-                        )
+                    val seq = burstCount + mIdx + 1
+                    val (photo, shotJson) = captureLocked(
+                        options = opts,
+                        burstStamp = sessionStamp,
+                        burstIdx = 0, // 0 = not a burst frame; distinguishes manual shots
+                        burstTotal = 0,
+                        sessionSubdir = sessionSubdir,
+                        sessionSeq = seq,
+                        sessionTotal = totalShots,
+                        deviceSlug = device,
+                        contextTokens = contextTokens,
                     )
+                    results.add(photo)
+                    appendShotJson(shotJson)
                 }
             } finally {
                 resetCameraStateLocked()
+            }
+            // Write session.json + note.txt (if provided) alongside
+            // the shot files. Best-effort — session.json failing
+            // doesn't invalidate the captures.
+            try {
+                writeSessionSidecars(
+                    sessionSubdir = sessionSubdir,
+                    sessionStamp = sessionStamp,
+                    device = device,
+                    context = context,
+                    shotsJsonArray = shotJsonEntries.toString(),
+                )
+            } catch (e: Throwable) {
+                Log.w(TAG, "captureSession: session sidecar write failed", e)
             }
             Log.i(TAG, "captureSession: complete, ${results.size} shots in $sessionSubdir")
             results.toTypedArray()
@@ -369,7 +421,13 @@ object CameraSessionManager {
         burstIdx: Int,
         burstTotal: Int,
         sessionSubdir: String?,
-    ): CapturedPhoto {
+        // Session-flow inputs. Ignored when sessionSubdir==null (non-
+        // session captures still use the legacy stem builder).
+        sessionSeq: Int,
+        sessionTotal: Int,
+        deviceSlug: String,
+        contextTokens: List<String>,
+    ): Pair<CapturedPhoto, String> {
         Log.i(
             TAG,
             "captureLocked: entered opts=$options burst=$burstIdx/$burstTotal session=$sessionSubdir",
@@ -382,14 +440,14 @@ object CameraSessionManager {
         ) ?: Rational(1, 1)
         val effectiveOptions = clampOptions(options, characteristics)
         val stamp = burstStamp ?: timestampNowCompact()
-        val stem =
-            if (sessionSubdir != null) {
-                buildSessionShotStem(
-                    options = effectiveOptions,
-                    burstIdx = burstIdx,
-                    burstTotal = burstTotal,
-                )
-            } else {
+
+        // In session mode we DEFER the stem calculation until after the
+        // TotalCaptureResult arrives (so actual sensor iso/shutter/AE
+        // state land in the filename, not the requested values). Non-
+        // session shots still use the legacy fixed-at-request-time stem.
+        val useMediaStore = sessionSubdir != null
+        val nonSessionStem =
+            if (!useMediaStore) {
                 buildFileStem(
                     stamp = stamp,
                     options = effectiveOptions,
@@ -398,7 +456,7 @@ object CameraSessionManager {
                     burstIdx = burstIdx,
                     burstTotal = burstTotal,
                 )
-            }
+            } else null
 
         applyCaptureOptionsLocked(effectiveOptions, lockAeAwbForBurst = burstTotal > 1)
 
@@ -406,28 +464,38 @@ object CameraSessionManager {
         pendingResult = resultDeferred
         Log.i(TAG, "captureLocked: triggering takePicture (raw + jpeg)…")
 
-        // Two output paths depending on whether we're in session mode:
+        // Two output paths:
         //   sessionSubdir=null → cacheDir (single-shot / plain burst path,
-        //     for the built-in analyzer + share-sheet flow)
+        //     for the built-in analyzer + share-sheet flow). JPEG is
+        //     captured directly to its final cacheDir location.
         //   sessionSubdir!=null → MediaStore.Downloads/soilcap/$sessionSubdir/
-        //     (research data-collection path, visible to Files/Drive apps
-        //     and accessible via `adb pull /sdcard/Download/soilcap/…`)
-        val useMediaStore = sessionSubdir != null
+        //     (research data-collection path). JPEG is captured to a
+        //     TEMP cacheDir file first, then copied into MediaStore with
+        //     its final name after TotalCaptureResult tells us the
+        //     actual sensor params. This defer-and-rename dance is the
+        //     only way to embed actual (post-AE) iso/shutter in the
+        //     filename for auto-AE bursts.
         val jpegOptions: ImageCapture.OutputFileOptions
-        val jpegDisplayPath: String
-        val jpegCleanup: () -> Unit
+        val jpegSourceTempFile: File?
+        val jpegDisplayPathForNonSession: String
         if (useMediaStore) {
-            val opened = openJpegMediaStoreOutput(sessionSubdir!!, stem)
-            jpegOptions = opened.options
-            jpegDisplayPath = opened.displayPath
-            jpegCleanup = { deleteMediaStoreUri(opened.uri) }
+            jpegSourceTempFile = File.createTempFile(
+                "soilcap_jpeg_", ".jpg", context.cacheDir,
+            )
+            jpegOptions = ImageCapture.OutputFileOptions.Builder(jpegSourceTempFile).build()
+            jpegDisplayPathForNonSession = ""
         } else {
+            val stem = nonSessionStem!!
             val jpegFile = File(context.cacheDir, "$stem.jpg")
+            jpegSourceTempFile = null
             jpegOptions = ImageCapture.OutputFileOptions.Builder(jpegFile).build()
-            jpegDisplayPath = "file://${jpegFile.absolutePath}"
-            jpegCleanup = { jpegFile.delete() }
+            jpegDisplayPathForNonSession = "file://${jpegFile.absolutePath}"
         }
         val executor = ContextCompat.getMainExecutor(context)
+
+        fun cleanupJpeg() {
+            jpegSourceTempFile?.delete()
+        }
 
         try {
             return coroutineScope {
@@ -444,7 +512,7 @@ object CameraSessionManager {
                     } catch (e: Throwable) {
                         pendingResult = null
                         jpegJob.cancel()
-                        jpegCleanup()
+                        cleanupJpeg()
                         Log.e(TAG, "captureLocked: RAW takePicture failed", e)
                         throw RuntimeException(
                             "takePicture failed (or timed out after ${TAKE_PICTURE_TIMEOUT_MS}ms)",
@@ -462,7 +530,7 @@ object CameraSessionManager {
                     } catch (e: Throwable) {
                         image.close()
                         jpegJob.cancel()
-                        jpegCleanup()
+                        cleanupJpeg()
                         throw RuntimeException(
                             "Timed out waiting for TotalCaptureResult (${CAPTURE_RESULT_TIMEOUT_MS}ms)",
                             e,
@@ -471,30 +539,78 @@ object CameraSessionManager {
                         pendingResult = null
                     }
 
-                val jpegPath: String? =
+                // Wait for the JPEG save to complete (or fail). We need
+                // this whether we're moving it to MediaStore (session
+                // mode) or the file's already at its final location
+                // (non-session).
+                val jpegSaveOk: Boolean =
                     try {
                         withTimeout(TAKE_PICTURE_TIMEOUT_MS) { jpegJob.await() }
-                        Log.i(TAG, "captureLocked: JPEG written to $jpegDisplayPath")
-                        jpegDisplayPath
+                        true
                     } catch (e: Throwable) {
                         Log.w(
                             TAG,
                             "captureLocked: JPEG capture failed (continuing with RAW only)",
                             e,
                         )
-                        jpegCleanup()
-                        null
+                        cleanupJpeg()
+                        false
                     }
 
-                val result =
-                    if (useMediaStore) {
-                        writeDngMediaStore(image, characteristics, totalResult, sessionSubdir!!, stem, jpegPath)
-                    } else {
-                        val dngFile = File(context.cacheDir, "$stem.dng")
-                        writeDngFile(image, characteristics, totalResult, dngFile, jpegPath)
-                    }
-                image.close()
-                result
+                if (useMediaStore) {
+                    // Session mode: compose the final stem now (actual
+                    // sensor params in hand), then write DNG + move JPEG
+                    // into MediaStore with matching filenames.
+                    val actual = extractActualSensorParams(totalResult)
+                    val finalStem = buildSessionShotStem(
+                        seq = sessionSeq,
+                        sessionTotal = sessionTotal,
+                        deviceSlug = deviceSlug,
+                        contextTokens = contextTokens,
+                        options = effectiveOptions,
+                        actual = actual,
+                        burstIdx = burstIdx,
+                        burstTotal = burstTotal,
+                    )
+                    val jpegPath: String? =
+                        if (jpegSaveOk) {
+                            try {
+                                copyToMediaStoreJpeg(
+                                    sessionSubdir!!, finalStem, jpegSourceTempFile!!
+                                )
+                            } catch (e: Throwable) {
+                                Log.w(TAG, "captureLocked: JPEG → MediaStore copy failed", e)
+                                null
+                            } finally {
+                                cleanupJpeg()
+                            }
+                        } else null
+                    val photo = writeDngMediaStore(
+                        image, characteristics, totalResult,
+                        sessionSubdir!!, finalStem, jpegPath,
+                    )
+                    image.close()
+                    val shotJson = buildShotJson(
+                        stem = finalStem,
+                        burstIdx = burstIdx,
+                        burstTotal = burstTotal,
+                        options = effectiveOptions,
+                        actual = actual,
+                    )
+                    Pair(photo, shotJson)
+                } else {
+                    // Non-session (single-shot / plain burst / cacheDir).
+                    val stem = nonSessionStem!!
+                    val jpegPath: String? =
+                        if (jpegSaveOk) {
+                            Log.i(TAG, "captureLocked: JPEG written to $jpegDisplayPathForNonSession")
+                            jpegDisplayPathForNonSession
+                        } else null
+                    val dngFile = File(context.cacheDir, "$stem.dng")
+                    val photo = writeDngFile(image, characteristics, totalResult, dngFile, jpegPath)
+                    image.close()
+                    Pair(photo, "")
+                }
             }
         } finally {
             // For a single capture, reset overrides so the next call
@@ -1073,46 +1189,6 @@ object CameraSessionManager {
     // `adb pull /sdcard/Download/soilcap` in one shot.
     private const val SOILCAP_ROOT = "Download/soilcap"
 
-    private data class MediaStoreJpegOutput(
-        val options: ImageCapture.OutputFileOptions,
-        val uri: Uri,
-        val displayPath: String,
-    )
-
-    // Insert a MediaStore.Downloads row for a JPEG under $SOILCAP_ROOT/
-    // <sessionSubdir>/, get back a Uri + OutputFileOptions the JPEG
-    // ImageCapture can write to directly. displayPath is the sdcard
-    // path the file will end up at, for logs + the JS-side result.
-    private fun openJpegMediaStoreOutput(
-        sessionSubdir: String,
-        stem: String,
-    ): MediaStoreJpegOutput {
-        val displayName = "$stem.jpg"
-        val relativePath = "$SOILCAP_ROOT/$sessionSubdir"
-        val values = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
-                put(MediaStore.MediaColumns.IS_PENDING, 1)
-            }
-        }
-        val collection = downloadsCollection()
-        val options = ImageCapture.OutputFileOptions.Builder(
-            context.contentResolver, collection, values,
-        ).build()
-        // The Uri from OutputFileOptions isn't exposed; CameraX inserts
-        // its own row when it saves. We insert an extra placeholder here
-        // just for tracking + cleanup on error. Actually CameraX'
-        // OutputFileOptions.Builder(contentResolver, collection, values)
-        // handles insertion internally and returns the row Uri in
-        // OnImageSavedCallback. So we can't clean up on cancellation
-        // without waiting for the callback. Best-effort: rely on the
-        // catch in captureLocked to have already fired.
-        val displayPath = "/sdcard/$relativePath/$displayName"
-        return MediaStoreJpegOutput(options, Uri.EMPTY, displayPath)
-    }
-
     // Delete a MediaStore row by Uri. Best-effort — swallow errors.
     // Uri.EMPTY is a no-op (we don't always have a concrete Uri).
     private fun deleteMediaStoreUri(uri: Uri) {
@@ -1227,23 +1303,279 @@ object CameraSessionManager {
     }
 
     // Session-mode stem — used when the file lands inside a
-    // session_<ts>/ directory, so the timestamp + fixed "RawCameraAndroid"
-    // prefix are redundant. Emits shorter, more legible names:
-    //   burstIdx>0  → "burst<i>of<N>_auto"
-    //   burstIdx==0 → "manual_iso<n>_shut<X>" (options must set both)
-    //   otherwise   → "auto" (single-shot in session — rare)
+    // session_<ts>/ directory. Fully self-labelled: sequence, device
+    // slug, user context tokens (page/bg/refcard/illuminant), shot
+    // kind, ACTUAL sensor params from TotalCaptureResult, and burst
+    // suffix.
+    //
+    // Example (all context tokens set, auto burst frame 3 of 5):
+    //   03_pixel6a_10YR_dark_multi_sun_auto_iso61_shut25ms_burst3of5_awblock
+    // Example (context omitted, manual):
+    //   06_pixel6a_manual_iso100_shut33ms
+    //
+    // Order rationale:
+    //   seq first  → files sort in capture order regardless of param
+    //   device     → cross-device pulls group nicely by device
+    //   context    → visually stable across a session, easy to grep
+    //   kind       → auto vs manual sharpens the read
+    //   iso/shut   → actual sensor state (post-AE resolution)
+    //   burst tail → sort adjacent within a burst
     private fun buildSessionShotStem(
+        seq: Int,
+        sessionTotal: Int,
+        deviceSlug: String,
+        contextTokens: List<String>,
         options: CaptureOptions,
+        actual: ActualSensorParams,
         burstIdx: Int,
         burstTotal: Int,
     ): String {
-        if (burstTotal > 1) return "burst${burstIdx}of${burstTotal}_auto"
-        val iso = options.sensorSensitivity?.toInt()
-        val shutterNs = options.sensorExposureTimeNs?.toLong()
-        if (iso != null && shutterNs != null) {
-            return "manual_iso${iso}_shut${formatShutter(shutterNs)}"
+        val parts = mutableListOf<String>()
+        // Zero-pad seq so lexical sort matches capture order for
+        // sessions up to 99 shots.
+        val seqWidth = if (sessionTotal >= 10) 2 else 1
+        parts.add(seq.toString().padStart(seqWidth, '0'))
+        parts.add(deviceSlug)
+        parts.addAll(contextTokens)
+        val kind = if (burstTotal > 1) "auto" else if (options.sensorSensitivity != null) "manual" else "auto"
+        parts.add(kind)
+        actual.iso?.let { parts.add("iso$it") }
+        actual.shutterNs?.let { parts.add("shut${formatShutter(it)}") }
+        if (burstTotal > 1) parts.add("burst${burstIdx}of${burstTotal}")
+        if (actual.awbLocked) parts.add("awblock")
+        return parts.joinToString("_")
+    }
+
+    // Slugify Build.MODEL for filename use. Lowercases, strips
+    // punctuation, collapses runs of non-alnum to nothing. Examples:
+    //   "Pixel 6a"      → "pixel6a"
+    //   "Pixel 7 Pro"   → "pixel7pro"
+    //   "SM-G998U"      → "smg998u"
+    private fun deviceSlug(): String {
+        val raw = android.os.Build.MODEL ?: "unknown"
+        val s = raw.lowercase(Locale.US).replace("[^a-z0-9]".toRegex(), "")
+        return if (s.isEmpty()) "unknown" else s
+    }
+
+    // Convert a SessionContext to the list of filename tokens in
+    // canonical order. Fields the user hasn't set are simply skipped —
+    // resulting filenames are shorter but still uniquely identify
+    // what's known. Sanitises everything to filename-safe chars.
+    private fun buildSessionContextTokens(context: SessionContext?): List<String> {
+        if (context == null) return emptyList()
+        val out = mutableListOf<String>()
+        context.page?.let { if (it.isNotBlank()) out.add(sanitizeToken(it)) }
+        context.background?.let { if (it.isNotBlank()) out.add(sanitizeToken(it)) }
+        context.refCard?.let { if (it.isNotBlank()) out.add("ref${sanitizeToken(it)}") }
+        context.illuminant?.let { if (it.isNotBlank()) out.add("light${sanitizeToken(it)}") }
+        return out
+    }
+
+    private fun sanitizeToken(s: String): String =
+        s.trim().replace("[^A-Za-z0-9.]".toRegex(), "")
+
+    // Snapshot of what the sensor actually did on this shot. Pulled
+    // from TotalCaptureResult (as opposed to the CaptureOptions we
+    // requested — those diverge whenever AE picked its own iso/shutter
+    // instead of accepting our overrides).
+    private data class ActualSensorParams(
+        val iso: Int?,
+        val shutterNs: Long?,
+        val aeMode: Int?,
+        val awbMode: Int?,
+        val awbLocked: Boolean,
+        val aeLocked: Boolean,
+    )
+
+    private fun extractActualSensorParams(r: TotalCaptureResult): ActualSensorParams =
+        ActualSensorParams(
+            iso = r.get(CaptureResult.SENSOR_SENSITIVITY),
+            shutterNs = r.get(CaptureResult.SENSOR_EXPOSURE_TIME),
+            aeMode = r.get(CaptureResult.CONTROL_AE_MODE),
+            awbMode = r.get(CaptureResult.CONTROL_AWB_MODE),
+            awbLocked = r.get(CaptureResult.CONTROL_AWB_LOCK) == true,
+            aeLocked = r.get(CaptureResult.CONTROL_AE_LOCK) == true,
+        )
+
+    // Copy a JPEG from a private cacheDir tempfile to a
+    // MediaStore.Downloads entry under the given session subdir. Used
+    // by the session flow because the final filename isn't known until
+    // AFTER capture (needs actual sensor params from TotalCaptureResult).
+    // Returns the sdcard-style display path suitable for the JS side.
+    private fun copyToMediaStoreJpeg(
+        sessionSubdir: String,
+        stem: String,
+        source: File,
+    ): String {
+        val displayName = "$stem.jpg"
+        val relativePath = "$SOILCAP_ROOT/$sessionSubdir"
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
         }
-        return "auto"
+        val resolver = context.contentResolver
+        val uri = resolver.insert(downloadsCollection(), values)
+            ?: throw RuntimeException("MediaStore.insert returned null for $displayName")
+        try {
+            resolver.openOutputStream(uri, "w")?.use { out ->
+                java.io.FileInputStream(source).use { input ->
+                    input.copyTo(out)
+                }
+            } ?: throw RuntimeException("openOutputStream returned null for $uri")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val finalize = ContentValues().apply {
+                    put(MediaStore.MediaColumns.IS_PENDING, 0)
+                }
+                resolver.update(uri, finalize, null, null)
+            }
+        } catch (e: Throwable) {
+            deleteMediaStoreUri(uri)
+            throw e
+        }
+        val displayPath = "/sdcard/$relativePath/$displayName"
+        Log.i(TAG, "JPEG copied (mediastore): path=$displayPath uri=$uri")
+        return "file://$displayPath"
+    }
+
+    // Build the JSON string for one shot's entry inside session.json.
+    // Emitted as a naked object literal (the caller comma-joins these
+    // into a JSON array). No dependency on any JSON lib — the data
+    // shape is fixed and small.
+    private fun buildShotJson(
+        stem: String,
+        burstIdx: Int,
+        burstTotal: Int,
+        options: CaptureOptions,
+        actual: ActualSensorParams,
+    ): String {
+        val kind = if (burstTotal > 1) "auto_burst" else if (options.sensorSensitivity != null) "manual" else "auto_single"
+        val requested = buildString {
+            append('{')
+            options.aeCompensation?.let { append("\"ae_comp_idx\":").append(it.toInt()).append(',') }
+            options.sensorSensitivity?.let { append("\"iso\":").append(it.toInt()).append(',') }
+            options.sensorExposureTimeNs?.let { append("\"shutter_ns\":").append(it.toLong()).append(',') }
+            append("\"ae_lock\":").append(burstTotal > 1).append(',')
+            append("\"awb_lock\":").append(burstTotal > 1)
+            append('}')
+        }
+        val actualJson = buildString {
+            append('{')
+            actual.iso?.let { append("\"iso\":").append(it).append(',') }
+            actual.shutterNs?.let { append("\"shutter_ns\":").append(it).append(',') }
+            actual.aeMode?.let { append("\"ae_mode\":").append(it).append(',') }
+            actual.awbMode?.let { append("\"awb_mode\":").append(it).append(',') }
+            append("\"ae_locked\":").append(actual.aeLocked).append(',')
+            append("\"awb_locked\":").append(actual.awbLocked)
+            append('}')
+        }
+        val burstJson =
+            if (burstTotal > 1) ",\"burst_idx\":$burstIdx,\"burst_total\":$burstTotal"
+            else ""
+        return "{\"filename\":\"$stem\",\"kind\":\"$kind\"$burstJson,\"requested\":$requested,\"actual\":$actualJson}"
+    }
+
+    // Write session.json (and note.txt if the user typed one) into the
+    // session's MediaStore.Downloads/soilcap/session_<ts>/ dir. Best-
+    // effort — errors are logged but don't fail the captures.
+    private fun writeSessionSidecars(
+        sessionSubdir: String,
+        sessionStamp: String,
+        device: String,
+        context: SessionContext?,
+        shotsJsonArray: String,
+    ) {
+        val relativePath = "$SOILCAP_ROOT/$sessionSubdir"
+        val note = context?.note?.trim().orEmpty()
+
+        val ctxJson = buildString {
+            append('{')
+            append("\"page\":").append(jsonStr(context?.page)).append(',')
+            append("\"background\":").append(jsonStr(context?.background)).append(',')
+            append("\"ref_card\":").append(jsonStr(context?.refCard)).append(',')
+            append("\"illuminant\":").append(jsonStr(context?.illuminant)).append(',')
+            append("\"note\":").append(jsonStr(note))
+            append('}')
+        }
+        val deviceJson = buildString {
+            append('{')
+            append("\"make\":").append(jsonStr(android.os.Build.MANUFACTURER)).append(',')
+            append("\"model\":").append(jsonStr(android.os.Build.MODEL)).append(',')
+            append("\"slug\":").append(jsonStr(device)).append(',')
+            append("\"android_release\":").append(jsonStr(android.os.Build.VERSION.RELEASE)).append(',')
+            append("\"android_sdk_int\":").append(android.os.Build.VERSION.SDK_INT)
+            append('}')
+        }
+        val topJson = buildString {
+            append('{')
+            append("\"session_id\":").append(jsonStr(sessionStamp)).append(',')
+            append("\"schema_version\":\"1\",\n")
+            append("\"device\":").append(deviceJson).append(',')
+            append("\"context\":").append(ctxJson).append(',')
+            append("\"shots\":[").append(shotsJsonArray).append("]")
+            append('}')
+        }
+        writeSessionTextFile(relativePath, "session.json", topJson, "application/json")
+        if (note.isNotEmpty()) {
+            writeSessionTextFile(relativePath, "note.txt", note, "text/plain")
+        }
+    }
+
+    // JSON-string helper. Returns the literal "null" (unquoted) for
+    // null / blank input, otherwise a proper double-quoted escaped
+    // string. Handles the small set of chars that appear in our
+    // context values (backslash, quote, newline).
+    private fun jsonStr(s: String?): String {
+        if (s.isNullOrBlank()) return "null"
+        val sb = StringBuilder("\"")
+        for (c in s) {
+            when (c) {
+                '\\', '"' -> { sb.append('\\'); sb.append(c) }
+                '\n' -> sb.append("\\n")
+                '\r' -> sb.append("\\r")
+                '\t' -> sb.append("\\t")
+                else -> sb.append(c)
+            }
+        }
+        sb.append('"')
+        return sb.toString()
+    }
+
+    private fun writeSessionTextFile(
+        relativePath: String,
+        displayName: String,
+        content: String,
+        mime: String,
+    ) {
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            put(MediaStore.MediaColumns.MIME_TYPE, mime)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
+        }
+        val resolver = context.contentResolver
+        val uri = resolver.insert(downloadsCollection(), values)
+            ?: throw RuntimeException("MediaStore.insert returned null for $displayName")
+        try {
+            resolver.openOutputStream(uri, "w")?.use { out ->
+                out.write(content.toByteArray(Charsets.UTF_8))
+            } ?: throw RuntimeException("openOutputStream returned null for $uri")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val finalize = ContentValues().apply {
+                    put(MediaStore.MediaColumns.IS_PENDING, 0)
+                }
+                resolver.update(uri, finalize, null, null)
+            }
+        } catch (e: Throwable) {
+            deleteMediaStoreUri(uri)
+            throw e
+        }
+        Log.i(TAG, "sidecar written: $relativePath/$displayName")
     }
 
     // Format an AE compensation index as an EV string with sign, up to

@@ -92,16 +92,42 @@ type Sample = {
   refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]}};
 };
 
+// Recognise device from either the directory path (legacy fixtures
+// organised by device folder) OR the enriched-filename token (e.g.
+// `pixel6a`, `pixel7`, `iphone14pro`). Path wins when both are set
+// because it's the more explicit categorisation for existing batches.
 const deviceOf = (p: string): string => {
   if (p.includes('iPhone')) return 'iPhone';
   if (p.includes('Pixel 4')) return 'Pixel 4';
   if (p.includes('Pixel 6a')) return 'Pixel 6a';
   if (p.includes('Pixel 7')) return 'Pixel 7';
+  // Enriched-filename fallback: look for a lower-case device slug
+  // in the basename. Match iphone / pixelNa / pixelN with a rough
+  // pretty-print heuristic. Order matters: check the more-specific
+  // `pixel6a` before the generic `pixel6`.
+  const base = p.split('/').pop()?.toLowerCase() ?? '';
+  const m = base.match(/(iphone[a-z0-9]*|pixel\d+[a-z]*)/);
+  if (m) {
+    const slug = m[1];
+    if (slug.startsWith('iphone')) return 'iPhone';
+    if (slug === 'pixel4') return 'Pixel 4';
+    if (slug === 'pixel6a') return 'Pixel 6a';
+    if (slug === 'pixel7') return 'Pixel 7';
+    // Unrecognised specific model — capitalise for display but keep
+    // the specifics so it's distinguishable in the device filter.
+    return slug[0].toUpperCase() + slug.slice(1);
+  }
   return 'other';
 };
+// Background derivation: legacy path convention ("LIGHT BG" / "DARK BG"
+// folder) first, then enriched-filename fallback (bare `_light` / `_dark`
+// tokens embedded in the basename by the MULTI session flow).
 const bgOf = (p: string): string => {
   if (p.includes('LIGHT BG')) return 'light';
   if (p.includes('DARK BG')) return 'dark';
+  const base = p.split('/').pop()?.toLowerCase() ?? '';
+  if (base.split('_').includes('light')) return 'light';
+  if (base.split('_').includes('dark')) return 'dark';
   return 'unknown';
 };
 
@@ -356,6 +382,33 @@ const html = `<!DOCTYPE html>
           which corrects sensor offset that a one-ref fit can't see.
           Options exclude the first ref.
         </div>
+      </fieldset>
+      <fieldset id="ctl-ccm">
+        <legend>Tuned 3×3 CCM (experimental)</legend>
+        <div style="font-size: 10px; color: #888; margin-top: 4px;">
+          Fit <code>M · raw ≈ expected</code> (least squares, cross-channel
+          mixing) from the currently-filtered chart chips + ref cards.
+          Replaces WB when applied. Narrow the primary filters (device,
+          bg, card) first so the fit is per-scenario. See
+          <code>docs/munsell-dark-sensor.md</code> option #7.
+        </div>
+        <div id="ccm-controls" style="margin-top: 6px; display: flex;
+             flex-direction: column; gap: 4px;">
+          <button id="ccm-fit-btn" type="button" style="font-size: 12px;
+                  padding: 3px 8px; cursor: pointer;">
+            Make tuned CCM from filtered
+          </button>
+          <label style="font-size: 12px;">
+            <input type="checkbox" id="ccm-apply-toggle" /> Apply CCM
+            (replaces WB in results)
+          </label>
+          <button id="ccm-clear-btn" type="button" style="font-size: 11px;
+                  padding: 2px 6px; cursor: pointer; align-self: flex-start;">
+            Clear
+          </button>
+        </div>
+        <div id="ccm-viz" style="margin-top: 6px; font-size: 11px;
+             color: #444;"></div>
       </fieldset>
       <fieldset id="ctl-device">
         <legend>Device</legend>
@@ -659,6 +712,158 @@ function applyWB(rgb, wb) {
   ];
 }
 
+// ---- Tuned 3×3 CCM (experimental) ---------------------------------------
+
+// Analytic 3×3 inverse. Used inside the normal-equations solver for the
+// CCM fit — we compute (X · Xᵀ)⁻¹ once per row of M. Throws on
+// near-singular input (shouldn't happen with 30+ chart samples but
+// guards against a filtered-to-nothing corner case).
+function invert3x3(m) {
+  const a = m[0], b = m[1], c = m[2];
+  const d = m[3], e = m[4], f = m[5];
+  const g = m[6], h = m[7], i = m[8];
+  const A =  (e * i - f * h);
+  const B = -(d * i - f * g);
+  const C =  (d * h - e * g);
+  const det = a * A + b * B + c * C;
+  if (Math.abs(det) < 1e-12) throw new Error('CCM fit: singular normal matrix');
+  const invDet = 1 / det;
+  return [
+    A * invDet,  -(b * i - c * h) * invDet,   (b * f - c * e) * invDet,
+    B * invDet,   (a * i - c * g) * invDet,  -(a * f - c * d) * invDet,
+    C * invDet,  -(a * h - b * g) * invDet,   (a * e - b * d) * invDet,
+  ];
+}
+
+function matVec3(m, v) {
+  return [
+    m[0] * v[0] + m[1] * v[1] + m[2] * v[2],
+    m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
+    m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
+  ];
+}
+
+// Fit a 3×3 M such that M · raw ≈ expected in the least-squares sense
+// over the supplied (raw, expected) pairs. Each row of M is solved
+// independently as a 3-parameter linear regression: m_iᵀ = y_i · Xᵀ ·
+// (X · Xᵀ)⁻¹. Well-overdetermined at 24+ chips × 3 channels = 72+
+// equations for 9 unknowns; numerically stable without any weighting.
+//
+// Also computes residual ΔE on the training samples so the UI can
+// display "training fit quality" (a proxy for whether the fixed
+// scenario the fit was done over is coherent enough for a linear
+// CCM to explain).
+function fitCCM(pairs) {
+  const n = pairs.length;
+  if (n < 4) return null;
+  // Build X · Xᵀ (3×3) and X · Yᵀ (3×3 too — cols indexed by output ch).
+  const XXt = [0,0,0, 0,0,0, 0,0,0];
+  const XYt = [0,0,0, 0,0,0, 0,0,0];
+  for (const {raw, expected} of pairs) {
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+      XXt[r * 3 + c] += raw[r] * raw[c];
+      XYt[r * 3 + c] += raw[r] * expected[c];
+    }
+  }
+  const XXt_inv = invert3x3(XXt);
+  // Solve each row of M independently (each row is a 3-parameter
+  // linear regression of one output channel on all three raw
+  // channels): m_row = XYt-column times XXt_inv.
+  const matrix = [0,0,0, 0,0,0, 0,0,0];
+  for (let out = 0; out < 3; out++) {
+    // Row "out" of M: coeffs on raw R, G, B.
+    for (let j = 0; j < 3; j++) {
+      let s = 0;
+      for (let k = 0; k < 3; k++) {
+        s += XYt[k * 3 + out] * XXt_inv[k * 3 + j];
+      }
+      matrix[out * 3 + j] = s;
+    }
+  }
+  // Residual ΔE on the training set.
+  let sumDe = 0;
+  let maxDe = 0;
+  for (const {raw, expected} of pairs) {
+    const pred = matVec3(matrix, raw);
+    const de = deltaE2000(rgbToLab(pred), rgbToLab(expected));
+    sumDe += de;
+    if (de > maxDe) maxDe = de;
+  }
+  return {
+    matrix,
+    meanResidualDe: sumDe / n,
+    maxResidualDe: maxDe,
+    nSamples: n,
+  };
+}
+
+function applyCCM(rgb, matrix) {
+  const out = matVec3(matrix, rgb);
+  return [Math.max(0, out[0]), Math.max(0, out[1]), Math.max(0, out[2])];
+}
+
+// Render the CCM matrix as a 3×3 HTML table with cell color coding.
+// Diagonal cells: green tint if close to 1 (sensor near-identity),
+// red tint if far. Off-diagonal cells: neutral if close to 0
+// (little cross-channel mixing), amber if non-trivial. Includes the
+// residual ΔE stats so users can gauge whether the fit was clean or
+// under-determined (a training-set residual bigger than the raw
+// jaggedness we're trying to fix = the CCM can't explain the error,
+// which means metameric failure isn't fully linear either).
+function renderCcmViz(ccm) {
+  if (!ccm) {
+    return '<div style="color:#888; font-style:italic">' +
+      'No CCM yet. Narrow filters + click "Make tuned CCM".</div>';
+  }
+  const labels = ['R', 'G', 'B'];
+  const cellStyle = (row, col) => {
+    const v = ccm.matrix[row * 3 + col];
+    const isDiag = row === col;
+    if (isDiag) {
+      // Distance from 1 for the diagonal: 0 = perfect, 0.3 = notable.
+      const d = Math.min(1, Math.abs(v - 1) / 0.3);
+      const alpha = 0.15 + 0.55 * d;
+      return 'background: rgba(220, 60, 60, ' + alpha.toFixed(2) + ');';
+    }
+    // Off-diagonal: magnitude flags cross-channel mixing.
+    const d = Math.min(1, Math.abs(v) / 0.3);
+    if (Math.abs(v) < 0.02) return 'background: #f2f2f2;';
+    const alpha = 0.15 + 0.5 * d;
+    const rgbTint = v > 0 ? '240,170,50' : '80,140,200';
+    return 'background: rgba(' + rgbTint + ', ' + alpha.toFixed(2) + ');';
+  };
+  let html = '<div style="font-weight:600; font-size:11px;' +
+    ' margin-bottom:3px;">M · raw = measured</div>';
+  html += '<table style="border-collapse: collapse; font-size:11px;' +
+    ' font-variant-numeric: tabular-nums;"><thead><tr>' +
+    '<th></th>' +
+    labels.map(l => '<th style="padding:2px 5px; font-weight:600;' +
+      ' color:#888;">raw ' + l + '</th>').join('') +
+    '</tr></thead><tbody>';
+  for (let r = 0; r < 3; r++) {
+    html += '<tr><td style="padding:2px 5px; font-weight:600; color:#888;">' +
+      'out ' + labels[r] + '</td>';
+    for (let c = 0; c < 3; c++) {
+      const v = ccm.matrix[r * 3 + c];
+      html += '<td style="padding:3px 6px; border:1px solid #ddd; ' +
+        'text-align:right; ' + cellStyle(r, c) + '">' +
+        v.toFixed(3) + '</td>';
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  html += '<div style="margin-top:5px; color:#666;">' +
+    'Fit on <strong>' + ccm.nSamples + '</strong> sample' +
+    (ccm.nSamples === 1 ? '' : 's') + '. ' +
+    'Training-set residual: mean ΔE <strong>' +
+    ccm.meanResidualDe.toFixed(2) + '</strong>, ' +
+    'max <strong>' + ccm.maxResidualDe.toFixed(2) +
+    '</strong>.</div>';
+  html += '<div style="margin-top:3px; color:#999; font-size:10px;">' +
+    'Diagonal red = far from 1. Off-diag amber/blue = cross-channel mixing.</div>';
+  return html;
+}
+
 // ---- Munsell notation parser --------------------------------------------
 // Standard chip:   "10YR 5/4"   "2.5YR 7.5/2"
 // Fractional pred: "8YR 5.7/1.3"
@@ -796,6 +1001,13 @@ const state = {
   // pre-WB (native sensor read, useful to isolate WB miscalibration
   // from a sensor offset / stray-light issue).
   channelSource: 'measured',
+  // Experimental tuned 3×3 CCM. Null when not fit. When ccmApplied,
+  // replaces WB in filterSamples: measured = M · raw. Fit lazily on
+  // button click from the currently-filtered chips + ref cards, so
+  // narrowing device/bg/card first produces a scenario-specific M.
+  // See docs/munsell-dark-sensor.md option #7 for context.
+  ccm: null,            // {matrix: number[9], meanResidualDe, maxResidualDe, nSamples, fittedFrom: {device, bg, format}}
+  ccmApplied: false,
 };
 
 // Options for the heatmap row/col axis pickers. Any Sample-derived
@@ -1172,6 +1384,73 @@ function initControls() {
     );
   };
   rebuildRefControls();
+
+  // Tuned 3×3 CCM controls (experimental). Fit uses the sample set
+  // AFTER primary filters but BEFORE the CCM-apply switch, so users
+  // narrow to (device × bg × card) first and get a scenario-specific
+  // matrix. Never persisted to URL — always a fresh fit each session.
+  const ccmFitBtn = document.getElementById('ccm-fit-btn');
+  const ccmApplyToggle = document.getElementById('ccm-apply-toggle');
+  const ccmClearBtn = document.getElementById('ccm-clear-btn');
+  const ccmVizEl = document.getElementById('ccm-viz');
+  function refreshCcmUi() {
+    ccmApplyToggle.checked = state.ccmApplied;
+    ccmApplyToggle.disabled = state.ccm == null;
+    ccmVizEl.innerHTML = renderCcmViz(state.ccm);
+  }
+  ccmFitBtn.addEventListener('click', () => {
+    // Build the training pool: same primary filters as filterSamples,
+    // but pulling BOTH chart chips (from Sample.rawRgb/expectedRgb)
+    // AND per-shot ref cards (from Sample.refOptions). Refs cards
+    // give the fit a stronger neutral anchor. Skip anything without
+    // real expected/raw values.
+    const pairs = [];
+    const seenRefKey = new Set();
+    for (const s of SAMPLES) {
+      if (state.format !== 'all' && s.format !== state.format) continue;
+      if (state.device.size > 0 && !state.device.has(s.device)) continue;
+      if (state.bg.size > 0     && !state.bg.has(s.bg))         continue;
+      if (state.card.size > 0   && !state.card.has(s.page))     continue;
+      if (state.fixture.size > 0 && !state.fixture.has(s.fixtureLabel)) continue;
+      if (state.excludeFlaggedChips && EXCLUDED_CHIPS.has(s.expected)) continue;
+      if (state.excludeFlaggedCards && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
+      pairs.push({raw: s.rawRgb, expected: s.expectedRgb});
+      // Add each shot's ref cards, deduped by (shot × card).
+      for (const [name, ref] of Object.entries(s.refOptions)) {
+        const key = s.fixtureLabel + '|' + s.format + '|' + name;
+        if (seenRefKey.has(key)) continue;
+        seenRefKey.add(key);
+        pairs.push({raw: ref.raw, expected: ref.expected});
+      }
+    }
+    if (pairs.length < 4) {
+      alert('Not enough samples to fit a 3×3 CCM (need >= 4, have ' +
+            pairs.length + '). Widen the filters.');
+      return;
+    }
+    try {
+      const fit = fitCCM(pairs);
+      if (fit == null) throw new Error('fitCCM returned null');
+      state.ccm = fit;
+      state.ccmApplied = true;
+      refreshCcmUi();
+      render();
+    } catch (e) {
+      alert('CCM fit failed: ' + e.message);
+    }
+  });
+  ccmApplyToggle.addEventListener('change', e => {
+    state.ccmApplied = e.target.checked;
+    render();
+  });
+  ccmClearBtn.addEventListener('click', () => {
+    state.ccm = null;
+    state.ccmApplied = false;
+    refreshCcmUi();
+    render();
+  });
+  refreshCcmUi();
+
   // Illumination-unevenness slider. Range 0..100 with a max-position
   // treated as "no filter" (so users don't have to know that "999
   // means all"). Live value shown next to the slider.
@@ -1341,9 +1620,17 @@ function filterSamples() {
     }
     if (excludeFlagged && EXCLUDED_CHIPS.has(s.expected)) continue;
     if (excludeFlaggedFixtures && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
-    const wb = computeWB(s.refOptions, firstRef, secondRef);
-    if (!wb) continue;
-    const measuredRgb = applyWB(s.rawRgb, wb);
+    let measuredRgb;
+    if (state.ccmApplied && state.ccm) {
+      // CCM path: skip WB entirely, apply the fitted M · raw. CCM was
+      // trained to map raw → expected directly, so it already subsumes
+      // whatever WB the training scenario needed.
+      measuredRgb = applyCCM(s.rawRgb, state.ccm.matrix);
+    } else {
+      const wb = computeWB(s.refOptions, firstRef, secondRef);
+      if (!wb) continue;
+      measuredRgb = applyWB(s.rawRgb, wb);
+    }
     const measured = nearestChipNotation(measuredRgb);
     const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
     passed.push({...s, measured, measuredRgb, deltaE});

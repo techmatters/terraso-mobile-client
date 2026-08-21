@@ -459,6 +459,29 @@ const BOTH_TOKEN = 'both';
 const PLATFORM_TOKENS = new Set<'ios' | 'android'>(['ios', 'android']);
 const TIMESTAMP_RE = /^\d{8}t\d{4,6}$/;
 
+// New enriched-session tokens produced by the MULTI session flow.
+// See docs/munsell-multishot.md "Enriched filenames". These are
+// filename-native (no dependency on directory hierarchy):
+//   - `ref<name>`  → reference-card layout (refmulti / refgreycard etc.)
+//   - `light<slug>`→ user-supplied illuminant type (lightsun / lightshade)
+//   - `pixel<n...>`, `iphone<...>` → device model slug
+//   - `iso<n>`, `shut<n>{us,ms,s}` → actual sensor params
+//   - `burst<i>of<N>`  → burst frame position (already existed)
+//   - `awblock`, `aeoff`, `manual`, `auto` → capture-mode flags
+const REF_PREFIX = 'ref';
+const LIGHT_PREFIX = 'light';
+const SESSION_SEQ_RE = /^\d{1,3}$/; // leading numeric seq in enriched names
+// Device slugs seen in real filenames. We keep this loose (accept
+// anything starting with the recognised prefix) rather than enumerate
+// every model — new devices arrive faster than we care to hardcode.
+const DEVICE_SLUG_PREFIXES = ['pixel', 'iphone', 'samsung', 'oneplus'];
+// Tokens we simply drop from the free-form tags list because they
+// don't add analysis value (already captured elsewhere or descriptive
+// of a mode we don't track as a filter).
+const DROP_TOKENS = new Set([
+  'auto', 'manual', 'awblock', 'aeoff', 'aeon',
+]);
+
 const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
   const ext = path.extname(fullPath).slice(1).toLowerCase();
   const base = path.basename(fullPath, path.extname(fullPath));
@@ -475,9 +498,17 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
   let reference: string | null = null;
   let illuminant_tag: string | null = null;
   const tags: string[] = [];
+  // First numeric-only token is the enriched-format session sequence
+  // (01, 02, ...). Drop it so it doesn't clutter the tag list but
+  // keep it out of the "unrecognised" pile.
+  let seenSeq = false;
 
   for (const t of tokens) {
     if (t === ext) continue; // drop redundant `_DNG` (matches extension)
+    if (!seenSeq && SESSION_SEQ_RE.test(t)) {
+      seenSeq = true;
+      continue;
+    }
     const p = PAGE_LOOKUP.get(t);
     if (p) {
       page = p.name;
@@ -488,8 +519,37 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
       reference = t === 'none' ? 'nothing' : t;
       continue;
     }
+    // Enriched-session ref token: `ref<name>` (e.g. `refmulti`,
+    // `refgreycard`). Takes precedence over the plain token above
+    // since it's the explicitly-typed variant.
+    if (t.startsWith(REF_PREFIX) && t.length > REF_PREFIX.length) {
+      const name = t.slice(REF_PREFIX.length);
+      if (REFERENCE_TOKENS.has(name) || name === 'white') {
+        reference = name === 'none' ? 'nothing' : name;
+        continue;
+      }
+    }
     if (ILLUMINANT_TOKENS.has(t)) {
       illuminant_tag = t;
+      continue;
+    }
+    // Enriched-session illuminant slug: `light<name>` (e.g. `lightsun`,
+    // `lightshade`, `lightled5000k`). Kept as a free-form tag rather
+    // than shoehorned into the existing 'light'/'dark' background
+    // slot — it's a different dimension.
+    if (t.startsWith(LIGHT_PREFIX) && t.length > LIGHT_PREFIX.length) {
+      tags.push(t);
+      continue;
+    }
+    // Device slug — bake into platform + drop from tags.
+    if (
+      DEVICE_SLUG_PREFIXES.some(pfx => t.startsWith(pfx)) &&
+      /\d/.test(t)
+    ) {
+      // Everything except iphone maps to android.
+      platform = t.startsWith('iphone') ? 'ios' : 'android';
+      tags.push(t); // keep the specific slug so device filters can
+                    // distinguish pixel6a vs pixel4 vs pixel7 etc.
       continue;
     }
     if (PLATFORM_TOKENS.has(t as 'ios' | 'android')) {
@@ -498,6 +558,7 @@ const parseFixtureFilename = (fullPath: string): ParsedFixture | null => {
     }
     if (t === BOTH_TOKEN) continue;
     if (TIMESTAMP_RE.test(t)) continue;
+    if (DROP_TOKENS.has(t)) continue;
     tags.push(t);
   }
 
