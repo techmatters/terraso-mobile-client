@@ -52,6 +52,9 @@ import {
   type Roi,
 } from 'terraso-mobile-client/screens/MunsellChartValidator/dngDecoderShim';
 import {
+  MULTI_CARD_OFFSET_PITCHES,
+} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
+import {
   findMunsellPage,
   MUNSELL_PAGES,
   pageReferenceGridPoints,
@@ -1160,6 +1163,12 @@ const buildCaptureEntry = (
           }
         : null,
     ref_cards: refCardsWithPaper,
+    // Diagnostic: the offsetPitches the multi-card sweep picked for
+    // this fixture (null when the sweep didn't run or the fixture is
+    // not multi-mode). Values above 1.75 = chart body was displaced
+    // leftward inside the mask holder; equal to 1.75 = as designed.
+    multi_card_sweep_offset_pitches:
+      (outcome as any)._sweepOffset ?? null,
     cells: results.map((r, i) => ({
       physical_row: r.cell.rowIdx,
       physical_col: r.cell.colIdx,
@@ -1428,6 +1437,179 @@ const buildBurstAverageCaptures = (
   return {captures: outCaptures, contexts: outContexts};
 };
 
+// ---- MULTI ref-card horizontal offset sweep --------------------------------
+
+// Candidate horizontal offsets (in colPitch units past the last chip
+// column) to test for each MULTI capture. Baseline is the app's
+// nominal MULTI_CARD_OFFSET_PITCHES (1.75×). Physical mask + chart
+// slop can shift the actual patch positions anywhere from ~1.7 to
+// ~2.25 depending on how the chart sits in the holder — see docs
+// discussion. Range covers that with 0.1 granularity (~0.06" per
+// step on the physical card).
+const OFFSET_SWEEP: readonly number[] = [1.7, 1.8, 1.9, 2.0, 2.1];
+
+// Linear-RGB distance between two triples. Squared so it can drive
+// argmin without a needless sqrt per candidate.
+function linearRgbDist2(
+  a: {r: number; g: number; b: number},
+  b: {r: number; g: number; b: number},
+): number {
+  const dr = a.r - b.r;
+  const dg = a.g - b.g;
+  const db = a.b - b.b;
+  return dr * dr + dg * dg + db * db;
+}
+
+// Sweeps the horizontal offset of the MULTI ref-card sample rectangles
+// over OFFSET_SWEEP candidates and picks the position where the joint
+// mean-vs-expected distance across all 4 slots is minimized.
+//
+// Rationale: the paper mask cutouts sit at 1.75× colPitch past the
+// last chip column BY DESIGN, but the chart body has ~0.3" of slop
+// inside the card-holder window. When the chart is pushed to the LEFT
+// of that slop, the ref cards effectively land at ~2× (~0.15" further
+// right in ref-grid terms). The app samples at 1.75× and misses.
+//
+// Mutates outcome.result.multiRefCards in place so downstream
+// buildCaptureEntry emits the corrected values. Also adds an
+// `_optimalOffsetPitches` field on the outcome (non-enumerable would
+// be cleaner but we just tack it on) for diagnostic logging.
+function maybeSweepMultiCardOffset(
+  outcome: MunsellChartOutcome,
+  fixture: ParsedFixture,
+  decoder: NodeDecoder,
+): void {
+  if (outcome.kind !== 'success') return;
+  const result = outcome.result;
+  const multi = result.multiRefCards;
+  if (!multi || multi.length === 0) return;
+  // Need at least two same-row chart chips to derive the horizontal
+  // step vector in image (preview) coords. previewRects is row-major
+  // per pageSampleGridPoints; for 10YR row 0 that's chips at cols 0..5
+  // (indices 0 and 5).
+  const previewRects = result.previewRects;
+  if (previewRects.length < 6) {
+    // Small page (2 chips per row) — not worth sweeping; would need
+    // different chip indices per page. Skip for now, log so we notice.
+    process.stderr.write(
+      `    multi-sweep: page ${fixture.page} has ${previewRects.length} chips; skipping\n`,
+    );
+    return;
+  }
+  const rect0 = previewRects[0];
+  const rect5 = previewRects[5];
+  const c0x = rect0.x + rect0.w / 2;
+  const c0y = rect0.y + rect0.h / 2;
+  const c5x = rect5.x + rect5.w / 2;
+  const c5y = rect5.y + rect5.h / 2;
+  // Ref-grid delta between chips (0,0) and (0,5): (10, 0) in ref-grid
+  // units (colStep=2 × 5 cols).
+  const stepPerRefUnitX = (c5x - c0x) / 10;
+  const stepPerRefUnitY = (c5y - c0y) / 10;
+  // Scale factor from preview coords → source (DNG/JPEG) coords.
+  const sourceW = result.sourceDimensions.width;
+  const sourceH = result.sourceDimensions.height;
+  const scaleX = sourceW / result.preview.width;
+  const scaleY = sourceH / result.preview.height;
+
+  // Per-slot expected colours (drives the scoring). Slots without a
+  // known expected are skipped in the score sum — better than
+  // defaulting them.
+  const expectedByName: Record<string, {r: number; g: number; b: number}> =
+    REF_CARD_EXPECTED;
+  const scoredNames = multi
+    .map(m => m.name)
+    .filter(n => expectedByName[n]);
+  if (scoredNames.length === 0) return; // nothing to score against
+
+  let bestOffset = OFFSET_SWEEP[0];
+  let bestScore = Infinity;
+  let bestSamples: Array<{r: number; g: number; b: number}> = [];
+  let bestRects: Array<{x: number; y: number; w: number; h: number}> = [];
+  for (const candidate of OFFSET_SWEEP) {
+    // Delta in ref-grid units from the app's nominal position to this
+    // candidate. colStep=2 → each 1.0 of offsetPitches shifts by 2
+    // ref-grid units.
+    const deltaRefUnits = (candidate - MULTI_CARD_OFFSET_PITCHES) * 2;
+    const dxPreview = stepPerRefUnitX * deltaRefUnits;
+    const dyPreview = stepPerRefUnitY * deltaRefUnits;
+    // Shift each multi ref card by the same delta (all slots share
+    // the same x in ref-grid, so all shift together).
+    const candRects = multi.map(slot => {
+      const cx = slot.rect.x + slot.rect.w / 2 + dxPreview;
+      const cy = slot.rect.y + slot.rect.h / 2 + dyPreview;
+      const shifted = {
+        x: Math.round(cx - slot.rect.w / 2),
+        y: Math.round(cy - slot.rect.h / 2),
+        w: slot.rect.w,
+        h: slot.rect.h,
+      };
+      return shifted;
+    });
+    // Preview → source coords.
+    const sourceRois: Roi[] = candRects.map(r => ({
+      x: Math.round(r.x * scaleX),
+      y: Math.round(r.y * scaleY),
+      w: Math.round(r.w * scaleX),
+      h: Math.round(r.h * scaleY),
+    }));
+    let samples: Array<{r: number; g: number; b: number}>;
+    try {
+      samples =
+        fixture.format === 'raw'
+          ? decoder.decodeDngRois(fixture.path, sourceRois)
+          : decoder.decodePhotoRois(fixture.path, sourceRois);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      process.stderr.write(
+        `    multi-sweep: decode at offset ${candidate} failed (${msg}); skipping\n`,
+      );
+      continue;
+    }
+    // Score: sum of linear-RGB squared distance across the SPECTRALLY-
+    // NEUTRAL slots only (whibal, greycard, white). Postit's saturated
+    // yellow is a bad "similarity magnet" — it can only "match" itself
+    // and dominates the sum whenever it's slightly off, biasing the
+    // sweep toward whatever offset happens to reduce postit's error
+    // even at the cost of the three neutrals. Scoring on neutrals
+    // gives a physically-grounded joint fit; postit rides along at
+    // the winning offset (same physical mask assembly, so it's
+    // consistent to sample at the same shift).
+    let score = 0;
+    for (let i = 0; i < multi.length; i++) {
+      const name = multi[i].name;
+      if (name === 'postit') continue;
+      const exp = expectedByName[name];
+      if (!exp) continue;
+      score += linearRgbDist2(samples[i], exp);
+    }
+    if (score < bestScore) {
+      bestScore = score;
+      bestOffset = candidate;
+      bestSamples = samples;
+      bestRects = candRects;
+    }
+  }
+  if (bestSamples.length !== multi.length) return; // all candidates failed
+
+  // Mutate in place. Also tack on the diagnostic so downstream can
+  // emit it into the JSON.
+  for (let i = 0; i < multi.length; i++) {
+    multi[i] = {
+      ...multi[i],
+      linearRgb: bestSamples[i],
+      rect: bestRects[i],
+    };
+  }
+  // Non-enumerable-ish diagnostic: attach to the outcome for buildCaptureEntry.
+  (outcome as any)._sweepOffset = bestOffset;
+  const nudge = bestOffset !== MULTI_CARD_OFFSET_PITCHES ? ' (nudged)' : '';
+  process.stderr.write(
+    `    multi-sweep: chose offsetPitches=${bestOffset.toFixed(2)}${nudge}` +
+      ` for ${path.basename(fixture.path)}\n`,
+  );
+}
+
 // ---- Main ------------------------------------------------------------------
 
 const die = (msg: string): never => {
@@ -1652,6 +1834,19 @@ let nFailure = 0;
     const ms = Date.now() - t0;
     if (outcome.kind === 'success') {
       nSuccess++;
+      // Post-hoc horizontal sweep of the multi-card sample positions.
+      // Compensates for physical mask/chart misalignment (the printout
+      // has ~0.3" of horizontal slop between the Munsell chart body and
+      // the paper mask's ref-card cutouts — depending on how the chart
+      // sits in the holder, the ref cards land anywhere from
+      // 1.75× to ~2.25× colPitch past the last chip column). Sweeps
+      // candidate offsets, picks the position where the sample means
+      // best match the expected card colours, mutates the outcome's
+      // multiRefCards in place. See docs/munsell-dark-sensor.md option
+      // #1 for the general "sensor-vs-expected" motivation.
+      if (fixture.reference === 'multi') {
+        maybeSweepMultiCardOffset(outcome, fixture, decoder);
+      }
     } else {
       nFailure++;
     }

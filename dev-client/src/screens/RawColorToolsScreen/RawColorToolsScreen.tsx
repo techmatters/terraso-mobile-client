@@ -240,6 +240,12 @@ export const RawColorToolsScreen = () => {
     if (persisted && MUNSELL_PAGES.some(p => p.name === persisted)) {
       return persisted;
     }
+    // Persist the picker's shown default on first-run so consumers
+    // that read MMKV directly (e.g. the MULTI shutter via
+    // getMultishotSessionContext) see the same value as the picker.
+    // Without this, MULTI captures pre-first-touch produce filenames
+    // with no page token → analyzer rejects them.
+    kvStorage.setString(CHART_PAGE_HUE_KEY, MUNSELL_PAGES[0].name);
     return MUNSELL_PAGES[0].name;
   });
   const setPageHue = useCallback((hue: string) => {
@@ -652,13 +658,21 @@ export type MultishotSessionContext = {
 export const getMultishotSessionContext = (): MultishotSessionContext => {
   const norm = (v: string | undefined, unset: readonly string[]) =>
     v && !unset.includes(v) ? v : undefined;
-  const page = kvStorage.getString(CHART_PAGE_HUE_KEY);
+  // Page: fall back to MUNSELL_PAGES[0].name if MMKV is empty. This
+  // matches what the picker's useState initializer displays as its
+  // default, ensuring the analyzer always sees a valid page token
+  // even for a fresh install that never touched the picker.
+  const persistedPage = kvStorage.getString(CHART_PAGE_HUE_KEY);
+  const page =
+    persistedPage && MUNSELL_PAGES.some(p => p.name === persistedPage)
+      ? persistedPage
+      : MUNSELL_PAGES[0].name;
   const bg = norm(kvStorage.getString(SESSION_BACKGROUND_KEY), ['unknown']);
   const ref = norm(kvStorage.getString(CHART_REF_MODE_KEY), ['nothing']);
   const light = norm(kvStorage.getString(SESSION_ILLUMINANT_KEY), ['unknown']);
   const note = kvStorage.getString(SESSION_NOTE_KEY)?.trim();
   return {
-    page: page || undefined,
+    page,
     background: bg,
     refCard: ref,
     illuminant: light,

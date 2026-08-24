@@ -85,6 +85,11 @@ export type MunsellChartResult = {
   // pixels?" view. Rendered from the same DNG at the same maxDim so
   // the previewRects below index into its pixel space directly.
   preview: {uri: string; width: number; height: number};
+  // Source-image dimensions (the DNG or JPEG the previewRects need to
+  // be scaled up to for a direct decodeDngRois / decodePhotoRois call).
+  // Analyzer post-hoc sweeps use this to shift + resample without
+  // re-reading the preview just to recover the source dims.
+  sourceDimensions: {width: number; height: number};
   // Per-cell sampling rectangle in preview-space pixels. Same length
   // as `measurements`. Rendered as red-outlined overlays on top of the
   // preview so a tester can visually confirm each rect lands on the
@@ -764,6 +769,10 @@ export const analyzeMunsellChart = async (
       measurements,
       grid,
       preview,
+      sourceDimensions: {
+        width: rgbPreview.sourceWidth,
+        height: rgbPreview.sourceHeight,
+      },
       previewRects,
       refCardRect,
       detectedSwatches: grid.detected,
