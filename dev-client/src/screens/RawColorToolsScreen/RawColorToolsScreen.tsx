@@ -121,12 +121,19 @@ const CHART_ANALYSIS_MODE_LABEL: Record<AnalysisMode, string> = {
 // capture. Baked into the friendly filename so the mac parser (and
 // the mac batch analyzer) can route the shot into the right pipeline.
 // Values match the REFERENCE_TOKENS set in scripts/analyze-fixtures.ts.
-type ChartRefMode = 'nothing' | 'greycard' | 'whibal' | 'postit' | 'multi';
+type ChartRefMode =
+  | 'nothing'
+  | 'greycard'
+  | 'whibal'
+  | 'postit'
+  | 'white'
+  | 'multi';
 const CHART_REF_MODES: readonly ChartRefMode[] = [
   'nothing',
   'greycard',
   'whibal',
   'postit',
+  'white',
   'multi',
 ];
 const CHART_REF_MODE_LABEL: Record<ChartRefMode, string> = {
@@ -134,7 +141,11 @@ const CHART_REF_MODE_LABEL: Record<ChartRefMode, string> = {
   greycard: 'Grey card only',
   whibal: 'WhiBal only',
   postit: 'Post-it Yellow only',
-  multi: 'All three (whibal / postit / greycard)',
+  white: 'White (printer paper) only',
+  // "multi" ships all four slots on the current physical mask — the
+  // analyzer's MULTI_CARD_POINTS list has been {whibal, postit,
+  // greycard, white} since the 4th slot was added.
+  multi: 'All four (whibal / postit / greycard / white)',
 };
 
 // Pick 'raw' for .dng and 'photo' for common photo formats; null for

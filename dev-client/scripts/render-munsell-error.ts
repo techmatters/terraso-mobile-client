@@ -1032,6 +1032,14 @@ const HEATMAP_AXIS_OPTIONS = [
   // average" — pair with the fixture multi-select above to focus on a
   // handful of related captures.
   {value: 'fixture',     label: 'fixture (individual photo)'},
+  // WB anchor split — one row/col per anchor (whibal / greycard /
+  // postit / white / self / paper). OVERRIDES the global "First
+  // reference" pick for scoring: for each sample, we produce one
+  // virtual copy per anchor available on that shot, each with its
+  // own WB-corrected measured RGB + ΔE. Lets you see "which anchor
+  // wins for this device/scene" as a heatmap. Second-ref is ignored
+  // in this mode (each virtual sample uses single-ref gain).
+  {value: 'anchor',      label: 'WB anchor (splits sample per ref card)'},
   {value: 'unevenness',  label: 'illum unevenness (2-wide buckets)'},
   {value: 'signal',      label: 'signal (greycard min R/G/B, 0.05 buckets)'},
 ];
@@ -1068,6 +1076,7 @@ function axisValueOf(s, axis) {
     case 'device':     return s.device;
     case 'bg':         return s.bg;
     case 'fixture':    return s.fixtureLabel;
+    case 'anchor':     return s.anchor ?? null;
     case 'expValue':   return exp ? exp.value : null;
     case 'meaValue':   return mea ? mea.value : null;
     case 'expChroma':  return exp ? exp.chroma : null;
@@ -1600,6 +1609,16 @@ function filterSamples() {
   const excludeFlaggedFixtures =
     state.excludeFlaggedCards && EXCLUDED_CARDS.size > 0;
   const {firstRef, secondRef} = state;
+  // Anchor-splitting mode: when any of facet/row/col is set to
+  // 'anchor', we expand each sample into ONE virtual sample per anchor
+  // present in that shot's refOptions (self, whibal, postit, greycard,
+  // white, paper — whatever's there). Each virtual sample gets its
+  // own single-ref WB applied. Second-ref is ignored in this mode.
+  // This lets a heatmap show "which anchor is best per (row, col)".
+  const splitByAnchor =
+    state.facetAxis === 'anchor' ||
+    state.rowAxis === 'anchor' ||
+    state.colAxis === 'anchor';
 
   // First pass — apply per-sample filters (format, device, bg, card,
   // uneven), recompute WB-derived measured / ΔE. Skip excluded-chip
@@ -1620,20 +1639,37 @@ function filterSamples() {
     }
     if (excludeFlagged && EXCLUDED_CHIPS.has(s.expected)) continue;
     if (excludeFlaggedFixtures && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
-    let measuredRgb;
+
     if (state.ccmApplied && state.ccm) {
-      // CCM path: skip WB entirely, apply the fitted M · raw. CCM was
-      // trained to map raw → expected directly, so it already subsumes
-      // whatever WB the training scenario needed.
-      measuredRgb = applyCCM(s.rawRgb, state.ccm.matrix);
+      // CCM path: no anchor, no WB. Always one copy per sample even
+      // in split mode — anchor axis is meaningless when CCM is in
+      // effect (measurement doesn't depend on anchor choice).
+      const measuredRgb = applyCCM(s.rawRgb, state.ccm.matrix);
+      const measured = nearestChipNotation(measuredRgb);
+      const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
+      passed.push({...s, measured, measuredRgb, deltaE, anchor: 'ccm'});
+      continue;
+    }
+    if (splitByAnchor) {
+      // Emit one virtual sample per available anchor on this shot.
+      // Second-ref intentionally 'none' — the point of this mode is
+      // to compare anchors individually.
+      for (const name of Object.keys(s.refOptions)) {
+        const wb = computeWB(s.refOptions, name, 'none');
+        if (!wb) continue;
+        const measuredRgb = applyWB(s.rawRgb, wb);
+        const measured = nearestChipNotation(measuredRgb);
+        const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
+        passed.push({...s, measured, measuredRgb, deltaE, anchor: name});
+      }
     } else {
       const wb = computeWB(s.refOptions, firstRef, secondRef);
       if (!wb) continue;
-      measuredRgb = applyWB(s.rawRgb, wb);
+      const measuredRgb = applyWB(s.rawRgb, wb);
+      const measured = nearestChipNotation(measuredRgb);
+      const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
+      passed.push({...s, measured, measuredRgb, deltaE, anchor: firstRef});
     }
-    const measured = nearestChipNotation(measuredRgb);
-    const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
-    passed.push({...s, measured, measuredRgb, deltaE});
   }
 
   // Second pass — worst-ΔE-per-fixture gate. Key by fixtureLabel +

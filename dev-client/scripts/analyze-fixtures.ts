@@ -439,6 +439,7 @@ const REFERENCE_TOKENS = new Set([
   'greycard',
   'postit',
   'whibal',
+  'white',
   'nothing',
   'none',
   'multi',

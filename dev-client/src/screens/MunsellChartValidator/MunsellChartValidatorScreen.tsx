@@ -123,7 +123,7 @@ export type MunsellChartValidatorProps = {
   // explicitly from RawColorToolsScreen's picker (authoritative);
   // falls back to filename-token parsing for load-from-file flows.
   // Drives multi-card mode in the analyzer.
-  refMode?: 'nothing' | 'greycard' | 'whibal' | 'postit' | 'multi';
+  refMode?: 'nothing' | 'greycard' | 'whibal' | 'postit' | 'white' | 'multi';
   // Which registration algorithm to run against the detected holes.
   // Picked on the RAW_COLOR_TOOLS screen before capture; defaults to
   // the constrained-random pair-similarity implementation if not set.
