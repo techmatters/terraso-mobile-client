@@ -44,6 +44,7 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {logCalibrateStep} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/calibrateTimingLog';
 import {
   linearRgbToCss,
   PipelineColumn,
@@ -120,10 +121,13 @@ export const CalibrateReferenceScreen = ({
   const [editableName, setEditableName] = useState('');
 
   useEffect(() => {
+    logCalibrateStep('Calibrate screen mount');
     resetRawAnalysisSession(null);
     (async () => {
       try {
+        logCalibrateStep('renderPreview start');
         const p = await DngDecoderHybrid.renderPreview(dngPath, 1200);
+        logCalibrateStep('renderPreview end');
         resetRawAnalysisSession({
           uri: p.uri,
           width: p.width,
@@ -148,6 +152,7 @@ export const CalibrateReferenceScreen = ({
           'sample',
           hintRoiToSquareRawCrop(preset.sample, p.width, p.height),
         );
+        logCalibrateStep('seeds set');
       } catch (err) {
         console.error('renderPreview failed:', err);
         setPreviewError(String(err));
@@ -176,9 +181,11 @@ export const CalibrateReferenceScreen = ({
 
   const onCalibrate = useCallback(async () => {
     if (!session.refCrop || !session.sampleCrop || !session.preview) return;
+    logCalibrateStep('Calibrate & Save tap');
     setBusy(true);
     let decoded: {knownMeasured: LinearRgb; newMeasured: LinearRgb};
     try {
+      logCalibrateStep('decode start');
       decoded = await decodeCalibrationCrops({
         dngPath,
         sensorWidth,
@@ -187,6 +194,7 @@ export const CalibrateReferenceScreen = ({
         knownCrop: session.refCrop,
         newCrop: session.sampleCrop,
       });
+      logCalibrateStep('decode end');
     } catch (err) {
       console.error('Calibrate decode failed:', err);
       Alert.alert('Calibrate failed', String(err));
@@ -254,6 +262,7 @@ export const CalibrateReferenceScreen = ({
       // would fail the trim() gate, so type something first).
       setEditableName('');
       setPendingSave(p);
+      logCalibrateStep('pipeline results shown');
       return;
     }
     // Fallback: no valid pre-selection → show top match with confirm.

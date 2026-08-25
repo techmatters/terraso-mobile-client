@@ -49,6 +49,10 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import type {ChartGuide} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
 import {getMultishotSessionContext} from 'terraso-mobile-client/screens/RawColorToolsScreen/RawColorToolsScreen';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {
+  logCalibrateStep,
+  startCalibrateTimer,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/calibrateTimingLog';
 
 // Fixed burst size when burst mode is enabled. See
 // docs/munsell-dark-sensor.md option #3 — 5 frames give ~2.2× shot-noise
@@ -239,6 +243,8 @@ export const AndroidRawCaptureScreen = () => {
 
   const shutter = useCallback(async () => {
     if (isCapturing) return;
+    startCalibrateTimer();
+    logCalibrateStep('shutter tap');
     setIsCapturing(true);
     try {
       const options = buildOptions();
@@ -280,6 +286,7 @@ export const AndroidRawCaptureScreen = () => {
         primary = await RawCameraAndroidHybrid.capturePhoto(options);
       }
       const {dngPath, jpegPath, width, height} = primary;
+      logCalibrateStep('native capturePhoto returned');
       console.log(
         `[AndroidRawCaptureScreen] DNG captured: ${width}x${height}` +
           ` (aspect=${(width / height).toFixed(3)})` +
@@ -317,6 +324,7 @@ export const AndroidRawCaptureScreen = () => {
       // (and the ~1s renderPreview on the next screen) reads as "the
       // capture is still going" even though it isn't.
       setIsCapturing(false);
+      logCalibrateStep('nav.pop');
       navigation.pop();
       cb?.onCapture(result);
     } catch (err) {
@@ -559,6 +567,7 @@ export const AndroidRawCaptureScreen = () => {
           <View style={styles.progressOverlay} pointerEvents="auto">
             <View style={styles.progressBox}>
               <Text style={styles.progressTitle}>Capturing…</Text>
+              <Text style={styles.progressSubtitle}>Hold the phone still.</Text>
             </View>
           </View>
         )}
@@ -930,5 +939,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: '700',
+    marginBottom: 6,
+  },
+  progressSubtitle: {
+    color: 'white',
+    fontSize: 14,
+    opacity: 0.85,
   },
 });
