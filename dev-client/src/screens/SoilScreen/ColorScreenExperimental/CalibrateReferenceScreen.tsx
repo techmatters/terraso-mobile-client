@@ -154,26 +154,57 @@ export const CalibrateReferenceScreen = ({
       return;
     }
 
-    // Rank existing references against the measured known-ref ROI so
-    // the user picks (and implicitly validates) which stored card they
-    // framed. Top pick is auto-labeled — if the tester expected a
-    // different one, this catches the mismatch before it corrupts the
-    // stored calibration.
+    // Rank existing references against the measured known-ref ROI.
+    // rankReferences merges builtins + custom; on a fresh device the
+    // list is ~7 candidates plus Cancel, which is more than Android's
+    // native AlertDialog can display (max 3 buttons — extras silently
+    // drop the whole dialog). Instead of a picker, auto-pick the top
+    // match and dump the full ranking to Metro so the tester can
+    // eyeball whether the top pick makes sense. If it's wrong the
+    // tester cancels the name prompt and re-shoots (usually a framing
+    // issue → the wrong physical card ended up in the "existing" ROI).
     const ranked = rankReferences(
       decoded.knownMeasured,
       listCustomReferences(),
     );
+    if (ranked.length === 0) {
+      Alert.alert(
+        'No references available',
+        'No builtin or custom references to match against. Save aborted.',
+        [{text: 'OK', onPress: () => setBusy(false)}],
+      );
+      return;
+    }
+    console.log(
+      'Calibrate ranked matches for known ROI (top-first):\n' +
+        ranked
+          .map(
+            (r, i) =>
+              `  ${i + 1}. ${r.name} — ΔE ${r.deltaE.toFixed(1)} ` +
+              `(${Math.round(r.confidence * 100)}%)`,
+          )
+          .join('\n'),
+    );
+    const top = ranked[0];
+    const runnerUpText =
+      ranked.length > 1
+        ? `\n\nRunner-up: ${ranked[1].name} (ΔE ${ranked[1].deltaE.toFixed(1)})`
+        : '';
     Alert.alert(
-      'Which known reference did you frame?',
-      'Ranked by closest color match. Pick the physical card in the "Known" ROI.',
+      `Top match: ${top.name}`,
+      `ΔE ${top.deltaE.toFixed(1)}, ${Math.round(top.confidence * 100)}% ` +
+        `confidence. Full ranking in Metro logs.${runnerUpText}`,
       [
-        ...ranked.map(r => ({
-          text: `${r.name}  (ΔE ${r.deltaE.toFixed(1)}, ${Math.round(
-            r.confidence * 100,
-          )}%)`,
+        {
+          text: 'Cancel',
+          style: 'cancel' as const,
+          onPress: () => setBusy(false),
+        },
+        {
+          text: 'Use this ref',
           onPress: () => {
             promptNameAndSave(
-              r,
+              top,
               decoded.knownMeasured,
               decoded.newMeasured,
               () => {
@@ -182,11 +213,6 @@ export const CalibrateReferenceScreen = ({
               },
             );
           },
-        })),
-        {
-          text: 'Cancel',
-          style: 'cancel' as const,
-          onPress: () => setBusy(false),
         },
       ],
       {cancelable: true, onDismiss: () => setBusy(false)},
