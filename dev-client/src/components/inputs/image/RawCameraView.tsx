@@ -142,6 +142,15 @@ type Props = {
    * green evenness outline (calibrate + 'raw+evenness' mode).
    */
   preferJpeg?: boolean;
+  /**
+   * When true, hides ALL ROI-framing UX on the capture screen — the
+   * native RoiOverlayView (red/green outlines), the +/- ROI size
+   * buttons, and any JS-drawn labels. Plain camera + shutter. Used
+   * by the "RAW + JPEG" grab-and-share flow where the tester isn't
+   * doing calibrate / soil-color / chart work and just wants a
+   * shot. Android only.
+   */
+  simpleShutter?: boolean;
 };
 
 // Top-level router. Android + DNG uses the raw-camera-android Nitro
@@ -552,6 +561,7 @@ const AndroidRawViewImpl = ({
   roiHint,
   skipJpeg,
   preferJpeg,
+  simpleShutter,
 }: Props) => {
   const navigation = useNavigation();
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -589,6 +599,7 @@ const AndroidRawViewImpl = ({
       roiHint,
       skipJpeg,
       preferJpeg,
+      simpleShutter,
     });
     navigation.navigate('ANDROID_RAW_CAPTURE');
     // Only trigger on the visible→true transition. Re-firing on

@@ -64,6 +64,13 @@ export type AndroidRawCaptureCallbacks = {
   // true. Calibrate + 'raw+evenness' leave undefined (=false) so
   // the live variance analyser stays alive on constrained devices.
   preferJpeg?: boolean;
+  // When true, the capture screen strips all ROI-framing UX: no
+  // native RoiOverlayView (red/green boxes), no +/- ROI size buttons,
+  // no on-screen labels. Just camera preview + shutter. Used by the
+  // "RAW + JPEG" grab-and-share flow where the tester doesn't want
+  // any of the calibrate/soil-color ROI machinery visible or
+  // interactable, and doesn't want their ROI preset index nudged.
+  simpleShutter?: boolean;
 };
 
 let pending: AndroidRawCaptureCallbacks | null = null;

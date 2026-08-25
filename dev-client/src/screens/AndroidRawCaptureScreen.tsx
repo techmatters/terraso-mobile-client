@@ -133,6 +133,7 @@ export const AndroidRawCaptureScreen = () => {
   >(null);
   const [skipJpeg, setSkipJpeg] = useState(false);
   const [preferJpeg, setPreferJpeg] = useState(false);
+  const [simpleShutter, setSimpleShutter] = useState(false);
   // ROI preset index — shared with iOS soil-color RAW-Live via
   // useRoiFrameAnalyzer's ROI_PRESETS + kvStorage. +/- buttons flanking
   // the shutter cycle through 4 sizes (tiny/small/medium/large); the
@@ -158,6 +159,7 @@ export const AndroidRawCaptureScreen = () => {
     setRoiHint(cb?.roiHint ?? null);
     setSkipJpeg(cb?.skipJpeg ?? false);
     setPreferJpeg(cb?.preferJpeg ?? false);
+    setSimpleShutter(cb?.simpleShutter ?? false);
   }, []);
 
   const [isCapturing, setIsCapturing] = useState(false);
@@ -407,12 +409,11 @@ export const AndroidRawCaptureScreen = () => {
          */}
         <RawCameraAndroidView
           style={StyleSheet.absoluteFill}
-          // Native RoiOverlayView is now ON for the calibrate flow (roiHint
-          // set) so the user gets live red/green outlines from the per-frame
-          // variance analyser — exactly the "evenness feedback" the iOS
-          // vision-camera path shows. It also draws the two ROI rectangles.
-          // Only chartGuide suppresses it (chart flow uses its own overlay).
-          showRoiOverlay={!chartGuide}
+          // Native RoiOverlayView is on by default so calibrate + soil-
+          // color flows get live red/green outlines. Off for chart
+          // (has its own guide overlay) AND for the simple-shutter
+          // grab-and-share flow (no ROI machinery at all).
+          showRoiOverlay={!chartGuide && !simpleShutter}
           previewFitCenter={!!chartGuide || !!roiHint}
           refRoiX={activePreset.ref.x}
           refRoiY={activePreset.ref.y}
@@ -503,7 +504,7 @@ export const AndroidRawCaptureScreen = () => {
           </View>
         )}
         <View style={styles.bottomBar}>
-          {!chartGuide && (
+          {!chartGuide && !simpleShutter && (
             <Pressable
               onPress={() => changeRoiPresetIndex(roiPresetIndex - 1)}
               disabled={roiPresetIndex <= 0 || isCapturing}

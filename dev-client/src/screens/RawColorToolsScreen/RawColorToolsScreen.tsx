@@ -727,6 +727,11 @@ export const RawColorToolsScreen = () => {
         preferJpeg={
           captureFlow?.kind === 'chart' || captureFlow?.kind === 'raw-jpeg'
         }
+        // Grab-and-share flow: strip the ROI overlay + +/- size
+        // buttons so the tester sees a plain camera + shutter,
+        // independent of the shared ROI preset MMKV state that
+        // other flows write into.
+        simpleShutter={captureFlow?.kind === 'raw-jpeg'}
       />
     </ScreenScaffold>
   );
