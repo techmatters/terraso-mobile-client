@@ -109,6 +109,8 @@ const InputFormSwitch = ({method, isRequired}: InputFormSwitchProps) => {
         name={methodEnabled(method)}
         disabled={isRequired}
         accessibilityLabel={label}
+        // Mirrors the Formik field name so tests select by field rather than by translated label.
+        testID={`${methodEnabled(method)}-switch`}
       />
       <Text
         ml={SWITCH_PADDING}
