@@ -33,7 +33,7 @@ describe('switchColorProps', () => {
     });
   });
 
-  test('uses a dark thumb when off, which is what makes the off state visible', () => {
+  test('uses a dark thumb when off (which makes the off state more easily visible if user is viewing screen in bright sunlight)', () => {
     expect(switchColorProps(false, 'ios').thumbColor).toBe(colors.thumbOff);
   });
 

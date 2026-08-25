@@ -31,7 +31,7 @@ import {theme} from 'terraso-mobile-client/theme';
  * components inherit them; new controlled-state props go in SwitchProps. */
 export type SharedSwitchProps = {
   /* Required: React Native does not associate neighboring label text with the
-   * switch, so without this a screen reader announces only "switch, on". */
+   * switch, so without accessibilityLabel a screen reader announces only "switch, on". */
   accessibilityLabel: string;
   disabled?: boolean;
   testID?: string;
@@ -61,7 +61,7 @@ const TRACK_ON = {
 
 /* The color props React Native wants, which is why the shape is uneven: RN takes a single thumb color, so on/off is resolved here, but takes the track as a per-state map it resolves itself.
  *
- * Only Android needs the faded tone when disabled: it applies our colors as a color filter, which takes precedence over the drawable's own disabled tint, so anything we color would otherwise stay at full strength. iOS renders a disabled switch translucent itself and would fade these a second time. */
+ * Only Android needs the faded tone when disabled: it applies our colors as a color filter, which takes precedence over the drawable's own disabled tint, so anything we color would otherwise stay at full strength. iOS renders a disabled switch translucent automatically, so avoid fading a second time. */
 export const switchColorProps = (
   value: boolean,
   platform: typeof Platform.OS,
