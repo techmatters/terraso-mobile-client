@@ -46,7 +46,6 @@ import {
 } from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import type {ChartGuide} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
 import {getMultishotSessionContext} from 'terraso-mobile-client/screens/RawColorToolsScreen/RawColorToolsScreen';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
@@ -120,20 +119,42 @@ export const AndroidRawCaptureScreen = () => {
   // framing a card in the phase-8 overlay.
   useKeepAwake('AndroidRawCaptureScreen');
 
-  // Grab the pending callbacks once at mount. Missing callbacks means
-  // the screen was opened directly (deep link, dev tools) rather than
-  // through RawCameraView — treat that as an error UI.
-  const callbacksRef = useRef<AndroidRawCaptureCallbacks | null>(null);
-  const [noCallbacks, setNoCallbacks] = useState(false);
-  const [chartGuide, setChartGuide] = useState<ChartGuide | null>(null);
-  const [showResearchControls, setShowResearchControls] = useState(false);
-  const [captureHint, setCaptureHint] = useState<string | null>(null);
-  const [roiHint, setRoiHint] = useState<
-    AndroidRawCaptureCallbacks['roiHint'] | null
-  >(null);
-  const [skipJpeg, setSkipJpeg] = useState(false);
-  const [preferJpeg, setPreferJpeg] = useState(false);
-  const [simpleShutter, setSimpleShutter] = useState(false);
+  // Grab the pending callbacks synchronously on the first render (via
+  // a useRef gate — NOT a useEffect). Reason: the native
+  // RawCameraAndroidView mounts on the FIRST commit, and its bound
+  // props (preferJpeg + skipJpeg especially) drive the CameraX bind
+  // fallback at attachSurfaceProvider time. A previous version read
+  // the callbacks in useEffect, which fires AFTER the first commit —
+  // so the initial render mounted the native view with preferJpeg=
+  // false, the session bound with JPEG dropped, and any subsequent
+  // prop update didn't rebind (the atomic flag change doesn't force
+  // a session rebuild). That silently killed the JPEG companion for
+  // the RAW+JPEG grab flow on constrained devices like Pixel 7.
+  //
+  // Missing callbacks means the screen was opened directly (deep
+  // link, dev tools) rather than through RawCameraView — treat that
+  // as an error UI (noCallbacks flag).
+  //
+  // The `| undefined` sentinel is "not yet consumed"; null means
+  // "consumed but no callbacks were pending" (error case).
+  const callbacksRef = useRef<AndroidRawCaptureCallbacks | null | undefined>(
+    undefined,
+  );
+  if (callbacksRef.current === undefined) {
+    callbacksRef.current = consumeAndroidRawCaptureCallbacks();
+    if (callbacksRef.current == null) {
+      console.warn('AndroidRawCaptureScreen mounted with no pending callbacks');
+    }
+  }
+  const cb = callbacksRef.current;
+  const noCallbacks = cb == null;
+  const chartGuide = cb?.chartGuide ?? null;
+  const showResearchControls = cb?.showResearchControls ?? false;
+  const captureHint = cb?.captureHint ?? null;
+  const roiHint = cb?.roiHint ?? null;
+  const skipJpeg = cb?.skipJpeg ?? false;
+  const preferJpeg = cb?.preferJpeg ?? false;
+  const simpleShutter = cb?.simpleShutter ?? false;
   // ROI preset index — shared with iOS soil-color RAW-Live via
   // useRoiFrameAnalyzer's ROI_PRESETS + kvStorage. +/- buttons flanking
   // the shutter cycle through 4 sizes (tiny/small/medium/large); the
@@ -146,22 +167,6 @@ export const AndroidRawCaptureScreen = () => {
     setRoiPresetIndex(next);
     setActiveRoiPresetIndex(next);
   }, []);
-  useEffect(() => {
-    const cb = consumeAndroidRawCaptureCallbacks();
-    if (cb == null) {
-      console.warn('AndroidRawCaptureScreen mounted with no pending callbacks');
-      setNoCallbacks(true);
-    }
-    callbacksRef.current = cb;
-    setChartGuide(cb?.chartGuide ?? null);
-    setShowResearchControls(cb?.showResearchControls ?? false);
-    setCaptureHint(cb?.captureHint ?? null);
-    setRoiHint(cb?.roiHint ?? null);
-    setSkipJpeg(cb?.skipJpeg ?? false);
-    setPreferJpeg(cb?.preferJpeg ?? false);
-    setSimpleShutter(cb?.simpleShutter ?? false);
-  }, []);
-
   const [isCapturing, setIsCapturing] = useState(false);
   const [caps, setCaps] = useState<CaptureCapabilities | null>(null);
   const [evIndex, setEvIndex] = useState(0);
@@ -317,7 +322,7 @@ export const AndroidRawCaptureScreen = () => {
       // callback, we'd pop the analysis screen we just pushed instead
       // of AndroidRawCaptureScreen.
       cancelledRef.current = true; // suppress the beforeRemove onCancel
-      const cb = callbacksRef.current;
+      const activeCb = callbacksRef.current;
       callbacksRef.current = null;
       // Dismiss the "Capturing…" overlay before the nav-pop animation
       // starts — the DNG is already on disk at this point so the
@@ -328,7 +333,7 @@ export const AndroidRawCaptureScreen = () => {
       setIsCapturing(false);
       logCalibrateStep('nav.pop');
       navigation.pop();
-      cb?.onCapture(result);
+      activeCb?.onCapture(result);
     } catch (err) {
       console.error('AndroidRawCaptureScreen shutter failed:', err);
       Alert.alert('Capture failed', String(err), [
