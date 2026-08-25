@@ -310,6 +310,13 @@ export const AndroidRawCaptureScreen = () => {
       cancelledRef.current = true; // suppress the beforeRemove onCancel
       const cb = callbacksRef.current;
       callbacksRef.current = null;
+      // Dismiss the "Capturing…" overlay before the nav-pop animation
+      // starts — the DNG is already on disk at this point so the
+      // overlay's "you're waiting for the sensor" cue has served its
+      // purpose. Keeping it up through the ~300ms pop transition
+      // (and the ~1s renderPreview on the next screen) reads as "the
+      // capture is still going" even though it isn't.
+      setIsCapturing(false);
       navigation.pop();
       cb?.onCapture(result);
     } catch (err) {
@@ -552,7 +559,6 @@ export const AndroidRawCaptureScreen = () => {
           <View style={styles.progressOverlay} pointerEvents="auto">
             <View style={styles.progressBox}>
               <Text style={styles.progressTitle}>Capturing…</Text>
-              <Text style={styles.progressSubtitle}>Hold the phone still.</Text>
             </View>
           </View>
         )}
@@ -924,11 +930,5 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: '700',
-    marginBottom: 6,
-  },
-  progressSubtitle: {
-    color: 'white',
-    fontSize: 14,
-    opacity: 0.85,
   },
 });

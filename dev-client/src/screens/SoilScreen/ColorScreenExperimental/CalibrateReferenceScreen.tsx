@@ -247,7 +247,12 @@ export const CalibrateReferenceScreen = ({
         decoded.knownMeasured,
         decoded.newMeasured,
       );
-      setEditableName(p.defaultName);
+      // Blank the field by default — the auto-generated
+      // "{knownRef} recal {stamp}" name isn't a name testers actually
+      // want to save. It rides as the TextInput placeholder instead
+      // so the fallback is one tap away (leave blank + hit Save
+      // would fail the trim() gate, so type something first).
+      setEditableName('');
       setPendingSave(p);
       return;
     }
@@ -275,7 +280,12 @@ export const CalibrateReferenceScreen = ({
               decoded.knownMeasured,
               decoded.newMeasured,
             );
-            setEditableName(p.defaultName);
+            // Blank the field by default — the auto-generated
+            // "{knownRef} recal {stamp}" name isn't a name testers actually
+            // want to save. It rides as the TextInput placeholder instead
+            // so the fallback is one tap away (leave blank + hit Save
+            // would fail the trim() gate, so type something first).
+            setEditableName('');
             setPendingSave(p);
           },
         },
