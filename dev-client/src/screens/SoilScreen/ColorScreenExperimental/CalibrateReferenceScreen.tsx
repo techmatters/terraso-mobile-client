@@ -97,11 +97,13 @@ export const CalibrateReferenceScreen = ({
   const gotoCrop = useCallback(
     (role: RawAnalysisRole) => {
       const titleOverride =
-        role === 'reference' ? 'Known reference' : 'New reference';
+        role === 'reference'
+          ? 'Existing ref (already in library)'
+          : 'New ref (to calibrate)';
       const descriptionOverride =
         role === 'reference'
-          ? 'Frame the known reference (a card already in your library). Pan to move, pinch to zoom.'
-          : 'Frame the new reference you want to calibrate. Pan to move, pinch to zoom.';
+          ? 'Frame the EXISTING reference card — the one already in your library. Its known color drives the calibration for the new card. Pan to move, pinch to zoom.'
+          : "Frame the NEW reference card — the one you want to add to your library. Its color will be computed from the existing ref's known value. Pan to move, pinch to zoom.";
       navigation.navigate('RAW_COLOR_CROP_EXPERIMENTAL', {
         role,
         titleOverride,
@@ -195,9 +197,11 @@ export const CalibrateReferenceScreen = ({
       <SafeScrollView>
         <Column padding="md" space="md">
           <Paragraph>
-            Frame a known reference card AND a new uncalibrated card in the same
-            shot. Select each ROI, then tap Calibrate to compute the new card's
-            linear-sRGB and save it.
+            Frame BOTH an existing reference card (already in your library) AND
+            the new card you want to add, in the same shot. Then pick each ROI
+            below — "Existing ref" first, "New ref" second — and tap Calibrate
+            to compute the new card's linear-sRGB from the existing one's known
+            value and save it.
           </Paragraph>
           <PreviewThumbnail
             uri={session.preview?.uri}
@@ -209,13 +213,13 @@ export const CalibrateReferenceScreen = ({
           />
           <Row space="sm">
             <SelectButton
-              label="Known reference"
+              label="Existing ref"
               selected={!!session.refCrop}
               onPress={() => gotoCrop('reference')}
               disabled={!session.preview}
             />
             <SelectButton
-              label="New reference"
+              label="New ref"
               selected={!!session.sampleCrop}
               onPress={() => gotoCrop('sample')}
               disabled={!session.preview}

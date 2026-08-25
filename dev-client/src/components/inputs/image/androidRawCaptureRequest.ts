@@ -33,6 +33,16 @@ export type AndroidRawCaptureCallbacks = {
   // when the parent passed `chartGuide`. Same aspectW / aspectH /
   // marginFrac shape iOS's Vision Camera path consumes.
   chartGuide?: ChartGuide;
+  // When true, the capture screen shows the research controls (MULTI
+  // button, Burst toggle, Manual iso/shutter, EV widget). Only the
+  // Munsell chart validator flow wants them. Calibrate / fixture
+  // flows set this false (or omit) and get a clean single-shot UI.
+  showResearchControls?: boolean;
+  // Optional on-screen banner text shown above the shutter — use to
+  // remind the user what they're supposed to frame (e.g. calibration
+  // wants both cards in the shot, which isn't obvious from the
+  // camera view alone).
+  captureHint?: string;
 };
 
 let pending: AndroidRawCaptureCallbacks | null = null;

@@ -25,8 +25,6 @@ import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponent
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {AndroidRawCaptureTestItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/AndroidRawCaptureTestItem';
-import {CaptureAndroidRawItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CaptureAndroidRawItem';
 import {CopyAccessTokenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CopyAccessTokenItem';
 import {DataExportItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DataExportItem';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
@@ -63,8 +61,6 @@ export function UserSettingsScreen() {
                 <SelectLanguageItem />
                 <RestrictByFlag flag="FF_testing">
                   <CopyAccessTokenItem />
-                  <CaptureAndroidRawItem />
-                  <AndroidRawCaptureTestItem />
                   <RawColorToolsItem />
                   <ExperimentalColorScreenItem />
                 </RestrictByFlag>

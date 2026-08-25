@@ -105,6 +105,14 @@ type Props = {
     aspectH: number;
     marginFrac: number;
   };
+  /**
+   * Optional on-screen banner shown just above the shutter button —
+   * use to remind the user what they're supposed to frame when the
+   * intent isn't obvious from the camera view alone (calibrate flow
+   * needs both cards in the shot, etc). Currently only wired through
+   * on Android; iOS has its own vision-camera UI.
+   */
+  captureHint?: string;
 };
 
 // Top-level router. Android + DNG uses the raw-camera-android Nitro
@@ -511,6 +519,7 @@ const AndroidRawViewImpl = ({
   onCancel,
   onRawPhotoDevOnly,
   chartGuide,
+  captureHint,
 }: Props) => {
   const navigation = useNavigation();
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -539,6 +548,12 @@ const AndroidRawViewImpl = ({
       },
       onCancel,
       chartGuide,
+      // Research controls (MULTI, Burst, Manual, EV) only make sense
+      // for the chart-validator batch-capture flow. Chart guide
+      // presence is the only signal available here that distinguishes
+      // that flow from the fixture/calibrate paths, so we key off it.
+      showResearchControls: chartGuide != null,
+      captureHint,
     });
     navigation.navigate('ANDROID_RAW_CAPTURE');
     // Only trigger on the visible→true transition. Re-firing on

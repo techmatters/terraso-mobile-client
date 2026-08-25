@@ -641,6 +641,11 @@ export const RawColorToolsScreen = () => {
           captureFlow?.kind === 'fixture' ? handleFixtureCapture : undefined
         }
         chartGuide={captureFlow?.kind === 'chart' ? CHART_GUIDE : undefined}
+        captureHint={
+          captureFlow?.kind === 'calibrate'
+            ? 'Frame BOTH cards in this shot — the EXISTING known reference and the NEW card you want to calibrate. You will pick each ROI in the next step.'
+            : undefined
+        }
       />
     </ScreenScaffold>
   );

@@ -117,6 +117,8 @@ export const AndroidRawCaptureScreen = () => {
   const callbacksRef = useRef<AndroidRawCaptureCallbacks | null>(null);
   const [noCallbacks, setNoCallbacks] = useState(false);
   const [chartGuide, setChartGuide] = useState<ChartGuide | null>(null);
+  const [showResearchControls, setShowResearchControls] = useState(false);
+  const [captureHint, setCaptureHint] = useState<string | null>(null);
   useEffect(() => {
     const cb = consumeAndroidRawCaptureCallbacks();
     if (cb == null) {
@@ -125,6 +127,8 @@ export const AndroidRawCaptureScreen = () => {
     }
     callbacksRef.current = cb;
     setChartGuide(cb?.chartGuide ?? null);
+    setShowResearchControls(cb?.showResearchControls ?? false);
+    setCaptureHint(cb?.captureHint ?? null);
   }, []);
 
   const [isCapturing, setIsCapturing] = useState(false);
@@ -365,54 +369,70 @@ export const AndroidRawCaptureScreen = () => {
             <ChartGuideOverlay guide={chartGuide} />
           </SensorAspectFrame>
         )}
-        <View style={styles.controlsPanel} pointerEvents="box-none">
-          <Stepper
-            label="EV"
-            value={evLabel}
-            onDec={() => setEvIndex(i => i - 1)}
-            onInc={() => setEvIndex(i => i + 1)}
-            canDec={canDecEv && !isCapturing}
-            canInc={canIncEv && !isCapturing}
-          />
-          <Toggle
-            label={`Burst ${BURST_COUNT}×`}
-            on={burstOn}
-            onToggle={() => setBurstOn(v => !v)}
-            disabled={isCapturing}
-          />
-          <Toggle
-            label="Manual"
-            on={manualOn}
-            onToggle={() => setManualOn(v => !v)}
-            disabled={isCapturing}
-          />
-          {manualOn && (
-            <>
-              <Stepper
-                label="ISO"
-                value={String(ISO_PRESETS[isoIdx])}
-                onDec={() => setIsoIdx(i => Math.max(0, i - 1))}
-                onInc={() =>
-                  setIsoIdx(i => Math.min(ISO_PRESETS.length - 1, i + 1))
-                }
-                canDec={isoIdx > 0 && !isCapturing}
-                canInc={isoIdx < ISO_PRESETS.length - 1 && !isCapturing}
-              />
-              <Stepper
-                label="Shutter"
-                value={formatShutterLabel(SHUTTER_PRESETS_NS[shutIdx])}
-                onDec={() => setShutIdx(i => Math.max(0, i - 1))}
-                onInc={() =>
-                  setShutIdx(i =>
-                    Math.min(SHUTTER_PRESETS_NS.length - 1, i + 1),
-                  )
-                }
-                canDec={shutIdx > 0 && !isCapturing}
-                canInc={shutIdx < SHUTTER_PRESETS_NS.length - 1 && !isCapturing}
-              />
-            </>
-          )}
-        </View>
+        {/*
+         * Research controls (EV / Burst / Manual / MULTI) only appear
+         * when the caller opted in via callbacks.showResearchControls
+         * — currently the Munsell chart validator flow. Calibrate /
+         * fixture flows get a clean single-shot UI with just the
+         * shutter (and optional captureHint banner).
+         */}
+        {showResearchControls && (
+          <View style={styles.controlsPanel} pointerEvents="box-none">
+            <Stepper
+              label="EV"
+              value={evLabel}
+              onDec={() => setEvIndex(i => i - 1)}
+              onInc={() => setEvIndex(i => i + 1)}
+              canDec={canDecEv && !isCapturing}
+              canInc={canIncEv && !isCapturing}
+            />
+            <Toggle
+              label={`Burst ${BURST_COUNT}×`}
+              on={burstOn}
+              onToggle={() => setBurstOn(v => !v)}
+              disabled={isCapturing}
+            />
+            <Toggle
+              label="Manual"
+              on={manualOn}
+              onToggle={() => setManualOn(v => !v)}
+              disabled={isCapturing}
+            />
+            {manualOn && (
+              <>
+                <Stepper
+                  label="ISO"
+                  value={String(ISO_PRESETS[isoIdx])}
+                  onDec={() => setIsoIdx(i => Math.max(0, i - 1))}
+                  onInc={() =>
+                    setIsoIdx(i => Math.min(ISO_PRESETS.length - 1, i + 1))
+                  }
+                  canDec={isoIdx > 0 && !isCapturing}
+                  canInc={isoIdx < ISO_PRESETS.length - 1 && !isCapturing}
+                />
+                <Stepper
+                  label="Shutter"
+                  value={formatShutterLabel(SHUTTER_PRESETS_NS[shutIdx])}
+                  onDec={() => setShutIdx(i => Math.max(0, i - 1))}
+                  onInc={() =>
+                    setShutIdx(i =>
+                      Math.min(SHUTTER_PRESETS_NS.length - 1, i + 1),
+                    )
+                  }
+                  canDec={shutIdx > 0 && !isCapturing}
+                  canInc={
+                    shutIdx < SHUTTER_PRESETS_NS.length - 1 && !isCapturing
+                  }
+                />
+              </>
+            )}
+          </View>
+        )}
+        {captureHint && (
+          <View style={styles.hintBanner} pointerEvents="none">
+            <Text style={styles.hintBannerText}>{captureHint}</Text>
+          </View>
+        )}
         <View style={styles.bottomBar}>
           <Pressable
             onPress={shutter}
@@ -425,20 +445,22 @@ export const AndroidRawCaptureScreen = () => {
             ]}>
             <View style={styles.shutterInner} />
           </Pressable>
-          <Pressable
-            onPress={runMultiSession}
-            disabled={isCapturing}
-            accessibilityRole="button"
-            accessibilityLabel={`Multi-shot session (${MULTI_SESSION_TOTAL} shots)`}
-            style={({pressed}) => [
-              styles.multiButton,
-              (pressed || isCapturing) && styles.multiButtonPressed,
-            ]}>
-            <Text style={styles.multiButtonText}>MULTI</Text>
-            <Text style={styles.multiButtonSubtext}>
-              {MULTI_SESSION_TOTAL}× shots
-            </Text>
-          </Pressable>
+          {showResearchControls && (
+            <Pressable
+              onPress={runMultiSession}
+              disabled={isCapturing}
+              accessibilityRole="button"
+              accessibilityLabel={`Multi-shot session (${MULTI_SESSION_TOTAL} shots)`}
+              style={({pressed}) => [
+                styles.multiButton,
+                (pressed || isCapturing) && styles.multiButtonPressed,
+              ]}>
+              <Text style={styles.multiButtonText}>MULTI</Text>
+              <Text style={styles.multiButtonSubtext}>
+                {MULTI_SESSION_TOTAL}× shots
+              </Text>
+            </Pressable>
+          )}
         </View>
         {isCapturing && (
           <View style={styles.progressOverlay} pointerEvents="auto">
@@ -569,6 +591,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'rgba(0,0,0,0.55)',
     gap: 6,
+  },
+  hintBanner: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    bottom: 130,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 200, 60, 0.85)',
+  },
+  hintBannerText: {
+    color: 'black',
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   stepperRow: {
     flexDirection: 'row',
