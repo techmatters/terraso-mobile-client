@@ -96,6 +96,11 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
       <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Column>
           <CaptureModeSelector current={captureMode} />
+          <Box paddingHorizontal="md" pb="sm">
+            <Text variant="caption" color="text.secondary">
+              {CAPTURE_MODE_DESCRIPTION[captureMode]}
+            </Text>
+          </Box>
           <Box alignItems="center" paddingVertical="lg">
             <RawPickImageButton
               featureName={t('soil.color.featureName')}
@@ -127,7 +132,20 @@ export const CameraWorkflowExperimental = (props: SoilPitInputScreenProps) => {
   );
 };
 
-// Temporary two-option selector (experimental screen only). Not
+// One-line description of what each capture mode does, shown as a
+// caption under the selector so the tester doesn't have to guess
+// what differs between RAW and RAW-Live. Not translated — the
+// selector itself is dev/tester-facing and will be replaced when
+// the RAW pipeline promotes to production.
+const CAPTURE_MODE_DESCRIPTION: Record<ExperimentalCaptureMode, string> = {
+  jpeg: 'JPEG pipeline (production). No live overlay, no manual crop.',
+  raw: 'RAW capture. After you shoot, pick the ref-card + soil crops by hand.',
+  'raw-live':
+    'RAW capture. The on-camera ROI boxes (ref on top, soil on bottom) ' +
+    'are used as-is — no manual crop step.',
+};
+
+// Temporary three-option selector (experimental screen only). Not
 // translated — this UI is dev/tester-facing and will be replaced
 // entirely when the RAW pipeline is ready to promote to production.
 const CaptureModeSelector = ({current}: {current: ExperimentalCaptureMode}) => (

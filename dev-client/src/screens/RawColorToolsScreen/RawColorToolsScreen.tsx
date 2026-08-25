@@ -179,7 +179,7 @@ const detectFormatFromName = (name: string): 'raw' | 'photo' | null => {
 // modal is open; used by onCapture to route the resulting DNG or
 // JPEG to the right downstream screen.
 type CaptureFlow =
-  | {kind: 'fixture'} // dev: log to Metro + share sheet
+  | {kind: 'raw-jpeg'} // dev: capture DNG + JPEG, pop the share sheet
   | {kind: 'calibrate'; knownRefId: string}
   | {
       kind: 'chart';
@@ -365,14 +365,21 @@ export const RawColorToolsScreen = () => {
   const [captureFlow, setCaptureFlow] = useState<CaptureFlow | null>(null);
   const cancelCapture = useCallback(() => setCaptureFlow(null), []);
 
-  // Fixture-capture handoff: decode a centred ROI to check the pipeline
-  // end-to-end and pop the share sheet so the tester can AirDrop the
-  // DNG off-device for offline inspection. Same behaviour the retired
-  // CaptureRawFixtureItem had.
-  const handleFixtureCapture = useCallback(async (uri: string) => {
+  // RAW+JPEG capture handoff: pops the share sheet with BOTH the DNG
+  // and its companion JPEG so the tester can AirDrop the pair to a
+  // desktop for side-by-side analysis. Also decodes a centred ROI
+  // from the DNG as an end-to-end pipeline sanity check.
+  const handleRawJpegCapture = useCallback(async (result: CaptureResult) => {
+    if (result.kind !== 'raw') {
+      console.warn(
+        'RawColorToolsScreen: RAW+JPEG expected raw capture, got',
+        result.kind,
+      );
+      return;
+    }
     try {
       const roi = {x: 1500, y: 1000, w: 1000, h: 1000};
-      const [rgb] = await DngDecoderHybrid.decodeDngRois(uri, [roi]);
+      const [rgb] = await DngDecoderHybrid.decodeDngRois(result.dngPath, [roi]);
       console.log(
         `DngDecoder: ROI ${roi.x},${roi.y} ${roi.w}x${roi.h} → linear sRGB (` +
           `r=${rgb.r.toFixed(4)}, g=${rgb.g.toFixed(4)}, b=${rgb.b.toFixed(4)})`,
@@ -380,14 +387,17 @@ export const RawColorToolsScreen = () => {
     } catch (err) {
       console.error('DngDecoder.decodeDngRois failed:', err);
     }
+    const urls = [
+      result.dngPath,
+      ...(result.jpegPath ? [result.jpegPath] : []),
+    ];
     try {
       await Share.open({
-        url: uri,
-        type: 'image/x-adobe-dng',
+        urls,
         failOnCancel: false,
       });
     } catch (err) {
-      console.error('RawColorToolsScreen: fixture share failed', err);
+      console.error('RawColorToolsScreen: RAW+JPEG share failed', err);
     }
   }, []);
 
@@ -396,9 +406,10 @@ export const RawColorToolsScreen = () => {
       const flow = captureFlow;
       setCaptureFlow(null);
       if (!flow) return;
-      if (flow.kind === 'calibrate' || flow.kind === 'fixture') {
-        // Calibrate & fixture both require RAW; fixture is handled
-        // by onRawPhotoDevOnly (no nav here).
+      if (flow.kind === 'calibrate' || flow.kind === 'raw-jpeg') {
+        // Both require a RAW result. Calibrate navigates onward;
+        // raw-jpeg shares the DNG + companion JPEG via the OS share
+        // sheet and stays on this screen.
         if (result.kind !== 'raw') {
           console.warn(
             'RawColorToolsScreen: expected raw capture for',
@@ -415,6 +426,8 @@ export const RawColorToolsScreen = () => {
             sensorHeight: result.height,
             knownRefId: flow.knownRefId,
           });
+        } else {
+          handleRawJpegCapture(result);
         }
       } else if (flow.kind === 'chart') {
         // Chart always captures DNG; the companion JPEG (Apple ISP's
@@ -470,7 +483,7 @@ export const RawColorToolsScreen = () => {
         })();
       }
     },
-    [navigation, captureFlow],
+    [navigation, captureFlow, handleRawJpegCapture],
   );
 
   // The RawCameraView is a Modal — mount it always with visible driven
@@ -488,15 +501,15 @@ export const RawColorToolsScreen = () => {
           </Paragraph>
 
           <Text variant="body1" bold>
-            RAW fixture capture
+            RAW + JPEG capture
           </Text>
           <Paragraph>
-            Take a DNG, log the centre ROI's linear-sRGB to Metro, and AirDrop /
-            share the raw file for offline inspection.
+            Take a DNG plus its HAL-processed companion JPEG, then open the
+            share sheet with both files (AirDrop, Files, Google Drive, etc.).
           </Paragraph>
           <ContainedButton
-            label="Capture RAW fixture"
-            onPress={() => setCaptureFlow({kind: 'fixture'})}
+            label="Capture RAW+JPEG"
+            onPress={() => setCaptureFlow({kind: 'raw-jpeg'})}
           />
 
           <Text variant="body1" bold>
@@ -685,15 +698,12 @@ export const RawColorToolsScreen = () => {
       </SafeScrollView>
       <RawCameraView
         visible={cameraVisible}
-        // Chart, calibrate, and fixture flows all capture RAW now —
-        // chart because the DNG carries its embedded JPEG preview
-        // through as a companion for the JPEG pipeline.
+        // All three flows capture RAW; chart + raw-jpeg additionally
+        // want the HAL-processed companion JPEG (chart for its A/B
+        // report, raw-jpeg for its share sheet).
         containerFormat="dng"
         onCancel={cancelCapture}
         onCapture={onCapture}
-        onRawPhotoDevOnly={
-          captureFlow?.kind === 'fixture' ? handleFixtureCapture : undefined
-        }
         chartGuide={captureFlow?.kind === 'chart' ? CHART_GUIDE : undefined}
         captureHint={
           captureFlow?.kind === 'calibrate'
@@ -705,20 +715,18 @@ export const RawColorToolsScreen = () => {
             ? {labels: CALIBRATE_LABELS}
             : undefined
         }
-        // Chart flow needs the companion JPEG (JPEG-pipeline A/B);
-        // calibrate + fixture flows drop it so the native side takes
-        // one takePicture instead of two — noticeably faster on
-        // devices where HDR+ JPEG post-processing is slower than the
-        // RAW write.
-        skipJpeg={
-          captureFlow?.kind === 'calibrate' || captureFlow?.kind === 'fixture'
+        // Calibrate drops the JPEG (only needs the DNG) so the native
+        // side takes one takePicture instead of two. Chart + raw-jpeg
+        // keep it — the JPEG companion is the whole point of both.
+        skipJpeg={captureFlow?.kind === 'calibrate'}
+        // Chart + raw-jpeg also want JPEG at bind time: on constrained
+        // devices where the 4-stream bind fails, keep JPEG and drop
+        // the live variance analyser (neither flow uses the on-screen
+        // evenness feedback). Calibrate leaves preferJpeg default so
+        // the analyser survives the fallback.
+        preferJpeg={
+          captureFlow?.kind === 'chart' || captureFlow?.kind === 'raw-jpeg'
         }
-        // Chart flow also wants JPEG at bind time (on constrained
-        // devices where the 4-stream bind fails, we'd rather keep
-        // JPEG and drop the live variance analyser — chart doesn't
-        // use the on-screen evenness feedback anyway). Calibrate
-        // + fixture leave it default (=false, prefer Analysis).
-        preferJpeg={captureFlow?.kind === 'chart'}
       />
     </ScreenScaffold>
   );

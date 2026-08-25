@@ -18,16 +18,20 @@
 import {useCallback, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import * as DocumentPicker from 'expo-document-picker';
 import {
   launchImageLibraryAsync,
   useMediaLibraryPermissions,
 } from 'expo-image-picker';
 import {createAssetAsync} from 'expo-media-library';
 
+import {DngDecoderHybrid} from 'dng-decoder';
+
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {
   CaptureResult,
   ContainerFormat,
+  isDngContainer,
 } from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RawCameraView} from 'terraso-mobile-client/components/inputs/image/RawCameraView';
 import {
@@ -91,12 +95,63 @@ export const RawImagePicker = ({
   }, []);
 
   const onUseMediaLibrary = useCallback(async () => {
+    if (isDngContainer(containerFormat)) {
+      // RAW modes: pick a .dng from Files, not a JPEG from the photo
+      // gallery. The photo library strips RAW originals on the way in
+      // (iOS auto-converts + Android's MediaStore likewise) so gallery
+      // → RAW is intrinsically broken. Route the picked DNG through
+      // the same handoff camera-captured DNGs use (kind: 'raw' with
+      // decodeRoi + renderPreview closures), so downstream nav lands
+      // on the experimental analysis screen instead of the
+      // production-JPEG COLOR_ANALYSIS route.
+      const res = await DocumentPicker.getDocumentAsync({
+        type: '*/*',
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+      sheetRef.current?.onClose();
+      if (res.canceled) return;
+      const asset = res.assets?.[0];
+      if (!asset || !asset.name.toLowerCase().endsWith('.dng')) {
+        console.warn(
+          'RawImagePicker: gallery pick in RAW mode expects .dng, got',
+          asset?.name,
+        );
+        return;
+      }
+      const dngPath = asset.uri.startsWith('file://')
+        ? asset.uri
+        : `file://${asset.uri}`;
+      // Sensor dims come from the DNG's own metadata — parsed once
+      // from the TIFF headers (cheap, no pixel decode). The
+      // downstream analysis screen uses these to scale preview-space
+      // ROIs back up to sensor coords before decodeDngRois.
+      const meta = DngDecoderHybrid.readMetadata(dngPath);
+      onPick({
+        kind: 'raw',
+        dngPath,
+        jpegPath: undefined,
+        width: meta.width,
+        height: meta.height,
+        decodeRoi: async roi => {
+          const [rgb] = await DngDecoderHybrid.decodeDngRois(dngPath, [roi]);
+          return rgb;
+        },
+        renderPreview: async maxDim => {
+          const p = await DngDecoderHybrid.renderPreview(dngPath, maxDim);
+          return {uri: p.uri, width: p.width, height: p.height};
+        },
+        dispose: () => {},
+      });
+      return;
+    }
+    // JPEG mode: photo gallery like the production path.
     const response = await launchImageLibraryAsync({mediaTypes: 'images'});
     if (!response.canceled) {
       onPick({kind: 'jpeg', photo: response.assets[0]});
     }
     sheetRef.current?.onClose();
-  }, [onPick]);
+  }, [onPick, containerFormat]);
 
   return (
     <>
