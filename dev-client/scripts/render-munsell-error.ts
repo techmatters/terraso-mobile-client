@@ -90,6 +90,14 @@ type Sample = {
   // points for the client-side WB fit; missing entries just mean
   // that card wasn't visible in this capture and can't be picked.
   refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]}};
+  // Shot kind bucket, derived from the label:
+  //   'burst1of5' … 'burstNofM' — individual burst frames
+  //   'burstavgofN'             — the synthetic averaged capture
+  //   'manual_iso100_shut33ms'  — one manual (iso, shutter) shot per row
+  //   'single'                  — non-burst / non-manual (default)
+  // Lets the filmstrip facet by shot type across a whole batch —
+  // e.g. "does burstavg do noticeably better than a single frame?"
+  captureType: string;
 };
 
 // Recognise device from either the directory path (legacy fixtures
@@ -129,6 +137,25 @@ const bgOf = (p: string): string => {
   if (base.split('_').includes('light')) return 'light';
   if (base.split('_').includes('dark')) return 'dark';
   return 'unknown';
+};
+
+// Derive the capture-type bucket from a fixture label. Matches:
+//   burstavgofN     → 'burstavgofN'  (synthetic averaged burst)
+//   burstNofM       → 'burstNofM'    (individual burst frame)
+//   manual_isoX_shutY → 'manual_isoX_shutY'
+//   anything else   → 'single'
+// Case-insensitive on the pattern names; keeps whatever iso/shut
+// values the label actually carries so parameter variants stay
+// distinct (e.g. iso100_shut33ms vs iso100_shut67ms).
+const captureTypeOf = (label: string): string => {
+  const lower = label.toLowerCase();
+  let m = lower.match(/burstavgof(\d+)/);
+  if (m) return `burstavgof${m[1]}`;
+  m = lower.match(/burst(\d+)of(\d+)/);
+  if (m) return `burst${m[1]}of${m[2]}`;
+  m = lower.match(/manual_iso(\d+)_shut([a-z0-9]+)/);
+  if (m) return `manual_iso${m[1]}_shut${m[2]}`;
+  return 'single';
 };
 
 const runDoc = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
@@ -207,6 +234,7 @@ for (const cap of runDoc.captures) {
       expectedRgb: cell.expected_linear_rgb,
       rawRgb: cell.raw_linear_rgb,
       refOptions,
+      captureType: captureTypeOf(cap.label ?? ''),
     });
   }
 }
@@ -1032,6 +1060,12 @@ const HEATMAP_AXIS_OPTIONS = [
   // average" — pair with the fixture multi-select above to focus on a
   // handful of related captures.
   {value: 'fixture',     label: 'fixture (individual photo)'},
+  // Shot kind bucket (burst frame index, burstavg synthetic, manual
+  // iso/shutter). Orthogonal to fixture — one captureType value bins
+  // the same shot kind across every page/device in the batch so you
+  // can answer "does burstavg beat a single frame?" or "is manual
+  // iso400 worse than auto?" head-to-head.
+  {value: 'captureType', label: 'capture type (burst / avg / manual)'},
   // WB anchor split — one row/col per anchor (whibal / greycard /
   // postit / white / self / paper). OVERRIDES the global "First
   // reference" pick for scoring: for each sample, we produce one
@@ -1076,6 +1110,7 @@ function axisValueOf(s, axis) {
     case 'device':     return s.device;
     case 'bg':         return s.bg;
     case 'fixture':    return s.fixtureLabel;
+    case 'captureType':return s.captureType;
     case 'anchor':     return s.anchor ?? null;
     case 'expValue':   return exp ? exp.value : null;
     case 'meaValue':   return mea ? mea.value : null;
