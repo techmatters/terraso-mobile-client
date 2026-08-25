@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cmath>
+#include <cstdio>
 #include <stdexcept>
 
 namespace dngdecoder {
@@ -276,7 +278,7 @@ namespace {
 // sRGB linear -> sRGB gamma-encoded, 0..1 to 0..255. Piecewise curve
 // from IEC 61966-2-1; standard formulation used by everything from
 // libpng to Photoshop.
-inline uint32_t linearToSrgb255(double v) {
+inline uint32_t linearToSrgb255Precise(double v) {
   if (v <= 0.0) return 0;
   if (v >= 1.0) return 255;
   const double enc = v <= 0.0031308
@@ -286,6 +288,36 @@ inline uint32_t linearToSrgb255(double v) {
   if (i < 0) i = 0;
   if (i > 255) i = 255;
   return static_cast<uint32_t>(i);
+}
+
+// 4097-entry LUT (0..4096 inclusive) driven off a 12-bit quantisation
+// of the linear input. Precomputed once at first use; every subsequent
+// preview + ROI decode reads it instead of calling std::pow(). Turns
+// the ~3M-4M pow() calls per full-frame preview into ~3M-4M memory
+// reads → ~10-20× speedup for the gamma step on typical Android
+// devices. Quantisation error is ≤ 1/2048 in linear which maps to
+// well under 1 sRGB byte for anything above black — good enough for
+// display previews AND for the analyzer, which reads raw floats
+// directly (not through this LUT).
+inline uint8_t makeLutEntry(int i) {
+  const double v = static_cast<double>(i) / 4096.0;
+  return static_cast<uint8_t>(linearToSrgb255Precise(v));
+}
+struct SrgbLut {
+  std::array<uint8_t, 4097> data;
+  SrgbLut() {
+    for (int i = 0; i < 4097; ++i) data[i] = makeLutEntry(i);
+  }
+};
+inline const SrgbLut& srgbLut() {
+  static const SrgbLut lut;
+  return lut;
+}
+inline uint32_t linearToSrgb255(double v) {
+  if (v <= 0.0) return 0;
+  if (v >= 1.0) return 255;
+  const int idx = static_cast<int>(v * 4096.0);
+  return srgbLut().data[idx > 4096 ? 4096 : idx];
 }
 
 // Precomputed color-transform state so decodeRoi and renderPreviewRgba
@@ -345,6 +377,7 @@ PreviewRgba renderPreviewRgba(const ParsedDng& dng, uint32_t maxDim) {
   if (maxDim < 16) {
     throw std::runtime_error("renderPreviewRgba: maxDim too small");
   }
+  const auto tStart = std::chrono::steady_clock::now();
 
   // Intermediate (sensor-oriented) output dimensions. Scale the larger
   // side of the CROP rect to maxDim, preserve aspect. Iteration bounds
@@ -479,6 +512,17 @@ PreviewRgba renderPreviewRgba(const ParsedDng& dng, uint32_t maxDim) {
       out.argb[size_t(oy) * outW + ox] = argb;
     }
   }
+  const auto tEnd = std::chrono::steady_clock::now();
+  const auto ms =
+      std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart)
+          .count();
+  std::fprintf(
+      stderr,
+      "[DngPipeline] renderPreviewRgba: maxDim=%u out=%ux%u scale=%u "
+      "sensor=%ux%u layout=%s stride=%u %lldms\n",
+      maxDim, outW, outH, scale, dng.width, dng.height,
+      dng.layout == PixelLayout::LinearRaw ? "LinearRaw" : "CFA",
+      subsampleStride, static_cast<long long>(ms));
   return out;
 }
 

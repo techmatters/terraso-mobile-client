@@ -1,6 +1,8 @@
 package com.margelo.nitro.dngdecoder
 
 import android.graphics.Bitmap
+import android.os.SystemClock
+import android.util.Log
 import androidx.annotation.Keep
 import com.facebook.common.internal.DoNotStrip
 import com.margelo.nitro.NitroModules
@@ -38,23 +40,37 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         // Preview matches the RAW analysis's color space — no HDR+ tone
         // baked in (contrast with the earlier thumbnail-extraction
         // approach which used DngCreator's Google-flavored preview).
+        val tTotal = SystemClock.elapsedRealtime()
         val dims = IntArray(2)
         val err = arrayOfNulls<String>(1)
+        val tNative = SystemClock.elapsedRealtime()
         val argb =
             nativeRenderPreview(dngPath, maxDim.toInt(), dims, err)
                 ?: throw RuntimeException(err[0] ?: "renderPreview failed")
+        val nativeMs = SystemClock.elapsedRealtime() - tNative
         val width = dims[0]
         val height = dims[1]
 
+        val tBitmap = SystemClock.elapsedRealtime()
         val bitmap = Bitmap.createBitmap(argb, width, height, Bitmap.Config.ARGB_8888)
+        val bitmapMs = SystemClock.elapsedRealtime() - tBitmap
         val cacheDir =
             NitroModules.applicationContext?.cacheDir
                 ?: throw RuntimeException("No ReactApplicationContext for cache dir")
         val outFile = File.createTempFile("dng-preview-", ".png", cacheDir)
+        val tPng = SystemClock.elapsedRealtime()
         FileOutputStream(outFile).use { fos ->
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
         }
+        val pngMs = SystemClock.elapsedRealtime() - tPng
         bitmap.recycle()
+
+        Log.i(
+            TAG,
+            "renderPreview($maxDim) → ${width}x${height}: " +
+                "native=${nativeMs}ms bitmap=${bitmapMs}ms " +
+                "png=${pngMs}ms total=${SystemClock.elapsedRealtime() - tTotal}ms",
+        )
 
         return PreviewImage(
             uri = "file://${outFile.absolutePath}",
@@ -207,6 +223,8 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
     ): IntArray?
 
     companion object {
+        private const val TAG = "DngDecoder"
+
         init {
             System.loadLibrary("DngDecoder")
         }

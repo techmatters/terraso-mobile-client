@@ -126,7 +126,13 @@ export const CalibrateReferenceScreen = ({
     (async () => {
       try {
         logCalibrateStep('renderPreview start');
-        const p = await DngDecoderHybrid.renderPreview(dngPath, 1200);
+        // Preview is shown on this screen as a full-width thumbnail
+        // (~360-400 pt wide) + 96 pt pipeline column crops. A
+        // maxDim=800 preview (~800×600 output) has plenty of detail
+        // for both while roughly halving the native gamma+PNG-encode
+        // work vs the old 1200 target. Sensor demosaic cost is fixed
+        // regardless of maxDim.
+        const p = await DngDecoderHybrid.renderPreview(dngPath, 800);
         logCalibrateStep('renderPreview end');
         resetRawAnalysisSession({
           uri: p.uri,
