@@ -42,9 +42,14 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
+  CALIBRATE_EXISTING_ROI,
+  CALIBRATE_NEW_ROI,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/calibrateRois';
+import {
   RawAnalysisRole,
   RawCrop,
   resetRawAnalysisSession,
+  setRawAnalysisCrop,
   useRawAnalysisSession,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/rawAnalysisSession';
 
@@ -87,6 +92,22 @@ export const CalibrateReferenceScreen = ({
           width: p.width,
           height: p.height,
         });
+        // Auto-seed both crops from the on-camera hint boxes so the
+        // user can go straight to "Calibrate & Save" — assuming they
+        // framed the cards inside the yellow overlay boxes on capture.
+        // The two SelectButton entries remain functional as an escape
+        // hatch: tapping either re-opens RawCropScreen for a manual
+        // pan/pinch pick, which then overrides the seed. A square is
+        // used (RawCrop is single-sided) — take the largest square
+        // that fits inside the hint rectangle, centered on it.
+        setRawAnalysisCrop(
+          'reference',
+          hintRoiToSquareRawCrop(CALIBRATE_EXISTING_ROI, p.width, p.height),
+        );
+        setRawAnalysisCrop(
+          'sample',
+          hintRoiToSquareRawCrop(CALIBRATE_NEW_ROI, p.width, p.height),
+        );
       } catch (err) {
         console.error('renderPreview failed:', err);
         setPreviewError(String(err));
@@ -197,11 +218,9 @@ export const CalibrateReferenceScreen = ({
       <SafeScrollView>
         <Column padding="md" space="md">
           <Paragraph>
-            Frame BOTH an existing reference card (already in your library) AND
-            the new card you want to add, in the same shot. Then pick each ROI
-            below — "Existing ref" first, "New ref" second — and tap Calibrate
-            to compute the new card's linear-sRGB from the existing one's known
-            value and save it.
+            Both crops are pre-set from the on-camera yellow hint boxes — tap
+            "Calibrate & Save" if the framing was good. To fine-tune either
+            crop, tap "Existing ref" or "New ref" to open the pan/pinch picker.
           </Paragraph>
           <PreviewThumbnail
             uri={session.preview?.uri}
@@ -285,6 +304,28 @@ const SelectButton = ({
     />
   </Box>
 );
+
+// Convert a display-space fractional hint rectangle to a preview-space
+// SQUARE RawCrop centered on the hint. The hint is rectangular (the
+// yellow overlay box the user framed against), but RawCrop is
+// square-only, so we take the largest centered square that fits
+// inside the hint's preview-pixel projection. Good default: if the
+// user framed their card inside the yellow box, the centered square
+// samples the middle of the card and avoids the borders.
+const hintRoiToSquareRawCrop = (
+  hint: {x: number; y: number; w: number; h: number},
+  previewWidth: number,
+  previewHeight: number,
+): RawCrop => {
+  const boxLeft = hint.x * previewWidth;
+  const boxTop = hint.y * previewHeight;
+  const boxW = hint.w * previewWidth;
+  const boxH = hint.h * previewHeight;
+  const size = Math.floor(Math.min(boxW, boxH));
+  const left = Math.round(boxLeft + (boxW - size) / 2);
+  const top = Math.round(boxTop + (boxH - size) / 2);
+  return {top, left, size};
+};
 
 // Decode both ROIs — same coord math as RawColorAnalysisScreen's
 // decodeCrops. Kept as a local copy for now; if a third caller appears

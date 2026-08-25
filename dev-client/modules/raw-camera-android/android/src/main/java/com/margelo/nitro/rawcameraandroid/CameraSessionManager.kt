@@ -16,6 +16,7 @@ import android.hardware.camera2.TotalCaptureResult
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.SystemClock
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Rational
@@ -317,7 +318,7 @@ object CameraSessionManager {
                     Log.i(TAG, "captureSession: burst frame $i/$burstCount")
                     val seq = i
                     val (photo, shotJson) = captureLocked(
-                        options = CaptureOptions(null, null, null),
+                        options = CaptureOptions(null, null, null, null),
                         burstStamp = sessionStamp,
                         burstIdx = i,
                         burstTotal = burstCount,
@@ -342,6 +343,7 @@ object CameraSessionManager {
                         aeCompensation = null,
                         sensorExposureTimeNs = shot.sensorExposureTimeNs,
                         sensorSensitivity = shot.sensorSensitivity,
+                        skipJpeg = null,
                     )
                     val seq = burstCount + mIdx + 1
                     val (photo, shotJson) = captureLocked(
@@ -462,7 +464,17 @@ object CameraSessionManager {
 
         val resultDeferred = CompletableDeferred<TotalCaptureResult>()
         pendingResult = resultDeferred
-        Log.i(TAG, "captureLocked: triggering takePicture (raw + jpeg)…")
+        // MULTI/burst/chart flows keep the JPEG (research A/B or Munsell
+        // JPEG-pipeline analysis). Calibrate + fixture flows opt into
+        // skipJpeg to drop the second takePicture entirely — noticeably
+        // faster on devices where HDR+ is slower than the RAW write.
+        // MediaStore-mode sessions ignore skipJpeg (research data
+        // collection wants both).
+        val skipJpeg = (effectiveOptions.skipJpeg == true) && !useMediaStore
+        Log.i(
+            TAG,
+            "captureLocked: triggering takePicture (raw${if (skipJpeg) "" else " + jpeg"})…",
+        )
 
         // Two output paths:
         //   sessionSubdir=null → cacheDir (single-shot / plain burst path,
@@ -475,10 +487,14 @@ object CameraSessionManager {
         //     actual sensor params. This defer-and-rename dance is the
         //     only way to embed actual (post-AE) iso/shutter in the
         //     filename for auto-AE bursts.
-        val jpegOptions: ImageCapture.OutputFileOptions
+        val jpegOptions: ImageCapture.OutputFileOptions?
         val jpegSourceTempFile: File?
         val jpegDisplayPathForNonSession: String
-        if (useMediaStore) {
+        if (skipJpeg) {
+            jpegOptions = null
+            jpegSourceTempFile = null
+            jpegDisplayPathForNonSession = ""
+        } else if (useMediaStore) {
             jpegSourceTempFile = File.createTempFile(
                 "soilcap_jpeg_", ".jpg", context.cacheDir,
             )
@@ -499,11 +515,12 @@ object CameraSessionManager {
 
         try {
             return coroutineScope {
+                val rawStartMs = SystemClock.elapsedRealtime()
                 val rawJob = async(Dispatchers.Main) {
                     takePictureSuspending(imageCapture)
                 }
-                val jpegJob = async(Dispatchers.Main) {
-                    takePictureWithOptionsSuspending(jpegCapture, jpegOptions, executor)
+                val jpegJob = if (skipJpeg) null else async(Dispatchers.Main) {
+                    takePictureWithOptionsSuspending(jpegCapture, jpegOptions!!, executor)
                 }
 
                 val image: ImageProxy =
@@ -511,7 +528,7 @@ object CameraSessionManager {
                         withTimeout(TAKE_PICTURE_TIMEOUT_MS) { rawJob.await() }
                     } catch (e: Throwable) {
                         pendingResult = null
-                        jpegJob.cancel()
+                        jpegJob?.cancel()
                         cleanupJpeg()
                         Log.e(TAG, "captureLocked: RAW takePicture failed", e)
                         throw RuntimeException(
@@ -519,6 +536,7 @@ object CameraSessionManager {
                             e,
                         )
                     }
+                val rawElapsedMs = SystemClock.elapsedRealtime() - rawStartMs
                 Log.i(
                     TAG,
                     "captureLocked: takePicture returned image ${image.width}x${image.height}"
@@ -529,7 +547,7 @@ object CameraSessionManager {
                         withTimeout(CAPTURE_RESULT_TIMEOUT_MS) { resultDeferred.await() }
                     } catch (e: Throwable) {
                         image.close()
-                        jpegJob.cancel()
+                        jpegJob?.cancel()
                         cleanupJpeg()
                         throw RuntimeException(
                             "Timed out waiting for TotalCaptureResult (${CAPTURE_RESULT_TIMEOUT_MS}ms)",
@@ -538,13 +556,14 @@ object CameraSessionManager {
                     } finally {
                         pendingResult = null
                     }
+                val totalResultElapsedMs = SystemClock.elapsedRealtime() - rawStartMs
 
-                // Wait for the JPEG save to complete (or fail). We need
-                // this whether we're moving it to MediaStore (session
-                // mode) or the file's already at its final location
-                // (non-session).
+                // Wait for the JPEG save to complete (or fail). Skipped
+                // entirely when the caller opted into RAW-only via
+                // options.skipJpeg (calibrate / fixture flows).
+                val jpegSaveStartMs = SystemClock.elapsedRealtime()
                 val jpegSaveOk: Boolean =
-                    try {
+                    if (jpegJob == null) false else try {
                         withTimeout(TAKE_PICTURE_TIMEOUT_MS) { jpegJob.await() }
                         true
                     } catch (e: Throwable) {
@@ -556,6 +575,13 @@ object CameraSessionManager {
                         cleanupJpeg()
                         false
                     }
+                val jpegElapsedMs = SystemClock.elapsedRealtime() - jpegSaveStartMs
+                Log.i(
+                    TAG,
+                    "captureLocked: timing raw=${rawElapsedMs}ms " +
+                        "totalResult=${totalResultElapsedMs}ms " +
+                        "jpeg=${if (jpegJob == null) "skipped" else "${jpegElapsedMs}ms"}",
+                )
 
                 if (useMediaStore) {
                     // Session mode: compose the final stem now (actual
@@ -766,6 +792,7 @@ object CameraSessionManager {
             aeCompensation = evClamped,
             sensorExposureTimeNs = shutterClamped,
             sensorSensitivity = isoClamped,
+            skipJpeg = options.skipJpeg,
         )
     }
 

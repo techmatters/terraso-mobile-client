@@ -26,7 +26,10 @@ data class CaptureOptions(
   val sensorExposureTimeNs: Double?,
   @DoNotStrip
   @Keep
-  val sensorSensitivity: Double?
+  val sensorSensitivity: Double?,
+  @DoNotStrip
+  @Keep
+  val skipJpeg: Boolean?
 ) {
   /* primary constructor */
 
@@ -36,13 +39,15 @@ data class CaptureOptions(
     return Objects.deepEquals(this.aeCompensation, other.aeCompensation)
       && Objects.deepEquals(this.sensorExposureTimeNs, other.sensorExposureTimeNs)
       && Objects.deepEquals(this.sensorSensitivity, other.sensorSensitivity)
+      && Objects.deepEquals(this.skipJpeg, other.skipJpeg)
   }
 
   override fun hashCode(): Int {
     return arrayOf<Any?>(
       aeCompensation,
       sensorExposureTimeNs,
-      sensorSensitivity
+      sensorSensitivity,
+      skipJpeg
     ).contentDeepHashCode()
   }
 
@@ -54,8 +59,8 @@ data class CaptureOptions(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(aeCompensation: Double?, sensorExposureTimeNs: Double?, sensorSensitivity: Double?): CaptureOptions {
-      return CaptureOptions(aeCompensation, sensorExposureTimeNs, sensorSensitivity)
+    private fun fromCpp(aeCompensation: Double?, sensorExposureTimeNs: Double?, sensorSensitivity: Double?, skipJpeg: Boolean?): CaptureOptions {
+      return CaptureOptions(aeCompensation, sensorExposureTimeNs, sensorSensitivity, skipJpeg)
     }
   }
 }

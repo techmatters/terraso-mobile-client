@@ -43,6 +43,7 @@ import {CHART_GUIDE} from 'terraso-mobile-client/screens/MunsellChartValidator/c
 import {type RegistrationAlgorithm} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {MUNSELL_PAGES} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {CALIBRATE_ROIS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/calibrateRois';
 
 // Dev-only aggregate screen — one place for all RAW / DNG / colour-
 // reference tools that used to be scattered as individual items in the
@@ -643,8 +644,19 @@ export const RawColorToolsScreen = () => {
         chartGuide={captureFlow?.kind === 'chart' ? CHART_GUIDE : undefined}
         captureHint={
           captureFlow?.kind === 'calibrate'
-            ? 'Frame BOTH cards in this shot — the EXISTING known reference and the NEW card you want to calibrate. You will pick each ROI in the next step.'
+            ? 'Frame the EXISTING card inside the top box and the NEW card inside the bottom box.'
             : undefined
+        }
+        roiHint={
+          captureFlow?.kind === 'calibrate' ? {rois: CALIBRATE_ROIS} : undefined
+        }
+        // Chart flow needs the companion JPEG (JPEG-pipeline A/B);
+        // calibrate + fixture flows drop it so the native side takes
+        // one takePicture instead of two — noticeably faster on
+        // devices where HDR+ JPEG post-processing is slower than the
+        // RAW write.
+        skipJpeg={
+          captureFlow?.kind === 'calibrate' || captureFlow?.kind === 'fixture'
         }
       />
     </ScreenScaffold>

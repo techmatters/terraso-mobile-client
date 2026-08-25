@@ -28,6 +28,14 @@ export type CaptureOptions = {
   sensorExposureTimeNs?: number;
   // Manual ISO. When set, MUST also set sensorExposureTimeNs. See above.
   sensorSensitivity?: number;
+  // When true, skip the companion JPEG capture — only the RAW DNG is
+  // written. Halves the number of pipeline stages on the critical path
+  // (single takePicture instead of two + JPEG-save await), noticeably
+  // faster on devices where HDR+ JPEG post-processing is slower than
+  // the RAW write. Chart-validator flow leaves this false so the DNG
+  // still comes with its HAL-processed JPEG companion for A/B; calibrate
+  // and fixture flows set it true.
+  skipJpeg?: boolean;
 };
 
 // One "shot" descriptor inside a captureSession request. Either a

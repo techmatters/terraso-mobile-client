@@ -37,10 +37,13 @@ namespace margelo::nitro::rawcameraandroid {
       jni::local_ref<jni::JDouble> sensorExposureTimeNs = this->getFieldValue(fieldSensorExposureTimeNs);
       static const auto fieldSensorSensitivity = clazz->getField<jni::JDouble>("sensorSensitivity");
       jni::local_ref<jni::JDouble> sensorSensitivity = this->getFieldValue(fieldSensorSensitivity);
+      static const auto fieldSkipJpeg = clazz->getField<jni::JBoolean>("skipJpeg");
+      jni::local_ref<jni::JBoolean> skipJpeg = this->getFieldValue(fieldSkipJpeg);
       return CaptureOptions(
         aeCompensation != nullptr ? std::make_optional(aeCompensation->value()) : std::nullopt,
         sensorExposureTimeNs != nullptr ? std::make_optional(sensorExposureTimeNs->value()) : std::nullopt,
-        sensorSensitivity != nullptr ? std::make_optional(sensorSensitivity->value()) : std::nullopt
+        sensorSensitivity != nullptr ? std::make_optional(sensorSensitivity->value()) : std::nullopt,
+        skipJpeg != nullptr ? std::make_optional(static_cast<bool>(skipJpeg->value())) : std::nullopt
       );
     }
 
@@ -50,14 +53,15 @@ namespace margelo::nitro::rawcameraandroid {
      */
     [[maybe_unused]]
     static jni::local_ref<JCaptureOptions::javaobject> fromCpp(const CaptureOptions& value) {
-      using JSignature = JCaptureOptions(jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JDouble>);
+      using JSignature = JCaptureOptions(jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JBoolean>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
         clazz,
         value.aeCompensation.has_value() ? jni::JDouble::valueOf(value.aeCompensation.value()) : nullptr,
         value.sensorExposureTimeNs.has_value() ? jni::JDouble::valueOf(value.sensorExposureTimeNs.value()) : nullptr,
-        value.sensorSensitivity.has_value() ? jni::JDouble::valueOf(value.sensorSensitivity.value()) : nullptr
+        value.sensorSensitivity.has_value() ? jni::JDouble::valueOf(value.sensorSensitivity.value()) : nullptr,
+        value.skipJpeg.has_value() ? jni::JBoolean::valueOf(value.skipJpeg.value()) : nullptr
       );
     }
   };

@@ -43,6 +43,27 @@ export type AndroidRawCaptureCallbacks = {
   // wants both cards in the shot, which isn't obvious from the
   // camera view alone).
   captureHint?: string;
+  // Optional labeled ROI overlay. When set, the capture screen draws
+  // each rectangle in display-space fractional coords over the
+  // sensor-aspect frame, with its label rendered on top. Used by the
+  // calibrate flow to hint "put the EXISTING card here, the NEW card
+  // there" so the user can frame both simultaneously; the downstream
+  // analysis screen reads the same fractions to skip the manual crop
+  // pick.
+  roiHint?: {
+    rois: ReadonlyArray<{
+      label: string;
+      // Display-space fractional rect (x, y, w, h in [0..1] relative
+      // to the sensor-aspect frame). Same coordinate system as
+      // ROI_PRESETS in useRoiFrameAnalyzer.ts.
+      roi: {x: number; y: number; w: number; h: number};
+    }>;
+  };
+  // When true, request skipJpeg on the RAW capture — noticeably faster
+  // on Android because it drops the second takePicture from the
+  // critical path. Chart flow keeps this false (JPEG needed for the
+  // JPEG-pipeline A/B); calibrate/fixture set true.
+  skipJpeg?: boolean;
 };
 
 let pending: AndroidRawCaptureCallbacks | null = null;

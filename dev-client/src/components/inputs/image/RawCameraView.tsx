@@ -113,6 +113,29 @@ type Props = {
    * on Android; iOS has its own vision-camera UI.
    */
   captureHint?: string;
+  /**
+   * Optional labeled ROI overlay drawn on top of the preview. Each
+   * entry paints a bordered rectangle at display-space fractional
+   * coordinates (same coord system as ROI_PRESETS in
+   * useRoiFrameAnalyzer) with its `label` rendered above the box.
+   * Chart validator flow leaves this unset (it uses `chartGuide`);
+   * calibrate flow sets it to CALIBRATE_ROIS so both cards can be
+   * framed in a single shot with no ambiguity about which slot is
+   * which. Currently only wired through on Android.
+   */
+  roiHint?: {
+    rois: ReadonlyArray<{
+      label: string;
+      roi: {x: number; y: number; w: number; h: number};
+    }>;
+  };
+  /**
+   * When true, request skipJpeg on the RAW capture — the native side
+   * drops the companion JPEG takePicture from the critical path.
+   * Chart flow needs the JPEG for the JPEG-pipeline A/B, so it leaves
+   * this false; calibrate + fixture flows set it true. Android only.
+   */
+  skipJpeg?: boolean;
 };
 
 // Top-level router. Android + DNG uses the raw-camera-android Nitro
@@ -520,6 +543,8 @@ const AndroidRawViewImpl = ({
   onRawPhotoDevOnly,
   chartGuide,
   captureHint,
+  roiHint,
+  skipJpeg,
 }: Props) => {
   const navigation = useNavigation();
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -554,6 +579,8 @@ const AndroidRawViewImpl = ({
       // that flow from the fixture/calibrate paths, so we key off it.
       showResearchControls: chartGuide != null,
       captureHint,
+      roiHint,
+      skipJpeg,
     });
     navigation.navigate('ANDROID_RAW_CAPTURE');
     // Only trigger on the visible→true transition. Re-firing on

@@ -119,6 +119,10 @@ export const AndroidRawCaptureScreen = () => {
   const [chartGuide, setChartGuide] = useState<ChartGuide | null>(null);
   const [showResearchControls, setShowResearchControls] = useState(false);
   const [captureHint, setCaptureHint] = useState<string | null>(null);
+  const [roiHint, setRoiHint] = useState<
+    AndroidRawCaptureCallbacks['roiHint'] | null
+  >(null);
+  const [skipJpeg, setSkipJpeg] = useState(false);
   useEffect(() => {
     const cb = consumeAndroidRawCaptureCallbacks();
     if (cb == null) {
@@ -129,6 +133,8 @@ export const AndroidRawCaptureScreen = () => {
     setChartGuide(cb?.chartGuide ?? null);
     setShowResearchControls(cb?.showResearchControls ?? false);
     setCaptureHint(cb?.captureHint ?? null);
+    setRoiHint(cb?.roiHint ?? null);
+    setSkipJpeg(cb?.skipJpeg ?? false);
   }, []);
 
   const [isCapturing, setIsCapturing] = useState(false);
@@ -188,8 +194,14 @@ export const AndroidRawCaptureScreen = () => {
             sensorExposureTimeNs: SHUTTER_PRESETS_NS[shutIdx],
           }
         : {}),
+      // Chart flow wants the JPEG (JPEG-pipeline A/B); calibrate +
+      // fixture flows set skipJpeg on the callbacks so the native
+      // side drops the second takePicture from the critical path.
+      // Never skip when burst mode is on (burst = research, wants
+      // JPEG companion for every frame).
+      ...(skipJpeg && !burstOn ? {skipJpeg: true} : {}),
     };
-  }, [evIndex, manualOn, isoIdx, shutIdx]);
+  }, [evIndex, manualOn, isoIdx, shutIdx, skipJpeg, burstOn]);
 
   // Fire onCancel if the user pops via the AppBar back button (or
   // Android system back) without going through shutter. Won't fire on
@@ -361,12 +373,17 @@ export const AndroidRawCaptureScreen = () => {
          */}
         <RawCameraAndroidView
           style={StyleSheet.absoluteFill}
-          showRoiOverlay={!chartGuide}
-          previewFitCenter={!!chartGuide}
+          showRoiOverlay={!chartGuide && !roiHint}
+          previewFitCenter={!!chartGuide || !!roiHint}
         />
         {chartGuide && (
           <SensorAspectFrame aspect={SENSOR_ASPECT_PORTRAIT}>
             <ChartGuideOverlay guide={chartGuide} />
+          </SensorAspectFrame>
+        )}
+        {roiHint && (
+          <SensorAspectFrame aspect={SENSOR_ASPECT_PORTRAIT}>
+            <LabeledRoiOverlay rois={roiHint.rois} />
           </SensorAspectFrame>
         )}
         {/*
@@ -472,6 +489,54 @@ export const AndroidRawCaptureScreen = () => {
         )}
       </View>
     </ScreenScaffold>
+  );
+};
+
+// Draws a labelled ROI rectangle for each entry, positioned in
+// display-space fractional coords over its parent frame. The parent
+// is expected to be a SensorAspectFrame — same coordinate space that
+// the downstream analyzer maps back to sensor pixels, so the box on
+// screen and the box the analyzer decodes end up being the same
+// region. The label rides just above each box, black text on a
+// translucent white pill so it stays legible over any preview colour.
+const LabeledRoiOverlay = ({
+  rois,
+}: {
+  rois: ReadonlyArray<{
+    label: string;
+    roi: {x: number; y: number; w: number; h: number};
+  }>;
+}) => {
+  const [layout, setLayout] = useState<{w: number; h: number} | null>(null);
+  return (
+    <View
+      style={StyleSheet.absoluteFill}
+      pointerEvents="none"
+      onLayout={e =>
+        setLayout({
+          w: e.nativeEvent.layout.width,
+          h: e.nativeEvent.layout.height,
+        })
+      }>
+      {layout &&
+        rois.map(({label, roi}) => (
+          <View
+            key={label}
+            style={[
+              styles.roiHintBox,
+              {
+                left: roi.x * layout.w,
+                top: roi.y * layout.h,
+                width: roi.w * layout.w,
+                height: roi.h * layout.h,
+              },
+            ]}>
+            <View style={styles.roiHintLabelPill}>
+              <Text style={styles.roiHintLabelText}>{label}</Text>
+            </View>
+          </View>
+        ))}
+    </View>
   );
 };
 
@@ -606,6 +671,26 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  roiHintBox: {
+    position: 'absolute',
+    borderColor: 'rgba(255, 220, 90, 0.95)',
+    borderWidth: 2,
+    borderRadius: 4,
+    alignItems: 'center',
+  },
+  roiHintLabelPill: {
+    marginTop: -14,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 220, 90, 0.95)',
+  },
+  roiHintLabelText: {
+    color: 'black',
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   stepperRow: {
     flexDirection: 'row',

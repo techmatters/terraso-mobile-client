@@ -42,10 +42,11 @@ namespace margelo::nitro::rawcameraandroid {
     std::optional<double> aeCompensation     SWIFT_PRIVATE;
     std::optional<double> sensorExposureTimeNs     SWIFT_PRIVATE;
     std::optional<double> sensorSensitivity     SWIFT_PRIVATE;
+    std::optional<bool> skipJpeg     SWIFT_PRIVATE;
 
   public:
     CaptureOptions() = default;
-    explicit CaptureOptions(std::optional<double> aeCompensation, std::optional<double> sensorExposureTimeNs, std::optional<double> sensorSensitivity): aeCompensation(aeCompensation), sensorExposureTimeNs(sensorExposureTimeNs), sensorSensitivity(sensorSensitivity) {}
+    explicit CaptureOptions(std::optional<double> aeCompensation, std::optional<double> sensorExposureTimeNs, std::optional<double> sensorSensitivity, std::optional<bool> skipJpeg): aeCompensation(aeCompensation), sensorExposureTimeNs(sensorExposureTimeNs), sensorSensitivity(sensorSensitivity), skipJpeg(skipJpeg) {}
 
   public:
     friend bool operator==(const CaptureOptions& lhs, const CaptureOptions& rhs) = default;
@@ -63,7 +64,8 @@ namespace margelo::nitro {
       return margelo::nitro::rawcameraandroid::CaptureOptions(
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "aeCompensation"))),
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorExposureTimeNs"))),
-        JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivity")))
+        JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivity"))),
+        JSIConverter<std::optional<bool>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "skipJpeg")))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::rawcameraandroid::CaptureOptions& arg) {
@@ -71,6 +73,7 @@ namespace margelo::nitro {
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "aeCompensation"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.aeCompensation));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "sensorExposureTimeNs"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.sensorExposureTimeNs));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivity"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.sensorSensitivity));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "skipJpeg"), JSIConverter<std::optional<bool>>::toJSI(runtime, arg.skipJpeg));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -84,6 +87,7 @@ namespace margelo::nitro {
       if (!JSIConverter<std::optional<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "aeCompensation")))) return false;
       if (!JSIConverter<std::optional<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorExposureTimeNs")))) return false;
       if (!JSIConverter<std::optional<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivity")))) return false;
+      if (!JSIConverter<std::optional<bool>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "skipJpeg")))) return false;
       return true;
     }
   };
