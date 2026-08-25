@@ -462,8 +462,11 @@ const html = `<!DOCTYPE html>
       <fieldset id="ctl-card">
         <legend>Card (Munsell page)</legend>
       </fieldset>
+      <fieldset id="ctl-capture-type">
+        <legend>Capture type (burst / avg / manual)</legend>
+      </fieldset>
       <fieldset id="ctl-fixture">
-        <legend>Fixture (narrowed by card / device / format / bg)</legend>
+        <legend>Fixture (narrowed by card / device / format / bg / capture type)</legend>
       </fieldset>
     </div>
   </div>
@@ -999,8 +1002,14 @@ const state = {
   // the user can tell whether jumpy per-chip data across an axis
   // comes from one messy fixture or the average of many. Options
   // list is dynamically reduced to fixtures matching the current
-  // card / device / format / bg selection.
+  // card / device / format / bg / captureType selection.
   fixture: new Set(),
+  // Capture-type multi-select. Same buckets the 'capture type' heatmap
+  // axis exposes (burst1of5 … burstNofM, burstavgofN, manual_isoX_shutY,
+  // single). Lets the user narrow a whole batch to a specific shot
+  // kind (e.g. only burstavg captures, only manual_iso100_shut33ms)
+  // without picking each fixture by name.
+  captureType: new Set(),
   // Client-side WB reference cards. First is required (default =
   // greycard, the most-trusted anchor); second is optional (default
   // = 'none' → single-ref gain-only fit). Picking a second enables
@@ -1207,6 +1216,7 @@ const URL_STATE_SPEC = [
   ['device',     'device', 'set'],
   ['bg',         'bg',     'set'],
   ['card',       'card',   'set'],
+  ['captureType','captype','set'],
   ['fixture',    'fixture','set'],
   ['firstRef',   'ref1',   'scalar'],
   ['secondRef',  'ref2',   'scalar'],
@@ -1339,6 +1349,9 @@ function initControls() {
     () => rebuildFixtureControl());
   bindMultiSelect('ctl-card',   'card',   uniqueValues(SAMPLES, 'page'),
     () => rebuildFixtureControl());
+  bindMultiSelect('ctl-capture-type', 'captureType',
+    uniqueValues(SAMPLES, 'captureType'),
+    () => rebuildFixtureControl());
 
   // Fixture picker. Options list is dynamically reduced to fixtures
   // matching current device / bg / card / format filters. Rebuilt on
@@ -1356,6 +1369,8 @@ function initControls() {
       if (state.device.size > 0 && !state.device.has(s.device)) continue;
       if (state.bg.size > 0     && !state.bg.has(s.bg))         continue;
       if (state.card.size > 0   && !state.card.has(s.page))     continue;
+      if (state.captureType.size > 0 &&
+          !state.captureType.has(s.captureType)) continue;
       allowed.add(s.fixtureLabel);
     }
     const opts = [...allowed].sort();
@@ -1455,6 +1470,8 @@ function initControls() {
       if (state.device.size > 0 && !state.device.has(s.device)) continue;
       if (state.bg.size > 0     && !state.bg.has(s.bg))         continue;
       if (state.card.size > 0   && !state.card.has(s.page))     continue;
+      if (state.captureType.size > 0 &&
+          !state.captureType.has(s.captureType)) continue;
       if (state.fixture.size > 0 && !state.fixture.has(s.fixtureLabel)) continue;
       if (state.excludeFlaggedChips && EXCLUDED_CHIPS.has(s.expected)) continue;
       if (state.excludeFlaggedCards && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
@@ -1666,6 +1683,8 @@ function filterSamples() {
     if (state.device.size > 0 && !state.device.has(s.device)) continue;
     if (state.bg.size > 0     && !state.bg.has(s.bg))         continue;
     if (state.card.size > 0   && !state.card.has(s.page))     continue;
+    if (state.captureType.size > 0 &&
+        !state.captureType.has(s.captureType)) continue;
     if (state.fixture.size > 0 && !state.fixture.has(s.fixtureLabel)) continue;
     if (s.illumUnevenness !== null && s.illumUnevenness > uMax) continue;
     if (state.minSignal > 0) {
