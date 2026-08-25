@@ -33,9 +33,15 @@ export type CalibrateRoi = {
   roi: {x: number; y: number; w: number; h: number};
 };
 
+// IMPORTANT: these fractions must match the hardcoded rects in
+// modules/raw-camera-android/.../RoiOverlayView.kt (refRect,
+// sampleRect) so the native red/green analyser outline (which draws
+// its OWN box at those coords) lines up with our JS labels. When
+// task #78 lands (JS-tunable ROI positions), remove the native
+// hardcode and drive both from this constant.
 export const CALIBRATE_ROIS: readonly [CalibrateRoi, CalibrateRoi] = [
-  {label: 'EXISTING REF', roi: {x: 0.15, y: 0.1, w: 0.7, h: 0.35}},
-  {label: 'NEW REF', roi: {x: 0.15, y: 0.55, w: 0.7, h: 0.35}},
+  {label: 'EXISTING REF', roi: {x: 0.15, y: 0.1, w: 0.7, h: 0.3}},
+  {label: 'NEW REF', roi: {x: 0.15, y: 0.55, w: 0.7, h: 0.3}},
 ];
 
 // Convenience accessors so callers don't index into the array by

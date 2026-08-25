@@ -16,7 +16,16 @@
  */
 
 import {useCallback, useEffect, useState} from 'react';
-import {Alert, Image, StyleSheet, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  Modal,
+  Pressable,
+  Text as RNText,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 
@@ -92,6 +101,16 @@ export const CalibrateReferenceScreen = ({
   const session = useRawAnalysisSession();
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Pending-save state. When set, renders a modal above the screen
+  // with a TextInput pre-filled with the auto-generated name. On
+  // Save, calls saveAndConfirm with the (possibly edited) name; on
+  // Cancel, clears state and returns to the calibrate button.
+  const [pendingSave, setPendingSave] = useState<null | {
+    defaultName: string;
+    illuminant: string | undefined;
+    expected: LinearRgb;
+  }>(null);
+  const [editableName, setEditableName] = useState('');
 
   useEffect(() => {
     resetRawAnalysisSession(null);
@@ -213,15 +232,13 @@ export const CalibrateReferenceScreen = ({
           `(rank ${rank}/${ranked.length}, ` +
           `ΔE ${you?.deltaE.toFixed(1) ?? '?'} vs measured)`,
       );
-      promptNameAndSave(
+      const p = buildPendingSave(
         picked,
         decoded.knownMeasured,
         decoded.newMeasured,
-        () => {
-          setBusy(false);
-          navigation.pop();
-        },
       );
+      setEditableName(p.defaultName);
+      setPendingSave(p);
       return;
     }
     // Fallback: no valid pre-selection → show top match with confirm.
@@ -243,15 +260,13 @@ export const CalibrateReferenceScreen = ({
         {
           text: 'Use this ref',
           onPress: () => {
-            promptNameAndSave(
+            const p = buildPendingSave(
               top,
               decoded.knownMeasured,
               decoded.newMeasured,
-              () => {
-                setBusy(false);
-                navigation.pop();
-              },
             );
+            setEditableName(p.defaultName);
+            setPendingSave(p);
           },
         },
       ],
@@ -265,7 +280,6 @@ export const CalibrateReferenceScreen = ({
     sensorWidth,
     sensorHeight,
     knownRefId,
-    navigation,
   ]);
 
   if (previewError) {
@@ -323,9 +337,173 @@ export const CalibrateReferenceScreen = ({
           />
         </Column>
       </SafeScrollView>
+      {pendingSave && (
+        <NameInputModal
+          defaultName={pendingSave.defaultName}
+          value={editableName}
+          onChange={setEditableName}
+          expected={pendingSave.expected}
+          onCancel={() => {
+            setPendingSave(null);
+            setBusy(false);
+          }}
+          onSave={() => {
+            const trimmed = editableName.trim();
+            if (!trimmed) return;
+            const {illuminant, expected} = pendingSave;
+            setPendingSave(null);
+            saveAndConfirm(trimmed, illuminant, expected, () => {
+              setBusy(false);
+              navigation.pop();
+            });
+          }}
+        />
+      )}
     </ScreenScaffold>
   );
 };
+
+// Cross-platform naming Modal used when the user hits "Calibrate &
+// Save". Replaces the old iOS-only Alert.prompt chain that no-op'd
+// on Android and left the screen stuck at "Working…". Pre-fills the
+// auto-generated "{knownRef} recal {stamp}" name so users can just
+// tap Save to accept it; edit inline if they want a custom name.
+const NameInputModal = ({
+  defaultName,
+  value,
+  onChange,
+  expected,
+  onCancel,
+  onSave,
+}: {
+  defaultName: string;
+  value: string;
+  onChange: (v: string) => void;
+  expected: LinearRgb;
+  onCancel: () => void;
+  onSave: () => void;
+}) => {
+  const rgbLine =
+    `linear-sRGB: r=${expected.r.toFixed(4)}, ` +
+    `g=${expected.g.toFixed(4)}, b=${expected.b.toFixed(4)}`;
+  return (
+    <Modal transparent animationType="fade" visible onRequestClose={onCancel}>
+      <View style={nameModalStyles.backdrop}>
+        <View style={nameModalStyles.card}>
+          <RNText style={nameModalStyles.title}>Name this reference</RNText>
+          <RNText style={nameModalStyles.subtitle}>{rgbLine}</RNText>
+          <TextInput
+            value={value}
+            onChangeText={onChange}
+            placeholder={defaultName}
+            autoFocus
+            selectTextOnFocus
+            style={nameModalStyles.input}
+            returnKeyType="done"
+            onSubmitEditing={onSave}
+          />
+          <View style={nameModalStyles.buttonRow}>
+            <Pressable
+              onPress={onCancel}
+              style={({pressed}) => [
+                nameModalStyles.button,
+                nameModalStyles.buttonCancel,
+                pressed && nameModalStyles.buttonPressed,
+              ]}>
+              <RNText style={nameModalStyles.buttonText}>Cancel</RNText>
+            </Pressable>
+            <Pressable
+              onPress={onSave}
+              disabled={!value.trim()}
+              style={({pressed}) => [
+                nameModalStyles.button,
+                nameModalStyles.buttonSave,
+                !value.trim() && nameModalStyles.buttonDisabled,
+                pressed && nameModalStyles.buttonPressed,
+              ]}>
+              <RNText
+                style={[nameModalStyles.buttonText, nameModalStyles.saveText]}>
+                Save
+              </RNText>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+const nameModalStyles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    elevation: 6,
+  },
+  title: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#111',
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: '#555',
+    marginBottom: 12,
+    fontVariant: ['tabular-nums'],
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#bbb',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 15,
+    color: '#111',
+    marginBottom: 16,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8,
+  },
+  button: {
+    minWidth: 88,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  buttonCancel: {
+    backgroundColor: '#eee',
+  },
+  buttonSave: {
+    backgroundColor: '#0a6cff',
+  },
+  buttonDisabled: {
+    opacity: 0.4,
+  },
+  buttonPressed: {
+    opacity: 0.7,
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111',
+  },
+  saveText: {
+    color: 'white',
+  },
+});
 
 const PreviewThumbnail = ({
   uri,
@@ -445,24 +623,26 @@ const decodeCalibrationCrops = async ({
   return {knownMeasured, newMeasured};
 };
 
-// Auto-name + save the calibrated reference. Two-prompt Alert.prompt
-// flow is gone — Alert.prompt is iOS-only (no-op on Android) so the
-// save silently stalled with the screen stuck at "Working…". The
-// tester can rename via ManageCustomReferences after the fact.
+// Compute the calibrated linear-sRGB and pre-fill an auto-name, then
+// open the in-screen naming Modal so the user can edit + save. The
+// old Alert.prompt-based flow was iOS-only (Alert.prompt no-ops on
+// Android — the save silently stalled with the screen stuck at
+// "Working…"). Modal + TextInput works on both platforms.
 //
-// Auto-name format:
+// Auto-name format (used as the modal's default):
 //   "{knownRefName} recal {yyyymmdd-hhmm}"
-// e.g. "WhiBal G7 recal 20260825-1637". The known-ref name is baked
-// in so a "picked wrong known-ref" mistake is spottable at a glance
-// in the ManageCustomReferences list. Illuminant metadata gets
-// pulled from the Session Context MMKV (if the tester set it on
-// RawColorTools), otherwise left blank.
-const promptNameAndSave = (
+// e.g. "WhiBal G7 recal 20260825-1637". Illuminant pulled from the
+// Session Context MMKV (RawColorTools' munsellSession.illuminant) if
+// set, otherwise blank.
+const buildPendingSave = (
   known: AvailableReference,
   knownMeasured: LinearRgb,
   newMeasured: LinearRgb,
-  onDone: () => void,
-): void => {
+): {
+  defaultName: string;
+  illuminant: string | undefined;
+  expected: LinearRgb;
+} => {
   const expected = computeCalibratedReference(
     knownMeasured,
     known.linearRgb,
@@ -473,10 +653,10 @@ const promptNameAndSave = (
   const stamp =
     `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
     `-${pad(now.getHours())}${pad(now.getMinutes())}`;
-  const name = `${known.name} recal ${stamp}`;
+  const defaultName = `${known.name} recal ${stamp}`;
   const illuminant =
     kvStorage.getString('munsellSession.illuminant') || undefined;
-  saveAndConfirm(name, illuminant, expected, onDone);
+  return {defaultName, illuminant, expected};
 };
 
 const saveAndConfirm = (

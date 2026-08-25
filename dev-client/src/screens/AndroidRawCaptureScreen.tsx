@@ -373,7 +373,12 @@ export const AndroidRawCaptureScreen = () => {
          */}
         <RawCameraAndroidView
           style={StyleSheet.absoluteFill}
-          showRoiOverlay={!chartGuide && !roiHint}
+          // Native RoiOverlayView is now ON for the calibrate flow (roiHint
+          // set) so the user gets live red/green outlines from the per-frame
+          // variance analyser — exactly the "evenness feedback" the iOS
+          // vision-camera path shows. It also draws the two ROI rectangles.
+          // Only chartGuide suppresses it (chart flow uses its own overlay).
+          showRoiOverlay={!chartGuide}
           previewFitCenter={!!chartGuide || !!roiHint}
         />
         {chartGuide && (
@@ -492,13 +497,14 @@ export const AndroidRawCaptureScreen = () => {
   );
 };
 
-// Draws a labelled ROI rectangle for each entry, positioned in
-// display-space fractional coords over its parent frame. The parent
-// is expected to be a SensorAspectFrame — same coordinate space that
-// the downstream analyzer maps back to sensor pixels, so the box on
-// screen and the box the analyzer decodes end up being the same
-// region. The label rides just above each box, black text on a
-// translucent white pill so it stays legible over any preview colour.
+// Draws the LABEL for each ROI in display-space fractional coords
+// over its parent frame. The rectangle itself is drawn by the
+// native RoiOverlayView (which also colours the outline per-frame
+// based on the variance analyser — the live evenness feedback).
+// This overlay just adds a legible "EXISTING REF" / "NEW REF" pill
+// above each rect so the user knows which slot is which. The pill
+// coords match the native rectangle top edge so it reads as a
+// header for that rect.
 const LabeledRoiOverlay = ({
   rois,
 }: {
@@ -523,12 +529,11 @@ const LabeledRoiOverlay = ({
           <View
             key={label}
             style={[
-              styles.roiHintBox,
+              styles.roiHintLabelWrap,
               {
                 left: roi.x * layout.w,
-                top: roi.y * layout.h,
                 width: roi.w * layout.w,
-                height: roi.h * layout.h,
+                top: roi.y * layout.h - 18,
               },
             ]}>
             <View style={styles.roiHintLabelPill}>
@@ -672,15 +677,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  roiHintBox: {
+  roiHintLabelWrap: {
     position: 'absolute',
-    borderColor: 'rgba(255, 220, 90, 0.95)',
-    borderWidth: 2,
-    borderRadius: 4,
     alignItems: 'center',
   },
   roiHintLabelPill: {
-    marginTop: -14,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
