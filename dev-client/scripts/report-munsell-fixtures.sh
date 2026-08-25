@@ -84,7 +84,5 @@ echo "==> outputs:"
 ls -lh "$OUT"
 
 echo
-echo "==> opening reports …"
-open "$OUT/run.html"
-open "$OUT/munsell-error.html"
-open "$OUT/delta-e-analysis.html"
+echo "==> opening results folder in Finder …"
+open "$OUT"
