@@ -228,6 +228,14 @@ constructor(
         CameraSessionManager.setAnalyzerSampleRoi(x, y, w, h)
     }
 
+    // Prop forwarder for the preferJpeg view manager prop. Applied
+    // BEFORE onAttachedToWindow's bind so the ensureBoundLocked
+    // fallback ordering sees the caller's preference. See
+    // CameraSessionManager.setPreferJpegOverAnalysis for semantics.
+    fun setPreferJpegOverAnalysis(prefer: Boolean) {
+        CameraSessionManager.setPreferJpegOverAnalysis(prefer)
+    }
+
     companion object {
         private const val TAG = "RawCameraAndroid.View"
     }

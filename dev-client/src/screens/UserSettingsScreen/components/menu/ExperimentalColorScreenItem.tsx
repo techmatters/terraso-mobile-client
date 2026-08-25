@@ -23,16 +23,61 @@ import {
   setExperimentalColorScreenEnabled,
   useIsExperimentalColorScreenEnabled,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/experimentalColorScreenToggle';
+import {
+  setExperimentalCaptureMode,
+  useExperimentalCaptureMode,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/experimentalCaptureModeToggle';
 
-// Dev-only two-state selector: which ColorScreen the soil-color route
-// dispatches to (see ColorScreenRouter). Tapping the row flips between
-// "Production" and "Experimental" and re-renders any subscribers.
+// Dev-only three-state cycler: which soil-color capture pipeline runs.
+// One tap advances through: Production → RAW + JPEG → RAW + evenness
+// (then back to Production). Sync-writes both underlying toggles:
+//   Production        → experimentalColorScreen OFF (captureMode ignored)
+//   RAW + JPEG        → experimentalColorScreen ON,  captureMode='raw'
+//                       (native camera prefers JPEG in 3-stream fallback)
+//   RAW + evenness    → experimentalColorScreen ON,  captureMode='raw-live'
+//                       (native camera prefers Analysis in 3-stream
+//                       fallback, gives live red/green overlay)
+type Mode = 'production' | 'raw+jpeg' | 'raw+evenness';
+
+const readMode = (
+  experimental: boolean,
+  capture: 'jpeg' | 'raw' | 'raw-live',
+): Mode => {
+  if (!experimental) return 'production';
+  if (capture === 'raw-live') return 'raw+evenness';
+  return 'raw+jpeg';
+};
+
+const applyMode = (m: Mode) => {
+  if (m === 'production') {
+    setExperimentalColorScreenEnabled(false);
+    return;
+  }
+  setExperimentalColorScreenEnabled(true);
+  setExperimentalCaptureMode(m === 'raw+evenness' ? 'raw-live' : 'raw');
+};
+
+const nextMode = (m: Mode): Mode =>
+  m === 'production'
+    ? 'raw+jpeg'
+    : m === 'raw+jpeg'
+      ? 'raw+evenness'
+      : 'production';
+
+const MODE_LABEL: Record<Mode, string> = {
+  production: 'Production',
+  'raw+jpeg': 'RAW + JPEG',
+  'raw+evenness': 'RAW + evenness',
+};
+
 export const ExperimentalColorScreenItem = () => {
-  const isExperimental = useIsExperimentalColorScreenEnabled();
+  const experimental = useIsExperimentalColorScreenEnabled();
+  const capture = useExperimentalCaptureMode();
+  const mode = readMode(experimental, capture);
 
-  const toggle = useCallback(() => {
-    setExperimentalColorScreenEnabled(!isExperimental);
-  }, [isExperimental]);
+  const cycle = useCallback(() => {
+    applyMode(nextMode(mode));
+  }, [mode]);
 
   if (APP_CONFIG.environment === 'production') {
     return null;
@@ -42,8 +87,8 @@ export const ExperimentalColorScreenItem = () => {
     <MenuItem
       variant="default"
       icon="science"
-      label={`Color analysis: ${isExperimental ? 'Experimental' : 'Production'}`}
-      onPress={toggle}
+      label={`Color analysis: ${MODE_LABEL[mode]}`}
+      onPress={cycle}
     />
   );
 };

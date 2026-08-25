@@ -59,6 +59,11 @@ export type AndroidRawCaptureCallbacks = {
   // critical path. Chart flow keeps this false (JPEG needed for the
   // JPEG-pipeline A/B); calibrate/fixture set true.
   skipJpeg?: boolean;
+  // When true, camera bind's 3-stream fallback keeps JPEG and drops
+  // ImageAnalysis. Chart flow + soil-color 'raw+jpeg' mode set this
+  // true. Calibrate + 'raw+evenness' leave undefined (=false) so
+  // the live variance analyser stays alive on constrained devices.
+  preferJpeg?: boolean;
 };
 
 let pending: AndroidRawCaptureCallbacks | null = null;

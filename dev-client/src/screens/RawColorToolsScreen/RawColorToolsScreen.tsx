@@ -713,6 +713,12 @@ export const RawColorToolsScreen = () => {
         skipJpeg={
           captureFlow?.kind === 'calibrate' || captureFlow?.kind === 'fixture'
         }
+        // Chart flow also wants JPEG at bind time (on constrained
+        // devices where the 4-stream bind fails, we'd rather keep
+        // JPEG and drop the live variance analyser — chart doesn't
+        // use the on-screen evenness feedback anyway). Calibrate
+        // + fixture leave it default (=false, prefer Analysis).
+        preferJpeg={captureFlow?.kind === 'chart'}
       />
     </ScreenScaffold>
   );

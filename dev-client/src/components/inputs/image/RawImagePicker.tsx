@@ -139,6 +139,12 @@ export const RawImagePicker = ({
         onCapture={onCameraCapture}
         onCancel={onCameraCancel}
         containerFormat={containerFormat}
+        // Soil-color capture-mode inference: 'dng' = "raw + jpeg"
+        // (user wants JPEG companion), 'dng-live' = "raw + evenness"
+        // (user wants live variance analyser). Chart/calibrate flows
+        // use RawCameraView directly and set preferJpeg explicitly;
+        // this only applies to the RawImagePicker (soil-color) path.
+        preferJpeg={containerFormat === 'dng'}
       />
     </>
   );

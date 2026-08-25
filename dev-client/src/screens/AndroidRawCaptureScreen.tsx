@@ -128,6 +128,7 @@ export const AndroidRawCaptureScreen = () => {
     AndroidRawCaptureCallbacks['roiHint'] | null
   >(null);
   const [skipJpeg, setSkipJpeg] = useState(false);
+  const [preferJpeg, setPreferJpeg] = useState(false);
   // ROI preset index — shared with iOS soil-color RAW-Live via
   // useRoiFrameAnalyzer's ROI_PRESETS + kvStorage. +/- buttons flanking
   // the shutter cycle through 4 sizes (tiny/small/medium/large); the
@@ -152,6 +153,7 @@ export const AndroidRawCaptureScreen = () => {
     setCaptureHint(cb?.captureHint ?? null);
     setRoiHint(cb?.roiHint ?? null);
     setSkipJpeg(cb?.skipJpeg ?? false);
+    setPreferJpeg(cb?.preferJpeg ?? false);
   }, []);
 
   const [isCapturing, setIsCapturing] = useState(false);
@@ -405,6 +407,7 @@ export const AndroidRawCaptureScreen = () => {
           sampleRoiY={activePreset.sample.y}
           sampleRoiW={activePreset.sample.w}
           sampleRoiH={activePreset.sample.h}
+          preferJpeg={preferJpeg}
         />
         {chartGuide && (
           <SensorAspectFrame aspect={SENSOR_ASPECT_PORTRAIT}>

@@ -133,6 +133,15 @@ type Props = {
    * this false; calibrate + fixture flows set it true. Android only.
    */
   skipJpeg?: boolean;
+  /**
+   * When true, the Android camera bind's 3-stream fallback (needed on
+   * devices where the 4-stream config fails, e.g. Pixel 7) keeps the
+   * JPEG ImageCapture and drops ImageAnalysis — chart flow + soil-
+   * color 'raw+jpeg' capture mode want this. Leave undefined (=false)
+   * to keep Analysis and drop JPEG, which preserves the live red/
+   * green evenness outline (calibrate + 'raw+evenness' mode).
+   */
+  preferJpeg?: boolean;
 };
 
 // Top-level router. Android + DNG uses the raw-camera-android Nitro
@@ -542,6 +551,7 @@ const AndroidRawViewImpl = ({
   captureHint,
   roiHint,
   skipJpeg,
+  preferJpeg,
 }: Props) => {
   const navigation = useNavigation();
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -578,6 +588,7 @@ const AndroidRawViewImpl = ({
       captureHint,
       roiHint,
       skipJpeg,
+      preferJpeg,
     });
     navigation.navigate('ANDROID_RAW_CAPTURE');
     // Only trigger on the visible→true transition. Re-firing on

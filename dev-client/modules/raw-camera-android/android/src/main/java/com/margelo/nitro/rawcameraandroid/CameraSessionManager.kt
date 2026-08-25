@@ -144,6 +144,19 @@ object CameraSessionManager {
     // supported surface combination" for the 4-stream config — we
     // drop JPEG on fallback and callers must skip it in that mode.
     @Volatile private var jpegBound: Boolean = false
+
+    // When true, ensureBoundLocked() tries the "keep JPEG, drop
+    // Analysis" 3-stream fallback BEFORE the "drop JPEG, keep
+    // Analysis" one. Chart flow + soil-color 'raw+jpeg' mode set
+    // this true (they want the JPEG companion for downstream A/B).
+    // Calibrate + 'raw+evenness' mode leave it false (they want the
+    // live variance analyser's red/green outlines). Set via the
+    // view manager prop preferJpeg on RawCameraAndroidView.
+    @Volatile private var preferJpegOverAnalysis: Boolean = false
+
+    fun setPreferJpegOverAnalysis(prefer: Boolean) {
+        preferJpegOverAnalysis = prefer
+    }
     private var boundPreview: Preview? = null
     private var boundAnalysis: ImageAnalysis? = null
     private var boundCharacteristics: CameraCharacteristics? = null
@@ -1034,12 +1047,25 @@ object CameraSessionManager {
             b.build()
         }
         // Ordered attempts: (includeJpeg, includeAnalysis, label).
+        // Middle two entries swap based on preferJpegOverAnalysis so
+        // the constrained 3-stream fallback keeps whichever of JPEG /
+        // Analysis the current flow actually depends on. Ties broken
+        // in favour of Analysis by default (calibrate / raw+evenness).
         val attempts =
             if (preview != null) {
+                val jpegBeforeAnalysis =
+                    Triple(true,  false, "3-stream (preview + raw + jpeg, drop Analysis)")
+                val analysisBeforeJpeg =
+                    Triple(false, true,  "3-stream (preview + raw + analysis, drop JPEG)")
+                val (mid1, mid2) =
+                    if (preferJpegOverAnalysis)
+                        Pair(jpegBeforeAnalysis, analysisBeforeJpeg)
+                    else
+                        Pair(analysisBeforeJpeg, jpegBeforeAnalysis)
                 listOf(
                     Triple(true,  true,  "4-stream (preview + raw + jpeg + analysis)"),
-                    Triple(false, true,  "3-stream (preview + raw + analysis, drop JPEG)"),
-                    Triple(true,  false, "3-stream (preview + raw + jpeg, drop Analysis)"),
+                    mid1,
+                    mid2,
                     Triple(false, false, "2-stream (preview + raw only)"),
                 )
             } else {
@@ -1049,6 +1075,10 @@ object CameraSessionManager {
                     Triple(false, true,  "2-stream headless (raw + analysis)"),
                 )
             }
+        Log.i(
+            TAG,
+            "ensureBound: preferJpegOverAnalysis=$preferJpegOverAnalysis",
+        )
         var boundCombo: Triple<Boolean, Boolean, String>? = null
         val camera =
             withContext(Dispatchers.Main) {

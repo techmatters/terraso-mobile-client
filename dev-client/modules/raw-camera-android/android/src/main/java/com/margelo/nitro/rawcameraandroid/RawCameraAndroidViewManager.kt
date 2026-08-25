@@ -70,6 +70,15 @@ class RawCameraAndroidViewManager : SimpleViewManager<RawCameraAndroidView>() {
     @ReactProp(name = "sampleRoiH", defaultFloat = 0.30f)
     fun setSampleRoiH(view: RawCameraAndroidView, v: Float) { updateRoi(view, SAMPLE, 3, v) }
 
+    // When true, camera bind fallback keeps the JPEG ImageCapture and
+    // drops ImageAnalysis on constrained devices (Pixel 7 4-stream
+    // failure). Default false = keep Analysis (preserves the live
+    // red/green evenness outline on RoiOverlayView).
+    @ReactProp(name = "preferJpeg", defaultBoolean = false)
+    fun setPreferJpeg(view: RawCameraAndroidView, prefer: Boolean) {
+        view.setPreferJpegOverAnalysis(prefer)
+    }
+
     // Per-view accumulator: view instance → [refXYWH, sampleXYWH].
     // WeakHashMap so a destroyed view doesn't leak. Every prop write
     // updates one slot and re-pushes the current tuple.

@@ -32,6 +32,14 @@ export type RawCameraAndroidViewProps = ViewProps & {
   sampleRoiY?: number;
   sampleRoiW?: number;
   sampleRoiH?: number;
+
+  // When true, the native camera bind's 3-stream fallback keeps
+  // JPEG and drops ImageAnalysis (chart flow, 'raw+jpeg' capture
+  // mode). Default false = keep Analysis, drop JPEG — preserves
+  // the live red/green evenness outline used by calibrate and
+  // 'raw+evenness' capture mode. Only matters on devices where the
+  // 4-stream (P+R+JPEG+Analysis) bind fails (e.g. Pixel 7).
+  preferJpeg?: boolean;
 };
 
 const NativeRawCameraAndroidView: ComponentType<RawCameraAndroidViewProps> =
