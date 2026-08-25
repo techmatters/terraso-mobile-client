@@ -17,7 +17,6 @@
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Alert, Image, StyleSheet, View} from 'react-native';
-import Svg, {Image as SvgImage} from 'react-native-svg';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 
@@ -36,7 +35,6 @@ import {
   munsellToRGB,
   munsellToString,
 } from 'terraso-mobile-client/model/color/colorConversions';
-import {linearToSrgb} from 'terraso-mobile-client/model/color/colorDetection';
 import {listCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
 import {
   getColorFromLinearRgb,
@@ -49,6 +47,12 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {
+  linearRgbToCss,
+  PipelineColumn,
+  PreviewRect,
+  rgb255ToCss,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/pipelineColumn';
 import {
   RawAnalysisRole,
   RawCrop,
@@ -533,101 +537,10 @@ const ResultView = ({
   );
 };
 
-// Convert a linear-sRGB triple to a CSS rgb() string suitable for a
-// backgroundColor prop. The color pipeline stores values linear-light
-// throughout; gamma-encoding at display time is the standard fix so
-// the swatch appears correct on the (sRGB-managed) screen.
-const linearRgbToCss = (linearRgb: LinearRgb): string => {
-  const toByte = (v: number) => Math.round(linearToSrgb(v));
-  return `rgb(${toByte(linearRgb.r)}, ${toByte(linearRgb.g)}, ${toByte(linearRgb.b)})`;
-};
-
-// Convert a gamma-encoded sRGB 0-255 triple (what mhvcToRgb255
-// returns for the Munsell chip lookup) to a CSS rgb() string. No
-// gamma re-encoding — it's already display-ready.
-const rgb255ToCss = (rgb: readonly [number, number, number]): string =>
-  `rgb(${Math.round(rgb[0])}, ${Math.round(rgb[1])}, ${Math.round(rgb[2])})`;
-
-// One column of the result-view pipeline:
-//   heading (Reference/Soil)
-//     photo crop of the ROI region
-//   avg ↓
-//     measured average color (from linear-sRGB)
-//   correction ↓
-//     "final" color: on the ref side this is the picked reference
-//     card's expected color; on the soil side it's the color of the
-//     nearest Munsell chip to the WB-corrected soil measurement.
-// The `finalCss` prop lets the caller supply the bottom swatch as
-// either a linear-sRGB → CSS conversion (ref column) or a direct
-// sRGB → CSS conversion (soil / Munsell chip column) so this
-// component doesn't care about the colorspace journey — just renders
-// what it's told.
-const PipelineColumn = ({
-  heading,
-  photoRect,
-  preview,
-  measuredLinearRgb,
-  finalCss,
-  finalLabel,
-}: {
-  heading: string;
-  photoRect: PreviewRect;
-  preview: {uri: string; width: number; height: number};
-  measuredLinearRgb: LinearRgb;
-  finalCss: string;
-  finalLabel: string;
-}) => {
-  const measuredCss = linearRgbToCss(measuredLinearRgb);
-  return (
-    <Column alignItems="center" space="sm">
-      <Text variant="body2" bold>
-        {heading}
-      </Text>
-      <RoiCropSquare rect={photoRect} preview={preview} />
-      <Text variant="caption">photo</Text>
-      <Text variant="body2">↓ avg</Text>
-      <ColorSquare css={measuredCss} />
-      <Text variant="caption">measured rgb</Text>
-      <Text variant="body2">↓ correction</Text>
-      <ColorSquare css={finalCss} />
-      <Text variant="caption">{finalLabel}</Text>
-    </Column>
-  );
-};
-
-// Fixed-size square filled with a CSS color. Same border treatment
-// as RoiCropSquare so the two-column pipeline looks uniform.
-const ColorSquare = ({css}: {css: string}) => (
-  <View style={[styles.pipelineSquare, {backgroundColor: css}]} />
-);
-
-// Renamed / trimmed variant of RoiCrop: just the square (no label
-// or column wrapper — those live in PipelineColumn now). Same
-// SVG-crop + 90° CCW rotation as before.
-const RoiCropSquare = ({
-  rect,
-  preview,
-}: {
-  rect: PreviewRect;
-  preview: {uri: string; width: number; height: number};
-}) => (
-  <View style={[styles.pipelineSquare, styles.roiCropRotated]}>
-    <Svg
-      width="100%"
-      height="100%"
-      viewBox={`${rect.left} ${rect.top} ${rect.width} ${rect.height}`}
-      preserveAspectRatio="xMidYMid slice">
-      <SvgImage
-        href={preview.uri}
-        x={0}
-        y={0}
-        width={preview.width}
-        height={preview.height}
-        preserveAspectRatio="xMidYMid meet"
-      />
-    </Svg>
-  </View>
-);
+// Pipeline column bits moved to ./pipelineColumn.tsx so the calibrate
+// results view can use the same layout. See imports at the top of
+// this file for PipelineColumn / RoiCropSquare / linearRgbToCss /
+// rgb255ToCss.
 
 const PreviewThumbnail = ({
   uri,
@@ -673,8 +586,6 @@ const SelectButton = ({
     />
   </Box>
 );
-
-type PreviewRect = {left: number; top: number; width: number; height: number};
 
 // Scale preview-space rectangles up to sensor-space ROIs and call
 // decodeDngRois. Returns the two per-ROI linear-sRGB averages so the
@@ -740,25 +651,3 @@ const decodeRects = async ({
   );
   return {card, sample};
 };
-
-const styles = StyleSheet.create({
-  // Fixed-size square used for both the ROI-crop and solid-color
-  // swatches in the two-column pipeline layout. Same border treatment
-  // so the columns look uniform.
-  pipelineSquare: {
-    width: 96,
-    height: 96,
-    borderWidth: 1,
-    borderColor: '#8a8a8a',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  // 90° CCW rotation to display the crop in the same orientation the
-  // user framed at capture time. The DNG preview is rendered portrait;
-  // the user held the phone landscape-CCW so what they saw as "top"
-  // maps to the preview's right edge. Rotating -90° here brings the
-  // preview's right back to visual top.
-  roiCropRotated: {
-    transform: [{rotate: '-90deg'}],
-  },
-});

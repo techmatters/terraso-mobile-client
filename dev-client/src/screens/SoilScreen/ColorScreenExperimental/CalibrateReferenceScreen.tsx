@@ -16,16 +16,7 @@
  */
 
 import {useCallback, useEffect, useState} from 'react';
-import {
-  Alert,
-  Image,
-  Modal,
-  Pressable,
-  Text as RNText,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import {Alert, Image, StyleSheet, TextInput, View} from 'react-native';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 
@@ -53,6 +44,10 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
+import {
+  linearRgbToCss,
+  PipelineColumn,
+} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/pipelineColumn';
 import {
   RawAnalysisRole,
   RawCrop,
@@ -98,14 +93,29 @@ export const CalibrateReferenceScreen = ({
   const session = useRawAnalysisSession();
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  // Pending-save state. When set, renders a modal above the screen
-  // with a TextInput pre-filled with the auto-generated name. On
-  // Save, calls saveAndConfirm with the (possibly edited) name; on
-  // Cancel, clears state and returns to the calibrate button.
+  // Pending-save state. When set, the "Calibrate & Save" section
+  // switches into results mode: two-column pipeline visualisation
+  // (Existing ref: photo → measured → known linear-sRGB / New ref:
+  // photo → measured → computed calibrated linear-sRGB) plus an
+  // inline TextInput pre-filled with the auto-generated name and
+  // Save/Cancel buttons. Mirrors the soil-id RawColorAnalysisScreen
+  // results view.
   const [pendingSave, setPendingSave] = useState<null | {
     defaultName: string;
     illuminant: string | undefined;
+    // Computed calibrated linear-sRGB for the new card — persisted on
+    // Save via customReferences and shown in the "New ref" column's
+    // bottom swatch.
     expected: LinearRgb;
+    // Known ref's expected linear-sRGB (bottom swatch of "Existing
+    // ref" column).
+    knownExpected: LinearRgb;
+    // Per-ROI measured averages (middle swatch of each column).
+    knownMeasured: LinearRgb;
+    newMeasured: LinearRgb;
+    // Human-readable label for the "Existing ref" column bottom
+    // swatch — the picked known reference's name.
+    knownName: string;
   }>(null);
   const [editableName, setEditableName] = useState('');
 
@@ -325,142 +335,149 @@ export const CalibrateReferenceScreen = ({
               disabled={!session.preview}
             />
           </Row>
-          <ContainedButton
-            label={busy ? 'Working…' : 'Calibrate & Save'}
-            onPress={onCalibrate}
-            disabled={
-              !session.preview ||
-              !session.refCrop ||
-              !session.sampleCrop ||
-              busy
-            }
-          />
+          {!pendingSave && (
+            <ContainedButton
+              label={busy ? 'Working…' : 'Calibrate & Save'}
+              onPress={onCalibrate}
+              disabled={
+                !session.preview ||
+                !session.refCrop ||
+                !session.sampleCrop ||
+                busy
+              }
+            />
+          )}
+          {pendingSave &&
+            session.preview &&
+            session.refCrop &&
+            session.sampleCrop && (
+              <CalibrateResultsPanel
+                preview={session.preview}
+                refCrop={session.refCrop}
+                sampleCrop={session.sampleCrop}
+                pending={pendingSave}
+                nameValue={editableName}
+                onNameChange={setEditableName}
+                onCancel={() => {
+                  setPendingSave(null);
+                  setBusy(false);
+                }}
+                onSave={() => {
+                  const trimmed = editableName.trim();
+                  if (!trimmed) return;
+                  const {illuminant, expected} = pendingSave;
+                  setPendingSave(null);
+                  saveAndConfirm(trimmed, illuminant, expected, () => {
+                    setBusy(false);
+                    navigation.pop();
+                  });
+                }}
+              />
+            )}
         </Column>
       </SafeScrollView>
-      {pendingSave && (
-        <NameInputModal
-          defaultName={pendingSave.defaultName}
-          value={editableName}
-          onChange={setEditableName}
-          expected={pendingSave.expected}
-          onCancel={() => {
-            setPendingSave(null);
-            setBusy(false);
-          }}
-          onSave={() => {
-            const trimmed = editableName.trim();
-            if (!trimmed) return;
-            const {illuminant, expected} = pendingSave;
-            setPendingSave(null);
-            saveAndConfirm(trimmed, illuminant, expected, () => {
-              setBusy(false);
-              navigation.pop();
-            });
-          }}
-        />
-      )}
     </ScreenScaffold>
   );
 };
 
-// Cross-platform naming Modal used when the user hits "Calibrate &
-// Save". Replaces the old iOS-only Alert.prompt chain that no-op'd
-// on Android and left the screen stuck at "Working…". Pre-fills the
-// auto-generated "{knownRef} recal {stamp}" name so users can just
-// tap Save to accept it; edit inline if they want a custom name.
-const NameInputModal = ({
-  defaultName,
-  value,
-  onChange,
-  expected,
+// Two-column pipeline visualisation for the calibrate flow — mirrors
+// the RawColorAnalysisScreen soil-id results section. Each column
+// shows the ROI photo → measured average → final colour (known
+// linear-sRGB for "Existing ref", computed calibrated linear-sRGB
+// for "New ref"). Below the columns: an inline TextInput pre-filled
+// with the auto-generated name, plus Cancel / Save buttons. Only
+// mounted when pendingSave is non-null; unmounts back to the
+// "Calibrate & Save" button on cancel.
+const CalibrateResultsPanel = ({
+  preview,
+  refCrop,
+  sampleCrop,
+  pending,
+  nameValue,
+  onNameChange,
   onCancel,
   onSave,
 }: {
-  defaultName: string;
-  value: string;
-  onChange: (v: string) => void;
-  expected: LinearRgb;
+  preview: {uri: string; width: number; height: number};
+  refCrop: RawCrop;
+  sampleCrop: RawCrop;
+  pending: {
+    defaultName: string;
+    expected: LinearRgb;
+    knownExpected: LinearRgb;
+    knownMeasured: LinearRgb;
+    newMeasured: LinearRgb;
+    knownName: string;
+  };
+  nameValue: string;
+  onNameChange: (v: string) => void;
   onCancel: () => void;
   onSave: () => void;
 }) => {
+  // Convert the session's square RawCrops into the PreviewRect shape
+  // PipelineColumn wants for its SVG viewBox.
+  const cropToRect = (c: RawCrop) => ({
+    left: c.left,
+    top: c.top,
+    width: c.size,
+    height: c.size,
+  });
   const rgbLine =
-    `linear-sRGB: r=${expected.r.toFixed(4)}, ` +
-    `g=${expected.g.toFixed(4)}, b=${expected.b.toFixed(4)}`;
+    `linear-sRGB: r=${pending.expected.r.toFixed(4)}, ` +
+    `g=${pending.expected.g.toFixed(4)}, b=${pending.expected.b.toFixed(4)}`;
   return (
-    <Modal transparent animationType="fade" visible onRequestClose={onCancel}>
-      <View style={nameModalStyles.backdrop}>
-        <View style={nameModalStyles.card}>
-          <RNText style={nameModalStyles.title}>Name this reference</RNText>
-          <RNText style={nameModalStyles.subtitle}>{rgbLine}</RNText>
-          <TextInput
-            value={value}
-            onChangeText={onChange}
-            placeholder={defaultName}
-            autoFocus
-            selectTextOnFocus
-            style={nameModalStyles.input}
-            returnKeyType="done"
-            onSubmitEditing={onSave}
+    <>
+      <Row space="lg" alignItems="flex-start" justifyContent="center">
+        <PipelineColumn
+          heading="Existing ref"
+          photoRect={cropToRect(refCrop)}
+          preview={preview}
+          measuredLinearRgb={pending.knownMeasured}
+          finalCss={linearRgbToCss(pending.knownExpected)}
+          finalLabel={pending.knownName}
+        />
+        <PipelineColumn
+          heading="New ref"
+          photoRect={cropToRect(sampleCrop)}
+          preview={preview}
+          measuredLinearRgb={pending.newMeasured}
+          finalCss={linearRgbToCss(pending.expected)}
+          finalLabel="calibrated"
+        />
+      </Row>
+      <Paragraph>{rgbLine}</Paragraph>
+      <TextInput
+        value={nameValue}
+        onChangeText={onNameChange}
+        placeholder={pending.defaultName}
+        autoFocus
+        selectTextOnFocus
+        style={resultsStyles.input}
+        returnKeyType="done"
+        onSubmitEditing={onSave}
+      />
+      <Row space="sm">
+        <Box flex={1}>
+          <ContainedButton
+            label="Cancel"
+            onPress={onCancel}
+            stretchToFit={true}
           />
-          <View style={nameModalStyles.buttonRow}>
-            <Pressable
-              onPress={onCancel}
-              style={({pressed}) => [
-                nameModalStyles.button,
-                nameModalStyles.buttonCancel,
-                pressed && nameModalStyles.buttonPressed,
-              ]}>
-              <RNText style={nameModalStyles.buttonText}>Cancel</RNText>
-            </Pressable>
-            <Pressable
-              onPress={onSave}
-              disabled={!value.trim()}
-              style={({pressed}) => [
-                nameModalStyles.button,
-                nameModalStyles.buttonSave,
-                !value.trim() && nameModalStyles.buttonDisabled,
-                pressed && nameModalStyles.buttonPressed,
-              ]}>
-              <RNText
-                style={[nameModalStyles.buttonText, nameModalStyles.saveText]}>
-                Save
-              </RNText>
-            </Pressable>
-          </View>
-        </View>
-      </View>
-    </Modal>
+        </Box>
+        <Box flex={1}>
+          <ContainedButton
+            label="Save"
+            onPress={onSave}
+            disabled={!nameValue.trim()}
+            stretchToFit={true}
+          />
+        </Box>
+      </Row>
+    </>
   );
 };
 
-const nameModalStyles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 420,
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
-    elevation: 6,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#111',
-    marginBottom: 6,
-  },
-  subtitle: {
-    fontSize: 12,
-    color: '#555',
-    marginBottom: 12,
-    fontVariant: ['tabular-nums'],
-  },
+const resultsStyles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#bbb',
@@ -469,39 +486,6 @@ const nameModalStyles = StyleSheet.create({
     paddingVertical: 8,
     fontSize: 15,
     color: '#111',
-    marginBottom: 16,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 8,
-  },
-  button: {
-    minWidth: 88,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  buttonCancel: {
-    backgroundColor: '#eee',
-  },
-  buttonSave: {
-    backgroundColor: '#0a6cff',
-  },
-  buttonDisabled: {
-    opacity: 0.4,
-  },
-  buttonPressed: {
-    opacity: 0.7,
-  },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#111',
-  },
-  saveText: {
-    color: 'white',
   },
 });
 
@@ -642,6 +626,10 @@ const buildPendingSave = (
   defaultName: string;
   illuminant: string | undefined;
   expected: LinearRgb;
+  knownExpected: LinearRgb;
+  knownMeasured: LinearRgb;
+  newMeasured: LinearRgb;
+  knownName: string;
 } => {
   const expected = computeCalibratedReference(
     knownMeasured,
@@ -656,7 +644,15 @@ const buildPendingSave = (
   const defaultName = `${known.name} recal ${stamp}`;
   const illuminant =
     kvStorage.getString('munsellSession.illuminant') || undefined;
-  return {defaultName, illuminant, expected};
+  return {
+    defaultName,
+    illuminant,
+    expected,
+    knownExpected: known.linearRgb,
+    knownMeasured,
+    newMeasured,
+    knownName: known.name,
+  };
 };
 
 const saveAndConfirm = (
