@@ -114,20 +114,17 @@ type Props = {
    */
   captureHint?: string;
   /**
-   * Optional labeled ROI overlay drawn on top of the preview. Each
-   * entry paints a bordered rectangle at display-space fractional
-   * coordinates (same coord system as ROI_PRESETS in
-   * useRoiFrameAnalyzer) with its `label` rendered above the box.
+   * Optional label pair for the two ROI overlay rectangles (top, then
+   * bottom). When set, the Android capture screen enables the size-
+   * cycling +/- buttons (shared with iOS soil-color RAW-Live) and
+   * paints these labels above the native rectangles. Rectangle
+   * positions come from the ROI_PRESETS system in useRoiFrameAnalyzer.
    * Chart validator flow leaves this unset (it uses `chartGuide`);
-   * calibrate flow sets it to CALIBRATE_ROIS so both cards can be
-   * framed in a single shot with no ambiguity about which slot is
-   * which. Currently only wired through on Android.
+   * calibrate flow passes `['EXISTING REF', 'NEW REF']`. Currently
+   * only wired through on Android.
    */
   roiHint?: {
-    rois: ReadonlyArray<{
-      label: string;
-      roi: {x: number; y: number; w: number; h: number};
-    }>;
+    labels: readonly [string, string];
   };
   /**
    * When true, request skipJpeg on the RAW capture — the native side

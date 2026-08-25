@@ -172,6 +172,24 @@ object CameraSessionManager {
         frameColorListener = cb
     }
 
+    // JS-driven ROI positions for the per-frame variance analyser.
+    // Stored as display-space fractions (x, y, w, h). Rotated to
+    // sensor-space at analysis time via displayToSensorRoi below.
+    // Defaults match the RoiOverlayView defaults (medium preset) so
+    // pre-props-wired callers still work.
+    @Volatile private var analyzerRefRoi: FloatArray =
+        floatArrayOf(0.15f, 0.10f, 0.70f, 0.30f)
+    @Volatile private var analyzerSampleRoi: FloatArray =
+        floatArrayOf(0.15f, 0.55f, 0.70f, 0.30f)
+
+    fun setAnalyzerRefRoi(x: Float, y: Float, w: Float, h: Float) {
+        analyzerRefRoi = floatArrayOf(x, y, w, h)
+    }
+
+    fun setAnalyzerSampleRoi(x: Float, y: Float, w: Float, h: Float) {
+        analyzerSampleRoi = floatArrayOf(x, y, w, h)
+    }
+
     // Slot for the next TotalCaptureResult. See per-capture protocol
     // below; each capture assigns its own deferred before triggering
     // takePicture.
@@ -1656,24 +1674,23 @@ object CameraSessionManager {
         val w = proxy.width
         val h = proxy.height
 
-        // Hardcoded phase-8.2 ROIs in Y-plane (sensor) coordinates.
-        // Pixel 6a's rear camera is landscape 4:3 with rotationDegrees=90,
-        // so display-portrait maps to sensor-landscape rotated 90° CW.
-        // Under that mapping, the overlay's top rect (display fractions
-        // 0.15..0.85 x 0.10..0.40) lands on the sensor's LEFT stripe
-        // (0.10..0.40 x 0.15..0.85), and the overlay's bottom rect on
-        // the RIGHT stripe. Phase 8.3 will replace this with a shared
-        // ROI source driven from JS so the overlay + analyzer stay in
-        // sync across orientations + devices.
+        // JS-driven display-space ROIs, rotated to sensor-space for the
+        // Y-plane read. Pixel 6a/7 rear cam is landscape 4:3 with
+        // rotationDegrees=90 (portrait-up display), which maps a display
+        // rect (dx, dy, dw, dh) to a sensor rect (dy, dx, dh, dw) —
+        // simple axis swap, no mirroring. If we ever expose a front-cam
+        // path we'll need to branch on the orientation here.
+        val ref = analyzerRefRoi
         val refCode = analyzeRoiToCode(
             yPlane, w, h,
-            (0.10f * w).toInt(), (0.15f * h).toInt(),
-            (0.30f * w).toInt(), (0.70f * h).toInt(),
+            (ref[1] * w).toInt(), (ref[0] * h).toInt(),
+            (ref[3] * w).toInt(), (ref[2] * h).toInt(),
         )
+        val sample = analyzerSampleRoi
         val sampleCode = analyzeRoiToCode(
             yPlane, w, h,
-            (0.55f * w).toInt(), (0.15f * h).toInt(),
-            (0.30f * w).toInt(), (0.70f * h).toInt(),
+            (sample[1] * w).toInt(), (sample[0] * h).toInt(),
+            (sample[3] * w).toInt(), (sample[2] * h).toInt(),
         )
         listener(refCode, sampleCode)
     }

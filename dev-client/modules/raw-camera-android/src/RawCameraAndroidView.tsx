@@ -18,6 +18,20 @@ export type RawCameraAndroidViewProps = ViewProps & {
   // validator, where the guide rectangle must correspond to the same
   // fraction of the sensor image as it does of the on-screen preview.
   previewFitCenter?: boolean;
+
+  // Per-ROI display-space fractional coords (0..1 relative to the
+  // native view). Both the RoiOverlayView rectangles AND the per-frame
+  // variance analyser's sample regions are driven from these — they
+  // stay in sync so the red/green outline reflects the same region the
+  // user sees framed. Defaults match the "medium" ROI_PRESETS entry.
+  refRoiX?: number;
+  refRoiY?: number;
+  refRoiW?: number;
+  refRoiH?: number;
+  sampleRoiX?: number;
+  sampleRoiY?: number;
+  sampleRoiW?: number;
+  sampleRoiH?: number;
 };
 
 const NativeRawCameraAndroidView: ComponentType<RawCameraAndroidViewProps> =

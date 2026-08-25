@@ -15,36 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-// Fixed 2-box viewport-hint layout for the "calibrate a new reference"
-// flow. Both boxes are in display-space fractional coordinates relative
-// to the SensorAspectFrame (portrait 3:4), so the same numbers drive:
-//   - the on-camera overlay drawn by AndroidRawCaptureScreen
-//     (visual framing hint at shutter time), and
-//   - the pre-populated refCrop/sampleCrop the CalibrateReferenceScreen
-//     seeds into rawAnalysisSession (so the user can hit "Calibrate &
-//     Save" without a manual crop pick).
-//
-// Layout: EXISTING on top, NEW on the bottom, centered horizontally,
-// with a gap between so the labels don't collide with the borders.
-// The `size` is expressed as w × h in the same fraction system.
-
-export type CalibrateRoi = {
-  label: string;
-  roi: {x: number; y: number; w: number; h: number};
-};
-
-// IMPORTANT: these fractions must match the hardcoded rects in
-// modules/raw-camera-android/.../RoiOverlayView.kt (refRect,
-// sampleRect) so the native red/green analyser outline (which draws
-// its OWN box at those coords) lines up with our JS labels. When
-// task #78 lands (JS-tunable ROI positions), remove the native
-// hardcode and drive both from this constant.
-export const CALIBRATE_ROIS: readonly [CalibrateRoi, CalibrateRoi] = [
-  {label: 'EXISTING REF', roi: {x: 0.15, y: 0.1, w: 0.7, h: 0.3}},
-  {label: 'NEW REF', roi: {x: 0.15, y: 0.55, w: 0.7, h: 0.3}},
-];
-
-// Convenience accessors so callers don't index into the array by
-// position — protects against a future re-ordering.
-export const CALIBRATE_EXISTING_ROI = CALIBRATE_ROIS[0].roi;
-export const CALIBRATE_NEW_ROI = CALIBRATE_ROIS[1].roi;
+// Label text for the calibrate flow's two on-camera ROI hint pills,
+// in (top, bottom) order — matches ROI_PRESETS' ref/sample order.
+// Actual rectangle positions come from ROI_PRESETS (see
+// useRoiFrameAnalyzer.ts) so the +/- size buttons on the capture
+// screen cycle both the visible box AND the label together.
+export const CALIBRATE_LABELS = ['EXISTING REF', 'NEW REF'] as const;

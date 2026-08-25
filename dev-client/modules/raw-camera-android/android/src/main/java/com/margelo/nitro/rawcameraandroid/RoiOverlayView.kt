@@ -36,10 +36,26 @@ constructor(
 
     // ROI positions as fractions of the view (0..1). Defaults are
     // stacked-portrait — reference on top third, sample on bottom
-    // third, centred horizontally. Phase 8.3 will let the JS side
-    // override via view manager props.
+    // third, centred horizontally. JS side overrides via
+    // RawCameraAndroidViewManager @ReactProp setters (refRoi{X,Y,W,H}
+    // + sampleRoi{X,Y,W,H}); use setRefRoi/setSampleRoi below to keep
+    // the analyser in sync.
     private var refRect = RectF(0.15f, 0.10f, 0.85f, 0.40f)
     private var sampleRect = RectF(0.15f, 0.55f, 0.85f, 0.85f)
+
+    // Set the ref/sample ROI to (x, y, x+w, y+h) in display-space
+    // fractions. Called by RawCameraAndroidView.setRefRoi/setSampleRoi
+    // when the JS side updates the corresponding view props. Invalidates
+    // the view so the next frame draws the new rect.
+    fun setRefRoi(x: Float, y: Float, w: Float, h: Float) {
+        refRect.set(x, y, x + w, y + h)
+        invalidate()
+    }
+
+    fun setSampleRoi(x: Float, y: Float, w: Float, h: Float) {
+        sampleRect.set(x, y, x + w, y + h)
+        invalidate()
+    }
 
     private val maskPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {

@@ -45,7 +45,7 @@ import {CHART_GUIDE} from 'terraso-mobile-client/screens/MunsellChartValidator/c
 import {type RegistrationAlgorithm} from 'terraso-mobile-client/screens/MunsellChartValidator/matchAlgorithm';
 import {MUNSELL_PAGES} from 'terraso-mobile-client/screens/MunsellChartValidator/munsellPages';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {CALIBRATE_ROIS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/calibrateRois';
+import {CALIBRATE_LABELS} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/calibrateRois';
 
 // Dev-only aggregate screen — one place for all RAW / DNG / colour-
 // reference tools that used to be scattered as individual items in the
@@ -701,7 +701,9 @@ export const RawColorToolsScreen = () => {
             : undefined
         }
         roiHint={
-          captureFlow?.kind === 'calibrate' ? {rois: CALIBRATE_ROIS} : undefined
+          captureFlow?.kind === 'calibrate'
+            ? {labels: CALIBRATE_LABELS}
+            : undefined
         }
         // Chart flow needs the companion JPEG (JPEG-pipeline A/B);
         // calibrate + fixture flows drop it so the native side takes

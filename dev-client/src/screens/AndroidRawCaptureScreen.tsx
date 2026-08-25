@@ -39,6 +39,11 @@ import {
   SENSOR_ASPECT_PORTRAIT,
   SensorAspectFrame,
 } from 'terraso-mobile-client/components/inputs/image/RawCameraView';
+import {
+  getActiveRoiPresetIndex,
+  ROI_PRESETS,
+  setActiveRoiPresetIndex,
+} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import type {ChartGuide} from 'terraso-mobile-client/screens/MunsellChartValidator/chartGuide';
@@ -123,6 +128,18 @@ export const AndroidRawCaptureScreen = () => {
     AndroidRawCaptureCallbacks['roiHint'] | null
   >(null);
   const [skipJpeg, setSkipJpeg] = useState(false);
+  // ROI preset index — shared with iOS soil-color RAW-Live via
+  // useRoiFrameAnalyzer's ROI_PRESETS + kvStorage. +/- buttons flanking
+  // the shutter cycle through 4 sizes (tiny/small/medium/large); the
+  // current preset drives BOTH the native RoiOverlayView + analyser
+  // rectangles (via the refRoi{X,Y,W,H} / sampleRoi{X,Y,W,H} view
+  // props) AND the JS label positions.
+  const [roiPresetIndex, setRoiPresetIndex] = useState(getActiveRoiPresetIndex);
+  const activePreset = ROI_PRESETS[roiPresetIndex];
+  const changeRoiPresetIndex = useCallback((next: number) => {
+    setRoiPresetIndex(next);
+    setActiveRoiPresetIndex(next);
+  }, []);
   useEffect(() => {
     const cb = consumeAndroidRawCaptureCallbacks();
     if (cb == null) {
@@ -380,6 +397,14 @@ export const AndroidRawCaptureScreen = () => {
           // Only chartGuide suppresses it (chart flow uses its own overlay).
           showRoiOverlay={!chartGuide}
           previewFitCenter={!!chartGuide || !!roiHint}
+          refRoiX={activePreset.ref.x}
+          refRoiY={activePreset.ref.y}
+          refRoiW={activePreset.ref.w}
+          refRoiH={activePreset.ref.h}
+          sampleRoiX={activePreset.sample.x}
+          sampleRoiY={activePreset.sample.y}
+          sampleRoiW={activePreset.sample.w}
+          sampleRoiH={activePreset.sample.h}
         />
         {chartGuide && (
           <SensorAspectFrame aspect={SENSOR_ASPECT_PORTRAIT}>
@@ -388,7 +413,11 @@ export const AndroidRawCaptureScreen = () => {
         )}
         {roiHint && (
           <SensorAspectFrame aspect={SENSOR_ASPECT_PORTRAIT}>
-            <LabeledRoiOverlay rois={roiHint.rois} />
+            <LabeledRoiOverlay
+              labels={roiHint.labels}
+              refRoi={activePreset.ref}
+              sampleRoi={activePreset.sample}
+            />
           </SensorAspectFrame>
         )}
         {/*
@@ -456,6 +485,22 @@ export const AndroidRawCaptureScreen = () => {
           </View>
         )}
         <View style={styles.bottomBar}>
+          {!chartGuide && (
+            <Pressable
+              onPress={() => changeRoiPresetIndex(roiPresetIndex - 1)}
+              disabled={roiPresetIndex <= 0 || isCapturing}
+              accessibilityRole="button"
+              accessibilityLabel="Smaller capture boxes"
+              hitSlop={12}
+              style={({pressed}) => [
+                styles.roiSizeButton,
+                (roiPresetIndex <= 0 || isCapturing) &&
+                  styles.roiSizeButtonDisabled,
+                pressed && styles.roiSizeButtonPressed,
+              ]}>
+              <Text style={styles.roiSizeButtonText}>−</Text>
+            </Pressable>
+          )}
           <Pressable
             onPress={shutter}
             disabled={isCapturing || noCallbacks}
@@ -467,6 +512,22 @@ export const AndroidRawCaptureScreen = () => {
             ]}>
             <View style={styles.shutterInner} />
           </Pressable>
+          {!chartGuide && (
+            <Pressable
+              onPress={() => changeRoiPresetIndex(roiPresetIndex + 1)}
+              disabled={roiPresetIndex >= ROI_PRESETS.length - 1 || isCapturing}
+              accessibilityRole="button"
+              accessibilityLabel="Larger capture boxes"
+              hitSlop={12}
+              style={({pressed}) => [
+                styles.roiSizeButton,
+                (roiPresetIndex >= ROI_PRESETS.length - 1 || isCapturing) &&
+                  styles.roiSizeButtonDisabled,
+                pressed && styles.roiSizeButtonPressed,
+              ]}>
+              <Text style={styles.roiSizeButtonText}>+</Text>
+            </Pressable>
+          )}
           {showResearchControls && (
             <Pressable
               onPress={runMultiSession}
@@ -501,19 +562,26 @@ export const AndroidRawCaptureScreen = () => {
 // over its parent frame. The rectangle itself is drawn by the
 // native RoiOverlayView (which also colours the outline per-frame
 // based on the variance analyser — the live evenness feedback).
-// This overlay just adds a legible "EXISTING REF" / "NEW REF" pill
-// above each rect so the user knows which slot is which. The pill
-// coords match the native rectangle top edge so it reads as a
-// header for that rect.
+// This overlay just adds a legible label pill above each rect so
+// the user knows which slot is which. Coords come from the active
+// ROI_PRESETS entry so labels move with the +/- size buttons.
 const LabeledRoiOverlay = ({
-  rois,
+  labels,
+  refRoi,
+  sampleRoi,
 }: {
-  rois: ReadonlyArray<{
-    label: string;
-    roi: {x: number; y: number; w: number; h: number};
-  }>;
+  labels: readonly [string, string];
+  refRoi: {x: number; y: number; w: number; h: number};
+  sampleRoi: {x: number; y: number; w: number; h: number};
 }) => {
   const [layout, setLayout] = useState<{w: number; h: number} | null>(null);
+  const items: {
+    label: string;
+    roi: {x: number; y: number; w: number; h: number};
+  }[] = [
+    {label: labels[0], roi: refRoi},
+    {label: labels[1], roi: sampleRoi},
+  ];
   return (
     <View
       style={StyleSheet.absoluteFill}
@@ -525,7 +593,7 @@ const LabeledRoiOverlay = ({
         })
       }>
       {layout &&
-        rois.map(({label, roi}) => (
+        items.map(({label, roi}) => (
           <View
             key={label}
             style={[
@@ -676,6 +744,28 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  roiSizeButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  roiSizeButtonPressed: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+  roiSizeButtonDisabled: {
+    opacity: 0.3,
+  },
+  roiSizeButtonText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: '700',
+    lineHeight: 26,
   },
   roiHintLabelWrap: {
     position: 'absolute',

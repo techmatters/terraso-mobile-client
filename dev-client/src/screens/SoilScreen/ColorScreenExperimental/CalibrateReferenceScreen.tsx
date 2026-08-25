@@ -30,6 +30,7 @@ import {
 import {DngDecoderHybrid} from 'dng-decoder';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {getActiveRoiPreset} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
 import {
   Box,
   Column,
@@ -52,10 +53,6 @@ import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
-import {
-  CALIBRATE_EXISTING_ROI,
-  CALIBRATE_NEW_ROI,
-} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/calibrateRois';
 import {
   RawAnalysisRole,
   RawCrop,
@@ -129,14 +126,17 @@ export const CalibrateReferenceScreen = ({
         // hatch: tapping either re-opens RawCropScreen for a manual
         // pan/pinch pick, which then overrides the seed. A square is
         // used (RawCrop is single-sided) — take the largest square
-        // that fits inside the hint rectangle, centered on it.
+        // that fits inside the hint rectangle, centered on it. Uses
+        // the SAME preset the user picked with +/- on the capture
+        // screen, so a small preset seeds smaller crops.
+        const preset = getActiveRoiPreset();
         setRawAnalysisCrop(
           'reference',
-          hintRoiToSquareRawCrop(CALIBRATE_EXISTING_ROI, p.width, p.height),
+          hintRoiToSquareRawCrop(preset.ref, p.width, p.height),
         );
         setRawAnalysisCrop(
           'sample',
-          hintRoiToSquareRawCrop(CALIBRATE_NEW_ROI, p.width, p.height),
+          hintRoiToSquareRawCrop(preset.sample, p.width, p.height),
         );
       } catch (err) {
         console.error('renderPreview failed:', err);

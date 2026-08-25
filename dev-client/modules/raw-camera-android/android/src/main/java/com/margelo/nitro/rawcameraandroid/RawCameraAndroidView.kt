@@ -211,6 +211,23 @@ constructor(
         previewView.scaleType = scaleType
     }
 
+    // JS-driven ROI position setters. Update both the visual overlay
+    // (native RoiOverlayView, which draws the two rects and colours
+    // their outlines per-frame) AND the analyser (CameraSessionManager,
+    // which samples the Y-plane inside those rects for variance). Both
+    // rects come from the same fractional coords so they stay in sync
+    // — otherwise the coloured outline would show the wrong region's
+    // consistency.
+    fun setRefRoi(x: Float, y: Float, w: Float, h: Float) {
+        overlay.setRefRoi(x, y, w, h)
+        CameraSessionManager.setAnalyzerRefRoi(x, y, w, h)
+    }
+
+    fun setSampleRoi(x: Float, y: Float, w: Float, h: Float) {
+        overlay.setSampleRoi(x, y, w, h)
+        CameraSessionManager.setAnalyzerSampleRoi(x, y, w, h)
+    }
+
     companion object {
         private const val TAG = "RawCameraAndroid.View"
     }
