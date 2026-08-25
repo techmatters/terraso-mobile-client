@@ -138,6 +138,12 @@ object CameraSessionManager {
     // stream-combination pressure and drop the parallel-await complexity
     // in capture().
     private var boundJpegCapture: ImageCapture? = null
+    // True when the last ensureBoundLocked() call actually included
+    // the JPEG ImageCapture in the bound UseCaseGroup. Some devices
+    // (Pixel 7 in preview + RAW + JPEG + Analysis mode) return "No
+    // supported surface combination" for the 4-stream config — we
+    // drop JPEG on fallback and callers must skip it in that mode.
+    @Volatile private var jpegBound: Boolean = false
     private var boundPreview: Preview? = null
     private var boundAnalysis: ImageAnalysis? = null
     private var boundCharacteristics: CameraCharacteristics? = null
@@ -488,7 +494,16 @@ object CameraSessionManager {
         // faster on devices where HDR+ is slower than the RAW write.
         // MediaStore-mode sessions ignore skipJpeg (research data
         // collection wants both).
-        val skipJpeg = (effectiveOptions.skipJpeg == true) && !useMediaStore
+        // Skip the JPEG capture when either (a) the caller opted in via
+        // options.skipJpeg (calibrate / fixture flows) or (b) the JPEG
+        // ImageCapture wasn't bound at all (constrained-device
+        // fallback — see ensureBoundLocked's attempts ladder). Ignored
+        // when useMediaStore (research MULTI sessions always want JPEG;
+        // if it's unbound the shot will fail loudly which is what we
+        // want for a research capture that promised both files).
+        val skipJpeg =
+            !useMediaStore &&
+                (effectiveOptions.skipJpeg == true || !jpegBound)
         Log.i(
             TAG,
             "captureLocked: triggering takePicture (raw${if (skipJpeg) "" else " + jpeg"})…",
@@ -995,55 +1010,72 @@ object CameraSessionManager {
         val viewPort = ViewPort.Builder(Rational(3, 4), Surface.ROTATION_0)
             .setScaleType(ViewPort.FILL_CENTER)
             .build()
-        // Try binding Preview + Analysis + RAW + JPEG (4 streams) first
+        // Try binding Preview + RAW + JPEG + Analysis (4 streams) first
         // — LEVEL_3 Camera2 devices are supposed to support this combo,
-        // but in practice not all do (Pixel 6a errors with "No supported
-        // surface combination"). If that fails, retry without Analysis
-        // (Preview provides the repeating-request keep-alive; the phase-8
-        // real-time overlay just won't have per-frame data). In blind
-        // mode (no Preview surface) Analysis stays in as the keep-alive.
-        val buildGroup = { includeAnalysis: Boolean ->
+        // but in practice not all do (Pixel 6a + Pixel 7 both error with
+        // "No supported surface combination"). Fallback ladder in
+        // preview mode, in order:
+        //   1. P + R + JPEG + Analysis  (best — all features)
+        //   2. P + R + Analysis         (drop JPEG — keeps live evenness
+        //      feedback for calibrate/soil-color; chart flow loses its
+        //      JPEG companion, which the report handles as "raw-only")
+        //   3. P + R + JPEG             (drop Analysis — chart-friendly
+        //      fallback if the RAW+Analysis combo also failed for some
+        //      other reason)
+        //   4. P + R                    (bare minimum — always works)
+        // In blind mode (no Preview) Analysis IS the keep-alive so we
+        // must not drop it; only try config #1 and #3 there.
+        val buildGroup = { includeJpeg: Boolean, includeAnalysis: Boolean ->
             val b = UseCaseGroup.Builder().setViewPort(viewPort)
             b.addUseCase(imageCapture)
-            b.addUseCase(jpegCapture)
+            if (includeJpeg) b.addUseCase(jpegCapture)
             if (includeAnalysis) b.addUseCase(analysis)
             if (preview != null) b.addUseCase(preview)
             b.build()
         }
-        val analysisBoundRef = arrayOf(false)
+        // Ordered attempts: (includeJpeg, includeAnalysis, label).
+        val attempts =
+            if (preview != null) {
+                listOf(
+                    Triple(true,  true,  "4-stream (preview + raw + jpeg + analysis)"),
+                    Triple(false, true,  "3-stream (preview + raw + analysis, drop JPEG)"),
+                    Triple(true,  false, "3-stream (preview + raw + jpeg, drop Analysis)"),
+                    Triple(false, false, "2-stream (preview + raw only)"),
+                )
+            } else {
+                // Blind mode: no preview, analysis is the required keep-alive.
+                listOf(
+                    Triple(true,  true,  "3-stream headless (raw + jpeg + analysis)"),
+                    Triple(false, true,  "2-stream headless (raw + analysis)"),
+                )
+            }
+        var boundCombo: Triple<Boolean, Boolean, String>? = null
         val camera =
             withContext(Dispatchers.Main) {
-                val fullGroup = buildGroup(true)
+                var lastError: IllegalArgumentException? = null
                 Log.i(
                     TAG,
-                    "ensureBound: binding preview=${preview != null} analysis=true jpeg=true raw=true (viewport 3:4 portrait)"
+                    "ensureBound: trying bind combos (preview=${preview != null})"
                 )
-                try {
-                    val c = provider.bindToLifecycle(
-                        ProcessLifecycleOwner.get(),
-                        CameraSelector.DEFAULT_BACK_CAMERA,
-                        fullGroup,
-                    )
-                    analysisBoundRef[0] = true
-                    c
-                } catch (e: IllegalArgumentException) {
-                    // Preview-mode fallback only — in blind mode Analysis
-                    // is the keep-alive and we must not drop it.
-                    if (preview == null) throw e
-                    Log.w(
-                        TAG,
-                        "4-stream bind failed on this device, retrying without ImageAnalysis (phase-8 overlay will be inactive)",
-                        e,
-                    )
-                    val fallbackGroup = buildGroup(false)
-                    provider.bindToLifecycle(
-                        ProcessLifecycleOwner.get(),
-                        CameraSelector.DEFAULT_BACK_CAMERA,
-                        fallbackGroup,
-                    )
+                for (a in attempts) {
+                    try {
+                        val c = provider.bindToLifecycle(
+                            ProcessLifecycleOwner.get(),
+                            CameraSelector.DEFAULT_BACK_CAMERA,
+                            buildGroup(a.first, a.second),
+                        )
+                        Log.i(TAG, "ensureBound: bound ${a.third}")
+                        boundCombo = a
+                        return@withContext c
+                    } catch (e: IllegalArgumentException) {
+                        Log.w(TAG, "ensureBound: ${a.third} failed", e)
+                        lastError = e
+                    }
                 }
+                throw lastError ?: IllegalStateException("no viable camera bind")
             }
-        val analysisWasBound = analysisBoundRef[0]
+        val analysisWasBound = boundCombo?.second == true
+        jpegBound = boundCombo?.first == true
         val cameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
         val characteristics = fetchCharacteristics(cameraInfo)
 
@@ -1124,6 +1156,7 @@ object CameraSessionManager {
         boundPreview = null
         boundAnalysis = null
         boundCharacteristics = null
+        jpegBound = false
     }
 
     private fun fetchCharacteristics(camera2Info: Camera2CameraInfo): CameraCharacteristics {
