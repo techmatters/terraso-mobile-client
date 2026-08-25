@@ -33,13 +33,15 @@ import {
   saveCustomReference,
 } from 'terraso-mobile-client/model/color/customReferences';
 import {
+  AvailableReference,
   computeCalibratedReference,
   LinearRgb,
-  RankedReference,
+  listAvailableReferences,
   rankReferences,
 } from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {
   CALIBRATE_EXISTING_ROI,
@@ -59,6 +61,14 @@ export type CalibrateReferenceProps = {
   /** Sensor dimensions from the vision-camera Photo object. */
   sensorWidth: number;
   sensorHeight: number;
+  /**
+   * ID (as in AvailableReference.id — "builtin:<key>" or "custom:<uuid>")
+   * of the known reference the user framed in the "existing" ROI, picked
+   * on the previous screen. When resolvable, skips the auto-rank picker
+   * and calibrates directly against this ref's linearRgb. Missing / stale
+   * ID falls back to the ranked top-pick alert.
+   */
+  knownRefId?: string;
 };
 
 // Phase-6 calibrate-a-new-reference flow. Structural sibling of
@@ -76,6 +86,7 @@ export const CalibrateReferenceScreen = ({
   dngPath,
   sensorWidth,
   sensorHeight,
+  knownRefId,
 }: CalibrateReferenceProps) => {
   const navigation = useNavigation();
   const session = useRawAnalysisSession();
@@ -154,19 +165,14 @@ export const CalibrateReferenceScreen = ({
       return;
     }
 
-    // Rank existing references against the measured known-ref ROI.
-    // rankReferences merges builtins + custom; on a fresh device the
-    // list is ~7 candidates plus Cancel, which is more than Android's
-    // native AlertDialog can display (max 3 buttons — extras silently
-    // drop the whole dialog). Instead of a picker, auto-pick the top
-    // match and dump the full ranking to Metro so the tester can
-    // eyeball whether the top pick makes sense. If it's wrong the
-    // tester cancels the name prompt and re-shoots (usually a framing
-    // issue → the wrong physical card ended up in the "existing" ROI).
-    const ranked = rankReferences(
-      decoded.knownMeasured,
-      listCustomReferences(),
-    );
+    // Two paths:
+    //   1. knownRefId set (normal flow — dropdown picked on RawColorTools):
+    //      look it up directly, log the ranked comparison for sanity,
+    //      go straight to name prompt.
+    //   2. knownRefId missing / stale (deep-link, deleted custom):
+    //      fall back to top-pick alert as a safety net.
+    const customRefs = listCustomReferences();
+    const ranked = rankReferences(decoded.knownMeasured, customRefs);
     if (ranked.length === 0) {
       Alert.alert(
         'No references available',
@@ -185,6 +191,40 @@ export const CalibrateReferenceScreen = ({
           )
           .join('\n'),
     );
+    let picked: AvailableReference | undefined;
+    if (knownRefId) {
+      picked = listAvailableReferences(customRefs).find(
+        r => r.id === knownRefId,
+      );
+      if (!picked) {
+        console.warn(
+          `knownRefId "${knownRefId}" no longer resolves (deleted custom?); ` +
+            'falling back to top-pick prompt',
+        );
+      }
+    }
+    if (picked) {
+      // Note where the user's pick landed in the ranking so a
+      // "picked #4 but expected #1" mismatch is obvious in the log.
+      const rank = ranked.findIndex(r => r.id === picked!.id) + 1;
+      const you = ranked.find(r => r.id === picked!.id);
+      console.log(
+        `Using pre-selected ref "${picked.name}" ` +
+          `(rank ${rank}/${ranked.length}, ` +
+          `ΔE ${you?.deltaE.toFixed(1) ?? '?'} vs measured)`,
+      );
+      promptNameAndSave(
+        picked,
+        decoded.knownMeasured,
+        decoded.newMeasured,
+        () => {
+          setBusy(false);
+          navigation.pop();
+        },
+      );
+      return;
+    }
+    // Fallback: no valid pre-selection → show top match with confirm.
     const top = ranked[0];
     const runnerUpText =
       ranked.length > 1
@@ -224,6 +264,7 @@ export const CalibrateReferenceScreen = ({
     dngPath,
     sensorWidth,
     sensorHeight,
+    knownRefId,
     navigation,
   ]);
 
@@ -404,11 +445,20 @@ const decodeCalibrationCrops = async ({
   return {knownMeasured, newMeasured};
 };
 
-// Prompt for name (required) + illuminant note (optional), then save
-// to MMKV. iOS-only path — Alert.prompt is not implemented on Android;
-// the whole RAW pipeline is iOS-only anyway at time of writing.
+// Auto-name + save the calibrated reference. Two-prompt Alert.prompt
+// flow is gone — Alert.prompt is iOS-only (no-op on Android) so the
+// save silently stalled with the screen stuck at "Working…". The
+// tester can rename via ManageCustomReferences after the fact.
+//
+// Auto-name format:
+//   "{knownRefName} recal {yyyymmdd-hhmm}"
+// e.g. "WhiBal G7 recal 20260825-1637". The known-ref name is baked
+// in so a "picked wrong known-ref" mistake is spottable at a glance
+// in the ManageCustomReferences list. Illuminant metadata gets
+// pulled from the Session Context MMKV (if the tester set it on
+// RawColorTools), otherwise left blank.
 const promptNameAndSave = (
-  known: RankedReference,
+  known: AvailableReference,
   knownMeasured: LinearRgb,
   newMeasured: LinearRgb,
   onDone: () => void,
@@ -418,62 +468,15 @@ const promptNameAndSave = (
     known.linearRgb,
     newMeasured,
   );
-  const rgbLabel = `r=${expected.r.toFixed(4)}, g=${expected.g.toFixed(4)}, b=${expected.b.toFixed(4)}`;
-  Alert.prompt(
-    'Name this reference',
-    `Computed linear-sRGB:\n${rgbLabel}\n\n` +
-      `Paste these values into LINEAR_REFERENCES ` +
-      `(src/model/color/getColorFromLinearRgb.ts) to promote this ` +
-      `custom reference to a builtin.\n\n` +
-      `Enter a name for this reference:`,
-    [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-        onPress: () => onDone(),
-      },
-      {
-        text: 'Next',
-        onPress: (name?: string) => {
-          const trimmed = (name ?? '').trim();
-          if (!trimmed) {
-            Alert.alert(
-              'Name required',
-              'Please enter a name for the reference.',
-              [{text: 'OK', onPress: () => onDone()}],
-            );
-            return;
-          }
-          Alert.prompt(
-            'Illuminant note (optional)',
-            'Free-form description of the lighting you used (e.g. "kitchen daylight ~4pm cloudy"). Leave blank to skip.',
-            [
-              {
-                text: 'Skip',
-                onPress: () => {
-                  saveAndConfirm(trimmed, undefined, expected, onDone);
-                },
-              },
-              {
-                text: 'Save',
-                onPress: (note?: string) => {
-                  const noteTrimmed = (note ?? '').trim();
-                  saveAndConfirm(
-                    trimmed,
-                    noteTrimmed || undefined,
-                    expected,
-                    onDone,
-                  );
-                },
-              },
-            ],
-            'plain-text',
-          );
-        },
-      },
-    ],
-    'plain-text',
-  );
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const stamp =
+    `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
+    `-${pad(now.getHours())}${pad(now.getMinutes())}`;
+  const name = `${known.name} recal ${stamp}`;
+  const illuminant =
+    kvStorage.getString('munsellSession.illuminant') || undefined;
+  saveAndConfirm(name, illuminant, expected, onDone);
 };
 
 const saveAndConfirm = (

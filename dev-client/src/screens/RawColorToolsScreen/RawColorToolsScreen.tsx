@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {Platform, StyleSheet, TextInput} from 'react-native';
 import Share from 'react-native-share';
 
@@ -35,6 +35,8 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
+import {useCustomReferences} from 'terraso-mobile-client/model/color/customReferences';
+import {listAvailableReferences} from 'terraso-mobile-client/model/color/getColorFromLinearRgb';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
@@ -58,6 +60,12 @@ import {CALIBRATE_ROIS} from 'terraso-mobile-client/screens/SoilScreen/ColorScre
 const CHART_PAGE_HUE_KEY = 'munsellChartValidator.selectedPageHue';
 const CHART_REF_MODE_KEY = 'munsellChartValidator.selectedRefMode';
 const CHART_ANALYSIS_MODE_KEY = 'munsellChartValidator.analysisMode';
+
+// User's pre-capture pick of which existing reference is going to be
+// framed in the "existing" ROI. Persisted so it doesn't reset between
+// shoots — testers usually iterate on one physical card at a time.
+// Stored as the AvailableReference.id ("builtin:<key>" or "custom:<uuid>").
+const CALIBRATE_KNOWN_REF_ID_KEY = 'calibrate.knownRefId';
 
 // MMKV keys for the multi-shot session context panel. See
 // docs/munsell-multishot.md "Session context". These values are
@@ -172,7 +180,7 @@ const detectFormatFromName = (name: string): 'raw' | 'photo' | null => {
 // JPEG to the right downstream screen.
 type CaptureFlow =
   | {kind: 'fixture'} // dev: log to Metro + share sheet
-  | {kind: 'calibrate'}
+  | {kind: 'calibrate'; knownRefId: string}
   | {
       kind: 'chart';
       pageHue: string;
@@ -326,6 +334,34 @@ export const RawColorToolsScreen = () => {
   // MunsellChartValidator plumbing still threads the choice through)
   // but no longer surfaced in the UI. Dead-code cleanup is deferred.
   const algorithm: RegistrationAlgorithm = 'directed-quadrant';
+  // Available references for the calibrate flow's "known reference"
+  // dropdown — builtins first, then custom (in creation order). Also
+  // used to validate the persisted knownRefId on load.
+  const customRefs = useCustomReferences();
+  const availableRefs = useMemo(
+    () => listAvailableReferences(customRefs),
+    [customRefs],
+  );
+  const [knownRefId, setKnownRefIdState] = useState<string>(() => {
+    const persisted = kvStorage.getString(CALIBRATE_KNOWN_REF_ID_KEY);
+    if (persisted != null) return persisted;
+    // Default to the first available (a builtin). Custom refs come
+    // after, so on a fresh install this is a stable known-good.
+    return availableRefs[0]?.id ?? '';
+  });
+  // If the persisted ID no longer resolves (custom ref deleted since
+  // last calibrate), fall back to the first available. Kept as an
+  // effect so a deletion from ManageCustomReferences flows through.
+  useEffect(() => {
+    if (availableRefs.length === 0) return;
+    if (availableRefs.some(r => r.id === knownRefId)) return;
+    setKnownRefIdState(availableRefs[0].id);
+    kvStorage.setString(CALIBRATE_KNOWN_REF_ID_KEY, availableRefs[0].id);
+  }, [availableRefs, knownRefId]);
+  const setKnownRefId = useCallback((id: string) => {
+    kvStorage.setString(CALIBRATE_KNOWN_REF_ID_KEY, id);
+    setKnownRefIdState(id);
+  }, []);
   const [captureFlow, setCaptureFlow] = useState<CaptureFlow | null>(null);
   const cancelCapture = useCallback(() => setCaptureFlow(null), []);
 
@@ -377,6 +413,7 @@ export const RawColorToolsScreen = () => {
             dngPath: result.dngPath,
             sensorWidth: result.width,
             sensorHeight: result.height,
+            knownRefId: flow.knownRefId,
           });
         }
       } else if (flow.kind === 'chart') {
@@ -467,11 +504,27 @@ export const RawColorToolsScreen = () => {
           </Text>
           <Paragraph>
             Calibrate a new custom colour reference from a card, or review /
-            delete existing ones.
+            delete existing ones. Pick which existing card you'll be framing in
+            the "existing" ROI before capture — the ranked auto-pick wasn't
+            reliable enough.
           </Paragraph>
+          <Select<string, false>
+            nullable={false}
+            options={availableRefs.map(r => r.id)}
+            value={knownRefId}
+            onValueChange={setKnownRefId}
+            renderValue={id => {
+              const r = availableRefs.find(x => x.id === id);
+              if (!r) return id;
+              const suffix = r.source === 'custom' ? ' (custom)' : '';
+              return `${r.name}${suffix}`;
+            }}
+            label="Existing reference to calibrate against"
+          />
           <ContainedButton
             label="Calibrate reference…"
-            onPress={() => setCaptureFlow({kind: 'calibrate'})}
+            onPress={() => setCaptureFlow({kind: 'calibrate', knownRefId})}
+            disabled={!knownRefId}
           />
           <ContainedButton
             label="Manage custom references"
