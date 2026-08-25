@@ -391,9 +391,22 @@ export const RawColorToolsScreen = () => {
       result.dngPath,
       ...(result.jpegPath ? [result.jpegPath] : []),
     ];
+    console.log(
+      `RAW+JPEG share: ${urls.length} file(s)\n` +
+        `  dng: ${result.dngPath}\n` +
+        `  jpg: ${result.jpegPath ?? '(missing — camera bind may have dropped JPEG)'}`,
+    );
     try {
       await Share.open({
         urls,
+        // Mixed set (DNG + JPEG) → "*/*" so the OS sheet offers
+        // everything (Files, Drive, Gmail attach) instead of
+        // filtering to image-only apps. Also fixes the sheet header
+        // that otherwise reads "Sharing image" because
+        // react-native-share defaults to image/* when a single mime
+        // isn't specified.
+        type: '*/*',
+        subject: 'RAW + JPEG capture',
         failOnCancel: false,
       });
     } catch (err) {
