@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useState} from 'react';
-import {Alert, Image, StyleSheet, TextInput, View} from 'react-native';
+import {useEffect, useRef, useState} from 'react';
+import {Alert, Text as RNText, StyleSheet, TextInput, View} from 'react-native';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 
@@ -50,7 +50,6 @@ import {
   PipelineColumn,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/pipelineColumn';
 import {
-  RawAnalysisRole,
   RawCrop,
   resetRawAnalysisSession,
   setRawAnalysisCrop,
@@ -93,7 +92,9 @@ export const CalibrateReferenceScreen = ({
   const navigation = useNavigation();
   const session = useRawAnalysisSession();
   const [previewError, setPreviewError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  // Two-stage overlay text while the screen is busy. Nulled out once
+  // pendingSave is set (the results panel takes over the visible area).
+  const [phase, setPhase] = useState<'preview' | 'calibrating'>('preview');
   // Pending-save state. When set, the "Calibrate & Save" section
   // switches into results mode: two-column pipeline visualisation
   // (Existing ref: photo → measured → known linear-sRGB / New ref:
@@ -120,202 +121,71 @@ export const CalibrateReferenceScreen = ({
   }>(null);
   const [editableName, setEditableName] = useState('');
 
+  // Mount effect — renders preview, seeds crops from the on-camera
+  // hint boxes, then immediately kicks off the decode/rank/save-prep
+  // work so the user doesn't have to hit a second button. The whole
+  // sequence runs behind a full-screen "Working…" overlay (see phase
+  // state); at the end, pendingSave is set and the results panel
+  // takes over. A ref guards against double-runs across React 18's
+  // effect double-invoke in dev.
+  const kickedOffRef = useRef(false);
   useEffect(() => {
     logCalibrateStep('Calibrate screen mount');
+    if (kickedOffRef.current) return;
+    kickedOffRef.current = true;
     resetRawAnalysisSession(null);
+    setPhase('preview');
     (async () => {
+      let preview: {uri: string; width: number; height: number};
+      let refCrop: RawCrop;
+      let sampleCrop: RawCrop;
       try {
         logCalibrateStep('renderPreview start');
-        // Preview is shown on this screen as a full-width thumbnail
-        // (~360-400 pt wide) + 96 pt pipeline column crops. A
-        // maxDim=800 preview (~800×600 output) has plenty of detail
-        // for both while roughly halving the native gamma+PNG-encode
-        // work vs the old 1200 target. Sensor demosaic cost is fixed
-        // regardless of maxDim.
-        const p = await DngDecoderHybrid.renderPreview(dngPath, 800);
+        // maxDim=800 → ~800×600 output; plenty for the pipeline
+        // column crop thumbnails, ~half the gamma+PNG work vs the
+        // old 1200 target. Sensor demosaic cost is fixed regardless.
+        preview = await DngDecoderHybrid.renderPreview(dngPath, 800);
         logCalibrateStep('renderPreview end');
-        resetRawAnalysisSession({
-          uri: p.uri,
-          width: p.width,
-          height: p.height,
-        });
-        // Auto-seed both crops from the on-camera hint boxes so the
-        // user can go straight to "Calibrate & Save" — assuming they
-        // framed the cards inside the yellow overlay boxes on capture.
-        // The two SelectButton entries remain functional as an escape
-        // hatch: tapping either re-opens RawCropScreen for a manual
-        // pan/pinch pick, which then overrides the seed. A square is
-        // used (RawCrop is single-sided) — take the largest square
-        // that fits inside the hint rectangle, centered on it. Uses
-        // the SAME preset the user picked with +/- on the capture
-        // screen, so a small preset seeds smaller crops.
+        resetRawAnalysisSession(preview);
+        // Crops come from the same ROI_PRESETS entry the user picked
+        // with +/- on the capture screen (or default 'medium').
         const preset = getActiveRoiPreset();
-        setRawAnalysisCrop(
-          'reference',
-          hintRoiToSquareRawCrop(preset.ref, p.width, p.height),
+        refCrop = hintRoiToSquareRawCrop(
+          preset.ref,
+          preview.width,
+          preview.height,
         );
-        setRawAnalysisCrop(
-          'sample',
-          hintRoiToSquareRawCrop(preset.sample, p.width, p.height),
+        sampleCrop = hintRoiToSquareRawCrop(
+          preset.sample,
+          preview.width,
+          preview.height,
         );
+        setRawAnalysisCrop('reference', refCrop);
+        setRawAnalysisCrop('sample', sampleCrop);
         logCalibrateStep('seeds set');
       } catch (err) {
         console.error('renderPreview failed:', err);
         setPreviewError(String(err));
+        return;
       }
-    })();
-  }, [dngPath]);
-
-  const gotoCrop = useCallback(
-    (role: RawAnalysisRole) => {
-      const titleOverride =
-        role === 'reference'
-          ? 'Existing ref (already in library)'
-          : 'New ref (to calibrate)';
-      const descriptionOverride =
-        role === 'reference'
-          ? 'Frame the EXISTING reference card — the one already in your library. Its known color drives the calibration for the new card. Pan to move, pinch to zoom.'
-          : "Frame the NEW reference card — the one you want to add to your library. Its color will be computed from the existing ref's known value. Pan to move, pinch to zoom.";
-      navigation.navigate('RAW_COLOR_CROP_EXPERIMENTAL', {
-        role,
-        titleOverride,
-        descriptionOverride,
-      });
-    },
-    [navigation],
-  );
-
-  const onCalibrate = useCallback(async () => {
-    if (!session.refCrop || !session.sampleCrop || !session.preview) return;
-    logCalibrateStep('Calibrate & Save tap');
-    setBusy(true);
-    let decoded: {knownMeasured: LinearRgb; newMeasured: LinearRgb};
-    try {
-      logCalibrateStep('decode start');
-      decoded = await decodeCalibrationCrops({
+      setPhase('calibrating');
+      await runCalibrate({
+        preview,
+        refCrop,
+        sampleCrop,
         dngPath,
         sensorWidth,
         sensorHeight,
-        preview: session.preview,
-        knownCrop: session.refCrop,
-        newCrop: session.sampleCrop,
+        knownRefId,
+        onPendingSave: p => {
+          setEditableName('');
+          setPendingSave(p);
+          logCalibrateStep('pipeline results shown');
+        },
+        onCancelFlow: () => navigation.pop(),
       });
-      logCalibrateStep('decode end');
-    } catch (err) {
-      console.error('Calibrate decode failed:', err);
-      Alert.alert('Calibrate failed', String(err));
-      setBusy(false);
-      return;
-    }
-
-    // Two paths:
-    //   1. knownRefId set (normal flow — dropdown picked on RawColorTools):
-    //      look it up directly, log the ranked comparison for sanity,
-    //      go straight to name prompt.
-    //   2. knownRefId missing / stale (deep-link, deleted custom):
-    //      fall back to top-pick alert as a safety net.
-    const customRefs = listCustomReferences();
-    const ranked = rankReferences(decoded.knownMeasured, customRefs);
-    if (ranked.length === 0) {
-      Alert.alert(
-        'No references available',
-        'No builtin or custom references to match against. Save aborted.',
-        [{text: 'OK', onPress: () => setBusy(false)}],
-      );
-      return;
-    }
-    console.log(
-      'Calibrate ranked matches for known ROI (top-first):\n' +
-        ranked
-          .map(
-            (r, i) =>
-              `  ${i + 1}. ${r.name} — ΔE ${r.deltaE.toFixed(1)} ` +
-              `(${Math.round(r.confidence * 100)}%)`,
-          )
-          .join('\n'),
-    );
-    let picked: AvailableReference | undefined;
-    if (knownRefId) {
-      picked = listAvailableReferences(customRefs).find(
-        r => r.id === knownRefId,
-      );
-      if (!picked) {
-        console.warn(
-          `knownRefId "${knownRefId}" no longer resolves (deleted custom?); ` +
-            'falling back to top-pick prompt',
-        );
-      }
-    }
-    if (picked) {
-      // Note where the user's pick landed in the ranking so a
-      // "picked #4 but expected #1" mismatch is obvious in the log.
-      const rank = ranked.findIndex(r => r.id === picked!.id) + 1;
-      const you = ranked.find(r => r.id === picked!.id);
-      console.log(
-        `Using pre-selected ref "${picked.name}" ` +
-          `(rank ${rank}/${ranked.length}, ` +
-          `ΔE ${you?.deltaE.toFixed(1) ?? '?'} vs measured)`,
-      );
-      const p = buildPendingSave(
-        picked,
-        decoded.knownMeasured,
-        decoded.newMeasured,
-      );
-      // Blank the field by default — the auto-generated
-      // "{knownRef} recal {stamp}" name isn't a name testers actually
-      // want to save. It rides as the TextInput placeholder instead
-      // so the fallback is one tap away (leave blank + hit Save
-      // would fail the trim() gate, so type something first).
-      setEditableName('');
-      setPendingSave(p);
-      logCalibrateStep('pipeline results shown');
-      return;
-    }
-    // Fallback: no valid pre-selection → show top match with confirm.
-    const top = ranked[0];
-    const runnerUpText =
-      ranked.length > 1
-        ? `\n\nRunner-up: ${ranked[1].name} (ΔE ${ranked[1].deltaE.toFixed(1)})`
-        : '';
-    Alert.alert(
-      `Top match: ${top.name}`,
-      `ΔE ${top.deltaE.toFixed(1)}, ${Math.round(top.confidence * 100)}% ` +
-        `confidence. Full ranking in Metro logs.${runnerUpText}`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel' as const,
-          onPress: () => setBusy(false),
-        },
-        {
-          text: 'Use this ref',
-          onPress: () => {
-            const p = buildPendingSave(
-              top,
-              decoded.knownMeasured,
-              decoded.newMeasured,
-            );
-            // Blank the field by default — the auto-generated
-            // "{knownRef} recal {stamp}" name isn't a name testers actually
-            // want to save. It rides as the TextInput placeholder instead
-            // so the fallback is one tap away (leave blank + hit Save
-            // would fail the trim() gate, so type something first).
-            setEditableName('');
-            setPendingSave(p);
-          },
-        },
-      ],
-      {cancelable: true, onDismiss: () => setBusy(false)},
-    );
-  }, [
-    session.refCrop,
-    session.sampleCrop,
-    session.preview,
-    dngPath,
-    sensorWidth,
-    sensorHeight,
-    knownRefId,
-  ]);
+    })();
+  }, [dngPath, sensorWidth, sensorHeight, knownRefId, navigation]);
 
   if (previewError) {
     return (
@@ -333,45 +203,6 @@ export const CalibrateReferenceScreen = ({
     <ScreenScaffold AppBar={<AppBar title="Calibrate reference (dev)" />}>
       <SafeScrollView>
         <Column padding="md" space="md">
-          <Paragraph>
-            Both crops are pre-set from the on-camera yellow hint boxes — tap
-            "Calibrate & Save" if the framing was good. To fine-tune either
-            crop, tap "Existing ref" or "New ref" to open the pan/pinch picker.
-          </Paragraph>
-          <PreviewThumbnail
-            uri={session.preview?.uri}
-            aspectRatio={
-              session.preview
-                ? session.preview.width / session.preview.height
-                : 3 / 4
-            }
-          />
-          <Row space="sm">
-            <SelectButton
-              label="Existing ref"
-              selected={!!session.refCrop}
-              onPress={() => gotoCrop('reference')}
-              disabled={!session.preview}
-            />
-            <SelectButton
-              label="New ref"
-              selected={!!session.sampleCrop}
-              onPress={() => gotoCrop('sample')}
-              disabled={!session.preview}
-            />
-          </Row>
-          {!pendingSave && (
-            <ContainedButton
-              label={busy ? 'Working…' : 'Calibrate & Save'}
-              onPress={onCalibrate}
-              disabled={
-                !session.preview ||
-                !session.refCrop ||
-                !session.sampleCrop ||
-                busy
-              }
-            />
-          )}
           {pendingSave &&
             session.preview &&
             session.refCrop &&
@@ -383,17 +214,13 @@ export const CalibrateReferenceScreen = ({
                 pending={pendingSave}
                 nameValue={editableName}
                 onNameChange={setEditableName}
-                onCancel={() => {
-                  setPendingSave(null);
-                  setBusy(false);
-                }}
+                onCancel={() => navigation.pop()}
                 onSave={() => {
                   const trimmed = editableName.trim();
                   if (!trimmed) return;
                   const {illuminant, expected} = pendingSave;
                   setPendingSave(null);
                   saveAndConfirm(trimmed, illuminant, expected, () => {
-                    setBusy(false);
                     navigation.pop();
                   });
                 }}
@@ -401,9 +228,53 @@ export const CalibrateReferenceScreen = ({
             )}
         </Column>
       </SafeScrollView>
+      {!pendingSave && (
+        <WorkingOverlay
+          text={phase === 'preview' ? 'Loading preview…' : 'Calibrating…'}
+        />
+      )}
     </ScreenScaffold>
   );
 };
+
+// Full-screen busy overlay used while the mount effect is preparing
+// the results panel — first while renderPreview runs (~1-4s), then
+// while the decode + rank runs (~500ms). Same visual language as
+// AndroidRawCaptureScreen's "Capturing…" overlay so the shutter →
+// results transition reads as one continuous "working" state to
+// the tester.
+const WorkingOverlay = ({text}: {text: string}) => (
+  <View style={overlayStyles.overlay} pointerEvents="auto">
+    <View style={overlayStyles.box}>
+      <RNText style={overlayStyles.title}>{text}</RNText>
+    </View>
+  </View>
+);
+
+const overlayStyles = StyleSheet.create({
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  box: {
+    paddingVertical: 20,
+    paddingHorizontal: 28,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    alignItems: 'center',
+  },
+  title: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '700',
+  },
+});
 
 // Two-column pipeline visualisation for the calibrate flow — mirrors
 // the RawColorAnalysisScreen soil-id results section. Each column
@@ -513,51 +384,6 @@ const resultsStyles = StyleSheet.create({
     color: '#111',
   },
 });
-
-const PreviewThumbnail = ({
-  uri,
-  aspectRatio,
-}: {
-  uri: string | undefined;
-  aspectRatio: number;
-}) => (
-  <Box
-    width="100%"
-    aspectRatio={aspectRatio}
-    backgroundColor="grey.900"
-    overflow="hidden">
-    {uri && (
-      <View style={StyleSheet.absoluteFill}>
-        <Image
-          source={{uri}}
-          style={StyleSheet.absoluteFill}
-          resizeMode="contain"
-        />
-      </View>
-    )}
-  </Box>
-);
-
-const SelectButton = ({
-  label,
-  selected,
-  onPress,
-  disabled,
-}: {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-  disabled: boolean;
-}) => (
-  <Box flex={1}>
-    <ContainedButton
-      label={`${selected ? '✓ ' : ''}${label}`}
-      onPress={onPress}
-      disabled={disabled}
-      stretchToFit={true}
-    />
-  </Box>
-);
 
 // Convert a display-space fractional hint rectangle to a preview-space
 // SQUARE RawCrop centered on the hint. The hint is rectangular (the
@@ -678,6 +504,129 @@ const buildPendingSave = (
     newMeasured,
     knownName: known.name,
   };
+};
+
+// Runs the decode → rank → pending-save-state build for the auto-run
+// calibrate flow. Called from the CalibrateReferenceScreen mount
+// effect right after seeds are set. Takes explicit crops (not from
+// session state) so it can run inside the same async block that just
+// wrote them — session updates via useSyncExternalStore haven't
+// flushed by the time we get here.
+//
+// Result paths:
+//   * knownRefId resolves            → auto-pick, call onPendingSave
+//   * knownRefId missing / stale     → top-pick alert asks user to
+//                                      confirm; Cancel → onCancelFlow
+//   * ranked list empty              → alert + onCancelFlow
+//   * decode throws                  → alert + onCancelFlow
+const runCalibrate = async (args: {
+  preview: {uri: string; width: number; height: number};
+  refCrop: RawCrop;
+  sampleCrop: RawCrop;
+  dngPath: string;
+  sensorWidth: number;
+  sensorHeight: number;
+  knownRefId: string | undefined;
+  onPendingSave: (p: ReturnType<typeof buildPendingSave>) => void;
+  onCancelFlow: () => void;
+}): Promise<void> => {
+  const {
+    preview,
+    refCrop,
+    sampleCrop,
+    dngPath,
+    sensorWidth,
+    sensorHeight,
+    knownRefId,
+    onPendingSave,
+    onCancelFlow,
+  } = args;
+  logCalibrateStep('decode start');
+  let decoded: {knownMeasured: LinearRgb; newMeasured: LinearRgb};
+  try {
+    decoded = await decodeCalibrationCrops({
+      dngPath,
+      sensorWidth,
+      sensorHeight,
+      preview,
+      knownCrop: refCrop,
+      newCrop: sampleCrop,
+    });
+    logCalibrateStep('decode end');
+  } catch (err) {
+    console.error('Calibrate decode failed:', err);
+    Alert.alert('Calibrate failed', String(err), [
+      {text: 'OK', onPress: onCancelFlow},
+    ]);
+    return;
+  }
+
+  const customRefs = listCustomReferences();
+  const ranked = rankReferences(decoded.knownMeasured, customRefs);
+  if (ranked.length === 0) {
+    Alert.alert(
+      'No references available',
+      'No builtin or custom references to match against. Save aborted.',
+      [{text: 'OK', onPress: onCancelFlow}],
+    );
+    return;
+  }
+  console.log(
+    'Calibrate ranked matches for known ROI (top-first):\n' +
+      ranked
+        .map(
+          (r, i) =>
+            `  ${i + 1}. ${r.name} — ΔE ${r.deltaE.toFixed(1)} ` +
+            `(${Math.round(r.confidence * 100)}%)`,
+        )
+        .join('\n'),
+  );
+  let picked: AvailableReference | undefined;
+  if (knownRefId) {
+    picked = listAvailableReferences(customRefs).find(r => r.id === knownRefId);
+    if (!picked) {
+      console.warn(
+        `knownRefId "${knownRefId}" no longer resolves (deleted custom?); ` +
+          'falling back to top-pick prompt',
+      );
+    }
+  }
+  if (picked) {
+    const rank = ranked.findIndex(r => r.id === picked!.id) + 1;
+    const you = ranked.find(r => r.id === picked!.id);
+    console.log(
+      `Using pre-selected ref "${picked.name}" ` +
+        `(rank ${rank}/${ranked.length}, ` +
+        `ΔE ${you?.deltaE.toFixed(1) ?? '?'} vs measured)`,
+    );
+    onPendingSave(
+      buildPendingSave(picked, decoded.knownMeasured, decoded.newMeasured),
+    );
+    return;
+  }
+  // Fallback: no valid pre-selection → confirm top match.
+  const top = ranked[0];
+  const runnerUpText =
+    ranked.length > 1
+      ? `\n\nRunner-up: ${ranked[1].name} (ΔE ${ranked[1].deltaE.toFixed(1)})`
+      : '';
+  Alert.alert(
+    `Top match: ${top.name}`,
+    `ΔE ${top.deltaE.toFixed(1)}, ${Math.round(top.confidence * 100)}% ` +
+      `confidence. Full ranking in Metro logs.${runnerUpText}`,
+    [
+      {text: 'Cancel', style: 'cancel' as const, onPress: onCancelFlow},
+      {
+        text: 'Use this ref',
+        onPress: () => {
+          onPendingSave(
+            buildPendingSave(top, decoded.knownMeasured, decoded.newMeasured),
+          );
+        },
+      },
+    ],
+    {cancelable: true, onDismiss: onCancelFlow},
+  );
 };
 
 const saveAndConfirm = (
