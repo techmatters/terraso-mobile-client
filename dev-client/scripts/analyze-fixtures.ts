@@ -625,8 +625,12 @@ const scanFixtures = (root: string, cli: string): ParsedFixture[] => {
     for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
       if (entry.name.startsWith('.')) continue;
       const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) walkExtract(full);
-      else if (entry.isFile() && entry.name.toLowerCase().endsWith('.dng')) {
+      // Follow symlinks — Dirent.isFile/isDirectory return false for
+      // symbolic links, which silently drops any symlinked fixture
+      // tree. statSync resolves the link and reports the real type.
+      const st = entry.isSymbolicLink() ? fs.statSync(full) : entry;
+      if (st.isDirectory()) walkExtract(full);
+      else if (st.isFile() && entry.name.toLowerCase().endsWith('.dng')) {
         ensureDngJpegSibling(full, cli);
       }
     }
@@ -636,9 +640,13 @@ const scanFixtures = (root: string, cli: string): ParsedFixture[] => {
     for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
       if (entry.name.startsWith('.')) continue;
       const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
+      // Follow symlinks — Dirent.isFile/isDirectory return false for
+      // symbolic links, which silently drops any symlinked fixture
+      // tree. statSync resolves the link and reports the real type.
+      const st = entry.isSymbolicLink() ? fs.statSync(full) : entry;
+      if (st.isDirectory()) {
         walk(full);
-      } else if (entry.isFile() && isSupportedFixture(entry.name)) {
+      } else if (st.isFile() && isSupportedFixture(entry.name)) {
         const parsed = parseFixtureFilename(full);
         if (parsed) out.push(parsed);
         else skipped.push(full);
