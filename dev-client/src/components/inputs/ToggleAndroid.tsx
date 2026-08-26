@@ -131,21 +131,15 @@ const styles = StyleSheet.create({
   toggleContainer: {
     width: TRACK_WIDTH,
     height: TRACK_HEIGHT,
-    borderRadius: 15,
+    borderRadius: 12,
     justifyContent: 'center',
   },
   toggleWheelStyle: {
     width: THUMB_SIZE,
     height: THUMB_SIZE,
     borderRadius: THUMB_SIZE / 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2.5,
-    elevation: 1.5,
+    /* boxShadow rather than the shadow* props, which are iOS-only, or elevation, which is Android-only and too faint here to match the shadow baked into the native switch's thumb drawable. */
+    boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.3)',
   },
 });
 
@@ -154,42 +148,3 @@ const styles = StyleSheet.create({
 // 2. Android vs iOS -- should they appear different?
 // 3. Update all the other switches, tests, FormSwitch
 // 4. Update Figma documentation
-
-// FYI: Old colors for theme.ts
-// switch: {
-//   trackOn: '#ABD9BE',
-//   trackOnDisabled: '#D5ECDF',
-//   trackOff: '#C0C0C0',
-//   trackOffDisabled: '#D0D0E0',
-//   thumbOn: '#028843',
-//   thumbOnDisabled: '#80C4A1',
-//   thumbOff: '#616161',
-//   thumbOffDisabled: '#B0B0B0',
-// },
-
-// const oldStyles = StyleSheet.create({
-//   container: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   toggleContainer: {
-//     width: 34,
-//     height: 14,
-//     marginLeft: TOGGLE_LEFT_MARGIN,
-//     borderRadius: 15,
-//     justifyContent: 'center',
-//   },
-//   toggleWheelStyle: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 10,
-//     shadowColor: '#000',
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.2,
-//     shadowRadius: 2.5,
-//     elevation: 1.5,
-//   },
-// });
