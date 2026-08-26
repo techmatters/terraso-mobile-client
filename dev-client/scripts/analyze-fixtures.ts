@@ -248,6 +248,25 @@ const DNG_CLI_CPP = path.resolve(
 // stubbed — it's only called after readPreviewRgb, and JS consumers
 // (RN screen) use the returned URI to display; Node consumers include
 // it in the JSON output but don't dereference it.
+
+// Shared JSON parser for the CLI's decode-dng-rois output shape —
+// `[{r,g,b,dominantR,dominantG,dominantB}, ...]`. Both the flat and
+// batch endpoints emit inner arrays of this shape.
+const parseReducedJson = (json: string): LinearRgbReduced[] => {
+  const raw = JSON.parse(json) as Array<{
+    r: number;
+    g: number;
+    b: number;
+    dominantR: number;
+    dominantG: number;
+    dominantB: number;
+  }>;
+  return raw.map(r => ({
+    mean: {r: r.r, g: r.g, b: r.b},
+    dominant: {r: r.dominantR, g: r.dominantG, b: r.dominantB},
+  }));
+};
+
 class NodeDecoder implements DngDecoderLike {
   // Two CLIs, one for DNG methods and one for photo methods. iOS
   // fixtures use the Swift CLI (CIRAWFilter for DNG, CIImage for
@@ -263,10 +282,22 @@ class NodeDecoder implements DngDecoderLike {
     string,
     {width: number; height: number; sourceWidth: number; sourceHeight: number}
   >();
+  // dng-cli-cpp supports `decode-dng-rois-batch`, the Swift dng-cli
+  // does not. Set true when constructing an androidDecoder so the
+  // sweep can collapse its N-candidate probe into one process
+  // invocation. Falls back to a per-candidate loop when false so
+  // callers can always use decodeDngRoisReducedBatch and get the best
+  // speed available for their CLI.
+  private supportsBatch: boolean;
 
-  constructor(dngCliPath: string, photoCliPath: string = dngCliPath) {
+  constructor(
+    dngCliPath: string,
+    photoCliPath: string = dngCliPath,
+    supportsBatch: boolean = false,
+  ) {
     this.dngCliPath = dngCliPath;
     this.photoCliPath = photoCliPath;
+    this.supportsBatch = supportsBatch;
     this.tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dng-cli-'));
   }
 
@@ -297,18 +328,45 @@ class NodeDecoder implements DngDecoderLike {
       ['decode-dng-rois', dngPath, JSON.stringify(rois)],
       {encoding: 'utf-8', maxBuffer: 32 * 1024 * 1024},
     );
-    const raw = JSON.parse(out) as Array<{
-      r: number;
-      g: number;
-      b: number;
-      dominantR: number;
-      dominantG: number;
-      dominantB: number;
-    }>;
-    return raw.map(r => ({
-      mean: {r: r.r, g: r.g, b: r.b},
-      dominant: {r: r.dominantR, g: r.dominantG, b: r.dominantB},
-    }));
+    return parseReducedJson(out);
+  }
+
+  // Batch-decode many ROI sets in one CLI invocation when the CLI
+  // supports it — the multi-card sweep's raison-d'être. Measured
+  // ~6.4× faster than the equivalent N sequential decodeDngRoisReduced
+  // calls on Pixel-7 DNGs (parseDng ~20ms vs per-ROI ~0.5ms). Falls
+  // back to sequential decodeDngRoisReduced calls when the CLI is
+  // Swift-side (iOS DNGs) so callers always get the best-available
+  // speed without branching.
+  decodeDngRoisReducedBatch(
+    dngPath: string,
+    roiSets: Roi[][],
+  ): LinearRgbReduced[][] {
+    if (!this.supportsBatch) {
+      return roiSets.map(rois => this.decodeDngRoisReduced(dngPath, rois));
+    }
+    if (roiSets.length === 0) return [];
+    const out = execFileSync(
+      this.dngCliPath,
+      ['decode-dng-rois-batch', dngPath, JSON.stringify(roiSets)],
+      {encoding: 'utf-8', maxBuffer: 64 * 1024 * 1024},
+    );
+    const raw = JSON.parse(out) as Array<
+      Array<{
+        r: number;
+        g: number;
+        b: number;
+        dominantR: number;
+        dominantG: number;
+        dominantB: number;
+      }>
+    >;
+    return raw.map(inner =>
+      inner.map(r => ({
+        mean: {r: r.r, g: r.g, b: r.b},
+        dominant: {r: r.dominantR, g: r.dominantG, b: r.dominantB},
+      })),
+    );
   }
 
   readPreviewRgb(dngPath: string, maxDim: number): PreviewRgb {
@@ -1641,26 +1699,18 @@ function maybeSweepMultiCardOffset(
     .filter(n => expectedByName[n]);
   if (scoredNames.length === 0) return; // nothing to score against
 
-  let bestOffset = OFFSET_SWEEP[0];
-  let bestVerticalShift = VERTICAL_SWEEP[0];
-  let bestScore = Infinity;
-  let bestSamples: Array<{r: number; g: number; b: number}> = [];
-  // Parallel to bestSamples: dominant reducer (median-cut) result per
-  // slot at the winning position. Only populated on RAW-path fixtures
-  // (photo path can't cheaply do per-pixel median-cut, so we leave
-  // dominant null and the filmstrip's reducer toggle falls back to
-  // mean for that fixture). Kept alongside so we mutate BOTH linearRgb
-  // and linearRgbDominant in lock-step below — otherwise a Phase-1
-  // dominant sampled at the pre-sweep nominal position would linger
-  // and diverge from the (swept) mean.
-  let bestDominant: Array<{r: number; g: number; b: number} | null> = [];
-  let bestRects: Array<{x: number; y: number; w: number; h: number}> = [];
-  // 2D cartesian scan: horizontal offset × vertical shift. Cheaper
-  // than sequential 1D sweeps in the (rare) case where the horizontal
-  // optimum shifts with vertical position (nonlinear chart tilt), and
-  // total decode count is bounded — |OFFSET_SWEEP| × |VERTICAL_SWEEP|
-  // == 30 rect-quads per fixture. Each decode takes ~50–100ms so a
-  // full sweep adds ~2s per fixture.
+  // 2D cartesian scan: horizontal offset × vertical shift. Compute
+  // all candidate rect-sets first, then decode the whole batch in ONE
+  // CLI invocation (~6× faster than N sequential invocations because
+  // parseDng runs once). Scoring stays in JS and iterates the
+  // returned nested array.
+  type CandidateMeta = {
+    candidate: number;
+    vShift: number;
+    previewRects: Array<{x: number; y: number; w: number; h: number}>;
+  };
+  const candidateMeta: CandidateMeta[] = [];
+  const roiSets: Roi[][] = [];
   for (const candidate of OFFSET_SWEEP) {
     // Delta in ref-grid units from the app's nominal position to this
     // candidate. colStep=2 → each 1.0 of offsetPitches shifts by 2
@@ -1669,21 +1719,14 @@ function maybeSweepMultiCardOffset(
     for (const vShift of VERTICAL_SWEEP) {
       // Horizontal shift shares row axis; vertical shift is applied
       // strictly along the chart's row axis via the same ref-grid
-      // basis (stepPerRefUnitX/Y), preserving any chart tilt.
+      // basis (stepPerRefUnitX/Y), preserving any chart tilt. Row-
+      // perpendicular basis = 90° CCW rotation of the col-axis basis:
+      // (-stepPerRefUnitY, stepPerRefUnitX). On a portrait capture
+      // stepPerRefUnitY ≈ 0 so vShift positive → DOWN in image coords.
       const dxPreview =
         stepPerRefUnitX * hDeltaRefUnits + -stepPerRefUnitY * vShift;
       const dyPreview =
         stepPerRefUnitY * hDeltaRefUnits + stepPerRefUnitX * vShift;
-      // Row-axis basis derivation: the row-perpendicular axis is a
-      // 90° rotation of the col-axis basis (stepPerRefUnitX,
-      // stepPerRefUnitY). For an image with chart rows running left→
-      // right (positive stepPerRefUnitX) and NO tilt, rotating +90°
-      // CCW gives (-stepPerRefUnitY, stepPerRefUnitX); on a portrait
-      // capture stepPerRefUnitY ≈ 0 so this reduces to (0, +unit) —
-      // "positive vShift moves DOWN in image coords". Any small
-      // chart tilt rotates both bases the same amount, so the shift
-      // still runs perpendicular to the chart's actual row axis.
-
       // Shift each multi ref card by the same combined delta.
       const candRects = multi.map(slot => {
         const cx = slot.rect.x + slot.rect.w / 2 + dxPreview;
@@ -1702,53 +1745,83 @@ function maybeSweepMultiCardOffset(
         w: Math.round(r.w * scaleX),
         h: Math.round(r.h * scaleY),
       }));
-      let samples: Array<{r: number; g: number; b: number}>;
-      let dominantSamples: Array<{r: number; g: number; b: number} | null>;
-      try {
-        if (fixture.format === 'raw') {
-          const reduced = decoder.decodeDngRoisReduced(
-            fixture.path,
-            sourceRois,
-          );
-          samples = reduced.map(r => r.mean);
-          dominantSamples = reduced.map(r => r.dominant);
-        } else {
-          samples = decoder.decodePhotoRois(fixture.path, sourceRois);
-          dominantSamples = sourceRois.map(() => null);
-        }
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        process.stderr.write(
-          `    multi-sweep: decode at (offset=${candidate}, vShift=${vShift.toFixed(2)}) ` +
-            `failed (${msg}); skipping\n`,
-        );
-        continue;
-      }
-      // Score: sum of linear-RGB squared distance across the SPECTRALLY-
-      // NEUTRAL slots only (whibal, greycard, white). Postit's saturated
-      // yellow is a bad "similarity magnet" — it can only "match" itself
-      // and dominates the sum whenever it's slightly off, biasing the
-      // sweep toward whatever offset happens to reduce postit's error
-      // even at the cost of the three neutrals. Scoring on neutrals
-      // gives a physically-grounded joint fit; postit rides along at
-      // the winning offset (same physical mask assembly, so it's
-      // consistent to sample at the same shift).
-      let score = 0;
-      for (let i = 0; i < multi.length; i++) {
-        const name = multi[i].name;
-        if (name === 'postit') continue;
-        const exp = expectedByName[name];
-        if (!exp) continue;
-        score += linearRgbDist2(samples[i], exp);
-      }
-      if (score < bestScore) {
-        bestScore = score;
-        bestOffset = candidate;
-        bestVerticalShift = vShift;
-        bestSamples = samples;
-        bestDominant = dominantSamples;
-        bestRects = candRects;
-      }
+      candidateMeta.push({candidate, vShift, previewRects: candRects});
+      roiSets.push(sourceRois);
+    }
+  }
+
+  // ONE decode call for the whole batch (dng-cli-cpp) or a per-set
+  // loop wrapped for us (Swift dng-cli). See NodeDecoder for the
+  // fallback logic.
+  let batchResults: LinearRgbReduced[][];
+  const photoRoiFallback: Array<Array<{r: number; g: number; b: number}>> = [];
+  try {
+    if (fixture.format === 'raw') {
+      batchResults = decoder.decodeDngRoisReducedBatch(fixture.path, roiSets);
+    } else {
+      // Photo path — dominant unavailable (see decoder note). Decode
+      // each candidate mean, synthesise the LinearRgbReduced shape
+      // with dominant = mean so the scoring loop below can stay
+      // reducer-agnostic (it only reads .mean anyway).
+      batchResults = roiSets.map(rois => {
+        const means = decoder.decodePhotoRois(fixture.path, rois);
+        photoRoiFallback.push(means);
+        return means.map(m => ({mean: m, dominant: m}));
+      });
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(
+      `    multi-sweep: batch decode failed (${msg}); skipping sweep for ${path.basename(fixture.path)}\n`,
+    );
+    return;
+  }
+  void photoRoiFallback;
+
+  // Score each candidate. Neutral-slot-only sum of linear-RGB squared
+  // distance against the physical expected — see below for why
+  // postit is excluded from the score.
+  let bestOffset = OFFSET_SWEEP[0];
+  let bestVerticalShift = VERTICAL_SWEEP[0];
+  let bestScore = Infinity;
+  let bestSamples: Array<{r: number; g: number; b: number}> = [];
+  // Parallel to bestSamples: dominant reducer at the winning position.
+  // For the photo path dominant === mean (see note above), so the
+  // filmstrip's mean/dominant radio has nothing to flip; that's fine.
+  let bestDominant: Array<{r: number; g: number; b: number} | null> = [];
+  let bestRects: Array<{x: number; y: number; w: number; h: number}> = [];
+  for (let idx = 0; idx < batchResults.length; idx++) {
+    const reduced = batchResults[idx];
+    if (!reduced || reduced.length !== multi.length) continue;
+    const {candidate, vShift, previewRects: candRects} = candidateMeta[idx];
+    const samples = reduced.map(r => r.mean);
+    // Postit's saturated yellow is a bad "similarity magnet" — it can
+    // only "match" itself and dominates the sum whenever it's slightly
+    // off, biasing the sweep toward whatever offset happens to reduce
+    // postit's error even at the cost of the three neutrals. Scoring
+    // on neutrals gives a physically-grounded joint fit; postit rides
+    // along at the winning offset.
+    let score = 0;
+    for (let i = 0; i < multi.length; i++) {
+      const name = multi[i].name;
+      if (name === 'postit') continue;
+      const exp = expectedByName[name];
+      if (!exp) continue;
+      score += linearRgbDist2(samples[i], exp);
+    }
+    if (score < bestScore) {
+      bestScore = score;
+      bestOffset = candidate;
+      bestVerticalShift = vShift;
+      bestSamples = samples;
+      // For RAW: dominant is the real median-cut. For photo:
+      // dominant equals mean (synthesised above), so downstream still
+      // gets a value and the filmstrip A/B is a no-op flip — same as
+      // pre-batch behavior.
+      bestDominant = reduced.map(r =>
+        fixture.format === 'raw' ? r.dominant : null,
+      );
+      bestRects = candRects;
     }
   }
   if (bestSamples.length !== multi.length) return; // all candidates failed
@@ -1928,7 +2001,7 @@ if (hasAndroidFixture && !fs.existsSync(DNG_CLI_CPP)) {
   );
 }
 const androidDecoder = hasAndroidFixture
-  ? new NodeDecoder(DNG_CLI_CPP, DNG_CLI)
+  ? new NodeDecoder(DNG_CLI_CPP, DNG_CLI, /*supportsBatch*/ true)
   : null;
 const decoderFor = (f: ParsedFixture) =>
   f.platform === 'android' ? androidDecoder! : iosDecoder;

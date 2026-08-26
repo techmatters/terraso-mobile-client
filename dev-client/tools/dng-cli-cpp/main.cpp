@@ -12,9 +12,16 @@
 // further branching downstream.
 //
 // Subcommands implemented:
-//   decode-dng-rois   <dngPath> <roisJson>
-//   read-preview-rgb  <dngPath> <maxDim> <outRgbPath>
-//   read-metadata     <dngPath>
+//   decode-dng-rois         <dngPath> <roisJson>
+//   decode-dng-rois-batch   <dngPath> <nestedRoisJson>
+//   read-preview-rgb        <dngPath> <maxDim> <outRgbPath>
+//   read-metadata           <dngPath>
+//
+// decode-dng-rois-batch is a mac-only optimisation for the analyzer's
+// multi-card sweep — accepts many candidate ROI sets in one process
+// invocation so parseDng runs once for the whole batch instead of
+// per-candidate. Not mirrored to iOS/Android on-device (single-shot
+// paths don't benefit).
 //
 // See docs/android-raw-path.md for the full motivation.
 
@@ -133,6 +140,41 @@ void writeDouble(std::string& out, double v) {
   out += buf;
 }
 
+// Parse `[[roi, roi, ...], [roi, roi, ...], ...]` — an array whose
+// entries are themselves ROI arrays (each in the same format
+// parseRoisJson accepts). Used by decode-dng-rois-batch. Each inner
+// list corresponds to one "candidate" (e.g. one position tried by
+// the analyzer's multi-card sweep), so callers can pass N × M ROIs
+// in one process invocation and pay the parseDng fixed cost once.
+std::vector<std::vector<Roi>> parseNestedRoisJson(const std::string& s) {
+  std::vector<std::vector<Roi>> out;
+  const char* p = s.c_str();
+  if (!consume(p, '[')) die("nested rois json: expected outer '['");
+  skipWs(p);
+  if (*p == ']') return out;
+  for (;;) {
+    skipWs(p);
+    if (*p != '[') die("nested rois json: expected inner '['");
+    // Find the matching inner ']' and hand that slice to
+    // parseRoisJson. Bracket-balanced scan handles nested {} inside
+    // ROI objects without needing a full recursive-descent parser.
+    const char* start = p;
+    int depth = 0;
+    do {
+      if (*p == '[') depth++;
+      else if (*p == ']') depth--;
+      ++p;
+    } while (depth > 0 && *p);
+    if (depth != 0) die("nested rois json: unbalanced inner brackets");
+    out.push_back(parseRoisJson(std::string(start, p - start)));
+    skipWs(p);
+    if (*p == ',') { ++p; continue; }
+    if (*p == ']') { ++p; break; }
+    die("nested rois json: expected ',' or ']' after inner list");
+  }
+  return out;
+}
+
 int cmdDecodeDngRois(int argc, char** argv) {
   if (argc < 4) die("usage: dng-cli-cpp decode-dng-rois <dngPath> <roisJson>");
   const std::string path = readFilePath(argv[2]);
@@ -176,6 +218,81 @@ int cmdDecodeDngRois(int argc, char** argv) {
     out += ",\"dominantB\":";
     writeDouble(out, dB[i]);
     out += "}";
+  }
+  out += "]\n";
+  std::fwrite(out.data(), 1, out.size(), stdout);
+  return 0;
+}
+
+// Batch sibling of decode-dng-rois. Accepts nested `[[roi,...], ...]`
+// and emits the corresponding nested output. Runs parseDng ONCE for
+// the whole batch — measured ~7-8× speedup vs one CLI invocation per
+// candidate (parseDng ~20ms per invocation vs ~0.5ms per ROI decode
+// on a 12MP Pixel-7 DNG). Analyzer sweep uses this to collapse its
+// 30-candidate × 4-ROI probe into a single subprocess call per
+// fixture.
+int cmdDecodeDngRoisBatch(int argc, char** argv) {
+  if (argc < 4) {
+    die("usage: dng-cli-cpp decode-dng-rois-batch <dngPath> <nestedRoisJson>");
+  }
+  const std::string path = readFilePath(argv[2]);
+  const std::string roisJson = argv[3];
+  const std::vector<std::vector<Roi>> sets = parseNestedRoisJson(roisJson);
+
+  // Flatten every set into one big ROI array for a single call into
+  // the C bridge — which then loops without re-parsing the DNG. The
+  // output arrays come back in the same order; we walk them back
+  // out into per-set nested JSON below.
+  size_t total = 0;
+  for (const auto& s : sets) total += s.size();
+  std::vector<int32_t> flat(total * 4);
+  size_t w = 0;
+  for (const auto& s : sets) {
+    for (const auto& r : s) {
+      flat[w++] = r.x;
+      flat[w++] = r.y;
+      flat[w++] = r.w;
+      flat[w++] = r.h;
+    }
+  }
+
+  std::vector<double> mR(total), mG(total), mB(total);
+  std::vector<double> dR(total), dG(total), dB(total);
+  const char* err = nullptr;
+  if (total > 0) {
+    if (!dngDecoderDecodeRoisReduced(path.c_str(), flat.data(),
+                                     static_cast<int32_t>(total), mR.data(),
+                                     mG.data(), mB.data(), dR.data(),
+                                     dG.data(), dB.data(), &err)) {
+      die(std::string("dngDecoderDecodeRoisReduced failed: ") +
+          (err ? err : "unknown"));
+    }
+  }
+
+  std::string out = "[";
+  size_t off = 0;
+  for (size_t si = 0; si < sets.size(); ++si) {
+    if (si) out += ",";
+    out += "[";
+    for (size_t i = 0; i < sets[si].size(); ++i) {
+      if (i) out += ",";
+      const size_t k = off + i;
+      out += "{\"r\":";
+      writeDouble(out, mR[k]);
+      out += ",\"g\":";
+      writeDouble(out, mG[k]);
+      out += ",\"b\":";
+      writeDouble(out, mB[k]);
+      out += ",\"dominantR\":";
+      writeDouble(out, dR[k]);
+      out += ",\"dominantG\":";
+      writeDouble(out, dG[k]);
+      out += ",\"dominantB\":";
+      writeDouble(out, dB[k]);
+      out += "}";
+    }
+    out += "]";
+    off += sets[si].size();
   }
   out += "]\n";
   std::fwrite(out.data(), 1, out.size(), stdout);
@@ -280,9 +397,10 @@ int cmdReadPreviewRgb(int argc, char** argv) {
 int usage() {
   std::fputs(
     "usage: dng-cli-cpp <subcommand> ...\n"
-    "  decode-dng-rois  <dngPath> <roisJson>\n"
-    "  read-preview-rgb <dngPath> <maxDim> <outRgbPath>\n"
-    "  read-metadata    <dngPath>\n",
+    "  decode-dng-rois        <dngPath> <roisJson>\n"
+    "  decode-dng-rois-batch  <dngPath> <nestedRoisJson>\n"
+    "  read-preview-rgb       <dngPath> <maxDim> <outRgbPath>\n"
+    "  read-metadata          <dngPath>\n",
     stderr);
   return 1;
 }
@@ -294,6 +412,7 @@ int main(int argc, char** argv) {
   const std::string cmd = argv[1];
   try {
     if (cmd == "decode-dng-rois") return cmdDecodeDngRois(argc, argv);
+    if (cmd == "decode-dng-rois-batch") return cmdDecodeDngRoisBatch(argc, argv);
     if (cmd == "read-metadata") return cmdReadMetadata(argc, argv);
     if (cmd == "read-preview-rgb") return cmdReadPreviewRgb(argc, argv);
   } catch (const std::exception& e) {
