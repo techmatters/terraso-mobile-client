@@ -1225,6 +1225,13 @@ const buildCaptureEntry = (
     // leftward inside the mask holder; equal to 1.75 = as designed.
     multi_card_sweep_offset_pitches:
       (outcome as any)._sweepOffset ?? null,
+    // Sibling diagnostic for the vertical (down-only) shift the sweep
+    // added on top of the horizontal offset. In ref-grid units, 0 =
+    // no shift (rect centered on the ref-card row midpoint); positive
+    // = shifted down inside the mask cutout (typically because the
+    // top of the cutout has a soft shadow from the tape wedge).
+    multi_card_sweep_vertical_shift:
+      (outcome as any)._sweepVerticalShift ?? null,
     cells: results.map((r, i) => {
       const dom = measurements[i].rawLinearRgbDominant;
       return {
@@ -1547,6 +1554,19 @@ const buildBurstAverageCaptures = (
 // step on the physical card).
 const OFFSET_SWEEP: readonly number[] = [1.7, 1.8, 1.9, 2.0, 2.1];
 
+// Candidate vertical shifts, in ref-grid units, applied DOWN from
+// the nominal MULTI_CARD_POINTS y (positive = lower on the card as
+// rendered in the image). Physical mask cutouts on the ref-card
+// strip sit ~3 ref-units tall (row pitch), so the sample rect —
+// which is ~0.25 ref-units tall — can shift down by up to ~1 unit
+// while staying inside the cutout. Zero is baseline (row centroid).
+// Bias is asymmetric-downward because top of each cutout is where
+// the strip's shadow lands (top edge of the paper strip is elevated
+// by the tape wedge, casting a soft shadow onto the top ~⅓ of the
+// cutout). Sweeping symmetrically would let a fixture "win" by
+// moving into the shadow — not helpful.
+const VERTICAL_SWEEP: readonly number[] = [0.0, 0.15, 0.3, 0.45, 0.6, 0.75];
+
 // Linear-RGB distance between two triples. Squared so it can drive
 // argmin without a needless sqrt per candidate.
 function linearRgbDist2(
@@ -1622,89 +1642,137 @@ function maybeSweepMultiCardOffset(
   if (scoredNames.length === 0) return; // nothing to score against
 
   let bestOffset = OFFSET_SWEEP[0];
+  let bestVerticalShift = VERTICAL_SWEEP[0];
   let bestScore = Infinity;
   let bestSamples: Array<{r: number; g: number; b: number}> = [];
+  // Parallel to bestSamples: dominant reducer (median-cut) result per
+  // slot at the winning position. Only populated on RAW-path fixtures
+  // (photo path can't cheaply do per-pixel median-cut, so we leave
+  // dominant null and the filmstrip's reducer toggle falls back to
+  // mean for that fixture). Kept alongside so we mutate BOTH linearRgb
+  // and linearRgbDominant in lock-step below — otherwise a Phase-1
+  // dominant sampled at the pre-sweep nominal position would linger
+  // and diverge from the (swept) mean.
+  let bestDominant: Array<{r: number; g: number; b: number} | null> = [];
   let bestRects: Array<{x: number; y: number; w: number; h: number}> = [];
+  // 2D cartesian scan: horizontal offset × vertical shift. Cheaper
+  // than sequential 1D sweeps in the (rare) case where the horizontal
+  // optimum shifts with vertical position (nonlinear chart tilt), and
+  // total decode count is bounded — |OFFSET_SWEEP| × |VERTICAL_SWEEP|
+  // == 30 rect-quads per fixture. Each decode takes ~50–100ms so a
+  // full sweep adds ~2s per fixture.
   for (const candidate of OFFSET_SWEEP) {
     // Delta in ref-grid units from the app's nominal position to this
     // candidate. colStep=2 → each 1.0 of offsetPitches shifts by 2
     // ref-grid units.
-    const deltaRefUnits = (candidate - MULTI_CARD_OFFSET_PITCHES) * 2;
-    const dxPreview = stepPerRefUnitX * deltaRefUnits;
-    const dyPreview = stepPerRefUnitY * deltaRefUnits;
-    // Shift each multi ref card by the same delta (all slots share
-    // the same x in ref-grid, so all shift together).
-    const candRects = multi.map(slot => {
-      const cx = slot.rect.x + slot.rect.w / 2 + dxPreview;
-      const cy = slot.rect.y + slot.rect.h / 2 + dyPreview;
-      const shifted = {
-        x: Math.round(cx - slot.rect.w / 2),
-        y: Math.round(cy - slot.rect.h / 2),
-        w: slot.rect.w,
-        h: slot.rect.h,
-      };
-      return shifted;
-    });
-    // Preview → source coords.
-    const sourceRois: Roi[] = candRects.map(r => ({
-      x: Math.round(r.x * scaleX),
-      y: Math.round(r.y * scaleY),
-      w: Math.round(r.w * scaleX),
-      h: Math.round(r.h * scaleY),
-    }));
-    let samples: Array<{r: number; g: number; b: number}>;
-    try {
-      samples =
-        fixture.format === 'raw'
-          ? decoder.decodeDngRois(fixture.path, sourceRois)
-          : decoder.decodePhotoRois(fixture.path, sourceRois);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      process.stderr.write(
-        `    multi-sweep: decode at offset ${candidate} failed (${msg}); skipping\n`,
-      );
-      continue;
-    }
-    // Score: sum of linear-RGB squared distance across the SPECTRALLY-
-    // NEUTRAL slots only (whibal, greycard, white). Postit's saturated
-    // yellow is a bad "similarity magnet" — it can only "match" itself
-    // and dominates the sum whenever it's slightly off, biasing the
-    // sweep toward whatever offset happens to reduce postit's error
-    // even at the cost of the three neutrals. Scoring on neutrals
-    // gives a physically-grounded joint fit; postit rides along at
-    // the winning offset (same physical mask assembly, so it's
-    // consistent to sample at the same shift).
-    let score = 0;
-    for (let i = 0; i < multi.length; i++) {
-      const name = multi[i].name;
-      if (name === 'postit') continue;
-      const exp = expectedByName[name];
-      if (!exp) continue;
-      score += linearRgbDist2(samples[i], exp);
-    }
-    if (score < bestScore) {
-      bestScore = score;
-      bestOffset = candidate;
-      bestSamples = samples;
-      bestRects = candRects;
+    const hDeltaRefUnits = (candidate - MULTI_CARD_OFFSET_PITCHES) * 2;
+    for (const vShift of VERTICAL_SWEEP) {
+      // Horizontal shift shares row axis; vertical shift is applied
+      // strictly along the chart's row axis via the same ref-grid
+      // basis (stepPerRefUnitX/Y), preserving any chart tilt.
+      const dxPreview =
+        stepPerRefUnitX * hDeltaRefUnits + -stepPerRefUnitY * vShift;
+      const dyPreview =
+        stepPerRefUnitY * hDeltaRefUnits + stepPerRefUnitX * vShift;
+      // Row-axis basis derivation: the row-perpendicular axis is a
+      // 90° rotation of the col-axis basis (stepPerRefUnitX,
+      // stepPerRefUnitY). For an image with chart rows running left→
+      // right (positive stepPerRefUnitX) and NO tilt, rotating +90°
+      // CCW gives (-stepPerRefUnitY, stepPerRefUnitX); on a portrait
+      // capture stepPerRefUnitY ≈ 0 so this reduces to (0, +unit) —
+      // "positive vShift moves DOWN in image coords". Any small
+      // chart tilt rotates both bases the same amount, so the shift
+      // still runs perpendicular to the chart's actual row axis.
+
+      // Shift each multi ref card by the same combined delta.
+      const candRects = multi.map(slot => {
+        const cx = slot.rect.x + slot.rect.w / 2 + dxPreview;
+        const cy = slot.rect.y + slot.rect.h / 2 + dyPreview;
+        return {
+          x: Math.round(cx - slot.rect.w / 2),
+          y: Math.round(cy - slot.rect.h / 2),
+          w: slot.rect.w,
+          h: slot.rect.h,
+        };
+      });
+      // Preview → source coords.
+      const sourceRois: Roi[] = candRects.map(r => ({
+        x: Math.round(r.x * scaleX),
+        y: Math.round(r.y * scaleY),
+        w: Math.round(r.w * scaleX),
+        h: Math.round(r.h * scaleY),
+      }));
+      let samples: Array<{r: number; g: number; b: number}>;
+      let dominantSamples: Array<{r: number; g: number; b: number} | null>;
+      try {
+        if (fixture.format === 'raw') {
+          const reduced = decoder.decodeDngRoisReduced(
+            fixture.path,
+            sourceRois,
+          );
+          samples = reduced.map(r => r.mean);
+          dominantSamples = reduced.map(r => r.dominant);
+        } else {
+          samples = decoder.decodePhotoRois(fixture.path, sourceRois);
+          dominantSamples = sourceRois.map(() => null);
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        process.stderr.write(
+          `    multi-sweep: decode at (offset=${candidate}, vShift=${vShift.toFixed(2)}) ` +
+            `failed (${msg}); skipping\n`,
+        );
+        continue;
+      }
+      // Score: sum of linear-RGB squared distance across the SPECTRALLY-
+      // NEUTRAL slots only (whibal, greycard, white). Postit's saturated
+      // yellow is a bad "similarity magnet" — it can only "match" itself
+      // and dominates the sum whenever it's slightly off, biasing the
+      // sweep toward whatever offset happens to reduce postit's error
+      // even at the cost of the three neutrals. Scoring on neutrals
+      // gives a physically-grounded joint fit; postit rides along at
+      // the winning offset (same physical mask assembly, so it's
+      // consistent to sample at the same shift).
+      let score = 0;
+      for (let i = 0; i < multi.length; i++) {
+        const name = multi[i].name;
+        if (name === 'postit') continue;
+        const exp = expectedByName[name];
+        if (!exp) continue;
+        score += linearRgbDist2(samples[i], exp);
+      }
+      if (score < bestScore) {
+        bestScore = score;
+        bestOffset = candidate;
+        bestVerticalShift = vShift;
+        bestSamples = samples;
+        bestDominant = dominantSamples;
+        bestRects = candRects;
+      }
     }
   }
   if (bestSamples.length !== multi.length) return; // all candidates failed
 
   // Mutate in place. Also tack on the diagnostic so downstream can
-  // emit it into the JSON.
+  // emit it into the JSON. Both reducer variants are updated so the
+  // filmstrip's mean/dominant radio sees consistent post-sweep values.
   for (let i = 0; i < multi.length; i++) {
     multi[i] = {
       ...multi[i],
       linearRgb: bestSamples[i],
+      linearRgbDominant: bestDominant[i],
       rect: bestRects[i],
     };
   }
-  // Non-enumerable-ish diagnostic: attach to the outcome for buildCaptureEntry.
+  // Non-enumerable-ish diagnostics: attach to the outcome for buildCaptureEntry.
   (outcome as any)._sweepOffset = bestOffset;
-  const nudge = bestOffset !== MULTI_CARD_OFFSET_PITCHES ? ' (nudged)' : '';
+  (outcome as any)._sweepVerticalShift = bestVerticalShift;
+  const nudgeH =
+    bestOffset !== MULTI_CARD_OFFSET_PITCHES ? ' (H-nudged)' : '';
+  const nudgeV = bestVerticalShift !== 0 ? ' (V-nudged↓)' : '';
   process.stderr.write(
-    `    multi-sweep: chose offsetPitches=${bestOffset.toFixed(2)}${nudge}` +
+    `    multi-sweep: chose offsetPitches=${bestOffset.toFixed(2)}` +
+      ` vShift=${bestVerticalShift.toFixed(2)}${nudgeH}${nudgeV}` +
       ` for ${path.basename(fixture.path)}\n`,
   );
 }
