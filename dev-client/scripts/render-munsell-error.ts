@@ -106,6 +106,13 @@ type Sample = {
   // Lets the filmstrip facet by shot type across a whole batch —
   // e.g. "does burstavg do noticeably better than a single frame?"
   captureType: string;
+  // Illumination bucket, derived from the enriched-filename
+  // `lightSLUG` tag (lightsun / lightshade / lightled5000k / …) OR
+  // from the parent directory path (e.g. "direct sunlight" / "open
+  // shade" / "cloudy"). Lets the filmstrip A/B compare light
+  // conditions on the same physical chart. 'unknown' when neither
+  // source yields a hit.
+  illumination: string;
 };
 
 // Recognise device from either the directory path (legacy fixtures
@@ -164,6 +171,29 @@ const captureTypeOf = (label: string): string => {
   m = lower.match(/manual_iso(\d+)_shut([a-z0-9]+)/);
   if (m) return `manual_iso${m[1]}_shut${m[2]}`;
   return 'single';
+};
+
+// Illumination bucket. Reads from two sources, filename first (more
+// authoritative when present) then parent directory. Filename source
+// is the enriched `lightSLUG` token that parseFixtureFilename in
+// analyze-fixtures.ts pushes into `tags` verbatim — we strip the
+// prefix here to get 'sun' / 'shade' / 'led5000k'. Path source is
+// the fixture-batch subdir naming convention (e.g. "0824 direct
+// sunlight" → 'sun', "0824 open shade" → 'shade', "cloudy" →
+// 'cloudy'), useful for legacy batches captured before the enriched
+// filename convention landed. Returns 'unknown' when neither hits.
+const illuminationOf = (sourcePath: string, tags: string[]): string => {
+  for (const t of tags) {
+    if (t.startsWith('light') && t.length > 5) return t.slice(5);
+  }
+  const lower = sourcePath.toLowerCase();
+  if (lower.includes('direct sunlight') || lower.includes('direct sun')) {
+    return 'sun';
+  }
+  if (lower.includes('open shade') || lower.includes('shade')) return 'shade';
+  if (lower.includes('cloudy') || lower.includes('overcast')) return 'cloudy';
+  if (lower.includes('indoor')) return 'indoor';
+  return 'unknown';
 };
 
 const runDoc = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
@@ -246,6 +276,7 @@ for (const cap of runDoc.captures) {
       rawRgbDominant: cell.raw_linear_rgb_dominant ?? null,
       refOptions,
       captureType: captureTypeOf(cap.label ?? ''),
+      illumination: illuminationOf(sourcePath, cap.environment?.tags ?? []),
     });
   }
 }
@@ -486,6 +517,9 @@ const html = `<!DOCTYPE html>
       </fieldset>
       <fieldset id="ctl-capture-type">
         <legend>Capture type (burst / avg / manual)</legend>
+      </fieldset>
+      <fieldset id="ctl-illumination">
+        <legend>Illumination (sun / shade / …)</legend>
       </fieldset>
       <fieldset id="ctl-fixture">
         <legend>Fixture (narrowed by card / device / format / bg / capture type)</legend>
@@ -1051,6 +1085,12 @@ const state = {
   // kind (e.g. only burstavg captures, only manual_iso100_shut33ms)
   // without picking each fixture by name.
   captureType: new Set(),
+  // Illumination multi-select. Buckets are 'sun', 'shade', 'cloudy',
+  // 'indoor', 'ledXXXXk', 'unknown'. Derived from the enriched-filename
+  // 'lightSLUG' tag first, then from the fixture parent directory
+  // path (see illuminationOf). Lets the user A/B compare the same
+  // chart under direct sunlight vs. open shade on a mixed batch.
+  illumination: new Set(),
   // Client-side WB reference cards. First is required (default =
   // greycard, the most-trusted anchor); second is optional (default
   // = 'none' → single-ref gain-only fit). Picking a second enables
@@ -1125,6 +1165,11 @@ const HEATMAP_AXIS_OPTIONS = [
   // can answer "does burstavg beat a single frame?" or "is manual
   // iso400 worse than auto?" head-to-head.
   {value: 'captureType', label: 'capture type (burst / avg / manual)'},
+  // Light-source bucket per fixture (sun / shade / cloudy / led / …),
+  // derived by illuminationOf. Same physical chart under different
+  // light sits side-by-side; picking this on the row or facet axis
+  // lets you see how a light change moves ΔE at the chip level.
+  {value: 'illumination', label: 'illumination (sun / shade / …)'},
   // WB anchor split — one row/col per anchor (whibal / greycard /
   // postit / white / self / paper). OVERRIDES the global "First
   // reference" pick for scoring: for each sample, we produce one
@@ -1171,6 +1216,7 @@ function axisValueOf(s, axis) {
     case 'bg':         return s.bg;
     case 'fixture':    return s.fixtureLabel;
     case 'captureType':return s.captureType;
+    case 'illumination':return s.illumination;
     case 'anchor':     return s.anchor ?? null;
     case 'expValue':   return exp ? exp.value : null;
     case 'meaValue':   return mea ? mea.value : null;
@@ -1268,6 +1314,7 @@ const URL_STATE_SPEC = [
   ['bg',         'bg',     'set'],
   ['card',       'card',   'set'],
   ['captureType','captype','set'],
+  ['illumination','illum','set'],
   ['fixture',    'fixture','set'],
   ['firstRef',   'ref1',   'scalar'],
   ['secondRef',  'ref2',   'scalar'],
@@ -1411,6 +1458,9 @@ function initControls() {
   bindMultiSelect('ctl-capture-type', 'captureType',
     uniqueValues(SAMPLES, 'captureType'),
     () => rebuildFixtureControl());
+  bindMultiSelect('ctl-illumination', 'illumination',
+    uniqueValues(SAMPLES, 'illumination'),
+    () => rebuildFixtureControl());
 
   // Fixture picker. Options list is dynamically reduced to fixtures
   // matching current device / bg / card / format filters. Rebuilt on
@@ -1430,6 +1480,8 @@ function initControls() {
       if (state.card.size > 0   && !state.card.has(s.page))     continue;
       if (state.captureType.size > 0 &&
           !state.captureType.has(s.captureType)) continue;
+      if (state.illumination.size > 0 &&
+          !state.illumination.has(s.illumination)) continue;
       allowed.add(s.fixtureLabel);
     }
     const opts = [...allowed].sort();
@@ -1531,6 +1583,8 @@ function initControls() {
       if (state.card.size > 0   && !state.card.has(s.page))     continue;
       if (state.captureType.size > 0 &&
           !state.captureType.has(s.captureType)) continue;
+      if (state.illumination.size > 0 &&
+          !state.illumination.has(s.illumination)) continue;
       if (state.fixture.size > 0 && !state.fixture.has(s.fixtureLabel)) continue;
       if (state.excludeFlaggedChips && EXCLUDED_CHIPS.has(s.expected)) continue;
       if (state.excludeFlaggedCards && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
@@ -1744,6 +1798,8 @@ function filterSamples() {
     if (state.card.size > 0   && !state.card.has(s.page))     continue;
     if (state.captureType.size > 0 &&
         !state.captureType.has(s.captureType)) continue;
+    if (state.illumination.size > 0 &&
+        !state.illumination.has(s.illumination)) continue;
     if (state.fixture.size > 0 && !state.fixture.has(s.fixtureLabel)) continue;
     if (s.illumUnevenness !== null && s.illumUnevenness > uMax) continue;
     if (state.minSignal > 0) {
