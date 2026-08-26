@@ -1,11 +1,14 @@
 #include "DngPipeline.hpp"
 
+#include "MedianCut.hpp"
+
 #include <algorithm>
 #include <array>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <stdexcept>
+#include <vector>
 
 namespace dngdecoder {
 
@@ -271,6 +274,102 @@ LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roiIn) {
       std::clamp(srgb[2], 0.0, 1.0),
   };
   return out;
+}
+
+namespace {
+
+// Apply the sensor→linear-sRGB colour pipeline to an already-averaged
+// (or per-pixel) sensor triple. Extracted from decodeRoi so
+// decodeRoiReduced can call it PER PIXEL — median-cut needs each
+// individual pixel in linear-sRGB space, not just the mean.
+LinearRgbF sensorToLinearSrgb(const ParsedDng& dng,
+                              std::array<double, 3> sensor) {
+  for (int c = 0; c < 3; ++c) {
+    const double n = dng.asShotNeutral[c];
+    if (n > 0) sensor[c] /= n;
+  }
+  std::array<double, 3> xyz;
+  if (dng.hasForwardMatrix2) {
+    const std::array<double, 3> xyz_d50 =
+        matVec(dng.forwardMatrix2, sensor);
+    xyz = matVec(BRADFORD_D50_TO_D65, xyz_d50);
+  } else {
+    const auto& cmatrix =
+        dng.hasColorMatrix2 ? dng.colorMatrix2 : dng.colorMatrix1;
+    const auto sensorToXyz = invert3x3(cmatrix);
+    xyz = matVec(sensorToXyz, sensor);
+  }
+  const std::array<double, 3> srgb = matVec(XYZ_D65_TO_SRGB_LINEAR, xyz);
+  return {
+      std::clamp(srgb[0], 0.0, 1.0),
+      std::clamp(srgb[1], 0.0, 1.0),
+      std::clamp(srgb[2], 0.0, 1.0),
+  };
+}
+
+// Read one sensor pixel and normalise (deblack + range-scale) — no
+// colour pipeline yet. Returns a sensor-space triple.
+// For LinearRaw the pixel is already 3-channel; for CFA we demosaic.
+std::array<double, 3> readSensorPixel(const ParsedDng& dng,
+                                      uint32_t x, uint32_t y) {
+  std::array<double, 3> s{0, 0, 0};
+  if (dng.layout == PixelLayout::LinearRaw) {
+    const size_t base = size_t(y) * size_t(dng.width) * 3 + size_t(x) * 3;
+    for (int c = 0; c < 3; ++c) {
+      const double v = dng.pixels[base + size_t(c)];
+      const double bl = dng.blackLevel[c];
+      const double range = dng.whiteLevel - bl;
+      if (range <= 0.0) continue;
+      const double n = (v - bl) / range;
+      s[c] = (n < 0.0 ? 0.0 : (n > 1.0 ? 1.0 : n));
+    }
+  } else {
+    s = demosaicOne(dng, x, y);
+  }
+  return s;
+}
+
+}  // namespace
+
+RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
+  if (roiIn.w == 0 || roiIn.h == 0) {
+    throw std::runtime_error("DNG pipeline: empty ROI");
+  }
+  const RoiPx roi =
+      rotateRoiToSensor(roiIn, dng.orientation, dng.cropRect);
+  if (roi.x + roi.w > dng.width || roi.y + roi.h > dng.height) {
+    throw std::runtime_error("DNG pipeline: ROI out of image bounds");
+  }
+
+  // Two accumulators: sensor-space sum for the mean (matches decodeRoi's
+  // math exactly), and a vector of per-pixel linear-sRGB values for
+  // the median-cut dominant. Reserve up front — ROI sizes are known.
+  std::array<double, 3> sensorSum{0, 0, 0};
+  const uint64_t total = uint64_t(roi.w) * roi.h;
+  std::vector<LinearRgbF> pixels;
+  pixels.reserve(size_t(total));
+
+  for (uint32_t j = 0; j < roi.h; ++j) {
+    for (uint32_t i = 0; i < roi.w; ++i) {
+      const auto s = readSensorPixel(dng, roi.x + i, roi.y + j);
+      sensorSum[0] += s[0];
+      sensorSum[1] += s[1];
+      sensorSum[2] += s[2];
+      pixels.push_back(sensorToLinearSrgb(dng, s));
+    }
+  }
+
+  // Mean via the classic per-ROI pipeline pass (single matrix apply on
+  // the sensor-averaged triple) — byte-for-byte matches decodeRoi so
+  // callers using either function agree.
+  const std::array<double, 3> sensorAvg{
+      sensorSum[0] / total, sensorSum[1] / total, sensorSum[2] / total};
+  const LinearRgbF mean = sensorToLinearSrgb(dng, sensorAvg);
+
+  // Dominant via median-cut on the already-pipelined per-pixel values.
+  const LinearRgbF dominant = dominantLinearRgb(pixels);
+
+  return {mean, dominant};
 }
 
 namespace {

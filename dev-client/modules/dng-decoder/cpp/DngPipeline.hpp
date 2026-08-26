@@ -26,9 +26,26 @@ struct LinearRgbF {
   double b;
 };
 
+// Two-reducer result: `mean` is the classic per-channel arithmetic
+// average (biased by highlights + off-tone flecks), `dominant` is the
+// median-cut posterise "biggest colour cluster" (robust to a handful
+// of outlier pixels). See MedianCut.hpp for algorithm details.
+struct RoiReduced {
+  LinearRgbF mean;
+  LinearRgbF dominant;
+};
+
 // Decode a single ROI. Averages the demosaiced patch and applies the
 // color pipeline once per ROI (rather than per pixel).
 LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roi);
+
+// Decode a single ROI, returning both the per-channel mean AND the
+// median-cut dominant colour. Uses a per-pixel color pipeline pass
+// (slower than decodeRoi's per-ROI pass) since the dominant needs
+// per-pixel linear-sRGB values as input to the median-cut binning.
+// The returned `mean` is byte-identical to what decodeRoi returns
+// for the same ROI (modulo double-precision rounding).
+RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roi);
 
 // Sub-sampled preview render. Produces an ARGB8888 buffer (each
 // uint32_t = 0xFF__RRGGBB) suitable for direct Bitmap.ARGB_8888
