@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {Alert, Text as RNText, StyleSheet, TextInput, View} from 'react-native';
 
 import {DngDecoderHybrid} from 'dng-decoder';
@@ -55,6 +55,11 @@ import {
   setRawAnalysisCrop,
   useRawAnalysisSession,
 } from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/rawAnalysisSession';
+
+// Shared with soil-id RawColorAnalysisScreen so both screens open on
+// the user's last-used reducer choice. Kept in sync manually with the
+// key declared there.
+const LAST_USED_REDUCER_KEY = 'soilColor.lastUsedReducer';
 
 export type CalibrateReferenceProps = {
   /** file:// URI to the captured DNG. */
@@ -102,24 +107,27 @@ export const CalibrateReferenceScreen = ({
   // inline TextInput pre-filled with the auto-generated name and
   // Save/Cancel buttons. Mirrors the soil-id RawColorAnalysisScreen
   // results view.
-  const [pendingSave, setPendingSave] = useState<null | {
-    defaultName: string;
-    illuminant: string | undefined;
-    // Computed calibrated linear-sRGB for the new card — persisted on
-    // Save via customReferences and shown in the "New ref" column's
-    // bottom swatch.
-    expected: LinearRgb;
-    // Known ref's expected linear-sRGB (bottom swatch of "Existing
-    // ref" column).
-    knownExpected: LinearRgb;
-    // Per-ROI measured averages (middle swatch of each column).
-    knownMeasured: LinearRgb;
-    newMeasured: LinearRgb;
-    // Human-readable label for the "Existing ref" column bottom
-    // swatch — the picked known reference's name.
-    knownName: string;
-  }>(null);
+  const [pendingSave, setPendingSave] = useState<PendingSave | null>(null);
   const [editableName, setEditableName] = useState('');
+  // Sticky mean/dominant pick, mirrored from the soil-id analysis
+  // screen so both screens open on the user's last-used choice.
+  const [reducer, setReducer] = useState<'mean' | 'dominant'>(
+    () =>
+      (kvStorage.getString(LAST_USED_REDUCER_KEY) as
+        | 'mean'
+        | 'dominant'
+        | undefined) ?? 'mean',
+  );
+  const onSelectReducer = useCallback((v: 'mean' | 'dominant') => {
+    setReducer(v);
+    kvStorage.setString(LAST_USED_REDUCER_KEY, v);
+    // Rebuild pendingSave (if any) with the new reducer — this
+    // re-runs computeCalibratedReference against the OTHER measurement
+    // variant. Cheap; no re-decode.
+    setPendingSave(prev =>
+      prev ? rebuildPendingSaveForReducer(prev, v) : prev,
+    );
+  }, []);
 
   // Mount effect — renders preview, seeds crops from the on-camera
   // hint boxes, then immediately kicks off the decode/rank/save-prep
@@ -177,6 +185,7 @@ export const CalibrateReferenceScreen = ({
         sensorWidth,
         sensorHeight,
         knownRefId,
+        reducer,
         onPendingSave: p => {
           setEditableName('');
           setPendingSave(p);
@@ -185,6 +194,11 @@ export const CalibrateReferenceScreen = ({
         onCancelFlow: () => navigation.pop(),
       });
     })();
+    // reducer intentionally NOT a dep — mount effect fires once,
+    // seeded with the initial reducer. Post-mount toggles reroute via
+    // rebuildPendingSaveForReducer inside onSelectReducer above, not
+    // via a re-decode.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dngPath, sensorWidth, sensorHeight, knownRefId, navigation]);
 
   if (previewError) {
@@ -224,6 +238,8 @@ export const CalibrateReferenceScreen = ({
                     navigation.pop();
                   });
                 }}
+                reducer={reducer}
+                onSelectReducer={onSelectReducer}
               />
             )}
         </Column>
@@ -293,22 +309,19 @@ const CalibrateResultsPanel = ({
   onNameChange,
   onCancel,
   onSave,
+  reducer,
+  onSelectReducer,
 }: {
   preview: {uri: string; width: number; height: number};
   refCrop: RawCrop;
   sampleCrop: RawCrop;
-  pending: {
-    defaultName: string;
-    expected: LinearRgb;
-    knownExpected: LinearRgb;
-    knownMeasured: LinearRgb;
-    newMeasured: LinearRgb;
-    knownName: string;
-  };
+  pending: PendingSave;
   nameValue: string;
   onNameChange: (v: string) => void;
   onCancel: () => void;
   onSave: () => void;
+  reducer: 'mean' | 'dominant';
+  onSelectReducer: (v: 'mean' | 'dominant') => void;
 }) => {
   // Convert the session's square RawCrops into the PreviewRect shape
   // PipelineColumn wants for its SVG viewBox.
@@ -342,6 +355,22 @@ const CalibrateResultsPanel = ({
         />
       </Row>
       <Paragraph>{rgbLine}</Paragraph>
+      <Row space="sm">
+        <Box flex={1}>
+          <ContainedButton
+            label={`${reducer === 'mean' ? '✓ ' : ''}Mean (average)`}
+            onPress={() => onSelectReducer('mean')}
+            stretchToFit={true}
+          />
+        </Box>
+        <Box flex={1}>
+          <ContainedButton
+            label={`${reducer === 'dominant' ? '✓ ' : ''}Dominant (posterise)`}
+            onPress={() => onSelectReducer('dominant')}
+            stretchToFit={true}
+          />
+        </Box>
+      </Row>
       <TextInput
         value={nameValue}
         onChangeText={onNameChange}
@@ -424,7 +453,12 @@ const decodeCalibrationCrops = async ({
   preview: {width: number; height: number};
   knownCrop: RawCrop;
   newCrop: RawCrop;
-}): Promise<{knownMeasured: LinearRgb; newMeasured: LinearRgb}> => {
+}): Promise<{
+  knownMeasured: LinearRgb;
+  newMeasured: LinearRgb;
+  knownMeasuredDominant: LinearRgb;
+  newMeasuredDominant: LinearRgb;
+}> => {
   const previewIsPortrait = preview.width < preview.height;
   const rawSensorIsPortrait = sensorWidth < sensorHeight;
   const effectiveSensorWidth =
@@ -447,15 +481,25 @@ const decodeCalibrationCrops = async ({
   console.log(
     `  knownROI(sensor)=${JSON.stringify(knownSensor)} newROI(sensor)=${JSON.stringify(newSensor)}`,
   );
-  const [knownMeasured, newMeasured] = await DngDecoderHybrid.decodeDngRois(
-    dngPath,
-    [knownSensor, newSensor],
-  );
+  // Single call returns both reducers per ROI; the caller lets the
+  // user switch which one is fed into computeCalibratedReference.
+  const [knownReduced, newReduced] =
+    await DngDecoderHybrid.decodeDngRoisReduced(dngPath, [
+      knownSensor,
+      newSensor,
+    ]);
   console.log(
-    `  decoded known=(${knownMeasured.r.toFixed(3)},${knownMeasured.g.toFixed(3)},${knownMeasured.b.toFixed(3)}) ` +
-      `new=(${newMeasured.r.toFixed(3)},${newMeasured.g.toFixed(3)},${newMeasured.b.toFixed(3)})`,
+    `  decoded known mean=(${knownReduced.mean.r.toFixed(3)},${knownReduced.mean.g.toFixed(3)},${knownReduced.mean.b.toFixed(3)}) ` +
+      `dom=(${knownReduced.dominant.r.toFixed(3)},${knownReduced.dominant.g.toFixed(3)},${knownReduced.dominant.b.toFixed(3)}) ` +
+      `new mean=(${newReduced.mean.r.toFixed(3)},${newReduced.mean.g.toFixed(3)},${newReduced.mean.b.toFixed(3)}) ` +
+      `dom=(${newReduced.dominant.r.toFixed(3)},${newReduced.dominant.g.toFixed(3)},${newReduced.dominant.b.toFixed(3)})`,
   );
-  return {knownMeasured, newMeasured};
+  return {
+    knownMeasured: knownReduced.mean,
+    newMeasured: newReduced.mean,
+    knownMeasuredDominant: knownReduced.dominant,
+    newMeasuredDominant: newReduced.dominant,
+  };
 };
 
 // Compute the calibrated linear-sRGB and pre-fill an auto-name, then
@@ -469,24 +513,49 @@ const decodeCalibrationCrops = async ({
 // e.g. "WhiBal G7 recal 20260825-1637". Illuminant pulled from the
 // Session Context MMKV (RawColorTools' munsellSession.illuminant) if
 // set, otherwise blank.
-const buildPendingSave = (
-  known: AvailableReference,
-  knownMeasured: LinearRgb,
-  newMeasured: LinearRgb,
-): {
+// The pendingSave payload carries BOTH reducer variants of each
+// measurement so the results panel can flip between them without
+// re-decoding. `reducer` = the currently-picked reducer (drives
+// which measurement pair feeds computeCalibratedReference); toggling
+// it in the panel rebuilds via `withReducer` below.
+type PendingSave = {
   defaultName: string;
   illuminant: string | undefined;
   expected: LinearRgb;
   knownExpected: LinearRgb;
+  // Currently-active measurements, matching `reducer`. Displayed in
+  // the pipeline column swatches.
   knownMeasured: LinearRgb;
   newMeasured: LinearRgb;
+  // All four reducer variants, kept alongside so the panel toggle
+  // can rebuild the active pair without re-decoding.
+  knownMeasuredMean: LinearRgb;
+  newMeasuredMean: LinearRgb;
+  knownMeasuredDominant: LinearRgb;
+  newMeasuredDominant: LinearRgb;
+  reducer: 'mean' | 'dominant';
   knownName: string;
-} => {
-  const expected = computeCalibratedReference(
-    knownMeasured,
-    known.linearRgb,
-    newMeasured,
-  );
+};
+
+const buildPendingSave = (
+  known: AvailableReference,
+  measurements: {
+    knownMeasured: LinearRgb;
+    newMeasured: LinearRgb;
+    knownMeasuredDominant: LinearRgb;
+    newMeasuredDominant: LinearRgb;
+  },
+  reducer: 'mean' | 'dominant',
+): PendingSave => {
+  const knownM =
+    reducer === 'dominant'
+      ? measurements.knownMeasuredDominant
+      : measurements.knownMeasured;
+  const newM =
+    reducer === 'dominant'
+      ? measurements.newMeasuredDominant
+      : measurements.newMeasured;
+  const expected = computeCalibratedReference(knownM, known.linearRgb, newM);
   const now = new Date();
   const pad = (n: number) => String(n).padStart(2, '0');
   const stamp =
@@ -500,9 +569,37 @@ const buildPendingSave = (
     illuminant,
     expected,
     knownExpected: known.linearRgb,
-    knownMeasured,
-    newMeasured,
+    knownMeasured: knownM,
+    newMeasured: newM,
+    knownMeasuredMean: measurements.knownMeasured,
+    newMeasuredMean: measurements.newMeasured,
+    knownMeasuredDominant: measurements.knownMeasuredDominant,
+    newMeasuredDominant: measurements.newMeasuredDominant,
+    reducer,
     knownName: known.name,
+  };
+};
+
+// Re-derive a PendingSave for a different reducer choice, reusing
+// the measurements + illuminant + knownName that don't depend on
+// the reducer pick. computeCalibratedReference is pure so this is
+// cheap — no re-decode, no I/O.
+const rebuildPendingSaveForReducer = (
+  prev: PendingSave,
+  reducer: 'mean' | 'dominant',
+): PendingSave => {
+  const knownM =
+    reducer === 'dominant'
+      ? prev.knownMeasuredDominant
+      : prev.knownMeasuredMean;
+  const newM =
+    reducer === 'dominant' ? prev.newMeasuredDominant : prev.newMeasuredMean;
+  return {
+    ...prev,
+    reducer,
+    knownMeasured: knownM,
+    newMeasured: newM,
+    expected: computeCalibratedReference(knownM, prev.knownExpected, newM),
   };
 };
 
@@ -527,7 +624,9 @@ const runCalibrate = async (args: {
   sensorWidth: number;
   sensorHeight: number;
   knownRefId: string | undefined;
-  onPendingSave: (p: ReturnType<typeof buildPendingSave>) => void;
+  // Initial reducer pick — the panel toggle can flip it after mount.
+  reducer: 'mean' | 'dominant';
+  onPendingSave: (p: PendingSave) => void;
   onCancelFlow: () => void;
 }): Promise<void> => {
   const {
@@ -538,11 +637,17 @@ const runCalibrate = async (args: {
     sensorWidth,
     sensorHeight,
     knownRefId,
+    reducer,
     onPendingSave,
     onCancelFlow,
   } = args;
   logCalibrateStep('decode start');
-  let decoded: {knownMeasured: LinearRgb; newMeasured: LinearRgb};
+  let decoded: {
+    knownMeasured: LinearRgb;
+    newMeasured: LinearRgb;
+    knownMeasuredDominant: LinearRgb;
+    newMeasuredDominant: LinearRgb;
+  };
   try {
     decoded = await decodeCalibrationCrops({
       dngPath,
@@ -561,8 +666,19 @@ const runCalibrate = async (args: {
     return;
   }
 
+  // Rank the known ROI against builtin + custom references using the
+  // CURRENTLY-active reducer so the top pick matches what the user
+  // sees in the panel. When they flip the reducer in the panel, the
+  // rebuild path re-runs computeCalibratedReference — the ranking
+  // isn't re-run (auto-pick has already committed to a known ref),
+  // which is fine because the calibration math doesn't rely on
+  // re-ranking.
+  const rankingMeasured =
+    reducer === 'dominant'
+      ? decoded.knownMeasuredDominant
+      : decoded.knownMeasured;
   const customRefs = listCustomReferences();
-  const ranked = rankReferences(decoded.knownMeasured, customRefs);
+  const ranked = rankReferences(rankingMeasured, customRefs);
   if (ranked.length === 0) {
     Alert.alert(
       'No references available',
@@ -599,9 +715,7 @@ const runCalibrate = async (args: {
         `(rank ${rank}/${ranked.length}, ` +
         `ΔE ${you?.deltaE.toFixed(1) ?? '?'} vs measured)`,
     );
-    onPendingSave(
-      buildPendingSave(picked, decoded.knownMeasured, decoded.newMeasured),
-    );
+    onPendingSave(buildPendingSave(picked, decoded, reducer));
     return;
   }
   // Fallback: no valid pre-selection → confirm top match.
@@ -619,9 +733,7 @@ const runCalibrate = async (args: {
       {
         text: 'Use this ref',
         onPress: () => {
-          onPendingSave(
-            buildPendingSave(top, decoded.knownMeasured, decoded.newMeasured),
-          );
+          onPendingSave(buildPendingSave(top, decoded, reducer));
         },
       },
     ],

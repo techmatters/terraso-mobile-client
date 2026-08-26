@@ -67,6 +67,9 @@ import {useDispatch} from 'terraso-mobile-client/store';
 // builtin renamed), the auto-select silently falls back to the top-
 // ranked entry — see resolveInitialRefId below.
 const LAST_USED_REF_KEY = 'soilColor.lastUsedReferenceId';
+// Sticky picker for the mean/dominant ROI reducer — see the state
+// initialiser on RawColorAnalysisScreen.
+const LAST_USED_REDUCER_KEY = 'soilColor.lastUsedReducer';
 
 // Confidence = max(0, 1 - deltaE/40). At the threshold below (0.6)
 // deltaE is ~16 — a meaningful chromaticity mismatch between the
@@ -134,12 +137,34 @@ export const RawColorAnalysisScreen = ({
   const [analyzed, setAnalyzed] = useState<{
     card: LinearRgb;
     sample: LinearRgb;
+    // Median-cut dominant companions to card/sample, for the reducer
+    // toggle below. Same units + coord frame.
+    cardDominant: LinearRgb;
+    sampleDominant: LinearRgb;
     ranked: RankedReference[];
     refRect: PreviewRect;
     sampleRect: PreviewRect;
     preview: {uri: string; width: number; height: number};
   } | null>(null);
   const [selectedRefId, setSelectedRefId] = useState<string | null>(null);
+  // Reducer pick. 'mean' = per-channel arithmetic average of the ROI
+  // (the new pipeline's default). 'dominant' = median-cut biggest-
+  // cluster centroid — same semantic as the legacy JPEG dominantColor
+  // path, robust to a handful of off-tone flecks in the sample.
+  // Persisted per-session in kvStorage; each subsequent capture opens
+  // on whatever the user last picked so an A/B comparison across
+  // shutters stays stable without re-toggling.
+  const [reducer, setReducer] = useState<'mean' | 'dominant'>(
+    () =>
+      (kvStorage.getString(LAST_USED_REDUCER_KEY) as
+        | 'mean'
+        | 'dominant'
+        | undefined) ?? 'mean',
+  );
+  const onSelectReducer = useCallback((v: 'mean' | 'dominant') => {
+    setReducer(v);
+    kvStorage.setString(LAST_USED_REDUCER_KEY, v);
+  }, []);
   // Flipped true only AFTER renderPreview for the CURRENT dngPath has
   // completed and repopulated the module-scope session. Gates the
   // auto-analyze effect below so it doesn't fire with a stale
@@ -195,7 +220,7 @@ export const RawColorAnalysisScreen = ({
       sampleRect: PreviewRect,
     ) => {
       setAnalyzing(true);
-      let decoded: {card: LinearRgb; sample: LinearRgb};
+      let decoded: Awaited<ReturnType<typeof decodeRects>>;
       try {
         decoded = await decodeRects({
           dngPath,
@@ -213,12 +238,13 @@ export const RawColorAnalysisScreen = ({
       }
 
       // Rank predefined + user-calibrated references against the
-      // measured card. No modal picker — the result view below the
-      // preview shows a Select dropdown and lets the user change the
-      // reference in-place, with the Munsell result recomputing as
-      // they do. Auto-select "last used" (persisted across captures)
-      // if it's still in the ranked list, else the top-ranked entry.
-      const ranked = rankReferences(decoded.card, listCustomReferences());
+      // measured card. Ranking uses the CURRENTLY-active reducer so
+      // the top-ranked entry matches what the user sees in the
+      // pipeline column. When the toggle flips, the reranking + auto-
+      // reselect happen in the reactiveRank useMemo below.
+      const activeCardForRank =
+        reducer === 'dominant' ? decoded.cardDominant : decoded.card;
+      const ranked = rankReferences(activeCardForRank, listCustomReferences());
       const persisted = kvStorage.getString(LAST_USED_REF_KEY);
       const initialRefId =
         persisted && ranked.some(r => r.id === persisted)
@@ -227,6 +253,8 @@ export const RawColorAnalysisScreen = ({
       setAnalyzed({
         card: decoded.card,
         sample: decoded.sample,
+        cardDominant: decoded.cardDominant,
+        sampleDominant: decoded.sampleDominant,
         ranked,
         refRect,
         sampleRect,
@@ -235,7 +263,7 @@ export const RawColorAnalysisScreen = ({
       setSelectedRefId(initialRefId);
       setAnalyzing(false);
     },
-    [dngPath, sensorWidth, sensorHeight],
+    [dngPath, sensorWidth, sensorHeight, reducer],
   );
 
   // Manual-picker Analyze button — pulls crops from the session and
@@ -288,29 +316,56 @@ export const RawColorAnalysisScreen = ({
     );
   }, [previewReady, preSelectedDisplayRois, session.preview, runAnalyze]);
 
+  // Reducer-aware active card/sample pair. Downstream ranking + WB +
+  // Munsell all consume these; flipping the reducer toggle just
+  // re-derives without re-decoding the DNG.
+  const activeCard = useMemo<LinearRgb | null>(() => {
+    if (!analyzed) return null;
+    return reducer === 'dominant' ? analyzed.cardDominant : analyzed.card;
+  }, [analyzed, reducer]);
+  const activeSample = useMemo<LinearRgb | null>(() => {
+    if (!analyzed) return null;
+    return reducer === 'dominant' ? analyzed.sampleDominant : analyzed.sample;
+  }, [analyzed, reducer]);
+
+  // Re-rank references whenever the reducer flips. The initial rank
+  // in runAnalyze uses the reducer active at capture time; when the
+  // toggle changes here, references are re-scored against the newly-
+  // active card. selectedRefId is preserved when it still exists in
+  // the new ranking; otherwise falls back to the top entry.
+  const ranked = useMemo<RankedReference[]>(() => {
+    if (!analyzed || !activeCard) return [];
+    return rankReferences(activeCard, listCustomReferences());
+  }, [analyzed, activeCard]);
+  useEffect(() => {
+    if (ranked.length === 0) return;
+    setSelectedRefId(prev => {
+      if (prev && ranked.some(r => r.id === prev)) return prev;
+      return ranked[0]?.id ?? null;
+    });
+  }, [ranked]);
+
   // Currently-selected ranked entry. Null if analyzed hasn't run yet
-  // or if selectedRefId doesn't resolve (e.g. stale kvStorage entry
-  // that got pruned — shouldn't happen given resolveInitialRefId
-  // above, but the type demands the guard).
+  // or if selectedRefId doesn't resolve.
   const selectedRef: RankedReference | null = useMemo(() => {
-    if (!analyzed || !selectedRefId) return null;
-    return analyzed.ranked.find(r => r.id === selectedRefId) ?? null;
-  }, [analyzed, selectedRefId]);
+    if (!selectedRefId) return null;
+    return ranked.find(r => r.id === selectedRefId) ?? null;
+  }, [ranked, selectedRefId]);
 
   // Recompute Munsell whenever card/sample/selected-reference changes.
   // Splitting the color computation out of the dispatch effect below
   // lets us render the notation in the result view without triggering
   // an extra Redux round-trip.
   const munsell = useMemo(() => {
-    if (!analyzed || !selectedRef) return null;
+    if (!activeCard || !activeSample || !selectedRef) return null;
     const result = getColorFromLinearRgb(
-      analyzed.card,
-      analyzed.sample,
+      activeCard,
+      activeSample,
       selectedRef.linearRgb,
     );
     const hvc = 'result' in result ? result.result : result.nearestValidResult;
     return {hvc, text: munsellToString(hvc)};
-  }, [analyzed, selectedRef]);
+  }, [activeCard, activeSample, selectedRef]);
 
   // Dispatch the current Munsell to Redux whenever it changes — same
   // aggressive-save semantics as the rest of the color screen. Backing
@@ -410,11 +465,11 @@ export const RawColorAnalysisScreen = ({
           {!analyzed && preSelectedDisplayRois && analyzing && (
             <Paragraph>Analyzing…</Paragraph>
           )}
-          {analyzed && selectedRef && munsell && (
+          {analyzed && activeCard && activeSample && selectedRef && munsell && (
             <ResultView
-              card={analyzed.card}
-              sample={analyzed.sample}
-              ranked={analyzed.ranked}
+              card={activeCard}
+              sample={activeSample}
+              ranked={ranked}
               selectedRef={selectedRef}
               munsellText={munsell.text}
               munsellHvc={munsell.hvc}
@@ -423,6 +478,8 @@ export const RawColorAnalysisScreen = ({
               refRect={analyzed.refRect}
               sampleRect={analyzed.sampleRect}
               preview={analyzed.preview}
+              reducer={reducer}
+              onSelectReducer={onSelectReducer}
             />
           )}
         </Column>
@@ -449,6 +506,8 @@ const ResultView = ({
   refRect,
   sampleRect,
   preview,
+  reducer,
+  onSelectReducer,
 }: {
   card: LinearRgb;
   sample: LinearRgb;
@@ -461,6 +520,8 @@ const ResultView = ({
   refRect: PreviewRect;
   sampleRect: PreviewRect;
   preview: {uri: string; width: number; height: number};
+  reducer: 'mean' | 'dominant';
+  onSelectReducer: (v: 'mean' | 'dominant') => void;
 }) => {
   const lowConfidence =
     selectedRef.confidence < LOW_CONFIDENCE_WARNING_THRESHOLD;
@@ -499,6 +560,7 @@ const ResultView = ({
       <Text variant="body1" bold>
         Soil color: {munsellText}
       </Text>
+      <ReducerToggle value={reducer} onChange={onSelectReducer} />
       <Select<string, false>
         nullable={false}
         options={ranked.map(r => r.id)}
@@ -566,6 +628,37 @@ const PreviewThumbnail = ({
   </Box>
 );
 
+// Two-button "segmented" toggle for the ROI reducer pick. Kept simple
+// (a pair of ContainedButtons in a row, filled/outlined by state) so
+// it renders identically on iOS + Android without pulling in a
+// segmented-control lib. The Munsell result + ranking below reactively
+// recompute the instant the value changes — no re-decode, so switches
+// are effectively free.
+const ReducerToggle = ({
+  value,
+  onChange,
+}: {
+  value: 'mean' | 'dominant';
+  onChange: (v: 'mean' | 'dominant') => void;
+}) => (
+  <Row space="sm">
+    <Box flex={1}>
+      <ContainedButton
+        label={`${value === 'mean' ? '✓ ' : ''}Mean (average)`}
+        onPress={() => onChange('mean')}
+        stretchToFit={true}
+      />
+    </Box>
+    <Box flex={1}>
+      <ContainedButton
+        label={`${value === 'dominant' ? '✓ ' : ''}Dominant (posterise)`}
+        onPress={() => onChange('dominant')}
+        stretchToFit={true}
+      />
+    </Box>
+  </Row>
+);
+
 const SelectButton = ({
   label,
   selected,
@@ -588,9 +681,12 @@ const SelectButton = ({
 );
 
 // Scale preview-space rectangles up to sensor-space ROIs and call
-// decodeDngRois. Returns the two per-ROI linear-sRGB averages so the
-// caller can rank references before choosing which one to correct
-// against.
+// decodeDngRoisReduced. Returns both the per-channel mean and the
+// median-cut dominant per ROI so the caller can flip reducers
+// (matches the legacy JPEG posterise pipeline) without re-decoding
+// the DNG. `card` / `sample` = mean; `cardDominant` / `sampleDominant`
+// = dominant; the caller's reducer toggle picks which pair feeds
+// Munsell downstream.
 const decodeRects = async ({
   dngPath,
   sensorWidth,
@@ -605,7 +701,12 @@ const decodeRects = async ({
   preview: {width: number; height: number};
   refRect: PreviewRect;
   sampleRect: PreviewRect;
-}): Promise<{card: LinearRgb; sample: LinearRgb}> => {
+}): Promise<{
+  card: LinearRgb;
+  sample: LinearRgb;
+  cardDominant: LinearRgb;
+  sampleDominant: LinearRgb;
+}> => {
   // Vision-camera reports photo.width/height in the DNG's *pre-orientation*
   // dimensions — iPhone in portrait writes a landscape 4032×3024 DNG with
   // Orientation=6 (rotate 90 CW). CIRAWFilter honors the orientation tag,
@@ -641,13 +742,21 @@ const decodeRects = async ({
   console.log(
     `  sampleRect(preview)=${JSON.stringify(sampleRect)} → sampleROI(sensor)=${JSON.stringify(sampleSensor)}`,
   );
-  const [card, sample] = await DngDecoderHybrid.decodeDngRois(dngPath, [
-    refSensor,
-    sampleSensor,
-  ]);
+  const [refReduced, sampleReduced] =
+    await DngDecoderHybrid.decodeDngRoisReduced(dngPath, [
+      refSensor,
+      sampleSensor,
+    ]);
   console.log(
-    `  decoded card=(${card.r.toFixed(3)},${card.g.toFixed(3)},${card.b.toFixed(3)}) ` +
-      `sample=(${sample.r.toFixed(3)},${sample.g.toFixed(3)},${sample.b.toFixed(3)})`,
+    `  decoded card mean=(${refReduced.mean.r.toFixed(3)},${refReduced.mean.g.toFixed(3)},${refReduced.mean.b.toFixed(3)}) ` +
+      `dom=(${refReduced.dominant.r.toFixed(3)},${refReduced.dominant.g.toFixed(3)},${refReduced.dominant.b.toFixed(3)}) ` +
+      `sample mean=(${sampleReduced.mean.r.toFixed(3)},${sampleReduced.mean.g.toFixed(3)},${sampleReduced.mean.b.toFixed(3)}) ` +
+      `dom=(${sampleReduced.dominant.r.toFixed(3)},${sampleReduced.dominant.g.toFixed(3)},${sampleReduced.dominant.b.toFixed(3)})`,
   );
-  return {card, sample};
+  return {
+    card: refReduced.mean,
+    sample: sampleReduced.mean,
+    cardDominant: refReduced.dominant,
+    sampleDominant: sampleReduced.dominant,
+  };
 };
