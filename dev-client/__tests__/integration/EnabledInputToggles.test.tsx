@@ -52,6 +52,10 @@ const intervalWith = (
  * translated strings that a POEditor sync can change. */
 const switchFor = (method: SoilPitMethod) => `${method}Enabled-switch`;
 
+/* The toggle reports its state to assistive tech rather than through a `value` prop. */
+const isOn = (element: {props: {accessibilityState: {checked: boolean}}}) =>
+  element.props.accessibilityState.checked;
+
 const renderToggles = (
   interval: AggregatedInterval,
   requiredInputs: SoilPitMethod[],
@@ -78,7 +82,7 @@ describe('EnabledInputToggles', () => {
       [],
     );
 
-    expect(getByTestId(switchFor('soilColor')).props.value).toBe(false);
+    expect(isOn(getByTestId(switchFor('soilColor')))).toBe(false);
   });
 
   test('shows a required method as on and locked, even when it was stored as off', () => {
@@ -88,8 +92,8 @@ describe('EnabledInputToggles', () => {
     );
 
     const element = getByTestId(switchFor('soilColor'));
-    expect(element.props.value).toBe(true);
-    expect(element.props.disabled).toBe(true);
+    expect(isOn(element)).toBe(true);
+    expect(element.props.accessibilityState.disabled).toBe(true);
   });
 
   test('leaves methods the project does not require editable', async () => {
@@ -99,11 +103,27 @@ describe('EnabledInputToggles', () => {
     );
 
     await act(async () => {
-      fireEvent(getByTestId(switchFor('soilTexture')), 'valueChange', true);
+      fireEvent.press(getByTestId(switchFor('soilTexture')));
     });
 
     expect(values().soilTextureEnabled).toBe(true);
     // The required method is untouched by its neighbor.
+    expect(values().soilColorEnabled).toBe(true);
+  });
+
+  /* Worth asserting now that the toggle is a press target: with the native
+   * switch, disabled was enforced on the native side and a fired event went
+   * straight through, so this could not be tested from JS. */
+  test('ignores presses on a required method', async () => {
+    const {getByTestId, values} = renderToggles(
+      intervalWith({soilColorEnabled: true}),
+      ['soilColor'],
+    );
+
+    await act(async () => {
+      fireEvent.press(getByTestId(switchFor('soilColor')));
+    });
+
     expect(values().soilColorEnabled).toBe(true);
   });
 
@@ -114,7 +134,7 @@ describe('EnabledInputToggles', () => {
     );
 
     await act(async () => {
-      fireEvent(getByTestId(switchFor('soilTexture')), 'valueChange', false);
+      fireEvent.press(getByTestId(switchFor('soilTexture')));
     });
 
     expect(values().soilTextureEnabled).toBe(false);

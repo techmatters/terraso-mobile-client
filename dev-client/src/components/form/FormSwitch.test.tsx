@@ -39,16 +39,19 @@ const renderInFormik = async (
   return utils;
 };
 
-/* Takes the value rather than assuming a direction: a handler that ignored its
- * argument and always wrote `true` would pass an on-only suite. */
-const toggle = async (
-  getByTestId: ReturnType<typeof render>['getByTestId'],
-  value: boolean,
-) => {
+/* The toggle is a press target rather than a native switch, so this is what a
+ * user actually does. Direction comes from the seeded value: the suite drives
+ * it both ways so a handler that always wrote `true` would fail. */
+const press = async (getByTestId: ReturnType<typeof render>['getByTestId']) => {
   await act(async () => {
-    fireEvent(getByTestId('switch'), 'valueChange', value);
+    fireEvent.press(getByTestId('switch'));
   });
 };
+
+/* The toggle reports its state to assistive tech rather than through a `value`
+ * prop, which is also the only thing a screen reader user can perceive. */
+const isOn = (element: ReturnType<ReturnType<typeof render>['getByTestId']>) =>
+  element.props.accessibilityState.checked;
 
 describe('FormSwitch', () => {
   test('reads initial value from Formik', async () => {
@@ -61,7 +64,7 @@ describe('FormSwitch', () => {
       />,
     );
 
-    expect(getByTestId('switch').props.value).toBe(true);
+    expect(isOn(getByTestId('switch'))).toBe(true);
   });
 
   test('shows off when the field is missing, rather than an indeterminate switch', async () => {
@@ -74,7 +77,7 @@ describe('FormSwitch', () => {
       />,
     );
 
-    expect(getByTestId('switch').props.value).toBe(false);
+    expect(isOn(getByTestId('switch'))).toBe(false);
   });
 
   test('updates Formik state on change', async () => {
@@ -96,7 +99,7 @@ describe('FormSwitch', () => {
       </Formik>,
     );
 
-    await toggle(getByTestId, true);
+    await press(getByTestId);
 
     expect(latestValues.enabled).toBe(true);
   });
@@ -118,7 +121,7 @@ describe('FormSwitch', () => {
       </Formik>,
     );
 
-    await toggle(getByTestId, false);
+    await press(getByTestId);
 
     expect(latestValues.enabled).toBe(false);
   });
@@ -142,7 +145,7 @@ describe('FormSwitch', () => {
       </Formik>,
     );
 
-    await toggle(getByTestId, true);
+    await press(getByTestId);
 
     expect(latestValues).toEqual({enabled: true, other: false});
   });
@@ -160,12 +163,12 @@ describe('FormSwitch', () => {
       />,
     );
 
-    await toggle(getByTestId, true);
+    await press(getByTestId);
 
     expect(callerHandler).toHaveBeenCalledWith(true);
   });
 
-  test('forwards display props to Switch', async () => {
+  test('forwards display props to the toggle', async () => {
     const {getByTestId} = await renderInFormik(
       {enabled: false},
       <FormSwitch<ToggleForm>
@@ -178,7 +181,7 @@ describe('FormSwitch', () => {
 
     const element = getByTestId('switch');
     expect(element.props.accessibilityLabel).toBe('Soil color');
-    expect(element.props.disabled).toBe(true);
+    expect(element.props.accessibilityState.disabled).toBe(true);
   });
 
   /* Compile-time assertion rather than a runtime one: if BooleanFieldKeys ever

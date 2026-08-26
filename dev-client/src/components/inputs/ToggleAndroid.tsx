@@ -13,6 +13,9 @@ interface ToggleProps {
   value: boolean;
   onValueChange?: (value: boolean) => void;
   disabled?: boolean;
+  /* Required: this is a stack of plain views, so without a label a screen reader has nothing to announce. */
+  accessibilityLabel: string;
+  testID?: string;
 }
 
 /* Interpolation endpoints, [off, on], for each tone. A disabled toggle is drawn in its own muted colors rather than by fading the control, so its state stays legible. */
@@ -36,6 +39,8 @@ const Toggle: React.FC<ToggleProps> = ({
   value = false,
   onValueChange = () => {},
   disabled = false,
+  accessibilityLabel,
+  testID,
 }) => {
   const animatedValue = useRef(new Animated.Value(value ? 1 : 0)).current;
 
@@ -82,7 +87,12 @@ const Toggle: React.FC<ToggleProps> = ({
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback
-        onPress={disabled ? undefined : () => onValueChange(!value)}>
+        onPress={disabled ? undefined : () => onValueChange(!value)}
+        /* Supplies what the native switch gets for free: a screen reader needs to know this is a switch, which way it is set, and whether it can be operated. */
+        accessibilityRole="switch"
+        accessibilityState={{checked: value, disabled}}
+        accessibilityLabel={accessibilityLabel}
+        testID={testID}>
         <Animated.View
           style={[styles.toggleContainer, {backgroundColor: trackColor}]}>
           <Animated.View
@@ -105,14 +115,6 @@ const THUMB_SIZE = 20;
 
 /* Gap between the thumb and the nearer end of the track, applied at both ends so the off and on positions mirror each other. Zero sits the thumb flush with each end; a negative value lets it overhang, as Material's switch does. */
 const THUMB_INSET = 0;
-
-// TODO-cknipe: More like the Material Switch measurements
-// const TRACK_WIDTH = 25;
-// const TRACK_HEIGHT = 14;
-// const THUMB_SIZE = 20;
-
-// /* Gap between the thumb and the nearer end of the track, applied at both ends so the off and on positions mirror each other. Zero sits the thumb flush with each end; a negative value lets it overhang, as Material's switch does. */
-// const THUMB_INSET = -6;
 
 const TOGGLE_LEFT_MARGIN = THUMB_INSET;
 const TOGGLE_RIGHT_MARGIN = TRACK_WIDTH - THUMB_SIZE - THUMB_INSET;
@@ -144,7 +146,5 @@ const styles = StyleSheet.create({
 });
 
 // TODO-cknipe:
-// 1. Opacity or colors for disabled state?
-// 2. Android vs iOS -- should they appear different?
 // 3. Update all the other switches, tests, FormSwitch
 // 4. Update Figma documentation

@@ -20,7 +20,7 @@ import {ScrollView, StyleSheet, useWindowDimensions} from 'react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Divider} from 'terraso-mobile-client/components/Divider';
-import {Switch} from 'terraso-mobile-client/components/inputs/Switch';
+import Toggle from 'terraso-mobile-client/components/inputs/ToggleAndroid';
 import {
   Box,
   Column,
@@ -109,7 +109,7 @@ const ConnectivityToggle = () => {
 
   return (
     <Row alignItems="center" space="8px">
-      <Switch
+      <Toggle
         value={!isOffline}
         onValueChange={onToggle}
         accessibilityLabel="Online"

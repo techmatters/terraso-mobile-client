@@ -64,6 +64,7 @@ export const RequiredDataSettings = ({
               <Toggle
                 disabled={!enabled}
                 value={settings[methodRequired(method)]}
+                accessibilityLabel={label}
                 onValueChange={value => {
                   dispatch(
                     updateProjectSoilSettings({
