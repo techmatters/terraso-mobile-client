@@ -258,13 +258,14 @@ int cmdDecodeDngRoisBatch(int argc, char** argv) {
 
   std::vector<double> mR(total), mG(total), mB(total);
   std::vector<double> dR(total), dG(total), dB(total);
+  std::vector<double> vR(total), vG(total), vB(total);
   const char* err = nullptr;
   if (total > 0) {
-    if (!dngDecoderDecodeRoisReduced(path.c_str(), flat.data(),
-                                     static_cast<int32_t>(total), mR.data(),
-                                     mG.data(), mB.data(), dR.data(),
-                                     dG.data(), dB.data(), &err)) {
-      die(std::string("dngDecoderDecodeRoisReduced failed: ") +
+    if (!dngDecoderDecodeRoisReducedWithVar(
+            path.c_str(), flat.data(), static_cast<int32_t>(total), mR.data(),
+            mG.data(), mB.data(), dR.data(), dG.data(), dB.data(), vR.data(),
+            vG.data(), vB.data(), &err)) {
+      die(std::string("dngDecoderDecodeRoisReducedWithVar failed: ") +
           (err ? err : "unknown"));
     }
   }
@@ -289,6 +290,12 @@ int cmdDecodeDngRoisBatch(int argc, char** argv) {
       writeDouble(out, dG[k]);
       out += ",\"dominantB\":";
       writeDouble(out, dB[k]);
+      out += ",\"varianceR\":";
+      writeDouble(out, vR[k]);
+      out += ",\"varianceG\":";
+      writeDouble(out, vG[k]);
+      out += ",\"varianceB\":";
+      writeDouble(out, vB[k]);
       out += "}";
     }
     out += "]";

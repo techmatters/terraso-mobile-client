@@ -55,6 +55,23 @@ bool dngDecoderDecodeRoisReduced(const char* path, const int32_t* rois,
                                  double* outDomG, double* outDomB,
                                  const char** errorOut);
 
+// Sibling of dngDecoderDecodeRoisReduced that ALSO returns per-channel
+// variance across the ROI (in linear-sRGB space, unbiased population
+// variance). Nine parallel double arrays. mean* and dom* are byte-
+// identical to what dngDecoderDecodeRoisReduced returns for the
+// same ROI — the underlying pipeline is the same, this variant just
+// exposes an accumulator that was already being computed anyway.
+// Used by the analyzer's multi-card sweep to score sample-rect
+// homogeneity (low variance = sample sits on a uniform patch).
+// CLI-only for now (dng-cli-cpp batch endpoint); on-device Nitro
+// path continues to use dngDecoderDecodeRoisReduced.
+bool dngDecoderDecodeRoisReducedWithVar(
+    const char* path, const int32_t* rois, int32_t count,
+    double* outMeanR, double* outMeanG, double* outMeanB,
+    double* outDomR, double* outDomG, double* outDomB,
+    double* outVarR, double* outVarG, double* outVarB,
+    const char** errorOut);
+
 // Render a sub-sampled preview from the DNG at path. On success, sets
 // *outWidth, *outHeight, and allocates *outBytes (caller must free
 // with dngDecoderFreePreview). *outByteCount = *outWidth * *outHeight * 4.

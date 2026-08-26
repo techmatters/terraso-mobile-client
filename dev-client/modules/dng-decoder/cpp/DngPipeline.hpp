@@ -26,13 +26,28 @@ struct LinearRgbF {
   double b;
 };
 
-// Two-reducer result: `mean` is the classic per-channel arithmetic
-// average (biased by highlights + off-tone flecks), `dominant` is the
-// median-cut posterise "biggest colour cluster" (robust to a handful
-// of outlier pixels). See MedianCut.hpp for algorithm details.
+// Two-reducer result plus a homogeneity signal:
+//   `mean`     — classic per-channel arithmetic average (biased by
+//                highlights + off-tone flecks).
+//   `dominant` — median-cut posterise "biggest colour cluster",
+//                robust to a handful of outlier pixels. See
+//                MedianCut.hpp.
+//   `variance` — per-channel unbiased population variance across
+//                every pixel in the ROI, computed in the same linear-
+//                sRGB space `mean` lives in. Zero when the ROI is
+//                perfectly uniform; grows quadratically with intra-
+//                ROI colour spread. Useful as a "homogeneity" score:
+//                a sample rect fully on a ref-card patch has low
+//                variance, one straddling the card / mask-strip
+//                edge has high variance because the two materials
+//                sit far apart in linear space. Same formula the
+//                live evenness overlay uses on the Y plane
+//                (frame_analyzer.cpp:123): E[X²] − E[X]², single
+//                pass, ~3 extra flops per pixel per channel.
 struct RoiReduced {
   LinearRgbF mean;
   LinearRgbF dominant;
+  LinearRgbF variance;
 };
 
 // Decode a single ROI. Averages the demosaiced patch and applies the

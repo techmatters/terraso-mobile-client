@@ -341,10 +341,22 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
     throw std::runtime_error("DNG pipeline: ROI out of image bounds");
   }
 
-  // Two accumulators: sensor-space sum for the mean (matches decodeRoi's
-  // math exactly), and a vector of per-pixel linear-sRGB values for
-  // the median-cut dominant. Reserve up front — ROI sizes are known.
+  // Three accumulators:
+  //   sensorSum       — sensor-space sum for the mean (matches
+  //                     decodeRoi's math exactly).
+  //   pixels          — per-pixel linear-sRGB values for the
+  //                     median-cut dominant.
+  //   linearSum,
+  //   linearSumSq     — running sum + sum-of-squares of the already-
+  //                     pipelined per-pixel linear-sRGB triples, for
+  //                     computing per-channel variance in the linear-
+  //                     sRGB space (E[X²] − E[X]²). Same streaming
+  //                     formula the live evenness overlay uses on the
+  //                     Y plane; see the RoiReduced doc comment for
+  //                     why callers care.
   std::array<double, 3> sensorSum{0, 0, 0};
+  std::array<double, 3> linearSum{0, 0, 0};
+  std::array<double, 3> linearSumSq{0, 0, 0};
   const uint64_t total = uint64_t(roi.w) * roi.h;
   std::vector<LinearRgbF> pixels;
   pixels.reserve(size_t(total));
@@ -355,7 +367,14 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
       sensorSum[0] += s[0];
       sensorSum[1] += s[1];
       sensorSum[2] += s[2];
-      pixels.push_back(sensorToLinearSrgb(dng, s));
+      const LinearRgbF lin = sensorToLinearSrgb(dng, s);
+      pixels.push_back(lin);
+      linearSum[0] += lin.r;
+      linearSum[1] += lin.g;
+      linearSum[2] += lin.b;
+      linearSumSq[0] += lin.r * lin.r;
+      linearSumSq[1] += lin.g * lin.g;
+      linearSumSq[2] += lin.b * lin.b;
     }
   }
 
@@ -369,7 +388,21 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
   // Dominant via median-cut on the already-pipelined per-pixel values.
   const LinearRgbF dominant = dominantLinearRgb(pixels);
 
-  return {mean, dominant};
+  // Per-channel variance over the linear-sRGB per-pixel triples.
+  // Using the linear-sRGB stream (rather than sensor-native) means the
+  // number is directly comparable to `mean` and `dominant` for
+  // downstream code. `max(0, …)` guards against negative round-off on
+  // near-uniform ROIs.
+  const double invN = 1.0 / static_cast<double>(total);
+  const LinearRgbF meanLin{
+      linearSum[0] * invN, linearSum[1] * invN, linearSum[2] * invN};
+  const LinearRgbF variance{
+      std::max(0.0, linearSumSq[0] * invN - meanLin.r * meanLin.r),
+      std::max(0.0, linearSumSq[1] * invN - meanLin.g * meanLin.g),
+      std::max(0.0, linearSumSq[2] * invN - meanLin.b * meanLin.b),
+  };
+
+  return {mean, dominant, variance};
 }
 
 namespace {

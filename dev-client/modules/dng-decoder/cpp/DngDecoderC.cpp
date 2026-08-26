@@ -121,6 +121,50 @@ bool dngDecoderDecodeRoisReduced(const char* path, const int32_t* rois,
   }
 }
 
+bool dngDecoderDecodeRoisReducedWithVar(
+    const char* path, const int32_t* rois, int32_t count,
+    double* outMeanR, double* outMeanG, double* outMeanB,
+    double* outDomR, double* outDomG, double* outDomB,
+    double* outVarR, double* outVarG, double* outVarB,
+    const char** errorOut) {
+  if (!path || !rois || !outMeanR || !outMeanG || !outMeanB ||
+      !outDomR || !outDomG || !outDomB ||
+      !outVarR || !outVarG || !outVarB || count < 0) {
+    if (errorOut) *errorOut = stashError("null argument");
+    return false;
+  }
+  try {
+    dngdecoder::ParsedDng parsed = dngdecoder::parseDng(path);
+    for (int32_t i = 0; i < count; ++i) {
+      const int32_t* r = rois + i * 4;
+      const dngdecoder::RoiPx roi{
+          static_cast<uint32_t>(r[0]), static_cast<uint32_t>(r[1]),
+          static_cast<uint32_t>(r[2]), static_cast<uint32_t>(r[3])};
+      const dngdecoder::RoiReduced red =
+          dngdecoder::decodeRoiReduced(parsed, roi);
+      outMeanR[i] = red.mean.r;
+      outMeanG[i] = red.mean.g;
+      outMeanB[i] = red.mean.b;
+      outDomR[i] = red.dominant.r;
+      outDomG[i] = red.dominant.g;
+      outDomB[i] = red.dominant.b;
+      outVarR[i] = red.variance.r;
+      outVarG[i] = red.variance.g;
+      outVarB[i] = red.variance.b;
+    }
+    if (errorOut) *errorOut = nullptr;
+    return true;
+  } catch (const std::exception& e) {
+    if (errorOut) *errorOut = stashError(e.what());
+    return false;
+  } catch (...) {
+    if (errorOut)
+      *errorOut =
+          stashError("unknown exception in dngDecoderDecodeRoisReducedWithVar");
+    return false;
+  }
+}
+
 bool dngDecoderRenderPreviewRgba(const char* path, int32_t maxDim,
                                  int32_t* outWidth, int32_t* outHeight,
                                  uint32_t** outBytes, int32_t* outByteCount,

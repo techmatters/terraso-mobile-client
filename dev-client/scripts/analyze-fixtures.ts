@@ -267,6 +267,18 @@ const parseReducedJson = (json: string): LinearRgbReduced[] => {
   }));
 };
 
+// Analyzer-local extension of LinearRgbReduced with per-channel
+// linear-sRGB variance across the ROI's pixels. Only produced by the
+// C++ CLI's decode-dng-rois-batch endpoint (mac-only); the on-device
+// Nitro decoders don't expose it, and neither does the Swift dng-cli
+// batch fallback (photos + iOS DNGs). Sweep scoring uses it to
+// prefer sample positions where each ref-card slot lands on a
+// uniform patch (low variance ↔ likely on the card, not straddling
+// the strip edge).
+type LinearRgbReducedWithVar = LinearRgbReduced & {
+  variance: LinearRgb | null;
+};
+
 class NodeDecoder implements DngDecoderLike {
   // Two CLIs, one for DNG methods and one for photo methods. iOS
   // fixtures use the Swift CLI (CIRAWFilter for DNG, CIImage for
@@ -341,9 +353,17 @@ class NodeDecoder implements DngDecoderLike {
   decodeDngRoisReducedBatch(
     dngPath: string,
     roiSets: Roi[][],
-  ): LinearRgbReduced[][] {
+  ): LinearRgbReducedWithVar[][] {
     if (!this.supportsBatch) {
-      return roiSets.map(rois => this.decodeDngRoisReduced(dngPath, rois));
+      // Swift-CLI fallback path (iOS DNGs). No variance available —
+      // scoring code branches on variance !== null to pick the
+      // appropriate objective.
+      return roiSets.map(rois =>
+        this.decodeDngRoisReduced(dngPath, rois).map(r => ({
+          ...r,
+          variance: null,
+        })),
+      );
     }
     if (roiSets.length === 0) return [];
     const out = execFileSync(
@@ -359,12 +379,21 @@ class NodeDecoder implements DngDecoderLike {
         dominantR: number;
         dominantG: number;
         dominantB: number;
+        varianceR?: number;
+        varianceG?: number;
+        varianceB?: number;
       }>
     >;
     return raw.map(inner =>
       inner.map(r => ({
         mean: {r: r.r, g: r.g, b: r.b},
         dominant: {r: r.dominantR, g: r.dominantG, b: r.dominantB},
+        variance:
+          r.varianceR !== undefined &&
+          r.varianceG !== undefined &&
+          r.varianceB !== undefined
+            ? {r: r.varianceR, g: r.varianceG, b: r.varianceB}
+            : null,
       })),
     );
   }
@@ -1606,24 +1635,224 @@ const buildBurstAverageCaptures = (
 // Candidate horizontal offsets (in colPitch units past the last chip
 // column) to test for each MULTI capture. Baseline is the app's
 // nominal MULTI_CARD_OFFSET_PITCHES (1.75×). Physical mask + chart
-// slop can shift the actual patch positions anywhere from ~1.7 to
-// ~2.25 depending on how the chart sits in the holder — see docs
-// discussion. Range covers that with 0.1 granularity (~0.06" per
-// step on the physical card).
-const OFFSET_SWEEP: readonly number[] = [1.7, 1.8, 1.9, 2.0, 2.1];
+// slop can shift the actual patch positions anywhere from ~1.5 to
+// ~2.4 depending on how the chart sits in the holder + how the
+// ref-card strip is taped. Range widened after the 322-sweep pass
+// on Multi Ref Capture 0824 saw 41% hit the old 1.70 floor and 27%
+// hit the old 2.10 ceiling — both ends need more slack. Kept at 0.1
+// granularity (~0.06" per step on the physical card) so the wider
+// grid is 10 candidates deep. Total sweep cost stays flat vs the
+// old 5-candidate range now that decode-dng-rois-batch collapses
+// the whole probe into one CLI call per fixture.
+const OFFSET_SWEEP: readonly number[] = [
+  1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
+];
 
 // Candidate vertical shifts, in ref-grid units, applied DOWN from
 // the nominal MULTI_CARD_POINTS y (positive = lower on the card as
 // rendered in the image). Physical mask cutouts on the ref-card
 // strip sit ~3 ref-units tall (row pitch), so the sample rect —
-// which is ~0.25 ref-units tall — can shift down by up to ~1 unit
-// while staying inside the cutout. Zero is baseline (row centroid).
-// Bias is asymmetric-downward because top of each cutout is where
-// the strip's shadow lands (top edge of the paper strip is elevated
-// by the tape wedge, casting a soft shadow onto the top ~⅓ of the
-// cutout). Sweeping symmetrically would let a fixture "win" by
-// moving into the shadow — not helpful.
-const VERTICAL_SWEEP: readonly number[] = [0.0, 0.15, 0.3, 0.45, 0.6, 0.75];
+// which is ~0.25 ref-units tall — can shift down by up to ~1.4
+// units while staying inside the cutout. Zero is baseline (row
+// centroid). Bias is asymmetric-downward because top of each cutout
+// is where the strip's shadow lands (top edge of the paper strip
+// is elevated by the tape wedge, casting a soft shadow onto the top
+// ~⅓ of the cutout). Sweeping symmetrically would let a fixture
+// "win" by moving into the shadow — not helpful. Range widened
+// again past the previous 1.20 ceiling (still 28% of sweeps pinned
+// there on that pass); 1.50 is at the physical edge of "still
+// inside the cutout" for a nominal-sized rect.
+const VERTICAL_SWEEP: readonly number[] = [
+  0.0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5,
+];
+
+// Debug-only: emit an HTML page showing every (H, V) candidate as a
+// crop of the actual preview pixels inside the WHITE slot's sample
+// rect. Only the WHITE slot is shown (per user request) to keep the
+// grid legible. Each cell's background is colour-coded by score
+// (variance sum when available, distance-from-expected otherwise) —
+// green best, red worst. Winner has a black outline.
+//
+// Showing REAL pixels (not the mean colour) lets a human see the
+// mix that produced the mean: a rect fully on the card looks like a
+// uniform patch; a straddling rect shows card on one side + dark
+// strip on the other. That's the visualisation "evenness" is
+// supposed to measure numerically — high variance if you can see
+// two materials in the crop.
+function writeSweepDebugHtml(
+  outPath: string,
+  data: {
+    fixture: string;
+    rows: Array<{
+      candidate: number;
+      vShift: number;
+      score: number;
+      samples: Array<{r: number; g: number; b: number}>;
+      variances: Array<{r: number; g: number; b: number} | null>;
+      whiteRect: {x: number; y: number; w: number; h: number} | null;
+    }>;
+    slotNames: string[];
+    expectedByName: Record<string, {r: number; g: number; b: number}>;
+    winner: {h: number; v: number; score: number};
+    preview: {pixels: Uint8Array; width: number; height: number} | null;
+  },
+): void {
+  // pngjs is a pure-JS PNG encoder in node_modules — used only in
+  // debug mode, not in the analyzer hot path. Encode each ROI crop
+  // as a small PNG data URI; CSS then upscales with pixelated
+  // rendering so individual sensor pixels stay visible.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const {PNG} = require('pngjs') as typeof import('pngjs');
+  const cropPngDataUri = (
+    rect: {x: number; y: number; w: number; h: number},
+  ): string | null => {
+    if (!data.preview) return null;
+    const {pixels, width, height} = data.preview;
+    // Clamp to preview bounds (rect can spill past edge on some
+    // sweep candidates; better to crop the intersect than reject).
+    const x0 = Math.max(0, Math.min(width, Math.round(rect.x)));
+    const y0 = Math.max(0, Math.min(height, Math.round(rect.y)));
+    const x1 = Math.max(x0, Math.min(width, Math.round(rect.x + rect.w)));
+    const y1 = Math.max(y0, Math.min(height, Math.round(rect.y + rect.h)));
+    const w = x1 - x0;
+    const h = y1 - y0;
+    if (w <= 0 || h <= 0) return null;
+    const png = new PNG({width: w, height: h});
+    // pngjs uses RGBA; preview is interleaved RGB — expand to RGBA
+    // with alpha=255. Row-by-row copy since preview has no padding
+    // but png.data is w*h*4 bytes tight.
+    for (let j = 0; j < h; j++) {
+      for (let i = 0; i < w; i++) {
+        const src = ((y0 + j) * width + (x0 + i)) * 3;
+        const dst = (j * w + i) * 4;
+        png.data[dst] = pixels[src];
+        png.data[dst + 1] = pixels[src + 1];
+        png.data[dst + 2] = pixels[src + 2];
+        png.data[dst + 3] = 255;
+      }
+    }
+    const buf = PNG.sync.write(png);
+    return 'data:image/png;base64,' + buf.toString('base64');
+  };
+  const linearToSrgb = (v: number) => {
+    const c = Math.max(0, Math.min(1, v));
+    return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+  };
+  const swatch = (rgb: {r: number; g: number; b: number}, label: string) => {
+    const r = Math.round(linearToSrgb(rgb.r) * 255);
+    const g = Math.round(linearToSrgb(rgb.g) * 255);
+    const b = Math.round(linearToSrgb(rgb.b) * 255);
+    return (
+      `<div class="sw" style="background:rgb(${r},${g},${b})" ` +
+      `title="${label}: linear=(${rgb.r.toFixed(3)},${rgb.g.toFixed(3)},${rgb.b.toFixed(3)})"></div>`
+    );
+  };
+  const uniqueH = [
+    ...new Set(data.rows.map(r => r.candidate)),
+  ].sort((a, b) => a - b);
+  const uniqueV = [...new Set(data.rows.map(r => r.vShift))].sort(
+    (a, b) => a - b,
+  );
+  const rowByKey = new Map(
+    data.rows.map(r => [`${r.candidate}|${r.vShift}`, r]),
+  );
+  // Colour-code the score cell background — best score green, worst
+  // red. Filter Infinity out of the range (rejected candidates from
+  // the brightness gate) so a single-rejected cell doesn't collapse
+  // the whole colour gradient.
+  const finiteScores = data.rows
+    .map(r => r.score)
+    .filter(s => Number.isFinite(s));
+  const minS = finiteScores.length > 0 ? Math.min(...finiteScores) : 0;
+  const maxS = finiteScores.length > 0 ? Math.max(...finiteScores) : 1;
+  const scoreColour = (s: number) => {
+    if (!Number.isFinite(s)) return '#555';
+    const t = maxS > minS ? (s - minS) / (maxS - minS) : 0;
+    const hue = 120 - 120 * t; // green (120) → red (0)
+    return `hsl(${hue.toFixed(0)}, 65%, 82%)`;
+  };
+  const whiteIdx = data.slotNames.indexOf('white');
+  let body = `<h1>Sweep debug — ${data.fixture}</h1>`;
+  body +=
+    `<p>WHITE slot only. Winner H=${data.winner.h.toFixed(2)} ` +
+    `V=${data.winner.v.toFixed(2)} score=${data.winner.score.toExponential(3)}. ` +
+    `Score = per-channel variance summed across all 4 slots (the ` +
+    `"evenness" metric — lower = more uniform patch). Cell background ` +
+    `green→red = best→worst. Rejected (dark-strip brightness gate) = dark grey. ` +
+    `Rect pixels shown at native size, upscaled with CSS <code>image-rendering: pixelated</code>.</p>`;
+  if (whiteIdx >= 0 && data.expectedByName['white']) {
+    const e = data.expectedByName['white'];
+    body +=
+      `<p>Expected white: ${swatch(e, 'expected white')} ` +
+      `(${e.r.toFixed(2)},${e.g.toFixed(2)},${e.b.toFixed(2)})</p>`;
+  }
+  body += '<table><thead><tr><th>H \\ V</th>';
+  for (const v of uniqueV) body += `<th>V=${v.toFixed(2)}</th>`;
+  body += '</tr></thead><tbody>';
+  for (const h of uniqueH) {
+    body += `<tr><th>H=${h.toFixed(2)}</th>`;
+    for (const v of uniqueV) {
+      const r = rowByKey.get(`${h}|${v}`);
+      if (!r) {
+        body += '<td class="miss">–</td>';
+        continue;
+      }
+      const isWinner = h === data.winner.h && v === data.winner.v;
+      const bg = scoreColour(r.score);
+      const dataUri = r.whiteRect ? cropPngDataUri(r.whiteRect) : null;
+      const whiteVar =
+        whiteIdx >= 0 && r.variances[whiteIdx]
+          ? r.variances[whiteIdx]!
+          : null;
+      const whiteMean =
+        whiteIdx >= 0 ? r.samples[whiteIdx] : null;
+      const title = [
+        `H=${h.toFixed(2)} V=${v.toFixed(2)}`,
+        `score=${r.score.toExponential(3)}`,
+        whiteMean
+          ? `white mean=(${whiteMean.r.toFixed(3)},${whiteMean.g.toFixed(3)},${whiteMean.b.toFixed(3)})`
+          : '',
+        whiteVar
+          ? `white variance=(${whiteVar.r.toExponential(2)},${whiteVar.g.toExponential(2)},${whiteVar.b.toExponential(2)})`
+          : '',
+      ]
+        .filter(Boolean)
+        .join(' · ');
+      const scoreLabel = Number.isFinite(r.score)
+        ? r.score.toExponential(2)
+        : 'reject';
+      body +=
+        `<td style="background:${bg}${isWinner ? ';outline:3px solid #000' : ''}" title="${title}">` +
+        `<div class="cell-inner">` +
+        (dataUri
+          ? `<img src="${dataUri}" alt="" class="crop">`
+          : '<div class="crop miss"></div>') +
+        `<span class="s">${scoreLabel}</span>` +
+        '</div>' +
+        '</td>';
+    }
+    body += '</tr>';
+  }
+  body += '</tbody></table>';
+  const html = `<!doctype html><html><head><meta charset="utf-8">
+<title>sweep-debug ${data.fixture}</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 12px; }
+  table { border-collapse: collapse; }
+  th, td { padding: 3px; border: 1px solid #ccc; text-align: center; font-size: 11px; }
+  th { background: #eee; position: sticky; top: 0; z-index: 1; }
+  th:first-child { left: 0; z-index: 2; }
+  .cell-inner { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .cell-inner .s { font-family: monospace; font-size: 10px; }
+  .crop { width: 80px; height: 80px; image-rendering: pixelated;
+          border: 1px solid #444; background: #222; display: block; }
+  .sw { display: inline-block; width: 14px; height: 14px; margin: 0 1px;
+        border: 1px solid #444; vertical-align: middle; }
+  .miss { color: #999; }
+</style>
+</head><body>${body}</body></html>`;
+  fs.writeFileSync(outPath, html);
+}
 
 // Linear-RGB distance between two triples. Squared so it can drive
 // argmin without a needless sqrt per candidate.
@@ -1753,20 +1982,21 @@ function maybeSweepMultiCardOffset(
   // ONE decode call for the whole batch (dng-cli-cpp) or a per-set
   // loop wrapped for us (Swift dng-cli). See NodeDecoder for the
   // fallback logic.
-  let batchResults: LinearRgbReduced[][];
+  let batchResults: LinearRgbReducedWithVar[][];
   const photoRoiFallback: Array<Array<{r: number; g: number; b: number}>> = [];
   try {
     if (fixture.format === 'raw') {
       batchResults = decoder.decodeDngRoisReducedBatch(fixture.path, roiSets);
     } else {
-      // Photo path — dominant unavailable (see decoder note). Decode
-      // each candidate mean, synthesise the LinearRgbReduced shape
-      // with dominant = mean so the scoring loop below can stay
-      // reducer-agnostic (it only reads .mean anyway).
+      // Photo path — dominant + variance unavailable (see decoder
+      // note). Decode each candidate mean, synthesise the
+      // LinearRgbReducedWithVar shape with dominant = mean and
+      // variance = null so the scoring loop below can stay reducer-
+      // agnostic (it only reads .mean when variance is null anyway).
       batchResults = roiSets.map(rois => {
         const means = decoder.decodePhotoRois(fixture.path, rois);
         photoRoiFallback.push(means);
-        return means.map(m => ({mean: m, dominant: m}));
+        return means.map(m => ({mean: m, dominant: m, variance: null}));
       });
     }
   } catch (err) {
@@ -1781,6 +2011,33 @@ function maybeSweepMultiCardOffset(
   // Score each candidate. Neutral-slot-only sum of linear-RGB squared
   // distance against the physical expected — see below for why
   // postit is excluded from the score.
+  // Diagnostic dump: when SWEEP_DEBUG_MATCH is set and the fixture's
+  // basename contains it, print the entire score landscape + per-slot
+  // sample values for every (H, V) candidate. Zero cost when the env
+  // var isn't set, so safe to leave in. SWEEP_DEBUG_HTML additionally
+  // writes an HTML grid to that path with per-candidate color
+  // swatches so the sampled colours can be eyeballed side-by-side
+  // against the score landscape.
+  const debugMatch = process.env.SWEEP_DEBUG_MATCH;
+  const wantDebug =
+    !!debugMatch && path.basename(fixture.path).includes(debugMatch);
+  const debugHtmlPath = wantDebug ? process.env.SWEEP_DEBUG_HTML : null;
+  type DebugRow = {
+    candidate: number;
+    vShift: number;
+    score: number;
+    samples: Array<{r: number; g: number; b: number}>;
+    variances: Array<{r: number; g: number; b: number} | null>;
+    // Preview-space rect for the WHITE slot only — used to crop the
+    // actual pixels out of the preview PNG for the debug HTML.
+    // Other slots are excluded from the current debug view to keep
+    // the grid compact (`--only-slot white` behaviour).
+    whiteRect: {x: number; y: number; w: number; h: number} | null;
+  };
+  const debugRows: DebugRow[] = [];
+  const whiteSlotIdx = wantDebug
+    ? multi.findIndex(m => m.name === 'white')
+    : -1;
   let bestOffset = OFFSET_SWEEP[0];
   let bestVerticalShift = VERTICAL_SWEEP[0];
   let bestScore = Infinity;
@@ -1795,19 +2052,54 @@ function maybeSweepMultiCardOffset(
     if (!reduced || reduced.length !== multi.length) continue;
     const {candidate, vShift, previewRects: candRects} = candidateMeta[idx];
     const samples = reduced.map(r => r.mean);
-    // Postit's saturated yellow is a bad "similarity magnet" — it can
-    // only "match" itself and dominates the sum whenever it's slightly
-    // off, biasing the sweep toward whatever offset happens to reduce
-    // postit's error even at the cost of the three neutrals. Scoring
-    // on neutrals gives a physically-grounded joint fit; postit rides
-    // along at the winning offset.
+    // Homogeneity-based score (preferred when variance is available,
+    // i.e. RAW/DNG batches through dng-cli-cpp): for each slot, sum
+    // per-channel intra-ROI variance in linear-sRGB space. A rect
+    // fully on a card patch has near-zero variance; one straddling
+    // the card / mask-strip edge has high variance because those
+    // materials sit far apart in linear space. Aggregating across
+    // slots picks the position that lands ALL sample rects on
+    // uniform regions simultaneously. No comparison to expected
+    // colour, so raw sensor-magnitude mismatches (e.g. an off
+    // AsShotNeutral making everything dim) don't bias the scan.
+    //
+    // Fallback (photos + iOS DNGs, variance unavailable): the
+    // classic distance-from-expected on the three neutrals. Postit
+    // is excluded because its saturated yellow dominates any
+    // similarity-magnet sum whenever it's slightly off, biasing the
+    // sweep toward whatever offset happens to reduce postit's
+    // error even at the cost of the three neutrals.
     let score = 0;
-    for (let i = 0; i < multi.length; i++) {
-      const name = multi[i].name;
-      if (name === 'postit') continue;
-      const exp = expectedByName[name];
-      if (!exp) continue;
-      score += linearRgbDist2(samples[i], exp);
+    const haveVariance = reduced.every(r => r.variance !== null);
+    if (haveVariance) {
+      // Variance-only scoring picks the "all off-card on uniform
+      // dark strip" failure mode — a rect entirely on the black tape
+      // between mask cutouts has variance ≈ 0, which BEATS a rect
+      // truly on the card. So we augment the variance objective
+      // with a hard gate: at least one slot's mean brightness
+      // (r+g+b)/3 must exceed MIN_SLOT_BRIGHTNESS. Cards are always
+      // brighter than the strip (whibal ~0.4, greycard ~0.18, white
+      // ~0.85, postit ~0.55 pre-analyzer-WB values on Pixel 7 sun
+      // captures); the strip reads ~0.02. A 0.04 threshold catches
+      // the failure without excluding legit dim-side sensor
+      // captures.
+      let anyBright = false;
+      for (let i = 0; i < multi.length; i++) {
+        const m = samples[i];
+        const b = (m.r + m.g + m.b) / 3;
+        if (b >= 0.04) anyBright = true;
+        const v = reduced[i].variance!;
+        score += v.r + v.g + v.b;
+      }
+      if (!anyBright) score = Infinity;
+    } else {
+      for (let i = 0; i < multi.length; i++) {
+        const name = multi[i].name;
+        if (name === 'postit') continue;
+        const exp = expectedByName[name];
+        if (!exp) continue;
+        score += linearRgbDist2(samples[i], exp);
+      }
     }
     if (score < bestScore) {
       bestScore = score;
@@ -1822,6 +2114,76 @@ function maybeSweepMultiCardOffset(
         fixture.format === 'raw' ? r.dominant : null,
       );
       bestRects = candRects;
+    }
+    if (wantDebug) {
+      // Per-candidate diagnostic row: H, V, score, per-slot samples
+      // vs expected. Neutrals-only score matches the argmin above.
+      const parts = [
+        `H=${candidateMeta[idx].candidate.toFixed(2)}`,
+        `V=${candidateMeta[idx].vShift.toFixed(2)}`,
+        `score=${score.toExponential(3)}`,
+      ];
+      for (let i = 0; i < multi.length; i++) {
+        const s = samples[i];
+        const name = multi[i].name;
+        parts.push(
+          `${name}=(${s.r.toFixed(3)},${s.g.toFixed(3)},${s.b.toFixed(3)})`,
+        );
+      }
+      process.stderr.write(`    sweep-debug: ${parts.join(' ')}\n`);
+      const meta = candidateMeta[idx];
+      debugRows.push({
+        candidate: meta.candidate,
+        vShift: meta.vShift,
+        score,
+        samples: samples.map(s => ({...s})),
+        variances: reduced.map(r =>
+          r.variance ? {...r.variance} : null,
+        ),
+        whiteRect:
+          whiteSlotIdx >= 0 ? {...meta.previewRects[whiteSlotIdx]} : null,
+      });
+    }
+  }
+  if (wantDebug) {
+    process.stderr.write(
+      `    sweep-debug: WINNER H=${bestOffset.toFixed(2)} ` +
+        `V=${bestVerticalShift.toFixed(2)} score=${bestScore.toExponential(3)}\n`,
+    );
+    if (debugHtmlPath) {
+      // Grab the preview pixels once so the HTML writer can crop
+      // each candidate's WHITE-slot rect out for inline display.
+      // Cheap for a debug flow (~1 preview decode); skipped
+      // entirely when SWEEP_DEBUG_HTML isn't set.
+      let previewPixels: Uint8Array | null = null;
+      let previewW = 0;
+      let previewH = 0;
+      try {
+        const preview =
+          fixture.format === 'raw'
+            ? decoder.readPreviewRgb(fixture.path, 1200)
+            : decoder.readPreviewRgbPhoto(fixture.path, 1200);
+        previewPixels = new Uint8Array(preview.pixels);
+        previewW = preview.width;
+        previewH = preview.height;
+      } catch (err) {
+        process.stderr.write(
+          `    sweep-debug: preview render failed (${(err as Error).message ?? err}); ` +
+            `HTML will omit pixel crops\n`,
+        );
+      }
+      writeSweepDebugHtml(debugHtmlPath, {
+        fixture: path.basename(fixture.path),
+        rows: debugRows,
+        slotNames: multi.map(m => m.name),
+        expectedByName,
+        winner: {h: bestOffset, v: bestVerticalShift, score: bestScore},
+        preview:
+          previewPixels && previewW > 0 && previewH > 0
+            ? {pixels: previewPixels, width: previewW, height: previewH}
+            : null,
+      });
+      process.stderr.write(`    sweep-debug: wrote ${debugHtmlPath}\n`);
     }
   }
   if (bestSamples.length !== multi.length) return; // all candidates failed
