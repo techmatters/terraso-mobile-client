@@ -13,6 +13,7 @@ clang++ -std=c++17 -O2 -Wall -Wextra \
   main.cpp \
   "${CPP_DIR}/DngParser.cpp" \
   "${CPP_DIR}/DngPipeline.cpp" \
+  "${CPP_DIR}/MedianCut.cpp" \
   "${CPP_DIR}/DngDecoderC.cpp" \
   -o build/dng-cli-cpp
 

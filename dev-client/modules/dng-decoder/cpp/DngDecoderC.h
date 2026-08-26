@@ -41,6 +41,20 @@ bool dngDecoderDecodeRois(const char* path, const int32_t* rois, int32_t count,
                           double* outR, double* outG, double* outB,
                           const char** errorOut);
 
+// Dual-reducer variant of dngDecoderDecodeRois: for each ROI produces
+// BOTH the per-channel mean AND the median-cut dominant colour
+// (largest of 5 quantised vboxes — semantic match for the production
+// JPEG `dominantColor` algorithm). Six parallel double arrays, all
+// sized `count`. mean* values are byte-identical to what
+// dngDecoderDecodeRois returns for the same ROI. Same error
+// convention.
+bool dngDecoderDecodeRoisReduced(const char* path, const int32_t* rois,
+                                 int32_t count,
+                                 double* outMeanR, double* outMeanG,
+                                 double* outMeanB, double* outDomR,
+                                 double* outDomG, double* outDomB,
+                                 const char** errorOut);
+
 // Render a sub-sampled preview from the DNG at path. On success, sets
 // *outWidth, *outHeight, and allocates *outBytes (caller must free
 // with dngDecoderFreePreview). *outByteCount = *outWidth * *outHeight * 4.

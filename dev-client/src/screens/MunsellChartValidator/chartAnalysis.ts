@@ -118,6 +118,10 @@ export type MunsellChartResult = {
   // alias for matchedSampleValues[last]; kept as its own field so
   // consumers don't need to hard-code the array's last index.
   testSwatchLinearRgb: {r: number; g: number; b: number} | null;
+  // Median-cut dominant companion for testSwatchLinearRgb — same
+  // sample rect, biggest-cluster reducer instead of per-channel mean.
+  // Populated on RAW path only (photo path leaves it null).
+  testSwatchLinearRgbDominant: {r: number; g: number; b: number} | null;
   // Multi-card mode: raw linear-sRGB at each MULTI_CARD_POINTS slot.
   // Null when the caller ran single-card mode (default); otherwise a
   // per-slot array in MULTI_CARD_POINTS declaration order (whibal,
@@ -125,6 +129,9 @@ export type MunsellChartResult = {
   multiRefCards: Array<{
     name: 'whibal' | 'postit' | 'greycard' | 'white';
     linearRgb: {r: number; g: number; b: number};
+    // Median-cut dominant companion. Populated on RAW path; null on
+    // photo path (see CellMeasurement.rawLinearRgbDominant note).
+    linearRgbDominant: {r: number; g: number; b: number} | null;
     rect: {x: number; y: number; w: number; h: number};
   }> | null;
 };
@@ -647,11 +654,20 @@ export const analyzeMunsellChart = async (
   // renders instead of the plain error text. Users can then eyeball
   // what went wrong (chart mis-framed, poor focus, etc.).
   let measured: {r: number; g: number; b: number}[];
+  // Parallel `measuredDominant` populated only on the RAW path — the
+  // photo (CIImage) path can't cheaply do per-pixel median-cut, so
+  // dominant stays null there and downstream code treats the reducer
+  // as "mean only" for photos.
+  let measuredDominant: ({r: number; g: number; b: number} | null)[] = [];
   try {
-    measured =
-      format === 'raw'
-        ? decoder.decodeDngRois(imagePath, dngRois)
-        : decoder.decodePhotoRois(imagePath, dngRois);
+    if (format === 'raw') {
+      const reduced = decoder.decodeDngRoisReduced(imagePath, dngRois);
+      measured = reduced.map(r => r.mean);
+      measuredDominant = reduced.map(r => r.dominant);
+    } else {
+      measured = decoder.decodePhotoRois(imagePath, dngRois);
+      measuredDominant = dngRois.map(() => null);
+    }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     const failurePreview =
@@ -690,6 +706,7 @@ export const analyzeMunsellChart = async (
   const measurements: CellMeasurement[] = cells.map((cell, idx) => ({
     cell,
     rawLinearRgb: measured[idx],
+    rawLinearRgbDominant: measuredDominant[idx],
   }));
 
   // 5. Colour preview for the validation view. RAW → renderPreview
@@ -716,6 +733,12 @@ export const analyzeMunsellChart = async (
   //    the old cluster-fit ones. Not mapped to Munsell notations
   //    yet; caller decides what to do with the raw values.
   let matchedSampleValues: {r: number; g: number; b: number}[] | null = null;
+  // Parallel to matchedSampleValues: dominant reducer per matched
+  // sample rect. Same length + ordering; null entries where the reducer
+  // isn't available (photo path).
+  let matchedSampleValuesDominant:
+    | ({r: number; g: number; b: number} | null)[]
+    | null = null;
   if (grid.matchedSampleRects) {
     const sampleDngRois = grid.matchedSampleRects.map(r => ({
       x: Math.round(r.x * scaleX),
@@ -724,10 +747,14 @@ export const analyzeMunsellChart = async (
       h: Math.round(r.h * scaleY),
     }));
     try {
-      matchedSampleValues =
-        format === 'raw'
-          ? decoder.decodeDngRois(imagePath, sampleDngRois)
-          : decoder.decodePhotoRois(imagePath, sampleDngRois);
+      if (format === 'raw') {
+        const reduced = decoder.decodeDngRoisReduced(imagePath, sampleDngRois);
+        matchedSampleValues = reduced.map(r => r.mean);
+        matchedSampleValuesDominant = reduced.map(r => r.dominant);
+      } else {
+        matchedSampleValues = decoder.decodePhotoRois(imagePath, sampleDngRois);
+        matchedSampleValuesDominant = sampleDngRois.map(() => null);
+      }
     } catch (err) {
       // Match-rect decode is optional (falls back to grid.centers via
       // the null check on matchedSampleValues elsewhere). Log and
@@ -746,6 +773,10 @@ export const analyzeMunsellChart = async (
     matchedSampleValues && legacyRefIdx >= 0
       ? (matchedSampleValues[legacyRefIdx] ?? null)
       : null;
+  const testSwatchLinearRgbDominant =
+    matchedSampleValuesDominant && legacyRefIdx >= 0
+      ? (matchedSampleValuesDominant[legacyRefIdx] ?? null)
+      : null;
   // In multi mode, the last MULTI_CARD_POINTS.length entries of
   // matchedSampleValues correspond to the 3 fixed slots in declared
   // order. Pair each with its slot name + preview rect.
@@ -759,6 +790,7 @@ export const analyzeMunsellChart = async (
           return {
             name: slot.name,
             linearRgb: matchedSampleValues[valueIdx],
+            linearRgbDominant: matchedSampleValuesDominant?.[valueIdx] ?? null,
             rect: rectAtIdx(rectIdx),
           };
         })
@@ -778,6 +810,7 @@ export const analyzeMunsellChart = async (
       detectedSwatches: grid.detected,
       matchedSampleValues,
       testSwatchLinearRgb,
+      testSwatchLinearRgbDominant,
       multiRefCards,
     },
   };

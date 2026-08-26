@@ -41,6 +41,20 @@ struct LinearRgb: Encodable {
   let b: Double
 }
 
+// Mirror of the C++ CLI's per-ROI output shape: `r/g/b` = per-channel
+// mean, `dominantR/dominantG/dominantB` = median-cut "biggest cluster".
+// The Apple CIRAWFilter path only computes the mean, so the dominant
+// fields are emitted equal to the mean as a placeholder — keeps the
+// JSON schema stable for the analyzer.
+struct LinearRgbReduced: Encodable {
+  let r: Double
+  let g: Double
+  let b: Double
+  let dominantR: Double
+  let dominantG: Double
+  let dominantB: Double
+}
+
 enum CliError: Error {
   case msg(String)
 }
@@ -502,7 +516,14 @@ case "decode-dng-rois":
   } catch {
     die("unexpected error: \(error.localizedDescription)")
   }
-  writeJson(results)
+  // Emit mean AND placeholder-dominant fields so downstream parsers see
+  // the same schema as the C++ CLI (see LinearRgbReduced above).
+  let reduced = results.map {
+    LinearRgbReduced(
+      r: $0.r, g: $0.g, b: $0.b,
+      dominantR: $0.r, dominantG: $0.g, dominantB: $0.b)
+  }
+  writeJson(reduced)
 
 case "read-preview-rgb":
   guard args.count >= 5 else {
@@ -544,7 +565,12 @@ case "decode-photo-rois":
   } catch {
     die("unexpected error: \(error.localizedDescription)")
   }
-  writeJson(results)
+  let reduced = results.map {
+    LinearRgbReduced(
+      r: $0.r, g: $0.g, b: $0.b,
+      dominantR: $0.r, dominantG: $0.g, dominantB: $0.b)
+  }
+  writeJson(reduced)
 
 case "read-preview-rgb-photo":
   guard args.count >= 5 else {

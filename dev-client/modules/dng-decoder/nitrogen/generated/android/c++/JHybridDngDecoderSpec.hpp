@@ -56,6 +56,7 @@ namespace margelo::nitro::dngdecoder {
     // Methods
     DngMetadata readMetadata(const std::string& dngPath) override;
     std::vector<LinearRgb> decodeDngRois(const std::string& dngPath, const std::vector<Roi>& rois) override;
+    std::vector<LinearRgbReduced> decodeDngRoisReduced(const std::string& dngPath, const std::vector<Roi>& rois) override;
     PreviewImage renderPreview(const std::string& dngPath, double maxDim) override;
     PreviewGrayscale readPreviewGrayscale(const std::string& dngPath, double maxDim) override;
     PreviewRgb readPreviewRgb(const std::string& dngPath, double maxDim) override;

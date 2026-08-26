@@ -155,6 +155,24 @@ open class HybridDngDecoderSpec_cxx {
   }
   
   @inline(__always)
+  public final func decodeDngRoisReduced(dngPath: std.string, rois: bridge.std__vector_Roi_) -> bridge.Result_std__vector_LinearRgbReduced__ {
+    do {
+      let __result = try self.__implementation.decodeDngRoisReduced(dngPath: String(dngPath), rois: rois.map({ __item in __item }))
+      let __resultCpp = { () -> bridge.std__vector_LinearRgbReduced_ in
+        var __vector = bridge.create_std__vector_LinearRgbReduced_(__result.count)
+        for __item in __result {
+          __vector.push_back(__item)
+        }
+        return __vector
+      }()
+      return bridge.create_Result_std__vector_LinearRgbReduced__(__resultCpp)
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_std__vector_LinearRgbReduced__(__exceptionPtr)
+    }
+  }
+  
+  @inline(__always)
   public final func renderPreview(dngPath: std.string, maxDim: Double) -> bridge.Result_PreviewImage_ {
     do {
       let __result = try self.__implementation.renderPreview(dngPath: String(dngPath), maxDim: maxDim)

@@ -94,6 +94,10 @@ export type CaptureJsonEntry = {
     display_name: string | null;
     sample_rect: {x: number; y: number; w: number; h: number};
     raw_linear_rgb: [number, number, number];
+    // Median-cut dominant reducer companion. Same units as
+    // raw_linear_rgb; null when the fixture path can't produce one
+    // (photo-file fixtures, or paper synthesised from grid stats).
+    raw_linear_rgb_dominant?: [number, number, number] | null;
     expected_linear_rgb: [number, number, number] | null;
     measured_linear_rgb: [number, number, number] | null;
     delta_e: number | null;
@@ -106,6 +110,7 @@ export type CaptureJsonEntry = {
     display_name: string;
     sample_rect: {x: number; y: number; w: number; h: number};
     raw_linear_rgb: [number, number, number];
+    raw_linear_rgb_dominant?: [number, number, number] | null;
     expected_linear_rgb: [number, number, number] | null;
     measured_linear_rgb: [number, number, number] | null;
     delta_e: number | null;
@@ -143,6 +148,9 @@ export type CellJsonEntry = {
   measured_notation: string;
   expected_linear_rgb: [number, number, number];
   raw_linear_rgb: [number, number, number];
+  // Median-cut dominant reducer companion (see analyzer + filmstrip
+  // reducer radio). Null on photo-path fixtures.
+  raw_linear_rgb_dominant?: [number, number, number] | null;
   measured_linear_rgb: [number, number, number];
   delta_e: number;
   sample_rect: {x: number; y: number; w: number; h: number};

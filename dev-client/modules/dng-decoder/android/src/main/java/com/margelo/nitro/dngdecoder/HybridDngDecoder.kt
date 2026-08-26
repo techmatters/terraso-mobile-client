@@ -191,6 +191,36 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         return Array(rois.size) { i -> LinearRgb(r = outR[i], g = outG[i], b = outB[i]) }
     }
 
+    override fun decodeDngRoisReduced(
+        dngPath: String,
+        rois: Array<Roi>,
+    ): Array<LinearRgbReduced> {
+        val flat = IntArray(rois.size * 4)
+        for (i in rois.indices) {
+            flat[i * 4] = rois[i].x.toInt()
+            flat[i * 4 + 1] = rois[i].y.toInt()
+            flat[i * 4 + 2] = rois[i].w.toInt()
+            flat[i * 4 + 3] = rois[i].h.toInt()
+        }
+        val meanR = DoubleArray(rois.size)
+        val meanG = DoubleArray(rois.size)
+        val meanB = DoubleArray(rois.size)
+        val domR = DoubleArray(rois.size)
+        val domG = DoubleArray(rois.size)
+        val domB = DoubleArray(rois.size)
+        val err = arrayOfNulls<String>(1)
+        val ok = nativeDecodeRoisReduced(
+            dngPath, flat, meanR, meanG, meanB, domR, domG, domB, err,
+        )
+        if (!ok) throw RuntimeException(err[0] ?: "DNG decode failed")
+        return Array(rois.size) { i ->
+            LinearRgbReduced(
+                mean = LinearRgb(r = meanR[i], g = meanG[i], b = meanB[i]),
+                dominant = LinearRgb(r = domR[i], g = domG[i], b = domB[i]),
+            )
+        }
+    }
+
     private fun channelChar(c: Int): String = when (c) {
         0 -> "R"
         1 -> "G"
@@ -212,6 +242,18 @@ class HybridDngDecoder : HybridDngDecoderSpec() {
         outR: DoubleArray,
         outG: DoubleArray,
         outB: DoubleArray,
+        errorOut: Array<String?>,
+    ): Boolean
+
+    private external fun nativeDecodeRoisReduced(
+        path: String,
+        rois: IntArray,      // flattened [x,y,w,h] per ROI
+        outMeanR: DoubleArray,
+        outMeanG: DoubleArray,
+        outMeanB: DoubleArray,
+        outDomR: DoubleArray,
+        outDomG: DoubleArray,
+        outDomB: DoubleArray,
         errorOut: Array<String?>,
     ): Boolean
 

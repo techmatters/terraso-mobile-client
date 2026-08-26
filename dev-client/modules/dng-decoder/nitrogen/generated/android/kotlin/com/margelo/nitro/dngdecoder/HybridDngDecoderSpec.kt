@@ -38,6 +38,10 @@ abstract class HybridDngDecoderSpec: HybridObject() {
   
   @DoNotStrip
   @Keep
+  abstract fun decodeDngRoisReduced(dngPath: String, rois: Array<Roi>): Array<LinearRgbReduced>
+  
+  @DoNotStrip
+  @Keep
   abstract fun renderPreview(dngPath: String, maxDim: Double): PreviewImage
   
   @DoNotStrip

@@ -40,6 +40,14 @@ import type {MunsellPageCell} from 'terraso-mobile-client/screens/MunsellChartVa
 export type CellMeasurement = {
   cell: MunsellPageCell;
   rawLinearRgb: {r: number; g: number; b: number};
+  // Optional companion reducer: median-cut "biggest colour cluster"
+  // over the same ROI, matching the legacy JPEG dominantColor path.
+  // Populated by chartAnalysis via decoder.decodeDngRoisReduced for
+  // the RAW path; null for the photo path (CIImage can't cheaply do
+  // per-pixel median-cut). Downstream consumers pick which reducer
+  // to feed into WB + Munsell match; the filmstrip's mean-vs-dominant
+  // radio flips between them.
+  rawLinearRgbDominant?: {r: number; g: number; b: number} | null;
 };
 
 export type MunsellCellResult = {

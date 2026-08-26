@@ -28,6 +28,13 @@
 
 export type Roi = {x: number; y: number; w: number; h: number};
 export type LinearRgb = {r: number; g: number; b: number};
+
+// Dual-reducer per-ROI decode result. `mean` = per-channel arithmetic
+// average (biased by highlights + off-tone flecks); `dominant` =
+// median-cut posterise "biggest colour cluster" (matches the legacy
+// JPEG dominantColor algorithm, robust to a handful of outlier
+// pixels). Kept in lockstep with LinearRgbReduced in the Nitro spec.
+export type LinearRgbReduced = {mean: LinearRgb; dominant: LinearRgb};
 export type PreviewImage = {uri: string; width: number; height: number};
 export type PreviewRgb = {
   width: number;
@@ -41,6 +48,7 @@ export type PreviewRgb = {
 
 export interface DngDecoderLike {
   decodeDngRois(dngPath: string, rois: Roi[]): LinearRgb[];
+  decodeDngRoisReduced(dngPath: string, rois: Roi[]): LinearRgbReduced[];
   decodePhotoRois(imagePath: string, rois: Roi[]): LinearRgb[];
   readPreviewRgb(dngPath: string, maxDim: number): PreviewRgb;
   readPreviewRgbPhoto(imagePath: string, maxDim: number): PreviewRgb;

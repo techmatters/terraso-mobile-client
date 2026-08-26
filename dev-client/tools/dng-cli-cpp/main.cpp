@@ -147,22 +147,34 @@ int cmdDecodeDngRois(int argc, char** argv) {
     flat[i * 4 + 2] = rois[i].w;
     flat[i * 4 + 3] = rois[i].h;
   }
-  std::vector<double> rOut(rois.size()), gOut(rois.size()), bOut(rois.size());
+  // Reduced form: mean + dominant. The mean is byte-identical to what
+  // the old dngDecoderDecodeRois returned, so the `r`/`g`/`b` fields
+  // stay stable for callers that don't yet parse the dominant fields.
+  const size_t n = rois.size();
+  std::vector<double> mR(n), mG(n), mB(n), dR(n), dG(n), dB(n);
   const char* err = nullptr;
-  if (!dngDecoderDecodeRois(path.c_str(), flat.data(),
-                            static_cast<int32_t>(rois.size()),
-                            rOut.data(), gOut.data(), bOut.data(), &err)) {
-    die(std::string("dngDecoderDecodeRois failed: ") + (err ? err : "unknown"));
+  if (!dngDecoderDecodeRoisReduced(path.c_str(), flat.data(),
+                                   static_cast<int32_t>(n), mR.data(),
+                                   mG.data(), mB.data(), dR.data(),
+                                   dG.data(), dB.data(), &err)) {
+    die(std::string("dngDecoderDecodeRoisReduced failed: ") +
+        (err ? err : "unknown"));
   }
   std::string out = "[";
-  for (size_t i = 0; i < rois.size(); i++) {
+  for (size_t i = 0; i < n; i++) {
     if (i) out += ",";
     out += "{\"r\":";
-    writeDouble(out, rOut[i]);
+    writeDouble(out, mR[i]);
     out += ",\"g\":";
-    writeDouble(out, gOut[i]);
+    writeDouble(out, mG[i]);
     out += ",\"b\":";
-    writeDouble(out, bOut[i]);
+    writeDouble(out, mB[i]);
+    out += ",\"dominantR\":";
+    writeDouble(out, dR[i]);
+    out += ",\"dominantG\":";
+    writeDouble(out, dG[i]);
+    out += ",\"dominantB\":";
+    writeDouble(out, dB[i]);
     out += "}";
   }
   out += "]\n";

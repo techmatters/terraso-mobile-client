@@ -11,6 +11,8 @@
 namespace margelo::nitro::dngdecoder { struct DngMetadata; }
 // Forward declaration of `LinearRgb` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct LinearRgb; }
+// Forward declaration of `LinearRgbReduced` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct LinearRgbReduced; }
 // Forward declaration of `PreviewImage` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct PreviewImage; }
 // Forward declaration of `PreviewGrayscale` to properly resolve imports.
@@ -26,6 +28,8 @@ namespace margelo::nitro::dngdecoder { struct Roi; }
 #include "LinearRgb.hpp"
 #include <vector>
 #include "JLinearRgb.hpp"
+#include "LinearRgbReduced.hpp"
+#include "JLinearRgbReduced.hpp"
 #include "PreviewImage.hpp"
 #include "JPreviewImage.hpp"
 #include "PreviewGrayscale.hpp"
@@ -90,6 +94,29 @@ namespace margelo::nitro::dngdecoder {
     return [&](auto&& __input) {
       size_t __size = __input->size();
       std::vector<LinearRgb> __vector;
+      __vector.reserve(__size);
+      for (size_t __i = 0; __i < __size; __i++) {
+        auto __element = __input->getElement(__i);
+        __vector.push_back(__element->toCpp());
+      }
+      return __vector;
+    }(__result);
+  }
+  std::vector<LinearRgbReduced> JHybridDngDecoderSpec::decodeDngRoisReduced(const std::string& dngPath, const std::vector<Roi>& rois) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<jni::JArrayClass<JLinearRgbReduced>>(jni::alias_ref<jni::JString> /* dngPath */, jni::alias_ref<jni::JArrayClass<JRoi>> /* rois */)>("decodeDngRoisReduced");
+    auto __result = method(_javaPart, jni::make_jstring(dngPath), [&](auto&& __input) {
+      size_t __size = __input.size();
+      jni::local_ref<jni::JArrayClass<JRoi>> __array = jni::JArrayClass<JRoi>::newArray(__size);
+      for (size_t __i = 0; __i < __size; __i++) {
+        const auto& __element = __input[__i];
+        auto __elementJni = JRoi::fromCpp(__element);
+        __array->setElement(__i, *__elementJni);
+      }
+      return __array;
+    }(rois));
+    return [&](auto&& __input) {
+      size_t __size = __input->size();
+      std::vector<LinearRgbReduced> __vector;
       __vector.reserve(__size);
       for (size_t __i = 0; __i < __size; __i++) {
         auto __element = __input->getElement(__i);

@@ -12,6 +12,8 @@
 namespace margelo::nitro::dngdecoder { struct DngMetadata; }
 // Forward declaration of `HybridDngDecoderSpec` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { class HybridDngDecoderSpec; }
+// Forward declaration of `LinearRgbReduced` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct LinearRgbReduced; }
 // Forward declaration of `LinearRgb` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct LinearRgb; }
 // Forward declaration of `PreviewGrayscale` to properly resolve imports.
@@ -31,6 +33,7 @@ namespace DngDecoder { class HybridDngDecoderSpec_cxx; }
 #include "DngMetadata.hpp"
 #include "HybridDngDecoderSpec.hpp"
 #include "LinearRgb.hpp"
+#include "LinearRgbReduced.hpp"
 #include "PreviewGrayscale.hpp"
 #include "PreviewImage.hpp"
 #include "PreviewRgb.hpp"
@@ -69,6 +72,17 @@ namespace margelo::nitro::dngdecoder::bridge::swift {
     return vector;
   }
   
+  // pragma MARK: std::vector<LinearRgbReduced>
+  /**
+   * Specialized version of `std::vector<LinearRgbReduced>`.
+   */
+  using std__vector_LinearRgbReduced_ = std::vector<LinearRgbReduced>;
+  inline std::vector<LinearRgbReduced> create_std__vector_LinearRgbReduced_(size_t size) noexcept {
+    std::vector<LinearRgbReduced> vector;
+    vector.reserve(size);
+    return vector;
+  }
+  
   // pragma MARK: std::shared_ptr<HybridDngDecoderSpec>
   /**
    * Specialized version of `std::shared_ptr<HybridDngDecoderSpec>`.
@@ -97,6 +111,15 @@ namespace margelo::nitro::dngdecoder::bridge::swift {
   }
   inline Result_std__vector_LinearRgb__ create_Result_std__vector_LinearRgb__(const std::exception_ptr& error) noexcept {
     return Result<std::vector<LinearRgb>>::withError(error);
+  }
+  
+  // pragma MARK: Result<std::vector<LinearRgbReduced>>
+  using Result_std__vector_LinearRgbReduced__ = Result<std::vector<LinearRgbReduced>>;
+  inline Result_std__vector_LinearRgbReduced__ create_Result_std__vector_LinearRgbReduced__(const std::vector<LinearRgbReduced>& value) noexcept {
+    return Result<std::vector<LinearRgbReduced>>::withValue(value);
+  }
+  inline Result_std__vector_LinearRgbReduced__ create_Result_std__vector_LinearRgbReduced__(const std::exception_ptr& error) noexcept {
+    return Result<std::vector<LinearRgbReduced>>::withError(error);
   }
   
   // pragma MARK: Result<PreviewImage>

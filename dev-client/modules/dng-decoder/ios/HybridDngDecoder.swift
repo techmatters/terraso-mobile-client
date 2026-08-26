@@ -129,6 +129,21 @@ class HybridDngDecoder: HybridDngDecoderSpec {
     return results
   }
 
+  // Dual-reducer sibling of decodeDngRois. On iOS/mac the CIRAWFilter
+  // pipeline only exposes a per-ROI area-average (mean); a real
+  // per-pixel median-cut pass would need us to render each ROI to a
+  // CPU-side buffer and re-implement quantisation on top of that.
+  // Until that lands, emit dominant = mean as a placeholder so the
+  // JSON schema matches the Android C++ path. Callers on iOS therefore
+  // see "mean and dominant agree exactly," which is a hint that this
+  // platform hasn't been upgraded rather than a claim about pixel data.
+  func decodeDngRoisReduced(dngPath: String, rois: [Roi]) throws
+    -> [LinearRgbReduced]
+  {
+    let means = try decodeDngRois(dngPath: dngPath, rois: rois)
+    return means.map { LinearRgbReduced(mean: $0, dominant: $0) }
+  }
+
   func renderPreview(dngPath: String, maxDim: Double) throws -> PreviewImage {
     let url = URL(fileURLWithPath: stripFileScheme(dngPath))
     guard let rawFilter = CIRAWFilter(imageURL: url) else {

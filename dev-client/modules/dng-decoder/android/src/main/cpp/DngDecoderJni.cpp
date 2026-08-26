@@ -71,6 +71,41 @@ Java_com_margelo_nitro_dngdecoder_HybridDngDecoder_nativeDecodeRois(
   return JNI_TRUE;
 }
 
+// Dual-reducer sibling of nativeDecodeRois. Returns per-channel mean
+// + median-cut dominant in six parallel DoubleArrays. The mean output
+// is byte-identical to what nativeDecodeRois returns for the same ROI.
+JNIEXPORT jboolean JNICALL
+Java_com_margelo_nitro_dngdecoder_HybridDngDecoder_nativeDecodeRoisReduced(
+    JNIEnv* env, jobject /*thiz*/, jstring jpath, jintArray jrois,
+    jdoubleArray joutMeanR, jdoubleArray joutMeanG, jdoubleArray joutMeanB,
+    jdoubleArray joutDomR, jdoubleArray joutDomG, jdoubleArray joutDomB,
+    jobjectArray jerr) {
+  const char* cpath = env->GetStringUTFChars(jpath, nullptr);
+  const jsize roiLen = env->GetArrayLength(jrois);
+  const jint count = roiLen / 4;
+  std::vector<jint> rois(roiLen);
+  env->GetIntArrayRegion(jrois, 0, roiLen, rois.data());
+  std::vector<double> mR(count), mG(count), mB(count);
+  std::vector<double> dR(count), dG(count), dB(count);
+  const char* errPtr = nullptr;
+  const bool ok = dngDecoderDecodeRoisReduced(
+      cpath, reinterpret_cast<const int32_t*>(rois.data()), count,
+      mR.data(), mG.data(), mB.data(), dR.data(), dG.data(), dB.data(),
+      &errPtr);
+  env->ReleaseStringUTFChars(jpath, cpath);
+  if (!ok) {
+    setErrorSlot(env, jerr, errPtr);
+    return JNI_FALSE;
+  }
+  env->SetDoubleArrayRegion(joutMeanR, 0, count, mR.data());
+  env->SetDoubleArrayRegion(joutMeanG, 0, count, mG.data());
+  env->SetDoubleArrayRegion(joutMeanB, 0, count, mB.data());
+  env->SetDoubleArrayRegion(joutDomR, 0, count, dR.data());
+  env->SetDoubleArrayRegion(joutDomG, 0, count, dG.data());
+  env->SetDoubleArrayRegion(joutDomB, 0, count, dB.data());
+  return JNI_TRUE;
+}
+
 // Kotlin signature (see HybridDngDecoder.kt):
 //   nativeRenderPreview(path: String, maxDim: Int, dims: IntArray[2], err)
 //     : IntArray?

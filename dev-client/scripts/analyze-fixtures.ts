@@ -47,6 +47,7 @@ import {
 import {
   type DngDecoderLike,
   type LinearRgb,
+  type LinearRgbReduced,
   type PreviewImage,
   type PreviewRgb,
   type Roi,
@@ -274,12 +275,40 @@ class NodeDecoder implements DngDecoderLike {
   }
 
   decodeDngRois(dngPath: string, rois: Roi[]): LinearRgb[] {
+    // Both CLIs now always emit `{r,g,b,dominantR,dominantG,dominantB}`
+    // per ROI; the extra dominant fields are harmless here since the
+    // LinearRgb shape only reads r/g/b — but decodeDngRoisReduced below
+    // is the way to actually consume the dominant reducer.
     const out = execFileSync(
       this.dngCliPath,
       ['decode-dng-rois', dngPath, JSON.stringify(rois)],
       {encoding: 'utf-8', maxBuffer: 32 * 1024 * 1024},
     );
     return JSON.parse(out);
+  }
+
+  decodeDngRoisReduced(dngPath: string, rois: Roi[]): LinearRgbReduced[] {
+    // Single CLI call that returns both reducers per ROI. Both the C++
+    // (Android-fixture) CLI and the Swift (iOS/mac-fixture) CLI emit
+    // the same shape; the iOS side just repeats mean→dominant since
+    // its CIRAWFilter pipeline can't cheaply do a per-pixel pass.
+    const out = execFileSync(
+      this.dngCliPath,
+      ['decode-dng-rois', dngPath, JSON.stringify(rois)],
+      {encoding: 'utf-8', maxBuffer: 32 * 1024 * 1024},
+    );
+    const raw = JSON.parse(out) as Array<{
+      r: number;
+      g: number;
+      b: number;
+      dominantR: number;
+      dominantG: number;
+      dominantB: number;
+    }>;
+    return raw.map(r => ({
+      mean: {r: r.r, g: r.g, b: r.b},
+      dominant: {r: r.dominantR, g: r.dominantG, b: r.dominantB},
+    }));
   }
 
   readPreviewRgb(dngPath: string, maxDim: number): PreviewRgb {
@@ -1083,6 +1112,10 @@ const buildCaptureEntry = (
         srgbGammaInverse(g / 255),
         srgbGammaInverse(b / 255),
       ],
+      // No dominant reducer for the paper pseudo-ref — it's synthesised
+      // from the whiteMask border-ring median, not sampled via a
+      // decoder ROI.
+      raw_linear_rgb_dominant: null,
       expected_linear_rgb: [PAPER_EXPECTED.r, PAPER_EXPECTED.g, PAPER_EXPECTED.b],
       measured_linear_rgb: null,
       delta_e: null,
@@ -1114,6 +1147,13 @@ const buildCaptureEntry = (
             slot.linearRgb.g,
             slot.linearRgb.b,
           ],
+          raw_linear_rgb_dominant: slot.linearRgbDominant
+            ? [
+                slot.linearRgbDominant.r,
+                slot.linearRgbDominant.g,
+                slot.linearRgbDominant.b,
+              ]
+            : null,
           expected_linear_rgb: expected
             ? [expected.r, expected.g, expected.b]
             : null,
@@ -1158,6 +1198,13 @@ const buildCaptureEntry = (
               fixture.reference,
             sample_rect: refCardRect,
             raw_linear_rgb: [refCardRaw.r, refCardRaw.g, refCardRaw.b],
+            raw_linear_rgb_dominant: outcome.result.testSwatchLinearRgbDominant
+              ? [
+                  outcome.result.testSwatchLinearRgbDominant.r,
+                  outcome.result.testSwatchLinearRgbDominant.g,
+                  outcome.result.testSwatchLinearRgbDominant.b,
+                ]
+              : null,
             expected_linear_rgb: refCardExpected
               ? [refCardExpected.r, refCardExpected.g, refCardExpected.b]
               : null,
@@ -1178,32 +1225,41 @@ const buildCaptureEntry = (
     // leftward inside the mask holder; equal to 1.75 = as designed.
     multi_card_sweep_offset_pitches:
       (outcome as any)._sweepOffset ?? null,
-    cells: results.map((r, i) => ({
-      physical_row: r.cell.rowIdx,
-      physical_col: r.cell.colIdx,
-      expected_notation: r.cell.notation,
-      measured_notation: r.measuredMunsell,
-      expected_linear_rgb: [
-        r.cell.expectedLinearRgb.r,
-        r.cell.expectedLinearRgb.g,
-        r.cell.expectedLinearRgb.b,
-      ],
-      raw_linear_rgb: [
-        measurements[i].rawLinearRgb.r,
-        measurements[i].rawLinearRgb.g,
-        measurements[i].rawLinearRgb.b,
-      ],
-      measured_linear_rgb: [
-        r.measuredLinearRgb.r,
-        r.measuredLinearRgb.g,
-        r.measuredLinearRgb.b,
-      ],
-      delta_e: r.deltaE,
-      sample_rect: previewRects[i],
-      is_reference:
-        anchor.isOnPage === true &&
-        r.cell.notation === anchor.displayNotation,
-    })),
+    cells: results.map((r, i) => {
+      const dom = measurements[i].rawLinearRgbDominant;
+      return {
+        physical_row: r.cell.rowIdx,
+        physical_col: r.cell.colIdx,
+        expected_notation: r.cell.notation,
+        measured_notation: r.measuredMunsell,
+        expected_linear_rgb: [
+          r.cell.expectedLinearRgb.r,
+          r.cell.expectedLinearRgb.g,
+          r.cell.expectedLinearRgb.b,
+        ],
+        raw_linear_rgb: [
+          measurements[i].rawLinearRgb.r,
+          measurements[i].rawLinearRgb.g,
+          measurements[i].rawLinearRgb.b,
+        ],
+        // Median-cut dominant reducer companion. Same units + coord
+        // frame as raw_linear_rgb; null on photo-path fixtures (see
+        // CellMeasurement.rawLinearRgbDominant note in cellResults.ts).
+        // Filmstrip's mean/dominant radio flips downstream ΔE math to
+        // use this in place of raw_linear_rgb.
+        raw_linear_rgb_dominant: dom ? [dom.r, dom.g, dom.b] : null,
+        measured_linear_rgb: [
+          r.measuredLinearRgb.r,
+          r.measuredLinearRgb.g,
+          r.measuredLinearRgb.b,
+        ],
+        delta_e: r.deltaE,
+        sample_rect: previewRects[i],
+        is_reference:
+          anchor.isOnPage === true &&
+          r.cell.notation === anchor.displayNotation,
+      };
+    }),
   };
 };
 
@@ -1292,41 +1348,75 @@ const buildBurstAverageCaptures = (
       continue;
     }
 
-    // Average per-cell raw_linear_rgb across frames.
+    // Average per-cell raw_linear_rgb (and companion dominant) across
+    // frames. Dominant is a median-cut reducer: strictly speaking a
+    // per-pixel operation, so averaging its per-frame outputs is a
+    // pragmatic approximation — it stays "the biggest-cluster centroid
+    // per frame, averaged" rather than "the median-cut over the union
+    // of all frames' pixels". Good enough for the filmstrip's A/B toy;
+    // if the divergence matters, an offline recomputation would need
+    // the raw DNGs anyway.
     const avgCells = template.cells.map((tCell, i) => {
-      let r = 0;
-      let g = 0;
-      let b = 0;
+      let r = 0, g = 0, b = 0;
+      let dR = 0, dG = 0, dB = 0;
+      let domFrames = 0;
       for (const f of frames) {
         const c = f.cap.cells[i];
         r += c.raw_linear_rgb[0];
         g += c.raw_linear_rgb[1];
         b += c.raw_linear_rgb[2];
+        const cd = c.raw_linear_rgb_dominant;
+        if (cd) {
+          dR += cd[0];
+          dG += cd[1];
+          dB += cd[2];
+          domFrames += 1;
+        }
       }
       return {
         ...tCell,
         raw_linear_rgb: [r / n, g / n, b / n] as [number, number, number],
+        raw_linear_rgb_dominant:
+          domFrames > 0
+            ? ([dR / domFrames, dG / domFrames, dB / domFrames] as [
+                number, number, number,
+              ])
+            : null,
       };
     });
 
-    // Average per-refcard raw_linear_rgb across frames (multi mode).
+    // Average per-refcard raw_linear_rgb (+ companion dominant) across
+    // frames (multi mode).
     const templateRefCards = template.ref_cards;
     let avgRefCards: typeof templateRefCards = null;
     if (templateRefCards && templateRefCards.length > 0) {
       avgRefCards = templateRefCards.map((tRc, i) => {
-        let r = 0;
-        let g = 0;
-        let b = 0;
+        let r = 0, g = 0, b = 0;
+        let dR = 0, dG = 0, dB = 0;
+        let domFrames = 0;
         for (const f of frames) {
           const rc = f.cap.ref_cards?.[i];
           if (!rc) return tRc; // schema drift; keep template as-is
           r += rc.raw_linear_rgb[0];
           g += rc.raw_linear_rgb[1];
           b += rc.raw_linear_rgb[2];
+          const rd = rc.raw_linear_rgb_dominant;
+          if (rd) {
+            dR += rd[0];
+            dG += rd[1];
+            dB += rd[2];
+            domFrames += 1;
+          }
         }
         return {
           ...tRc,
           raw_linear_rgb: [r / n, g / n, b / n] as [number, number, number],
+          raw_linear_rgb_dominant:
+            domFrames > 0
+              ? ([dR / domFrames, dG / domFrames, dB / domFrames] as [
+                  number, number, number,
+                ])
+              : null,
         };
       });
     }

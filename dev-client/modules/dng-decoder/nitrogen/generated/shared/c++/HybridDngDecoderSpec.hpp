@@ -19,6 +19,8 @@ namespace margelo::nitro::dngdecoder { struct DngMetadata; }
 namespace margelo::nitro::dngdecoder { struct LinearRgb; }
 // Forward declaration of `Roi` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct Roi; }
+// Forward declaration of `LinearRgbReduced` to properly resolve imports.
+namespace margelo::nitro::dngdecoder { struct LinearRgbReduced; }
 // Forward declaration of `PreviewImage` to properly resolve imports.
 namespace margelo::nitro::dngdecoder { struct PreviewImage; }
 // Forward declaration of `PreviewGrayscale` to properly resolve imports.
@@ -31,6 +33,7 @@ namespace margelo::nitro::dngdecoder { struct PreviewRgb; }
 #include "LinearRgb.hpp"
 #include <vector>
 #include "Roi.hpp"
+#include "LinearRgbReduced.hpp"
 #include "PreviewImage.hpp"
 #include "PreviewGrayscale.hpp"
 #include "PreviewRgb.hpp"
@@ -68,6 +71,7 @@ namespace margelo::nitro::dngdecoder {
       // Methods
       virtual DngMetadata readMetadata(const std::string& dngPath) = 0;
       virtual std::vector<LinearRgb> decodeDngRois(const std::string& dngPath, const std::vector<Roi>& rois) = 0;
+      virtual std::vector<LinearRgbReduced> decodeDngRoisReduced(const std::string& dngPath, const std::vector<Roi>& rois) = 0;
       virtual PreviewImage renderPreview(const std::string& dngPath, double maxDim) = 0;
       virtual PreviewGrayscale readPreviewGrayscale(const std::string& dngPath, double maxDim) = 0;
       virtual PreviewRgb readPreviewRgb(const std::string& dngPath, double maxDim) = 0;

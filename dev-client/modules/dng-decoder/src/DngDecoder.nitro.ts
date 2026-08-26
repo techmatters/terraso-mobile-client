@@ -13,6 +13,18 @@ export type LinearRgb = {
   b: number;
 };
 
+// Dual-reducer per-ROI result: `mean` is the classic per-channel
+// arithmetic average (biased by highlights + off-tone flecks); `dominant`
+// is the median-cut posterise "biggest colour cluster" — matches the
+// legacy JPEG dominantColor algorithm and is robust to outlier pixels.
+// The Android C++ path computes both natively. iOS/mac's CIRAWFilter
+// path only computes the mean; `dominant` is a placeholder equal to
+// `mean` there until a per-pixel iOS path lands.
+export type LinearRgbReduced = {
+  mean: LinearRgb;
+  dominant: LinearRgb;
+};
+
 export type DngMetadata = {
   width: number;
   height: number;
@@ -66,6 +78,16 @@ export interface DngDecoder
   readMetadata(dngPath: string): DngMetadata;
 
   decodeDngRois(dngPath: string, rois: Roi[]): LinearRgb[];
+
+  /**
+   * Dual-reducer variant of decodeDngRois. Returns both the per-channel
+   * arithmetic mean AND the median-cut dominant colour (biggest of 5
+   * quantised vboxes — same semantic as the legacy JPEG dominantColor
+   * pipeline). Callers that only care about one can ignore the other;
+   * the mean field is byte-identical to what decodeDngRois returns for
+   * the same ROI. See LinearRgbReduced for platform notes.
+   */
+  decodeDngRoisReduced(dngPath: string, rois: Roi[]): LinearRgbReduced[];
 
   /**
    * Render the DNG to a display-friendly PNG file for use as a preview in
