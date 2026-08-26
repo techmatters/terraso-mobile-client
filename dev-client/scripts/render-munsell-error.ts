@@ -85,11 +85,19 @@ type Sample = {
   // / delta_e — they'd be inconsistent with a live WB choice.
   expectedRgb: [number, number, number];
   rawRgb: [number, number, number];
+  // Median-cut dominant reducer companion (Phase 1). Same coord frame
+  // as rawRgb; null when the analyzer couldn't produce one for this
+  // sample (photo-path fixtures — CIImage can't cheaply do per-pixel
+  // median-cut; also legacy runs that predate the dominant emit).
+  // The 'reducer' radio flips downstream ΔE math from rawRgb to this.
+  rawRgbDominant: [number, number, number] | null;
   // Physical-card measurements from THIS shutter, keyed by card
   // name ('whibal' | 'postit' | 'greycard'). Used as reference
   // points for the client-side WB fit; missing entries just mean
   // that card wasn't visible in this capture and can't be picked.
-  refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]}};
+  // `rawDominant` is the per-card median-cut companion of `raw`;
+  // null on photo-path fixtures + legacy runs.
+  refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]; rawDominant: [number, number, number] | null}};
   // Shot kind bucket, derived from the label:
   //   'burst1of5' … 'burstNofM' — individual burst frames
   //   'burstavgofN'             — the synthetic averaged capture
@@ -192,6 +200,7 @@ for (const cap of runDoc.captures) {
       refOptions[rc.name] = {
         expected: rc.expected_linear_rgb,
         raw: rc.raw_linear_rgb,
+        rawDominant: rc.raw_linear_rgb_dominant ?? null,
       };
     }
   }
@@ -209,6 +218,7 @@ for (const cap of runDoc.captures) {
         refOptions.self = {
           expected: anchorCell.expected_linear_rgb,
           raw: anchorCell.raw_linear_rgb,
+          rawDominant: anchorCell.raw_linear_rgb_dominant ?? null,
         };
       }
     }
@@ -233,6 +243,7 @@ for (const cap of runDoc.captures) {
       illumUnevenness,
       expectedRgb: cell.expected_linear_rgb,
       rawRgb: cell.raw_linear_rgb,
+      rawRgbDominant: cell.raw_linear_rgb_dominant ?? null,
       refOptions,
       captureType: captureTypeOf(cap.label ?? ''),
     });
@@ -395,6 +406,17 @@ const html = `<!DOCTYPE html>
       </fieldset>
       <fieldset id="ctl-format">
         <legend>Format</legend>
+      </fieldset>
+      <fieldset id="ctl-reducer">
+        <legend>ROI reducer</legend>
+        <div style="font-size: 10px; color: #888; margin-top: 4px;">
+          <code>mean</code> = per-channel arithmetic average (default).
+          <code>dominant</code> = median-cut posterise, biggest colour
+          cluster in the ROI — matches the legacy JPEG dominantColor
+          path and is robust to off-tone flecks. Flips WB fit, ΔE,
+          rankings, all downstream math. Samples without a dominant
+          (photo-path, legacy runs) fall back silently to mean.
+        </div>
       </fieldset>
       <fieldset id="ctl-first-ref">
         <legend>First reference (WB anchor)</legend>
@@ -700,6 +722,23 @@ function nearestChipNotation(measRgb) {
   return CHIPS[bestIdx].notation;
 }
 
+// Reducer-aware raw accessors. Every call site that reads a sample's
+// or a ref card's raw linear-sRGB should go through these — flipping
+// state.reducer between 'mean' and 'dominant' then re-runs all
+// downstream math on the picked reducer. When state.reducer is
+// 'dominant' but the sample/ref has no dominant (legacy runs, photo
+// path), fall back to mean so nothing silently disappears.
+function rawOfSample(s) {
+  return state.reducer === 'dominant' && s.rawRgbDominant
+    ? s.rawRgbDominant
+    : s.rawRgb;
+}
+function rawOfRef(ref) {
+  return state.reducer === 'dominant' && ref.rawDominant
+    ? ref.rawDominant
+    : ref.raw;
+}
+
 // Client-side WB fit. Two modes: single-ref (gain-only, forced
 // through origin) and two-ref (gain + offset). Per-channel — computed
 // independently for R, G, B. Returns null if the refs aren't
@@ -708,29 +747,31 @@ function nearestChipNotation(measRgb) {
 function computeWB(refOptions, firstRef, secondRef) {
   const ref1 = refOptions[firstRef];
   if (!ref1) return null;
+  const raw1 = rawOfRef(ref1);
   if (secondRef === 'none' || !refOptions[secondRef]) {
     return {
       gain: [
-        ref1.raw[0] > 0 ? ref1.expected[0] / ref1.raw[0] : 1,
-        ref1.raw[1] > 0 ? ref1.expected[1] / ref1.raw[1] : 1,
-        ref1.raw[2] > 0 ? ref1.expected[2] / ref1.raw[2] : 1,
+        raw1[0] > 0 ? ref1.expected[0] / raw1[0] : 1,
+        raw1[1] > 0 ? ref1.expected[1] / raw1[1] : 1,
+        raw1[2] > 0 ? ref1.expected[2] / raw1[2] : 1,
       ],
       offset: [0, 0, 0],
     };
   }
   const ref2 = refOptions[secondRef];
+  const raw2 = rawOfRef(ref2);
   const gain = [0, 0, 0];
   const offset = [0, 0, 0];
   for (let k = 0; k < 3; k++) {
-    const dRaw = ref1.raw[k] - ref2.raw[k];
+    const dRaw = raw1[k] - raw2[k];
     // Degenerate: both refs read the same on this channel. Fall
     // back to single-ref gain — better than divide-by-zero.
     if (Math.abs(dRaw) < 1e-6) {
-      gain[k] = ref1.raw[k] > 0 ? ref1.expected[k] / ref1.raw[k] : 1;
+      gain[k] = raw1[k] > 0 ? ref1.expected[k] / raw1[k] : 1;
       offset[k] = 0;
     } else {
       gain[k] = (ref1.expected[k] - ref2.expected[k]) / dRaw;
-      offset[k] = ref1.expected[k] - ref1.raw[k] * gain[k];
+      offset[k] = ref1.expected[k] - raw1[k] * gain[k];
     }
   }
   return {gain, offset};
@@ -1016,6 +1057,15 @@ const state = {
   // the two-ref gain+offset fit.
   firstRef: 'greycard',
   secondRef: 'none',
+  // ROI reducer: 'mean' (per-channel arithmetic average) or 'dominant'
+  // (median-cut posterise "biggest cluster"). Flips the whole
+  // filmstrip: WB fit, per-chip ΔE, ref-card ΔE, ranking tables — all
+  // consume rawRgb (mean) or rawRgbDominant (dominant) depending on
+  // this pick. Samples whose dominant is unavailable (legacy runs,
+  // photo path) fall back to mean so nothing disappears when the
+  // radio flips; a small badge could later flag which samples fell
+  // back if this becomes confusing.
+  reducer: 'mean',
   // Chart type: 'polar' (existing 2D/3D disks) | 'heatmap' | 'bar'.
   chartType: 'polar',
   // Heatmap axes + aggregation. Defaults: rows = expected value, cols
@@ -1096,7 +1146,8 @@ const HEATMAP_AXIS_OPTIONS = [
 function signalStrengthOf(s) {
   const gc = s.refOptions?.greycard;
   if (!gc) return null;
-  return Math.min(gc.raw[0], gc.raw[1], gc.raw[2]);
+  const raw = rawOfRef(gc);
+  return Math.min(raw[0], raw[1], raw[2]);
 }
 
 // Bucket a continuous angle to width-w bands, labelled by the lower
@@ -1220,6 +1271,7 @@ const URL_STATE_SPEC = [
   ['fixture',    'fixture','set'],
   ['firstRef',   'ref1',   'scalar'],
   ['secondRef',  'ref2',   'scalar'],
+  ['reducer',    'reducer','scalar'],
 ];
 
 function hydrateStateFromUrl() {
@@ -1321,6 +1373,13 @@ function initControls() {
      {value: 'photo', label: 'jpeg (JPEG)'}],
     () => state.format,
     v => { state.format = v; rebuildFixtureControl(); },
+  );
+  makeRadioGroup(
+    document.getElementById('ctl-reducer'), 'reducer',
+    [{value: 'mean', label: 'mean (per-channel average)'},
+     {value: 'dominant', label: 'dominant (median-cut biggest cluster)'}],
+    () => state.reducer,
+    v => { state.reducer = v; },
   );
   // Multi-select filters. Empty set = no filter (all pass). On first
   // uncheck we expand the set to the full list so the box we just
@@ -1475,13 +1534,13 @@ function initControls() {
       if (state.fixture.size > 0 && !state.fixture.has(s.fixtureLabel)) continue;
       if (state.excludeFlaggedChips && EXCLUDED_CHIPS.has(s.expected)) continue;
       if (state.excludeFlaggedCards && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
-      pairs.push({raw: s.rawRgb, expected: s.expectedRgb});
+      pairs.push({raw: rawOfSample(s), expected: s.expectedRgb});
       // Add each shot's ref cards, deduped by (shot × card).
       for (const [name, ref] of Object.entries(s.refOptions)) {
         const key = s.fixtureLabel + '|' + s.format + '|' + name;
         if (seenRefKey.has(key)) continue;
         seenRefKey.add(key);
-        pairs.push({raw: ref.raw, expected: ref.expected});
+        pairs.push({raw: rawOfRef(ref), expected: ref.expected});
       }
     }
     if (pairs.length < 4) {
@@ -1694,11 +1753,12 @@ function filterSamples() {
     if (excludeFlagged && EXCLUDED_CHIPS.has(s.expected)) continue;
     if (excludeFlaggedFixtures && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
 
+    const rawIn = rawOfSample(s);
     if (state.ccmApplied && state.ccm) {
       // CCM path: no anchor, no WB. Always one copy per sample even
       // in split mode — anchor axis is meaningless when CCM is in
       // effect (measurement doesn't depend on anchor choice).
-      const measuredRgb = applyCCM(s.rawRgb, state.ccm.matrix);
+      const measuredRgb = applyCCM(rawIn, state.ccm.matrix);
       const measured = nearestChipNotation(measuredRgb);
       const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
       passed.push({...s, measured, measuredRgb, deltaE, anchor: 'ccm'});
@@ -1711,7 +1771,7 @@ function filterSamples() {
       for (const name of Object.keys(s.refOptions)) {
         const wb = computeWB(s.refOptions, name, 'none');
         if (!wb) continue;
-        const measuredRgb = applyWB(s.rawRgb, wb);
+        const measuredRgb = applyWB(rawIn, wb);
         const measured = nearestChipNotation(measuredRgb);
         const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
         passed.push({...s, measured, measuredRgb, deltaE, anchor: name});
@@ -1719,7 +1779,7 @@ function filterSamples() {
     } else {
       const wb = computeWB(s.refOptions, firstRef, secondRef);
       if (!wb) continue;
-      const measuredRgb = applyWB(s.rawRgb, wb);
+      const measuredRgb = applyWB(rawIn, wb);
       const measured = nearestChipNotation(measuredRgb);
       const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
       passed.push({...s, measured, measuredRgb, deltaE, anchor: firstRef});
@@ -2445,7 +2505,12 @@ function renderChannels(filtered) {
     const samples = facetGroups.get(k);
     const perChannel = CHANNELS.map(() => new Map());
     for (const s of samples) {
-      const src = channelSource === 'raw' ? s.rawRgb : s.measuredRgb;
+      // Reducer applies to the 'raw' side of channels chart too — if
+      // the user is comparing raw R/G/B vs expected, they should see
+      // the reducer they picked. 'measured' is already computed through
+      // rawOfSample upstream in filterSamples, so it doesn't need
+      // re-routing here.
+      const src = channelSource === 'raw' ? rawOfSample(s) : s.measuredRgb;
       if (!s.expectedRgb || !src) continue;
       for (const c of CHANNELS) {
         const x = Math.round(s.expectedRgb[c.idx] * 1000) / 1000;
@@ -2480,9 +2545,10 @@ function renderChannels(filtered) {
                meaSum: [0, 0, 0], n: 0};
           refStats.set(name, e);
         }
-        for (let k = 0; k < 3; k++) e.rawSum[k] += ref.raw[k];
+        const refRaw = rawOfRef(ref);
+        for (let k = 0; k < 3; k++) e.rawSum[k] += refRaw[k];
         if (wb) {
-          const m = applyWB(ref.raw, wb);
+          const m = applyWB(refRaw, wb);
           for (let k = 0; k < 3; k++) e.meaSum[k] += m[k];
         }
         e.n++;
