@@ -2551,6 +2551,13 @@ const {values} = parseArgs({
     // Value must be one of REFERENCE_TOKENS (multi / whibal / postit /
     // greycard / nothing / none).
     'override-ref': {type: 'string'},
+    // Comma-separated substring filters applied to each fixture's
+    // full path (parent directories + filename, lowercased). A
+    // fixture is kept only if EVERY token appears somewhere in that
+    // path. Handy for restricting a run to e.g. burst frame #1
+    // ("burst1of5") or a specific illumination ("light7") to iterate
+    // faster / keep the HTML report a manageable size.
+    filter: {type: 'string'},
   },
 });
 
@@ -2630,13 +2637,40 @@ const pageFilter = values.pages
         .filter(Boolean),
     )
   : null;
-const fixtures = pageFilter
+// --filter tokens are AND-ed: every token must appear somewhere in the
+// fixture's relative path (parent dirs + filename), lowercased. Uses
+// the path relative to fixturesDir so tokens can match session
+// folder names (e.g. "0824 open shade") as easily as filename tokens
+// like "burst1of5".
+const filterTokens = values.filter
+  ? values.filter
+      .split(',')
+      .map(s => s.trim().toLowerCase())
+      .filter(Boolean)
+  : [];
+const pathMatchesFilter = (p: string): boolean => {
+  if (filterTokens.length === 0) return true;
+  const relLower = path.relative(fixturesDir!, p).toLowerCase();
+  return filterTokens.every(tok => relLower.includes(tok));
+};
+const pageFiltered = pageFilter
   ? allFixtures.filter(f => pageFilter.has(f.page.toLowerCase()))
   : allFixtures;
+const fixtures =
+  filterTokens.length > 0
+    ? pageFiltered.filter(f => pathMatchesFilter(f.path))
+    : pageFiltered;
+const filterNotes: string[] = [];
+if (pageFilter) {
+  filterNotes.push(`pages=[${[...pageFilter].join(', ')}]`);
+}
+if (filterTokens.length > 0) {
+  filterNotes.push(`filter=[${filterTokens.join(', ')}]`);
+}
 process.stderr.write(
   `found ${allFixtures.length} fixture(s)` +
-    (pageFilter
-      ? ` — filtered to ${fixtures.length} for pages=[${[...pageFilter].join(', ')}]`
+    (filterNotes.length > 0
+      ? ` — filtered to ${fixtures.length} for ${filterNotes.join(' + ')}`
       : '') +
     `; refs=[${refNotations.join(', ')}]\n`,
 );
