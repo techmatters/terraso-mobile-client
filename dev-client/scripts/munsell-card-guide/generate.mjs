@@ -486,6 +486,53 @@ function buildCutSvg({includeBorder = true} = {}) {
   ]);
 }
 
+// "cut-test-v2": same window + hue-label cutouts as cut-test, but
+// the six/seven individual right-side boxes are replaced by ONE
+// rectangle wrapping them all — margin 0.2" on the LEFT and 0.4"
+// on the TOP / BOTTOM / RIGHT. Adds two 0.5" × 0.5" corner
+// alignment squares (upper-right, lower-left) alongside the
+// existing inset anchor at top-left. Everything else stays at
+// exact existing positions.
+function buildCutTestV2Svg() {
+  const rectPath = ({x, y, w, h}) =>
+    `M ${f(x)} ${f(y)} H ${f(x + w)} V ${f(y + h)} H ${f(x)} Z`;
+  const first = squares[0];
+  const last = squares.at(-1);
+  const wrap = {
+    x: first.x - 0.2,
+    y: first.y - 0.4,
+    w: first.w + 0.2 + 0.4,
+    h: last.y + last.h - first.y + 0.4 + 0.4,
+  };
+  const cornerSize = 0.5;
+  const cornerInset = ANCHOR_SQUARE.inset;
+  const upperRight = {
+    x: PAGE.w - cornerInset - cornerSize,
+    y: cornerInset,
+    w: cornerSize,
+    h: cornerSize,
+  };
+  const lowerLeft = {
+    x: cornerInset,
+    y: PAGE.h - cornerInset - cornerSize,
+    w: cornerSize,
+    h: cornerSize,
+  };
+  const shapes = [window_, label, wrap, upperRight, lowerLeft];
+  if (ANCHOR_SQUARE.size > 0) {
+    shapes.push({
+      x: ANCHOR_SQUARE.inset,
+      y: ANCHOR_SQUARE.inset,
+      w: ANCHOR_SQUARE.size,
+      h: ANCHOR_SQUARE.size,
+    });
+  }
+  const d = shapes.map(rectPath).join(' ');
+  return svgDocument([
+    `<path d="${d}" fill="#000000" fill-rule="evenodd" stroke="none"/>`,
+  ]);
+}
+
 // Path helpers shared by the mask / card-holder cut files below.
 const rectPathD = ({x, y, w, h}) =>
   `M ${f(x)} ${f(y)} H ${f(x + w)} V ${f(y + h)} H ${f(x)} Z`;
@@ -507,6 +554,36 @@ function buildMaskSvg() {
   const r = GRID.holeR * 1.1;
   const parts = gridHoles.map(h => circlePathD(h.cx, h.cy, r));
   if (ANCHOR_SQUARE.size > 0) parts.push(rectPathD(anchorSquareRect()));
+  return svgDocument([
+    `<path d="${parts.join(' ')}" fill="#000000" fill-rule="evenodd" stroke="none"/>`,
+  ]);
+}
+
+// "mask-v2": same as mask, plus two corner alignment squares in the
+// same positions as cut-test-v2's upper-right / lower-left squares —
+// but 10% bigger, centred on the same points (like the viewing holes,
+// which also grow around their centres). The 10% extra gives the
+// mask a small tolerance when it's registered onto a cut base sheet.
+function buildMaskV2Svg() {
+  const r = GRID.holeR * 1.1;
+  const parts = gridHoles.map(h => circlePathD(h.cx, h.cy, r));
+  if (ANCHOR_SQUARE.size > 0) parts.push(rectPathD(anchorSquareRect()));
+  // Match cut-test-v2's corner squares (0.5 × 0.5 at ANCHOR_SQUARE.inset
+  // from the near corners), grow by 10% around the SAME centre so
+  // registration lands identically.
+  const baseSize = 0.5;
+  const size = baseSize * 1.1;
+  const inset = ANCHOR_SQUARE.inset;
+  const cxUR = PAGE.w - inset - baseSize / 2;
+  const cyUR = inset + baseSize / 2;
+  const cxLL = inset + baseSize / 2;
+  const cyLL = PAGE.h - inset - baseSize / 2;
+  parts.push(
+    rectPathD({x: cxUR - size / 2, y: cyUR - size / 2, w: size, h: size}),
+  );
+  parts.push(
+    rectPathD({x: cxLL - size / 2, y: cyLL - size / 2, w: size, h: size}),
+  );
   return svgDocument([
     `<path d="${parts.join(' ')}" fill="#000000" fill-rule="evenodd" stroke="none"/>`,
   ]);
@@ -594,10 +671,22 @@ function main() {
       `TEST -> ${testPath}  (holes only, no border — paper registration test)`,
     );
 
+    const testV2Path = join(OUT_DIR, 'munsell-card-guide.cut-test-v2.svg');
+    writeFileSync(testV2Path, buildCutTestV2Svg());
+    console.log(
+      `TSTv2-> ${testV2Path}  (wrap rect around right boxes + UR/LL corner squares)`,
+    );
+
     const maskPath = join(OUT_DIR, 'munsell-card-guide.mask.svg');
     writeFileSync(maskPath, buildMaskSvg());
     console.log(
       `MASK -> ${maskPath}  (36 viewing holes only, +10% diameter)`,
+    );
+
+    const maskV2Path = join(OUT_DIR, 'munsell-card-guide.mask-v2.svg');
+    writeFileSync(maskV2Path, buildMaskV2Svg());
+    console.log(
+      `MSKv2-> ${maskV2Path}  (mask + UR/LL corner squares, +10% size)`,
     );
 
     const holderPath = join(OUT_DIR, 'munsell-card-guide.card-holder.svg');
