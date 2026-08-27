@@ -15,7 +15,7 @@
 
 set -euo pipefail
 
-DEFAULT_FIXTURES="$HOME/Library/CloudStorage/GoogleDrive-johannes@terraso.org/My Drive/Munsell/Multi Ref Device"
+DEFAULT_FIXTURES="$HOME/Library/CloudStorage/GoogleDrive-johannes@terraso.org/.shortcut-targets-by-id/1yID-VPBZVoe2kpynavVfCWmhQ2SEyIEB/Multi Ref, Device, Capture"
 
 # First arg is the fixtures dir UNLESS it starts with "--" (in which
 # case it's an analyze-fixtures flag and we use the default dir).
