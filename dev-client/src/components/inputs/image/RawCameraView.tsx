@@ -71,6 +71,14 @@ type Props = {
   onCapture: (result: CaptureResult) => void;
   onCancel: () => void;
   /**
+   * Optional callback fired AFTER the modal dismiss animation completes
+   * (iOS-only — RN Modal's `onDismiss` prop). Use this instead of doing
+   * work inside `onCapture`/`onCancel` when the follow-up needs UIKit
+   * to be free to present a new modal (e.g. Share.open) — otherwise
+   * the new presentation silently races the dismiss and no-ops.
+   */
+  onDismiss?: () => void;
+  /**
    * `'jpeg'` (default) mirrors the current expo-image-picker output.
    * `'dng'` and `'dng-live'` both capture RAW: on iOS via vision-camera
    * + our ProRAW patch, on Android via the raw-camera-android Nitro
@@ -177,6 +185,7 @@ const VisionCameraViewImpl = ({
   visible,
   onCapture,
   onCancel,
+  onDismiss,
   containerFormat = 'jpeg',
   onRawPhotoDevOnly,
   chartGuide,
@@ -424,6 +433,7 @@ const VisionCameraViewImpl = ({
       exposureEv={exposureEv}
       onCycleExposure={cycleExposureEv}
       chartGuide={chartGuide}
+      onDismiss={onDismiss}
       roiSize={roiSize}>
       {preview}
     </CameraChrome>
@@ -630,6 +640,7 @@ const CameraChrome = ({
   exposureEv,
   onCycleExposure,
   chartGuide,
+  onDismiss,
   roiSize,
   children,
 }: {
@@ -642,6 +653,11 @@ const CameraChrome = ({
   exposureEv: number;
   onCycleExposure: () => void;
   chartGuide?: {aspectW: number; aspectH: number; marginFrac: number};
+  // Fires after the modal's iOS dismiss animation completes. Threaded
+  // through so callers whose post-capture work needs UIKit to be free
+  // (e.g. Share.open) can defer that work until the presenting VC has
+  // actually gone away.
+  onDismiss?: () => void;
   // Present only when the caller is using RoiOverlay (dng-live). When
   // set, two icon buttons appear flanking the shutter — shrink/grow
   // cycle through ROI_PRESETS. Undefined → no buttons rendered.
@@ -673,7 +689,8 @@ const CameraChrome = ({
       visible={visible}
       animationType="fade"
       statusBarTranslucent
-      onRequestClose={cancel}>
+      onRequestClose={cancel}
+      onDismiss={onDismiss}>
       <StatusBar hidden />
       <View style={styles.container}>
         {/* Sensor-aspect frame that both the letterboxed camera preview

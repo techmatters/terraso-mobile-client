@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Platform, StyleSheet, TextInput} from 'react-native';
 import Share from 'react-native-share';
 
@@ -363,6 +363,10 @@ export const RawColorToolsScreen = () => {
     setKnownRefIdState(id);
   }, []);
   const [captureFlow, setCaptureFlow] = useState<CaptureFlow | null>(null);
+  // URLs the raw-jpeg flow wants to share, stashed at onCapture time
+  // and consumed by onCameraDismiss after the modal-dismiss animation
+  // completes. Ref so writes don't trigger renders.
+  const pendingShareUrlsRef = useRef<string[] | null>(null);
   const cancelCapture = useCallback(() => setCaptureFlow(null), []);
 
   // RAW+JPEG capture handoff: pops the share sheet with BOTH the DNG
@@ -396,22 +400,35 @@ export const RawColorToolsScreen = () => {
         `  dng: ${result.dngPath}\n` +
         `  jpg: ${result.jpegPath ?? '(missing — camera bind may have dropped JPEG)'}`,
     );
-    try {
-      await Share.open({
-        urls,
-        // Mixed set (DNG + JPEG) → "*/*" so the OS sheet offers
-        // everything (Files, Drive, Gmail attach) instead of
-        // filtering to image-only apps. Also fixes the sheet header
-        // that otherwise reads "Sharing image" because
-        // react-native-share defaults to image/* when a single mime
-        // isn't specified.
-        type: '*/*',
-        subject: 'RAW + JPEG capture',
-        failOnCancel: false,
-      });
-    } catch (err) {
-      console.error('RawColorToolsScreen: RAW+JPEG share failed', err);
-    }
+    // Deferred to the RawCameraView modal's onDismiss (see below) —
+    // UIKit refuses to present a new modal while the previous one is
+    // still animating away, and its onDismiss fires exactly when the
+    // presenting VC is gone. We just stash the URLs here.
+    pendingShareUrlsRef.current = urls;
+  }, []);
+
+  // Fires from RawCameraView after the iOS modal-dismiss animation
+  // completes. When there's a pending raw-jpeg share, open the sheet
+  // now — UIKit is free to present. No `type` field: iOS uses UTIs
+  // (public.dng, public.jpeg) and derives them from the file
+  // extensions; passing "*/*" makes react-native-share hand a bogus
+  // MIME to UIActivityViewController which silently drops the whole
+  // activity list on some iOS versions.
+  const onCameraDismiss = useCallback(() => {
+    const urls = pendingShareUrlsRef.current;
+    if (!urls) return;
+    pendingShareUrlsRef.current = null;
+    (async () => {
+      try {
+        await Share.open({
+          urls,
+          subject: 'RAW + JPEG capture',
+          failOnCancel: false,
+        });
+      } catch (err) {
+        console.error('RawColorToolsScreen: RAW+JPEG share failed', err);
+      }
+    })();
   }, []);
 
   const onCapture = useCallback(
@@ -717,6 +734,10 @@ export const RawColorToolsScreen = () => {
         containerFormat="dng"
         onCancel={cancelCapture}
         onCapture={onCapture}
+        // Fires on iOS after the modal-dismiss animation completes.
+        // raw-jpeg uses this to defer Share.open until UIKit has torn
+        // down the presenting VC — see onCameraDismiss.
+        onDismiss={onCameraDismiss}
         chartGuide={captureFlow?.kind === 'chart' ? CHART_GUIDE : undefined}
         captureHint={
           captureFlow?.kind === 'calibrate'
