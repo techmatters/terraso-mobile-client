@@ -802,9 +802,37 @@ const ensureDngJpegSibling = (dngPath: string, cli: string): void => {
 // all tokens before regex matches.
 const BURST_TAG_RE = /^burst(\d+)of(\d+)$/;
 
-const scanFixtures = (root: string, cli: string): ParsedFixture[] => {
+const scanFixtures = (
+  root: string,
+  cli: string,
+  // Optional predicate — when set, files whose full path fails the
+  // check are skipped for BOTH the JPEG-sibling extraction pass and
+  // the fixture-parse pass. Used to make --filter runs cheap:
+  // otherwise we'd extract a preview JPEG from every DNG in the
+  // whole tree before filtering the resulting fixture list.
+  keepPath: (fullPath: string) => boolean = () => true,
+): ParsedFixture[] => {
   const out: ParsedFixture[] = [];
   const skipped: string[] = [];
+  // Resolve a directory entry's real type, tolerating broken
+  // symlinks (dangling targets throw ENOENT from statSync — a
+  // stray symlink in a scanned tree shouldn't kill the whole run).
+  // Returns null when the entry should be skipped entirely.
+  const resolveEntry = (
+    entry: fs.Dirent,
+    full: string,
+  ): {isDirectory(): boolean; isFile(): boolean} | null => {
+    if (!entry.isSymbolicLink()) return entry;
+    try {
+      return fs.statSync(full);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      process.stderr.write(
+        `  scan: skipping broken symlink ${full}: ${msg.split('\n')[0]}\n`,
+      );
+      return null;
+    }
+  };
   // First pass: extract JPEG siblings for any DNGs that don't have
   // one yet. Doing this before the ParsedFixture walk means the
   // second pass sees the freshly-extracted .jpg files as normal
@@ -813,12 +841,14 @@ const scanFixtures = (root: string, cli: string): ParsedFixture[] => {
     for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
       if (entry.name.startsWith('.')) continue;
       const full = path.join(dir, entry.name);
-      // Follow symlinks — Dirent.isFile/isDirectory return false for
-      // symbolic links, which silently drops any symlinked fixture
-      // tree. statSync resolves the link and reports the real type.
-      const st = entry.isSymbolicLink() ? fs.statSync(full) : entry;
+      const st = resolveEntry(entry, full);
+      if (!st) continue;
       if (st.isDirectory()) walkExtract(full);
-      else if (st.isFile() && entry.name.toLowerCase().endsWith('.dng')) {
+      else if (
+        st.isFile() &&
+        entry.name.toLowerCase().endsWith('.dng') &&
+        keepPath(full)
+      ) {
         ensureDngJpegSibling(full, cli);
       }
     }
@@ -828,13 +858,12 @@ const scanFixtures = (root: string, cli: string): ParsedFixture[] => {
     for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
       if (entry.name.startsWith('.')) continue;
       const full = path.join(dir, entry.name);
-      // Follow symlinks — Dirent.isFile/isDirectory return false for
-      // symbolic links, which silently drops any symlinked fixture
-      // tree. statSync resolves the link and reports the real type.
-      const st = entry.isSymbolicLink() ? fs.statSync(full) : entry;
+      const st = resolveEntry(entry, full);
+      if (!st) continue;
       if (st.isDirectory()) {
         walk(full);
       } else if (st.isFile() && isSupportedFixture(entry.name)) {
+        if (!keepPath(full)) continue;
         const parsed = parseFixtureFilename(full);
         if (parsed) out.push(parsed);
         else skipped.push(full);
@@ -2616,8 +2645,28 @@ if (overrideRef !== undefined) {
   );
 }
 
+// --filter tokens are AND-ed: every token must appear somewhere in the
+// fixture's relative path (parent dirs + filename), lowercased. Uses
+// the path relative to fixturesDir so tokens can match session
+// folder names (e.g. "0824 open shade") as easily as filename tokens
+// like "burst1of5". Declared before scanFixtures so the same
+// predicate can prune the JPEG-sibling extraction pass — otherwise
+// we'd auto-extract a preview JPEG from every DNG in the tree
+// before the filter shrinks the list.
+const filterTokens = values.filter
+  ? values.filter
+      .split(',')
+      .map(s => s.trim().toLowerCase())
+      .filter(Boolean)
+  : [];
+const pathMatchesFilter = (p: string): boolean => {
+  if (filterTokens.length === 0) return true;
+  const relLower = path.relative(fixturesDir!, p).toLowerCase();
+  return filterTokens.every(tok => relLower.includes(tok));
+};
+
 process.stderr.write(`scanning ${fixturesDir}\n`);
-const allFixtures = scanFixtures(fixturesDir!, DNG_CLI);
+const allFixtures = scanFixtures(fixturesDir!, DNG_CLI, pathMatchesFilter);
 // Apply --override-ref post-scan so every fixture takes the same
 // reference regardless of its filename token. reference_card in the
 // JSON + which per-fixture WB sweep runs (multi expands to 4 refs)
@@ -2637,29 +2686,11 @@ const pageFilter = values.pages
         .filter(Boolean),
     )
   : null;
-// --filter tokens are AND-ed: every token must appear somewhere in the
-// fixture's relative path (parent dirs + filename), lowercased. Uses
-// the path relative to fixturesDir so tokens can match session
-// folder names (e.g. "0824 open shade") as easily as filename tokens
-// like "burst1of5".
-const filterTokens = values.filter
-  ? values.filter
-      .split(',')
-      .map(s => s.trim().toLowerCase())
-      .filter(Boolean)
-  : [];
-const pathMatchesFilter = (p: string): boolean => {
-  if (filterTokens.length === 0) return true;
-  const relLower = path.relative(fixturesDir!, p).toLowerCase();
-  return filterTokens.every(tok => relLower.includes(tok));
-};
-const pageFiltered = pageFilter
+// scanFixtures already applied pathMatchesFilter, so allFixtures is
+// pre-filtered by --filter. Only --pages needs applying here.
+const fixtures = pageFilter
   ? allFixtures.filter(f => pageFilter.has(f.page.toLowerCase()))
   : allFixtures;
-const fixtures =
-  filterTokens.length > 0
-    ? pageFiltered.filter(f => pathMatchesFilter(f.path))
-    : pageFiltered;
 const filterNotes: string[] = [];
 if (pageFilter) {
   filterNotes.push(`pages=[${[...pageFilter].join(', ')}]`);
