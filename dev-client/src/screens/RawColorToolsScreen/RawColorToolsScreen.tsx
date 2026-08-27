@@ -19,6 +19,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Platform, StyleSheet, TextInput} from 'react-native';
 import Share from 'react-native-share';
 
+import * as Device from 'expo-device';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as ImagePicker from 'expo-image-picker';
@@ -201,32 +202,71 @@ const yyyymmddThhmmss = (d: Date): string => {
   );
 };
 
-// Friendly filename stem for a chart capture:
-//   "{page}_{refMode}_[BOTH_]{PLATFORM}_{ts}"
-// - {refMode} matches REFERENCE_TOKENS in scripts/analyze-fixtures.ts
-//   ('nothing' / 'greycard' / 'whibal' / 'postit' / 'multi') so the
-//   mac parser knows which pipeline to route the shot into without
-//   requiring a rename step.
-// - "BOTH" flags that the DNG has its ISP-processed JPEG companion
-//   alongside. Included only when hasJpeg=true; dropped otherwise so
-//   the token isn't misleading.
-// - {PLATFORM} = "IOS" or "ANDROID". Analyze-fixtures reads this to
-//   route through the platform-matching decoder CLI (dng-cli for
-//   iOS, dng-cli-cpp for Android) — the same-code-path invariant
-//   requires the mac's analysis to use the same decoder that runs
-//   on-device for that platform.
-// - Page name is used verbatim; Munsell page names are already
-//   filesystem-safe ("10YR", "7.5YR", "GLEY1", "10Y-5GY").
-const friendlyStemForChartCapture = (
-  pageHue: string,
-  refMode: ChartRefMode,
+// Slugify Device.modelName the same way the Android native
+// CameraSessionManager does (Build.MODEL → lowercase alnum), so the
+// mac analyzer's DEVICE_SLUG_PREFIXES matcher recognises iOS files
+// the same way it recognises Android ones. Falls back to a generic
+// per-platform token if expo-device can't tell us the model.
+const deviceSlug = (): string => {
+  const raw = Device.modelName?.trim() ?? '';
+  const slug = raw.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (slug) return slug;
+  return Platform.OS === 'android' ? 'unknownandroid' : 'unknownios';
+};
+
+// Friendly filename stem for a chart / raw-jpeg capture.
+//
+//   "{device}_{page}_{bg}_ref{refCard}_light{illuminant}_[BOTH_]{PLATFORM}_{ts}"
+//
+// The tokens between {device} and {PLATFORM} match the enriched
+// session format the Android MULTI session emits (see Kotlin
+// buildSessionShotStem + buildSessionContextTokens). Every context
+// token that MMKV knows about is included, so a single DNG+JPEG
+// capture carries the same page/bg/refCard/illuminant metadata a
+// multi session would — which is what the analyzer keys off to
+// decide "does this shot have taped ref cards, and where are they"
+// without needing the user to remember to name the file by hand.
+//
+// - {device}: Device.modelName slugified — 'iphone15promax',
+//   'pixel7', etc. Analyzer's DEVICE_SLUG_PREFIXES parser picks it
+//   up (iphone/pixel/samsung/oneplus).
+// - {page}: verbatim ('10YR', '7.5YR', 'GLEY1'). Munsell page
+//   names are already filesystem-safe.
+// - "{bg}" (literal, no prefix — matches Android session format's
+//   ILLUMINANT_TOKENS parse: 'dark' / 'light' land verbatim) /
+//   "ref{refCard}" / "light{illuminant}": each token only emitted
+//   when the corresponding MMKV field is set to a non-'unknown' /
+//   non-'nothing' value.
+// - "BOTH": DNG has an ISP-processed JPEG companion. Dropped when
+//   the caller doesn't have a paired JPEG.
+// - {PLATFORM} = "IOS" or "ANDROID". Routes the mac analyzer's
+//   decoder choice (dng-cli vs dng-cli-cpp) per the same-code-path
+//   invariant — the CLI that runs on the mac must be the same one
+//   that decodes on-device for that platform.
+const friendlyStemForCapture = (
+  context: MultishotSessionContext,
   hasJpeg: boolean,
   when: Date,
 ): string => {
   const platform = Platform.OS === 'android' ? 'ANDROID' : 'IOS';
-  const bothToken = hasJpeg ? 'BOTH_' : '';
-  return `${pageHue}_${refMode}_${bothToken}${platform}_${yyyymmddThhmmss(when)}`;
+  const parts: string[] = [deviceSlug()];
+  if (context.page) parts.push(context.page);
+  if (context.background) parts.push(sanitizeToken(context.background));
+  if (context.refCard) parts.push(`ref${sanitizeToken(context.refCard)}`);
+  if (context.illuminant) {
+    parts.push(`light${sanitizeToken(context.illuminant)}`);
+  }
+  if (hasJpeg) parts.push('BOTH');
+  parts.push(platform);
+  parts.push(yyyymmddThhmmss(when));
+  return parts.join('_');
 };
+
+// Match Kotlin sanitizeToken: keep A-Z0-9 (and dot), drop everything
+// else. Same rule so a shared "sun" or "5YR" token slugifies to the
+// same on-disk chars whether it originated on iOS or Android.
+const sanitizeToken = (s: string): string =>
+  s.trim().replace(/[^A-Za-z0-9.]/g, '');
 
 // Rename a DNG (+ optional sibling JPEG) to a friendly stem in the
 // same directory. Returns the new file:// URIs. Uses moveAsync so
@@ -391,14 +431,37 @@ export const RawColorToolsScreen = () => {
     } catch (err) {
       console.error('DngDecoder.decodeDngRois failed:', err);
     }
-    const urls = [
-      result.dngPath,
-      ...(result.jpegPath ? [result.jpegPath] : []),
-    ];
+    // Rename the vision-camera UUID temp files (F2BEDD...dng/.jpg) to
+    // a self-describing stem carrying the current session context —
+    // page, background, ref card, illuminant, device, timestamp. The
+    // analyzer keys off these tokens to decide "does this shot have
+    // taped ref cards, and where", so a filename that only says
+    // "F2BEDD.dng" analyzes as a bare capture with no ref cards even
+    // when the user had all four taped. Best-effort — if rename
+    // fails, fall through to the UUID names so the share still works.
+    let dngPath = result.dngPath;
+    let jpegPath = result.jpegPath;
+    try {
+      const stem = friendlyStemForCapture(
+        getMultishotSessionContext(),
+        jpegPath != null,
+        new Date(),
+      );
+      const renamed = await renamePairToFriendlyStem(dngPath, jpegPath, stem);
+      dngPath = renamed.dngPath;
+      jpegPath = renamed.jpegPath;
+    } catch (err) {
+      console.warn(
+        'RawColorToolsScreen: RAW+JPEG friendly-rename failed, ' +
+          'falling back to vision-camera temp names',
+        err,
+      );
+    }
+    const urls = [dngPath, ...(jpegPath ? [jpegPath] : [])];
     console.log(
       `RAW+JPEG share: ${urls.length} file(s)\n` +
-        `  dng: ${result.dngPath}\n` +
-        `  jpg: ${result.jpegPath ?? '(missing — camera bind may have dropped JPEG)'}`,
+        `  dng: ${dngPath}\n` +
+        `  jpg: ${jpegPath ?? '(missing — camera bind may have dropped JPEG)'}`,
     );
     // Deferred to the RawCameraView modal's onDismiss (see below) —
     // UIKit refuses to present a new modal while the previous one is
@@ -473,18 +536,18 @@ export const RawColorToolsScreen = () => {
           return;
         }
         // Rename the vision-camera temp files (mrousavyXXXX.dng/.jpg)
-        // to something a mac tester can identify at a glance after
-        // AirDrop: "10YR_BOTH_IOS_20260808T134502.dng" carries page,
-        // capture mode, source device, and timestamp. Best-effort —
-        // if the rename fails for any reason, we fall back to the
+        // to a self-describing stem carrying page/bg/refCard/
+        // illuminant/device/timestamp — same tokens the Android MULTI
+        // session bakes into its filenames, so the mac analyzer
+        // routes the shot through the same pipeline regardless of
+        // origin. Best-effort — if rename fails, fall back to the
         // vision-camera-generated names so capture still completes.
         (async () => {
           let dngPath = result.dngPath;
           let jpegPath = result.jpegPath;
           try {
-            const stem = friendlyStemForChartCapture(
-              flow.pageHue,
-              flow.refMode,
+            const stem = friendlyStemForCapture(
+              getMultishotSessionContext(),
               jpegPath != null,
               new Date(),
             );
