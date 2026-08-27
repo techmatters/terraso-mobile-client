@@ -154,6 +154,24 @@ def load_df(json_path: str) -> pd.DataFrame:
 
 
 df = load_df(args.json)
+# Empty run (e.g. --filter matched nothing, or every capture failed).
+# Write a stub HTML explaining why so the report chain doesn't crash
+# on a KeyError from pandas trying to look up columns in an empty df.
+if len(df) == 0:
+    print('loaded 0 chip measurements — writing stub report', file=sys.stderr)
+    stub = (
+        '<!doctype html><html><head><meta charset="utf-8">'
+        '<title>delta-e-analysis — empty</title></head><body>'
+        '<h1>No chip measurements to analyse</h1>'
+        f'<p>Input: <code>{args.json}</code> contained no successful '
+        'captures with per-chip ΔE data. If you used <code>--filter</code>, '
+        'check that the tokens actually match some paths under the fixtures '
+        'directory (case-insensitive substring match against the full '
+        'relative path).</p></body></html>'
+    )
+    with open(args.out, 'w') as f:
+        f.write(stub)
+    sys.exit(0)
 print(f'loaded {len(df)} chip measurements from {df["capture_id"].nunique()} captures',
       file=sys.stderr)
 
