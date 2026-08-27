@@ -129,10 +129,25 @@ export type MunsellChartResult = {
   multiRefCards: Array<{
     name: 'whibal' | 'postit' | 'greycard' | 'white';
     linearRgb: {r: number; g: number; b: number};
+    // Pre-clamp linear-sRGB mean; drives WB-scale division when
+    // available so bright anchors aren't under-corrected. Null when
+    // the underlying decoder path doesn't expose it (JPEG / Swift
+    // iOS DNG); WB code falls back to linearRgb in that case.
+    // Populated by the analyzer's C++ CLI batch endpoint (mac +
+    // Android DNGs). See CellMeasurement.rawLinearRgbUnclamped for
+    // the reason.
+    linearRgbUnclamped: {r: number; g: number; b: number} | null;
     // Median-cut dominant companion. Populated on RAW path; null on
     // photo path (see CellMeasurement.rawLinearRgbDominant note).
     linearRgbDominant: {r: number; g: number; b: number} | null;
     rect: {x: number; y: number; w: number; h: number};
+    // Union of every rect the multi-card sweep considered for this
+    // slot — the "search area" over which the H×V grid was scanned.
+    // Populated by the analyzer's sweep only (null on the app-side
+    // path and when the sweep didn't run). Rendered as an overlay
+    // in run.html so a reviewer can eyeball "did the sweep search
+    // where the card actually is, or did the range cap us short?".
+    searchArea: {x: number; y: number; w: number; h: number} | null;
   }> | null;
 };
 
@@ -659,14 +674,23 @@ export const analyzeMunsellChart = async (
   // dominant stays null there and downstream code treats the reducer
   // as "mean only" for photos.
   let measuredDominant: ({r: number; g: number; b: number} | null)[] = [];
+  // Parallel to `measured`. Pre-clamp per-chip means from the C++ DNG
+  // pipeline; null on photo path (CIImage can't give us pre-clamp)
+  // and on iOS Swift DNG (CIRAWFilter clamps at the source). Flows
+  // through to CellMeasurement.rawLinearRgbUnclamped so bright chips
+  // (5/6+ value) get the true post-WB signal into downstream ΔE math
+  // instead of the clipped-to-1.0 mean.
+  let measuredUnclamped: ({r: number; g: number; b: number} | null)[] = [];
   try {
     if (format === 'raw') {
       const reduced = decoder.decodeDngRoisReduced(imagePath, dngRois);
       measured = reduced.map(r => r.mean);
       measuredDominant = reduced.map(r => r.dominant);
+      measuredUnclamped = reduced.map(r => r.meanUnclamped ?? null);
     } else {
       measured = decoder.decodePhotoRois(imagePath, dngRois);
       measuredDominant = dngRois.map(() => null);
+      measuredUnclamped = dngRois.map(() => null);
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -707,6 +731,7 @@ export const analyzeMunsellChart = async (
     cell,
     rawLinearRgb: measured[idx],
     rawLinearRgbDominant: measuredDominant[idx],
+    rawLinearRgbUnclamped: measuredUnclamped[idx],
   }));
 
   // 5. Colour preview for the validation view. RAW → renderPreview
@@ -739,6 +764,13 @@ export const analyzeMunsellChart = async (
   let matchedSampleValuesDominant:
     | ({r: number; g: number; b: number} | null)[]
     | null = null;
+  // Parallel unclamped-mean array so the multi ref-card slot seed
+  // rows carry a pre-clamp signal into WB math when the sweep
+  // doesn't run (e.g. on-device path). Null-entries where the
+  // decoder can't produce one (photo, iOS Swift DNG).
+  let matchedSampleValuesUnclamped:
+    | ({r: number; g: number; b: number} | null)[]
+    | null = null;
   if (grid.matchedSampleRects) {
     const sampleDngRois = grid.matchedSampleRects.map(r => ({
       x: Math.round(r.x * scaleX),
@@ -751,9 +783,13 @@ export const analyzeMunsellChart = async (
         const reduced = decoder.decodeDngRoisReduced(imagePath, sampleDngRois);
         matchedSampleValues = reduced.map(r => r.mean);
         matchedSampleValuesDominant = reduced.map(r => r.dominant);
+        matchedSampleValuesUnclamped = reduced.map(
+          r => r.meanUnclamped ?? null,
+        );
       } else {
         matchedSampleValues = decoder.decodePhotoRois(imagePath, sampleDngRois);
         matchedSampleValuesDominant = sampleDngRois.map(() => null);
+        matchedSampleValuesUnclamped = sampleDngRois.map(() => null);
       }
     } catch (err) {
       // Match-rect decode is optional (falls back to grid.centers via
@@ -790,8 +826,20 @@ export const analyzeMunsellChart = async (
           return {
             name: slot.name,
             linearRgb: matchedSampleValues[valueIdx],
+            // Seed unclamped mean from the initial chart decode when
+            // the decoder exposes it (mac dng-cli-cpp path). On
+            // decoders that don't produce it (photo, iOS Swift DNG,
+            // on-device Nitro) this stays null and the analyzer
+            // sweep may fill it in on a later mutation pass.
+            linearRgbUnclamped:
+              matchedSampleValuesUnclamped?.[valueIdx] ?? null,
             linearRgbDominant: matchedSampleValuesDominant?.[valueIdx] ?? null,
             rect: rectAtIdx(rectIdx),
+            // Search area only known after the analyzer's post-hoc
+            // sweep runs (see maybeSweepMultiCardOffset in
+            // scripts/analyze-fixtures.ts). Default null; sweep
+            // mutates in place when it computes the union.
+            searchArea: null,
           };
         })
       : null;

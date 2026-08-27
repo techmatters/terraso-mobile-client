@@ -48,6 +48,16 @@ export type CellMeasurement = {
   // to feed into WB + Munsell match; the filmstrip's mean-vs-dominant
   // radio flips between them.
   rawLinearRgbDominant?: {r: number; g: number; b: number} | null;
+  // Optional pre-clamp linear-sRGB mean. When present, WB-scale
+  // computation (wbRgbScaleFromReference / bradfordScaleFromReference)
+  // divides by this instead of `rawLinearRgb`, which is critical on
+  // bright WB anchors whose post-WB pipeline mean exceeds 1.0 —
+  // dividing by the clamped 1.0 under-corrects every chip on the
+  // chart. See DngPipeline RoiReduced::meanUnclamped for the source.
+  // Null / absent for callers that don't have an unclamped signal
+  // (JPEG path, Swift iOS DNG path, older on-device shims); those
+  // fall back to `rawLinearRgb`.
+  rawLinearRgbUnclamped?: {r: number; g: number; b: number} | null;
 };
 
 export type MunsellCellResult = {
@@ -125,11 +135,20 @@ export const computeArbitraryResult = (
   rawLinearRgb: {r: number; g: number; b: number},
   ref: CellMeasurement | undefined,
   useBradford: boolean = false,
+  // Pre-clamp companion to `rawLinearRgb`; when provided, WB is
+  // applied to this instead so bright ref-card samples (whose true
+  // R can be 1.3–1.5) aren't gained-up from a clipped 1.0. See
+  // CellMeasurement.rawLinearRgbUnclamped.
+  rawLinearRgbUnclamped?: {r: number; g: number; b: number} | null,
 ): {
   measuredLinearRgb: {r: number; g: number; b: number};
   deltaE: number;
 } => {
-  const measuredLinearRgb = applyWbCorrection(rawLinearRgb, ref, useBradford);
+  const measuredLinearRgb = applyWbCorrection(
+    rawLinearRgbUnclamped ?? rawLinearRgb,
+    ref,
+    useBradford,
+  );
   const deltaE = deltaEFromLinearRgb(measuredLinearRgb, expectedLinearRgb);
   return {measuredLinearRgb, deltaE};
 };
@@ -145,8 +164,16 @@ export const computeCellResults = (
   ref: CellMeasurement | undefined,
   useBradford: boolean = false,
 ): MunsellCellResult[] => {
-  return measurements.map(({cell, rawLinearRgb}) => {
-    const measuredLinearRgb = applyWbCorrection(rawLinearRgb, ref, useBradford);
+  return measurements.map(({cell, rawLinearRgb, rawLinearRgbUnclamped}) => {
+    // Same clamp caveat as wbRgbScaleFromReference: feed the pre-clamp
+    // chip raw (when available) into WB so a bright chip whose true
+    // R is 1.35 doesn't get its measured value pinned to
+    // (gain × 1.0) instead of (gain × 1.35).
+    const measuredLinearRgb = applyWbCorrection(
+      rawLinearRgbUnclamped ?? rawLinearRgb,
+      ref,
+      useBradford,
+    );
     // measuredLab kept as a local so it can feed both the ΔE call and
     // safeLabToMunsell without re-doing the XYZ+Lab conversion.
     const [X, Y, Z] = linearRgbToXyz(
@@ -173,8 +200,13 @@ const wbRgbScaleFromReference = (
   ref: CellMeasurement | undefined,
 ): {r: number; g: number; b: number} => {
   if (!ref) return {r: 1, g: 1, b: 1};
-  const {rawLinearRgb: raw, cell} = ref;
-  const {r: er, g: eg, b: eb} = cell.expectedLinearRgb;
+  // Prefer the pre-clamp mean when available. Clamping the divisor
+  // silently under-scales the gain on bright anchors: a card whose
+  // true post-WB R is 1.35 stored as 1.0 makes the returned gain
+  // 0.74× as strong as it should be, biasing every chip on the chart
+  // toward the raw camera cast. See CellMeasurement.rawLinearRgbUnclamped.
+  const raw = ref.rawLinearRgbUnclamped ?? ref.rawLinearRgb;
+  const {r: er, g: eg, b: eb} = ref.cell.expectedLinearRgb;
   const MIN = 1e-4;
   return {
     r: raw.r > MIN ? er / raw.r : 1,
@@ -238,11 +270,15 @@ const bradfordScaleFromReference = (
   ref: CellMeasurement | undefined,
 ): [number, number, number] | null => {
   if (!ref) return null;
-  const rawXyz = linearRgbToXyz(
-    ref.rawLinearRgb.r,
-    ref.rawLinearRgb.g,
-    ref.rawLinearRgb.b,
-  ) as [number, number, number];
+  // Same clamp caveat as wbRgbScaleFromReference — divide by the
+  // unclamped mean when available so bright anchors aren't
+  // under-corrected.
+  const raw = ref.rawLinearRgbUnclamped ?? ref.rawLinearRgb;
+  const rawXyz = linearRgbToXyz(raw.r, raw.g, raw.b) as [
+    number,
+    number,
+    number,
+  ];
   const expXyz = linearRgbToXyz(
     ref.cell.expectedLinearRgb.r,
     ref.cell.expectedLinearRgb.g,

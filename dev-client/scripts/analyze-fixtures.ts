@@ -35,6 +35,55 @@ import * as os from 'os';
 import * as path from 'path';
 import {parseArgs} from 'util';
 
+// Wall-clock timer with per-phase accumulators. Wrap any hot spot
+// with .time / .timeAsync and it lands in the end-of-run summary
+// (percent of total, count, avg ms). Purely additive — never affects
+// analyzer output. Ordered by wall-clock cost in the summary so the
+// biggest bucket is always at the top.
+class PhaseTimer {
+  private totals = new Map<string, number>();
+  private counts = new Map<string, number>();
+  time<T>(phase: string, fn: () => T): T {
+    const t0 = process.hrtime.bigint();
+    try {
+      return fn();
+    } finally {
+      const ms = Number(process.hrtime.bigint() - t0) / 1e6;
+      this.totals.set(phase, (this.totals.get(phase) ?? 0) + ms);
+      this.counts.set(phase, (this.counts.get(phase) ?? 0) + 1);
+    }
+  }
+  async timeAsync<T>(phase: string, fn: () => Promise<T>): Promise<T> {
+    const t0 = process.hrtime.bigint();
+    try {
+      return await fn();
+    } finally {
+      const ms = Number(process.hrtime.bigint() - t0) / 1e6;
+      this.totals.set(phase, (this.totals.get(phase) ?? 0) + ms);
+      this.counts.set(phase, (this.counts.get(phase) ?? 0) + 1);
+    }
+  }
+  report(): string {
+    const entries = [...this.totals.entries()].sort((a, b) => b[1] - a[1]);
+    if (entries.length === 0) return '  (no phases recorded)';
+    const total = entries.reduce((s, [, ms]) => s + ms, 0);
+    const nameW = Math.max(24, ...entries.map(([n]) => n.length));
+    return entries
+      .map(([phase, ms]) => {
+        const n = this.counts.get(phase) ?? 0;
+        const avg = n > 0 ? ms / n : 0;
+        const pct = total > 0 ? (ms * 100) / total : 0;
+        return (
+          `  ${phase.padEnd(nameW)}  ${(ms / 1000).toFixed(1).padStart(7)}s  ` +
+          `${pct.toFixed(1).padStart(5)}%  n=${n.toString().padStart(5)}  ` +
+          `avg=${avg.toFixed(1).padStart(7)}ms`
+        );
+      })
+      .join('\n');
+  }
+}
+const timer = new PhaseTimer();
+
 import {
   analyzeMunsellChart,
   type MunsellChartOutcome,
@@ -277,6 +326,12 @@ const parseReducedJson = (json: string): LinearRgbReduced[] => {
 // the strip edge).
 type LinearRgbReducedWithVar = LinearRgbReduced & {
   variance: LinearRgb | null;
+  // Pre-clamp per-channel mean from the DNG C++ pipeline (see
+  // DngPipeline RoiReduced::meanUnclamped). Only populated by the
+  // C++ CLI batch endpoint; the Swift path (iOS DNGs, all JPEG
+  // fixtures) returns null so downstream callers can fall back to
+  // the clamped mean when this isn't available.
+  meanUnclamped: LinearRgb | null;
 };
 
 class NodeDecoder implements DngDecoderLike {
@@ -331,10 +386,16 @@ class NodeDecoder implements DngDecoderLike {
   }
 
   decodeDngRoisReduced(dngPath: string, rois: Roi[]): LinearRgbReduced[] {
-    // Single CLI call that returns both reducers per ROI. Both the C++
-    // (Android-fixture) CLI and the Swift (iOS/mac-fixture) CLI emit
-    // the same shape; the iOS side just repeats mean→dominant since
-    // its CIRAWFilter pipeline can't cheaply do a per-pixel pass.
+    // On dng-cli-cpp we route through the batch endpoint even for a
+    // single set — it's the only channel that emits meanUnclamped,
+    // and the extra JSON wrap is negligible next to the DNG parse
+    // that dominates. iOS Swift CLI stays on the legacy endpoint
+    // (it doesn't have a batch subcommand, and its CIRAWFilter path
+    // can't give us pre-clamp values anyway).
+    if (this.supportsBatch) {
+      const batch = this.decodeDngRoisReducedBatch(dngPath, [rois]);
+      return batch[0] ?? [];
+    }
     const out = execFileSync(
       this.dngCliPath,
       ['decode-dng-rois', dngPath, JSON.stringify(rois)],
@@ -355,13 +416,15 @@ class NodeDecoder implements DngDecoderLike {
     roiSets: Roi[][],
   ): LinearRgbReducedWithVar[][] {
     if (!this.supportsBatch) {
-      // Swift-CLI fallback path (iOS DNGs). No variance available —
-      // scoring code branches on variance !== null to pick the
-      // appropriate objective.
+      // Swift-CLI fallback path (iOS DNGs). No variance or unclamped
+      // mean available — scoring code branches on variance !== null
+      // to pick the appropriate objective; WB-scale code falls back
+      // to the clamped mean when meanUnclamped is null.
       return roiSets.map(rois =>
         this.decodeDngRoisReduced(dngPath, rois).map(r => ({
           ...r,
           variance: null,
+          meanUnclamped: null,
         })),
       );
     }
@@ -376,6 +439,9 @@ class NodeDecoder implements DngDecoderLike {
         r: number;
         g: number;
         b: number;
+        meanUnclampedR?: number;
+        meanUnclampedG?: number;
+        meanUnclampedB?: number;
         dominantR: number;
         dominantG: number;
         dominantB: number;
@@ -387,6 +453,12 @@ class NodeDecoder implements DngDecoderLike {
     return raw.map(inner =>
       inner.map(r => ({
         mean: {r: r.r, g: r.g, b: r.b},
+        meanUnclamped:
+          r.meanUnclampedR !== undefined &&
+          r.meanUnclampedG !== undefined &&
+          r.meanUnclampedB !== undefined
+            ? {r: r.meanUnclampedR, g: r.meanUnclampedG, b: r.meanUnclampedB}
+            : null,
         dominant: {r: r.dominantR, g: r.dominantG, b: r.dominantB},
         variance:
           r.varianceR !== undefined &&
@@ -1090,6 +1162,11 @@ const buildMultiRefMeasurement = (
       colIdx: -1,
     },
     rawLinearRgb: slot.linearRgb,
+    // Pre-clamp mean when the sweep found one — WB scale divides
+    // by this to avoid under-correcting on bright anchors. Null
+    // when the underlying decoder path (JPEG / iOS DNG Swift) can't
+    // produce it; cellResults falls back to rawLinearRgb.
+    rawLinearRgbUnclamped: slot.linearRgbUnclamped,
   };
 };
 
@@ -1223,17 +1300,35 @@ const buildCaptureEntry = (
               slot.linearRgb,
               anchor.measurement,
               false,
+              slot.linearRgbUnclamped,
             )
           : null;
         return {
           name: slot.name,
           display_name: REF_CARD_DISPLAY_NAMES[slot.name] ?? slot.name,
           sample_rect: slot.rect,
+          // Union of every rect the multi-card sweep considered for
+          // this slot. run.html renders it as an overlay so a
+          // reviewer can spot "sweep range didn't reach the card"
+          // at a glance. Null when the sweep didn't run for this
+          // fixture (e.g. single-card mode).
+          search_rect: slot.searchArea,
           raw_linear_rgb: [
             slot.linearRgb.r,
             slot.linearRgb.g,
             slot.linearRgb.b,
           ],
+          // Pre-clamp mean when the decoder exposes it (RAW / dng-cli-cpp
+          // path); null on JPEG + iOS-DNG Swift path. Consumers doing
+          // WB math should prefer this over raw_linear_rgb — see
+          // CellMeasurement.rawLinearRgbUnclamped.
+          raw_linear_rgb_unclamped: slot.linearRgbUnclamped
+            ? [
+                slot.linearRgbUnclamped.r,
+                slot.linearRgbUnclamped.g,
+                slot.linearRgbUnclamped.b,
+              ]
+            : null,
           raw_linear_rgb_dominant: slot.linearRgbDominant
             ? [
                 slot.linearRgbDominant.r,
@@ -1306,21 +1401,21 @@ const buildCaptureEntry = (
           }
         : null,
     ref_cards: refCardsWithPaper,
-    // Diagnostic: the offsetPitches the multi-card sweep picked for
-    // this fixture (null when the sweep didn't run or the fixture is
-    // not multi-mode). Values above 1.75 = chart body was displaced
-    // leftward inside the mask holder; equal to 1.75 = as designed.
-    multi_card_sweep_offset_pitches:
-      (outcome as any)._sweepOffset ?? null,
-    // Sibling diagnostic for the vertical (down-only) shift the sweep
-    // added on top of the horizontal offset. In ref-grid units, 0 =
-    // no shift (rect centered on the ref-card row midpoint); positive
-    // = shifted down inside the mask cutout (typically because the
-    // top of the cutout has a soft shadow from the tape wedge).
-    multi_card_sweep_vertical_shift:
-      (outcome as any)._sweepVerticalShift ?? null,
+    // Diagnostic: per-slot (H, V) picked by the multi-card sweep.
+    // Each entry is {name, h, v, score} where h is in colPitch
+    // units past the last chip column (nominal 1.75), v is in
+    // ref-grid units downward from row centroid (nominal 0), and
+    // score is that slot's linear-sRGB variance sum at the picked
+    // position (lower = more uniform patch). h/v/score are null
+    // when the slot had no candidate passing the brightness /
+    // saturation gates (rect fell back to the analyzer's chart-
+    // derived seed position). Null on the whole field when the
+    // fixture is single-card mode or sweep didn't run.
+    multi_card_sweep_per_slot:
+      (outcome as any)._sweepPerSlot ?? null,
     cells: results.map((r, i) => {
       const dom = measurements[i].rawLinearRgbDominant;
+      const unc = measurements[i].rawLinearRgbUnclamped;
       return {
         physical_row: r.cell.rowIdx,
         physical_col: r.cell.colIdx,
@@ -1336,6 +1431,11 @@ const buildCaptureEntry = (
           measurements[i].rawLinearRgb.g,
           measurements[i].rawLinearRgb.b,
         ],
+        // Pre-clamp mean when the decoder exposes it (RAW / dng-cli-cpp
+        // path); null on JPEG + iOS-DNG Swift path. WB scale in
+        // cellResults divides by this when present — see
+        // CellMeasurement.rawLinearRgbUnclamped.
+        raw_linear_rgb_unclamped: unc ? [unc.r, unc.g, unc.b] : null,
         // Median-cut dominant reducer companion. Same units + coord
         // frame as raw_linear_rgb; null on photo-path fixtures (see
         // CellMeasurement.rawLinearRgbDominant note in cellResults.ts).
@@ -1453,7 +1553,9 @@ const buildBurstAverageCaptures = (
     const avgCells = template.cells.map((tCell, i) => {
       let r = 0, g = 0, b = 0;
       let dR = 0, dG = 0, dB = 0;
+      let uR = 0, uG = 0, uB = 0;
       let domFrames = 0;
+      let uncFrames = 0;
       for (const f of frames) {
         const c = f.cap.cells[i];
         r += c.raw_linear_rgb[0];
@@ -1466,6 +1568,13 @@ const buildBurstAverageCaptures = (
           dB += cd[2];
           domFrames += 1;
         }
+        const cu = c.raw_linear_rgb_unclamped;
+        if (cu) {
+          uR += cu[0];
+          uG += cu[1];
+          uB += cu[2];
+          uncFrames += 1;
+        }
       }
       return {
         ...tCell,
@@ -1473,6 +1582,12 @@ const buildBurstAverageCaptures = (
         raw_linear_rgb_dominant:
           domFrames > 0
             ? ([dR / domFrames, dG / domFrames, dB / domFrames] as [
+                number, number, number,
+              ])
+            : null,
+        raw_linear_rgb_unclamped:
+          uncFrames > 0
+            ? ([uR / uncFrames, uG / uncFrames, uB / uncFrames] as [
                 number, number, number,
               ])
             : null,
@@ -1487,7 +1602,9 @@ const buildBurstAverageCaptures = (
       avgRefCards = templateRefCards.map((tRc, i) => {
         let r = 0, g = 0, b = 0;
         let dR = 0, dG = 0, dB = 0;
+        let uR = 0, uG = 0, uB = 0;
         let domFrames = 0;
+        let uncFrames = 0;
         for (const f of frames) {
           const rc = f.cap.ref_cards?.[i];
           if (!rc) return tRc; // schema drift; keep template as-is
@@ -1501,6 +1618,13 @@ const buildBurstAverageCaptures = (
             dB += rd[2];
             domFrames += 1;
           }
+          const ru = rc.raw_linear_rgb_unclamped;
+          if (ru) {
+            uR += ru[0];
+            uG += ru[1];
+            uB += ru[2];
+            uncFrames += 1;
+          }
         }
         return {
           ...tRc,
@@ -1508,6 +1632,12 @@ const buildBurstAverageCaptures = (
           raw_linear_rgb_dominant:
             domFrames > 0
               ? ([dR / domFrames, dG / domFrames, dB / domFrames] as [
+                  number, number, number,
+                ])
+              : null,
+          raw_linear_rgb_unclamped:
+            uncFrames > 0
+              ? ([uR / uncFrames, uG / uncFrames, uB / uncFrames] as [
                   number, number, number,
                 ])
               : null,
@@ -1526,13 +1656,16 @@ const buildBurstAverageCaptures = (
       const cardName = wbRef.slice('ref_card:'.length);
       const rc = avgRefCards?.find(x => x.name === cardName);
       if (rc?.expected_linear_rgb) {
-        anchorRaw = rc.raw_linear_rgb;
+        // Prefer averaged unclamped anchor when available; falls back
+        // to clamped average when unclamped isn't in the frames (photo
+        // path, iOS-DNG). See wbRgbScaleFromReference for why.
+        anchorRaw = rc.raw_linear_rgb_unclamped ?? rc.raw_linear_rgb;
         anchorExpected = rc.expected_linear_rgb;
       }
     } else if (wbRef) {
       const c = avgCells.find(x => x.expected_notation === wbRef);
       if (c) {
-        anchorRaw = c.raw_linear_rgb;
+        anchorRaw = c.raw_linear_rgb_unclamped ?? c.raw_linear_rgb;
         anchorExpected = c.expected_linear_rgb;
       }
     }
@@ -1550,12 +1683,16 @@ const buildBurstAverageCaptures = (
 
     // Apply gain to each averaged cell raw → measured. Recompute ΔE
     // in Lab (D65) using the same deltaE2000 the report uses so avg
-    // and single-frame numbers are directly comparable.
+    // and single-frame numbers are directly comparable. Prefer the
+    // unclamped average as the raw input — a bright chip whose true
+    // R is 1.35 shouldn't get its measured value pinned to
+    // (gain × 1.0) instead of (gain × 1.35).
     for (const cell of avgCells) {
+      const raw = cell.raw_linear_rgb_unclamped ?? cell.raw_linear_rgb;
       const meas: [number, number, number] = [
-        cell.raw_linear_rgb[0] * gain[0],
-        cell.raw_linear_rgb[1] * gain[1],
-        cell.raw_linear_rgb[2] * gain[2],
+        raw[0] * gain[0],
+        raw[1] * gain[1],
+        raw[2] * gain[2],
       ];
       cell.measured_linear_rgb = meas;
       cell.delta_e = deltaE2000Breakdown(
@@ -1571,10 +1708,11 @@ const buildBurstAverageCaptures = (
     if (avgRefCards) {
       for (const rc of avgRefCards) {
         if (!rc.expected_linear_rgb) continue;
+        const raw = rc.raw_linear_rgb_unclamped ?? rc.raw_linear_rgb;
         const meas: [number, number, number] = [
-          rc.raw_linear_rgb[0] * gain[0],
-          rc.raw_linear_rgb[1] * gain[1],
-          rc.raw_linear_rgb[2] * gain[2],
+          raw[0] * gain[0],
+          raw[1] * gain[1],
+          raw[2] * gain[2],
         ];
         rc.measured_linear_rgb = meas;
         rc.delta_e = deltaE2000Breakdown(
@@ -1645,7 +1783,7 @@ const buildBurstAverageCaptures = (
 // old 5-candidate range now that decode-dng-rois-batch collapses
 // the whole probe into one CLI call per fixture.
 const OFFSET_SWEEP: readonly number[] = [
-  1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
+  1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
 ];
 
 // Candidate vertical shifts, in ref-grid units, applied DOWN from
@@ -1666,12 +1804,17 @@ const VERTICAL_SWEEP: readonly number[] = [
   0.0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5,
 ];
 
-// Debug-only: emit an HTML page showing every (H, V) candidate as a
-// crop of the actual preview pixels inside the WHITE slot's sample
-// rect. Only the WHITE slot is shown (per user request) to keep the
-// grid legible. Each cell's background is colour-coded by score
-// (variance sum when available, distance-from-expected otherwise) —
-// green best, red worst. Winner has a black outline.
+// Debug-only: emit an HTML page with one H×V grid per slot
+// (whibal / postit / greycard / white). Each cell shows a crop of
+// the actual preview pixels at that candidate's per-slot rect, and
+// its background is colour-coded by that slot's own variance sum
+// (linear-sRGB, "evenness"). Per-slot coloring — each grid is
+// normalised to its own min/max so the heatmap reads as "which
+// (H, V) is the best position for THIS card". Per-slot winner
+// (bestPerSlot[i]) has a black outline. Cells rejected by the
+// brightness or saturation gate are drawn dark grey with the reason
+// as a label — useful for spotting when the "clean white" area got
+// rejected as clipped.
 //
 // Showing REAL pixels (not the mean colour) lets a human see the
 // mix that produced the mean: a rect fully on the card looks like a
@@ -1686,14 +1829,19 @@ function writeSweepDebugHtml(
     rows: Array<{
       candidate: number;
       vShift: number;
-      score: number;
       samples: Array<{r: number; g: number; b: number}>;
       variances: Array<{r: number; g: number; b: number} | null>;
-      whiteRect: {x: number; y: number; w: number; h: number} | null;
+      // Per-slot preview-space rect for the sample area at this
+      // (H, V) candidate. One entry per slot in `slotNames` order.
+      rects: Array<{x: number; y: number; w: number; h: number} | null>;
     }>;
     slotNames: string[];
     expectedByName: Record<string, {r: number; g: number; b: number}>;
-    winner: {h: number; v: number; score: number};
+    // Per-slot winner (null if the slot found no passing candidate
+    // and fell back to its seed rect).
+    winners: Array<{h: number; v: number; score: number} | null>;
+    minSlotBrightness: number;
+    maxSlotBrightness: number;
     preview: {pixels: Uint8Array; width: number; height: number} | null;
   },
 ): void {
@@ -1756,92 +1904,163 @@ function writeSweepDebugHtml(
   const rowByKey = new Map(
     data.rows.map(r => [`${r.candidate}|${r.vShift}`, r]),
   );
-  // Colour-code the score cell background — best score green, worst
-  // red. Filter Infinity out of the range (rejected candidates from
-  // the brightness gate) so a single-rejected cell doesn't collapse
-  // the whole colour gradient.
-  const finiteScores = data.rows
-    .map(r => r.score)
-    .filter(s => Number.isFinite(s));
-  const minS = finiteScores.length > 0 ? Math.min(...finiteScores) : 0;
-  const maxS = finiteScores.length > 0 ? Math.max(...finiteScores) : 1;
-  const scoreColour = (s: number) => {
-    if (!Number.isFinite(s)) return '#555';
-    const t = maxS > minS ? (s - minS) / (maxS - minS) : 0;
-    const hue = 120 - 120 * t; // green (120) → red (0)
-    return `hsl(${hue.toFixed(0)}, 65%, 82%)`;
+  // Reject reason per (row, slot) — mirrors the sweep's gate order:
+  //   'sat' → any mean channel above MAX_SLOT_BRIGHTNESS (clipped)
+  //   'dark' → all-channel mean below MIN_SLOT_BRIGHTNESS (on strip)
+  //   null → passed both gates and was scored on variance
+  const rejectReason = (
+    mean: {r: number; g: number; b: number} | null,
+  ): 'sat' | 'dark' | null => {
+    if (!mean) return null;
+    const maxChan = Math.max(mean.r, mean.g, mean.b);
+    if (maxChan > data.maxSlotBrightness) return 'sat';
+    const brightness = (mean.r + mean.g + mean.b) / 3;
+    if (brightness < data.minSlotBrightness) return 'dark';
+    return null;
   };
-  const whiteIdx = data.slotNames.indexOf('white');
+  const slotSectionHtml = (slotIdx: number): string => {
+    const name = data.slotNames[slotIdx];
+    const winner = data.winners[slotIdx];
+    // Collect per-slot variance scores + reject reasons in one pass
+    // so both the heatmap normalisation and the cell render can use
+    // them without repeating the gate logic.
+    const cellData: Array<{
+      candidate: number;
+      vShift: number;
+      score: number | null;
+      reject: 'sat' | 'dark' | null;
+      mean: {r: number; g: number; b: number} | null;
+      variance: {r: number; g: number; b: number} | null;
+      rect: {x: number; y: number; w: number; h: number} | null;
+    }> = data.rows.map(r => {
+      const mean = r.samples[slotIdx] ?? null;
+      const variance = r.variances[slotIdx] ?? null;
+      const rect = r.rects[slotIdx] ?? null;
+      const reject = rejectReason(mean);
+      const score =
+        !reject && variance ? variance.r + variance.g + variance.b : null;
+      return {
+        candidate: r.candidate,
+        vShift: r.vShift,
+        score,
+        reject,
+        mean,
+        variance,
+        rect,
+      };
+    });
+    const byKey = new Map(cellData.map(c => [`${c.candidate}|${c.vShift}`, c]));
+    const passingScores = cellData
+      .map(c => c.score)
+      .filter((s): s is number => s !== null && Number.isFinite(s));
+    const minS = passingScores.length > 0 ? Math.min(...passingScores) : 0;
+    const maxS = passingScores.length > 0 ? Math.max(...passingScores) : 1;
+    const scoreColour = (s: number) => {
+      const t = maxS > minS ? (s - minS) / (maxS - minS) : 0;
+      const hue = 120 - 120 * t; // green (120) → red (0)
+      return `hsl(${hue.toFixed(0)}, 65%, 82%)`;
+    };
+    let out = `<h2>${name}</h2>`;
+    const winnerLine = winner
+      ? `winner H=${winner.h.toFixed(2)} V=${winner.v.toFixed(2)} ` +
+        `variance-sum=${winner.score.toExponential(3)}`
+      : `no candidate passed the brightness/saturation gates — ` +
+        `slot kept its chart-derived seed rect`;
+    out += `<p class="hdr">${winnerLine}. `;
+    if (data.expectedByName[name]) {
+      const e = data.expectedByName[name];
+      out +=
+        `Expected: ${swatch(e, `expected ${name}`)} ` +
+        `linear=(${e.r.toFixed(2)},${e.g.toFixed(2)},${e.b.toFixed(2)}). `;
+    }
+    out += `Heatmap is normalised to this slot's own passing range.</p>`;
+    out += '<table><thead><tr><th>H \\ V</th>';
+    for (const v of uniqueV) out += `<th>V=${v.toFixed(2)}</th>`;
+    out += '</tr></thead><tbody>';
+    for (const h of uniqueH) {
+      out += `<tr><th>H=${h.toFixed(2)}</th>`;
+      for (const v of uniqueV) {
+        const c = byKey.get(`${h}|${v}`);
+        if (!c) {
+          out += '<td class="miss">–</td>';
+          continue;
+        }
+        const isWinner =
+          winner && h === winner.h && v === winner.v;
+        const bg =
+          c.reject === 'sat'
+            ? '#c8b0d8'
+            : c.reject === 'dark'
+              ? '#444'
+              : c.score !== null
+                ? scoreColour(c.score)
+                : '#555';
+        const dataUri = c.rect ? cropPngDataUri(c.rect) : null;
+        const title = [
+          `H=${h.toFixed(2)} V=${v.toFixed(2)}`,
+          c.mean
+            ? `mean=(${c.mean.r.toFixed(3)},${c.mean.g.toFixed(3)},${c.mean.b.toFixed(3)})`
+            : '',
+          c.variance
+            ? `variance=(${c.variance.r.toExponential(2)},${c.variance.g.toExponential(2)},${c.variance.b.toExponential(2)})`
+            : '',
+          c.reject === 'sat' ? 'REJECT saturation (mean channel > gate)' : '',
+          c.reject === 'dark' ? 'REJECT brightness (mean < gate)' : '',
+        ]
+          .filter(Boolean)
+          .join(' · ');
+        const scoreLabel =
+          c.reject === 'sat'
+            ? 'sat'
+            : c.reject === 'dark'
+              ? 'dark'
+              : c.score !== null
+                ? c.score.toExponential(2)
+                : '–';
+        const textColor = c.reject === 'dark' ? '#eee' : '#000';
+        out +=
+          `<td style="background:${bg};color:${textColor}` +
+          `${isWinner ? ';outline:3px solid #000;outline-offset:-2px' : ''}" ` +
+          `title="${title}">` +
+          `<div class="cell-inner">` +
+          (dataUri
+            ? `<img src="${dataUri}" alt="" class="crop">`
+            : '<div class="crop miss"></div>') +
+          `<span class="s">${scoreLabel}</span>` +
+          '</div>' +
+          '</td>';
+      }
+      out += '</tr>';
+    }
+    out += '</tbody></table>';
+    return out;
+  };
   let body = `<h1>Sweep debug — ${data.fixture}</h1>`;
   body +=
-    `<p>WHITE slot only. Winner H=${data.winner.h.toFixed(2)} ` +
-    `V=${data.winner.v.toFixed(2)} score=${data.winner.score.toExponential(3)}. ` +
-    `Score = per-channel variance summed across all 4 slots (the ` +
-    `"evenness" metric — lower = more uniform patch). Cell background ` +
-    `green→red = best→worst. Rejected (dark-strip brightness gate) = dark grey. ` +
-    `Rect pixels shown at native size, upscaled with CSS <code>image-rendering: pixelated</code>.</p>`;
-  if (whiteIdx >= 0 && data.expectedByName['white']) {
-    const e = data.expectedByName['white'];
-    body +=
-      `<p>Expected white: ${swatch(e, 'expected white')} ` +
-      `(${e.r.toFixed(2)},${e.g.toFixed(2)},${e.b.toFixed(2)})</p>`;
+    `<p>Per-slot sweep grid. Score = intra-ROI linear-sRGB variance ` +
+    `summed across channels (the "evenness" metric — lower = more ` +
+    `uniform patch). Heatmap green→red = best→worst variance among ` +
+    `<em>passing</em> candidates for that slot. Purple = rejected as ` +
+    `clipped (max channel &gt; ${data.maxSlotBrightness}); dark grey = ` +
+    `rejected as too dark (mean &lt; ${data.minSlotBrightness}). ` +
+    `Winner cell (per-slot best) has a black outline. Rect pixels ` +
+    `shown at native size, upscaled with CSS ` +
+    `<code>image-rendering: pixelated</code>.</p>`;
+  const nav = data.slotNames
+    .map((n, i) => `<a href="#slot-${i}">${n}</a>`)
+    .join(' · ');
+  body += `<p class="nav">Jump to: ${nav}</p>`;
+  for (let i = 0; i < data.slotNames.length; i++) {
+    body += `<section id="slot-${i}">${slotSectionHtml(i)}</section>`;
   }
-  body += '<table><thead><tr><th>H \\ V</th>';
-  for (const v of uniqueV) body += `<th>V=${v.toFixed(2)}</th>`;
-  body += '</tr></thead><tbody>';
-  for (const h of uniqueH) {
-    body += `<tr><th>H=${h.toFixed(2)}</th>`;
-    for (const v of uniqueV) {
-      const r = rowByKey.get(`${h}|${v}`);
-      if (!r) {
-        body += '<td class="miss">–</td>';
-        continue;
-      }
-      const isWinner = h === data.winner.h && v === data.winner.v;
-      const bg = scoreColour(r.score);
-      const dataUri = r.whiteRect ? cropPngDataUri(r.whiteRect) : null;
-      const whiteVar =
-        whiteIdx >= 0 && r.variances[whiteIdx]
-          ? r.variances[whiteIdx]!
-          : null;
-      const whiteMean =
-        whiteIdx >= 0 ? r.samples[whiteIdx] : null;
-      const title = [
-        `H=${h.toFixed(2)} V=${v.toFixed(2)}`,
-        `score=${r.score.toExponential(3)}`,
-        whiteMean
-          ? `white mean=(${whiteMean.r.toFixed(3)},${whiteMean.g.toFixed(3)},${whiteMean.b.toFixed(3)})`
-          : '',
-        whiteVar
-          ? `white variance=(${whiteVar.r.toExponential(2)},${whiteVar.g.toExponential(2)},${whiteVar.b.toExponential(2)})`
-          : '',
-      ]
-        .filter(Boolean)
-        .join(' · ');
-      const scoreLabel = Number.isFinite(r.score)
-        ? r.score.toExponential(2)
-        : 'reject';
-      body +=
-        `<td style="background:${bg}${isWinner ? ';outline:3px solid #000' : ''}" title="${title}">` +
-        `<div class="cell-inner">` +
-        (dataUri
-          ? `<img src="${dataUri}" alt="" class="crop">`
-          : '<div class="crop miss"></div>') +
-        `<span class="s">${scoreLabel}</span>` +
-        '</div>' +
-        '</td>';
-    }
-    body += '</tr>';
-  }
-  body += '</tbody></table>';
   const html = `<!doctype html><html><head><meta charset="utf-8">
 <title>sweep-debug ${data.fixture}</title>
 <style>
   body { font-family: system-ui, sans-serif; margin: 12px; }
-  table { border-collapse: collapse; }
+  h2 { margin-top: 24px; }
+  table { border-collapse: collapse; margin-bottom: 20px; }
   th, td { padding: 3px; border: 1px solid #ccc; text-align: center; font-size: 11px; }
-  th { background: #eee; position: sticky; top: 0; z-index: 1; }
-  th:first-child { left: 0; z-index: 2; }
+  th { background: #eee; }
   .cell-inner { display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .cell-inner .s { font-family: monospace; font-size: 10px; }
   .crop { width: 80px; height: 80px; image-rendering: pixelated;
@@ -1849,6 +2068,8 @@ function writeSweepDebugHtml(
   .sw { display: inline-block; width: 14px; height: 14px; margin: 0 1px;
         border: 1px solid #444; vertical-align: middle; }
   .miss { color: #999; }
+  .hdr { margin: 4px 0 8px 0; }
+  .nav a { margin-right: 4px; }
 </style>
 </head><body>${body}</body></html>`;
   fs.writeFileSync(outPath, html);
@@ -1986,17 +2207,43 @@ function maybeSweepMultiCardOffset(
   const photoRoiFallback: Array<Array<{r: number; g: number; b: number}>> = [];
   try {
     if (fixture.format === 'raw') {
-      batchResults = decoder.decodeDngRoisReducedBatch(fixture.path, roiSets);
+      batchResults = timer.time('sweep.batch_decode', () =>
+        decoder.decodeDngRoisReducedBatch(fixture.path, roiSets),
+      );
     } else {
       // Photo path — dominant + variance unavailable (see decoder
       // note). Decode each candidate mean, synthesise the
       // LinearRgbReducedWithVar shape with dominant = mean and
       // variance = null so the scoring loop below can stay reducer-
       // agnostic (it only reads .mean when variance is null anyway).
-      batchResults = roiSets.map(rois => {
-        const means = decoder.decodePhotoRois(fixture.path, rois);
-        photoRoiFallback.push(means);
-        return means.map(m => ({mean: m, dominant: m, variance: null}));
+      // Flatten the N candidate sets into ONE call so the Swift CLI
+      // loads the JPEG once, samples every ROI in a single process,
+      // and returns everything in one shot. Cuts N subprocess
+      // spawns (176 per multi fixture) down to 1 — measured ~30×
+      // faster wall-clock on typical multi captures.
+      batchResults = timer.time('sweep.photo_rois_batch', () => {
+        const perSetLens = roiSets.map(s => s.length);
+        const flatRois = roiSets.flat();
+        const flatMeans = decoder.decodePhotoRois(fixture.path, flatRois);
+        const out: LinearRgbReducedWithVar[][] = [];
+        let off = 0;
+        for (const len of perSetLens) {
+          const slice = flatMeans.slice(off, off + len);
+          photoRoiFallback.push(slice);
+          out.push(
+            slice.map(m => ({
+              mean: m,
+              // No unclamped signal from the JPEG path (Swift CLI
+              // returns clamped 0-1 CIImage samples); reuse mean so
+              // downstream code can uniformly rely on the field.
+              meanUnclamped: m,
+              dominant: m,
+              variance: null,
+            })),
+          );
+          off += len;
+        }
+        return out;
       });
     }
   } catch (err) {
@@ -2008,16 +2255,42 @@ function maybeSweepMultiCardOffset(
   }
   void photoRoiFallback;
 
-  // Score each candidate. Neutral-slot-only sum of linear-RGB squared
-  // distance against the physical expected — see below for why
-  // postit is excluded from the score.
+  // Score each candidate PER SLOT INDEPENDENTLY. The multi-card
+  // strip has ~0.3" of slop and cards are hand-taped, so slots don't
+  // share a single true (H, V) offset — one card can be off-center
+  // in a different direction than its neighbours. Joint scoring
+  // averages across that mismatch and lands on a compromise no slot
+  // is happy with. Per-slot lets each card find its own optimum.
+  //
+  // Scoring is per-slot variance (intra-ROI, linear-sRGB summed
+  // across channels — same "evenness" formula the on-device live
+  // overlay uses). Guarded by two per-slot filters:
+  //   - Brightness gate: mean channel avg must exceed
+  //     MIN_SLOT_BRIGHTNESS. Rejects candidates entirely on the
+  //     dark mask-strip material (variance→0 by uniformity).
+  //   - Saturation gate: NO mean channel may exceed
+  //     MAX_SLOT_BRIGHTNESS. Rejects blown-out samples where the
+  //     sensor clipped to 1.0 (variance→0 by clamping, not by
+  //     actual uniformity).
+  // If a slot has NO passing candidate, its rect is left at the
+  // analyzer's chart-derived seed position — better to keep the
+  // pre-sweep position than pick a garbage candidate.
+  //
   // Diagnostic dump: when SWEEP_DEBUG_MATCH is set and the fixture's
-  // basename contains it, print the entire score landscape + per-slot
-  // sample values for every (H, V) candidate. Zero cost when the env
-  // var isn't set, so safe to leave in. SWEEP_DEBUG_HTML additionally
-  // writes an HTML grid to that path with per-candidate color
-  // swatches so the sampled colours can be eyeballed side-by-side
-  // against the score landscape.
+  // basename contains it, print every (H, V) candidate's per-slot
+  // samples + score. Zero cost when the env var isn't set.
+  // SWEEP_DEBUG_HTML additionally writes an HTML grid with pixel
+  // crops of the WHITE slot at every candidate.
+  const MIN_SLOT_BRIGHTNESS = 0.04;
+  // No mean-based saturation gate. Variance is now computed on the
+  // unclamped linear-sRGB pipeline (DngPipeline.cpp) so bright but
+  // non-saturated pixels retain a real signal. A patch that's
+  // physically saturated (raw at well cap) still shows near-zero
+  // variance and gets outranked by any patch with real spatial
+  // signal, but not by a false 0. If we see the sweep locking onto
+  // truly-flat saturated regions we'll add a variance-plus-mean
+  // sanity check; for now let it rank purely on variance.
+  const MAX_SLOT_BRIGHTNESS = Infinity;
   const debugMatch = process.env.SWEEP_DEBUG_MATCH;
   const wantDebug =
     !!debugMatch && path.basename(fixture.path).includes(debugMatch);
@@ -2025,103 +2298,95 @@ function maybeSweepMultiCardOffset(
   type DebugRow = {
     candidate: number;
     vShift: number;
-    score: number;
     samples: Array<{r: number; g: number; b: number}>;
     variances: Array<{r: number; g: number; b: number} | null>;
-    // Preview-space rect for the WHITE slot only — used to crop the
-    // actual pixels out of the preview PNG for the debug HTML.
-    // Other slots are excluded from the current debug view to keep
-    // the grid compact (`--only-slot white` behaviour).
-    whiteRect: {x: number; y: number; w: number; h: number} | null;
+    // Preview-space sample rect PER SLOT — used to crop the actual
+    // preview pixels for the per-slot heatmap grid in the debug HTML.
+    rects: Array<{x: number; y: number; w: number; h: number}>;
   };
   const debugRows: DebugRow[] = [];
-  const whiteSlotIdx = wantDebug
-    ? multi.findIndex(m => m.name === 'white')
-    : -1;
-  let bestOffset = OFFSET_SWEEP[0];
-  let bestVerticalShift = VERTICAL_SWEEP[0];
-  let bestScore = Infinity;
-  let bestSamples: Array<{r: number; g: number; b: number}> = [];
-  // Parallel to bestSamples: dominant reducer at the winning position.
-  // For the photo path dominant === mean (see note above), so the
-  // filmstrip's mean/dominant radio has nothing to flip; that's fine.
-  let bestDominant: Array<{r: number; g: number; b: number} | null> = [];
-  let bestRects: Array<{x: number; y: number; w: number; h: number}> = [];
+  // Per-slot best-tracking. Each slot independently picks the (H, V)
+  // that minimises its OWN linear-sRGB variance (post-brightness /
+  // saturation guards). If no candidate passes for a slot, its rect
+  // is left at the pre-sweep chart-derived seed — better than
+  // picking a garbage candidate.
+  type SlotBest = {
+    score: number;
+    mean: {r: number; g: number; b: number};
+    meanUnclamped: {r: number; g: number; b: number} | null;
+    dominant: {r: number; g: number; b: number} | null;
+    rect: {x: number; y: number; w: number; h: number};
+    candidate: number;
+    vShift: number;
+  };
+  const bestPerSlot: Array<SlotBest | null> = new Array(multi.length).fill(
+    null,
+  );
+  const haveVariance = batchResults.every(inner =>
+    inner.every(r => r.variance !== null),
+  );
+
   for (let idx = 0; idx < batchResults.length; idx++) {
     const reduced = batchResults[idx];
     if (!reduced || reduced.length !== multi.length) continue;
     const {candidate, vShift, previewRects: candRects} = candidateMeta[idx];
     const samples = reduced.map(r => r.mean);
-    // Homogeneity-based score (preferred when variance is available,
-    // i.e. RAW/DNG batches through dng-cli-cpp): for each slot, sum
-    // per-channel intra-ROI variance in linear-sRGB space. A rect
-    // fully on a card patch has near-zero variance; one straddling
-    // the card / mask-strip edge has high variance because those
-    // materials sit far apart in linear space. Aggregating across
-    // slots picks the position that lands ALL sample rects on
-    // uniform regions simultaneously. No comparison to expected
-    // colour, so raw sensor-magnitude mismatches (e.g. an off
-    // AsShotNeutral making everything dim) don't bias the scan.
-    //
-    // Fallback (photos + iOS DNGs, variance unavailable): the
-    // classic distance-from-expected on the three neutrals. Postit
-    // is excluded because its saturated yellow dominates any
-    // similarity-magnet sum whenever it's slightly off, biasing the
-    // sweep toward whatever offset happens to reduce postit's
-    // error even at the cost of the three neutrals.
-    let score = 0;
-    const haveVariance = reduced.every(r => r.variance !== null);
-    if (haveVariance) {
-      // Variance-only scoring picks the "all off-card on uniform
-      // dark strip" failure mode — a rect entirely on the black tape
-      // between mask cutouts has variance ≈ 0, which BEATS a rect
-      // truly on the card. So we augment the variance objective
-      // with a hard gate: at least one slot's mean brightness
-      // (r+g+b)/3 must exceed MIN_SLOT_BRIGHTNESS. Cards are always
-      // brighter than the strip (whibal ~0.4, greycard ~0.18, white
-      // ~0.85, postit ~0.55 pre-analyzer-WB values on Pixel 7 sun
-      // captures); the strip reads ~0.02. A 0.04 threshold catches
-      // the failure without excluding legit dim-side sensor
-      // captures.
-      let anyBright = false;
-      for (let i = 0; i < multi.length; i++) {
-        const m = samples[i];
-        const b = (m.r + m.g + m.b) / 3;
-        if (b >= 0.04) anyBright = true;
+    let summedVarForDebug = 0;
+
+    for (let i = 0; i < multi.length; i++) {
+      const mean = samples[i];
+      const brightness = (mean.r + mean.g + mean.b) / 3;
+      const maxChan = Math.max(mean.r, mean.g, mean.b);
+      // Gates applied PER SLOT so a saturated white doesn't
+      // disqualify a candidate that has a valid greycard.
+      //   Brightness: reject if entirely on dark mask-strip
+      //     material (variance→0 by uniform blackness).
+      //   Saturation: reject if the sensor clipped at 1.0
+      //     (variance→0 by clamping in sensorToLinearSrgb, not
+      //     by actual uniformity — see docs on the linear-sRGB
+      //     clamp; the clamp is a display convenience that
+      //     unfortunately erases the variance signal on
+      //     over-exposed patches).
+      let slotScore: number;
+      if (haveVariance) {
         const v = reduced[i].variance!;
-        score += v.r + v.g + v.b;
-      }
-      if (!anyBright) score = Infinity;
-    } else {
-      for (let i = 0; i < multi.length; i++) {
+        slotScore = v.r + v.g + v.b;
+        summedVarForDebug += slotScore;
+      } else {
+        // Photo-path fallback: distance-from-expected on the three
+        // physical neutrals (postit excluded — see the old-scorer
+        // comment on why it's a "similarity magnet").
         const name = multi[i].name;
         if (name === 'postit') continue;
         const exp = expectedByName[name];
         if (!exp) continue;
-        score += linearRgbDist2(samples[i], exp);
+        slotScore = linearRgbDist2(mean, exp);
+      }
+      if (brightness < MIN_SLOT_BRIGHTNESS) continue;
+      if (maxChan > MAX_SLOT_BRIGHTNESS) continue;
+      const cur = bestPerSlot[i];
+      if (!cur || slotScore < cur.score) {
+        bestPerSlot[i] = {
+          score: slotScore,
+          mean,
+          // Carry the unclamped mean through when the decoder
+          // exposes it (RAW path via dng-cli-cpp). Downstream WB
+          // gain uses it to avoid under-correcting on bright
+          // anchors — see wbRgbScaleFromReference.
+          meanUnclamped: reduced[i].meanUnclamped ?? null,
+          dominant: fixture.format === 'raw' ? reduced[i].dominant : null,
+          rect: candRects[i],
+          candidate,
+          vShift,
+        };
       }
     }
-    if (score < bestScore) {
-      bestScore = score;
-      bestOffset = candidate;
-      bestVerticalShift = vShift;
-      bestSamples = samples;
-      // For RAW: dominant is the real median-cut. For photo:
-      // dominant equals mean (synthesised above), so downstream still
-      // gets a value and the filmstrip A/B is a no-op flip — same as
-      // pre-batch behavior.
-      bestDominant = reduced.map(r =>
-        fixture.format === 'raw' ? r.dominant : null,
-      );
-      bestRects = candRects;
-    }
+
     if (wantDebug) {
-      // Per-candidate diagnostic row: H, V, score, per-slot samples
-      // vs expected. Neutrals-only score matches the argmin above.
       const parts = [
-        `H=${candidateMeta[idx].candidate.toFixed(2)}`,
-        `V=${candidateMeta[idx].vShift.toFixed(2)}`,
-        `score=${score.toExponential(3)}`,
+        `H=${candidate.toFixed(2)}`,
+        `V=${vShift.toFixed(2)}`,
+        `summed-var=${summedVarForDebug.toExponential(3)}`,
       ];
       for (let i = 0; i < multi.length; i++) {
         const s = samples[i];
@@ -2131,84 +2396,126 @@ function maybeSweepMultiCardOffset(
         );
       }
       process.stderr.write(`    sweep-debug: ${parts.join(' ')}\n`);
-      const meta = candidateMeta[idx];
       debugRows.push({
-        candidate: meta.candidate,
-        vShift: meta.vShift,
-        score,
+        candidate,
+        vShift,
         samples: samples.map(s => ({...s})),
-        variances: reduced.map(r =>
-          r.variance ? {...r.variance} : null,
-        ),
-        whiteRect:
-          whiteSlotIdx >= 0 ? {...meta.previewRects[whiteSlotIdx]} : null,
+        variances: reduced.map(r => (r.variance ? {...r.variance} : null)),
+        rects: candRects.map(r => ({...r})),
       });
     }
   }
-  if (wantDebug) {
-    process.stderr.write(
-      `    sweep-debug: WINNER H=${bestOffset.toFixed(2)} ` +
-        `V=${bestVerticalShift.toFixed(2)} score=${bestScore.toExponential(3)}\n`,
-    );
-    if (debugHtmlPath) {
-      // Grab the preview pixels once so the HTML writer can crop
-      // each candidate's WHITE-slot rect out for inline display.
-      // Cheap for a debug flow (~1 preview decode); skipped
-      // entirely when SWEEP_DEBUG_HTML isn't set.
-      let previewPixels: Uint8Array | null = null;
-      let previewW = 0;
-      let previewH = 0;
-      try {
-        const preview =
-          fixture.format === 'raw'
-            ? decoder.readPreviewRgb(fixture.path, 1200)
-            : decoder.readPreviewRgbPhoto(fixture.path, 1200);
-        previewPixels = new Uint8Array(preview.pixels);
-        previewW = preview.width;
-        previewH = preview.height;
-      } catch (err) {
-        process.stderr.write(
-          `    sweep-debug: preview render failed (${(err as Error).message ?? err}); ` +
-            `HTML will omit pixel crops\n`,
-        );
-      }
-      writeSweepDebugHtml(debugHtmlPath, {
-        fixture: path.basename(fixture.path),
-        rows: debugRows,
-        slotNames: multi.map(m => m.name),
-        expectedByName,
-        winner: {h: bestOffset, v: bestVerticalShift, score: bestScore},
-        preview:
-          previewPixels && previewW > 0 && previewH > 0
-            ? {pixels: previewPixels, width: previewW, height: previewH}
-            : null,
-      });
-      process.stderr.write(`    sweep-debug: wrote ${debugHtmlPath}\n`);
-    }
-  }
-  if (bestSamples.length !== multi.length) return; // all candidates failed
 
-  // Mutate in place. Also tack on the diagnostic so downstream can
-  // emit it into the JSON. Both reducer variants are updated so the
-  // filmstrip's mean/dominant radio sees consistent post-sweep values.
+  if (wantDebug && debugHtmlPath && !haveVariance) {
+    // The debug HTML colour-codes cells by intra-ROI variance —
+    // meaningless for the photo/JPEG path (variance not computed).
+    // Skip emission so we don't overwrite a preceding DNG debug HTML
+    // when the same fixture stem produces both formats.
+    process.stderr.write(
+      `    sweep-debug: skipping HTML for ${fixture.format} (no variance data)\n`,
+    );
+  } else if (wantDebug && debugHtmlPath) {
+    // Per-slot winners: each slot has its own bestPerSlot entry
+    // (or null if it fell back to the seed). The debug HTML renders
+    // one H×V grid per slot with its own winner outline.
+    let previewPixels: Uint8Array | null = null;
+    let previewW = 0;
+    let previewH = 0;
+    try {
+      const preview =
+        fixture.format === 'raw'
+          ? decoder.readPreviewRgb(fixture.path, 1200)
+          : decoder.readPreviewRgbPhoto(fixture.path, 1200);
+      previewPixels = new Uint8Array(preview.pixels);
+      previewW = preview.width;
+      previewH = preview.height;
+    } catch (err) {
+      process.stderr.write(
+        `    sweep-debug: preview render failed (${(err as Error).message ?? err}); ` +
+          `HTML will omit pixel crops\n`,
+      );
+    }
+    const winners = bestPerSlot.map(b =>
+      b ? {h: b.candidate, v: b.vShift, score: b.score} : null,
+    );
+    writeSweepDebugHtml(debugHtmlPath, {
+      fixture: path.basename(fixture.path),
+      rows: debugRows,
+      slotNames: multi.map(m => m.name),
+      expectedByName,
+      winners,
+      minSlotBrightness: MIN_SLOT_BRIGHTNESS,
+      maxSlotBrightness: MAX_SLOT_BRIGHTNESS,
+      preview:
+        previewPixels && previewW > 0 && previewH > 0
+          ? {pixels: previewPixels, width: previewW, height: previewH}
+          : null,
+    });
+    process.stderr.write(`    sweep-debug: wrote ${debugHtmlPath}\n`);
+  }
+
+  // Union of every candidate rect per slot — the "search area" the
+  // sweep considered. Stored on each slot so run.html can render an
+  // overlay ("did we sweep where the card actually is?"). Cheap
+  // single pass over the meta we already built above.
+  const searchAreaPerSlot = multi.map((_, i) => {
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity;
+    for (const meta of candidateMeta) {
+      const r = meta.previewRects[i];
+      if (r.x < minX) minX = r.x;
+      if (r.y < minY) minY = r.y;
+      if (r.x + r.w > maxX) maxX = r.x + r.w;
+      if (r.y + r.h > maxY) maxY = r.y + r.h;
+    }
+    if (!isFinite(minX)) return null;
+    return {
+      x: Math.round(minX),
+      y: Math.round(minY),
+      w: Math.round(maxX - minX),
+      h: Math.round(maxY - minY),
+    };
+  });
+
+  // Mutate in place per-slot. Slots with no passing candidate keep
+  // their pre-sweep seed rect (analyzer's chart-derived nominal
+  // MULTI_CARD_POINTS position).
   for (let i = 0; i < multi.length; i++) {
+    const best = bestPerSlot[i];
     multi[i] = {
       ...multi[i],
-      linearRgb: bestSamples[i],
-      linearRgbDominant: bestDominant[i],
-      rect: bestRects[i],
+      ...(best
+        ? {
+            linearRgb: best.mean,
+            linearRgbUnclamped: best.meanUnclamped,
+            linearRgbDominant: best.dominant,
+            rect: best.rect,
+          }
+        : {}),
+      searchArea: searchAreaPerSlot[i],
     };
   }
-  // Non-enumerable-ish diagnostics: attach to the outcome for buildCaptureEntry.
-  (outcome as any)._sweepOffset = bestOffset;
-  (outcome as any)._sweepVerticalShift = bestVerticalShift;
-  const nudgeH =
-    bestOffset !== MULTI_CARD_OFFSET_PITCHES ? ' (H-nudged)' : '';
-  const nudgeV = bestVerticalShift !== 0 ? ' (V-nudged↓)' : '';
+  // Diagnostics: per-slot chosen (H, V) + score. buildCaptureEntry
+  // emits this array into run.json so downstream can facet on it
+  // ("what fraction of shots had white pinned at the H boundary?").
+  const perSlotChoices = bestPerSlot.map((b, i) => ({
+    name: multi[i].name,
+    h: b ? b.candidate : null,
+    v: b ? b.vShift : null,
+    score: b ? b.score : null,
+  }));
+  (outcome as any)._sweepPerSlot = perSlotChoices;
+  const summary = perSlotChoices
+    .map(c =>
+      c.h == null
+        ? `${c.name}=seed`
+        : `${c.name}=(${c.h.toFixed(2)},${c.v!.toFixed(2)})`,
+    )
+    .join(' ');
   process.stderr.write(
-    `    multi-sweep: chose offsetPitches=${bestOffset.toFixed(2)}` +
-      ` vShift=${bestVerticalShift.toFixed(2)}${nudgeH}${nudgeV}` +
-      ` for ${path.basename(fixture.path)}\n`,
+    `    multi-sweep: ${summary} for ${path.basename(fixture.path)}\n`,
   );
 }
 
@@ -2341,7 +2648,9 @@ const uniqueFixturePaths = Array.from(new Set(fixtures.map(f => f.path)));
 process.stderr.write(
   `prefetching metadata for ${uniqueFixturePaths.length} fixture file(s) via exiftool…\n`,
 );
-const imageMetadataByPath = prefetchImageMetadata(uniqueFixturePaths);
+const imageMetadataByPath = timer.time('exiftool.prefetch', () =>
+  prefetchImageMetadata(uniqueFixturePaths),
+);
 
 // Two decoders — Android fixtures route their DNG methods through
 // the C++ CLI (byte-for-byte match with the on-device Android
@@ -2379,15 +2688,17 @@ let nFailure = 0;
     const t0 = Date.now();
     let outcome: MunsellChartOutcome;
     try {
-      outcome = await analyzeMunsellChart(
-        decoder,
-        fixture.path,
-        page,
-        fixture.format,
-        undefined,
-        fixture.reference === 'multi',
-        false,
-        guideAdjustment,
+      outcome = await timer.timeAsync('chart.analyze', () =>
+        analyzeMunsellChart(
+          decoder,
+          fixture.path,
+          page,
+          fixture.format,
+          undefined,
+          fixture.reference === 'multi',
+          false,
+          guideAdjustment,
+        ),
       );
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -2447,7 +2758,9 @@ let nFailure = 0;
       // multiRefCards in place. See docs/munsell-dark-sensor.md option
       // #1 for the general "sensor-vs-expected" motivation.
       if (fixture.reference === 'multi') {
-        maybeSweepMultiCardOffset(outcome, fixture, decoder);
+        timer.time('sweep.multi', () =>
+          maybeSweepMultiCardOffset(outcome, fixture, decoder),
+        );
       }
     } else {
       nFailure++;
@@ -2484,11 +2797,13 @@ let nFailure = 0;
     let previewImage: CaptureContext['previewImage'] | undefined;
     if (emitHtml && previewCoord) {
       try {
-        const rendered = decoder.renderPreviewImage(
-          fixture.path,
-          REPORT_PREVIEW_MAX_DIM,
-          fixture.format,
-          REPORT_PREVIEW_QUALITY,
+        const rendered = timer.time('preview.render_for_report', () =>
+          decoder.renderPreviewImage(
+            fixture.path,
+            REPORT_PREVIEW_MAX_DIM,
+            fixture.format,
+            REPORT_PREVIEW_QUALITY,
+          ),
         );
         previewImage = {
           base64: rendered.bytes.toString('base64'),
@@ -2525,12 +2840,8 @@ let nFailure = 0;
         );
         continue;
       }
-      const jsonEntry = buildCaptureEntry(
-        fixture,
-        refLabel,
-        anchor,
-        outcome,
-        page,
+      const jsonEntry = timer.time('buildCaptureEntry', () =>
+        buildCaptureEntry(fixture, refLabel, anchor, outcome, page),
       ) as CaptureJsonEntry;
       captures.push(jsonEntry);
       captureContexts.push({
@@ -2634,7 +2945,9 @@ let nFailure = 0;
   const output = {...runMeta, captures};
 
   fs.mkdirSync(path.dirname(outPath!), {recursive: true});
-  fs.writeFileSync(outPath!, JSON.stringify(output, null, 2) + '\n');
+  timer.time('json.write', () =>
+    fs.writeFileSync(outPath!, JSON.stringify(output, null, 2) + '\n'),
+  );
 
   if (emitHtml) {
     // HTML report next to the JSON. Derive path by swapping .json → .html
@@ -2642,8 +2955,10 @@ let nFailure = 0;
     const reportPath = outPath!.endsWith('.json')
       ? outPath!.replace(/\.json$/, '.html')
       : `${outPath}.html`;
-    const html = renderHtmlReport(runMeta, captureContexts);
-    fs.writeFileSync(reportPath, html);
+    const html = timer.time('report.render', () =>
+      renderHtmlReport(runMeta, captureContexts),
+    );
+    timer.time('report.write', () => fs.writeFileSync(reportPath, html));
     const reportBytes = fs.statSync(reportPath).size;
     process.stderr.write(
       `wrote ${captures.length} capture(s) (${nSuccess} success, ${nFailure} failure)\n` +
@@ -2656,6 +2971,7 @@ let nFailure = 0;
         `  json:   ${outPath}  (HTML skipped, --no-html)\n`,
     );
   }
+  process.stderr.write(`\nphase timing (sorted by wall time):\n${timer.report()}\n`);
 })().catch(err => {
   iosDecoder.cleanup();
   androidDecoder?.cleanup();

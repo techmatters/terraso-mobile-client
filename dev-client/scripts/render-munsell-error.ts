@@ -229,7 +229,12 @@ for (const cap of runDoc.captures) {
         !refOptions[rc.name]) {
       refOptions[rc.name] = {
         expected: rc.expected_linear_rgb,
-        raw: rc.raw_linear_rgb,
+        // Prefer pre-clamp mean when the analyzer produced one.
+        // A bright anchor whose true post-WB R is 1.35 clipped to
+        // 1.0 makes every gain computed against it too gentle —
+        // the whole filmstrip shifts by (1 / 1.35). See
+        // wbRgbScaleFromReference in cellResults.ts.
+        raw: rc.raw_linear_rgb_unclamped ?? rc.raw_linear_rgb,
         rawDominant: rc.raw_linear_rgb_dominant ?? null,
       };
     }
@@ -247,7 +252,10 @@ for (const cap of runDoc.captures) {
       if (anchorCell?.raw_linear_rgb && anchorCell?.expected_linear_rgb) {
         refOptions.self = {
           expected: anchorCell.expected_linear_rgb,
-          raw: anchorCell.raw_linear_rgb,
+          // Prefer unclamped for the self-anchor chip too — same
+          // gain-under-correction logic applies when the auto-picked
+          // anchor happens to be a bright chip.
+          raw: anchorCell.raw_linear_rgb_unclamped ?? anchorCell.raw_linear_rgb,
           rawDominant: anchorCell.raw_linear_rgb_dominant ?? null,
         };
       }
@@ -272,7 +280,11 @@ for (const cap of runDoc.captures) {
       bg: bgOf(sourcePath),
       illumUnevenness,
       expectedRgb: cell.expected_linear_rgb,
-      rawRgb: cell.raw_linear_rgb,
+      // Prefer unclamped chip mean so bright chips (5/6+ value) go
+      // through the client-side WB × CCM math with their true
+      // signal instead of a clipped 1.0. See analyzer's
+      // wbRgbScaleFromReference note for the direction of the bias.
+      rawRgb: cell.raw_linear_rgb_unclamped ?? cell.raw_linear_rgb,
       rawRgbDominant: cell.raw_linear_rgb_dominant ?? null,
       refOptions,
       captureType: captureTypeOf(cap.label ?? ''),

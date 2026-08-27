@@ -279,11 +279,17 @@ LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roiIn) {
 namespace {
 
 // Apply the sensor→linear-sRGB colour pipeline to an already-averaged
-// (or per-pixel) sensor triple. Extracted from decodeRoi so
-// decodeRoiReduced can call it PER PIXEL — median-cut needs each
-// individual pixel in linear-sRGB space, not just the mean.
-LinearRgbF sensorToLinearSrgb(const ParsedDng& dng,
-                              std::array<double, 3> sensor) {
+// (or per-pixel) sensor triple, returning the UNCLAMPED result. After
+// per-channel WB (asShotNeutral divide) and CCM/ForwardMatrix, valid
+// non-saturated bright pixels routinely exceed 1.0 on one or two
+// channels. Clamping them to 1.0 collapses the variance signal —
+// e.g. a slightly-brighter neighbour of a bright pixel maps to the
+// same 1.0 and looks "even" when it isn't. Callers that only need
+// the display range (previews, mean-for-Munsell-match) should follow
+// up with sensorToLinearSrgb; callers computing variance/evenness
+// want the raw floats.
+std::array<double, 3> sensorToLinearSrgbUnclamped(
+    const ParsedDng& dng, std::array<double, 3> sensor) {
   for (int c = 0; c < 3; ++c) {
     const double n = dng.asShotNeutral[c];
     if (n > 0) sensor[c] /= n;
@@ -299,7 +305,17 @@ LinearRgbF sensorToLinearSrgb(const ParsedDng& dng,
     const auto sensorToXyz = invert3x3(cmatrix);
     xyz = matVec(sensorToXyz, sensor);
   }
-  const std::array<double, 3> srgb = matVec(XYZ_D65_TO_SRGB_LINEAR, xyz);
+  return matVec(XYZ_D65_TO_SRGB_LINEAR, xyz);
+}
+
+// Same pipeline, clamped to [0, 1] for display-range consumers.
+// Extracted so decodeRoiReduced can call the unclamped path for its
+// variance accumulator while keeping the clamped path for the
+// median-cut dominant + mean.
+LinearRgbF sensorToLinearSrgb(const ParsedDng& dng,
+                              std::array<double, 3> sensor) {
+  const std::array<double, 3> srgb =
+      sensorToLinearSrgbUnclamped(dng, sensor);
   return {
       std::clamp(srgb[0], 0.0, 1.0),
       std::clamp(srgb[1], 0.0, 1.0),
@@ -347,13 +363,21 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
   //   pixels          — per-pixel linear-sRGB values for the
   //                     median-cut dominant.
   //   linearSum,
-  //   linearSumSq     — running sum + sum-of-squares of the already-
-  //                     pipelined per-pixel linear-sRGB triples, for
-  //                     computing per-channel variance in the linear-
-  //                     sRGB space (E[X²] − E[X]²). Same streaming
-  //                     formula the live evenness overlay uses on the
-  //                     Y plane; see the RoiReduced doc comment for
-  //                     why callers care.
+  //   linearSumSq     — running sum + sum-of-squares of per-pixel
+  //                     linear-sRGB triples on the UNCLAMPED path,
+  //                     for computing per-channel variance in the
+  //                     linear-sRGB space (E[X²] − E[X]²). Same
+  //                     streaming formula the live evenness overlay
+  //                     uses on the Y plane. UNCLAMPED so the
+  //                     analyzer sweep can distinguish "bright but
+  //                     not physically saturated" (real variance
+  //                     survives WB pushing values > 1) from
+  //                     "physically saturated raw well cap" (all
+  //                     pixels identical → real 0 variance) —
+  //                     clamping the accumulator to [0,1] would
+  //                     collapse the two into the same signal and
+  //                     force the sweep to reject bright regions
+  //                     wholesale.
   std::array<double, 3> sensorSum{0, 0, 0};
   std::array<double, 3> linearSum{0, 0, 0};
   std::array<double, 3> linearSumSq{0, 0, 0};
@@ -367,23 +391,38 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
       sensorSum[0] += s[0];
       sensorSum[1] += s[1];
       sensorSum[2] += s[2];
-      const LinearRgbF lin = sensorToLinearSrgb(dng, s);
-      pixels.push_back(lin);
-      linearSum[0] += lin.r;
-      linearSum[1] += lin.g;
-      linearSum[2] += lin.b;
-      linearSumSq[0] += lin.r * lin.r;
-      linearSumSq[1] += lin.g * lin.g;
-      linearSumSq[2] += lin.b * lin.b;
+      // UNCLAMPED path drives the variance accumulator so post-WB
+      // headroom (values > 1.0 on bright non-saturated pixels)
+      // survives; the clamped LinearRgbF still feeds median-cut so
+      // the dominant colour reducer stays inside display range.
+      const std::array<double, 3> linRaw =
+          sensorToLinearSrgbUnclamped(dng, s);
+      pixels.push_back({
+          std::clamp(linRaw[0], 0.0, 1.0),
+          std::clamp(linRaw[1], 0.0, 1.0),
+          std::clamp(linRaw[2], 0.0, 1.0),
+      });
+      linearSum[0] += linRaw[0];
+      linearSum[1] += linRaw[1];
+      linearSum[2] += linRaw[2];
+      linearSumSq[0] += linRaw[0] * linRaw[0];
+      linearSumSq[1] += linRaw[1] * linRaw[1];
+      linearSumSq[2] += linRaw[2] * linRaw[2];
     }
   }
 
   // Mean via the classic per-ROI pipeline pass (single matrix apply on
   // the sensor-averaged triple) — byte-for-byte matches decodeRoi so
-  // callers using either function agree.
+  // callers using either function agree. Also produce the unclamped
+  // sibling from the same sensor average: it's just sensorToLinearSrgb
+  // minus the final clamp step, and it's the number that WB anchors
+  // (e.g. wbRgbScaleFromReference) must divide by.
   const std::array<double, 3> sensorAvg{
       sensorSum[0] / total, sensorSum[1] / total, sensorSum[2] / total};
   const LinearRgbF mean = sensorToLinearSrgb(dng, sensorAvg);
+  const std::array<double, 3> meanUncArr =
+      sensorToLinearSrgbUnclamped(dng, sensorAvg);
+  const LinearRgbF meanUnclamped{meanUncArr[0], meanUncArr[1], meanUncArr[2]};
 
   // Dominant via median-cut on the already-pipelined per-pixel values.
   const LinearRgbF dominant = dominantLinearRgb(pixels);
@@ -402,7 +441,7 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
       std::max(0.0, linearSumSq[2] * invN - meanLin.b * meanLin.b),
   };
 
-  return {mean, dominant, variance};
+  return {mean, meanUnclamped, dominant, variance};
 }
 
 namespace {

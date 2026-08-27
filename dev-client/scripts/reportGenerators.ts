@@ -94,6 +94,9 @@ export type CaptureJsonEntry = {
     display_name: string | null;
     sample_rect: {x: number; y: number; w: number; h: number};
     raw_linear_rgb: [number, number, number];
+    // Pre-clamp per-channel mean from the C++ DNG pipeline. Null on
+    // paths that don't produce one (photo / iOS Swift DNG / paper).
+    raw_linear_rgb_unclamped?: [number, number, number] | null;
     // Median-cut dominant reducer companion. Same units as
     // raw_linear_rgb; null when the fixture path can't produce one
     // (photo-file fixtures, or paper synthesised from grid stats).
@@ -109,7 +112,13 @@ export type CaptureJsonEntry = {
     name: string;
     display_name: string;
     sample_rect: {x: number; y: number; w: number; h: number};
+    // Union of the multi-card sweep's per-slot candidate rects.
+    // Rendered as an overlay in run.html so a reviewer can see if
+    // the sweep range covered where the card actually is. Optional
+    // — null when the fixture is single-card / sweep didn't run.
+    search_rect?: {x: number; y: number; w: number; h: number} | null;
     raw_linear_rgb: [number, number, number];
+    raw_linear_rgb_unclamped?: [number, number, number] | null;
     raw_linear_rgb_dominant?: [number, number, number] | null;
     expected_linear_rgb: [number, number, number] | null;
     measured_linear_rgb: [number, number, number] | null;
@@ -148,6 +157,9 @@ export type CellJsonEntry = {
   measured_notation: string;
   expected_linear_rgb: [number, number, number];
   raw_linear_rgb: [number, number, number];
+  // Pre-clamp per-channel mean; used by WB math to avoid
+  // under-correcting on bright chips (see cellResults.ts).
+  raw_linear_rgb_unclamped?: [number, number, number] | null;
   // Median-cut dominant reducer companion (see analyzer + filmstrip
   // reducer radio). Null on photo-path fixtures.
   raw_linear_rgb_dominant?: [number, number, number] | null;
@@ -490,19 +502,6 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
   if (grid) {
     parts.push('<g class="layer-registration">');
 
-    // Magenta boxes for REJECTED candidates — makes visible which
-    // blobs the classifier tossed and why. Same color for all reject
-    // statuses; hover over the source JSON if you need to know which
-    // reject bucket a specific box came from.
-    for (const b of grid.rawBlobs) {
-      if (b.status === 'kept') continue;
-      const w = b.maxX - b.minX + 1;
-      const h = b.maxY - b.minY + 1;
-      parts.push(
-        `<rect x="${b.minX}" y="${b.minY}" width="${w}" height="${h}" stroke="#cc00cc" stroke-width="1" fill="none"/>`,
-      );
-    }
-
     // Green rings on detected/kept circles + centre dots.
     for (const b of grid.rawBlobs) {
       if (b.status !== 'kept') continue;
@@ -567,10 +566,21 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
       // Multi-mode: 3 extra rects for the taped whibal/postit/greycard
       // slots. Cyan outline + a small text label so they visually
       // distinguish from chip/ref-card rects. Absent for single-card
-      // fixtures.
+      // fixtures. Behind the cyan winner rect we ALSO draw the
+      // sweep's search area (union of every candidate rect the sweep
+      // considered) as a dashed orange outline. If the winner rect
+      // hugs one edge of the search area, that's an immediate visual
+      // signal the sweep range wasn't wide enough for this slot.
       const multi = result.multiRefCards;
       if (multi) {
         for (const slot of multi) {
+          if (slot.searchArea) {
+            const sa = slot.searchArea;
+            parts.push(
+              `<rect x="${sa.x}" y="${sa.y}" width="${sa.w}" height="${sa.h}" ` +
+                `stroke="#ff9020" stroke-width="1.5" stroke-dasharray="4,3" fill="none"/>`,
+            );
+          }
           const {x, y, w, h} = slot.rect;
           parts.push(
             `<rect x="${x}" y="${y}" width="${w}" height="${h}" ` +

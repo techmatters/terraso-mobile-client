@@ -34,7 +34,17 @@ export type LinearRgb = {r: number; g: number; b: number};
 // median-cut posterise "biggest colour cluster" (matches the legacy
 // JPEG dominantColor algorithm, robust to a handful of outlier
 // pixels). Kept in lockstep with LinearRgbReduced in the Nitro spec.
-export type LinearRgbReduced = {mean: LinearRgb; dominant: LinearRgb};
+// `meanUnclamped` is the pre-display-clamp version of `mean` from the
+// C++ DNG pipeline (see DngPipeline::sensorToLinearSrgbUnclamped) —
+// bright but non-saturated pixels post-WB routinely exceed 1.0, and
+// dividing WB anchors by the clamped mean under-corrects every chip.
+// Only populated by the mac dng-cli-cpp path; null on iOS Swift and
+// on-device Nitro paths, where consumers fall back to `mean`.
+export type LinearRgbReduced = {
+  mean: LinearRgb;
+  dominant: LinearRgb;
+  meanUnclamped?: LinearRgb | null;
+};
 export type PreviewImage = {uri: string; width: number; height: number};
 export type PreviewRgb = {
   width: number;

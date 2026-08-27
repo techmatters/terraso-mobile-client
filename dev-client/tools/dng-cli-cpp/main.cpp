@@ -257,14 +257,16 @@ int cmdDecodeDngRoisBatch(int argc, char** argv) {
   }
 
   std::vector<double> mR(total), mG(total), mB(total);
+  std::vector<double> muR(total), muG(total), muB(total);
   std::vector<double> dR(total), dG(total), dB(total);
   std::vector<double> vR(total), vG(total), vB(total);
   const char* err = nullptr;
   if (total > 0) {
     if (!dngDecoderDecodeRoisReducedWithVar(
             path.c_str(), flat.data(), static_cast<int32_t>(total), mR.data(),
-            mG.data(), mB.data(), dR.data(), dG.data(), dB.data(), vR.data(),
-            vG.data(), vB.data(), &err)) {
+            mG.data(), mB.data(), muR.data(), muG.data(), muB.data(),
+            dR.data(), dG.data(), dB.data(), vR.data(), vG.data(), vB.data(),
+            &err)) {
       die(std::string("dngDecoderDecodeRoisReducedWithVar failed: ") +
           (err ? err : "unknown"));
     }
@@ -284,6 +286,12 @@ int cmdDecodeDngRoisBatch(int argc, char** argv) {
       writeDouble(out, mG[k]);
       out += ",\"b\":";
       writeDouble(out, mB[k]);
+      out += ",\"meanUnclampedR\":";
+      writeDouble(out, muR[k]);
+      out += ",\"meanUnclampedG\":";
+      writeDouble(out, muG[k]);
+      out += ",\"meanUnclampedB\":";
+      writeDouble(out, muB[k]);
       out += ",\"dominantR\":";
       writeDouble(out, dR[k]);
       out += ",\"dominantG\":";

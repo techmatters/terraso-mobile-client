@@ -124,10 +124,12 @@ bool dngDecoderDecodeRoisReduced(const char* path, const int32_t* rois,
 bool dngDecoderDecodeRoisReducedWithVar(
     const char* path, const int32_t* rois, int32_t count,
     double* outMeanR, double* outMeanG, double* outMeanB,
+    double* outMeanUncR, double* outMeanUncG, double* outMeanUncB,
     double* outDomR, double* outDomG, double* outDomB,
     double* outVarR, double* outVarG, double* outVarB,
     const char** errorOut) {
   if (!path || !rois || !outMeanR || !outMeanG || !outMeanB ||
+      !outMeanUncR || !outMeanUncG || !outMeanUncB ||
       !outDomR || !outDomG || !outDomB ||
       !outVarR || !outVarG || !outVarB || count < 0) {
     if (errorOut) *errorOut = stashError("null argument");
@@ -145,6 +147,9 @@ bool dngDecoderDecodeRoisReducedWithVar(
       outMeanR[i] = red.mean.r;
       outMeanG[i] = red.mean.g;
       outMeanB[i] = red.mean.b;
+      outMeanUncR[i] = red.meanUnclamped.r;
+      outMeanUncG[i] = red.meanUnclamped.g;
+      outMeanUncB[i] = red.meanUnclamped.b;
       outDomR[i] = red.dominant.r;
       outDomG[i] = red.dominant.g;
       outDomB[i] = red.dominant.b;

@@ -46,6 +46,14 @@ struct LinearRgbF {
 //                pass, ~3 extra flops per pixel per channel.
 struct RoiReduced {
   LinearRgbF mean;
+  // Per-channel mean of the linear-sRGB pipeline WITHOUT the [0, 1]
+  // display clamp. On bright ROIs whose post-WB values push past 1.0
+  // (routine on well-exposed reference cards) this differs from
+  // `mean` and preserves the true intensity — critical for callers
+  // that divide by the anchor (e.g. wbRgbScaleFromReference), where
+  // clamping the divisor under-corrects every chip on the chart.
+  // Same math as `mean`, just no std::clamp on the final srgb triple.
+  LinearRgbF meanUnclamped;
   LinearRgbF dominant;
   LinearRgbF variance;
 };

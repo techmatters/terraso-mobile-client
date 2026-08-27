@@ -68,6 +68,9 @@ bool dngDecoderDecodeRoisReduced(const char* path, const int32_t* rois,
 bool dngDecoderDecodeRoisReducedWithVar(
     const char* path, const int32_t* rois, int32_t count,
     double* outMeanR, double* outMeanG, double* outMeanB,
+    // Per-channel pipeline mean WITHOUT the [0, 1] display clamp
+    // (see RoiReduced::meanUnclamped for why).
+    double* outMeanUncR, double* outMeanUncG, double* outMeanUncB,
     double* outDomR, double* outDomG, double* outDomB,
     double* outVarR, double* outVarG, double* outVarB,
     const char** errorOut);
