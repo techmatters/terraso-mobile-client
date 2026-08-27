@@ -268,27 +268,47 @@ const friendlyStemForCapture = (
 const sanitizeToken = (s: string): string =>
   s.trim().replace(/[^A-Za-z0-9.]/g, '');
 
-// Rename a DNG (+ optional sibling JPEG) to a friendly stem in the
-// same directory. Returns the new file:// URIs. Uses moveAsync so
-// no bytes are copied — cheap. Any prior file at the destination is
-// removed first so moveAsync doesn't error on a same-minute rename.
+// Rename a DNG (+ optional sibling JPEG) to a friendly stem.
+// Returns the new file:// URIs.
+//
+// Copies (not moves) into cacheDirectory rather than renaming in
+// place. The obvious in-place moveAsync fails on iOS SDK 54 with
+// "FileNotWritableException" against the source file's parent —
+// vision-camera writes the temp DNG/JPEG under Application/tmp/ and
+// expo-file-system/legacy refuses to move within that dir even
+// though it originally wrote there. copyAsync to cacheDirectory
+// works reliably (same code path prepareFriendlyShare already uses
+// downstream), and the extra bytes are cheap next to the DNG
+// decode we're about to do anyway.
+//
+// Best-effort delete of any prior copy under the friendly name so
+// re-captures within the same second overwrite cleanly. Failure of
+// that delete is swallowed — {idempotent: true} is supposed to make
+// it a no-op on missing targets but legacy still throws.
 const renamePairToFriendlyStem = async (
   dngPath: string,
   jpegPath: string | undefined,
   friendlyStem: string,
 ): Promise<{dngPath: string; jpegPath: string | undefined}> => {
-  const withoutScheme = (p: string) =>
-    p.startsWith('file://') ? p.slice('file://'.length) : p;
-  const dirOf = (p: string) => p.slice(0, p.lastIndexOf('/'));
-  const dir = dirOf(withoutScheme(dngPath));
-  const newDng = `file://${dir}/${friendlyStem}.dng`;
-  await FileSystem.deleteAsync(newDng, {idempotent: true});
-  await FileSystem.moveAsync({from: dngPath, to: newDng});
+  const cache = FileSystem.cacheDirectory;
+  if (!cache) {
+    throw new Error('renamePairToFriendlyStem: cacheDirectory unavailable');
+  }
+  const bestEffortDelete = async (uri: string): Promise<void> => {
+    try {
+      await FileSystem.deleteAsync(uri, {idempotent: true});
+    } catch {
+      /* missing target or legacy quirk — copy below will overwrite */
+    }
+  };
+  const newDng = `${cache}${friendlyStem}.dng`;
+  await bestEffortDelete(newDng);
+  await FileSystem.copyAsync({from: dngPath, to: newDng});
   let newJpeg: string | undefined;
   if (jpegPath) {
-    newJpeg = `file://${dir}/${friendlyStem}.jpg`;
-    await FileSystem.deleteAsync(newJpeg, {idempotent: true});
-    await FileSystem.moveAsync({from: jpegPath, to: newJpeg});
+    newJpeg = `${cache}${friendlyStem}.jpg`;
+    await bestEffortDelete(newJpeg);
+    await FileSystem.copyAsync({from: jpegPath, to: newJpeg});
   }
   return {dngPath: newDng, jpegPath: newJpeg};
 };
@@ -558,6 +578,11 @@ export const RawColorToolsScreen = () => {
             );
             dngPath = renamed.dngPath;
             jpegPath = renamed.jpegPath;
+            console.log(
+              `chart capture friendly-rename → stem="${stem}"\n` +
+                `  dng: ${dngPath}\n` +
+                `  jpg: ${jpegPath ?? '(none)'}`,
+            );
           } catch (err) {
             console.warn(
               'RawColorToolsScreen: friendly-rename failed, ' +

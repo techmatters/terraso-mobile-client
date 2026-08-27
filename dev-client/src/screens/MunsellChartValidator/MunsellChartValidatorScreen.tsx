@@ -282,8 +282,15 @@ const prepareFriendlyShare = async (
   const withScheme = (p: string) =>
     p.startsWith('file://') ? p : `file://${p}`;
   const basename = sourcePath.slice(sourcePath.lastIndexOf('/') + 1);
-  if (FRIENDLY_NAME_RE.test(basename)) return withScheme(sourcePath);
+  if (FRIENDLY_NAME_RE.test(basename)) {
+    console.log(`prepareFriendlyShare: keeping name "${basename}"`);
+    return withScheme(sourcePath);
+  }
   const friendly = `${pageName}_${yyyymmddThhmmss(new Date())}.${ext}`;
+  console.log(
+    `prepareFriendlyShare: source "${basename}" did NOT match ` +
+      `FRIENDLY_NAME_RE, copying to "${friendly}"`,
+  );
   const dstPath = `${cacheDirectory}${friendly}`;
   await deleteAsync(dstPath, {idempotent: true});
   await copyAsync({from: withScheme(sourcePath), to: dstPath});
