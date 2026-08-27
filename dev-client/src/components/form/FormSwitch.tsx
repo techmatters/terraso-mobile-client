@@ -17,8 +17,9 @@
 
 import {FormikValues, useFormikContext} from 'formik';
 
-import {SharedSwitchProps} from 'terraso-mobile-client/components/inputs/Switch';
-import Toggle from 'terraso-mobile-client/components/inputs/ToggleAndroid';
+import Switch, {
+  SharedSwitchProps,
+} from 'terraso-mobile-client/components/inputs/Switch';
 
 /* FormSwitch — use instead of Switch when in a Formik form.
  *
@@ -64,7 +65,7 @@ export const FormSwitch = <TValues extends FormikValues>({
   };
 
   return (
-    <Toggle
+    <Switch
       {...rest}
       value={Boolean(formik.values[name])}
       onValueChange={handleValueChange}

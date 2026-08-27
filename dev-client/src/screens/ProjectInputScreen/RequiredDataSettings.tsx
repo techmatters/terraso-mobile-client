@@ -18,7 +18,7 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 
-import Toggle from 'terraso-mobile-client/components/inputs/ToggleAndroid';
+import Switch from 'terraso-mobile-client/components/inputs/Switch';
 import {
   Box,
   Row,
@@ -61,7 +61,7 @@ export const RequiredDataSettings = ({
               mb={description ? 2 : 5}
               justifyContent="flex-start"
               alignItems="center">
-              <Toggle
+              <Switch
                 disabled={!enabled}
                 value={settings[methodRequired(method)]}
                 accessibilityLabel={label}

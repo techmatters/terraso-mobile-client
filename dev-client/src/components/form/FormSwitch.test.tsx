@@ -39,13 +39,29 @@ const renderInFormik = async (
   return utils;
 };
 
+/* Comfortably longer than the switch's 200ms color/slide animation. */
+const ANIMATION_MS = 500;
+
 /* The toggle is a press target rather than a native switch, so this is what a
  * user actually does. Direction comes from the seeded value: the suite drives
- * it both ways so a handler that always wrote `true` would fail. */
+ * it both ways so a handler that always wrote `true` would fail.
+ *
+ * Flipping the value starts an animation whose frames update state, and those
+ * updates land after the press returns — the "not wrapped in act" warning. So
+ * the animation is run out inside a second act. Fake timers are switched on
+ * only around the press, because enabling them for the whole suite hangs
+ * render and cleanup. */
 const press = async (getByTestId: ReturnType<typeof render>['getByTestId']) => {
+  jest.useFakeTimers();
+
   await act(async () => {
     fireEvent.press(getByTestId('switch'));
   });
+  await act(async () => {
+    jest.advanceTimersByTime(ANIMATION_MS);
+  });
+
+  jest.useRealTimers();
 };
 
 /* The toggle reports its state to assistive tech rather than through a `value`

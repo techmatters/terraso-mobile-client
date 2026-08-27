@@ -21,7 +21,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Divider} from 'terraso-mobile-client/components/Divider';
-import Toggle from 'terraso-mobile-client/components/inputs/ToggleAndroid';
+import Switch from 'terraso-mobile-client/components/inputs/Switch';
 import {
   Heading,
   Text,
@@ -90,7 +90,7 @@ const FeatureFlagControl = ({flag}: FeatureFlagControlProps) => {
       <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
       <View style={styles.nextFlagStateView}>
         <Text>{`On next app launch will be: `}</Text>
-        <Toggle
+        <Switch
           value={nextFlagState}
           onValueChange={onToggle}
           accessibilityLabel={flag}
