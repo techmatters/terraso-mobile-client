@@ -20,7 +20,7 @@ import {ScrollView, StyleSheet, useWindowDimensions} from 'react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Divider} from 'terraso-mobile-client/components/Divider';
-import Switch from 'terraso-mobile-client/components/inputs/Switch';
+import {Switch} from 'terraso-mobile-client/components/inputs/Switch';
 import {
   Box,
   Column,

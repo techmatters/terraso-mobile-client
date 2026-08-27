@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef} from 'react';
+import {useEffect, useMemo, useRef} from 'react';
 import {
   Animated,
   Easing,
@@ -44,13 +44,13 @@ const THUMB = {
   ],
 };
 
-const Switch: React.FC<SwitchProps> = ({
+export const Switch = ({
   value = false,
   onValueChange = () => {},
   disabled = false,
   accessibilityLabel,
   testID,
-}) => {
+}: SwitchProps) => {
   const animatedValue = useRef(new Animated.Value(value ? 1 : 0)).current;
 
   const moveSwitch = useMemo(
@@ -124,8 +124,6 @@ const Switch: React.FC<SwitchProps> = ({
     </View>
   );
 };
-
-export default Switch;
 
 const TRACK_WIDTH = 34;
 const TRACK_HEIGHT = 14;

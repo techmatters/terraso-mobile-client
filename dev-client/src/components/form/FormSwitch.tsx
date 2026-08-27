@@ -17,8 +17,9 @@
 
 import {FormikValues, useFormikContext} from 'formik';
 
-import Switch, {
+import {
   SharedSwitchProps,
+  Switch,
 } from 'terraso-mobile-client/components/inputs/Switch';
 
 /* FormSwitch — use instead of Switch when in a Formik form.

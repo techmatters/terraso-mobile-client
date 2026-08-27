@@ -18,7 +18,7 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 
-import Switch from 'terraso-mobile-client/components/inputs/Switch';
+import {Switch} from 'terraso-mobile-client/components/inputs/Switch';
 import {
   Box,
   Row,

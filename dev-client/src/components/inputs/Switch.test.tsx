@@ -19,7 +19,7 @@ import {processColor, StyleSheet} from 'react-native';
 
 import {act, fireEvent, render} from '@testing-library/react-native';
 
-import Switch from 'terraso-mobile-client/components/inputs/Switch';
+import {Switch} from 'terraso-mobile-client/components/inputs/Switch';
 import {theme} from 'terraso-mobile-client/theme';
 
 /* This is a hand-built control rather than a native switch, so everything a

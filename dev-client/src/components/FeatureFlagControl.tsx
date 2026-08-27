@@ -21,7 +21,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Divider} from 'terraso-mobile-client/components/Divider';
-import Switch from 'terraso-mobile-client/components/inputs/Switch';
+import {Switch} from 'terraso-mobile-client/components/inputs/Switch';
 import {
   Heading,
   Text,
