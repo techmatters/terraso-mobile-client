@@ -34,8 +34,8 @@ import {
   soilPitMethods,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {
-  SWITCH_PADDING,
-  SWITCH_VERTICAL_PADDING,
+  CONTROL_LABEL_SPACING,
+  CONTROL_ROW_VERTICAL_SPACING,
   theme,
 } from 'terraso-mobile-client/theme';
 
@@ -70,7 +70,7 @@ export const EnabledInputToggles = ({
                 key={method}
               />
               {description && (
-                <Text mb={SWITCH_VERTICAL_PADDING} variant="body2">
+                <Text mb={CONTROL_ROW_VERTICAL_SPACING} variant="body2">
                   {description}
                 </Text>
               )}
@@ -80,7 +80,7 @@ export const EnabledInputToggles = ({
       </Column>
       <Row mb="12px">
         <FormCheckbox name="applyToAll" />
-        <FormLabel variant="body1" ml={SWITCH_PADDING}>
+        <FormLabel variant="body1" ml={CONTROL_LABEL_SPACING}>
           {t('soil.depth.apply_to_all_label')}
         </FormLabel>
       </Row>
@@ -113,7 +113,7 @@ const InputFormSwitch = ({method, isRequired}: InputFormSwitchProps) => {
         testID={`${methodEnabled(method)}-switch`}
       />
       <Text
-        ml={SWITCH_PADDING}
+        ml={CONTROL_LABEL_SPACING}
         color={
           isRequired ? theme.colors.text.disabled : theme.colors.text.primary
         }>

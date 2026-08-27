@@ -31,7 +31,7 @@ import {
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useDispatch} from 'terraso-mobile-client/store';
 import {useProjectSoilSettings} from 'terraso-mobile-client/store/selectors';
-import {SWITCH_PADDING} from 'terraso-mobile-client/theme';
+import {CONTROL_LABEL_SPACING} from 'terraso-mobile-client/theme';
 
 export const RequiredDataSettings = ({
   projectId,
@@ -74,7 +74,7 @@ export const RequiredDataSettings = ({
                   );
                 }}
               />
-              <Text variant="body1" bold pl={SWITCH_PADDING}>
+              <Text variant="body1" bold pl={CONTROL_LABEL_SPACING}>
                 {label}
               </Text>
             </Row>

@@ -27,8 +27,8 @@ import {
   Row,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {
-  SWITCH_PADDING,
-  SWITCH_VERTICAL_PADDING,
+  CONTROL_LABEL_SPACING,
+  CONTROL_ROW_VERTICAL_SPACING,
 } from 'terraso-mobile-client/theme';
 
 type CheckboxProps = {
@@ -76,7 +76,7 @@ export const CheckboxGroup = ({
         <FormControl.Label
           htmlFor={`select-all-${groupName}`}
           variant="body1"
-          pl={SWITCH_PADDING}>
+          pl={CONTROL_LABEL_SPACING}>
           {t('general.select_all')}
         </FormControl.Label>
       </Row>
@@ -84,8 +84,8 @@ export const CheckboxGroup = ({
         {checkboxes.map(({label, id, checked}) => (
           <Row
             key={id}
-            mt={SWITCH_VERTICAL_PADDING}
-            mb={SWITCH_VERTICAL_PADDING}>
+            mt={CONTROL_ROW_VERTICAL_SPACING}
+            mb={CONTROL_ROW_VERTICAL_SPACING}>
             <StandardCheckbox
               id={'checkbox-' + id}
               onValueChange={onChangeValue(groupId, id)}
@@ -94,7 +94,7 @@ export const CheckboxGroup = ({
             <FormControl.Label
               htmlFor={'checkbox-' + id}
               variant="body1"
-              pl={SWITCH_PADDING}>
+              pl={CONTROL_LABEL_SPACING}>
               {label}
             </FormControl.Label>
           </Row>
