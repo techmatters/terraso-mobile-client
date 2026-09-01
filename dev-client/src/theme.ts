@@ -108,9 +108,6 @@ export const theme = extendTheme({
         hoverFill: '#E9E9E9',
       },
     },
-    /* Every color a Switch renders, kept together so the control can be retuned in one place.
-     * trackOff is only reachable from ToggleiOS, which draws its own track: React Native's Switch cannot fill the off track on iOS, so there it keeps the platform default and the dark thumb carries the contrast. Its value matches that default so the two implementations read alike.
-     * The Disabled variants are Android-only — iOS fades a disabled switch itself and would fade these a second time. Each is its enabled counterpart composited at 50% over white, approximating what iOS's fade produces. */
     switch: {
       trackOn: '#ABD9BE',
       trackOnDisabled: '#D5ECDF',

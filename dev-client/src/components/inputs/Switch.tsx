@@ -1,3 +1,20 @@
+/*
+ * Copyright © 2026 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
 import {useEffect, useMemo, useRef} from 'react';
 import {
   Animated,
@@ -24,7 +41,7 @@ export interface SharedSwitchProps {
 
 export interface SwitchProps extends SharedSwitchProps {
   value: boolean;
-  onValueChange?: (value: boolean) => void;
+  onValueChange: (value: boolean) => void;
 }
 
 /* Interpolation endpoints, [off, on], for each tone. */
@@ -45,8 +62,8 @@ const THUMB = {
 };
 
 export const Switch = ({
-  value = false,
-  onValueChange = () => {},
+  value,
+  onValueChange,
   disabled = false,
   accessibilityLabel,
   testID,
@@ -99,7 +116,6 @@ export const Switch = ({
       useNativeDriver: false,
     }).start();
   }, [value, animatedValue]);
-  // TODO-cknipe: animatedValue wasn't part of the dependency array, but the linter wanted it to be... should it be?
 
   return (
     <View style={styles.container}>
