@@ -21,13 +21,16 @@ import {TFunction} from 'i18next';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
-import {
-  Carousel,
-  CarouselPage,
-} from 'terraso-mobile-client/components/Carousel';
+import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
+import {CarouselButton} from 'terraso-mobile-client/components/buttons/CarouselButton';
+import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  Heading,
+  Text,
+  View,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
@@ -36,11 +39,54 @@ type SoilIdDescriptionSectionProps = {
   coords: Coords;
 };
 
-/* Placeholder content to eyeball the carousel; real art and copy TBD. */
+/* TODO-cknipe: Remove this test-only example content
+Placeholder content to eyeball the carousel; real art and copy TBD. */
+function componentToHex(c: number) {
+  var hex = c.toString(16);
+  return hex.length === 1 ? '0' + hex : hex;
+}
+
+function rgbToHex(r: number, g: number, b: number) {
+  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
 const PAGES: CarouselPage[] = [1, 2, 3].map(n => ({
   key: String(n),
-  above: <Box flex={1} bg="grey.300" />,
-  below: <Text variant="body1">Page {n}</Text>,
+  above: <Box flex={1} bg={rgbToHex(n * 30, n, n)} />,
+  below: (
+    <View>
+      <Heading variant="h3">Page {n}</Heading>
+      <Text variant="body1">You can put ANYTHING in here</Text>
+      <Text variant="body1">
+        Wooooooow look at how much text there is here -- So much text! Wow! So
+        much. It's text. HELLOOOOOOOOOOO as;ldf asdf asdf asdf asd a b c d e f g
+        h i j k l m n o p q r s t u v w x y z AND AGAIN! a b c d e f g h i j k l
+        m n o p q r s t u v w x y z NEVER STOP NEvER STOPPING \n \n a
+      </Text>
+      <Text variant="body1-strong">
+        as;ldf asdf asdf asdf asd a b c d e f g h i j k l m n o p q r s t u v w
+        x y z AND AGAIN! a b c d e f g h i j k l m n o p q r s t u v w x y z
+        NEVER STOP NEvER STOPPING \n \n a
+      </Text>
+      <Text variant="body1-strong">
+        as;ldf asdf asdf asdf asd a b c d e f g h i j k l m n o p q r s t u v w
+        x y z AND AGAIN! a b c d e f g h i j k l m n o p q r s t u v w x y z Ok
+        we'll stop now \n \n aa asdf asdf asdf asdf asd fasd fasd fasf wer asd
+        fweiru hpsiourth porih aopeir eopir opisrh tfpsouiefh sopiefh sopiefj
+        sopiefj spoiefj spoiefj opeirh4tpwi4uhp soihfsop ihfpe9u8hpsoie
+        hfpsiuth49pw83 98pshfep8s9yh4 w94p890 hsp890 wu-r 3890uw-
+        rt890uw-4t890wero0ifhsopdifhsp89 hspoeih
+      </Text>
+      <Text variant="body1-strong">
+        test text test text test text test text test text test text test text
+        test text test text test text test text test text test text test text
+        test text test text test text test text test text test text test text
+        test text test text test text test text test text test text test text
+        test text test text test text test text test text test text test text
+        test text test text test text test text test text
+      </Text>
+    </View>
+  ),
 }));
 
 export const SoilIdDescriptionSection = ({
@@ -54,9 +100,13 @@ export const SoilIdDescriptionSection = ({
 
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
-      <InfoButton sheetHeading={<Text>"The Carousel Sheet?"</Text>}>
-        <Carousel pages={PAGES} aboveHeight={100} />
-      </InfoButton>
+      <CarouselButton
+        image={<InfoSVG width={40} height={40} />}
+        accessibilityLabel="About soil identification"
+        sheetHeading={<Text>"The Carousel Sheet?"</Text>}
+        pages={PAGES}
+        aboveHeight={200}
+      />
       <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
     </ScreenContentSection>
   );
