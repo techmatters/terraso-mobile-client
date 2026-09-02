@@ -16,15 +16,11 @@
  */
 
 import {useCallback, useContext} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Switch,
-  useWindowDimensions,
-} from 'react-native';
+import {ScrollView, StyleSheet, useWindowDimensions} from 'react-native';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {Divider} from 'terraso-mobile-client/components/Divider';
+import {Switch} from 'terraso-mobile-client/components/inputs/Switch';
 import {
   Box,
   Column,
@@ -113,7 +109,11 @@ const ConnectivityToggle = () => {
 
   return (
     <Row alignItems="center" space="8px">
-      <Switch value={!isOffline} onValueChange={onToggle} />
+      <Switch
+        value={!isOffline}
+        onValueChange={onToggle}
+        accessibilityLabel="Online"
+      />
       <Text style={[styles.connectivityStatus, {color}]}>
         {'\u25CF'} {label}
       </Text>

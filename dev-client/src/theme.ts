@@ -19,8 +19,9 @@ import {MD3LightTheme as DefaultTheme} from 'react-native-paper';
 
 import {extendTheme} from 'native-base';
 
-export const SWITCH_PADDING = 2;
-export const SWITCH_VERTICAL_PADDING = 1;
+/* Spacing around switches and checkboxes and their labels, in native-base space units rather than pixels: 2 is 8px, 1 is 4px. */
+export const CONTROL_LABEL_SPACING = 2;
+export const CONTROL_ROW_VERTICAL_SPACING = 1;
 
 export const paperTheme = {
   ...DefaultTheme,
@@ -106,6 +107,16 @@ export const theme = extendTheme({
         enabledFill: '#EFEFEF',
         hoverFill: '#E9E9E9',
       },
+    },
+    switch: {
+      trackOn: '#ABD9BE',
+      trackOnDisabled: '#D5ECDF',
+      trackOff: '#9E9E9E',
+      trackOffDisabled: '#D0D0E0',
+      thumbOn: '#028843',
+      thumbOnDisabled: '#80C4A1',
+      thumbOff: '#FAFAFA',
+      thumbOffDisabled: '#FAFAFA',
     },
     transparent: '#00000000',
   },

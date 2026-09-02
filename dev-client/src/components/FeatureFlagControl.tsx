@@ -17,11 +17,11 @@
 import {useCallback, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {Switch} from 'react-native-paper';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Divider} from 'terraso-mobile-client/components/Divider';
+import {Switch} from 'terraso-mobile-client/components/inputs/Switch';
 import {
   Heading,
   Text,
@@ -90,7 +90,11 @@ const FeatureFlagControl = ({flag}: FeatureFlagControlProps) => {
       <Text>{`Currently: ${currentFlagState ? 'ON' : 'OFF'}`}</Text>
       <View style={styles.nextFlagStateView}>
         <Text>{`On next app launch will be: `}</Text>
-        <Switch value={nextFlagState} onValueChange={onToggle} />
+        <Switch
+          value={nextFlagState}
+          onValueChange={onToggle}
+          accessibilityLabel={flag}
+        />
         <Text>{` ${nextFlagState ? 'ON' : 'OFF'}`}</Text>
       </View>
     </View>

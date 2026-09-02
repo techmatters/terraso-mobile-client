@@ -3898,20 +3898,72 @@ exports[`renders correctly 1`] = `
                                               ]
                                             }
                                           >
-                                            <RCTSwitch
+                                            <View
+                                              accessibilityLabel="Slope and Landscape"
                                               accessibilityRole="switch"
-                                              disabled={true}
-                                              onChange={[Function]}
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": false,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "alignSelf": "flex-start",
+                                                  "alignItems": "center",
+                                                  "padding": 4,
                                                 }
                                               }
-                                              thumbTintColor="#FFFFFF"
-                                              value={false}
-                                            />
+                                            >
+                                              <View
+                                                collapsable={false}
+                                                style={
+                                                  {
+                                                    "backgroundColor": "rgba(208, 208, 224, 1)",
+                                                    "borderRadius": 12,
+                                                    "height": 14,
+                                                    "justifyContent": "center",
+                                                    "width": 34,
+                                                  }
+                                                }
+                                              >
+                                                <View
+                                                  collapsable={false}
+                                                  style={
+                                                    {
+                                                      "backgroundColor": "rgba(250, 250, 250, 1)",
+                                                      "borderRadius": 10,
+                                                      "boxShadow": "0px 1px 3px rgba(0, 0, 0, 0.3)",
+                                                      "height": 20,
+                                                      "marginLeft": 0,
+                                                      "width": 20,
+                                                    }
+                                                  }
+                                                />
+                                              </View>
+                                            </View>
                                             <Text
                                               letterSpacing="0.15px"
                                               lineHeight="24px"
@@ -3968,20 +4020,72 @@ exports[`renders correctly 1`] = `
                                               ]
                                             }
                                           >
-                                            <RCTSwitch
+                                            <View
+                                              accessibilityLabel="Soil Cracks"
                                               accessibilityRole="switch"
-                                              disabled={true}
-                                              onChange={[Function]}
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": false,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "alignSelf": "flex-start",
+                                                  "alignItems": "center",
+                                                  "padding": 4,
                                                 }
                                               }
-                                              thumbTintColor="#FFFFFF"
-                                              value={false}
-                                            />
+                                            >
+                                              <View
+                                                collapsable={false}
+                                                style={
+                                                  {
+                                                    "backgroundColor": "rgba(208, 208, 224, 1)",
+                                                    "borderRadius": 12,
+                                                    "height": 14,
+                                                    "justifyContent": "center",
+                                                    "width": 34,
+                                                  }
+                                                }
+                                              >
+                                                <View
+                                                  collapsable={false}
+                                                  style={
+                                                    {
+                                                      "backgroundColor": "rgba(250, 250, 250, 1)",
+                                                      "borderRadius": 10,
+                                                      "boxShadow": "0px 1px 3px rgba(0, 0, 0, 0.3)",
+                                                      "height": 20,
+                                                      "marginLeft": 0,
+                                                      "width": 20,
+                                                    }
+                                                  }
+                                                />
+                                              </View>
+                                            </View>
                                             <Text
                                               letterSpacing="0.15px"
                                               lineHeight="24px"
@@ -4012,20 +4116,72 @@ exports[`renders correctly 1`] = `
                                               ]
                                             }
                                           >
-                                            <RCTSwitch
+                                            <View
+                                              accessibilityLabel="Soil Texture"
                                               accessibilityRole="switch"
-                                              disabled={true}
-                                              onChange={[Function]}
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": true,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "alignSelf": "flex-start",
+                                                  "alignItems": "center",
+                                                  "padding": 4,
                                                 }
                                               }
-                                              thumbTintColor="#028843"
-                                              value={true}
-                                            />
+                                            >
+                                              <View
+                                                collapsable={false}
+                                                style={
+                                                  {
+                                                    "backgroundColor": "rgba(213, 236, 223, 1)",
+                                                    "borderRadius": 12,
+                                                    "height": 14,
+                                                    "justifyContent": "center",
+                                                    "width": 34,
+                                                  }
+                                                }
+                                              >
+                                                <View
+                                                  collapsable={false}
+                                                  style={
+                                                    {
+                                                      "backgroundColor": "rgba(128, 196, 161, 1)",
+                                                      "borderRadius": 10,
+                                                      "boxShadow": "0px 1px 3px rgba(0, 0, 0, 0.3)",
+                                                      "height": 20,
+                                                      "marginLeft": 14,
+                                                      "width": 20,
+                                                    }
+                                                  }
+                                                />
+                                              </View>
+                                            </View>
                                             <Text
                                               letterSpacing="0.15px"
                                               lineHeight="24px"
@@ -4082,20 +4238,72 @@ exports[`renders correctly 1`] = `
                                               ]
                                             }
                                           >
-                                            <RCTSwitch
+                                            <View
+                                              accessibilityLabel="Soil Color"
                                               accessibilityRole="switch"
-                                              disabled={true}
-                                              onChange={[Function]}
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": true,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "alignSelf": "flex-start",
+                                                  "alignItems": "center",
+                                                  "padding": 4,
                                                 }
                                               }
-                                              thumbTintColor="#028843"
-                                              value={true}
-                                            />
+                                            >
+                                              <View
+                                                collapsable={false}
+                                                style={
+                                                  {
+                                                    "backgroundColor": "rgba(213, 236, 223, 1)",
+                                                    "borderRadius": 12,
+                                                    "height": 14,
+                                                    "justifyContent": "center",
+                                                    "width": 34,
+                                                  }
+                                                }
+                                              >
+                                                <View
+                                                  collapsable={false}
+                                                  style={
+                                                    {
+                                                      "backgroundColor": "rgba(128, 196, 161, 1)",
+                                                      "borderRadius": 10,
+                                                      "boxShadow": "0px 1px 3px rgba(0, 0, 0, 0.3)",
+                                                      "height": 20,
+                                                      "marginLeft": 14,
+                                                      "width": 20,
+                                                    }
+                                                  }
+                                                />
+                                              </View>
+                                            </View>
                                             <Text
                                               letterSpacing="0.15px"
                                               lineHeight="24px"
@@ -4126,20 +4334,72 @@ exports[`renders correctly 1`] = `
                                               ]
                                             }
                                           >
-                                            <RCTSwitch
+                                            <View
+                                              accessibilityLabel="Notes"
                                               accessibilityRole="switch"
-                                              disabled={true}
-                                              onChange={[Function]}
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": false,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
                                               onResponderTerminationRequest={[Function]}
                                               onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
-                                                  "alignSelf": "flex-start",
+                                                  "alignItems": "center",
+                                                  "padding": 4,
                                                 }
                                               }
-                                              thumbTintColor="#FFFFFF"
-                                              value={false}
-                                            />
+                                            >
+                                              <View
+                                                collapsable={false}
+                                                style={
+                                                  {
+                                                    "backgroundColor": "rgba(208, 208, 224, 1)",
+                                                    "borderRadius": 12,
+                                                    "height": 14,
+                                                    "justifyContent": "center",
+                                                    "width": 34,
+                                                  }
+                                                }
+                                              >
+                                                <View
+                                                  collapsable={false}
+                                                  style={
+                                                    {
+                                                      "backgroundColor": "rgba(250, 250, 250, 1)",
+                                                      "borderRadius": 10,
+                                                      "boxShadow": "0px 1px 3px rgba(0, 0, 0, 0.3)",
+                                                      "height": 20,
+                                                      "marginLeft": 0,
+                                                      "width": 20,
+                                                    }
+                                                  }
+                                                />
+                                              </View>
+                                            </View>
                                             <Text
                                               letterSpacing="0.15px"
                                               lineHeight="24px"
