@@ -28,7 +28,6 @@ import {theme} from 'terraso-mobile-client/theme';
 /* Display props shared with FormSwitch, which supplies value/onValueChange from Formik. New display props belong here so both components inherit them. */
 export interface SharedSwitchProps {
   disabled?: boolean;
-  /* Required: this is a stack of plain views, so without a label a screen reader has nothing to announce. */
   accessibilityLabel: string;
   testID?: string;
 }
@@ -164,7 +163,6 @@ const styles = StyleSheet.create({
     width: THUMB_SIZE,
     height: THUMB_SIZE,
     borderRadius: THUMB_SIZE / 2,
-    /* boxShadow rather than the shadow* props, which are iOS-only, or elevation, which is Android-only and too faint here to match the shadow baked into the native switch's thumb drawable. */
     boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.3)',
   },
 });
