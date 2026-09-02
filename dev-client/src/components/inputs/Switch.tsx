@@ -16,13 +16,7 @@
  */
 
 import {useEffect, useMemo, useRef} from 'react';
-import {
-  Animated,
-  Easing,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {Animated, Easing, Pressable, StyleSheet} from 'react-native';
 
 import {theme} from 'terraso-mobile-client/theme';
 
@@ -109,6 +103,7 @@ export const Switch = ({
       return;
     }
 
+    /* Runs on the JS thread because marginLeft is a layout property, which the native driver does not support. If these ever stutter — most likely on the depth sheet, where several switches animate while Formik re-renders the form around them — move the thumb to transform: [{translateX: moveSwitch}] and set useNativeDriver: true. Both transform and backgroundColor are natively animatable, so the whole animation would move to the UI thread. The catch: the native driver stops writing values back into the JS-side style, so the "animates to the on colors" test below cannot read the final color and would have to be rewritten or dropped. */
     Animated.timing(animatedValue, {
       toValue: value ? 1 : 0,
       duration: 200,
@@ -118,26 +113,27 @@ export const Switch = ({
   }, [value, animatedValue]);
 
   return (
-    <View style={styles.container}>
-      <TouchableWithoutFeedback
-        onPress={disabled ? undefined : () => onValueChange(!value)}
-        /* Supplies what the native switch gets for free: a screen reader needs to know this is a switch, which way it is set, and whether it can be operated. */
-        accessibilityRole="switch"
-        accessibilityState={{checked: value, disabled}}
-        accessibilityLabel={accessibilityLabel}
-        testID={testID}>
+    <Pressable
+      onPress={disabled ? undefined : () => onValueChange(!value)}
+      disabled={disabled}
+      /* Supplies what the native switch gets for free: a screen reader needs to know this is a switch, which way it is set, and whether it can be operated. */
+      accessibilityRole="switch"
+      accessibilityState={{checked: value, disabled}}
+      accessibilityLabel={accessibilityLabel}
+      testID={testID}
+      style={styles.container}>
+      <Animated.View
+        testID={testID && `${testID}-track`}
+        style={[styles.switchContainer, {backgroundColor: trackColor}]}>
         <Animated.View
-          style={[styles.switchContainer, {backgroundColor: trackColor}]}>
-          <Animated.View
-            testID={testID && `${testID}-thumb`}
-            style={[
-              styles.switchWheelStyle,
-              {marginLeft: moveSwitch, backgroundColor: thumbColor},
-            ]}
-          />
-        </Animated.View>
-      </TouchableWithoutFeedback>
-    </View>
+          testID={testID && `${testID}-thumb`}
+          style={[
+            styles.switchWheelStyle,
+            {marginLeft: moveSwitch, backgroundColor: thumbColor},
+          ]}
+        />
+      </Animated.View>
+    </Pressable>
   );
 };
 
@@ -151,16 +147,12 @@ const THUMB_INSET = 0;
 const SWITCH_LEFT_MARGIN = THUMB_INSET;
 const SWITCH_RIGHT_MARGIN = TRACK_WIDTH - THUMB_SIZE - THUMB_INSET;
 
-/* The thumb is taller than the track and hangs past both of its ends, but only the track contributes to layout — so the container reserves the difference. Without it the thumb would be drawn over whatever sits beside the switch. */
-const THUMB_OVERHANG_X = Math.max(0, -THUMB_INSET);
-const THUMB_OVERHANG_Y = Math.max(0, (THUMB_SIZE - TRACK_HEIGHT) / 2);
+const TRACK_PADDING = 4;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: THUMB_OVERHANG_X,
-    paddingVertical: THUMB_OVERHANG_Y,
+    padding: TRACK_PADDING,
   },
   switchContainer: {
     width: TRACK_WIDTH,

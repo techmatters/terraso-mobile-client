@@ -3899,37 +3899,46 @@ exports[`renders correctly 1`] = `
                                             }
                                           >
                                             <View
+                                              accessibilityLabel="Slope and Landscape"
+                                              accessibilityRole="switch"
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": false,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
+                                              onResponderTerminationRequest={[Function]}
+                                              onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
                                                   "alignItems": "center",
-                                                  "flexDirection": "row",
-                                                  "paddingHorizontal": 0,
-                                                  "paddingVertical": 3,
+                                                  "padding": 4,
                                                 }
                                               }
                                             >
                                               <View
-                                                accessibilityLabel="Slope and Landscape"
-                                                accessibilityRole="switch"
-                                                accessibilityState={
-                                                  {
-                                                    "busy": undefined,
-                                                    "checked": false,
-                                                    "disabled": true,
-                                                    "expanded": undefined,
-                                                    "selected": undefined,
-                                                  }
-                                                }
-                                                accessible={true}
                                                 collapsable={false}
-                                                focusable={false}
-                                                onClick={[Function]}
-                                                onResponderGrant={[Function]}
-                                                onResponderMove={[Function]}
-                                                onResponderRelease={[Function]}
-                                                onResponderTerminate={[Function]}
-                                                onResponderTerminationRequest={[Function]}
-                                                onStartShouldSetResponder={[Function]}
                                                 style={
                                                   {
                                                     "backgroundColor": "rgba(208, 208, 224, 1)",
@@ -4012,37 +4021,46 @@ exports[`renders correctly 1`] = `
                                             }
                                           >
                                             <View
+                                              accessibilityLabel="Soil Cracks"
+                                              accessibilityRole="switch"
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": false,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
+                                              onResponderTerminationRequest={[Function]}
+                                              onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
                                                   "alignItems": "center",
-                                                  "flexDirection": "row",
-                                                  "paddingHorizontal": 0,
-                                                  "paddingVertical": 3,
+                                                  "padding": 4,
                                                 }
                                               }
                                             >
                                               <View
-                                                accessibilityLabel="Soil Cracks"
-                                                accessibilityRole="switch"
-                                                accessibilityState={
-                                                  {
-                                                    "busy": undefined,
-                                                    "checked": false,
-                                                    "disabled": true,
-                                                    "expanded": undefined,
-                                                    "selected": undefined,
-                                                  }
-                                                }
-                                                accessible={true}
                                                 collapsable={false}
-                                                focusable={false}
-                                                onClick={[Function]}
-                                                onResponderGrant={[Function]}
-                                                onResponderMove={[Function]}
-                                                onResponderRelease={[Function]}
-                                                onResponderTerminate={[Function]}
-                                                onResponderTerminationRequest={[Function]}
-                                                onStartShouldSetResponder={[Function]}
                                                 style={
                                                   {
                                                     "backgroundColor": "rgba(208, 208, 224, 1)",
@@ -4099,37 +4117,46 @@ exports[`renders correctly 1`] = `
                                             }
                                           >
                                             <View
+                                              accessibilityLabel="Soil Texture"
+                                              accessibilityRole="switch"
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": true,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
+                                              onResponderTerminationRequest={[Function]}
+                                              onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
                                                   "alignItems": "center",
-                                                  "flexDirection": "row",
-                                                  "paddingHorizontal": 0,
-                                                  "paddingVertical": 3,
+                                                  "padding": 4,
                                                 }
                                               }
                                             >
                                               <View
-                                                accessibilityLabel="Soil Texture"
-                                                accessibilityRole="switch"
-                                                accessibilityState={
-                                                  {
-                                                    "busy": undefined,
-                                                    "checked": true,
-                                                    "disabled": true,
-                                                    "expanded": undefined,
-                                                    "selected": undefined,
-                                                  }
-                                                }
-                                                accessible={true}
                                                 collapsable={false}
-                                                focusable={false}
-                                                onClick={[Function]}
-                                                onResponderGrant={[Function]}
-                                                onResponderMove={[Function]}
-                                                onResponderRelease={[Function]}
-                                                onResponderTerminate={[Function]}
-                                                onResponderTerminationRequest={[Function]}
-                                                onStartShouldSetResponder={[Function]}
                                                 style={
                                                   {
                                                     "backgroundColor": "rgba(213, 236, 223, 1)",
@@ -4212,37 +4239,46 @@ exports[`renders correctly 1`] = `
                                             }
                                           >
                                             <View
+                                              accessibilityLabel="Soil Color"
+                                              accessibilityRole="switch"
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": true,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
+                                              onResponderTerminationRequest={[Function]}
+                                              onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
                                                   "alignItems": "center",
-                                                  "flexDirection": "row",
-                                                  "paddingHorizontal": 0,
-                                                  "paddingVertical": 3,
+                                                  "padding": 4,
                                                 }
                                               }
                                             >
                                               <View
-                                                accessibilityLabel="Soil Color"
-                                                accessibilityRole="switch"
-                                                accessibilityState={
-                                                  {
-                                                    "busy": undefined,
-                                                    "checked": true,
-                                                    "disabled": true,
-                                                    "expanded": undefined,
-                                                    "selected": undefined,
-                                                  }
-                                                }
-                                                accessible={true}
                                                 collapsable={false}
-                                                focusable={false}
-                                                onClick={[Function]}
-                                                onResponderGrant={[Function]}
-                                                onResponderMove={[Function]}
-                                                onResponderRelease={[Function]}
-                                                onResponderTerminate={[Function]}
-                                                onResponderTerminationRequest={[Function]}
-                                                onStartShouldSetResponder={[Function]}
                                                 style={
                                                   {
                                                     "backgroundColor": "rgba(213, 236, 223, 1)",
@@ -4299,37 +4335,46 @@ exports[`renders correctly 1`] = `
                                             }
                                           >
                                             <View
+                                              accessibilityLabel="Notes"
+                                              accessibilityRole="switch"
+                                              accessibilityState={
+                                                {
+                                                  "busy": undefined,
+                                                  "checked": false,
+                                                  "disabled": true,
+                                                  "expanded": undefined,
+                                                  "selected": undefined,
+                                                }
+                                              }
+                                              accessibilityValue={
+                                                {
+                                                  "max": undefined,
+                                                  "min": undefined,
+                                                  "now": undefined,
+                                                  "text": undefined,
+                                                }
+                                              }
+                                              accessible={true}
+                                              collapsable={false}
+                                              focusable={true}
+                                              onBlur={[Function]}
+                                              onClick={[Function]}
+                                              onFocus={[Function]}
+                                              onResponderGrant={[Function]}
+                                              onResponderMove={[Function]}
+                                              onResponderRelease={[Function]}
+                                              onResponderTerminate={[Function]}
+                                              onResponderTerminationRequest={[Function]}
+                                              onStartShouldSetResponder={[Function]}
                                               style={
                                                 {
                                                   "alignItems": "center",
-                                                  "flexDirection": "row",
-                                                  "paddingHorizontal": 0,
-                                                  "paddingVertical": 3,
+                                                  "padding": 4,
                                                 }
                                               }
                                             >
                                               <View
-                                                accessibilityLabel="Notes"
-                                                accessibilityRole="switch"
-                                                accessibilityState={
-                                                  {
-                                                    "busy": undefined,
-                                                    "checked": false,
-                                                    "disabled": true,
-                                                    "expanded": undefined,
-                                                    "selected": undefined,
-                                                  }
-                                                }
-                                                accessible={true}
                                                 collapsable={false}
-                                                focusable={false}
-                                                onClick={[Function]}
-                                                onResponderGrant={[Function]}
-                                                onResponderMove={[Function]}
-                                                onResponderRelease={[Function]}
-                                                onResponderTerminate={[Function]}
-                                                onResponderTerminationRequest={[Function]}
-                                                onStartShouldSetResponder={[Function]}
                                                 style={
                                                   {
                                                     "backgroundColor": "rgba(208, 208, 224, 1)",

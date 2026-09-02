@@ -45,9 +45,10 @@ const renderSwitchParts = (
   const colorOf = (testID: string) =>
     StyleSheet.flatten(utils.getByTestId(testID).props.style).backgroundColor;
 
+  /* `switch` is the press target and the accessible element; the track and thumb it draws are separate nodes beneath it. */
   return {
     ...utils,
-    track: () => colorOf('switch'),
+    track: () => colorOf('switch-track'),
     thumb: () => colorOf('switch-thumb'),
   };
 };
