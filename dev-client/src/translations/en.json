@@ -427,7 +427,10 @@
         "offline_sign_in_body": "To use LandPKS Soil ID offline, you must first sign in while online.",
         "not_available": "Not available",
         "learn_more": "Learn more",
-        "read_only": "Read-only"
+        "read_only": "Read-only",
+        "carousel": {
+            "page_indicator": "Page {{current}} of {{total}}"
+        }
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",

@@ -419,7 +419,10 @@
         "privacy_policy_link_text": "Sera ya Faragha",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Sheria na Masharti",
-        "read_only": "Soma tu"
+        "read_only": "Soma tu",
+        "carousel": {
+            "page_indicator": "TK Page {{current}} of {{total}}"
+        }
     },
     "errors": {
         "sync_conflict": {

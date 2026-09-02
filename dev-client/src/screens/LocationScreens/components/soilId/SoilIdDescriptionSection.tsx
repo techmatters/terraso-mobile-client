@@ -21,8 +21,13 @@ import {TFunction} from 'i18next';
 
 import {Coords} from 'terraso-client-shared/types';
 
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
+import {
+  Carousel,
+  CarouselPage,
+} from 'terraso-mobile-client/components/Carousel';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Box, Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
@@ -30,6 +35,13 @@ type SoilIdDescriptionSectionProps = {
   siteId?: string;
   coords: Coords;
 };
+
+/* Placeholder content to eyeball the carousel; real art and copy TBD. */
+const PAGES: CarouselPage[] = [1, 2, 3].map(n => ({
+  key: String(n),
+  above: <Box flex={1} bg="grey.300" />,
+  below: <Text variant="body1">Page {n}</Text>,
+}));
 
 export const SoilIdDescriptionSection = ({
   siteId,
@@ -42,6 +54,9 @@ export const SoilIdDescriptionSection = ({
 
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
+      <InfoButton sheetHeading={<Text>"The Carousel Sheet?"</Text>}>
+        <Carousel pages={PAGES} aboveHeight={100} />
+      </InfoButton>
       <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
     </ScreenContentSection>
   );
