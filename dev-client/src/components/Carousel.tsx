@@ -30,10 +30,13 @@ export type CarouselPage = {
   below: React.ReactNode;
 };
 
+/* A percentage resolves against the carousel's own height, not the window's — the carousel is typically inside a sheet, so a window fraction would overshoot by the header and padding. */
+export type CarouselZoneHeight = number | `${number}%`;
+
 export type CarouselProps = {
   pages: CarouselPage[];
-  /* Both zones live in a single pager so they stay in sync, so this is what fixes the indicator's vertical position across pages. Without a known height the dots would drift with each page's content. */
-  aboveHeight: number;
+  /* Sizes the art zone only; it does not scale what you put in it. Art should fill the zone and use resizeMode="contain", which keeps its aspect ratio and scales it down centered when the zone is the wrong shape for it. Both zones live in a single pager so they stay in sync, so this is also what fixes the indicator's vertical position across pages. */
+  aboveHeight: CarouselZoneHeight;
   initialPage?: number;
   onPageChange?: (index: number) => void;
 };
@@ -62,7 +65,10 @@ export const Carousel = ({
     [onPageChange],
   );
 
-  const aboveStyle = useMemo(() => ({height: aboveHeight}), [aboveHeight]);
+  const aboveStyle = useMemo(
+    () => [styles.above, {height: aboveHeight}],
+    [aboveHeight],
+  );
   const indicatorStyle = useMemo(() => ({top: aboveHeight}), [aboveHeight]);
 
   return (
@@ -96,6 +102,10 @@ const styles = StyleSheet.create({
   },
   pager: {
     flex: 1,
+  },
+  /* Clips oversized art so it cannot bleed over the indicator band and the copy below it. */
+  above: {
+    overflow: 'hidden',
   },
   page: {
     flex: 1,

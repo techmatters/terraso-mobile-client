@@ -24,9 +24,9 @@ import {Coords} from 'terraso-client-shared/types';
 import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
 import {CarouselButton} from 'terraso-mobile-client/components/buttons/CarouselButton';
 import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
+import {CarouselImage} from 'terraso-mobile-client/components/CarouselImage';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {
-  Box,
   Heading,
   Text,
   View,
@@ -39,20 +39,17 @@ type SoilIdDescriptionSectionProps = {
   coords: Coords;
 };
 
-/* TODO-cknipe: Remove this test-only example content
+/* TODO-cknipe: Remove this test-only example content & icon further below
 Placeholder content to eyeball the carousel; real art and copy TBD. */
-function componentToHex(c: number) {
-  var hex = c.toString(16);
-  return hex.length === 1 ? '0' + hex : hex;
-}
-
-function rgbToHex(r: number, g: number, b: number) {
-  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
+const EXAMPLE_ART = [
+  require('terraso-mobile-client/assets/carousel-soilid/1.png'),
+  require('terraso-mobile-client/assets/carousel-soilid/2.png'),
+  require('terraso-mobile-client/assets/carousel-soilid/3.png'),
+];
 
 const PAGES: CarouselPage[] = [1, 2, 3].map(n => ({
   key: String(n),
-  above: <Box flex={1} bg={rgbToHex(n * 30, n, n)} />,
+  above: <CarouselImage source={EXAMPLE_ART[n - 1]} />,
   below: (
     <View>
       <Heading variant="h3">Page {n}</Heading>
@@ -105,7 +102,7 @@ export const SoilIdDescriptionSection = ({
         accessibilityLabel="About soil identification"
         sheetHeading={<Text>"The Carousel Sheet?"</Text>}
         pages={PAGES}
-        aboveHeight={200}
+        aboveHeight="60%"
       />
       <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
     </ScreenContentSection>

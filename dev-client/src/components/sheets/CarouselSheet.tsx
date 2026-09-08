@@ -25,6 +25,7 @@ import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/com
 import {
   Carousel,
   CarouselPage,
+  CarouselZoneHeight,
 } from 'terraso-mobile-client/components/Carousel';
 import {
   ModalContext,
@@ -36,7 +37,7 @@ import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type CarouselSheetProps = {
   pages: CarouselPage[];
-  aboveHeight: number;
+  aboveHeight: CarouselZoneHeight;
   heading?: React.ReactNode;
   trigger?: ModalTrigger;
 };

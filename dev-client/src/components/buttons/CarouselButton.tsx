@@ -18,14 +18,17 @@
 import {StyleSheet} from 'react-native';
 import {Pressable} from 'react-native-gesture-handler';
 
-import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
+import {
+  CarouselPage,
+  CarouselZoneHeight,
+} from 'terraso-mobile-client/components/Carousel';
 import {CarouselSheet} from 'terraso-mobile-client/components/sheets/CarouselSheet';
 
 export type CarouselButtonProps = {
   /* Rendered as the tappable trigger. A node rather than an image source, matching ImageRadio, so callers can pass either an SVG component or an <Image>. */
   image: React.ReactNode;
   pages: CarouselPage[];
-  aboveHeight: number;
+  aboveHeight: CarouselZoneHeight;
   sheetHeading?: React.ReactNode;
   /* Required: the trigger is image-only, so there is no text for a screen reader to fall back on. */
   accessibilityLabel: string;
