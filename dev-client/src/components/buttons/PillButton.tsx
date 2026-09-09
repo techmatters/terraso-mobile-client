@@ -19,7 +19,7 @@ import {PressableProps, StyleSheet} from 'react-native';
 
 import {BaseButton} from 'terraso-mobile-client/components/buttons/BaseButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
-import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
+import {theme} from 'terraso-mobile-client/theme';
 
 export type PillButtonProps = {
   label: string;
@@ -56,23 +56,23 @@ export const PillButton = ({
 
 const styles = StyleSheet.create({
   containerDefault: {
-    backgroundColor: convertColorProp('info.background'),
-    borderColor: convertColorProp('info.background'),
+    backgroundColor: theme.colors.pillButton.background,
+    borderColor: theme.colors.pillButton.border,
   },
   containerDefaultPressed: {
     /* Darkened info.background; no theme token exists for it yet. */
-    backgroundColor: '#CCE8F6',
-    borderColor: '#CCE8F6',
+    backgroundColor: theme.colors.pillButton.backgroundPressed,
+    borderColor: theme.colors.pillButton.border,
   },
   containerDisabled: {
-    backgroundColor: convertColorProp('action.disabledBackground'),
-    borderColor: convertColorProp('action.disabledBackground'),
+    backgroundColor: theme.colors.pillButton.backgroundDisabled,
+    borderColor: theme.colors.pillButton.borderDisabled,
   },
   contentDefault: {
-    color: convertColorProp('info.content'),
+    color: theme.colors.pillButton.text,
   },
   contentDisabled: {
-    color: convertColorProp('action.disabled'),
+    color: theme.colors.pillButton.textDisabled,
   },
 });
 

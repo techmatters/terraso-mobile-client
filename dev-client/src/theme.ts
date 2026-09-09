@@ -118,6 +118,15 @@ export const theme = extendTheme({
       thumbOff: '#FAFAFA',
       thumbOffDisabled: '#FAFAFA',
     },
+    pillButton: {
+      background: '#E7F1F5',
+      backgroundPressed: '#ADCFDC',
+      backgroundDisabled: '#E7F1F5',
+      border: '#ADCFDC',
+      borderDisabled: '#c4dbe4',
+      text: '#0D5A78',
+      textDisabled: '#5b8ea1',
+    },
     transparent: '#00000000',
   },
   radii: {

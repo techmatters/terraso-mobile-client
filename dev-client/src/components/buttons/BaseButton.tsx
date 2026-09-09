@@ -173,10 +173,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   containerPill: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
     /* Large enough to stay fully round at any height. */
-    borderRadius: 999,
+    borderRadius: 100,
   },
   label: {
     fontWeight: '500',
