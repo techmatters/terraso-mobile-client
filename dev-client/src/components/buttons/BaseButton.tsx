@@ -34,7 +34,14 @@ import {IconSize} from 'terraso-mobile-client/components/util/nativeBaseAdapters
  * Base shapes and structure for button implementations. Individual button implementations
  * should use these constants and components for consistent behavior and styling.
  */
-export type ButtonShape = 'sm' | 'md' | 'lg' | 'xl' | 'dialog' | 'text';
+export type ButtonShape =
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | 'dialog'
+  | 'text'
+  | 'pill';
 
 export type StateStyles<T> = {
   default: StyleProp<T>;
@@ -165,6 +172,12 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
+  containerPill: {
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    /* Large enough to stay fully round at any height. */
+    borderRadius: 999,
+  },
   label: {
     fontWeight: '500',
     textTransform: 'uppercase',
@@ -195,6 +208,12 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginHorizontal: 8,
   },
+  labelPill: {
+    fontSize: 14,
+    lineHeight: 24,
+    /* Pills carry sentence-case prose ("How does it work?"), not the uppercase action verbs the other shapes use. */
+    textTransform: 'none',
+  },
   leftIcon: {
     marginRight: 8,
   },
@@ -210,6 +229,7 @@ const containerShapeStyles = {
   xl: [styles.container, styles.containerXl],
   dialog: [styles.container, styles.containerDialog],
   text: [styles.container, styles.containerText],
+  pill: [styles.container, styles.containerPill],
 };
 
 const labelShapeStyles = {
@@ -219,6 +239,7 @@ const labelShapeStyles = {
   xl: [styles.label, styles.labelXl],
   dialog: [styles.label, styles.labelDialog],
   text: [styles.label, styles.labelText],
+  pill: [styles.label, styles.labelPill],
 };
 
 const leftIconShapeStyles = {
@@ -228,6 +249,7 @@ const leftIconShapeStyles = {
   xl: [styles.leftIcon],
   dialog: [styles.leftIcon],
   text: [styles.leftIcon],
+  pill: [styles.leftIcon],
 };
 
 const rightIconShapeStyles = {
@@ -237,6 +259,7 @@ const rightIconShapeStyles = {
   xl: [styles.rightIcon],
   dialog: [styles.rightIcon],
   text: [styles.rightIcon],
+  pill: [styles.rightIcon],
 };
 
 const iconShapeSize: Record<ButtonShape, IconSize> = {
@@ -246,4 +269,5 @@ const iconShapeSize: Record<ButtonShape, IconSize> = {
   xl: 'md',
   dialog: 'md',
   text: 'sm',
+  pill: 'sm',
 };

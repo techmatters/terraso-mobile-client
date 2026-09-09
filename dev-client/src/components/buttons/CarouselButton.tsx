@@ -15,9 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {StyleSheet} from 'react-native';
-import {Pressable} from 'react-native-gesture-handler';
-
+import {PillButton} from 'terraso-mobile-client/components/buttons/PillButton';
 import {
   CarouselPage,
   CarouselZoneHeight,
@@ -25,45 +23,37 @@ import {
 import {CarouselSheet} from 'terraso-mobile-client/components/sheets/CarouselSheet';
 
 export type CarouselButtonProps = {
-  /* Rendered as the tappable trigger. A node rather than an image source, matching ImageRadio, so callers can pass either an SVG component or an <Image>. */
-  image: React.ReactNode;
+  label: string;
   pages: CarouselPage[];
   aboveHeight: CarouselZoneHeight;
   sheetHeading?: React.ReactNode;
-  /* Required: the trigger is image-only, so there is no text for a screen reader to fall back on. */
-  accessibilityLabel: string;
+  /* Fires alongside opening the sheet, for callers tracking whether the carousel has been viewed. */
+  onPress?: () => void;
 };
 
 /*
- * Image trigger that opens a CarouselSheet. Unlike InfoButton, the trigger's
- * appearance is the caller's to supply.
+ * Pill trigger that opens a CarouselSheet. The label doubles as the accessibility
+ * name, so unlike an image trigger there is nothing extra for callers to supply.
  */
 export const CarouselButton = ({
-  image,
+  label,
   pages,
   aboveHeight,
   sheetHeading,
-  accessibilityLabel,
+  onPress,
 }: CarouselButtonProps) => (
   <CarouselSheet
     pages={pages}
     aboveHeight={aboveHeight}
     heading={sheetHeading}
     trigger={onOpen => (
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={accessibilityLabel}
-        onPress={onOpen}
-        style={styles.trigger}>
-        {image}
-      </Pressable>
+      <PillButton
+        label={label}
+        onPress={() => {
+          onPress?.();
+          onOpen();
+        }}
+      />
     )}
   />
 );
-
-const styles = StyleSheet.create({
-  /* Keeps the pressable hugging the image instead of stretching to fill a flex parent. */
-  trigger: {
-    alignSelf: 'flex-start',
-  },
-});

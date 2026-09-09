@@ -21,8 +21,7 @@ import {TFunction} from 'i18next';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import InfoSVG from 'terraso-mobile-client/assets/landpks_info_image.svg';
-import {CarouselButton} from 'terraso-mobile-client/components/buttons/CarouselButton';
+import {TutorialCarouselButton} from 'terraso-mobile-client/components/buttons/TutorialCarouselButton';
 import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {CarouselImage} from 'terraso-mobile-client/components/CarouselImage';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
@@ -38,6 +37,9 @@ type SoilIdDescriptionSectionProps = {
   siteId?: string;
   coords: Coords;
 };
+
+/* TODO-cknipe: Hand-authored stand-in until the designer delivers the real Lottie export. */
+const SHOVEL_ANIMATION = require('terraso-mobile-client/assets/animations/shovel-dig-placeholder.json');
 
 /* TODO-cknipe: Remove this test-only example content & icon further below
 Placeholder content to eyeball the carousel; real art and copy TBD. */
@@ -97,9 +99,10 @@ export const SoilIdDescriptionSection = ({
 
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
-      <CarouselButton
-        image={<InfoSVG width={40} height={40} />}
-        accessibilityLabel="About soil identification"
+      <TutorialCarouselButton
+        tutorialKey="soil-id-how-it-works"
+        label={t('site.soil_id.how_it_works')}
+        animation={SHOVEL_ANIMATION}
         sheetHeading={<Text>"The Carousel Sheet?"</Text>}
         pages={PAGES}
         aboveHeight="60%"

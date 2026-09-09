@@ -105,6 +105,7 @@
             "number_error": "Nambari na nukta pekee ndizo zinazoruhusiwa"
         },
         "soil_id": {
+            "how_it_works": "TK How does it work?",
             "title": "Kitambulisho cha Udongo",
             "description": {
                 "temp_location": "LandPKS Soil ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda eneo katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo.",

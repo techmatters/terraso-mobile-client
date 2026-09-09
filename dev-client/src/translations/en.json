@@ -78,6 +78,7 @@
             "default_title": "Temporary Pin"
         },
         "soil_id": {
+            "how_it_works": "How does it work?",
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter observations and improve the results.",
