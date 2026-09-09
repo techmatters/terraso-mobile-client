@@ -101,6 +101,7 @@ export const SoilIdDescriptionSection = ({
     <ScreenContentSection title={t('site.soil_id.title')}>
       <TutorialCarouselButton
         tutorialKey="soil-id-how-it-works"
+        contentVersion={1}
         label={t('site.soil_id.how_it_works')}
         animation={SHOVEL_ANIMATION}
         sheetHeading={<Text>"The Carousel Sheet?"</Text>}

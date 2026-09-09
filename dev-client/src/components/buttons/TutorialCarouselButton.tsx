@@ -30,14 +30,16 @@ import {
 } from 'terraso-mobile-client/components/Carousel';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
-const VIEWED_KEY_PREFIX = 'tutorial.viewed.';
+const VIEWED_KEY_PREFIX = 'tutorial.viewedVersion.';
 
 /* Enough to catch the eye on arrival without becoming ambient motion the user has to sit with. */
 const CYCLES_PER_VISIT = 3;
 
 export type TutorialCarouselButtonProps = {
-  /* Namespaces the viewed flag; opening one tutorial must not silence the others. */
+  /* Namespaces the viewed record; opening one tutorial must not silence the others. */
   tutorialKey: string;
+  /* Bump when the carousel gains content worth re-advertising, which re-arms the animation for users who already viewed an older version. Deliberately manual rather than a content hash: `pages` holds JSX, which has no stable serialization, and a typo fix should not re-nag everyone. */
+  contentVersion: number;
   label: string;
   animation: LottieViewProps['source'];
   pages: CarouselPage[];
@@ -48,12 +50,14 @@ export type TutorialCarouselButtonProps = {
 
 /*
  * Carousel button paired with an animated icon that draws attention until the
- * user has opened the carousel once. The flag is local-only (see kvStorage): it
- * is a UI hint rather than user data, so a reinstall replaying the animation is
- * an acceptable trade for working offline with no backend surface.
+ * user has opened the carousel at its current contentVersion. The record is
+ * local-only (see kvStorage): it is a UI hint rather than user data, so a
+ * reinstall replaying the animation is an acceptable trade for working offline
+ * with no backend surface.
  */
 export const TutorialCarouselButton = ({
   tutorialKey,
+  contentVersion,
   label,
   animation,
   pages,
@@ -61,14 +65,20 @@ export const TutorialCarouselButton = ({
   sheetHeading,
   iconSize,
 }: TutorialCarouselButtonProps) => {
-  const [viewed, setViewed] = kvStorage.useBool(
+  const [viewedVersion, setViewedVersion] = kvStorage.useNumber(
     VIEWED_KEY_PREFIX + tutorialKey,
-    false,
+    0,
   );
   const reducedMotion = useReducedMotion();
   const isFocused = useIsFocused();
 
-  const onPress = useCallback(() => setViewed(true), [setViewed]);
+  /* `>=` so rolling a version back does not re-nag users who already saw the newer content. */
+  const viewed = viewedVersion >= contentVersion;
+
+  const onPress = useCallback(
+    () => setViewedVersion(contentVersion),
+    [setViewedVersion, contentVersion],
+  );
 
   return (
     <View style={styles.row}>
