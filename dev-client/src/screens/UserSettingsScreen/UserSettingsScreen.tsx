@@ -21,6 +21,7 @@ import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {SessionReplayDebugContent} from 'terraso-mobile-client/components/SessionReplayDebugContent';
+import {KvStorageEditor} from 'terraso-mobile-client/components/util/KvStorageEditor';
 import {UiComponentList} from 'terraso-mobile-client/components/util/UiComponentList';
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -44,6 +45,7 @@ export function UserSettingsScreen() {
     <ScreenScaffold AppBar={<AppBar LeftButton={null} RightButton={null} />}>
       <RestrictByFlag flag="FF_testing">
         <UiComponentList />
+        <KvStorageEditor />
       </RestrictByFlag>
       <FeatureFlagControlPanel />
       <SessionReplayDebugContent />
