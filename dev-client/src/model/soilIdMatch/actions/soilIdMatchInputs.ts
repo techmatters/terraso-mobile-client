@@ -75,11 +75,17 @@ export const soilDataSlopePercent = (
   }
 };
 
-export const soilDataToIdInput = (data: SoilData): SoilIdInputData => {
+export const soilDataToIdInput = (
+  data: SoilData,
+  elevation?: number | null,
+): SoilIdInputData => {
   return {
     depthDependentData: data.depthDependentData.map(
       soilDepthDependentDataToIdInput,
     ),
+    // Sent when known so the backend can skip its Mapbox elevation lookup
+    // and use the client's already-fetched value as pElev.
+    elevation: typeof elevation === 'number' ? elevation : undefined,
     slope: soilDataSlopePercent(data),
     surfaceCracks: data.surfaceCracksSelect,
   };
