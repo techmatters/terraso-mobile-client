@@ -268,6 +268,10 @@ const soilIdMatchSlice = createSlice({
     flushDataCacheErrors: state => {
       flushErrorEntries(state.siteDataBasedMatches);
     },
+    flushAllMatches: state => {
+      state.locationBasedMatches = {};
+      state.siteDataBasedMatches = {};
+    },
     updateTempMatches: (state, action) => {
       const coords = action.payload.coords;
       const key = coordsKey(coords);
@@ -333,6 +337,7 @@ const soilIdMatchSlice = createSlice({
 export const {
   flushLocationCache,
   flushDataCacheErrors,
+  flushAllMatches,
   updateTempMatches,
   updateSiteMatches,
 } = soilIdMatchSlice.actions;
