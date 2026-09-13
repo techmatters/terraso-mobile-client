@@ -15,28 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {formatCoordinateInEnglish} from 'terraso-mobile-client/util';
+import {fetchElevation} from 'terraso-client-shared/soilId/soilIdService';
 
 const ELEVATION_FETCH_TIMEOUT_MS = 10000;
 
-// Raw HTTP call — may throw. Callers should use getElevation, which wraps
-// this with a timeout and swallows errors.
+// Raw call — may throw. Callers should use getElevation, which wraps this with
+// a timeout and swallows errors. Delegates to the backend soilId.elevation
+// query (Mapbox Terrain-RGB) so the stored/displayed elevation matches the one
+// the soil-ID ranking uses, instead of a separate provider that would diverge.
 const requestElevationApi = async (
   latitude: number,
   longitude: number,
 ): Promise<number | null> => {
-  const queryString = new URLSearchParams({
-    longitude: formatCoordinateInEnglish(longitude),
-    latitude: formatCoordinateInEnglish(latitude),
-  });
-  const response = await fetch(
-    `https://api.open-meteo.com/v1/elevation/?${queryString}`,
-  );
-  if (response.status !== 200) {
-    return null;
-  }
-  const result = await response.json();
-  return parseInt(result.elevation[0], 10);
+  return fetchElevation({latitude, longitude});
 };
 
 /**
