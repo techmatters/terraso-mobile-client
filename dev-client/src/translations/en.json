@@ -352,6 +352,7 @@
     "settings": {
         "unknown_user": "Unknown user",
         "copy_access_token": "Copy JWT Access Token",
+        "clear_soil_id_cache": "Clear soil ID match cache",
         "sign_out": "Sign out",
         "delete_account": "Delete account",
         "delete_account_pending": "Pending",
@@ -377,6 +378,7 @@
         },
         "cancel": "Cancel",
         "copied": "Copied!",
+        "cleared": "Cleared!",
         "add": "Add",
         "change": "Change",
         "create": "Create",
