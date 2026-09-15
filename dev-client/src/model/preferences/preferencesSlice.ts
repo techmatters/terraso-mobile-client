@@ -23,6 +23,9 @@ type Preferences = typeof initialState;
 
 const initialState = {
   colorWorkflow: 'MANUAL' satisfies ColorWorkflow as ColorWorkflow,
+  // Last-seen soil-ID algorithm semver (from the pull sync). Persisted so we can
+  // detect a MAJOR/MINOR change across sessions and flush cached matches.
+  soilIdAlgorithmVersion: undefined as string | undefined,
 } as const;
 
 const {
