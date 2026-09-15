@@ -59,6 +59,15 @@ export const deleteSiteMatches = (
   }
 };
 
+// Clear both match caches. Shared by the `flushAllMatches` action (dev "clear
+// cache" button) and the sync reducer's algorithm-version flush, so both stay in
+// lockstep. A full clear also resets each site entry's `.input`, which is what
+// makes site-based matches re-fetch on next view (not just location-based).
+export const clearAllMatches = (state: Draft<SoilState>) => {
+  state.locationBasedMatches = {};
+  state.siteDataBasedMatches = {};
+};
+
 // Type export for use in other files
 export type SoilIdFetchedResult = Awaited<
   ReturnType<typeof soilIdService.fetchSoilMatches>
@@ -268,10 +277,7 @@ const soilIdMatchSlice = createSlice({
     flushDataCacheErrors: state => {
       flushErrorEntries(state.siteDataBasedMatches);
     },
-    flushAllMatches: state => {
-      state.locationBasedMatches = {};
-      state.siteDataBasedMatches = {};
-    },
+    flushAllMatches: clearAllMatches,
     updateTempMatches: (state, action) => {
       const coords = action.payload.coords;
       const key = coordsKey(coords);

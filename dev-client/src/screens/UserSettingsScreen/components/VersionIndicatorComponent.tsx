@@ -24,11 +24,15 @@ import {
 } from 'terraso-mobile-client/app/posthog/PostHog';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
+import {useSelector} from 'terraso-mobile-client/store';
 
 export function VersionIndicator() {
   const {t} = useTranslation();
   const sessionRecordingState = useSessionRecordingState();
   const [nativeActive, setNativeActive] = useState<boolean | null>(null);
+  const soilIdVersion = useSelector(
+    state => state.preferences.soilIdAlgorithmVersion,
+  );
 
   useEffect(() => {
     checkNativeSessionReplayStatus().then(setNativeActive);
@@ -69,16 +73,26 @@ export function VersionIndicator() {
   }
 
   return (
-    <Text variant="body2">
-      {APP_CONFIG.version && APP_CONFIG.build
-        ? t('settings.version', {
-            version: APP_CONFIG.version,
-            build: APP_CONFIG.build,
-            environment,
-          }) + recordingSuffix
-        : `(${t('settings.unknown_version', {
-            environment,
-          })})`}
-    </Text>
+    <>
+      <Text variant="body2">
+        {APP_CONFIG.version && APP_CONFIG.build
+          ? t('settings.version', {
+              version: APP_CONFIG.version,
+              build: APP_CONFIG.build,
+              environment,
+            }) + recordingSuffix
+          : `(${t('settings.unknown_version', {
+              environment,
+            })})`}
+      </Text>
+      {soilIdVersion ? (
+        <Text variant="body2">
+          {t('settings.soil_id_version', {
+            version: soilIdVersion,
+            defaultValue: 'Soil ID algorithm {{version}}',
+          })}
+        </Text>
+      ) : null}
+    </>
   );
 }
