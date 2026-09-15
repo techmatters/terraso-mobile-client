@@ -97,6 +97,15 @@ jobs:
           distribution: "temurin"
           cache: gradle
 
+      # RN 0.83 / Expo SDK 56 asks for NDK 27.0.12077973 at build time.
+      # The ubuntu-latest runner only preinstalls NDK 26, and Gradle's
+      # auto-install via sdkmanager fails inside the build. Install it
+      # explicitly here (this action also accepts SDK licences).
+      - name: Install Android NDK 27
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "ndk;27.0.12077973"
+
       - name: Build Android app bundle
         working-directory: ./dev-client/android
         run: ./gradlew bundleRelease
