@@ -344,6 +344,7 @@
     "settings": {
         "staging": "staging",
         "version": "Versión {{version}} ({{build}}) {{environment}}",
+        "soil_id_version": "Algoritmo Soil ID {{version}}",
         "unknown_user": "Usuario desconocido",
         "copy_access_token": "Copiar token de acceso JWT",
         "clear_soil_id_cache": "Borrar caché de coincidencias de Soil ID",

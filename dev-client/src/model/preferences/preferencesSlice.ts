@@ -19,14 +19,16 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 import {ColorWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreen';
 
-type Preferences = typeof initialState;
+type Preferences = {
+  colorWorkflow: ColorWorkflow;
+  // Last-seen soil-ID algorithm semver (from the pull sync). Optional/persisted
+  // so we can detect a MAJOR/MINOR change across sessions and flush cached matches.
+  soilIdAlgorithmVersion?: string;
+};
 
-const initialState = {
-  colorWorkflow: 'MANUAL' satisfies ColorWorkflow as ColorWorkflow,
-  // Last-seen soil-ID algorithm semver (from the pull sync). Persisted so we can
-  // detect a MAJOR/MINOR change across sessions and flush cached matches.
-  soilIdAlgorithmVersion: undefined as string | undefined,
-} as const;
+const initialState: Preferences = {
+  colorWorkflow: 'MANUAL',
+};
 
 const {
   reducer,
