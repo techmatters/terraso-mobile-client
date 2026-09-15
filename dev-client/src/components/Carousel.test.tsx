@@ -17,6 +17,7 @@
 
 import {Text} from 'react-native';
 import PagerView from 'react-native-pager-view';
+import {SafeAreaInsetsContext} from 'react-native-safe-area-context';
 
 import {fireEvent, render, screen} from '@testing-library/react-native';
 
@@ -35,9 +36,16 @@ const PAGES = [
   {key: 'c', above: <Text>art C</Text>, below: <Text>copy C</Text>},
 ];
 
+/* The copy zone pads itself clear of the bottom inset, and useSafeAreaInsets throws outright when nothing supplies one. Feeding the context directly is enough — SafeAreaProvider would add frame plumbing no test here reads. */
 const renderCarousel = (
   props: Partial<React.ComponentProps<typeof Carousel>> = {},
-) => render(<Carousel pages={PAGES} aboveHeight={200} {...props} />);
+) =>
+  render(
+    <SafeAreaInsetsContext.Provider
+      value={{top: 0, left: 0, right: 0, bottom: 0}}>
+      <Carousel pages={PAGES} aboveHeight={200} {...props} />
+    </SafeAreaInsetsContext.Provider>,
+  );
 
 /* PagerView renders every page up front, so the pager itself is what reports
  * position — there is no "the visible page" to query for in a unit test. */

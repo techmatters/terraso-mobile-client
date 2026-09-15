@@ -16,13 +16,14 @@
  */
 
 import {useCallback, useMemo, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import PagerView, {PagerViewOnPageSelectedEvent} from 'react-native-pager-view';
 
 import {
   CarouselPageIndicator,
   INDICATOR_HEIGHT,
 } from 'terraso-mobile-client/components/CarouselPageIndicator';
+import {BottomInsetScrollView} from 'terraso-mobile-client/components/safeview/BottomInsetScrollView';
 
 export type CarouselPage = {
   key: string;
@@ -82,7 +83,7 @@ export const Carousel = ({
             <View style={aboveStyle}>{above}</View>
             {/* Holds open the band the indicator is absolutely positioned over. */}
             <View style={styles.indicatorSpacer} />
-            <ScrollView>{below}</ScrollView>
+            <BottomInsetScrollView>{below}</BottomInsetScrollView>
           </View>
         ))}
       </PagerView>
