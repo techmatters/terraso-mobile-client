@@ -49,6 +49,7 @@ exports[`renders correctly 1`] = `
           }
         >
           <View
+            onLayout={[Function]}
             style={
               [
                 {
@@ -58,23 +59,6 @@ exports[`renders correctly 1`] = `
               ]
             }
           >
-            <RNCSafeAreaProvider
-              onInsetsChange={[Function]}
-              style={
-                [
-                  {
-                    "flex": 1,
-                  },
-                  {
-                    "bottom": 0,
-                    "left": 0,
-                    "position": "absolute",
-                    "right": 0,
-                    "top": 0,
-                  },
-                ]
-              }
-            />
             <RNSScreenStack
               style={
                 {
@@ -84,8 +68,10 @@ exports[`renders correctly 1`] = `
             >
               <RNSScreen
                 activityState={2}
+                androidResetScreenShadowStateOnOrientationChangeEnabled={true}
                 aria-hidden={false}
                 collapsable={false}
+                fullScreenSwipeEnabled="undefined"
                 fullScreenSwipeShadowEnabled={true}
                 gestureResponseDistance={
                   {
@@ -116,6 +102,7 @@ exports[`renders correctly 1`] = `
                   ]
                 }
                 sheetCornerRadius={-1}
+                sheetDefaultResizeAnimationEnabled={true}
                 sheetElevation={24}
                 sheetExpandsWhenScrolledToEdge={true}
                 sheetGrabberVisible={false}
@@ -123,6 +110,7 @@ exports[`renders correctly 1`] = `
                 sheetInitialDetentIndex={0}
                 sheetLargestUndimmedDetent={-1}
                 sheetLargestUndimmedDetentIndex={-1}
+                sheetShouldOverflowTopInset={false}
                 stackPresentation="push"
                 style={
                   {
@@ -135,6 +123,7 @@ exports[`renders correctly 1`] = `
                   }
                 }
                 swipeDirection="horizontal"
+                synchronousShadowStateUpdatesEnabled={true}
               >
                 <RNSScreenContentWrapper
                   collapsable={false}
@@ -2399,6 +2388,10 @@ exports[`renders correctly 1`] = `
                   backTitleVisible={true}
                   backgroundColor="rgb(255, 255, 255)"
                   color="rgb(0, 122, 255)"
+                  consumeBottomInset={true}
+                  consumeLeftInset={true}
+                  consumeRightInset={true}
+                  consumeTopInset={true}
                   direction="ltr"
                   disableBackButtonMenu={false}
                   hidden={false}
@@ -2407,6 +2400,7 @@ exports[`renders correctly 1`] = `
                   largeTitleFontFamily="System"
                   largeTitleFontWeight="700"
                   largeTitleHideShadow={false}
+                  legacyTopInsetBehavior={false}
                   pointerEvents="box-none"
                   style={
                     {
@@ -2417,11 +2411,12 @@ exports[`renders correctly 1`] = `
                       "width": "100%",
                     }
                   }
+                  synchronousShadowStateUpdatesEnabled={true}
                   title="CREATE_SITE"
                   titleColor="rgb(28, 28, 30)"
                   titleFontFamily="System"
                   titleFontWeight="600"
-                  topInsetEnabled={true}
+                  topInsetEnabled={false}
                   translucent={false}
                 />
               </RNSScreen>

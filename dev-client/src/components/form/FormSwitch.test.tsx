@@ -16,6 +16,7 @@
  */
 
 import {act, fireEvent, render} from '@testing-library/react-native';
+import {isSwitchOn} from '@testing/isSwitchOn';
 import {Formik} from 'formik';
 
 import {FormSwitch} from 'terraso-mobile-client/components/form/FormSwitch';
@@ -64,11 +65,6 @@ const press = async (getByTestId: ReturnType<typeof render>['getByTestId']) => {
   jest.useRealTimers();
 };
 
-/* The toggle reports its state to assistive tech rather than through a `value`
- * prop, which is also the only thing a screen reader user can perceive. */
-const isOn = (element: ReturnType<ReturnType<typeof render>['getByTestId']>) =>
-  element.props.accessibilityState.checked;
-
 describe('FormSwitch', () => {
   test('reads initial value from Formik', async () => {
     const {getByTestId} = await renderInFormik(
@@ -80,7 +76,7 @@ describe('FormSwitch', () => {
       />,
     );
 
-    expect(isOn(getByTestId('switch'))).toBe(true);
+    expect(isSwitchOn(getByTestId('switch'))).toBe(true);
   });
 
   test('shows off when the field is missing, rather than an indeterminate switch', async () => {
@@ -93,7 +89,7 @@ describe('FormSwitch', () => {
       />,
     );
 
-    expect(isOn(getByTestId('switch'))).toBe(false);
+    expect(isSwitchOn(getByTestId('switch'))).toBe(false);
   });
 
   test('updates Formik state on change', async () => {

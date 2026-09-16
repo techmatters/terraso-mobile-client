@@ -49,6 +49,7 @@ exports[`renders correctly 1`] = `
           }
         >
           <View
+            onLayout={[Function]}
             style={
               [
                 {
@@ -58,23 +59,6 @@ exports[`renders correctly 1`] = `
               ]
             }
           >
-            <RNCSafeAreaProvider
-              onInsetsChange={[Function]}
-              style={
-                [
-                  {
-                    "flex": 1,
-                  },
-                  {
-                    "bottom": 0,
-                    "left": 0,
-                    "position": "absolute",
-                    "right": 0,
-                    "top": 0,
-                  },
-                ]
-              }
-            />
             <RNSScreenStack
               style={
                 {
@@ -84,8 +68,10 @@ exports[`renders correctly 1`] = `
             >
               <RNSScreen
                 activityState={2}
+                androidResetScreenShadowStateOnOrientationChangeEnabled={true}
                 aria-hidden={false}
                 collapsable={false}
+                fullScreenSwipeEnabled="undefined"
                 fullScreenSwipeShadowEnabled={true}
                 gestureResponseDistance={
                   {
@@ -116,6 +102,7 @@ exports[`renders correctly 1`] = `
                   ]
                 }
                 sheetCornerRadius={-1}
+                sheetDefaultResizeAnimationEnabled={true}
                 sheetElevation={24}
                 sheetExpandsWhenScrolledToEdge={true}
                 sheetGrabberVisible={false}
@@ -123,6 +110,7 @@ exports[`renders correctly 1`] = `
                 sheetInitialDetentIndex={0}
                 sheetLargestUndimmedDetent={-1}
                 sheetLargestUndimmedDetentIndex={-1}
+                sheetShouldOverflowTopInset={false}
                 stackPresentation="push"
                 style={
                   {
@@ -135,6 +123,7 @@ exports[`renders correctly 1`] = `
                   }
                 }
                 swipeDirection="horizontal"
+                synchronousShadowStateUpdatesEnabled={true}
               >
                 <RNSScreenContentWrapper
                   collapsable={false}
@@ -380,6 +369,9 @@ exports[`renders correctly 1`] = `
                                     "start": 0,
                                     "transform": [
                                       {
+                                        "translateX": 0,
+                                      },
+                                      {
                                         "scaleX": 0,
                                       },
                                       {
@@ -460,7 +452,6 @@ exports[`renders correctly 1`] = `
                                 onScroll={[Function]}
                                 onScrollBeginDrag={[Function]}
                                 onScrollEndDrag={[Function]}
-                                onViewableItemsChanged={[Function]}
                                 overScrollMode="never"
                                 removeClippedSubviews={false}
                                 renderItem={[Function]}
@@ -471,14 +462,7 @@ exports[`renders correctly 1`] = `
                                 showsHorizontalScrollIndicator={false}
                                 showsVerticalScrollIndicator={false}
                                 stickyHeaderIndices={[]}
-                                viewabilityConfigCallbackPairs={
-                                  [
-                                    {
-                                      "onViewableItemsChanged": [Function],
-                                      "viewabilityConfig": undefined,
-                                    },
-                                  ]
-                                }
+                                viewabilityConfigCallbackPairs={[]}
                               >
                                 <View>
                                   <View
@@ -536,6 +520,7 @@ exports[`renders correctly 1`] = `
                                           [
                                             {
                                               "backgroundColor": "transparent",
+                                              "borderCurve": "continuous",
                                               "borderRadius": 10,
                                             },
                                             null,
@@ -713,6 +698,7 @@ exports[`renders correctly 1`] = `
                                           [
                                             {
                                               "backgroundColor": "transparent",
+                                              "borderCurve": "continuous",
                                               "borderRadius": 10,
                                             },
                                             null,
@@ -890,6 +876,7 @@ exports[`renders correctly 1`] = `
                                           [
                                             {
                                               "backgroundColor": "transparent",
+                                              "borderCurve": "continuous",
                                               "borderRadius": 10,
                                             },
                                             null,
@@ -1067,6 +1054,7 @@ exports[`renders correctly 1`] = `
                                           [
                                             {
                                               "backgroundColor": "transparent",
+                                              "borderCurve": "continuous",
                                               "borderRadius": 10,
                                             },
                                             null,
@@ -1210,21 +1198,30 @@ exports[`renders correctly 1`] = `
                             onPageSelected={[Function]}
                             scrollEnabled={true}
                             style={
-                              {
-                                "flex": 1,
-                              }
+                              [
+                                {
+                                  "flex": 1,
+                                },
+                                null,
+                              ]
                             }
                           >
                             <View
                               collapsable={false}
                               style={
-                                {
-                                  "bottom": 0,
-                                  "left": 0,
-                                  "position": "absolute",
-                                  "right": 0,
-                                  "top": 0,
-                                }
+                                [
+                                  {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute",
+                                    "right": 0,
+                                    "top": 0,
+                                  },
+                                  {
+                                    "marginLeft": 0,
+                                    "marginRight": 0,
+                                  },
+                                ]
                               }
                             >
                               <View
@@ -2402,13 +2399,19 @@ exports[`renders correctly 1`] = `
                             <View
                               collapsable={false}
                               style={
-                                {
-                                  "bottom": 0,
-                                  "left": 0,
-                                  "position": "absolute",
-                                  "right": 0,
-                                  "top": 0,
-                                }
+                                [
+                                  {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute",
+                                    "right": 0,
+                                    "top": 0,
+                                  },
+                                  {
+                                    "marginLeft": 0,
+                                    "marginRight": 0,
+                                  },
+                                ]
                               }
                             >
                               <View
@@ -2442,13 +2445,19 @@ exports[`renders correctly 1`] = `
                             <View
                               collapsable={false}
                               style={
-                                {
-                                  "bottom": 0,
-                                  "left": 0,
-                                  "position": "absolute",
-                                  "right": 0,
-                                  "top": 0,
-                                }
+                                [
+                                  {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute",
+                                    "right": 0,
+                                    "top": 0,
+                                  },
+                                  {
+                                    "marginLeft": 0,
+                                    "marginRight": 0,
+                                  },
+                                ]
                               }
                             >
                               <View
@@ -2482,13 +2491,19 @@ exports[`renders correctly 1`] = `
                             <View
                               collapsable={false}
                               style={
-                                {
-                                  "bottom": 0,
-                                  "left": 0,
-                                  "position": "absolute",
-                                  "right": 0,
-                                  "top": 0,
-                                }
+                                [
+                                  {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute",
+                                    "right": 0,
+                                    "top": 0,
+                                  },
+                                  {
+                                    "marginLeft": 0,
+                                    "marginRight": 0,
+                                  },
+                                ]
                               }
                             >
                               <View
@@ -2531,6 +2546,10 @@ exports[`renders correctly 1`] = `
                   backTitleVisible={true}
                   backgroundColor="rgb(255, 255, 255)"
                   color="rgb(0, 122, 255)"
+                  consumeBottomInset={true}
+                  consumeLeftInset={true}
+                  consumeRightInset={true}
+                  consumeTopInset={true}
                   direction="ltr"
                   disableBackButtonMenu={false}
                   hidden={false}
@@ -2539,6 +2558,7 @@ exports[`renders correctly 1`] = `
                   largeTitleFontFamily="System"
                   largeTitleFontWeight="700"
                   largeTitleHideShadow={false}
+                  legacyTopInsetBehavior={false}
                   pointerEvents="box-none"
                   style={
                     {
@@ -2549,11 +2569,12 @@ exports[`renders correctly 1`] = `
                       "width": "100%",
                     }
                   }
+                  synchronousShadowStateUpdatesEnabled={true}
                   title="SITE_TABS"
                   titleColor="rgb(28, 28, 30)"
                   titleFontFamily="System"
                   titleFontWeight="600"
-                  topInsetEnabled={true}
+                  topInsetEnabled={false}
                   translucent={false}
                 />
               </RNSScreen>

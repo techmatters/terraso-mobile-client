@@ -1,0 +1,18 @@
+diff --git a/node_modules/react-native/Libraries/Animated/nodes/AnimatedNode.js b/node_modules/react-native/Libraries/Animated/nodes/AnimatedNode.js
+index 29ca679..72bafc3 100644
+--- a/node_modules/react-native/Libraries/Animated/nodes/AnimatedNode.js
++++ b/node_modules/react-native/Libraries/Animated/nodes/AnimatedNode.js
+@@ -121,6 +121,13 @@ export default class AnimatedNode {
+   }
+ 
+   __callListeners(value: number): void {
++    // terraso-mobile-client patch: guard against subclasses (some 3rd-party
++    // Animated-alike libs, including old native-base code paths) that reinit
++    // this._listeners to a plain object or leave it uninitialized. RN 0.83
++    // changed _listeners from an object to a Map; some libs weren't updated.
++    // Skipping the listener notification here is fine — the affected libs
++    // never relied on the listeners firing in the first place.
++    if (typeof this._listeners?.forEach !== 'function') return;
+     const event = {value};
+     this._listeners.forEach(listener => {
+       listener(event);

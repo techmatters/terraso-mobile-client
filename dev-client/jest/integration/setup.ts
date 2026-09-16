@@ -26,6 +26,19 @@ import {setAPIConfig} from 'terraso-client-shared/config';
 // needed for connectivity related tests
 jest.mock('@react-native-community/netinfo', () => mockRNCNetInfo);
 
+// react-native-worklets 0.8+ (which reanimated 4.x requires) hard-asserts
+// that its native side is initialized when imported. reanimated's own mock
+// still transitively imports worklets, so we need to stub worklets first
+// or the mock throws "Native part of Worklets doesn't seem to be initialized".
+// The stub is a recursive proxy: any property access AND any call returns
+// the same proxy, so `foo()`, `foo.bar`, `foo.bar.baz()` all no-op cleanly.
+// The `then` special-case avoids confusing anything that duck-types Promises.
+const mockWorkletsStub: any = new Proxy(function () {}, {
+  get: (_target, prop) => (prop === 'then' ? undefined : mockWorkletsStub),
+  apply: () => mockWorkletsStub,
+});
+jest.mock('react-native-worklets', () => mockWorkletsStub);
+
 // the next 3 jest calls are to get animated components to work in tests
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
@@ -51,6 +64,14 @@ jest.mock('@gorhom/bottom-sheet', () => ({
 }));
 
 jest.mock('expo-asset');
+
+// expo-media-library@56 exports classes that extend a native module
+// (`ExpoMediaLibraryNext`), which is undefined at import time in jest and
+// throws "Super expression must either be null or a function". Stub the one
+// API our code uses (createAssetAsync).
+jest.mock('expo-media-library', () => ({
+  createAssetAsync: jest.fn(() => Promise.resolve()),
+}));
 
 jest.mock('react-native-share', () => ({
   default: {

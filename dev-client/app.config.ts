@@ -185,7 +185,7 @@ const defaultConfig: ExpoConfig = {
   name: 'LandPKS Soil ID',
   slug: 'landpks',
   version: '1.4.8',
-  newArchEnabled: true,
+  // newArchEnabled removed as of SDK 55 — new arch is always on now.
   orientation: 'portrait',
   splash: {
     image: 'src/assets/splash.png',
@@ -236,7 +236,12 @@ const defaultConfig: ExpoConfig = {
       'aps-environment': 'development',
     },
     infoPlist: {
-      LSMinimumSystemVersion: '12.0',
+      // Apple's Xcode-26 validator (ITMS-91164) rejects LSMinimumSystemVersion
+      // values in the 16.0–25.x range because macOS numbering jumped from
+      // 15.x straight to 26.0 (Tahoe). Must be either <16.0 or ≥26.0. This
+      // key only controls the min macOS version for "Designed for iPad" on
+      // Apple Silicon; iOS API surface is governed by ios.deploymentTarget.
+      LSMinimumSystemVersion: '15.0',
       CFBundleAllowMixedLocalizations: true,
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription:
@@ -252,6 +257,10 @@ const defaultConfig: ExpoConfig = {
     },
   },
   plugins: [
+    // Required as of Expo SDK 55 — previously auto-registered.
+    '@sentry/react-native',
+    'expo-asset',
+    'expo-font',
     ['expo-apple-authentication'],
     ['expo-localization'],
     ['expo-screen-orientation', {initialOrientation: 'PORTRAIT'}],

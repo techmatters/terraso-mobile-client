@@ -99,7 +99,10 @@ describe('getLanguage', () => {
 
     it('should return fallback language when getLocales returns empty array', () => {
       mockKvStorage.getString.mockReturnValue(undefined);
-      mockGetLocales.mockReturnValue([]);
+      // expo-localization's getLocales type became a non-empty tuple as of
+      // SDK 55, but the empty-array case is exactly what this test needs to
+      // simulate (device with no locales configured).
+      mockGetLocales.mockReturnValue([] as any);
 
       const result = getLanguage();
 

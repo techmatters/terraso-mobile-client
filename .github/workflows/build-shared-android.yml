@@ -97,6 +97,15 @@ jobs:
           distribution: "temurin"
           cache: gradle
 
+      # RN 0.83 / Expo SDK 56 asks for NDK 27.0.12077973 at build time.
+      # The ubuntu-latest runner only preinstalls NDK 26, and Gradle's
+      # auto-install via sdkmanager fails inside the build. Install it
+      # explicitly here (this action also accepts SDK licences).
+      - name: Install Android NDK 27
+        uses: android-actions/setup-android@v4
+        with:
+          packages: "ndk;27.0.12077973"
+
       - name: Build Android app bundle
         working-directory: ./dev-client/android
         run: ./gradlew bundleRelease
@@ -115,12 +124,12 @@ jobs:
 
       - name: Upload App to Google Play
         if: ${{ inputs.upload == 'true' }}
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@v1.1.5
         with:
           serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
           releaseName: "LandPKS Soil ID"
           packageName: org.terraso.landpks
           releaseFiles: ${{ steps.sign_app.outputs.signedFile }}
-          track: internal
+          tracks: internal
           status: draft
           inAppUpdatePriority: 2
