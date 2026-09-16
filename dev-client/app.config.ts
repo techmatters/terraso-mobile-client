@@ -236,7 +236,12 @@ const defaultConfig: ExpoConfig = {
       'aps-environment': 'development',
     },
     infoPlist: {
-      LSMinimumSystemVersion: '16.4',
+      // Apple's Xcode-26 validator (ITMS-91164) rejects LSMinimumSystemVersion
+      // values in the 16.0–25.x range because macOS numbering jumped from
+      // 15.x straight to 26.0 (Tahoe). Must be either <16.0 or ≥26.0. This
+      // key only controls the min macOS version for "Designed for iPad" on
+      // Apple Silicon; iOS API surface is governed by ios.deploymentTarget.
+      LSMinimumSystemVersion: '15.0',
       CFBundleAllowMixedLocalizations: true,
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription:
