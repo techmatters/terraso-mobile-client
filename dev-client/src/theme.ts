@@ -492,6 +492,11 @@ export const theme = extendTheme({
           lineHeight: '14px',
           fontWeight: 500,
         },
+        pCarousel: {
+          fontSize: '20px',
+          lineHeight: 30,
+          fontWeight: 400,
+        },
       },
     },
     Heading: {

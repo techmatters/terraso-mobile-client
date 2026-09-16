@@ -30,10 +30,23 @@ import 'terraso-mobile-client/translations';
 /* The indicator is the only thing tying the two zones together, so these cover
  * that it tracks the pager and that both zones actually page as one unit. */
 
+/* Art carries an accessibility label only because that is the one per-page handle an image gives a query to grab. */
 const PAGES = [
-  {key: 'a', above: <Text>art A</Text>, below: <Text>copy A</Text>},
-  {key: 'b', above: <Text>art B</Text>, below: <Text>copy B</Text>},
-  {key: 'c', above: <Text>art C</Text>, below: <Text>copy C</Text>},
+  {
+    key: 'a',
+    image: {source: {uri: 'a'}, accessibilityLabel: 'art A'},
+    below: <Text>copy A</Text>,
+  },
+  {
+    key: 'b',
+    image: {source: {uri: 'b'}, accessibilityLabel: 'art B'},
+    below: <Text>copy B</Text>,
+  },
+  {
+    key: 'c',
+    image: {source: {uri: 'c'}, accessibilityLabel: 'art C'},
+    below: <Text>copy C</Text>,
+  },
 ];
 
 /* The copy zone pads itself clear of the bottom inset, and useSafeAreaInsets throws outright when nothing supplies one. Feeding the context directly is enough — SafeAreaProvider would add frame plumbing no test here reads. */
@@ -59,7 +72,7 @@ describe('Carousel', () => {
     renderCarousel();
 
     for (const suffix of ['A', 'B', 'C']) {
-      expect(screen.getByText(`art ${suffix}`)).toBeTruthy();
+      expect(screen.getByLabelText(`art ${suffix}`)).toBeTruthy();
       expect(screen.getByText(`copy ${suffix}`)).toBeTruthy();
     }
   });

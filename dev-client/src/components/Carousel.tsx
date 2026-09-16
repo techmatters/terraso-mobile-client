@@ -20,6 +20,10 @@ import {StyleSheet, View} from 'react-native';
 import PagerView, {PagerViewOnPageSelectedEvent} from 'react-native-pager-view';
 
 import {
+  CarouselImage,
+  CarouselImageProps,
+} from 'terraso-mobile-client/components/CarouselImage';
+import {
   CarouselPageIndicator,
   INDICATOR_HEIGHT,
 } from 'terraso-mobile-client/components/CarouselPageIndicator';
@@ -27,27 +31,32 @@ import {BottomInsetScrollView} from 'terraso-mobile-client/components/safeview/B
 
 export type CarouselPage = {
   key: string;
-  above: React.ReactNode;
+  image: CarouselImageProps;
+  /* Standards for text in the 'below' section:
+   * - Use h5 for header, and center it
+   * - Use pCarousel for body text
+   */
   below: React.ReactNode;
 };
 
-/* A percentage resolves against the carousel's own height, not the window's — the carousel is typically inside a sheet, so a window fraction would overshoot by the header and padding. */
+/* A percentage resolves against the carousel's own height.
+ * CarouselImage scales each page's art to fit it uncropped.
+ */
 export type CarouselZoneHeight = number | `${number}%`;
+
+/* Roughly 60 characters at the copy's 20px type — the upper end of what reads comfortably. Relevant for tablets. */
+const COPY_MAX_WIDTH = 600;
 
 export type CarouselProps = {
   pages: CarouselPage[];
-  /* Sizes the art zone only; it does not scale what you put in it. Art should fill the zone and use resizeMode="contain", which keeps its aspect ratio and scales it down centered when the zone is the wrong shape for it. Both zones live in a single pager so they stay in sync, so this is also what fixes the indicator's vertical position across pages. */
   aboveHeight: CarouselZoneHeight;
   initialPage?: number;
   onPageChange?: (index: number) => void;
 };
 
 /*
- * Horizontally paged carousel with a page indicator sandwiched between two
- * per-page content zones. The zone above the indicator is a fixed height; the
- * zone below takes the remaining space and scrolls internally when its content
- * overflows, so long copy degrades gracefully on short devices instead of
- * squashing the artwork.
+ * Horizontally paged carousel with a page indicator sandwiched between each
+ * page's art and its content.
  */
 export const Carousel = ({
   pages,
@@ -78,12 +87,16 @@ export const Carousel = ({
         style={styles.pager}
         initialPage={initialPage}
         onPageSelected={onPageSelected}>
-        {pages.map(({key, above, below}) => (
+        {pages.map(({key, image, below}) => (
           <View key={key} style={styles.page}>
-            <View style={aboveStyle}>{above}</View>
+            <View style={aboveStyle}>
+              <CarouselImage {...image} />
+            </View>
             {/* Holds open the band the indicator is absolutely positioned over. */}
             <View style={styles.indicatorSpacer} />
-            <BottomInsetScrollView>{below}</BottomInsetScrollView>
+            <BottomInsetScrollView contentContainerStyle={styles.below}>
+              {below}
+            </BottomInsetScrollView>
           </View>
         ))}
       </PagerView>
@@ -113,5 +126,11 @@ const styles = StyleSheet.create({
   },
   indicatorSpacer: {
     height: INDICATOR_HEIGHT,
+  },
+  /* Caps the line length on tablets, where full-width copy runs far past the ~60 characters a reader tracks comfortably. Never binds on phones, which are narrower than this. width is restored because alignSelf drops the container's default stretch. */
+  below: {
+    maxWidth: COPY_MAX_WIDTH,
+    width: '100%',
+    alignSelf: 'center',
   },
 });
