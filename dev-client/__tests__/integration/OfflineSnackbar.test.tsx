@@ -214,13 +214,14 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
       {route: 'PROJECT_VIEW', initialState: initialAppState},
     );
 
-    const snackbar = screen.queryByTestId(snackbarTestId);
-    expect(snackbar).toBeOnTheScreen();
+    // getByTestId throws if the snackbar isn't mounted — same runtime
+    // guarantee as expect().toBeOnTheScreen(), and TS sees a non-null value.
+    const snackbar = screen.getByTestId(snackbarTestId);
 
     // Dismiss snackbar
     // FYI: run timers so snackbar's dismissal animation completes
     await act(async () => {
-      fireEvent(snackbar!, 'onDismiss');
+      fireEvent(snackbar, 'onDismiss');
     });
     await act(async () => {
       jest.runAllTimers();
@@ -231,7 +232,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     // Fire the test button event to make a server request. The request is mocked to fail,
     // which should add a message to the notificationsSlice and trigger the snackbar.
     await act(async () => {
-      fireEvent.press(screen.queryByTestId('test-delete-project-btn')!);
+      fireEvent.press(screen.getByTestId('test-delete-project-btn'));
     });
 
     expect(screen.queryByTestId(snackbarTestId)).toBeOnTheScreen();
@@ -256,7 +257,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
     await act(async () => {
-      fireEvent.press(screen.queryByTestId('test-delete-project-btn')!);
+      fireEvent.press(screen.getByTestId('test-delete-project-btn'));
     });
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
@@ -278,13 +279,14 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
       {route: 'PROJECT_VIEW', initialState: initialAppState},
     );
 
-    const snackbar = screen.queryByTestId(snackbarTestId);
-    expect(snackbar).toBeOnTheScreen();
+    // getByTestId throws if the snackbar isn't mounted — same runtime
+    // guarantee as expect().toBeOnTheScreen(), and TS sees a non-null value.
+    const snackbar = screen.getByTestId(snackbarTestId);
 
     // Dismiss snackbar
     // FYI: run timers so snackbar's dismissal animation completes
     await act(async () => {
-      fireEvent(snackbar!, 'onDismiss');
+      fireEvent(snackbar, 'onDismiss');
     });
     await act(async () => {
       jest.runAllTimers();
@@ -293,7 +295,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
 
     await act(async () => {
-      fireEvent.press(screen.queryByTestId('test-delete-project-btn')!);
+      fireEvent.press(screen.getByTestId('test-delete-project-btn'));
     });
 
     expect(screen.queryByTestId(snackbarTestId)).not.toBeOnTheScreen();
