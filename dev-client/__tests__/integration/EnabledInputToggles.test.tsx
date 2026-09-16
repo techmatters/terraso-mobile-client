@@ -15,12 +15,11 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import type {ReactTestInstance} from 'react-test-renderer';
-
 import {act, fireEvent} from '@testing-library/react-native';
 /* The shared render wraps the app providers, and the integration setup calls
  * setAPIConfig — without it, importing soilDataSlice throws at module load. */
 import {render} from '@testing/integration/utils';
+import {isSwitchOn} from '@testing/isSwitchOn';
 import {Formik} from 'formik';
 
 import {
@@ -54,10 +53,6 @@ const intervalWith = (
  * translated strings that a POEditor sync can change. */
 const switchFor = (method: SoilPitMethod) => `${method}Enabled-switch`;
 
-/* The toggle reports its state to assistive tech rather than through a `value` prop. */
-const isOn = (element: ReactTestInstance) =>
-  element.props.accessibilityState.checked;
-
 const renderToggles = (
   interval: AggregatedInterval,
   requiredInputs: SoilPitMethod[],
@@ -84,7 +79,7 @@ describe('EnabledInputToggles', () => {
       [],
     );
 
-    expect(isOn(getByTestId(switchFor('soilColor')))).toBe(false);
+    expect(isSwitchOn(getByTestId(switchFor('soilColor')))).toBe(false);
   });
 
   test('shows a required method as on and locked, even when it was stored as off', () => {
@@ -94,7 +89,7 @@ describe('EnabledInputToggles', () => {
     );
 
     const element = getByTestId(switchFor('soilColor'));
-    expect(isOn(element)).toBe(true);
+    expect(isSwitchOn(element)).toBe(true);
     expect(element.props.accessibilityState.disabled).toBe(true);
   });
 
