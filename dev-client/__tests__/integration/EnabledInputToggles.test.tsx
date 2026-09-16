@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import type {ReactTestInstance} from 'react-test-renderer';
+
 import {act, fireEvent} from '@testing-library/react-native';
 /* The shared render wraps the app providers, and the integration setup calls
  * setAPIConfig — without it, importing soilDataSlice throws at module load. */
@@ -52,10 +54,8 @@ const intervalWith = (
  * translated strings that a POEditor sync can change. */
 const switchFor = (method: SoilPitMethod) => `${method}Enabled-switch`;
 
-/* The toggle reports its state to assistive tech rather than through a `value` prop.
- * Loose typing: RN 0.83's ReactTestInstance widened `props` to a plain index
- * signature, so a nested shape assertion here no longer holds. */
-const isOn = (element: {props: any}) =>
+/* The toggle reports its state to assistive tech rather than through a `value` prop. */
+const isOn = (element: ReactTestInstance) =>
   element.props.accessibilityState.checked;
 
 const renderToggles = (
