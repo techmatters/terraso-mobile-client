@@ -23,6 +23,7 @@ import {
   useSessionRecordingState,
 } from 'terraso-mobile-client/app/posthog/PostHog';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {useSelector} from 'terraso-mobile-client/store';
 
@@ -86,12 +87,14 @@ export function VersionIndicator() {
             })})`}
       </Text>
       {soilIdVersion ? (
-        <Text variant="body2">
-          {t('settings.soil_id_version', {
-            version: soilIdVersion,
-            defaultValue: 'Soil ID algorithm {{version}}',
-          })}
-        </Text>
+        <RestrictByFlag flag="FF_testing">
+          <Text variant="body2">
+            {t('settings.soil_id_version', {
+              version: soilIdVersion,
+              defaultValue: 'Soil ID algorithm {{version}}',
+            })}
+          </Text>
+        </RestrictByFlag>
       ) : null}
     </>
   );
