@@ -24,6 +24,7 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {TutorialCarouselButton} from 'terraso-mobile-client/components/buttons/TutorialCarouselButton';
 import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
+import {CarouselText} from 'terraso-mobile-client/components/CarouselText';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {
   Heading,
@@ -62,24 +63,13 @@ const PAGES: CarouselPage[] = [1, 2, 3, 4].map(n => ({
   image: {source: EXAMPLE_ART[n - 1]},
   below: (
     <View>
-      <Heading variant="h5" style={styles.heading}>
-        Page {n}
+      <Heading variant="h4" style={styles.heading}>
+        Soil identification matters!
       </Heading>
-      <Text variant="pCarousel">You can put ANYTHING in here</Text>
-      <Text variant="pCarousel">
-        Wooooooow look at how much text there is here -- So much text! Wow! So
-        much. It's text. HELLOOOOOOOOOOO as;ldf asdf asdf asdf asd a b c d e f g
-        h i j k l m n o p q r s t u v w x y z AND AGAIN! a b c d e f g h i j k l
-        m n o p q r s t u v w x y z NEVER STOP NEvER STOPPING \n \n a
-      </Text>
-      <Text variant="pCarousel">
-        test text test text test text test text test text test text test text
-        test text test text test text test text test text test text test text
-        test text test text test text test text test text test text test text
-        test text test text test text test text test text test text test text
-        test text test text test text test text test text test text test text
-        test text test text test text test text test text
-      </Text>
+      <CarouselText>
+        Soil identification is critical to land management decisions for
+        agriculture, construction, land use planning, restoration, and more.
+      </CarouselText>
     </View>
   ),
 }));
@@ -101,7 +91,6 @@ export const SoilIdDescriptionSection = ({
         label={t('site.soil_id.how_it_works')}
         animation={SHOVEL_ANIMATION}
         pages={PAGES}
-        aboveHeight="60%"
       />
       <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
     </ScreenContentSection>

@@ -20,11 +20,13 @@ import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 
 import {theme} from 'terraso-mobile-client/theme';
 
-/* Exported so the carousel can reserve a matching band of space inside each page. */
-export const INDICATOR_HEIGHT = 32;
-
 const DOT_SIZE = 7;
 const DOT_GAP = 8;
+/* Keeps the dots off the art above them and the copy below, which otherwise crowd the band. */
+const DOT_MARGIN = theme.space.sm;
+
+/* Exported so the carousel can reserve a matching band of space inside each page. */
+export const INDICATOR_HEIGHT = 32 + DOT_MARGIN * 2;
 
 export type CarouselPageIndicatorProps = {
   count: number;

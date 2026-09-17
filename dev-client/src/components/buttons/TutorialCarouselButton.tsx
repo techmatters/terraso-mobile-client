@@ -24,10 +24,7 @@ import {LottieViewProps} from 'lottie-react-native';
 
 import {AnimatedIcon} from 'terraso-mobile-client/components/AnimatedIcon';
 import {CarouselButton} from 'terraso-mobile-client/components/buttons/CarouselButton';
-import {
-  CarouselPage,
-  CarouselZoneHeight,
-} from 'terraso-mobile-client/components/Carousel';
+import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 const VIEWED_KEY_PREFIX = 'tutorial.viewedVersion.';
@@ -43,7 +40,6 @@ export type TutorialCarouselButtonProps = {
   label: string;
   animation: LottieViewProps['source'];
   pages: CarouselPage[];
-  aboveHeight: CarouselZoneHeight;
   sheetHeading?: React.ReactNode;
   iconSize?: number;
 };
@@ -61,7 +57,6 @@ export const TutorialCarouselButton = ({
   label,
   animation,
   pages,
-  aboveHeight,
   sheetHeading,
   iconSize,
 }: TutorialCarouselButtonProps) => {
@@ -85,7 +80,6 @@ export const TutorialCarouselButton = ({
       <CarouselButton
         label={label}
         pages={pages}
-        aboveHeight={aboveHeight}
         sheetHeading={sheetHeading}
         onPress={onPress}
       />

@@ -25,7 +25,6 @@ import {BigCloseButton} from 'terraso-mobile-client/components/buttons/icons/com
 import {
   Carousel,
   CarouselPage,
-  CarouselZoneHeight,
 } from 'terraso-mobile-client/components/Carousel';
 import {
   ModalContext,
@@ -37,7 +36,6 @@ import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type CarouselSheetProps = {
   pages: CarouselPage[];
-  aboveHeight: CarouselZoneHeight;
   heading?: React.ReactNode;
   trigger?: ModalTrigger;
 };
@@ -51,7 +49,7 @@ export type CarouselSheetProps = {
  * swipe; closing is via the header button.
  */
 export const CarouselSheet = forwardRef<ModalHandle, CarouselSheetProps>(
-  ({pages, aboveHeight, heading, trigger}: CarouselSheetProps, ref) => {
+  ({pages, heading, trigger}: CarouselSheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
     const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
 
@@ -72,7 +70,7 @@ export const CarouselSheet = forwardRef<ModalHandle, CarouselSheetProps>(
                 <View style={styles.headingContent}>{heading}</View>
                 <BigCloseButton onPress={handle.onClose} />
               </View>
-              <Carousel pages={pages} aboveHeight={aboveHeight} />
+              <Carousel pages={pages} />
             </View>
           </ModalContext.Provider>
         </GorhomBottomSheetModal>
@@ -82,12 +80,14 @@ export const CarouselSheet = forwardRef<ModalHandle, CarouselSheetProps>(
 );
 
 const styles = StyleSheet.create({
+  /* Unpadded horizontally and at the bottom: the carousel insets its own zones, and its copy scrolls all the way to the sheet's bottom edge rather than stopping short of it. */
   content: {
-    padding: 16,
+    paddingTop: 16,
     flex: 1,
   },
   headingRow: {
     flexDirection: 'row',
+    paddingHorizontal: 16,
     marginBottom: 16,
     alignContent: 'space-evenly',
     alignItems: 'center',

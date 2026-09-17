@@ -56,7 +56,7 @@ const renderCarousel = (
   render(
     <SafeAreaInsetsContext.Provider
       value={{top: 0, left: 0, right: 0, bottom: 0}}>
-      <Carousel pages={PAGES} aboveHeight={200} {...props} />
+      <Carousel pages={PAGES} {...props} />
     </SafeAreaInsetsContext.Provider>,
   );
 

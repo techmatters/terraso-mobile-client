@@ -173,7 +173,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   containerPill: {
-    paddingVertical: 4,
+    /* Height is specified rather than derived from padding, since the pill is spec'd at a fixed 32. minHeight, not height, so an OS text-size bump grows the button instead of clipping the label. */
+    minHeight: 32,
     paddingHorizontal: 10,
     /* Large enough to stay fully round at any height. */
     borderRadius: 100,

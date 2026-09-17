@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import PagerView, {PagerViewOnPageSelectedEvent} from 'react-native-pager-view';
 
@@ -28,13 +28,14 @@ import {
   INDICATOR_HEIGHT,
 } from 'terraso-mobile-client/components/CarouselPageIndicator';
 import {BottomInsetScrollView} from 'terraso-mobile-client/components/safeview/BottomInsetScrollView';
+import {theme} from 'terraso-mobile-client/theme';
 
 export type CarouselPage = {
   key: string;
   image: CarouselImageProps;
   /* Standards for text in the 'below' section:
    * - Use h5 for header, and center it
-   * - Use pCarousel for body text
+   * - Use CarouselText for body text, which carries the pCarousel variant and its leading
    */
   below: React.ReactNode;
 };
@@ -42,14 +43,16 @@ export type CarouselPage = {
 /* A percentage resolves against the carousel's own height.
  * CarouselImage scales each page's art to fit it uncropped.
  */
-export type CarouselZoneHeight = number | `${number}%`;
+const ABOVE_HEIGHT = '50%';
 
 /* Roughly 60 characters at the copy's 20px type — the upper end of what reads comfortably. Relevant for tablets. */
 const COPY_MAX_WIDTH = 600;
 
+/* Owned here rather than by the host so the carousel keeps its margins wherever it is mounted. Applied per zone, since the indicator spans the full width between them. */
+const ZONE_PADDING = theme.space.md;
+
 export type CarouselProps = {
   pages: CarouselPage[];
-  aboveHeight: CarouselZoneHeight;
   initialPage?: number;
   onPageChange?: (index: number) => void;
 };
@@ -60,7 +63,6 @@ export type CarouselProps = {
  */
 export const Carousel = ({
   pages,
-  aboveHeight,
   initialPage = 0,
   onPageChange,
 }: CarouselProps) => {
@@ -75,12 +77,6 @@ export const Carousel = ({
     [onPageChange],
   );
 
-  const aboveStyle = useMemo(
-    () => [styles.above, {height: aboveHeight}],
-    [aboveHeight],
-  );
-  const indicatorStyle = useMemo(() => ({top: aboveHeight}), [aboveHeight]);
-
   return (
     <View style={styles.container}>
       <PagerView
@@ -89,7 +85,7 @@ export const Carousel = ({
         onPageSelected={onPageSelected}>
         {pages.map(({key, image, below}) => (
           <View key={key} style={styles.page}>
-            <View style={aboveStyle}>
+            <View style={styles.above}>
               <CarouselImage {...image} />
             </View>
             {/* Holds open the band the indicator is absolutely positioned over. */}
@@ -102,7 +98,7 @@ export const Carousel = ({
       </PagerView>
       {/* Sits outside the pager so it stays put while pages swipe beneath it. */}
       <CarouselPageIndicator
-        style={indicatorStyle}
+        style={styles.indicator}
         count={pages.length}
         currentPage={currentPage}
       />
@@ -119,7 +115,12 @@ const styles = StyleSheet.create({
   },
   /* Clips oversized art so it cannot bleed over the indicator band and the copy below it. */
   above: {
+    height: ABOVE_HEIGHT,
+    paddingHorizontal: ZONE_PADDING,
     overflow: 'hidden',
+  },
+  indicator: {
+    top: ABOVE_HEIGHT,
   },
   page: {
     flex: 1,
@@ -127,10 +128,10 @@ const styles = StyleSheet.create({
   indicatorSpacer: {
     height: INDICATOR_HEIGHT,
   },
-  /* Caps the line length on tablets, where full-width copy runs far past the ~60 characters a reader tracks comfortably. Never binds on phones, which are narrower than this. width is restored because alignSelf drops the container's default stretch. */
   below: {
     maxWidth: COPY_MAX_WIDTH,
     width: '100%',
     alignSelf: 'center',
+    paddingHorizontal: ZONE_PADDING,
   },
 });

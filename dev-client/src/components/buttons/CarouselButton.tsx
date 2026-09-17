@@ -16,16 +16,12 @@
  */
 
 import {PillButton} from 'terraso-mobile-client/components/buttons/PillButton';
-import {
-  CarouselPage,
-  CarouselZoneHeight,
-} from 'terraso-mobile-client/components/Carousel';
+import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {CarouselSheet} from 'terraso-mobile-client/components/sheets/CarouselSheet';
 
 export type CarouselButtonProps = {
   label: string;
   pages: CarouselPage[];
-  aboveHeight: CarouselZoneHeight;
   sheetHeading?: React.ReactNode;
   /* Fires alongside opening the sheet, for callers tracking whether the carousel has been viewed. */
   onPress?: () => void;
@@ -38,13 +34,11 @@ export type CarouselButtonProps = {
 export const CarouselButton = ({
   label,
   pages,
-  aboveHeight,
   sheetHeading,
   onPress,
 }: CarouselButtonProps) => (
   <CarouselSheet
     pages={pages}
-    aboveHeight={aboveHeight}
     heading={sheetHeading}
     trigger={onOpen => (
       <PillButton
