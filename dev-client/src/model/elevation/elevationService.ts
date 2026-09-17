@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {fetchElevation} from 'terraso-client-shared/soilId/soilIdService';
+import {fetchElevation} from 'terraso-client-shared/elevation/elevationService';
 
 const ELEVATION_FETCH_TIMEOUT_MS = 10000;
 

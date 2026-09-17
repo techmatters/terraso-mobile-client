@@ -359,6 +359,7 @@
         "unknown_version": "Untagged application version {{environment}}",
         "staging": "staging",
         "version": "Version {{version}} ({{build}}) {{environment}}",
+        "soil_id_version": "Soil ID algorithm {{version}}",
         "select_language": "Language: {{language}}"
     },
     "general": {
