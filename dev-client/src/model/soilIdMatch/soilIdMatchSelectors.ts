@@ -75,24 +75,33 @@ export const selectNextDataBasedInputs = createSelector(
       (state: AppState) => state.soilData.soilData,
       (state: AppState) => state.soilData.projectSettings,
     ],
-    /* Combine soil data with site IDs to extract relevant entries */
+    /* Combine soil data with site IDs to extract relevant entries,
+       plus site elevation so we can forward it to the soil-ID backend. */
     (siteIds, sites, soilData, projectSettings) =>
       Object.fromEntries(
         siteIds.map(siteId => {
           return [
             siteId,
-            getVisibleSoilDataForSite(siteId, sites, soilData, projectSettings),
+            {
+              soilData: getVisibleSoilDataForSite(
+                siteId,
+                sites,
+                soilData,
+                projectSettings,
+              ),
+              elevation: sites[siteId]?.elevation,
+            },
           ];
         }),
       ),
   ),
 
-  /* Pass site-specific soil data through input format converter */
-  soilData =>
+  /* Pass site-specific soil data + elevation through input format converter */
+  perSite =>
     Object.fromEntries(
-      Object.entries(soilData).map(([siteId, siteSoilData]) => [
+      Object.entries(perSite).map(([siteId, {soilData, elevation}]) => [
         siteId,
-        siteSoilData ? soilDataToIdInput(siteSoilData) : undefined,
+        soilData ? soilDataToIdInput(soilData, elevation) : undefined,
       ]),
     ),
 );

@@ -79,6 +79,36 @@ describe('selectNextDataBasedInputs', () => {
     });
   });
 
+  test('forwards site elevation to soil ID input', () => {
+    const baseAppState = createMockAppState();
+    const site = generateSite();
+    site.elevation = 987;
+    const state = {
+      ...baseAppState,
+      site: {sites: {[site.id]: site}, siteSync: {}, siteDeletedByUser: false},
+    };
+    const selected = renderSelectorHook(
+      () => useSelector(s => selectNextDataBasedInputs(s, [site.id])),
+      state,
+    );
+    expect(selected[site.id]?.elevation).toBe(987);
+  });
+
+  test('omits elevation when the site has none', () => {
+    const baseAppState = createMockAppState();
+    const site = generateSite();
+    site.elevation = null;
+    const state = {
+      ...baseAppState,
+      site: {sites: {[site.id]: site}, siteSync: {}, siteDeletedByUser: false},
+    };
+    const selected = renderSelectorHook(
+      () => useSelector(s => selectNextDataBasedInputs(s, [site.id])),
+      state,
+    );
+    expect(selected[site.id]?.elevation).toBeUndefined();
+  });
+
   test('includes data at custom project depths', () => {
     const baseAppState = createMockAppState();
 
