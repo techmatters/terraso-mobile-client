@@ -53,12 +53,11 @@ import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
 /**
  * The soil-ID algorithm's MAJOR.MINOR (ignoring PATCH). Clients flush cached
  * matches when this changes; a PATCH-only bump does not (it cannot change
- * rankings). Returns undefined for a missing/blank version.
+ * rankings). Callers guard against a missing/blank pulled version before
+ * calling; the stored version is always a real string ('0.0.0' sentinel or
+ * a real semver from a prior pull).
  */
-const soilIdMajorMinor = (version?: string): string | undefined => {
-  if (!version) {
-    return undefined;
-  }
+const soilIdMajorMinor = (version: string): string => {
   const [major = '', minor = ''] = version.split('.');
   return `${major}.${minor}`;
 };
