@@ -37,7 +37,10 @@ const createAppState = () => ({
   map: {userLocation: {accuracyM: null, coords: null}},
   elevation: {elevationCache: {}},
   notifications: {messages: {}},
-  preferences: {colorWorkflow: 'MANUAL' as ColorWorkflow},
+  preferences: {
+    colorWorkflow: 'MANUAL' as ColorWorkflow,
+    soilIdAlgorithmVersion: '0.0.0',
+  },
   project: {projects: {}},
   site: {sites: {}, siteSync: {}, siteDeletedByUser: false},
   soilData: {

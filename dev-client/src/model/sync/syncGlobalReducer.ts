@@ -99,17 +99,17 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
 
     // Flush cached soil-ID matches when the algorithm's MAJOR/MINOR changes (a
     // result-affecting release); a PATCH-only bump can't change rankings, so it
-    // does not flush. First run (no stored version) stores silently without
-    // flushing. We always store the latest full semver for display + PATCH
-    // tracking. A full clear also resets each site entry's `.input`, so both
-    // location- and site-based matches re-fetch lazily on next view.
+    // does not flush. The stored version starts at the '0.0.0' sentinel, so
+    // the first real pull differs in MAJOR/MINOR and flushes — safe against
+    // stale caches from a prior algorithm version on upgrading installs, and
+    // a no-op on fresh installs (cache is empty). We always store the latest
+    // full semver for display + PATCH tracking. A full clear also resets each
+    // site entry's `.input`, so both location- and site-based matches re-fetch
+    // lazily on next view.
     const pulledVersion = payload.soilIdAlgorithmVersion;
     if (pulledVersion) {
       const storedVersion = state.preferences.soilIdAlgorithmVersion;
-      if (
-        storedVersion !== undefined &&
-        soilIdMajorMinor(pulledVersion) !== soilIdMajorMinor(storedVersion)
-      ) {
+      if (soilIdMajorMinor(pulledVersion) !== soilIdMajorMinor(storedVersion)) {
         clearAllMatches(state.soilIdMatch);
       }
       state.preferences.soilIdAlgorithmVersion = pulledVersion;
