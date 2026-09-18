@@ -422,6 +422,7 @@
         "terms_of_service_link_text": "Condiciones de servicio",
         "read_only": "Solo lectura",
         "carousel": {
+            "overview": "TK Overview",
             "page_indicator": "TK Page {{current}} of {{total}}"
         }
     },

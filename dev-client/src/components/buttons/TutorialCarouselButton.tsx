@@ -37,7 +37,6 @@ export type TutorialCarouselButtonProps = {
   tutorialKey: string;
   /* Bump when the carousel gains content worth re-advertising, which re-arms the animation for users who already viewed an older version. Deliberately manual rather than a content hash: `pages` holds JSX, which has no stable serialization, and a typo fix should not re-nag everyone. */
   contentVersion: number;
-  label: string;
   animation: LottieViewProps['source'];
   pages: CarouselPage[];
   sheetHeading?: React.ReactNode;
@@ -54,7 +53,6 @@ export type TutorialCarouselButtonProps = {
 export const TutorialCarouselButton = ({
   tutorialKey,
   contentVersion,
-  label,
   animation,
   pages,
   sheetHeading,
@@ -78,7 +76,6 @@ export const TutorialCarouselButton = ({
   return (
     <View style={styles.row}>
       <CarouselButton
-        label={label}
         pages={pages}
         sheetHeading={sheetHeading}
         onPress={onPress}

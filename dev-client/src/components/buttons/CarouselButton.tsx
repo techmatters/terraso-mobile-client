@@ -15,12 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {PillButton} from 'terraso-mobile-client/components/buttons/PillButton';
 import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {CarouselSheet} from 'terraso-mobile-client/components/sheets/CarouselSheet';
 
 export type CarouselButtonProps = {
-  label: string;
   pages: CarouselPage[];
   sheetHeading?: React.ReactNode;
   /* Fires alongside opening the sheet, for callers tracking whether the carousel has been viewed. */
@@ -32,22 +33,25 @@ export type CarouselButtonProps = {
  * name, so unlike an image trigger there is nothing extra for callers to supply.
  */
 export const CarouselButton = ({
-  label,
   pages,
   sheetHeading,
   onPress,
-}: CarouselButtonProps) => (
-  <CarouselSheet
-    pages={pages}
-    heading={sheetHeading}
-    trigger={onOpen => (
-      <PillButton
-        label={label}
-        onPress={() => {
-          onPress?.();
-          onOpen();
-        }}
-      />
-    )}
-  />
-);
+}: CarouselButtonProps) => {
+  const {t} = useTranslation();
+
+  return (
+    <CarouselSheet
+      pages={pages}
+      heading={sheetHeading}
+      trigger={onOpen => (
+        <PillButton
+          label={t('general.carousel.overview')}
+          onPress={() => {
+            onPress?.();
+            onOpen();
+          }}
+        />
+      )}
+    />
+  );
+};

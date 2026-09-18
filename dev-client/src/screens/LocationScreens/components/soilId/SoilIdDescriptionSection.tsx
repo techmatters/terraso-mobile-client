@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet} from 'react-native';
 
 import {TFunction} from 'i18next';
 
@@ -24,13 +24,10 @@ import {Coords} from 'terraso-client-shared/types';
 
 import {TutorialCarouselButton} from 'terraso-mobile-client/components/buttons/TutorialCarouselButton';
 import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
+import {CarouselHeading} from 'terraso-mobile-client/components/CarouselHeading';
 import {CarouselText} from 'terraso-mobile-client/components/CarouselText';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
-import {
-  Heading,
-  Text,
-  View,
-} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
@@ -50,29 +47,28 @@ const EXAMPLE_ART = [
   require('terraso-mobile-client/assets/carousel-soilid/4.jpg'),
 ];
 
-/* Declared above PAGES because the JSX below is built at module load and would otherwise read styles in its temporal dead zone. */
-const styles = StyleSheet.create({
-  heading: {
-    textAlign: 'center',
-    paddingBottom: 16,
-  },
-});
+/* A hook rather than a module constant because the copy is translated, and t is only reachable during render. */
+const useOverviewPages = (): CarouselPage[] => {
+  const {t} = useTranslation();
 
-const PAGES: CarouselPage[] = [1, 2, 3, 4].map(n => ({
-  key: String(n),
-  image: {source: EXAMPLE_ART[n - 1]},
-  below: (
-    <View>
-      <Heading variant="h4" style={styles.heading}>
-        Soil identification matters!
-      </Heading>
-      <CarouselText>
-        Soil identification is critical to land management decisions for
-        agriculture, construction, land use planning, restoration, and more.
-      </CarouselText>
-    </View>
-  ),
-}));
+  return useMemo(
+    () =>
+      EXAMPLE_ART.map((source, index) => {
+        const page = `site.soil_id.overview.page_${index + 1}`;
+        return {
+          key: String(index + 1),
+          image: {source},
+          below: (
+            <View>
+              <CarouselHeading>{t(`${page}.title`)}</CarouselHeading>
+              <CarouselText>{t(`${page}.info`)}</CarouselText>
+            </View>
+          ),
+        };
+      }),
+    [t],
+  );
+};
 
 export const SoilIdDescriptionSection = ({
   siteId,
@@ -82,15 +78,15 @@ export const SoilIdDescriptionSection = ({
   const input = siteId ? {siteId} : {coords};
   const soilIdOutput = useSoilIdOutput(input);
   const dataRegion = soilIdOutput.dataRegion;
+  const pages = useOverviewPages();
 
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
       <TutorialCarouselButton
         tutorialKey="soil-id-how-it-works"
         contentVersion={1}
-        label={t('site.soil_id.how_it_works')}
         animation={SHOVEL_ANIMATION}
-        pages={PAGES}
+        pages={pages}
       />
       <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
     </ScreenContentSection>

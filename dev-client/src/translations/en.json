@@ -78,7 +78,12 @@
             "default_title": "Temporary Pin"
         },
         "soil_id": {
-            "how_it_works": "How does it work?",
+            "overview": {
+                "page_1": {
+                    "title": "Soil identification matters!",
+                    "info": "Soil identification is critical to land management decisions for agriculture, construction, land use planning, restoration, and more."
+                }
+            },
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID uses data from soil maps to calculate predictions for the soil at this location. Create a site at this location to enter observations and improve the results.",
@@ -430,6 +435,7 @@
         "learn_more": "Learn more",
         "read_only": "Read-only",
         "carousel": {
+            "overview": "Overview",
             "page_indicator": "Page {{current}} of {{total}}"
         }
     },

@@ -33,10 +33,7 @@ import {theme} from 'terraso-mobile-client/theme';
 export type CarouselPage = {
   key: string;
   image: CarouselImageProps;
-  /* Standards for text in the 'below' section:
-   * - Use h5 for header, and center it
-   * - Use CarouselText for body text, which carries the pCarousel variant and its leading
-   */
+  /* Use CarouselHeading and CarouselText for consistent style */
   below: React.ReactNode;
 };
 

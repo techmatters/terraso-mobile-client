@@ -422,6 +422,7 @@
         "terms_of_service_link_text": "Умови надання послуг",
         "read_only": "Лише для читання",
         "carousel": {
+            "overview": "TK Overview",
             "page_indicator": "TK Page {{current}} of {{total}}"
         }
     },

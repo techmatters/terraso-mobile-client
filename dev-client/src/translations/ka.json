@@ -422,6 +422,7 @@
         "terms_of_service_link_text": "მომსახურების პირობები",
         "read_only": "მხოლოდ წასაკითხი",
         "carousel": {
+            "overview": "TK Overview",
             "page_indicator": "TK Page {{current}} of {{total}}"
         }
     },
