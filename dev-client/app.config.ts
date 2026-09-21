@@ -292,9 +292,17 @@ const defaultConfig: ExpoConfig = {
     [
       'expo-build-properties',
       {
-        ios: {},
+        ios: {
+          // SDK 57's hard floor — the expo-build-properties plugin refuses
+          // anything lower with "Error: ios.deploymentTarget needs to be at
+          // least version 16.4." Presumably one of the bundled expo-*
+          // modules uses an iOS 16.4 API. Not our choice — go up if a
+          // future dep demands it, but there's no reason to go higher yet.
+          deploymentTarget: '16.4',
+        },
         android: {
-          gradleVersion: '8.14.3',
+          // No gradleVersion pin: SDK 57 / RN 0.86 sets the wrapper to 9.3.1
+          // regardless of what we put here — the override was dead config.
           minSdkVersion: 26, // Required for PostHog session replay
         },
       },
