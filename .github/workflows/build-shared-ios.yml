@@ -114,7 +114,10 @@ jobs:
         run: |
           brew install fastlane
           RUBY_GEM="$(brew --prefix ruby)/bin/gem"
-          "$RUBY_GEM" install --no-document bigdecimal nkf abbrev fiddle mutex_m ostruct
+          # /opt/homebrew/lib/ruby/gems/4.0.0/ is root-owned, so we need
+          # sudo to install into Ruby 4's system gem path. Passwordless
+          # sudo is available on GitHub-hosted runners.
+          sudo "$RUBY_GEM" install --no-document bigdecimal nkf abbrev fiddle mutex_m ostruct
 
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.13.0
