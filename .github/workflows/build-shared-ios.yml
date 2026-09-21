@@ -121,7 +121,7 @@ jobs:
           FASTLANE_HOME="$HOME/.local/share/fastlane/4.0.0"
           mkdir -p "$FASTLANE_HOME"
           "$RUBY_GEM" install --install-dir "$FASTLANE_HOME" --no-document \
-            bigdecimal nkf abbrev fiddle mutex_m ostruct
+            bigdecimal nkf abbrev fiddle mutex_m ostruct digest-crc
 
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.13.0
