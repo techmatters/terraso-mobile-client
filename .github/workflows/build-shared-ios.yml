@@ -99,6 +99,23 @@ jobs:
           bundler-cache: true
           working-directory: dev-client
 
+      # yukiarrr/ios-build-action@v1.13.0 internally runs `brew install fastlane`.
+      # On the xcode-27 runner (macOS Tahoe) Homebrew's fastlane pulls in
+      # Ruby 4.0.6 as a dependency, and Ruby 4 dropped `bigdecimal` (and a
+      # few other gems) from stdlib — fastlane 2.239.x still requires them,
+      # so it crashes on startup with `Gem::MissingSpecError`.
+      # Do the brew install ourselves here, then gem-install the missing
+      # stdlib refugees into Ruby 4's path. yukiarrr's later brew step then
+      # finds fastlane already installed and no-ops. Delete this whole step
+      # once either (a) yukiarrr publishes a version that manages its own
+      # Ruby version, or (b) Homebrew fastlane starts declaring its stdlib
+      # gems explicitly.
+      - name: Prep fastlane for Ruby 4 (bigdecimal / nkf / …)
+        run: |
+          brew install fastlane
+          RUBY_GEM="$(brew --prefix ruby)/bin/gem"
+          "$RUBY_GEM" install --no-document bigdecimal nkf abbrev fiddle mutex_m ostruct
+
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.13.0
         with:
