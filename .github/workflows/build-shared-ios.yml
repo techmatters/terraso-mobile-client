@@ -114,10 +114,14 @@ jobs:
         run: |
           brew install fastlane
           RUBY_GEM="$(brew --prefix ruby)/bin/gem"
-          # /opt/homebrew/lib/ruby/gems/4.0.0/ is root-owned, so we need
-          # sudo to install into Ruby 4's system gem path. Passwordless
-          # sudo is available on GitHub-hosted runners.
-          sudo "$RUBY_GEM" install --no-document bigdecimal nkf abbrev fiddle mutex_m ostruct
+          # fastlane's GEM_PATH is hard-set to `~/.local/share/fastlane/4.0.0`
+          # + its own Cellar libexec; anywhere else (e.g. Ruby 4's default
+          # system gem dir) is invisible to it. Install our stdlib refugees
+          # directly into fastlane's expected home so it can find them.
+          FASTLANE_HOME="$HOME/.local/share/fastlane/4.0.0"
+          mkdir -p "$FASTLANE_HOME"
+          "$RUBY_GEM" install --install-dir "$FASTLANE_HOME" --no-document \
+            bigdecimal nkf abbrev fiddle mutex_m ostruct
 
       - name: Build iOS App
         uses: yukiarrr/ios-build-action@v1.13.0
