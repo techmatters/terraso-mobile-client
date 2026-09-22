@@ -61,6 +61,13 @@ i18n.use(initReactI18next).init({
   interpolation: {
     // react already escapes HTML tags by default
     escapeValue: false,
+    // i18next 26+ warning: `escapeValue: false` + a variable that happens to
+    // contain nesting syntax like `$t(...)` would let that syntax follow-
+    // through into another key lookup. All our t() call sites feed app-
+    // generated values (site names, counts, error text), never attacker-
+    // controlled input, so the surface is zero — but this option turns it
+    // off explicitly, which also silences the warning.
+    skipOnVariables: true,
   },
 });
 
