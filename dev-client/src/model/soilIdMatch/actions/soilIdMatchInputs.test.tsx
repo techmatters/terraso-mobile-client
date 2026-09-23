@@ -34,15 +34,15 @@ describe('degreeToPercent', () => {
 
 describe('selectToPercent', () => {
   test('maps all values', () => {
-    expect(selectToPercent('FLAT')).toEqual(0.0);
-    expect(selectToPercent('GENTLE')).toEqual(2);
-    expect(selectToPercent('HILLY')).toEqual(15);
-    expect(selectToPercent('MODERATE')).toEqual(5);
-    expect(selectToPercent('MODERATELY_STEEP')).toEqual(50);
-    expect(selectToPercent('ROLLING')).toEqual(10);
-    expect(selectToPercent('STEEP')).toEqual(30);
+    expect(selectToPercent('FLAT')).toEqual(1);
+    expect(selectToPercent('GENTLE')).toEqual(3.5);
+    expect(selectToPercent('HILLY')).toEqual(22.5);
+    expect(selectToPercent('MODERATE')).toEqual(7.5);
+    expect(selectToPercent('MODERATELY_STEEP')).toEqual(55);
+    expect(selectToPercent('ROLLING')).toEqual(12.5);
+    expect(selectToPercent('STEEP')).toEqual(40);
     expect(selectToPercent('STEEPEST')).toEqual(100);
-    expect(selectToPercent('VERY_STEEP')).toEqual(60);
+    expect(selectToPercent('VERY_STEEP')).toEqual(80);
   });
 });
 
@@ -69,7 +69,7 @@ describe('soilDataSlopePercent', () => {
 
   test('handles selections', () => {
     data.slopeSteepnessSelect = 'VERY_STEEP';
-    expect(soilDataSlopePercent(data)).toEqual(60);
+    expect(soilDataSlopePercent(data)).toEqual(80);
   });
 });
 

@@ -29,37 +29,45 @@ import {
 export const degreeToPercent = (degrees: number) =>
   Math.round(Math.tan((degrees * Math.PI) / 180) * 100);
 
+// For a categorical slope the soil-ID query needs one representative percent. We
+// use the class midpoint rather than the low edge: the low edge systematically
+// understates the true slope (by up to half a class width for wide classes like
+// HILLY 15-30 or STEEP 30-50), and tuning against the US bulk test estimated
+// ~+0.5 pt top-1 for the midpoint. STEEPEST is open-ended so it stays at 100.
+// NOTE: the backend export mirrors this mapping (terraso-backend
+// apps/export/fetch_data.py _SLOPE_SELECT_MIDPOINT_PCT); keep the two in sync or
+// the in-app and export soil-ID scores diverge.
 export const selectToPercent = (
   select: SoilIdSoilDataSlopeSteepnessSelectChoices,
 ) => {
   switch (select) {
-    /** 0 - 2% (flat) */
+    /** 0 - 2% (flat) -> midpoint */
     case 'FLAT':
-      return 0;
-    /** 2 - 5% (gentle) */
+      return 1;
+    /** 2 - 5% (gentle) -> midpoint */
     case 'GENTLE':
-      return 2;
-    /** 15 - 30% (hilly) */
+      return 3.5;
+    /** 15 - 30% (hilly) -> midpoint */
     case 'HILLY':
-      return 15;
-    /** 5 - 10% (moderate) */
+      return 22.5;
+    /** 5 - 10% (moderate) -> midpoint */
     case 'MODERATE':
-      return 5;
-    /** 50 - 60% (moderately steep) */
+      return 7.5;
+    /** 50 - 60% (moderately steep) -> midpoint */
     case 'MODERATELY_STEEP':
-      return 50;
-    /** 10 - 15% (rolling) */
+      return 55;
+    /** 10 - 15% (rolling) -> midpoint */
     case 'ROLLING':
-      return 10;
-    /** 30 - 50% (steep) */
+      return 12.5;
+    /** 30 - 50% (steep) -> midpoint */
     case 'STEEP':
-      return 30;
-    /** 100%+ (steepest) */
+      return 40;
+    /** 100%+ (steepest) -> open-ended, low edge */
     case 'STEEPEST':
       return 100;
-    /** 60 - 100% (very steep) */
+    /** 60 - 100% (very steep) -> midpoint */
     case 'VERY_STEEP':
-      return 60;
+      return 80;
   }
 };
 
