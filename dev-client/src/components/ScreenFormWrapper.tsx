@@ -103,12 +103,15 @@ export const ScreenFormWrapper = forwardRef(
     // updated value measured in onLayout callback via containerRef.current.measure()
     const [screenTopOffset, setScreenTopOffset] = useState(insets.top);
 
+    const minLengthError = t('site.notes.min_length_error', {
+      min: SITE_NOTE_MIN_LENGTH,
+    });
     const notesFormSchema = yup.object().shape({
       content: yup
         .string()
-        .required(
-          t('site.notes.min_length_error', {min: SITE_NOTE_MIN_LENGTH}),
-        ),
+        .trim()
+        .required(minLengthError)
+        .min(SITE_NOTE_MIN_LENGTH, minLengthError),
     });
 
     useImperativeHandle(ref, () => ({
@@ -165,6 +168,11 @@ export const ScreenFormWrapper = forwardRef(
       };
     }, [buttonRowHeight, insets.bottom, screenTopOffset]);
 
+    // Save stays disabled until the note reaches the minimum length so the
+    // user gets feedback before submitting rather than a validation error after.
+    const hasMinLength = (content: string | undefined) =>
+      (content ?? '').trim().length >= SITE_NOTE_MIN_LENGTH;
+
     // Shared button row component
     // iOS: Fixed padding (safe area handled by spacer Box)
     // Android: Include insets.bottom for home bar clearance
@@ -180,7 +188,7 @@ export const ScreenFormWrapper = forwardRef(
       [insets.bottom, debugStyles.row],
     );
 
-    const buttonRow = (
+    const renderButtonRow = (formikProps: FormikProps<{content: string}>) => (
       <Row
         style={buttonRowStyle}
         paddingHorizontal={5}
@@ -202,27 +210,12 @@ export const ScreenFormWrapper = forwardRef(
         />
         <ContainedButton
           onPress={handlePressSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !hasMinLength(formikProps.values.content)}
           size="lg"
           label={t('general.save')}
         />
       </Row>
     );
-
-    // Shared scroll content - render function to ensure fresh evaluation
-    const renderScrollContent = () => {
-      return (
-        <React.Fragment>
-          <Formik
-            innerRef={formikRef}
-            initialValues={initialValues}
-            validationSchema={notesFormSchema}
-            onSubmit={onSubmit}>
-            {formikProps => children(formikProps)}
-          </Formik>
-        </React.Fragment>
-      );
-    };
 
     // Platform-specific content container style
     const scrollContentStyle = useMemo(
@@ -244,7 +237,9 @@ export const ScreenFormWrapper = forwardRef(
       [keyboardHeight, debugStyles.buttonBox],
     );
 
-    const content = (
+    // Formik wraps both the scroll content and the button row so the Save
+    // button can react to the current form values.
+    const renderContent = (formikProps: FormikProps<{content: string}>) => (
       <>
         <Column
           flex={1}
@@ -257,7 +252,7 @@ export const ScreenFormWrapper = forwardRef(
             contentContainerStyle={scrollContentStyle}
             disableAutoPadding={true}
             flex={1}>
-            {renderScrollContent()}
+            {children(formikProps)}
           </SafeScrollView>
           <Box
             style={buttonBoxStyle}
@@ -265,7 +260,7 @@ export const ScreenFormWrapper = forwardRef(
             onLayout={withDebugLayout('Button Box', e => {
               setButtonRowHeight(e.nativeEvent.layout.height);
             })}>
-            {buttonRow}
+            {renderButtonRow(formikProps)}
           </Box>
         </Column>
         {/* Safe area spacer for home indicator - iOS only, pushed up by KeyboardAvoidingView */}
@@ -302,20 +297,28 @@ export const ScreenFormWrapper = forwardRef(
               );
             }
           }}>
-          {Platform.OS === 'ios' ? (
-            <KeyboardAvoidingView
-              behavior="padding"
-              keyboardVerticalOffset={screenTopOffset - insets.bottom}
-              style={styles.view}
-              onLayout={withDebugLayout('KeyboardAvoidingView', undefined, {
-                currentOffset: screenTopOffset - insets.bottom,
-                insetsBottom: insets.bottom,
-              })}>
-              {content}
-            </KeyboardAvoidingView>
-          ) : (
-            content
-          )}
+          <Formik
+            innerRef={formikRef}
+            initialValues={initialValues}
+            validationSchema={notesFormSchema}
+            onSubmit={onSubmit}>
+            {formikProps =>
+              Platform.OS === 'ios' ? (
+                <KeyboardAvoidingView
+                  behavior="padding"
+                  keyboardVerticalOffset={screenTopOffset - insets.bottom}
+                  style={styles.view}
+                  onLayout={withDebugLayout('KeyboardAvoidingView', undefined, {
+                    currentOffset: screenTopOffset - insets.bottom,
+                    insetsBottom: insets.bottom,
+                  })}>
+                  {renderContent(formikProps)}
+                </KeyboardAvoidingView>
+              ) : (
+                renderContent(formikProps)
+              )
+            }
+          </Formik>
         </RNView>
       </ScreenScaffold>
     );
