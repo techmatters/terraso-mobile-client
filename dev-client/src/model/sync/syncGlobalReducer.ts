@@ -34,6 +34,7 @@ import {
   setSoilData,
   updateSoilIdStatus,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {clearAllMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatchSlice';
 import {setSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import * as syncActions from 'terraso-mobile-client/model/sync/actions/syncActions';
 import {
@@ -48,6 +49,18 @@ import {
   logSyncSummary,
 } from 'terraso-mobile-client/model/sync/syncDebugLog';
 import {createGlobalReducer} from 'terraso-mobile-client/store/reducers';
+
+/**
+ * The soil-ID algorithm's MAJOR.MINOR (ignoring PATCH). Clients flush cached
+ * matches when this changes; a PATCH-only bump does not (it cannot change
+ * rankings). Callers guard against a missing/blank pulled version before
+ * calling; the stored version is always a real string ('0.0.0' sentinel or
+ * a real semver from a prior pull).
+ */
+const soilIdMajorMinor = (version: string): string => {
+  const [major = '', minor = ''] = version.split('.');
+  return `${major}.${minor}`;
+};
 
 export const pullUserData = createAsyncThunk(
   'sync/pullUserData',
@@ -82,6 +95,24 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
     setExportTokens(state.export, payload.exportTokens);
     updateSoilIdStatus(state.soilData, 'ready');
     setLastPullTimestamp(state.devOnly, Date.now());
+
+    // Flush cached soil-ID matches when the algorithm's MAJOR/MINOR changes (a
+    // result-affecting release); a PATCH-only bump can't change rankings, so it
+    // does not flush. The stored version starts at the '0.0.0' sentinel, so
+    // the first real pull differs in MAJOR/MINOR and flushes — safe against
+    // stale caches from a prior algorithm version on upgrading installs, and
+    // a no-op on fresh installs (cache is empty). We always store the latest
+    // full semver for display + PATCH tracking. A full clear also resets each
+    // site entry's `.input`, so both location- and site-based matches re-fetch
+    // lazily on next view.
+    const pulledVersion = payload.soilIdAlgorithmVersion;
+    if (pulledVersion) {
+      const storedVersion = state.preferences.soilIdAlgorithmVersion;
+      if (soilIdMajorMinor(pulledVersion) !== soilIdMajorMinor(storedVersion)) {
+        clearAllMatches(state.soilIdMatch);
+      }
+      state.preferences.soilIdAlgorithmVersion = pulledVersion;
+    }
 
     // Mark sites missing elevation as needing sync so their elevation
     // is fetched and pushed on the next push.
