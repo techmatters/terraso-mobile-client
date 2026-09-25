@@ -124,4 +124,17 @@ describe('soilDataToIdInput', () => {
     const result = soilDataToIdInput(data);
     expect(result.depthDependentData[0].colorMunsellNumeric).toBeUndefined();
   });
+
+  test('forwards elevation when a number is provided', () => {
+    data.depthDependentData = [];
+    expect(soilDataToIdInput(data, 1234).elevation).toBe(1234);
+    expect(soilDataToIdInput(data, 0).elevation).toBe(0);
+  });
+
+  test('omits elevation when null / undefined / not provided', () => {
+    data.depthDependentData = [];
+    expect(soilDataToIdInput(data).elevation).toBeUndefined();
+    expect(soilDataToIdInput(data, null).elevation).toBeUndefined();
+    expect(soilDataToIdInput(data, undefined).elevation).toBeUndefined();
+  });
 });
