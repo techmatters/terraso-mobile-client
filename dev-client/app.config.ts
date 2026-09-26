@@ -257,6 +257,10 @@ const defaultConfig: ExpoConfig = {
     },
   },
   plugins: [
+    // Adopt the UIScene life cycle so the app launches on iOS/iPadOS 27 (SDK 57
+    // / RN 0.86 don't ship it; without it UIKit hard-traps at launch). Listed
+    // first so its AppDelegate mod runs last — see the plugin's header comment.
+    './plugins/withUISceneLifecycle',
     // Required as of Expo SDK 55 — previously auto-registered.
     '@sentry/react-native',
     'expo-asset',
