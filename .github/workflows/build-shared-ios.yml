@@ -52,6 +52,11 @@ jobs:
       ENV: ${{ vars.ENV }}
       TERRASO_BACKEND: ${{ vars.TERRASO_BACKEND }}
       APP_BUILD: ${{ inputs.APP_BUILD }}
+      # Keep the global `fetch` on React Native's implementation instead of
+      # expo/fetch (URLSession-backed), which throws intermittent "network
+      # connection was lost" (NSURLError -1005) on keep-alive connection reuse.
+      # Expo's winter runtime reads this at bundle time; must match local dev.
+      EXPO_PUBLIC_USE_RN_FETCH: "1"
       GOOGLE_OAUTH_ANDROID_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_ANDROID_CLIENT_ID }}
       GOOGLE_OAUTH_IOS_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_IOS_CLIENT_ID }}
       GOOGLE_OAUTH_IOS_URI_SCHEME: ${{ vars.GOOGLE_OAUTH_IOS_URI_SCHEME }}
