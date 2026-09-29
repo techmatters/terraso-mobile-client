@@ -613,14 +613,18 @@
             },
             "guide": {
                 "step1": {
-                    "title": "1. Rassemblez des notes autocollantes.",
-                    "content": "Pour garantir une analyse précise des couleurs, vous devez utiliser des notes Post-it jaune canari 3M comme carte de référence, avec ces directives :",
-                    "bullets": {
+                    "title": "1. Rassemblez votre référence de sol.",
+                    "content": "Pour garantir une analyse précise des couleurs, vous devez utiliser un objet de référence dont la couleur est connue. Nous recommandons d'utiliser une carte WhiBal ou une carte grise à 18 % pour de meilleurs résultats. Une note Post-it jaune canari peut également être utilisée.",
+                    "general_intro": "Quelle que soit la référence utilisée, pour garantir une analyse précise des couleurs :",
+                    "general_bullets": {
+                        "1": "Utilisez des références propres et non marquées.",
+                        "2": "Assurez-vous que la référence ne s'est pas dégradée à la suite d'une exposition prolongée au soleil.",
+                        "3": "Rangez votre référence dans une enveloppe sombre pour éviter l'exposition au soleil."
+                    },
+                    "postit_intro": "Si vous utilisez des notes Post-it :",
+                    "postit_bullets": {
                         "1": "Utilisez uniquement des notes Post-it neuves.",
-                        "2": "Empilez au moins 3 notes Post-it les unes sur les autres.",
-                        "3": "Assurez-vous que chaque note Post-it est bien à plat, qu'elle n'est pas écrite et qu'elle n'est pas sale.",
-                        "4": "Assurez-vous que chaque note Post-it n'est pas dégradée par la lumière du soleil, car des variations considérables peuvent exister en fonction de l'exposition au soleil.",
-                        "5": "Conservez les notes Post-it dans des enveloppes foncées pour éviter l’exposition au soleil."
+                        "2": "Empilez au moins 3 notes Post-it les unes sur les autres."
                     }
                 },
                 "step2": {
@@ -631,11 +635,11 @@
                 },
                 "step3": {
                     "title": "3. Préparez l'éclairage.",
-                    "content": "La photo de la couleur du sol doit être prise dans des conditions d'éclairage uniformes et à l'abri du soleil direct.\n\nPrivilégiez une source de lumière zénithale à un éclairage latéral."
+                    "content": "La photo de la couleur du sol doit être prise en plein soleil ou dans une pièce éclairée par une lumière blanche.\n\nEssayez de prendre vos photos avec une source de lumière en hauteur plutôt qu'un éclairage latéral.\n\nÉvitez d'évaluer la couleur par temps nuageux ou aux moments où la lumière change de couleur, comme tôt le matin et en fin de soirée."
                 },
                 "step4": {
                     "title": "4. Placez la carte de référence à côté du sol.",
-                    "content": "Placez le Post-it à côté de l’échantillon de sol préparé, dans les conditions d’éclairage appropriées."
+                    "content": "Placez la référence à côté de l'échantillon de sol préparé, dans les bonnes conditions d'éclairage."
                 },
                 "step5": {
                     "title": "5. Composez la photo.",
@@ -646,9 +650,16 @@
                     "content": "Si vous avez suivi les instructions ci-dessus, vous êtes prêt ! Vous pouvez prendre une photo avec l'appareil photo de votre appareil ou revenir en arrière pour en télécharger une."
                 },
                 "go_back": "Retour",
-                "take_photo": "Prendre une photo"
+                "take_photo": "Ajouter une photo"
+            },
+            "reference_prompt": "Quelle référence avez-vous utilisée ?",
+            "reference_types": {
+                "WHIBAL_G7": "Carte WhiBal",
+                "GRAY_CARD_18PCT": "Carte grise à 18 %",
+                "CANARY_POST_IT": "Note Post-it jaune canari"
             },
             "reference": "Référence",
+            "crop_reference": "Recadrez l'image pour afficher uniquement votre carte de référence. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
             "soil": "Sol",
             "analyze": "Analyser",
             "confirm_delete": {
@@ -667,7 +678,6 @@
                 "headline": "Quelque chose s'est mal passé",
                 "body": "Un problème est survenu lors de l'identification de la couleur du sol. Veuillez suivre les instructions d'analyse photo et réessayer. Si le problème persiste, contactez l'assistance."
             },
-            "crop_reference": "Recadrez l'image pour afficher uniquement le Post-it 3M Jaune Canari. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
             "crop_soil": "Recadrez l'image pour afficher uniquement l'échantillon de sol. Pincez l'image entre le pouce et l'index pour zoomer (pincer vers l'intérieur) ou dézoomer (pincer vers l'extérieur). Déplacez l'image dans le cadre en faisant glisser un doigt.",
             "soil_condition": "État du sol :",
             "lighting_condition": "La photo a un éclairage uniforme et aucune ombre :",

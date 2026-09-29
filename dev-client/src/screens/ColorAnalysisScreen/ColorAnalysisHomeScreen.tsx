@@ -19,6 +19,8 @@ import {useCallback, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
 
+import {fromEntries} from 'terraso-client-shared/utils';
+
 import {trackSoilObservation} from 'terraso-mobile-client/analytics/soilObservationTracking';
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
@@ -34,8 +36,13 @@ import {
   Text,
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RadioBlock} from 'terraso-mobile-client/components/RadioBlock';
 import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/safeview/SafeScrollViewWithFab';
-import {getColorFromImages} from 'terraso-mobile-client/model/color/colorDetection';
+import {
+  getColorFromImages,
+  REFERENCE_TYPES,
+  ReferenceType,
+} from 'terraso-mobile-client/model/color/colorDetection';
 import {
   InvalidColorResult,
   MunsellColor,
@@ -64,6 +71,28 @@ export const ColorAnalysisHomeScreen = () => {
   const [colorResult, setColorResult] = useState<InvalidColorResult | null>(
     null,
   );
+  // No default: the user must explicitly pick which reference they used before
+  // analyzing, so we never silently correct against the wrong card.
+  const [referenceType, setReferenceType] = useState<ReferenceType>();
+
+  const referenceOptions = useMemo(
+    () =>
+      fromEntries(
+        REFERENCE_TYPES.map(type => [
+          type,
+          {text: t(`soil.color.reference_types.${type}`)},
+        ]),
+      ),
+    [t],
+  );
+  const referenceGroupProps = useMemo(
+    () => ({
+      name: 'REFERENCE',
+      value: referenceType,
+      onChange: setReferenceType,
+    }),
+    [referenceType],
+  );
 
   const dispatchColor = useCallback(
     (color: MunsellColor) => {
@@ -87,7 +116,7 @@ export const ColorAnalysisHomeScreen = () => {
   );
 
   const onAnalyze = useMemo(() => {
-    if (!reference || !soil) {
+    if (!reference || !soil || !referenceType) {
       return null;
     }
 
@@ -96,6 +125,7 @@ export const ColorAnalysisHomeScreen = () => {
         const color = getColorFromImages({
           reference: reference.photo,
           soil: soil.photo,
+          referenceType,
         });
 
         if ('result' in color) {
@@ -108,7 +138,7 @@ export const ColorAnalysisHomeScreen = () => {
         errorDialogRef.current?.onOpen();
       }
     };
-  }, [reference, soil, dispatchColor]);
+  }, [reference, soil, referenceType, dispatchColor]);
 
   const onReference = useCallback(() => {
     colorAnalysisNavigation.navigate('COLOR_CROP_REFERENCE');
@@ -188,6 +218,13 @@ export const ColorAnalysisHomeScreen = () => {
               </Column>
             ))}
           </Row>
+        </Column>
+        <Column paddingHorizontal="md">
+          <RadioBlock
+            label={t('soil.color.reference_prompt')}
+            options={referenceOptions}
+            groupProps={referenceGroupProps}
+          />
         </Column>
         {pitProps && <PhotoConditions {...pitProps} />}
       </SafeScrollViewWithFab>

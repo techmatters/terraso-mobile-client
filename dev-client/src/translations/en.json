@@ -749,14 +749,18 @@
             },
             "guide": {
                 "step1": {
-                    "title": "1. Gather Post-it Notes.",
-                    "content": "To ensure accurate color analysis you must use 3M Canary Yellow Post-it Notes for your reference card, with these guidelines:",
-                    "bullets": {
-                        "1": "Only use new Post-it Notes.",
-                        "2": "Stack at least 3 Post-it Notes on top of each other.",
-                        "3": "Make sure each Post-it note lays flat, isn’t written on, and isn’t dirty.",
-                        "4": "Make sure each Post-it note isn’t degraded by sunlight, as considerable variation can exist depending on sun exposure.",
-                        "5": "Store Post-it notes in dark envelopes to avoid sun exposure."
+                    "title": "1. Gather your soil reference.",
+                    "content": "To ensure accurate color analysis you must use a reference object with a known color. We recommend using a WhiBal card or an 18% grey card for best results. A Canary Yellow Post-it note can also be used.",
+                    "general_intro": "Whichever reference you use, to ensure accurate color analysis:",
+                    "general_bullets": {
+                        "1": "Use clean, unmarked references.",
+                        "2": "Make sure the reference hasn’t been degraded through long-term exposure to sunlight.",
+                        "3": "Store your reference in a dark envelope to avoid sun exposure."
+                    },
+                    "postit_intro": "If you use Post-it notes:",
+                    "postit_bullets": {
+                        "1": "Only use new Post-it notes.",
+                        "2": "Stack at least 3 Post-it notes on top of each other."
                     }
                 },
                 "step2": {
@@ -767,11 +771,11 @@
                 },
                 "step3": {
                     "title": "3. Prepare lighting.",
-                    "content": "The soil color photo needs to be taken in even lighting conditions and shaded from direct sun.\n\nTry to have an overhead light source rather than side lighting."
+                    "content": "The soil color photo needs to be taken in direct sun, or in a room lit with white light.\n\nTry to take your photos to have an overhead light source rather than side lighting.\n\nAvoid assessing color in cloudy conditions or times when the light changes color, such as early morning and late evening."
                 },
                 "step4": {
                     "title": "4. Place reference card next to soil.",
-                    "content": "Place the Post-it note next to the prepared soil sample, in the proper lighting conditions."
+                    "content": "Place the reference next to the prepared soil sample, in the proper lighting conditions."
                 },
                 "step5": {
                     "title": "5. Compose photo.",
@@ -782,10 +786,16 @@
                     "content": "If you’ve followed the instructions above, you’re ready! You can take a photo with your device’s camera, or go back to upload a photo."
                 },
                 "go_back": "Go back",
-                "take_photo": "Take Photo"
+                "take_photo": "Add Photo"
+            },
+            "reference_prompt": "Which reference did you use?",
+            "reference_types": {
+                "WHIBAL_G7": "WhiBal card",
+                "GRAY_CARD_18PCT": "18% grey card",
+                "CANARY_POST_IT": "Canary Yellow Post-it note"
             },
             "reference": "Reference",
-            "crop_reference": "Crop image to show only the 3M Canary Yellow Post-it Note. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
+            "crop_reference": "Crop image to show only your reference card. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
             "soil": "Soil",
             "crop_soil": "Crop image to show only the soil sample. Pinch the image with your thumb and forefinger to zoom in (pinching inward) or zoom out (pinching outward). Move the image in the box by swiping with one finger.",
             "soil_condition": "Soil condition:",
