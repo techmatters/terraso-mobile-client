@@ -36,7 +36,6 @@ import {useHeaderHeight} from 'terraso-mobile-client/hooks/useHeaderHeight';
 
 export type CarouselSheetProps = {
   pages: CarouselPage[];
-  heading?: React.ReactNode;
   trigger?: ModalTrigger;
 };
 
@@ -49,7 +48,7 @@ export type CarouselSheetProps = {
  * swipe; closing is via the header button.
  */
 export const CarouselSheet = forwardRef<ModalHandle, CarouselSheetProps>(
-  ({pages, heading, trigger}: CarouselSheetProps, ref) => {
+  ({pages, trigger}: CarouselSheetProps, ref) => {
     const {headerHeight} = useHeaderHeight();
     const {sheetRef, handle} = useGorhomSheetHandleRef(ref);
 
@@ -67,7 +66,6 @@ export const CarouselSheet = forwardRef<ModalHandle, CarouselSheetProps>(
           <ModalContext.Provider value={handle}>
             <View style={styles.content}>
               <View style={styles.headingRow}>
-                <View style={styles.headingContent}>{heading}</View>
                 <BigCloseButton onPress={handle.onClose} />
               </View>
               <Carousel pages={pages} />
@@ -91,9 +89,5 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     alignContent: 'space-evenly',
     alignItems: 'center',
-  },
-  headingContent: {
-    marginRight: 'auto',
-    flex: 1,
   },
 });

@@ -39,7 +39,6 @@ export type TutorialCarouselButtonProps = {
   contentVersion: number;
   animation: LottieViewProps['source'];
   pages: CarouselPage[];
-  sheetHeading?: React.ReactNode;
   iconSize?: number;
 };
 
@@ -55,7 +54,6 @@ export const TutorialCarouselButton = ({
   contentVersion,
   animation,
   pages,
-  sheetHeading,
   iconSize,
 }: TutorialCarouselButtonProps) => {
   const [viewedVersion, setViewedVersion] = kvStorage.useNumber(
@@ -75,11 +73,7 @@ export const TutorialCarouselButton = ({
 
   return (
     <View style={styles.row}>
-      <CarouselButton
-        pages={pages}
-        sheetHeading={sheetHeading}
-        onPress={onPress}
-      />
+      <CarouselButton pages={pages} onPress={onPress} />
       <AnimatedIcon
         source={animation}
         /* Re-arming on focus is what restarts the cycle count on each visit to the screen. */

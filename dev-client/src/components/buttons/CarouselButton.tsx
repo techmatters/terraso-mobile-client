@@ -23,7 +23,6 @@ import {CarouselSheet} from 'terraso-mobile-client/components/sheets/CarouselShe
 
 export type CarouselButtonProps = {
   pages: CarouselPage[];
-  sheetHeading?: React.ReactNode;
   /* Fires alongside opening the sheet, for callers tracking whether the carousel has been viewed. */
   onPress?: () => void;
 };
@@ -32,17 +31,12 @@ export type CarouselButtonProps = {
  * Pill trigger that opens a CarouselSheet. The label doubles as the accessibility
  * name, so unlike an image trigger there is nothing extra for callers to supply.
  */
-export const CarouselButton = ({
-  pages,
-  sheetHeading,
-  onPress,
-}: CarouselButtonProps) => {
+export const CarouselButton = ({pages, onPress}: CarouselButtonProps) => {
   const {t} = useTranslation();
 
   return (
     <CarouselSheet
       pages={pages}
-      heading={sheetHeading}
       trigger={onOpen => (
         <PillButton
           label={t('general.carousel.overview')}
