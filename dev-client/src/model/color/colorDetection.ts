@@ -67,10 +67,12 @@ const REFERENCES = {
   // grey fit is ~sRGB 125.
   GRAY_CARD_18PCT: [118, 118, 118],
   // WhiBal G7 Certified Neutral — kept neutral (r = g = b). Data-fit from the
-  // Munsell-chart validator captures puts the best neutral at sRGB ~188
-  // (≈0.505 linear, i.e. ~50% reflectance — not the datasheet 40%); rounded to
-  // 190. Roughly halves median ΔE00 vs the old [170, 170, 170].
-  WHIBAL_G7: [190, 190, 190],
+  // Munsell-chart validator JPEG captures — this release analyzes JPEG, not RAW,
+  // and JPEG's tone curve pushes the optimum brighter: best neutral is sRGB ~210
+  // (median ΔE00 7.4 → 6.5 on JPEG vs the old 170). The RAW fit wanted ~190; the
+  // other two entries here are still RAW-fit (post-it fits poorly on JPEG, grey
+  // is unchanged at neutral).
+  WHIBAL_G7: [210, 210, 210],
 } as const satisfies Record<string, RGB>;
 
 // The reference cards a user can choose from in the color guide, in display
