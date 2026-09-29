@@ -45,13 +45,11 @@ const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;
 // This value was arrived at via ad-hoc testing.
 const QUANTIZATION_COLOR_COUNT = 5;
 
-// These are the theoretical "correct" colors for several different reference objects.
-// The algorithm compares the color of the reference object in the picture to these colors
-// to figure out how to adjust the color of the soil. I don't really fully understand it,
-// but I'm leaving the following science-y note about the conditions under which these values
-// were measured in case they are needed in the future: Observer = 2°, Illuminant = D65
+// The "correct" colors for each reference card the user can choose (keyed by
+// REFERENCE_TYPES below). The algorithm compares the reference card's color in
+// the photo to these to figure out how to adjust the soil color. Each value is
+// data-fit from the Munsell-chart validator captures (see per-entry notes).
 const REFERENCES = {
-  CAMERA_TRAX: [210.15, 213.95, 218.42],
   // Data-fit ideal from the Munsell-chart validator captures (iPhone RAW,
   // single natural-exposure shots), minimizing median ΔE00 over ~430 chart
   // patches. Replaces the legacy D65-measured [249.92, 242.07, 161.42]; the
@@ -59,7 +57,6 @@ const REFERENCES = {
   // the old value assumed). Fit in linear per-channel correction space, which
   // is exactly what correctSampleRGB now applies (see below).
   CANARY_POST_IT: [247.6, 237.0, 173.3],
-  WHITE_BALANCE: [192.96, 192.0, 191.74],
   // Generic 18% neutral gray card (~18% reflectance, spectrally flat). 18%
   // linear-sRGB (r = g = b = 0.18) gamma-encoded to sRGB 0–255. Source value
   // tracks fix/munsell-export's LINEAR_REFERENCES.GRAY_CARD_18PCT. Left neutral
