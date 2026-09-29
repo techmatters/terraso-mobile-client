@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
   containerPill: {
     /* Height is specified rather than derived from padding, since the pill is spec'd at a fixed 32. minHeight, not height, so an OS text-size bump grows the button instead of clipping the label. */
     minHeight: 32,
+    paddingVertical: 4,
     paddingHorizontal: 10,
     /* Large enough to stay fully round at any height. */
     borderRadius: 100,
@@ -210,9 +211,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   labelPill: {
-    fontSize: 14,
-    lineHeight: 24,
-    /* Pills carry sentence-case prose ("How does it work?"), not the uppercase action verbs the other shapes use. */
+    fontSize: 13,
+    lineHeight: 22,
+    /* Pill buttons use sentence-case, not uppercase */
     textTransform: 'none',
   },
   leftIcon: {
