@@ -28,6 +28,7 @@ import {CarouselHeading} from 'terraso-mobile-client/components/CarouselHeading'
 import {CarouselText} from 'terraso-mobile-client/components/CarouselText';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 
@@ -82,12 +83,14 @@ export const SoilIdDescriptionSection = ({
 
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
-      <CarouselButtonWithAnimation
-        overviewKey="soil-id-how-it-works"
-        contentVersion={1}
-        animation={SHOVEL_ANIMATION}
-        pages={pages}
-      />
+      <RestrictByFlag flag="FF_testing">
+        <CarouselButtonWithAnimation
+          overviewKey="soil-id"
+          contentVersion={1}
+          animation={SHOVEL_ANIMATION}
+          pages={pages}
+        />
+      </RestrictByFlag>
       <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
     </ScreenContentSection>
   );

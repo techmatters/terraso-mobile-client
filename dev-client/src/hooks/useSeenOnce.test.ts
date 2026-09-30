@@ -38,12 +38,9 @@ describe('useSeenOnce', () => {
   beforeEach(() => givenStoredRevision());
 
   it('namespaces the key so records read as a set in storage', () => {
-    renderHook(() => useSeenOnce('overview.soil-id-how-it-works', 1));
+    renderHook(() => useSeenOnce('overview.soil-id', 1));
 
-    expect(mockUseNumber).toHaveBeenCalledWith(
-      'seen.overview.soil-id-how-it-works',
-      0,
-    );
+    expect(mockUseNumber).toHaveBeenCalledWith('seen.overview.soil-id', 0);
   });
 
   it('is unseen with no stored record', () => {
