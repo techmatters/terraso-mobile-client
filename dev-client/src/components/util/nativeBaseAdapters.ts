@@ -23,9 +23,11 @@ import {theme} from 'terraso-mobile-client/theme';
 
 type PathOf<O extends Record<string, any>> = string &
   keyof {
-    [P in keyof O as O[P] extends Record<string, any>
-      ? `${P & string}.${string & PathOf<O[P]>}`
-      : P]: true;
+    [
+      P in keyof O as O[P] extends Record<string, any>
+        ? `${P & string}.${string & PathOf<O[P]>}`
+        : P
+    ]: true;
   };
 
 type TypeAt<
@@ -50,7 +52,9 @@ export const getByKey = <O extends Record<string, any>, K extends string>(
     ) as K extends PathOf<O> ? TypeAt<O, K> : undefined;
 
 type Variants = {
-  [K in keyof typeof theme.components]: 'variants' extends keyof (typeof theme.components)[K]
+  [
+    K in keyof typeof theme.components
+  ]: 'variants' extends keyof (typeof theme.components)[K]
     ? (typeof theme.components)[K]['variants']
     : never;
 };
@@ -180,8 +184,9 @@ export type NBDimensionValue =
   | keyof typeof theme.space;
 export type NativeBaseProps = Partial<
   {
-    [K in keyof (typeof nativeBaseDimensions &
-      typeof nativeBaseNumerics)]: NBDimensionValue;
+    [
+      K in keyof (typeof nativeBaseDimensions & typeof nativeBaseNumerics)
+    ]: NBDimensionValue;
   } & {
     [K in keyof typeof nativeBaseStyleProps]: (ViewStyle & TextStyle)[K];
   } & {

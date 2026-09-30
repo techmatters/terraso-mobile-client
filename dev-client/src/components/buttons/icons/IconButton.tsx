@@ -32,11 +32,7 @@ import {
 export type IconButtonType = 'sm' | 'md' | 'sq';
 
 export type IconButtonVariant =
-  | 'normal'
-  | 'normal-filled'
-  | 'light'
-  | 'light-filled'
-  | 'location';
+  'normal' | 'normal-filled' | 'light' | 'light-filled' | 'location';
 
 export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
   type: IconButtonType;

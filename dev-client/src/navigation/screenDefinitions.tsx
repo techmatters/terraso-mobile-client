@@ -22,6 +22,7 @@ import {
 import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
 import {AddUserToProjectRoleScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectRoleScreen';
 import {AddUserToProjectScreen} from 'terraso-mobile-client/screens/AddUserToProjectScreen/AddUserToProjectScreen';
+import {AndroidRawCaptureScreen} from 'terraso-mobile-client/screens/AndroidRawCaptureScreen';
 import {BottomTabsScreen} from 'terraso-mobile-client/screens/BottomTabsScreen';
 import {ColorAnalysisScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisScreen';
 import {CreateProjectScreen} from 'terraso-mobile-client/screens/CreateProjectScreen/CreateProjectScreen';
@@ -40,8 +41,10 @@ import {TemporaryLocationScreen} from 'terraso-mobile-client/screens/LocationScr
 import {TemporaryLocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/TemporaryLocationSoilIdScreen';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
+import {MunsellChartValidatorScreen} from 'terraso-mobile-client/screens/MunsellChartValidator/MunsellChartValidatorScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectViewScreen';
+import {RawColorToolsScreen} from 'terraso-mobile-client/screens/RawColorToolsScreen/RawColorToolsScreen';
 import {AddSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/AddSiteNoteScreen';
 import {EditSiteNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/EditSiteNoteScreen';
 import {ReadPinnedNoteScreen} from 'terraso-mobile-client/screens/SiteNotesScreen/ReadPinnedNoteScreen';
@@ -54,7 +57,11 @@ import {SlopeShapeScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeS
 import {SlopeSteepnessScreen} from 'terraso-mobile-client/screens/SlopeScreen/SlopeSteepnessScreen';
 import {CarbonatesScreen} from 'terraso-mobile-client/screens/SoilScreen/CarbonatesScreen';
 import {ColorGuideScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorGuideScreen';
-import {ColorScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreen';
+import {ColorScreenRouter} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/ColorScreenRouter';
+import {CalibrateReferenceScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/CalibrateReferenceScreen';
+import {ManageCustomReferencesScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/ManageCustomReferencesScreen';
+import {RawColorAnalysisScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/RawColorAnalysisScreen';
+import {RawCropScreen} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/RawCropScreen';
 import {SoilSurfaceScreen} from 'terraso-mobile-client/screens/SoilScreen/components/SoilSurfaceScreen';
 import {ConductivityScreen} from 'terraso-mobile-client/screens/SoilScreen/ConductivityScreen';
 import {PhScreen} from 'terraso-mobile-client/screens/SoilScreen/PhScreen';
@@ -98,7 +105,7 @@ export const screenDefinitions = {
   SLOPE_METER: SlopeMeterScreen,
   SOIL_SURFACE: SoilSurfaceScreen,
   SOIL_INPUT_soilTexture: TextureScreen,
-  SOIL_INPUT_soilColor: ColorScreen,
+  SOIL_INPUT_soilColor: ColorScreenRouter,
   SOIL_INPUT_sodiumAdsorptionRatio: SARScreen,
   SOIL_INPUT_soilOrganicCarbonMatter: SOCSOMScreen,
   SOIL_INPUT_soilStructure: StructureScreen,
@@ -108,6 +115,13 @@ export const screenDefinitions = {
   TEXTURE_GUIDE: TextureGuideScreen,
   COLOR_GUIDE: ColorGuideScreen,
   COLOR_ANALYSIS: ColorAnalysisScreen,
+  RAW_COLOR_ANALYSIS_EXPERIMENTAL: RawColorAnalysisScreen,
+  RAW_COLOR_CROP_EXPERIMENTAL: RawCropScreen,
+  CALIBRATE_REFERENCE_EXPERIMENTAL: CalibrateReferenceScreen,
+  MANAGE_CUSTOM_REFERENCES_EXPERIMENTAL: ManageCustomReferencesScreen,
+  MUNSELL_CHART_VALIDATOR: MunsellChartValidatorScreen,
+  RAW_COLOR_TOOLS_EXPERIMENTAL: RawColorToolsScreen,
+  ANDROID_RAW_CAPTURE: AndroidRawCaptureScreen,
   DATA_EXPORT: UserDataExportScreen,
   SITE_EXPORT: SiteExportScreen,
   DELETE_ACCOUNT: DeleteAccountScreen,

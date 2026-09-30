@@ -1,0 +1,2 @@
+# Local Python venv for delta-e-analysis.py (see report-munsell-fixtures.sh).
+.venv-analysis/

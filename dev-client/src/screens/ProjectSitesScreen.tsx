@@ -134,8 +134,7 @@ const SiteMenu = ({site}: SiteProps) => {
 };
 
 type SiteCardListHeaderComponent =
-  | React.ComponentType<any>
-  | React.ReactElement;
+  React.ComponentType<any> | React.ReactElement;
 
 const SiteCardList = ({
   showButtons,

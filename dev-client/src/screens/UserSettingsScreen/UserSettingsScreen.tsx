@@ -29,8 +29,10 @@ import {ClearSoilIdCacheItem} from 'terraso-mobile-client/screens/UserSettingsSc
 import {CopyAccessTokenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CopyAccessTokenItem';
 import {DataExportItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DataExportItem';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
+import {ExperimentalColorScreenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/ExperimentalColorScreenItem';
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
+import {RawColorToolsItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/RawColorToolsItem';
 import {SelectLanguageItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SelectLanguageItem';
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
 import {TosItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/TosItem';
@@ -61,6 +63,8 @@ export function UserSettingsScreen() {
                 <RestrictByFlag flag="FF_testing">
                   <CopyAccessTokenItem />
                   <ClearSoilIdCacheItem />
+                  <RawColorToolsItem />
+                  <ExperimentalColorScreenItem />
                 </RestrictByFlag>
               </>
             )}

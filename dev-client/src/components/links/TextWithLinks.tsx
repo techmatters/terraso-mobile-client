@@ -28,8 +28,7 @@ type TextWithLinksProps = Omit<
 };
 
 type ParsedPart =
-  | {type: 'text'; content: string}
-  | {type: 'link'; url: string; text: string};
+  {type: 'text'; content: string} | {type: 'link'; url: string; text: string};
 
 /**
  * Like <Text> but parses <link url="...">text</link> tags into clickable links.

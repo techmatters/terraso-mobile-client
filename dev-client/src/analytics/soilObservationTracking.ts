@@ -29,12 +29,7 @@ export type SoilObservationType =
   | 'notes';
 
 export type SoilObservationMethod =
-  | 'manual'
-  | 'pictogram'
-  | 'clinometer'
-  | 'photo'
-  | 'guided'
-  | 'select';
+  'manual' | 'pictogram' | 'clinometer' | 'photo' | 'guided' | 'select';
 
 type SoilObservationProps = {
   input_type: SoilObservationType;

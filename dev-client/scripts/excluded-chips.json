@@ -1,0 +1,15 @@
+{
+  "//": "List of Munsell chip notations that are physically defective / drifted from spec and should be excluded from analysis. Seeded from cross-device consistency analysis (see the greycard ranking + channels chart to verify each candidate before adding). Reload run.json (rerun analyze-fixtures) to pick up changes.",
+  "chips": [
+    { "notation": "10B 2.5/1",   "reason": "Aged/darker: -1.5σ Pixel 7, -1.8σ iPhone vs value-2.5 row-siblings" },
+    { "notation": "2.5YR 3/6",   "reason": "Candidate DARK: -1.75σ / -1.69σ" },
+    { "notation": "2.5Y 7/8",    "reason": "Candidate DARK: -1.70σ / -1.68σ" },
+    { "notation": "2.5YR 5/8",   "reason": "Candidate DARK: -1.64σ / -1.48σ" },
+    { "notation": "10R 3/6",     "reason": "Candidate DARK: -1.47σ / -1.61σ" },
+    { "notation": "7.5YR 7/8",   "reason": "Candidate DARK: -1.66σ / -1.37σ" },
+    { "notation": "7.5YR 3/3",   "reason": "Candidate DARK: -1.32σ / -1.38σ" },
+    { "notation": "5R 2.5/2",    "reason": "Candidate BRIGHT: +1.39σ / +1.62σ" },
+    { "notation": "7.5R 2.5/1",  "reason": "Candidate BRIGHT: +1.01σ / +1.38σ" },
+    { "notation": "7.5YR 4/6",   "reason": "Candidate BRIGHT: +1.09σ / +1.74σ" }
+  ]
+}

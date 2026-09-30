@@ -186,8 +186,7 @@ export const pushUserData = async (
 
   // Build records for soilData (filter to only unsynced)
   let soilDataUnsyncedChanges:
-    | SyncRecords<SoilData, SoilDataPushFailureReason>
-    | undefined;
+    SyncRecords<SoilData, SoilDataPushFailureReason> | undefined;
   let soilDataUnsyncedData: Record<string, SoilData | undefined> | undefined;
 
   if (input.soilDataSiteIds && input.soilDataSiteIds.length > 0) {
@@ -205,11 +204,9 @@ export const pushUserData = async (
 
   // Build records for soilMetadata (filter to only unsynced)
   let soilMetadataUnsyncedChanges:
-    | SyncRecords<SoilMetadata, SoilMetadataPushFailureReason>
-    | undefined;
+    SyncRecords<SoilMetadata, SoilMetadataPushFailureReason> | undefined;
   let soilMetadataUnsyncedData:
-    | Record<string, SoilMetadata | undefined>
-    | undefined;
+    Record<string, SoilMetadata | undefined> | undefined;
 
   if (input.soilMetadataSiteIds && input.soilMetadataSiteIds.length > 0) {
     const unsyncedChanges = getUnsyncedRecords(

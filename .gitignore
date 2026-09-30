@@ -81,6 +81,24 @@ dev-client/vendor/bundle/
 android/
 ios/
 
+# Internal Nitro modules (dev-client/modules/*) ship their own android/
+# and ios/ subtrees alongside shared C++; unignore them.
+!dev-client/modules/*/android/
+!dev-client/modules/*/android/**
+!dev-client/modules/*/ios/
+!dev-client/modules/*/ios/**
+!dev-client/modules/*/nitrogen/generated/android/
+!dev-client/modules/*/nitrogen/generated/android/**
+!dev-client/modules/*/nitrogen/generated/ios/
+!dev-client/modules/*/nitrogen/generated/ios/**
+# ...but NEVER track their gradle/cmake build junk (huge .so files,
+# per-machine paths). The generic `build/` and `.gradle` / `.cxx`
+# rules above are shadowed by the unignore lines just above, so
+# re-shadow them explicitly under the modules subtrees.
+dev-client/modules/*/android/build/
+dev-client/modules/*/android/.gradle/
+dev-client/modules/*/android/.cxx/
+
 # Build
 .buildcache/
 buildcache/
@@ -92,3 +110,7 @@ sentry.properties
 # Sometimes watchman creates cookie files
 .watchman-cookie-*
 .claude/settings.local.json
+
+# Munsell chart validator regression outputs (JSON exports, historical
+# device-run artifacts) — local-only, not for version control.
+dev-client/results/

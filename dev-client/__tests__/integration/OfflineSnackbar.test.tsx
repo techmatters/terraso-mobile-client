@@ -221,7 +221,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     // Dismiss snackbar
     // FYI: run timers so snackbar's dismissal animation completes
     await act(async () => {
-      fireEvent(snackbar, 'onDismiss');
+      fireEvent(snackbar!, 'onDismiss');
     });
     await act(async () => {
       jest.runAllTimers();
@@ -286,7 +286,7 @@ describe('Offline snackbar (with mocked async thunk call)', () => {
     // Dismiss snackbar
     // FYI: run timers so snackbar's dismissal animation completes
     await act(async () => {
-      fireEvent(snackbar, 'onDismiss');
+      fireEvent(snackbar!, 'onDismiss');
     });
     await act(async () => {
       jest.runAllTimers();

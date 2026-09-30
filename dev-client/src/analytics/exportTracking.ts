@@ -22,9 +22,7 @@ import type {
 } from 'terraso-mobile-client/model/export/exportTypes';
 
 type ExportEvent =
-  | 'export_file_download'
-  | 'export_link_share'
-  | 'export_link_reset';
+  'export_file_download' | 'export_link_share' | 'export_link_reset';
 
 type TrackExportProps = {
   event: ExportEvent;

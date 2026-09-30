@@ -38,8 +38,7 @@ export const useFieldContext = <
   name?: Name,
 ): FieldContextType<Name, Value> => {
   const fieldContext = useContext(FieldContext) as
-    | FieldContextType<Name, Value>
-    | undefined;
+    FieldContextType<Name, Value> | undefined;
 
   const formikContext = useFormikContext<FormValues>();
 

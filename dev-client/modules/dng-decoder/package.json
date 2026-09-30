@@ -1,0 +1,33 @@
+{
+  "name": "dng-decoder",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Nitro module: decode DNG ROIs to linear-light RGB triples. See ../../docs/raw-camera-plan.md phase 3.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src",
+    "cpp",
+    "ios",
+    "android",
+    "nitrogen",
+    "nitro.json",
+    "DngDecoder.podspec"
+  ],
+  "scripts": {
+    "codegen": "nitrogen --path . --logLevel=info"
+  },
+  "keywords": [
+    "react-native",
+    "nitro-module",
+    "dng"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-nitro-modules": "*"
+  },
+  "devDependencies": {
+    "nitrogen": "0.36.1"
+  }
+}

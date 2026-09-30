@@ -73,6 +73,38 @@ jest.mock('expo-media-library', () => ({
   createAssetAsync: jest.fn(() => Promise.resolve()),
 }));
 
+// react-native-vision-camera (nitro-based) throws at import time trying to
+// resolve its native NitroModules turbo module. Stub the specific exports
+// RawCameraView.tsx uses so the app's require tree loads under jest.
+jest.mock('react-native-vision-camera', () => ({
+  Camera: 'Camera',
+  useCameraDevice: jest.fn(() => undefined),
+  useCameraDevices: jest.fn(() => []),
+  useCameraPermission: jest.fn(() => ({
+    hasPermission: false,
+    requestPermission: jest.fn(() => Promise.resolve(false)),
+  })),
+  usePhotoOutput: jest.fn(() => undefined),
+}));
+
+// dng-decoder (Nitro hybrid module) calls NitroModules.createHybridObject at
+// module-load time; NitroModules native side is unavailable under jest.
+jest.mock('dng-decoder', () => ({
+  DngDecoderHybrid: {
+    readMetadata: jest.fn(() => ({
+      width: 0,
+      height: 0,
+      bitsPerSample: 0,
+      cfaPattern: '',
+      blackLevel: 0,
+      whiteLevel: 0,
+      isMonochrome: false,
+    })),
+    decodeDngRois: jest.fn(() => []),
+    renderPreview: jest.fn(() => ({uri: '', width: 0, height: 0})),
+  },
+}));
+
 jest.mock('react-native-share', () => ({
   default: {
     open: jest.fn(() => Promise.resolve()),

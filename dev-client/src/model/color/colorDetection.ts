@@ -17,7 +17,6 @@
 
 import {Buffer} from '@craftzdog/react-native-buffer';
 import * as Sentry from '@sentry/react-native';
-import {getDeltaE00} from 'delta-e';
 import {rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
 
@@ -29,6 +28,7 @@ import {
   PhotoWithBase64,
 } from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {munsellHVCToLAB} from 'terraso-mobile-client/model/color/colorConversions';
+import {deltaEFromLab} from 'terraso-mobile-client/model/color/deltaE';
 import {SOIL_COLORS} from 'terraso-mobile-client/model/color/soilColors';
 import {
   ColorResult,
@@ -145,14 +145,37 @@ export const predictColorFromReference = (
   );
 };
 
-const correctSampleRGB = (
+// Standard piecewise sRGB transfer function.
+export const srgbToLinear = (c: number): number => {
+  const x = c / 255;
+  return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+};
+
+// Inverse of srgbToLinear. Clamps to [0, 255].
+export const linearToSrgb = (x: number): number => {
+  const clamped = Math.max(0, Math.min(1, x));
+  const c =
+    clamped <= 0.0031308
+      ? 12.92 * clamped
+      : 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055;
+  return Math.max(0, Math.min(255, Math.round(c * 255)));
+};
+
+export const correctSampleRGB = (
   cardPixel: RGB,
   samplePixel: RGB,
   referenceRGB: RGB,
 ): RGB => {
-  return cardPixel.map(
-    (cardV, index) => (referenceRGB[index] / cardV) * samplePixel[index],
-  ) as RGB;
+  // Per-channel gain (von-Kries-style WB correction) is only physically correct
+  // in linear-light space. Doing it on sRGB-encoded values under/over-corrects
+  // depending on where each value sits on the gamma curve.
+  return cardPixel.map((cardV, index) => {
+    const cardLin = srgbToLinear(cardV);
+    if (cardLin === 0) return 0; // guard against a fully-black card
+    const sampleLin = srgbToLinear(samplePixel[index]);
+    const referenceLin = srgbToLinear(referenceRGB[index]);
+    return linearToSrgb((referenceLin / cardLin) * sampleLin);
+  }) as RGB;
 };
 
 export const dominantColor = (pixels: RGBA[]): RGB => {
@@ -183,13 +206,17 @@ export const dominantColor = (pixels: RGBA[]): RGB => {
   return color;
 };
 
-const nearestSoilColor = (color: MunsellHVC) =>
+export const nearestSoilColor = (color: MunsellHVC) =>
   FLATTENED_SOIL_COLORS.reduce((a, b) =>
     munsellDistance(a, color) < munsellDistance(b, color) ? a : b,
   );
 
-const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
-  getDeltaE00(munsellHVCToLAB(a), munsellHVCToLAB(b));
+export const munsellDistance = (a: MunsellHVC, b: MunsellHVC): number =>
+  deltaEFromLab(munsellHVCToLAB(a), munsellHVCToLAB(b));
+
+// Same threshold used inside getColorFromPixels — exported for shared use
+// by getColorFromLinearRgb (the RAW-path equivalent).
+export const SOIL_COLOR_MATCH_THRESHOLD = SOIL_COLOR_SIMILARITY_THRESHOLD;
 
 const FLATTENED_SOIL_COLORS: MunsellHVC[] = entries(SOIL_COLORS).flatMap(
   ([hue, substepValueChromas]) =>

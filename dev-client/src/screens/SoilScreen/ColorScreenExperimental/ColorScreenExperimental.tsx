@@ -1,0 +1,178 @@
+/*
+ * Copyright © 2024 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+import {useCallback, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
+
+import {BulletList} from 'terraso-mobile-client/components/BulletList';
+import {DoneFab} from 'terraso-mobile-client/components/buttons/common/DoneFab';
+import {InfoButton} from 'terraso-mobile-client/components/buttons/icons/common/InfoButton';
+import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpContentSpacer';
+import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
+import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/commonRequirements';
+import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {
+  Box,
+  Column,
+  Heading,
+  Paragraph,
+  Row,
+  Text,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
+import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
+import {isColorComplete} from 'terraso-mobile-client/model/color/colorConversions';
+import {MunsellColor} from 'terraso-mobile-client/model/color/types';
+import {
+  canEditSite,
+  SITE_EDITOR_ROLES,
+} from 'terraso-mobile-client/model/permissions/permissions';
+import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {CameraWorkflowExperimental} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/components/CameraWorkflowExperimental';
+import {ColorDisplayExperimental} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/components/ColorDisplayExperimental';
+import {ManualWorkflowExperimental} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/components/ManualWorkflowExperimental';
+import {PhotoConditionsExperimental} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/components/PhotoConditionsExperimental';
+import {SwitchWorkflowButtonExperimental} from 'terraso-mobile-client/screens/SoilScreen/ColorScreenExperimental/components/SwitchWorkflowButtonExperimental';
+import {
+  SoilPitInputScreenProps,
+  SoilPitInputScreenScaffold,
+} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {
+  selectDepthDependentData,
+  selectUserRoleSite,
+} from 'terraso-mobile-client/store/selectors';
+
+export type ColorWorkflow = 'MANUAL' | 'CAMERA';
+
+export const ColorScreenExperimental = (props: SoilPitInputScreenProps) => {
+  const {t} = useTranslation();
+  const data = useSelector(selectDepthDependentData(props));
+  const previousWorkflow = useSelector(
+    state => state.preferences.colorWorkflow,
+  );
+  const siteWorkflow =
+    typeof data.colorPhotoUsed !== 'boolean'
+      ? undefined
+      : data.colorPhotoUsed
+        ? 'CAMERA'
+        : 'MANUAL';
+
+  const workflow = siteWorkflow ?? previousWorkflow;
+
+  const dispatch = useDispatch();
+
+  const userRole = useSelector(state =>
+    selectUserRoleSite(state, props.siteId),
+  );
+
+  const canDelete = useMemo(() => canEditSite(userRole), [userRole]);
+
+  const onClearValues = useCallback(() => {
+    dispatch(
+      updateDepthDependentSoilData({
+        siteId: props.siteId,
+        depthInterval: props.depthInterval.depthInterval,
+        colorHue: null,
+        colorValue: null,
+        colorChroma: null,
+      }),
+    );
+  }, [props.siteId, props.depthInterval, dispatch]);
+
+  const color: MunsellColor | undefined = useMemo(
+    () => (isColorComplete(data) ? data : undefined),
+    [data],
+  );
+
+  const requirements = useDefaultSiteDepthRequirements(
+    props.siteId,
+    props.depthInterval.depthInterval,
+  );
+
+  return (
+    <ScreenDataRequirements requirements={requirements}>
+      {() => (
+        <SoilPitInputScreenScaffold {...props}>
+          <SiteRoleContextProvider siteId={props.siteId}>
+            <Column padding="md">
+              <Row alignItems="flex-end">
+                <Row alignItems="center">
+                  <Heading variant="h6">{t('soil.color.title')}</Heading>
+                  <HelpContentSpacer />
+                  <InfoButton
+                    sheetHeading={
+                      <TranslatedHeading i18nKey="soil.color.title" />
+                    }>
+                    <Paragraph variant="body1">
+                      {t('soil.color.info.p1')}
+                    </Paragraph>
+                    <BulletList
+                      data={[1, 2, 3]}
+                      renderItem={i => (
+                        <Text variant="body1">
+                          {t(`soil.color.info.bullet${i}`)}
+                        </Text>
+                      )}
+                    />
+                    <Paragraph variant="body1">
+                      {t('soil.color.info.p2')}
+                    </Paragraph>
+                    <Paragraph variant="body1">
+                      {t('soil.color.info.p3')}
+                    </Paragraph>
+                  </InfoButton>
+                </Row>
+                <Box flex={1} />
+                <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+                  {(workflow === 'CAMERA' || color) && (
+                    <SwitchWorkflowButtonExperimental {...props} />
+                  )}
+                </RestrictBySiteRole>
+              </Row>
+            </Column>
+            {workflow === 'MANUAL' && <ManualWorkflowExperimental {...props} />}
+            {workflow === 'CAMERA' && !color && (
+              <CameraWorkflowExperimental {...props} />
+            )}
+            {color && (
+              <>
+                <ColorDisplayExperimental
+                  onDelete={
+                    canDelete && workflow === 'CAMERA'
+                      ? onClearValues
+                      : undefined
+                  }
+                  color={color}
+                  variant="lg"
+                />
+                {workflow === 'CAMERA' && (
+                  <PhotoConditionsExperimental {...props} />
+                )}
+              </>
+            )}
+            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+              <Box position="absolute" right="0" bottom="0">
+                <DoneFab disabled={!color} />
+              </Box>
+            </RestrictBySiteRole>
+          </SiteRoleContextProvider>
+        </SoilPitInputScreenScaffold>
+      )}
+    </ScreenDataRequirements>
+  );
+};

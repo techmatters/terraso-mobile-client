@@ -170,8 +170,7 @@ export const selectProjectsWithTransferrableSites = createSelector(
 // Note on "site" kind: In the future, there will also be site level roles, like manager and viewer
 // For now we only care if a user owns a site or not.
 export type SiteUserRole =
-  | {kind: 'site'; role: 'OWNER'}
-  | {kind: 'project'; role: ProjectRole};
+  {kind: 'site'; role: 'OWNER'} | {kind: 'project'; role: ProjectRole};
 
 const selectSiteId = (_state: any, siteId: string) => siteId;
 

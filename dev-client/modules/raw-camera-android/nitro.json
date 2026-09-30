@@ -1,0 +1,20 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": ["rawcameraandroid"],
+  "ios": {
+    "iosModuleName": "RawCameraAndroid"
+  },
+  "android": {
+    "androidNamespace": ["rawcameraandroid"],
+    "androidCxxLibName": "RawCameraAndroid"
+  },
+  "autolinking": {
+    "RawCameraAndroid": {
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "HybridRawCameraAndroid"
+      }
+    }
+  },
+  "ignorePaths": ["**/node_modules"]
+}
