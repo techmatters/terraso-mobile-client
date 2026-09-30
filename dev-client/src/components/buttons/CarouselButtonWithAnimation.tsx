@@ -52,7 +52,7 @@ export type OverviewCarouselButtonProps = {
  * is this component's choice: the animation advertises that the overview exists, and opening
  * it at all is enough to have delivered that.
  */
-export const OverviewCarouselButton = ({
+export const CarouselButtonWithAnimation = ({
   overviewKey,
   contentVersion,
   animation,
