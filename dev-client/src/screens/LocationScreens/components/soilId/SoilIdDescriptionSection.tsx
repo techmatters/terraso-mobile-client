@@ -22,7 +22,7 @@ import {TFunction} from 'i18next';
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {TutorialCarouselButton} from 'terraso-mobile-client/components/buttons/TutorialCarouselButton';
+import {OverviewCarouselButton} from 'terraso-mobile-client/components/buttons/OverviewCarouselButton';
 import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {CarouselHeading} from 'terraso-mobile-client/components/CarouselHeading';
 import {CarouselText} from 'terraso-mobile-client/components/CarouselText';
@@ -82,8 +82,8 @@ export const SoilIdDescriptionSection = ({
 
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
-      <TutorialCarouselButton
-        tutorialKey="soil-id-how-it-works"
+      <OverviewCarouselButton
+        overviewKey="soil-id-how-it-works"
         contentVersion={1}
         animation={SHOVEL_ANIMATION}
         pages={pages}
