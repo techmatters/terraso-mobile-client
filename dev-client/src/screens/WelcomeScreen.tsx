@@ -59,14 +59,22 @@ export const WelcomeScreen = () => {
 
         <ScreenContentSection title={t('welcome.title')}>
           <Text variant="body1-strong" mb="sm">
-            {t('welcome.version_includes.title')}
+            {t('welcome.version_includes.title', {
+              version: APP_CONFIG.version,
+            })}
           </Text>
           <TranslatedBulletList i18nKeyPrefix="welcome.version_includes.bullet_" />
 
           <Text variant="body1-strong" mb="sm">
+            {t('welcome.soil_id_changes.title')}
+          </Text>
+          <Text>{t('welcome.soil_id_changes.description')}</Text>
+          <Box height="24px" />
+
+          {/* <Text variant="body1-strong" mb="sm">
             {t('welcome.next.title')}
           </Text>
-          <TranslatedBulletList i18nKeyPrefix="welcome.next.bullet_" />
+          <TranslatedBulletList i18nKeyPrefix="welcome.next.bullet_" /> */}
 
           <Text variant="body1-strong">{t('welcome.learn_more')}</Text>
 

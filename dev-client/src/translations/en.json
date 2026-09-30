@@ -2,15 +2,14 @@
     "welcome": {
         "title": "Welcome to LandPKS Soil ID",
         "version_includes": {
-            "title": "New in this release:",
-            "bullet_1": "Max soil depth increased to 300cm",
-            "bullet_2": "Streamlined account deletion",
-            "bullet_3": "Added an “unaffiliated” option to filter sites list",
-            "bullet_4": "Fixed a bug that flashed an alert when a user deleted a site",
-            "bullet_5": "Functionality updates for text fields",
-            "bullet_6": "Added Mapbox attribution",
-            "bullet_7": "Updated links to new LandPKS website",
-            "bullet_8": "Improvements to the Soil ID Algorithm"
+            "title": "New in version {{version}}:",
+            "bullet_1": "Made switches more visible and consistent across operating systems",
+            "bullet_2": "Fixed bug in creating a site from a temporary location popover",
+            "bullet_3": "Fixed bug where elevation sometimes could not be found"
+        },
+        "soil_id_changes": {
+            "title": "Changes to the Soil ID Algorithm",
+            "description": "We've updated how the Soil ID algorithm calculates the soil properties score from user observations of slope, texture, rock fragment volume, and color. Visit your sites or export your data to see updated Soil ID match scores."
         },
         "next": {
             "title": "Future versions will include:",
