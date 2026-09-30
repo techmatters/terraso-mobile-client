@@ -83,7 +83,7 @@ export const SoilIdDescriptionSection = ({
 
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
-      <RestrictByFlag flag="FF_testing">
+      <RestrictByFlag flag="FF_redesign">
         <CarouselButtonWithAnimation
           overviewKey="soil-id"
           contentVersion={1}

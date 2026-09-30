@@ -27,6 +27,11 @@ export const featureFlags = {
     defaultIsEnabledInDevelopment: true,
     description: 'Enables testing-support controls',
   },
+  FF_redesign: {
+    defaultIsEnabled: false,
+    defaultIsEnabledInDevelopment: true,
+    description: 'Redesign to accomodate the soil health module',
+  },
 };
 
 export type FeatureFlagName = keyof typeof featureFlags;
