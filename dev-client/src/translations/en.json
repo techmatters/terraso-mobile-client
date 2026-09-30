@@ -11,10 +11,6 @@
             "title": "Changes to the Soil ID Algorithm",
             "description": "We've updated how the Soil ID algorithm calculates the soil properties score from user observations of slope, texture, rock fragment volume, and color. Visit your sites or export your data to see updated Soil ID match scores."
         },
-        "next": {
-            "title": "Future versions will include:",
-            "bullet_1": "Improvements to the soil color module"
-        },
         "learn_more": "Learn more and stay updated:",
         "link_text": "LandPKS from Terraso",
         "link_url": "https://landpotential.org/",

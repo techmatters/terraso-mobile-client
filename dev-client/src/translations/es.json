@@ -1,10 +1,6 @@
 {
     "welcome": {
         "title": "Bienvenido a LandPKS Soil ID",
-        "next": {
-            "title": "Las próximas versiones incluirán:",
-            "bullet_1": "Mejoras en el módulo de color del suelo"
-        },
         "version_includes": {
             "title": "Novedades de la versión {{version}}:",
             "bullet_1": "Los interruptores ahora son más visibles y coherentes entre sistemas operativos",

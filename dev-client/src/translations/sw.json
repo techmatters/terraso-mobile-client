@@ -1,10 +1,6 @@
 {
     "welcome": {
         "title": "Karibu kwenye LandPKS Soil ID",
-        "next": {
-            "title": "Matoleo yajayo yatajumuisha:",
-            "bullet_1": "Maboresho ya moduli ya rangi ya udongo"
-        },
         "version_includes": {
             "title": "Mapya katika toleo la {{version}}:",
             "bullet_1": "Swichi zimefanywa kuonekana vizuri zaidi na kufanana katika mifumo yote ya uendeshaji",
