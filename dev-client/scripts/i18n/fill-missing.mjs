@@ -60,8 +60,8 @@ for (const lang of langs) {
     langFlat[key] = `TK ${enFlat[key]}`;
   }
 
-  const result = unflatten(langFlat);
-  writeFileSync(langPath, JSON.stringify(result, null, 2) + '\n');
+  const result = unflatten(langFlat, {object:true});
+  writeFileSync(langPath, JSON.stringify(result, null, 4) + '\n');
   console.log(`${lang}: added ${missing.length} TK placeholder(s)`);
   totalAdded += missing.length;
 }
