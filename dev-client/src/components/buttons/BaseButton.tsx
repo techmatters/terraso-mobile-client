@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   labelPill: {
-    fontSize: 13,
+    fontSize: 14,
     lineHeight: 22,
     /* Pill buttons use sentence-case, not uppercase */
     textTransform: 'none',
