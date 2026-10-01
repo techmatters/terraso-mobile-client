@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 16,
     marginBottom: 16,
-    alignContent: 'space-evenly',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
 });
