@@ -442,7 +442,8 @@
         "read_only": "Soma tu",
         "carousel": {
             "overview": "Muhtasari",
-            "page_indicator": "Ukurasa {{current}} kati ya {{total}}"
+            "page_indicator": "Ukurasa {{current}} kati ya {{total}}",
+            "got_it": "Nimeelewa!"
         }
     },
     "errors": {

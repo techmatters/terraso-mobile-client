@@ -442,7 +442,8 @@
         "read_only": "Лише для читання",
         "carousel": {
             "overview": "Огляд",
-            "page_indicator": "Сторінка {{current}} з {{total}}"
+            "page_indicator": "Сторінка {{current}} з {{total}}",
+            "got_it": "Зрозуміло!"
         }
     },
     "errors": {

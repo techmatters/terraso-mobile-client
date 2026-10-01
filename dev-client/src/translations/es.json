@@ -442,7 +442,8 @@
         "read_only": "Solo lectura",
         "carousel": {
             "overview": "Resumen",
-            "page_indicator": "Página {{current}} de {{total}}"
+            "page_indicator": "Página {{current}} de {{total}}",
+            "got_it": "¡Entendido!"
         }
     },
     "errors": {

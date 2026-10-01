@@ -442,7 +442,8 @@
         "read_only": "მხოლოდ წასაკითხი",
         "carousel": {
             "overview": "მიმოხილვა",
-            "page_indicator": "გვერდი {{current}} {{total}}-დან"
+            "page_indicator": "გვერდი {{current}} {{total}}-დან",
+            "got_it": "გასაგებია!"
         }
     },
     "errors": {

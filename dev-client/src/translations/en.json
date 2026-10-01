@@ -450,7 +450,8 @@
         "read_only": "Read-only",
         "carousel": {
             "overview": "Overview",
-            "page_indicator": "Page {{current}} of {{total}}"
+            "page_indicator": "Page {{current}} of {{total}}",
+            "got_it": "Got it!"
         }
     },
     "permissions": {

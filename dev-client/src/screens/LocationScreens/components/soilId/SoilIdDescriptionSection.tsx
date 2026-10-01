@@ -24,6 +24,7 @@ import {TFunction} from 'i18next';
 import {Coords} from 'terraso-client-shared/types';
 
 import {CarouselButtonWithAnimation} from 'terraso-mobile-client/components/buttons/CarouselButtonWithAnimation';
+import {CloseModalButton} from 'terraso-mobile-client/components/buttons/CloseModalButton';
 import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {CarouselHeading} from 'terraso-mobile-client/components/CarouselHeading';
 import {CarouselText} from 'terraso-mobile-client/components/CarouselText';
@@ -33,6 +34,7 @@ import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {theme} from 'terraso-mobile-client/theme';
 
 type SoilIdDescriptionSectionProps = {
   siteId?: string;
@@ -80,15 +82,27 @@ const useOverviewPages = (): CarouselPage[] => {
       page(
         'page_3',
         EXAMPLE_ART[2],
-        /* Wrapped so the link centers under the copy above it. */
-        <View style={styles.link}>
-          <ExternalLink
-            label={t('site.soil_id.overview.page_3.link_text')}
-            url={t('site.soil_id.overview.page_3.link_url')}
-          />
-        </View>,
+        <>
+          <View style={styles.spacerSm} />
+          <View style={styles.pageAction}>
+            <ExternalLink
+              label={t('site.soil_id.overview.page_3.link_text')}
+              url={t('site.soil_id.overview.page_3.link_url')}
+            />
+          </View>
+        </>,
       ),
-      page('page_4', EXAMPLE_ART[3]),
+      /* The closer lives on the last page because that is where the overview ends, not because the carousel knows about it. */
+      page(
+        'page_4',
+        EXAMPLE_ART[3],
+        <>
+          <View style={styles.spacerMd} />
+          <View style={styles.pageAction}>
+            <CloseModalButton label={t('general.carousel.got_it')} />
+          </View>
+        </>,
+      ),
     ];
   }, [t]);
 };
@@ -133,9 +147,15 @@ const getText = (
 };
 
 const styles = StyleSheet.create({
-  /* A row, so centering is on the main axis: ExternalLink sets its own alignSelf, which would override alignItems here. */
-  link: {
+  /* A row, so centering is on the main axis: links and buttons both set alignSelf: 'flex-start' on themselves, which would override alignItems here. */
+  pageAction: {
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  spacerSm: {
+    height: theme.space.sm,
+  },
+  spacerMd: {
+    height: theme.space.md,
   },
 });
