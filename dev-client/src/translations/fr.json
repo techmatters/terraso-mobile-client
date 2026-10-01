@@ -1,20 +1,15 @@
 {
     "welcome": {
         "title": "Bienvenue sur LandPKS Soil ID",
-        "next": {
-            "title": "Les prochaines versions comprendront :",
-            "bullet_1": "Améliorations du module de couleur du sol"
-        },
         "version_includes": {
-            "title": "Nouveautés de cette version :",
-            "bullet_1": "Profondeur maximale du sol portée à 300 cm",
-            "bullet_2": "Suppression de compte simplifiée",
-            "bullet_3": "Ajout d'une option « non affilié » pour filtrer la liste des sites",
-            "bullet_4": "Correction d'un bug qui affichait brièvement une alerte lors de la suppression d'un site",
-            "bullet_5": "Améliorations du fonctionnement des champs de texte",
-            "bullet_6": "Ajout de l'attribution Mapbox",
-            "bullet_7": "Mise à jour des liens vers le nouveau site web LandPKS",
-            "bullet_8": "Améliorations de l'algorithme Soil ID"
+            "title": "Nouveautés de la version {{version}} :",
+            "bullet_1": "Les interrupteurs sont désormais plus visibles et plus cohérents d'un système d'exploitation à l'autre",
+            "bullet_2": "Correction d'un bug lors de la création d'un site depuis la fenêtre contextuelle d'un emplacement temporaire",
+            "bullet_3": "Correction d'un bug empêchant parfois de trouver l'élévation"
+        },
+        "soil_id_changes": {
+            "title": "Modifications de l'algorithme Soil ID",
+            "description": "Nous avons modifié la manière dont l'algorithme Soil ID calcule le score des propriétés du sol à partir des observations de pente, de texture, de volume de fragments de roche et de couleur. Consultez vos sites ou exportez vos données pour voir les scores de correspondance Soil ID mis à jour."
         },
         "learn_more": "Apprenez-en plus et restez informé :",
         "link_text": "LandPKS de Terraso",

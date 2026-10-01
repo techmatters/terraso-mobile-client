@@ -107,6 +107,7 @@ jest.mock('terraso-mobile-client/config', () => ({
   APP_CONFIG: {
     welcomeContentHash: 'test-hash',
     alwaysShowWelcome: false,
+    version: '0.0.0-test',
   },
 }));
 
