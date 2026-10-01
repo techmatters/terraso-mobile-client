@@ -17,6 +17,7 @@
 
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ImageSourcePropType, StyleSheet} from 'react-native';
 
 import {TFunction} from 'i18next';
 
@@ -27,6 +28,7 @@ import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {CarouselHeading} from 'terraso-mobile-client/components/CarouselHeading';
 import {CarouselText} from 'terraso-mobile-client/components/CarouselText';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
@@ -52,23 +54,43 @@ const EXAMPLE_ART = [
 const useOverviewPages = (): CarouselPage[] => {
   const {t} = useTranslation();
 
-  return useMemo(
-    () =>
-      EXAMPLE_ART.map((source, index) => {
-        const page = `site.soil_id.overview.page_${index + 1}`;
-        return {
-          key: String(index + 1),
-          image: {source},
-          below: (
-            <View>
-              <CarouselHeading>{t(`${page}.title`)}</CarouselHeading>
-              <CarouselText>{t(`${page}.info`)}</CarouselText>
-            </View>
-          ),
-        };
-      }),
-    [t],
-  );
+  return useMemo(() => {
+    /* Pages share a heading-over-copy shell; extra carries whatever a page adds below it. */
+    const page = (
+      key: string,
+      source: ImageSourcePropType,
+      extra?: React.ReactNode,
+    ): CarouselPage => ({
+      key,
+      image: {source},
+      below: (
+        <View>
+          <CarouselHeading>
+            {t(`site.soil_id.overview.${key}.title`)}
+          </CarouselHeading>
+          <CarouselText>{t(`site.soil_id.overview.${key}.info`)}</CarouselText>
+          {extra}
+        </View>
+      ),
+    });
+
+    return [
+      page('page_1', EXAMPLE_ART[0]),
+      page('page_2', EXAMPLE_ART[1]),
+      page(
+        'page_3',
+        EXAMPLE_ART[2],
+        /* Wrapped so the link centers under the copy above it. */
+        <View style={styles.link}>
+          <ExternalLink
+            label={t('site.soil_id.overview.page_3.link_text')}
+            url={t('site.soil_id.overview.page_3.link_url')}
+          />
+        </View>,
+      ),
+      page('page_4', EXAMPLE_ART[3]),
+    ];
+  }, [t]);
 };
 
 export const SoilIdDescriptionSection = ({
@@ -109,3 +131,11 @@ const getText = (
     return t('site.soil_id.description.temp_location');
   }
 };
+
+const styles = StyleSheet.create({
+  /* A row, so centering is on the main axis: ExternalLink sets its own alignSelf, which would override alignItems here. */
+  link: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+});

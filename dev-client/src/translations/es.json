@@ -105,12 +105,31 @@
             "number_error": "Solo se permiten números y punto"
         },
         "soil_id": {
-            "how_it_works": "TK How does it work?",
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID utiliza datos de mapas de suelos para calcular predicciones para el suelo en esta ubicación. Crea un sitio en esta ubicación para ingresar datos y mejorar los resultados.",
                 "site_US": "LandPKS Soil ID utiliza datos de mapas de suelos y las observaciones ingresadas por los usuarios sobre este sitio para calcular las coincidencias más probables del suelo. Elige la mejor coincidencia de suelo para este sitio para conocer su sitio ecológico y otras propiedades.",
                 "site_global_or_unknown": "LandPKS Soil ID utiliza datos de mapas de suelos y las observaciones ingresadas por los usuarios sobre este sitio para calcular las coincidencias más probables del suelo. Elige la mejor coincidencia de suelo para este sitio para conocer su sitio ecológico y otras propiedades."
+            },
+            "overview": {
+                "page_1": {
+                    "title": "¡La identificación del suelo importa!",
+                    "info": "La identificación del suelo es fundamental para tomar decisiones de manejo sostenible de la tierra en agricultura, construcción, planificación del uso del suelo, restauración y más."
+                },
+                "page_2": {
+                    "title": "Datos de suelo verificados en el campo",
+                    "info": "Los mapas de suelo ofrecen un punto de partida, pero sus predicciones no siempre son precisas para un sitio específico. Soil ID compara esas predicciones con las observaciones de campo para ordenar las coincidencias de suelo más probables."
+                },
+                "page_3": {
+                    "title": "Equipo para la calicata",
+                    "info": "Las observaciones se recopilan excavando una calicata. El equipo básico incluye una pala, una botella de agua, un tamiz y una referencia de color. Encuentra guías útiles en la aplicación en cada paso. Visita el Centro de Conocimiento de LandPKS para ver tutoriales y descargar la Guía del Usuario completa.",
+                    "link_text": "Centro de conocimiento",
+                    "link_url": "https://landpotential.org/"
+                },
+                "page_4": {
+                    "title": "Afinar la coincidencia de suelo",
+                    "info": "A medida que se ingresan observaciones, Soil ID vuelve a ordenar las coincidencias de suelo. Toca una coincidencia de suelo para conocer más sobre ella. Cuando tengas confianza en una coincidencia, usa el botón “Califica coincidencia” para confirmarla como el suelo del sitio."
+                }
             },
             "matches": {
                 "title": "Coincidencias de suelo",
@@ -422,8 +441,8 @@
         "terms_of_service_link_text": "Condiciones de servicio",
         "read_only": "Solo lectura",
         "carousel": {
-            "overview": "TK Overview",
-            "page_indicator": "TK Page {{current}} of {{total}}"
+            "overview": "Resumen",
+            "page_indicator": "Página {{current}} de {{total}}"
         }
     },
     "errors": {

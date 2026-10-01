@@ -105,12 +105,31 @@
             "number_error": "Seuls les chiffres et le point sont autorisés"
         },
         "soil_id": {
-            "how_it_works": "TK How does it work?",
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID utilise les données des cartes pédologiques pour calculer les prédictions concernant le sol à cet endroit. Créez un site à cet endroit pour saisir des observations et améliorer les résultats.",
                 "site_US": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance pédologique la plus adaptée à ce site pour en savoir plus sur son site écologique et ses autres propriétés.",
                 "site_global_or_unknown": "LandPKS Soil ID utilise les données des cartes pédologiques et les observations saisies par les utilisateurs sur ce site pour calculer les meilleures correspondances. Choisissez la correspondance la plus pertinente pour ce site afin d'en savoir plus sur ses caractéristiques et autres descriptions."
+            },
+            "overview": {
+                "page_1": {
+                    "title": "L'identification du sol est essentielle !",
+                    "info": "L'identification du sol est déterminante pour les décisions de gestion durable des terres : agriculture, construction, planification de l'usage des terres, restauration, et plus encore."
+                },
+                "page_2": {
+                    "title": "Des données pédologiques vérifiées sur le terrain",
+                    "info": "Les cartes pédologiques constituent un point de départ, mais leurs prédictions ne sont pas toujours exactes pour un site donné. Soil ID compare ces prédictions aux observations de terrain afin de classer les correspondances de sol les plus probables."
+                },
+                "page_3": {
+                    "title": "Matériel pour la fosse de sol",
+                    "info": "Les observations sont recueillies en creusant une fosse de sol. Le matériel de base comprend une pelle, une bouteille d'eau, un tamis et une référence de couleur. Des guides utiles sont disponibles dans l'application à chaque étape. Consultez le Centre de connaissances LandPKS pour des tutoriels et le Guide de l'utilisateur complet à télécharger.",
+                    "link_text": "Centre de connaissances",
+                    "link_url": "https://landpotential.org/"
+                },
+                "page_4": {
+                    "title": "Affiner la correspondance de sol",
+                    "info": "À mesure que les observations sont saisies, Soil ID reclasse les correspondances de sol. Appuyez sur une correspondance pour en savoir plus. Lorsque vous êtes sûr d'une correspondance, utilisez le bouton « Évaluer la correspondance » pour la confirmer comme sol du site."
+                }
             },
             "matches": {
                 "title": "Correspondance des Sols",
@@ -422,8 +441,8 @@
         "terms_of_service_link_text": "Conditions d'utilisation",
         "read_only": "Lecture seule",
         "carousel": {
-            "overview": "TK Overview",
-            "page_indicator": "TK Page {{current}} of {{total}}"
+            "overview": "Aperçu",
+            "page_indicator": "Page {{current}} sur {{total}}"
         }
     },
     "errors": {

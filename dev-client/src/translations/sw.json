@@ -105,12 +105,31 @@
             "number_error": "Nambari na nukta pekee ndizo zinazoruhusiwa"
         },
         "soil_id": {
-            "how_it_works": "TK How does it work?",
             "title": "Kitambulisho cha Udongo",
             "description": {
                 "temp_location": "LandPKS Soil ID hutumia data kutoka kwenye ramani za udongo ili kukokotoa utabiri wa udongo katika eneo hili. Unda eneo katika eneo hili ili kuingiza uchunguzi na kuboresha matokeo.",
                 "site_US": "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu eneo hili ili kukokotoa ulinganifu bora wa udongo wa eneo. Chagua ulinganifu bora wa udongo kwa eneo hili ili kujifunza kuhusu eneo lake la ikolojia na sifa zingine.",
                 "site_global_or_unknown": "LandPKS Soil ID hutumia data kutoka kwa ramani za udongo na uchunguzi ulioingizwa na watumiaji kuhusu eneo hili ili kukokotoa ulinganifu bora wa udongo wa eneo. Chagua ulinganifu bora wa udongo kwa eneo hili ili kujifunza kuhusu sifa za udongo na maelezo mengine."
+            },
+            "overview": {
+                "page_1": {
+                    "title": "Utambuzi wa udongo ni muhimu!",
+                    "info": "Utambuzi wa udongo ni muhimu sana kwa maamuzi ya usimamizi endelevu wa ardhi katika kilimo, ujenzi, upangaji wa matumizi ya ardhi, urejeshaji wa ardhi, na mengine."
+                },
+                "page_2": {
+                    "title": "Data ya udongo iliyothibitishwa shambani",
+                    "info": "Ramani za udongo hutoa mwanzo mzuri, lakini utabiri wake si sahihi kila wakati kwa eneo mahususi. Soil ID hulinganisha utabiri huo na uchunguzi wa shambani ili kupanga ulinganifu wa udongo unaowezekana zaidi."
+                },
+                "page_3": {
+                    "title": "Vifaa vya shimo la udongo",
+                    "info": "Uchunguzi hukusanywa kwa kuchimba shimo la udongo. Vifaa vya msingi ni sepetu, chupa ya maji, ungo, na kirejelea rangi. Pata miongozo ya kusaidia katika programu kwa kila hatua. Tembelea Kituo cha Maarifa cha LandPKS kwa mafunzo na Mwongozo kamili wa Mtumiaji unaoweza kupakuliwa.",
+                    "link_text": "Kituo cha maarifa",
+                    "link_url": "https://landpotential.org/"
+                },
+                "page_4": {
+                    "title": "Kuboresha ulinganifu wa udongo",
+                    "info": "Kadri uchunguzi unavyoingizwa, Soil ID hupanga upya ulinganifu wa udongo. Gusa ulinganifu wa udongo ili kujifunza zaidi kuuhusu. Ukishakuwa na uhakika wa ulinganifu, tumia kitufe cha “Kadiria ulinganifu” kuuthibitisha kama udongo wa eneo hili."
+                }
             },
             "matches": {
                 "title": "Vipimo Bora vya Udongo",
@@ -422,8 +441,8 @@
         "terms_of_service_link_text": "Sheria na Masharti",
         "read_only": "Soma tu",
         "carousel": {
-            "overview": "TK Overview",
-            "page_indicator": "TK Page {{current}} of {{total}}"
+            "overview": "Muhtasari",
+            "page_indicator": "Ukurasa {{current}} kati ya {{total}}"
         }
     },
     "errors": {

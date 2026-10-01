@@ -84,6 +84,26 @@
                 "site_US": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about its ecological site and other properties.",
                 "site_global_or_unknown": "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about soil characteristics and other descriptions."
             },
+            "overview": {
+                "page_1": {
+                    "title": "Soil identification matters!",
+                    "info": "Soil identification is critical to sustainable land management decisions for agriculture, construction, land use planning, restoration, and more."
+                },
+                "page_2": {
+                    "title": "Ground-truthed soil data",
+                    "info": "Soil maps offer a starting point, but their predictions aren't always accurate for a specific site. Soil ID compares those predictions with field observations to rank the most likely soil matches."
+                },
+                "page_3": {
+                    "title": "Equipment for the soil pit",
+                    "info": "Observations are collected by digging a soil pit. Basic equipment includes a shovel, water bottle, sieve, and color reference. Find helpful guides in the app at each step. Visit the LandPKS Knowledge Hub for tutorials and a full downloadable User Guide.",
+                    "link_text": "Knowledge hub",
+                    "link_url": "https://landpotential.org/"
+                },
+                "page_4": {
+                    "title": "Refining the soil match",
+                    "info": "As observations are entered, Soil ID re-ranks the soil matches. Tap a soil match to learn more about it. Once confident in a match, use the “Rate Match” button to confirm it as the soil for the site."
+                }
+            },
             "matches": {
                 "title": "Soil Matches",
                 "info": {
