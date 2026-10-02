@@ -45,10 +45,10 @@ export const flushDataIfBackendChanged = (dispatch: AppDispatch) => {
   const last = kvStorage.getString(LAST_BACKEND_KEY);
   if (last !== current) {
     performLogout(dispatch);
+    kvStorage.setString(LAST_BACKEND_KEY, current);
     console.log(
       `[backend-switch] backend ${last ?? '(none)'} → ${current}; ` +
         'logged out to flush local data',
     );
   }
-  kvStorage.setString(LAST_BACKEND_KEY, current);
 };
