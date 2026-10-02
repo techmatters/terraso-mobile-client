@@ -93,6 +93,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    gap: 8,
+    gap: 4,
   },
 });

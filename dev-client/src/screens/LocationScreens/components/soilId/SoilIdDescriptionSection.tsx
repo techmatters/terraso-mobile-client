@@ -31,7 +31,7 @@ import {CarouselText} from 'terraso-mobile-client/components/CarouselText';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
 import {theme} from 'terraso-mobile-client/theme';
@@ -117,17 +117,20 @@ export const SoilIdDescriptionSection = ({
   const dataRegion = soilIdOutput.dataRegion;
   const pages = useOverviewPages();
 
+  const redesignFlagEnabled = isFlagEnabled('FF_redesign');
+
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
-      <RestrictByFlag flag="FF_redesign">
+      {redesignFlagEnabled ? (
         <CarouselButtonWithAnimation
           overviewKey="soil-id"
           contentVersion={1}
           animation={SHOVEL_ANIMATION}
           pages={pages}
         />
-      </RestrictByFlag>
-      <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
+      ) : (
+        <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
+      )}
     </ScreenContentSection>
   );
 };
