@@ -608,14 +608,18 @@
             },
             "guide": {
                 "step1": {
-                    "title": "1. Kusanya Maelezo ya Baada ya Kuandika.",
-                    "content": "Ili kuhakikisha uchanganuzi sahihi wa rangi lazima utumie 3M Canary Yellow Post-it Notes kwa kadi yako ya marejeleo, pamoja na miongozo hii:",
-                    "bullets": {
-                        "1": "Tumia Vidokezo vipya vya Post-it pekee.",
-                        "2": "Weka angalau Vidokezo 3 vya Post-it juu ya kila kimoja.",
-                        "3": "Hakikisha kila noti ya Post-it imelala tambarare, haijaandikwa, na si chafu.",
-                        "4": "Hakikisha kila noti ya Post-it haiharibiwi na mwanga wa jua, kwani tofauti kubwa zinaweza kuwepo kulingana na mfiduo wa jua.",
-                        "5": "Hifadhi noti za Post-it katika bahasha nyeusi ili kuepuka kuathiriwa na jua."
+                    "title": "1. Kusanya marejeleo yako ya udongo.",
+                    "content": "Ili kuhakikisha uchanganuzi sahihi wa rangi lazima utumie kitu cha marejeleo chenye rangi inayojulikana. Tunapendekeza kutumia kadi ya WhiBal au kadi ya kijivu ya 18% kwa matokeo bora. Kidokezo cha Post-it cha manjano ya kanari pia kinaweza kutumika.",
+                    "general_intro": "Marejeleo yoyote utakayotumia, ili kuhakikisha uchanganuzi sahihi wa rangi:",
+                    "general_bullets": {
+                        "1": "Tumia marejeleo safi, yasiyo na alama.",
+                        "2": "Hakikisha marejeleo hayajaharibika kutokana na kuathiriwa na jua kwa muda mrefu.",
+                        "3": "Hifadhi marejeleo yako katika bahasha nyeusi ili kuepuka kuathiriwa na jua."
+                    },
+                    "postit_intro": "Ukitumia vidokezo vya Post-it:",
+                    "postit_bullets": {
+                        "1": "Tumia vidokezo vipya vya Post-it pekee.",
+                        "2": "Weka angalau vidokezo 3 vya Post-it juu ya kila kimoja."
                     }
                 },
                 "step2": {
@@ -626,11 +630,11 @@
                 },
                 "step3": {
                     "title": "3. Andaa taa.",
-                    "content": "Picha ya rangi ya udongo inahitaji kupigwa katika hali sawa ya mwanga na kivuli kutokana na jua moja kwa moja.\n\nJaribu kuwa na chanzo cha mwanga wa juu badala ya mwanga wa pembeni."
+                    "content": "Picha ya rangi ya udongo inahitaji kupigwa kwenye jua moja kwa moja, au katika chumba chenye mwanga mweupe.\n\nJaribu kupiga picha zako zikiwa na chanzo cha mwanga kutoka juu badala ya mwanga wa kando.\n\nEpuka kutathmini rangi katika hali ya mawingu au nyakati ambazo mwanga hubadilika rangi, kama vile alfajiri na jioni."
                 },
                 "step4": {
                     "title": "4. Weka kadi ya marejeleo karibu na udongo.",
-                    "content": "Weka alama ya Post-it karibu na sampuli ya udongo iliyoandaliwa, katika hali nzuri ya mwanga."
+                    "content": "Weka marejeleo karibu na sampuli ya udongo iliyoandaliwa, katika hali sahihi za mwanga."
                 },
                 "step5": {
                     "title": "5. Tunga picha.",
@@ -641,9 +645,16 @@
                     "content": "Ikiwa umefuata maagizo hapo juu, uko tayari! Unaweza kupiga picha kwa kutumia kamera ya kifaa chako, au kurudi nyuma ili kupakia picha."
                 },
                 "go_back": "Rudi nyuma",
-                "take_photo": "Piga Picha"
+                "take_photo": "Ongeza Picha"
+            },
+            "reference_prompt": "Ulitumia marejeleo gani?",
+            "reference_types": {
+                "WHIBAL_G7": "Kadi ya WhiBal",
+                "GRAY_CARD_18PCT": "Kadi ya kijivu ya 18%",
+                "CANARY_POST_IT": "Kidokezo cha Post-it cha manjano ya kanari"
             },
             "reference": "Marejeleo",
+            "crop_reference": "Kata picha ili kuonyesha kadi yako ya marejeleo pekee. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
             "soil": "Udongo",
             "analyze": "Chambua",
             "confirm_delete": {
@@ -662,7 +673,6 @@
                 "headline": "Kuna kitu kimeenda vibaya",
                 "body": "Kulikuwa na tatizo la kutambua rangi ya udongo. Hakikisha unafuata maagizo ya uchambuzi wa picha, na ujaribu tena. Ikiwa bado una tatizo, wasiliana na usaidizi."
             },
-            "crop_reference": "Kata picha ili kuonyesha tu Kidokezo cha 3M Canary Yellow Post-it. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
             "crop_soil": "Kata picha ili kuonyesha sampuli ya udongo pekee. Bandika picha kwa kidole gumba na kidole cha mbele ili kuvuta ndani (kubana ndani) au kuvuta nje (kubana nje). Sogeza picha kwenye kisanduku kwa kutelezesha kidole kimoja.",
             "soil_condition": "Hali ya udongo:",
             "lighting_condition": "Picha ina mwanga sawa na haina vivuli:",

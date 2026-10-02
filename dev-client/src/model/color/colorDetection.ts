@@ -45,21 +45,53 @@ const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;
 // This value was arrived at via ad-hoc testing.
 const QUANTIZATION_COLOR_COUNT = 5;
 
-// These are the theoretical "correct" colors for several different reference objects.
-// The algorithm compares the color of the reference object in the picture to these colors
-// to figure out how to adjust the color of the soil. I don't really fully understand it,
-// but I'm leaving the following science-y note about the conditions under which these values
-// were measured in case they are needed in the future: Observer = 2°, Illuminant = D65
+// The "correct" colors for each reference card the user can choose (keyed by
+// REFERENCE_TYPES below). The algorithm compares the reference card's color in
+// the photo to these to figure out how to adjust the soil color. Each value is
+// data-fit from the Munsell-chart validator captures (see per-entry notes).
 const REFERENCES = {
-  CAMERA_TRAX: [210.15, 213.95, 218.42],
-  CANARY_POST_IT: [249.92, 242.07, 161.42],
-  WHITE_BALANCE: [192.96, 192.0, 191.74],
+  // Data-fit ideal from the Munsell-chart validator captures (iPhone RAW,
+  // single natural-exposure shots), minimizing median ΔE00 over ~430 chart
+  // patches. Replaces the legacy D65-measured [249.92, 242.07, 161.42]; the
+  // blue channel is notably higher (post-it reads less saturated-yellow than
+  // the old value assumed). Fit in linear per-channel correction space, which
+  // is exactly what correctSampleRGB now applies (see below).
+  CANARY_POST_IT: [247.6, 237.0, 173.3],
+  // Generic 18% neutral gray card (~18% reflectance, spectrally flat). 18%
+  // linear-sRGB (r = g = b = 0.18) gamma-encoded to sRGB 0–255. Source value
+  // tracks fix/munsell-export's LINEAR_REFERENCES.GRAY_CARD_18PCT. Left neutral
+  // on purpose: the data wants a blue-shifted grey, but that cast is a
+  // page/hue-dependent chart+pipeline effect (an independent neutral card,
+  // WhiBal, shows the same per-page pattern), not the grey card — so it
+  // belongs in the pipeline, not baked into this reference. Best *neutral*
+  // grey fit is ~sRGB 125.
+  GRAY_CARD_18PCT: [118, 118, 118],
+  // WhiBal G7 Certified Neutral — kept neutral (r = g = b). Data-fit from the
+  // Munsell-chart validator JPEG captures — this release analyzes JPEG, not RAW,
+  // and JPEG's tone curve pushes the optimum brighter: best neutral is sRGB ~210
+  // (median ΔE00 7.4 → 6.5 on JPEG vs the old 170). The RAW fit wanted ~190; the
+  // other two entries here are still RAW-fit (post-it fits poorly on JPEG, grey
+  // is unchanged at neutral).
+  WHIBAL_G7: [210, 210, 210],
 } as const satisfies Record<string, RGB>;
+
+// The reference cards a user can choose from in the color guide, in display
+// order. Each is a key into REFERENCES above.
+export const REFERENCE_TYPES = [
+  'GRAY_CARD_18PCT',
+  'WHIBAL_G7',
+  'CANARY_POST_IT',
+] as const;
+
+export type ReferenceType = (typeof REFERENCE_TYPES)[number];
 
 export const getColorFromImages = ({
   reference,
   soil,
-}: Record<'soil' | 'reference', PhotoWithBase64>) => {
+  referenceType,
+}: Record<'soil' | 'reference', PhotoWithBase64> & {
+  referenceType: ReferenceType;
+}) => {
   const [referencePixels, soilPixels] = [reference, soil].map(({base64}) => {
     const {data, height, width} = decodeBase64Jpg(base64);
     const pixels: RGBA[] = [];
@@ -76,7 +108,7 @@ export const getColorFromImages = ({
     return getColorFromPixels(
       referencePixels,
       soilPixels,
-      REFERENCES.CANARY_POST_IT,
+      REFERENCES[referenceType],
     );
   } catch (e) {
     Sentry.captureEvent(
@@ -145,14 +177,39 @@ export const predictColorFromReference = (
   );
 };
 
+// Standard piecewise sRGB transfer function (8-bit sRGB → linear-light [0,1]).
+const srgbToLinear = (c: number): number => {
+  const x = c / 255;
+  return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+};
+
+// Inverse of srgbToLinear (linear-light [0,1] → 8-bit sRGB). Clamps to [0, 255].
+const linearToSrgb = (x: number): number => {
+  const clamped = Math.max(0, Math.min(1, x));
+  const c =
+    clamped <= 0.0031308
+      ? 12.92 * clamped
+      : 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055;
+  return Math.max(0, Math.min(255, c * 255));
+};
+
 const correctSampleRGB = (
   cardPixel: RGB,
   samplePixel: RGB,
   referenceRGB: RGB,
 ): RGB => {
-  return cardPixel.map(
-    (cardV, index) => (referenceRGB[index] / cardV) * samplePixel[index],
-  ) as RGB;
+  // Per-channel gain (von-Kries-style WB correction) is only physically correct
+  // in linear-light space. Doing it on sRGB-encoded values under/over-corrects
+  // depending on where each value sits on the gamma curve — and the REFERENCES
+  // above were fit in linear space, so the correction must match. Linearize,
+  // apply the gain, then re-encode to sRGB for the downstream Munsell lookup.
+  return cardPixel.map((cardV, index) => {
+    const cardLin = srgbToLinear(cardV);
+    if (cardLin === 0) return 0; // guard against a fully-black card
+    const sampleLin = srgbToLinear(samplePixel[index]);
+    const referenceLin = srgbToLinear(referenceRGB[index]);
+    return linearToSrgb((referenceLin / cardLin) * sampleLin);
+  }) as RGB;
 };
 
 export const dominantColor = (pixels: RGBA[]): RGB => {

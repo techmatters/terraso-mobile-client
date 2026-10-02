@@ -608,14 +608,18 @@
             },
             "guide": {
                 "step1": {
-                    "title": "1. Junta las notas Post-it.",
-                    "content": "Para garantizar un análisis de color preciso, debes utilizar notas Post-it de color amarillo canario de 3M como tarjeta de referencia, siguiendo las siguientes pautas:",
-                    "bullets": {
+                    "title": "1. Reúne tu referencia de suelo.",
+                    "content": "Para garantizar un análisis de color preciso, debes usar un objeto de referencia con un color conocido. Recomendamos usar una tarjeta WhiBal o una tarjeta gris del 18 % para obtener mejores resultados. También puedes usar una nota Post-it amarillo canario.",
+                    "general_intro": "Sea cual sea la referencia que uses, para garantizar un análisis de color preciso:",
+                    "general_bullets": {
+                        "1": "Usa referencias limpias y sin marcas.",
+                        "2": "Asegúrate de que la referencia no se haya degradado por una exposición prolongada a la luz solar.",
+                        "3": "Guarda tu referencia en un sobre oscuro para evitar la exposición al sol."
+                    },
+                    "postit_intro": "Si usas notas Post-it:",
+                    "postit_bullets": {
                         "1": "Usa solo notas Post-it nuevas.",
-                        "2": "Apila al menos 3 notas Post-it una encima de otra.",
-                        "3": "Asegúrate de que todas las notas Post-it están planas, sin escritura, y sin suciedad.",
-                        "4": "Asegúrate de que ninguna nota Post-it esté decolorada por la luz solar, ya que el color puede variar según la exposición al sol.",
-                        "5": "Guarda las Post-it en sobres oscuros para evitar exposición solar."
+                        "2": "Apila al menos 3 notas Post-it una encima de otra."
                     }
                 },
                 "step2": {
@@ -626,11 +630,11 @@
                 },
                 "step3": {
                     "title": "3. Prepara la iluminación.",
-                    "content": "Toma la foto del color del suelo con luz uniforme y protegida del sol directo.\n\nProcura contar con una fuente de luz desde arriba en lugar de iluminación lateral."
+                    "content": "La foto del color del suelo debe tomarse a la luz directa del sol o en una sala iluminada con luz blanca.\n\nProcura que tus fotos tengan una fuente de luz cenital en lugar de iluminación lateral.\n\nEvita evaluar el color en condiciones nubladas o en momentos en que la luz cambia de color, como al amanecer o al anochecer."
                 },
                 "step4": {
                     "title": "4. Coloca la tarjeta de referencia junto al suelo.",
-                    "content": "Coloca la nota Post-it junto a la muestra de suelo preparada, con las condiciones de iluminación adecuadas."
+                    "content": "Coloca la referencia junto a la muestra de suelo preparada, en las condiciones de iluminación adecuadas."
                 },
                 "step5": {
                     "title": "5. Compón la foto.",
@@ -641,9 +645,16 @@
                     "content": "Si has seguido las instrucciones anteriores, ¡ya estás listo! Puedes tomar una foto con la cámara de tu dispositivo o volver atrás para subir una foto."
                 },
                 "go_back": "Atrás",
-                "take_photo": "Tomar foto"
+                "take_photo": "Añadir foto"
+            },
+            "reference_prompt": "¿Qué referencia usaste?",
+            "reference_types": {
+                "WHIBAL_G7": "Tarjeta WhiBal",
+                "GRAY_CARD_18PCT": "Tarjeta gris del 18 %",
+                "CANARY_POST_IT": "Nota Post-it amarillo canario"
             },
             "reference": "Referencia",
+            "crop_reference": "Recorta la imagen para mostrar sólo tu tarjeta de referencia. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "soil": "Suelo",
             "analyze": "Analizar",
             "confirm_delete": {
@@ -662,7 +673,6 @@
                 "headline": "Algo salió mal",
                 "body": "Hubo un problema al identificar el color del suelo. Asegúrate de seguir las instrucciones del análisis fotográfico y vuelve a intentarlo. Si el problema persiste, contacta con el servicio de asistencia."
             },
-            "crop_reference": "Recorta la imagen para mostrar sólo la nota 3M Post-it de color amarillo canario. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "crop_soil": "Recorta la imagen para mostrar sólo la muestra de suelo. Pellizca la imagen con el pulgar y el índice para acercarla (pellizcando hacia dentro) o alejarla (pellizcando hacia fuera). Mueve la imagen en el recuadro deslizando con un dedo.",
             "soil_condition": "Condición del suelo:",
             "lighting_condition": "La foto tiene una iluminación uniforme y sin sombras:",
