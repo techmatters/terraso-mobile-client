@@ -100,6 +100,7 @@
             "number_error": "დაშვებულია მხოლოდ ციფრები და წერტილი"
         },
         "soil_id": {
+            "how_it_works": "TK How does it work?",
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID იყენებს ნიადაგის რუკებიდან მიღებულ მონაცემებს ამ ადგილას ნიადაგის პროგნოზების გამოსათვლელად. შექმენით საიტი ამ ადგილას დაკვირვებების შესატანად და შედეგების გასაუმჯობესებლად.",
@@ -414,7 +415,11 @@
         "privacy_policy_link_text": "კონფიდენციალურობის პოლიტიკა",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "მომსახურების პირობები",
-        "read_only": "მხოლოდ წასაკითხი"
+        "read_only": "მხოლოდ წასაკითხი",
+        "carousel": {
+            "overview": "TK Overview",
+            "page_indicator": "TK Page {{current}} of {{total}}"
+        }
     },
     "errors": {
         "sync_conflict": {

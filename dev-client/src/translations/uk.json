@@ -100,6 +100,7 @@
             "number_error": "Дозволені лише цифри та крапка"
         },
         "soil_id": {
+            "how_it_works": "TK How does it work?",
             "title": "Ідентифікатор ґрунту",
             "description": {
                 "temp_location": "LandPKS Soil ID використовує дані з ґрунтових карт для прогнозування типу ґрунту в цьому місці. Створіть ділянку в цьому місці, щоб вводити дані спостереження та покращувати результати.",
@@ -414,7 +415,11 @@
         "privacy_policy_link_text": "Політика конфіденційності",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Умови надання послуг",
-        "read_only": "Лише для читання"
+        "read_only": "Лише для читання",
+        "carousel": {
+            "overview": "TK Overview",
+            "page_indicator": "TK Page {{current}} of {{total}}"
+        }
     },
     "errors": {
         "sync_conflict": {
