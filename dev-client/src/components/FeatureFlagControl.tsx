@@ -53,6 +53,7 @@ export const FeatureFlagControlPanel = () => {
                 <ScreenContentSection>
                   <Heading mb="10px">Feature Flags</Heading>
                   <FeatureFlagControl flag="FF_testing" />
+                  <FeatureFlagControl flag="FF_redesign" />
                   <View style={styles.spacer} />
                   <Divider />
                 </ScreenContentSection>

@@ -27,6 +27,7 @@ import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 import {SAFE_AREA_BOTTOM_PADDING_DEFAULT} from 'terraso-mobile-client/constants/safeArea';
+import {SEEN_KEY_PREFIX} from 'terraso-mobile-client/hooks/useSeenOnce';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 const PREVIEW_LENGTH = 40;
@@ -221,7 +222,7 @@ const guessType = (key: string): KvValueType => {
   if (key.startsWith('FF_')) {
     return 'boolean';
   }
-  if (key.startsWith('tutorial.viewedVersion.')) {
+  if (key.startsWith(SEEN_KEY_PREFIX)) {
     return 'number';
   }
   return 'string';
