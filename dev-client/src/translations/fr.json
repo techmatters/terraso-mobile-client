@@ -1734,8 +1734,8 @@
     "sign_out": {
         "confirm_body": "Êtes-vous sûr de vouloir vous déconnecter ?",
         "confirm_action": "se déconnecter",
-        "blocked_title": "Impossible de se déconnecter",
-        "blocked_body": "Vous avez des modifications non synchronisées qui doivent être téléchargées avant de vous déconnecter. Veuillez vous connecter à Internet et attendre que vos données soient synchronisées."
+        "unsynced_body": "Vous avez des modifications qui n’ont pas encore été téléchargées. Si vous vous déconnectez maintenant, ces modifications seront perdues. Se déconnecter quand même ?",
+        "unsynced_action": "Se déconnecter quand même"
     },
     "account": {
         "google_login": "Connectez-vous avec Google",
