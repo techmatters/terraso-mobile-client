@@ -5,6 +5,12 @@
 # "Build failed after Xs" detection to see the real exit code.
 set -o pipefail
 
+# Force React Native's fetch instead of expo/fetch (URLSession-backed), which
+# throws intermittent NSURLError -1005 ("network connection was lost") on
+# keep-alive connection reuse. `npm run ios/android` (which this script calls)
+# also set it; exporting here covers any direct expo/metro invocation too.
+export EXPO_PUBLIC_USE_RN_FETCH=1
+
 print_usage() {
     echo "Usage:"
     echo "  npm run rebuild-all-ios        # shortcut, no flags"
