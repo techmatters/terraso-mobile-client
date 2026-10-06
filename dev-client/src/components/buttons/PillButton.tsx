@@ -56,11 +56,10 @@ export const PillButton = ({
 
 const styles = StyleSheet.create({
   containerDefault: {
-    backgroundColor: theme.colors.info.background,
-    borderColor: theme.colors.info.border,
+    backgroundColor: theme.colors.pillButton.background,
+    borderColor: theme.colors.pillButton.border,
   },
   containerDefaultPressed: {
-    /* Darkened info.background; no theme token exists for it yet. */
     backgroundColor: theme.colors.pillButton.backgroundPressed,
     borderColor: theme.colors.pillButton.border,
   },

@@ -43,8 +43,6 @@ type SoilIdDescriptionSectionProps = {
 
 const SHOVEL_ANIMATION = require('terraso-mobile-client/assets/animations/soil-shovel-icon.json');
 
-/* TODO-cknipe: Remove this test-only example content & icon further below
-Placeholder content to eyeball the carousel; real art and copy TBD. */
 const EXAMPLE_ART = [
   require('terraso-mobile-client/assets/carousel-soilid/1.jpg'),
   require('terraso-mobile-client/assets/carousel-soilid/2.jpg'),

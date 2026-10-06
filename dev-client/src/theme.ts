@@ -119,10 +119,10 @@ export const theme = extendTheme({
       thumbOffDisabled: '#FAFAFA',
     },
     pillButton: {
-      background: '#E7F1F5',
+      background: '#E5F6FD',
       backgroundPressed: '#ADCFDC',
       backgroundDisabled: '#E7F1F5',
-      border: '#ADCFDC',
+      border: '#0288D1',
       borderDisabled: '#c4dbe4',
       text: '#0D5A78',
       textDisabled: '#5b8ea1',
