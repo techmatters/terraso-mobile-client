@@ -85,9 +85,10 @@ if (persistedReduxState) {
 }
 const store = createStore(persistedReduxState);
 
-// If the backend server changed since the last launch (or this is the first
-// launch after the check shipped), log out to flush data/tokens that belong
-// to a different server. Runs before anything renders or syncs.
+// If the backend server changed since the last launch, log out to flush
+// data/tokens that belong to a different server. A first launch with nothing
+// stored only records the baseline and does not log out. Runs before anything
+// renders or syncs.
 flushDataIfBackendChanged(store.dispatch);
 
 /* Developer FYI: To enable the Little Snitch tool to simulate offline mode without losing connection to Metro:
