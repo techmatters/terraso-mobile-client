@@ -18,6 +18,7 @@
 import {
   MMKV,
   useMMKVBoolean,
+  useMMKVListener,
   useMMKVNumber,
   useMMKVObject,
   useMMKVString,
@@ -87,4 +88,8 @@ export const kvStorage = {
   },
   hasKey: (key: string) => mmkvStorage.contains(key),
   remove: (key: string) => mmkvStorage.delete(key),
+  getAllKeys: () => mmkvStorage.getAllKeys(),
+  /* Fires on any write or delete, including ones made elsewhere in the app. For tooling that mirrors storage rather than reading one known key. */
+  useChangeListener: (onChange: (key: string) => void) =>
+    useMMKVListener(onChange, mmkvStorage),
 };

@@ -118,6 +118,15 @@ export const theme = extendTheme({
       thumbOff: '#FAFAFA',
       thumbOffDisabled: '#FAFAFA',
     },
+    pillButton: {
+      background: '#E7F1F5',
+      backgroundPressed: '#ADCFDC',
+      backgroundDisabled: '#E7F1F5',
+      border: '#ADCFDC',
+      borderDisabled: '#c4dbe4',
+      text: '#0D5A78',
+      textDisabled: '#5b8ea1',
+    },
     transparent: '#00000000',
   },
   radii: {
@@ -482,6 +491,11 @@ export const theme = extendTheme({
           fontSize: '12px',
           lineHeight: '14px',
           fontWeight: 500,
+        },
+        /* TODO: Make lineHeight work in this file & remove it from styles in Carousel */
+        pCarousel: {
+          fontSize: '20px',
+          fontWeight: 400,
         },
       },
     },

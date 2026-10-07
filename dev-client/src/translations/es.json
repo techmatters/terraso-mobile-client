@@ -100,6 +100,7 @@
             "number_error": "Solo se permiten números y punto"
         },
         "soil_id": {
+            "how_it_works": "TK How does it work?",
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID utiliza datos de mapas de suelos para calcular predicciones para el suelo en esta ubicación. Crea un sitio en esta ubicación para ingresar datos y mejorar los resultados.",
@@ -414,7 +415,11 @@
         "privacy_policy_link_text": "Política de privacidad",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Condiciones de servicio",
-        "read_only": "Solo lectura"
+        "read_only": "Solo lectura",
+        "carousel": {
+            "overview": "TK Overview",
+            "page_indicator": "TK Page {{current}} of {{total}}"
+        }
     },
     "errors": {
         "sync_conflict": {

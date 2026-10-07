@@ -100,6 +100,7 @@
             "number_error": "Seuls les chiffres et le point sont autorisés"
         },
         "soil_id": {
+            "how_it_works": "TK How does it work?",
             "title": "Soil ID",
             "description": {
                 "temp_location": "LandPKS Soil ID utilise les données des cartes pédologiques pour calculer les prédictions concernant le sol à cet endroit. Créez un site à cet endroit pour saisir des observations et améliorer les résultats.",
@@ -414,7 +415,11 @@
         "privacy_policy_link_text": "politique de confidentialité",
         "terms_of_service_link_url": "https://terraso.org/terms-of-service/",
         "terms_of_service_link_text": "Conditions d'utilisation",
-        "read_only": "Lecture seule"
+        "read_only": "Lecture seule",
+        "carousel": {
+            "overview": "TK Overview",
+            "page_indicator": "TK Page {{current}} of {{total}}"
+        }
     },
     "errors": {
         "sync_conflict": {

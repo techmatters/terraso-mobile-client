@@ -47,7 +47,9 @@ jest.mock('react-native-reanimated', () => {
   // So we override it with a no-op
   Reanimated.default.call = () => {};
 
-  return Reanimated;
+  // The upstream mock omits useReducedMotion (it is commented "ADD ME IF NEEDED"
+  // there). Tests should exercise the normal, non-reduced-motion path.
+  return {...Reanimated, useReducedMotion: () => false};
 });
 jest.useFakeTimers();
 jest.mock('react-native/src/private/animated/NativeAnimatedHelper');
@@ -90,6 +92,28 @@ jest.mock('expo-font', () => {
   };
 
   return module;
+});
+
+// LottieView is a native component, and its imperative ref is what AnimatedIcon
+// drives playback with, so the mock has to supply those methods or the effect
+// throws. `source` is dropped from the rendered props to keep whole animation
+// JSON documents out of the snapshots.
+jest.mock('lottie-react-native', () => {
+  const React = require('react');
+
+  return {
+    __esModule: true,
+    default: React.forwardRef(({source: _source, ...props}: any, ref: any) => {
+      React.useImperativeHandle(ref, () => ({
+        play: jest.fn(),
+        pause: jest.fn(),
+        reset: jest.fn(),
+        resume: jest.fn(),
+      }));
+
+      return React.createElement('LottieView', props);
+    }),
+  };
 });
 
 jest.mock('expo-video', () => ({
