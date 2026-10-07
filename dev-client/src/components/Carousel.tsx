@@ -16,7 +16,8 @@
  */
 
 import {useCallback, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {AccessibilityInfo, Platform, StyleSheet, View} from 'react-native';
 import PagerView, {PagerViewOnPageSelectedEvent} from 'react-native-pager-view';
 
 import {
@@ -63,6 +64,7 @@ export const Carousel = ({
   initialPage = 0,
   onPageChange,
 }: CarouselProps) => {
+  const {t} = useTranslation();
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   const onPageSelected = useCallback(
@@ -70,8 +72,18 @@ export const Carousel = ({
       const {position} = event.nativeEvent;
       setCurrentPage(position);
       onPageChange?.(position);
+
+      /* The indicator's accessibilityLiveRegion covers this on Android only, so iOS has to be told. Announcing here rather than from an effect on currentPage, which would also fire on mount and announce page 1 to someone who just opened the sheet. */
+      if (Platform.OS === 'ios') {
+        AccessibilityInfo.announceForAccessibility(
+          t('general.carousel.page_indicator', {
+            current: position + 1,
+            total: pages.length,
+          }),
+        );
+      }
     },
-    [onPageChange],
+    [onPageChange, pages.length, t],
   );
 
   return (

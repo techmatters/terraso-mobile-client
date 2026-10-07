@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Technology Matters
+ * Copyright © 2026 Technology Matters
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,25 +15,19 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useTranslation} from 'react-i18next';
-import {PressableProps} from 'react-native';
+import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
+import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 
-import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
-
-type BigCloseButtonProps = {
-  onPress?: PressableProps['onPress'];
+export type CloseModalButtonProps = {
+  label: string;
 };
 
-export const BigCloseButton = ({onPress}: BigCloseButtonProps) => {
-  const {t} = useTranslation();
+/* Labeled button that dismisses the modal or sheet it is rendered in. */
+export const CloseModalButton = ({label}: CloseModalButtonProps) => {
+  const modalHandle = useModal();
 
-  return (
-    <IconButton
-      type="md"
-      name="close"
-      variant="normal-filled"
-      accessibilityLabel={t('general.close')}
-      onPress={onPress}
-    />
-  );
+  /* Don't render when we're outside a modal and there's nothing to dismiss */
+  return modalHandle ? (
+    <ContainedButton label={label} onPress={modalHandle.onClose} />
+  ) : null;
 };

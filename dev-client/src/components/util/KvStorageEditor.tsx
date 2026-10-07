@@ -18,7 +18,6 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Pressable, ScrollView} from 'react-native-gesture-handler';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {TextButton} from 'terraso-mobile-client/components/buttons/TextButton';
@@ -26,7 +25,8 @@ import {Icon} from 'terraso-mobile-client/components/icons/Icon';
 import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
-import {SAFE_AREA_BOTTOM_PADDING_DEFAULT} from 'terraso-mobile-client/constants/safeArea';
+import {useBottomInsetPadding} from 'terraso-mobile-client/hooks/useBottomInsetPadding';
+import {SEEN_KEY_PREFIX} from 'terraso-mobile-client/hooks/useSeenOnce';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
 const PREVIEW_LENGTH = 40;
@@ -50,8 +50,8 @@ const EXCLUDED_KEYS = new Set(['persisted-redux-state']);
 /*
  * Developer tool for inspecting and editing MMKV directly — chiefly the flags
  * that are otherwise only reachable by reinstalling, like
- * `tutorial.viewedVersion.*` (lower the number to re-arm a tutorial animation)
- * and `welcomeScreenSeenForHash`. Gated behind FF_testing by its caller.
+ * `seenRevision.*` (lower the number to re-arm a one-time affordance) and
+ * `welcomeScreenSeenForHash`. Gated behind FF_testing by its caller.
  */
 export const KvStorageEditor = () => {
   const [show, setShow] = useState(false);
@@ -78,14 +78,8 @@ export const KvStorageEditor = () => {
       .sort();
   }, [allKeys, filter]);
 
-  /* ScreenScaffold's SafeAreaView omits the bottom edge, so this panel runs under the home indicator / nav bar. SafeScrollView solves this for the screen's main content; this panel is a sibling of it and has to do the same for itself. */
-  const insets = useSafeAreaInsets();
-  const listContentStyle = useMemo(
-    () => ({
-      paddingBottom: Math.max(insets.bottom, SAFE_AREA_BOTTOM_PADDING_DEFAULT),
-    }),
-    [insets.bottom],
-  );
+  /* ScreenScaffold's SafeAreaView omits the bottom edge, so this panel runs under the home indicator / nav bar. The screen's main content is handled by its own scroll view; this panel is a sibling of it and has to do the same for itself. */
+  const listContentStyle = useBottomInsetPadding();
 
   return (
     <View>
@@ -221,7 +215,7 @@ const guessType = (key: string): KvValueType => {
   if (key.startsWith('FF_')) {
     return 'boolean';
   }
-  if (key.startsWith('tutorial.viewedVersion.')) {
+  if (key.startsWith(SEEN_KEY_PREFIX)) {
     return 'number';
   }
   return 'string';

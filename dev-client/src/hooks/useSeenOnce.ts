@@ -19,8 +19,8 @@ import {useCallback} from 'react';
 
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
-/* Groups every seen record under one namespace so they read as a set in KvStorageEditor. Callers supply the rest of the key. */
-const KEY_PREFIX = 'seen.';
+/* Groups every seen record under one namespace so they read as a set in KvStorageEditor. Callers supply the rest of the key. Named for the revision number actually stored rather than for `seen`, which would read as a boolean. Exported so KvStorageEditor can type these rows without duplicating the literal. */
+export const SEEN_KEY_PREFIX = 'seenRevision.';
 
 /*
  * Tracks whether the user has already seen a one-time affordance, at a given revision.
@@ -34,7 +34,7 @@ const KEY_PREFIX = 'seen.';
  */
 export const useSeenOnce = (key: string, revision: number) => {
   const [seenRevision, setSeenRevision] = kvStorage.useNumber(
-    KEY_PREFIX + key,
+    SEEN_KEY_PREFIX + key,
     0,
   );
 

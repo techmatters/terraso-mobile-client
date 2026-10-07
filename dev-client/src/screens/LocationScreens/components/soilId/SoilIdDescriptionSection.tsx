@@ -17,20 +17,24 @@
 
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {ImageSourcePropType, StyleSheet} from 'react-native';
 
 import {TFunction} from 'i18next';
 
 import {Coords} from 'terraso-client-shared/types';
 
 import {CarouselButtonWithAnimation} from 'terraso-mobile-client/components/buttons/CarouselButtonWithAnimation';
+import {CloseModalButton} from 'terraso-mobile-client/components/buttons/CloseModalButton';
 import {CarouselPage} from 'terraso-mobile-client/components/Carousel';
 import {CarouselHeading} from 'terraso-mobile-client/components/CarouselHeading';
 import {CarouselText} from 'terraso-mobile-client/components/CarouselText';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
+import {ExternalLink} from 'terraso-mobile-client/components/links/ExternalLink';
 import {Text, View} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {useSoilIdOutput} from 'terraso-mobile-client/hooks/soilIdHooks';
 import {DataRegion} from 'terraso-mobile-client/model/soilIdMatch/soilIdMatches';
+import {theme} from 'terraso-mobile-client/theme';
 
 type SoilIdDescriptionSectionProps = {
   siteId?: string;
@@ -39,9 +43,7 @@ type SoilIdDescriptionSectionProps = {
 
 const SHOVEL_ANIMATION = require('terraso-mobile-client/assets/animations/soil-shovel-icon.json');
 
-/* TODO-cknipe: Remove this test-only example content & icon further below
-Placeholder content to eyeball the carousel; real art and copy TBD. */
-const EXAMPLE_ART = [
+const OVERVIEW_ART = [
   require('terraso-mobile-client/assets/carousel-soilid/1.jpg'),
   require('terraso-mobile-client/assets/carousel-soilid/2.jpg'),
   require('terraso-mobile-client/assets/carousel-soilid/3.jpg'),
@@ -52,23 +54,55 @@ const EXAMPLE_ART = [
 const useOverviewPages = (): CarouselPage[] => {
   const {t} = useTranslation();
 
-  return useMemo(
-    () =>
-      EXAMPLE_ART.map((source, index) => {
-        const page = `site.soil_id.overview.page_${index + 1}`;
-        return {
-          key: String(index + 1),
-          image: {source},
-          below: (
-            <View>
-              <CarouselHeading>{t(`${page}.title`)}</CarouselHeading>
-              <CarouselText>{t(`${page}.info`)}</CarouselText>
-            </View>
-          ),
-        };
-      }),
-    [t],
-  );
+  return useMemo(() => {
+    /* Pages share a heading-over-copy shell; extra carries whatever a page adds below it. */
+    const page = (
+      key: string,
+      source: ImageSourcePropType,
+      extra?: React.ReactNode,
+    ): CarouselPage => ({
+      key,
+      image: {source},
+      below: (
+        <View>
+          <CarouselHeading>
+            {t(`site.soil_id.overview.${key}.title`)}
+          </CarouselHeading>
+          <CarouselText>{t(`site.soil_id.overview.${key}.info`)}</CarouselText>
+          {extra}
+        </View>
+      ),
+    });
+
+    return [
+      page('page_1', OVERVIEW_ART[0]),
+      page('page_2', OVERVIEW_ART[1]),
+      page(
+        'page_3',
+        OVERVIEW_ART[2],
+        <>
+          <View style={styles.spacerSm} />
+          <View style={styles.pageAction}>
+            <ExternalLink
+              label={t('site.soil_id.overview.page_3.link_text')}
+              url={t('site.soil_id.overview.page_3.link_url')}
+            />
+          </View>
+        </>,
+      ),
+      /* The closer lives on the last page because that is where the overview ends, not because the carousel knows about it. */
+      page(
+        'page_4',
+        OVERVIEW_ART[3],
+        <>
+          <View style={styles.spacerMd} />
+          <View style={styles.pageAction}>
+            <CloseModalButton label={t('general.carousel.got_it')} />
+          </View>
+        </>,
+      ),
+    ];
+  }, [t]);
 };
 
 export const SoilIdDescriptionSection = ({
@@ -81,17 +115,20 @@ export const SoilIdDescriptionSection = ({
   const dataRegion = soilIdOutput.dataRegion;
   const pages = useOverviewPages();
 
+  const redesignFlagEnabled = isFlagEnabled('FF_redesign');
+
   return (
     <ScreenContentSection title={t('site.soil_id.title')}>
-      <RestrictByFlag flag="FF_testing">
+      {redesignFlagEnabled ? (
         <CarouselButtonWithAnimation
           overviewKey="soil-id"
           contentVersion={1}
           animation={SHOVEL_ANIMATION}
           pages={pages}
         />
-      </RestrictByFlag>
-      <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
+      ) : (
+        <Text variant="body1">{getText(siteId, dataRegion, t)}</Text>
+      )}
     </ScreenContentSection>
   );
 };
@@ -109,3 +146,17 @@ const getText = (
     return t('site.soil_id.description.temp_location');
   }
 };
+
+const styles = StyleSheet.create({
+  /* A row, so centering is on the main axis: links and buttons both set alignSelf: 'flex-start' on themselves, which would override alignItems here. */
+  pageAction: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  spacerSm: {
+    height: theme.space.sm,
+  },
+  spacerMd: {
+    height: theme.space.md,
+  },
+});
