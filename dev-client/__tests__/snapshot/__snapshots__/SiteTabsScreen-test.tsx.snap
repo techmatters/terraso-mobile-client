@@ -1612,6 +1612,7 @@ exports[`renders correctly 1`] = `
                                                   </View>
                                                   <View>
                                                     <View
+                                                      accessibilityLabel="Close"
                                                       accessibilityRole="button"
                                                       accessibilityState={
                                                         {

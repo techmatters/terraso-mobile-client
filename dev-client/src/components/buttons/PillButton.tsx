@@ -63,25 +63,16 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.pillButton.backgroundPressed,
     borderColor: theme.colors.pillButton.border,
   },
-  containerDisabled: {
-    backgroundColor: theme.colors.pillButton.backgroundDisabled,
-    borderColor: theme.colors.pillButton.borderDisabled,
-  },
   contentDefault: {
     color: theme.colors.pillButton.text,
-  },
-  contentDisabled: {
-    color: theme.colors.pillButton.textDisabled,
   },
 });
 
 const CONTAINER_STYLES = {
   default: styles.containerDefault,
   pressed: styles.containerDefaultPressed,
-  disabled: styles.containerDisabled,
 };
 
 const CONTENT_STYLES = {
   default: styles.contentDefault,
-  disabled: styles.contentDisabled,
 };

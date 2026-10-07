@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
 import {PressableProps} from 'react-native';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
@@ -24,11 +25,14 @@ type BigCloseButtonProps = {
 };
 
 export const BigCloseButton = ({onPress}: BigCloseButtonProps) => {
+  const {t} = useTranslation();
+
   return (
     <IconButton
       type="md"
       name="close"
       variant="normal-filled"
+      accessibilityLabel={t('general.close')}
       onPress={onPress}
     />
   );

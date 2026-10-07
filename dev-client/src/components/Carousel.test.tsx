@@ -83,10 +83,12 @@ describe('Carousel', () => {
     expect(screen.getByLabelText('Page 1 of 3')).toBeTruthy();
   });
 
+  /* Assert that the label and actual page content respect the initialPage */
   test('honors initialPage', () => {
     renderCarousel({initialPage: 2});
 
     expect(screen.getByLabelText('Page 3 of 3')).toBeTruthy();
+    expect(screen.UNSAFE_getByType(PagerView).props.initialPage).toBe(2);
   });
 
   test('advances the indicator when the pager changes page', () => {

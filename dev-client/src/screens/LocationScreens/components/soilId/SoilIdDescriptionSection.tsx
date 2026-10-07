@@ -43,7 +43,7 @@ type SoilIdDescriptionSectionProps = {
 
 const SHOVEL_ANIMATION = require('terraso-mobile-client/assets/animations/soil-shovel-icon.json');
 
-const EXAMPLE_ART = [
+const OVERVIEW_ART = [
   require('terraso-mobile-client/assets/carousel-soilid/1.jpg'),
   require('terraso-mobile-client/assets/carousel-soilid/2.jpg'),
   require('terraso-mobile-client/assets/carousel-soilid/3.jpg'),
@@ -75,11 +75,11 @@ const useOverviewPages = (): CarouselPage[] => {
     });
 
     return [
-      page('page_1', EXAMPLE_ART[0]),
-      page('page_2', EXAMPLE_ART[1]),
+      page('page_1', OVERVIEW_ART[0]),
+      page('page_2', OVERVIEW_ART[1]),
       page(
         'page_3',
-        EXAMPLE_ART[2],
+        OVERVIEW_ART[2],
         <>
           <View style={styles.spacerSm} />
           <View style={styles.pageAction}>
@@ -93,7 +93,7 @@ const useOverviewPages = (): CarouselPage[] => {
       /* The closer lives on the last page because that is where the overview ends, not because the carousel knows about it. */
       page(
         'page_4',
-        EXAMPLE_ART[3],
+        OVERVIEW_ART[3],
         <>
           <View style={styles.spacerMd} />
           <View style={styles.pageAction}>
