@@ -17,9 +17,17 @@
 
 // HTML report generator for the Munsell fixture batch runner.
 //
-// Emits one self-contained HTML file per run: run-level header table
-// + one section per capture (metadata table + whitemask overlay SVG
-// + result grid SVG). Preview images are inline as base64 data URIs.
+// Emits one HTML file per run: run-level header table + one collapsed
+// <details> section per capture (metadata table + whitemask overlay +
+// result grid SVG). Captures are collapsed by default; a sticky filter
+// bar hides sections by status/format/page/ref/illuminant. Preview
+// rasters are plain <img loading="lazy"> elements (so overlays are a
+// transparent SVG layered on top, not an SVG-embedded <image>); their
+// `src` is set only when a section is expanded and cleared when it
+// collapses, so the browser never holds more than a few decoded
+// previews at once. The analyzer decides whether each src is an
+// external sidecar path (default) or an inline base64 data URI
+// (--inline-images).
 //
 // The two SVG generators here are DUPLICATES of the RN screen's
 // drawing code (ResultSvg, DebugOverlayLayers in
@@ -53,11 +61,13 @@ export type CaptureContext = {
   // Chosen WB reference for this capture (Munsell notation). Drives
   // the "which cell is the WB anchor" indicator in the result grid.
   referenceNotation: string;
-  // Preview JPEG bytes (base64-encoded here) + display dims. May be
-  // undefined when the analyzer failed and no preview was generated.
+  // Preview image + display dims. May be undefined when the analyzer
+  // failed and no preview was generated.
   previewImage?: {
-    base64: string;
-    ext: 'jpg' | 'png';
+    // Ready-to-use value for the <img> src — either a `data:` URI
+    // (--inline-images) or a path relative to the report HTML
+    // (e.g. "images/foo-3.jpg"). The report drops it straight in.
+    src: string;
     // Dims of the JPEG itself (usually smaller than the analysis
     // preview coord space — the SVG viewBox uses preview coord dims
     // and stretches the image to fit).
@@ -347,10 +357,17 @@ const renderBrightnessBarChart = (
   const PAD_B = 22;
   const plotW = WIDTH - PAD_L - PAD_R;
   const plotH = HEIGHT - PAD_T - PAD_B;
-  // Fixed y-scale [80, 220] — brightness range that covers virtually
-  // all captures without truncating.
-  const Y_MIN = 80;
-  const Y_MAX = 220;
+  // Y-scale defaults to [80, 220] — the brightness range that covers
+  // most captures — but EXPANDS (snapped to 10) to include any values
+  // outside it, so dim shots (means < 80) or blown-out ones (> 220)
+  // still render as proper bars instead of flooring to zero height.
+  // Normal in-range charts are unchanged; the 100/150/200 gridlines
+  // stay inside any expanded range.
+  const nums = values.filter((v): v is number => v !== null);
+  const dataMin = nums.length > 0 ? Math.min(...nums) : 80;
+  const dataMax = nums.length > 0 ? Math.max(...nums) : 220;
+  const Y_MIN = Math.min(80, Math.floor(dataMin / 10) * 10);
+  const Y_MAX = Math.max(220, Math.ceil(dataMax / 10) * 10);
   const yFor = (v: number): number =>
     PAD_T + plotH * (1 - (v - Y_MIN) / (Y_MAX - Y_MIN));
   const parts: string[] = [];
@@ -368,12 +385,20 @@ const renderBrightnessBarChart = (
     );
   }
   const barW = plotW / values.length;
+  const baseline = HEIGHT - PAD_B;
   values.forEach((v, i) => {
     if (v === null) return;
     const bx = PAD_L + i * barW + 1;
     const bw = barW - 2;
-    const by = yFor(v);
-    const bh = HEIGHT - PAD_B - by;
+    // Clamp the value into the chart's [Y_MIN, Y_MAX] range for the
+    // GEOMETRY only — out-of-range captures (e.g. dim shots with mean
+    // < 80) would otherwise put the bar top below the baseline and
+    // produce a negative rect height (invalid SVG). Dim bars floor at
+    // the baseline, bright ones cap at the top; the numeric label below
+    // still shows the true value.
+    const vClamped = Math.max(Y_MIN, Math.min(Y_MAX, v));
+    const by = yFor(vClamped);
+    const bh = Math.max(0, baseline - by);
     parts.push(
       `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="#3388cc"/>`,
     );
@@ -395,8 +420,7 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
     return '<div class="no-preview">(no preview available — analysis failed before preview render)</div>';
   }
   const {
-    base64,
-    ext,
+    src,
     coordWidth: W,
     coordHeight: H,
   } = cap.previewImage;
@@ -414,10 +438,10 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
         : null;
   const result =
     cap.outcome.kind === 'success' ? cap.outcome.result : null;
+  // Overlay vector only — the preview raster is a sibling <img> layered
+  // underneath (see the return below), NOT an SVG <image>, so it can be
+  // a lazy-loaded / tear-down-able HTML element.
   const parts: string[] = [];
-  parts.push(
-    `<image href="data:image/${ext};base64,${base64}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`,
-  );
 
   // Whitemask spans — the pixels the border-cal classifier labelled
   // "paper" (or "background color"). On bright-paper captures this
@@ -599,7 +623,22 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
     parts.push('</g>');
   }
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="whitemask-svg">${parts.join('')}</svg>`;
+  // Raster + overlay as two layers in a box with the analysis coord
+  // aspect ratio. The <img> stretches to fill (object-fit:fill ==
+  // the old preserveAspectRatio="none"). The whole section body is only
+  // injected into the page on expand (and torn out on collapse), so the
+  // raster loads then and is freed on collapse — loading="lazy" just
+  // trims further within a tall expanded section. The SVG overlay sits
+  // on top, sharing the same coordinate box (viewBox 0 0 W H) so
+  // rects/labels land in the right place regardless of the img's
+  // intrinsic size.
+  const overlay = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="whitemask-svg" preserveAspectRatio="none">${parts.join('')}</svg>`;
+  return (
+    `<div class="preview-stack" style="aspect-ratio:${W}/${H}">` +
+    `<img class="preview-raster" loading="lazy" src="${esc(src)}" alt="capture preview">` +
+    overlay +
+    `</div>`
+  );
 };
 
 // ---- Result grid SVG -------------------------------------------------------
@@ -933,10 +972,21 @@ export type RunMeta = {
   excluded_cards: string[];
 };
 
-export const renderHtmlReport = (
+// The report as a bundle of files: a light `index` (run.html — meta
+// tables, filter bar, TOC, and one collapsed <summary> per section) plus
+// one `sections/<id>.js` per capture group holding that section's heavy
+// body (preview + result grids). The index injects a section's body on
+// expand and clears it on collapse, so a multi-thousand-capture report
+// stays a few MB in the browser instead of hundreds. The analyzer writes
+// `index` to run.html and each `sections[i].js` to sections/<id>.js.
+export type ReportBundle = {
+  index: string;
+  sections: {id: string; js: string}[];
+};
+export const renderReportBundle = (
   meta: RunMeta,
   captures: CaptureContext[],
-): string => {
+): ReportBundle => {
   // Group by fixture stem (source_path minus extension). Multiple
   // captures per fixture arise when the runner sweeps several WB
   // anchors OR when a chart-capture pair produced both a DNG and a
@@ -956,11 +1006,17 @@ export const renderHtmlReport = (
   }
   const groupList = Array.from(groups.values());
   const excludedSet = new Set(meta.excluded_chips ?? []);
-  const sections = groupList
-    .map(g => renderFixtureSection(g, excludedSet))
-    .join('\n');
+  const rendered = groupList.map(g => renderFixtureSection(g, excludedSet));
+  // The index carries only the collapsed summaries; each heavy body goes
+  // to its own JS file that calls __loadSection(id, html) when loaded.
+  const summaries = rendered.map(r => r.summary).join('\n');
+  const sectionFiles = rendered.map(r => ({
+    id: r.id,
+    js:
+      `window.__loadSection(${JSON.stringify(r.id)}, ${JSON.stringify(r.body)});\n`,
+  }));
   const toc = renderToc(groupList);
-  return `<!DOCTYPE html>
+  const index = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -973,8 +1029,26 @@ export const renderHtmlReport = (
     table.meta { border-collapse: collapse; margin: 12px 0; font-size: 13px; }
     table.meta th, table.meta td { border: 1px solid #ddd; padding: 4px 10px; text-align: left; vertical-align: top; }
     table.meta th { background: #f7f7f7; font-weight: 600; white-space: nowrap; }
-    section.capture { border: 1px solid #ccc; padding: 12px 18px; margin: 12px 0; border-radius: 6px; background: #fafafa; }
-    section.capture.failed { background: #fff5f5; border-color: #f5c8c8; }
+    .capture { border: 1px solid #ccc; padding: 6px 18px; margin: 12px 0; border-radius: 6px; background: #fafafa; }
+    .capture.failed { background: #fff5f5; border-color: #f5c8c8; }
+    /* Collapsed-by-default capture sections. Summary is the clickable
+       header row; the heavy body (meta + preview + grids) only renders
+       when open, and the preview <img> only loads then (see script). */
+    details.capture > summary { cursor: pointer; list-style: none;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 8px 0; font-size: 17px; font-weight: 600; color: #222; }
+    details.capture > summary::-webkit-details-marker { display: none; }
+    details.capture > summary::before { content: '▸'; color: #999;
+      font-size: 13px; transition: transform .1s ease; }
+    details.capture[open] > summary::before { transform: rotate(90deg); }
+    .capture-summary .sum-meta { font-size: 12px; color: #888;
+      font-weight: 400; }
+    .sum-badge { font-size: 11px; padding: 1px 8px; border-radius: 3px;
+      border: 1px solid #ccc; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .03em; color: #555; background: #fff; }
+    .sum-badge.pass { background: #e6f6e6; color: #256b25; border-color: #bfe0bf; }
+    .sum-badge.fail { background: #fdecec; color: #b02020; border-color: #f0c4c4; }
+    .capture-body { padding: 4px 0 10px 0; }
     /* Whitemask sits on its own row (full width) so it can render as
        large as the browser will allow; result grids wrap below in a
        flex row. */
@@ -998,7 +1072,14 @@ export const renderHtmlReport = (
     .format-header.raw   .fmt-badge { background: #e8f0ff; color: #244; }
     .format-header.photo .fmt-badge { background: #fff4e8; color: #542; }
     .images { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
-    svg.whitemask-svg { width: 100%; height: auto; max-width: 1400px; background: #000; }
+    /* Preview = raster <img> layer + overlay <svg> layer stacked in a
+       box with the analysis coord aspect ratio. */
+    .preview-stack { position: relative; width: 100%; max-width: 1400px;
+      background: #000; }
+    .preview-stack .preview-raster { display: block; width: 100%;
+      height: 100%; object-fit: fill; }
+    .preview-stack svg.whitemask-svg { position: absolute; inset: 0;
+      width: 100%; height: 100%; }
     svg.results-svg { width: 100%; height: auto; max-width: 800px; }
     .no-preview { padding: 20px; background: #eee; color: #666; font-style: italic; }
     code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 12px; }
@@ -1035,10 +1116,28 @@ export const renderHtmlReport = (
     .preview-container[data-mode=original]     .layer-registration { display: none; }
     .preview-container[data-mode=original]     .layer-mask         { display: none; }
     .preview-container[data-mode=registration] .layer-mask         { display: none; }
+    /* Sticky filter bar — checkbox groups hide capture sections by
+       facet; all boxes start checked (everything visible). */
+    #filter-bar { position: sticky; top: 0; z-index: 10; background: #fff;
+      border: 1px solid #ddd; border-radius: 6px; padding: 10px 14px;
+      margin: 12px 0 18px 0; font-size: 13px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07); }
+    #filter-bar .fg { display: inline-flex; flex-wrap: wrap;
+      gap: 4px 10px; align-items: baseline; margin: 0 20px 6px 0; }
+    #filter-bar .fg-title { font-weight: 700; color: #333; }
+    #filter-bar label { cursor: pointer; user-select: none; white-space: nowrap; }
+    #filter-bar input[type=checkbox] { margin-right: 3px; vertical-align: -1px; }
+    #filter-bar .bar-actions { margin-top: 6px; display: flex; gap: 10px;
+      align-items: center; border-top: 1px solid #eee; padding-top: 8px; }
+    #filter-bar button { font-size: 12px; padding: 3px 12px; cursor: pointer;
+      border: 1px solid #bbb; border-radius: 4px; background: #f5f5f5; }
+    #filter-bar button:hover { background: #ececec; }
+    #filter-count { color: #666; font-variant-numeric: tabular-nums; }
   </style>
 </head>
 <body>
   <h1>Munsell Chart Validator — regression report</h1>
+  ${renderFilterBar(groupList)}
   <table class="meta">
     <tr><th>Schema version</th><td>${esc(meta.schema_version)}</td></tr>
     <tr><th>Generated</th><td>${esc(meta.generated_at)}</td></tr>
@@ -1050,7 +1149,7 @@ export const renderHtmlReport = (
   ${renderRegistrationTable(groupList)}
   ${toc}
   ${renderLegend()}
-  ${sections}
+  ${summaries}
   <script>
     // Per-fixture preview toggles. Each .preview-controls wraps two
     // radio groups (format + mode); on change, the sibling
@@ -1071,10 +1170,112 @@ export const renderHtmlReport = (
       if (isFmt) container.dataset.fmt = target.value;
       if (isMode) container.dataset.mode = target.value;
     });
+
+    // Section bodies live in sibling sections/<id>.js files to keep
+    // run.html small (a few MB instead of hundreds for a big run). Each
+    // such file calls __loadSection(id, html) to inject its body. On
+    // expand we load the file (if not already injected); on collapse we
+    // clear the body so only open sections hold heavy DOM + images —
+    // RAM stays bounded no matter how many captures. 'toggle' doesn't
+    // bubble, so we listen in the capture phase (O(1) listeners).
+    var SECTION_LOADING = {};
+    window.__loadSection = function (id, html) {
+      var d = document.getElementById(id);
+      SECTION_LOADING[id] = false;
+      if (!d || !d.open) return; // collapsed again before the file arrived
+      var body = d.querySelector('.capture-body');
+      if (body) body.innerHTML = html;
+    };
+    document.addEventListener('toggle', function (e) {
+      var d = e.target;
+      if (!d || d.tagName !== 'DETAILS' || !d.classList.contains('capture')) return;
+      var body = d.querySelector('.capture-body');
+      if (!body) return;
+      if (d.open) {
+        if (body.innerHTML || SECTION_LOADING[d.id]) return; // already loaded / loading
+        SECTION_LOADING[d.id] = true;
+        var s = document.createElement('script');
+        s.src = 'sections/' + d.id + '.js';
+        s.onload = function () { s.remove(); };
+        s.onerror = function () {
+          SECTION_LOADING[d.id] = false;
+          s.remove();
+          body.innerHTML = '<p style="color:#b00020">failed to load section body (' + d.id + '.js)</p>';
+        };
+        document.body.appendChild(s);
+      } else {
+        body.innerHTML = '';
+      }
+    }, true);
+
+    // Filter bar. Every checkbox is grouped by data-group (matching a
+    // <details> dataset key). A section is shown iff, for each group, its
+    // facet value is checked — and for the multi-valued 'formats' key, iff
+    // ANY of its formats is checked. Hidden sections (display:none) never
+    // load their lazy images, so filtering is also a memory lever.
+    function applyFilters() {
+      var bar = document.getElementById('filter-bar');
+      if (!bar) return;
+      var groups = {};
+      var boxes = bar.querySelectorAll('input[type=checkbox][data-group]');
+      for (var i = 0; i < boxes.length; i++) {
+        var g = boxes[i].dataset.group;
+        if (!groups[g]) groups[g] = {};
+        if (boxes[i].checked) groups[g][boxes[i].value] = true;
+      }
+      var secs = document.querySelectorAll('details.capture');
+      var shown = 0;
+      for (var s = 0; s < secs.length; s++) {
+        var sec = secs[s], ok = true;
+        for (var key in groups) {
+          if (key === 'formats') {
+            var fmts = (sec.dataset.formats || '').split(' ');
+            var any = false;
+            for (var f = 0; f < fmts.length; f++) {
+              if (fmts[f] && groups.formats[fmts[f]]) { any = true; break; }
+            }
+            if (!any) { ok = false; break; }
+          } else if (!groups[key][sec.dataset[key]]) {
+            ok = false; break;
+          }
+        }
+        sec.style.display = ok ? '' : 'none';
+        if (ok) shown++;
+      }
+      var c = document.getElementById('filter-count');
+      if (c) c.textContent = shown + ' / ' + secs.length + ' shown';
+    }
+    (function () {
+      var bar = document.getElementById('filter-bar');
+      if (bar) bar.addEventListener('change', applyFilters);
+      var expand = document.getElementById('expand-all');
+      if (expand) expand.addEventListener('click', function () {
+        var secs = document.querySelectorAll('details.capture');
+        for (var i = 0; i < secs.length; i++) {
+          if (secs[i].style.display !== 'none') secs[i].open = true;
+        }
+      });
+      var collapse = document.getElementById('collapse-all');
+      if (collapse) collapse.addEventListener('click', function () {
+        var secs = document.querySelectorAll('details.capture');
+        for (var i = 0; i < secs.length; i++) secs[i].open = false;
+      });
+      // Open the targeted section when navigating to a TOC anchor.
+      function openHashTarget() {
+        if (!location.hash) return;
+        var el;
+        try { el = document.querySelector(location.hash); } catch (e) { return; }
+        if (el && el.tagName === 'DETAILS') el.open = true;
+      }
+      window.addEventListener('hashchange', openHashTarget);
+      openHashTarget();
+      applyFilters();
+    })();
   </script>
 </body>
 </html>
 `;
+  return {index, sections: sectionFiles};
 };
 
 // Greycard-anchored fixture ranking. One row per (fixture stem,
@@ -1530,10 +1731,75 @@ const renderMultiRefRow = (variants: CaptureContext[]): string => {
   return `<tr><th>Multi refs ΔE</th><td>${rows}</td></tr>`;
 };
 
+// The facet values a capture section is filtered + badged by. Derived
+// once per section and reused for the <details> data-* attributes, the
+// summary badges, and the filter-bar checkbox lists (via renderFilterBar)
+// so the two always agree on the set of values.
+type SectionFacets = {
+  status: 'pass' | 'fail';
+  formats: ('raw' | 'photo')[];
+  page: string;
+  ref: string;
+  illum: string;
+};
+const sectionFacets = (variants: CaptureContext[]): SectionFacets => {
+  const je = variants[0].jsonEntry;
+  return {
+    status: variants.every(v => v.outcome.kind === 'failure') ? 'fail' : 'pass',
+    formats: Array.from(
+      new Set(variants.map(v => v.jsonEntry.capture_format)),
+    ),
+    page: je.page || '(none)',
+    ref: je.reference_card ?? '(none)',
+    illum: je.environment.illuminant_tag ?? '(none)',
+  };
+};
+
+// Sticky filter bar: one checkbox group per facet that has more than
+// one distinct value across the run (a single-valued facet isn't worth
+// a filter). data-group matches the <details> dataset key the filter
+// JS reads. All boxes start checked, so the default view shows every
+// section.
+const renderFilterBar = (groups: CaptureContext[][]): string => {
+  const facets = groups.map(sectionFacets);
+  const uniq = (xs: string[]) => Array.from(new Set(xs)).sort();
+  const groupHtml = (
+    title: string,
+    key: string,
+    values: string[],
+  ): string => {
+    if (values.length <= 1) return '';
+    const boxes = values
+      .map(
+        v =>
+          `<label><input type="checkbox" data-group="${key}" value="${esc(v)}" checked>${esc(v)}</label>`,
+      )
+      .join(' ');
+    return `<span class="fg"><span class="fg-title">${esc(title)}:</span> ${boxes}</span>`;
+  };
+  const bars = [
+    groupHtml('Status', 'status', uniq(facets.map(f => f.status))),
+    groupHtml('Format', 'formats', uniq(facets.flatMap(f => f.formats))),
+    groupHtml('Page', 'page', uniq(facets.map(f => f.page))),
+    groupHtml('Ref card', 'ref', uniq(facets.map(f => f.ref))),
+    groupHtml('Illuminant', 'illum', uniq(facets.map(f => f.illum))),
+  ].join('');
+  return `
+  <div id="filter-bar">
+    ${bars}
+    <div class="bar-actions">
+      <button type="button" id="expand-all">Expand visible</button>
+      <button type="button" id="collapse-all">Collapse all</button>
+      <span id="filter-count"></span>
+    </div>
+  </div>`;
+};
+
+type RenderedSection = {id: string; summary: string; body: string};
 const renderFixtureSection = (
   variants: CaptureContext[],
   excludedSet: Set<string>,
-): string => {
+): RenderedSection => {
   // A section groups every capture that shares a source-path stem —
   // so a DNG + its JPEG sibling for the same shutter land here
   // together, potentially alongside multiple WB-anchor sweeps of
@@ -1649,9 +1915,29 @@ const renderFixtureSection = (
     })
     .join('');
 
-  return `
-<section class="capture ${isFailed ? 'failed' : 'ok'}" id="${idBase}">
-  <h2>${esc(jsonEntry.label)}${isFailed ? ' <span style="color:#c62828">[FAILED]</span>' : ''}</h2>
+  // Facets drive both the filter-bar data-* attributes and the summary
+  // badges. The heavy body (preview + result grids) is NOT inlined in
+  // the index — it's emitted to a per-section JS file and injected into
+  // this `.capture-body` on expand / cleared on collapse (see the report
+  // <script> + renderReportBundle), so a 6000-capture run.html stays a
+  // few MB instead of hundreds. `summary` is what the index carries;
+  // `body` is what the section's JS file injects.
+  const facets = sectionFacets(sorted);
+  const summaryBadges =
+    `<span class="sum-badge ${facets.status}">${facets.status === 'fail' ? 'failed' : 'ok'}</span>` +
+    facets.formats.map(f => `<span class="sum-badge">${esc(f)}</span>`).join('');
+  const summary = `
+<details class="capture ${isFailed ? 'failed' : 'ok'}" id="${idBase}"
+  data-status="${facets.status}" data-formats="${esc(facets.formats.join(' '))}"
+  data-page="${esc(facets.page)}" data-ref="${esc(facets.ref)}" data-illum="${esc(facets.illum)}">
+  <summary class="capture-summary">
+    <span class="sum-label">${esc(jsonEntry.label)}</span>
+    ${summaryBadges}
+    <span class="sum-meta">${esc(facets.page)} · ${esc(facets.ref)} · ${esc(facets.illum)}</span>
+  </summary>
+  <div class="capture-body"></div>
+</details>`;
+  const body = `
   <table class="meta">
     <tr><th>Page</th><td>${esc(jsonEntry.page)}</td></tr>
     <tr><th>Formats</th><td>${esc(formats)}</td></tr>
@@ -1681,8 +1967,8 @@ const renderFixtureSection = (
       ${resultBlocks}
     </div>`
     }
-  </div>
-</section>`;
+  </div>`;
+  return {id: idBase, summary, body};
 };
 
 // Pulls the illumination stats out of the fixture's registration

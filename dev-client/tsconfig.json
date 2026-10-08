@@ -15,7 +15,9 @@
       "module": "commonjs",
       "moduleResolution": "node",
       "customConditions": null,
-      "allowImportingTsExtensions": false
+      "allowImportingTsExtensions": false,
+      "ignoreDeprecations": "6.0",
+      "rootDir": "."
     }
   }
 }

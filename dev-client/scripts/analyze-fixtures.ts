@@ -113,7 +113,7 @@ import {
 
 import {
   deltaE2000Breakdown,
-  renderHtmlReport,
+  renderReportBundle,
   rgbToLab,
   type CaptureContext,
   type CaptureJsonEntry,
@@ -585,7 +585,16 @@ class NodeDecoder implements DngDecoderLike {
 // ---- Filename parser -------------------------------------------------------
 
 type ParsedFixture = {
+  // The real, readable file on disk. For a preview JPEG extracted out
+  // of a DNG on a read-only tree (e.g. Google Drive), this points at
+  // the writable cache copy; `sourcePath` holds the logical location.
   path: string;
+  // Logical path used for grouping (raw↔photo pairing), label and the
+  // exported source_path. Defaults to `path` when unset — only the
+  // extracted-JPEG-sibling case sets it (path = cache, sourcePath =
+  // the DNG's sibling .jpg location) so the photo still groups with
+  // its DNG by shared stem.
+  sourcePath?: string;
   page: string;
   format: 'raw' | 'photo';
   // Which phone platform produced the capture — routes DNG decoding
@@ -772,28 +781,55 @@ const isSupportedFixture = (name: string): boolean => {
 };
 
 // Every iOS AVCapturePhoto DNG carries an Apple-ISP-processed JPEG
-// preview in a subimage. When a DNG doesn't have a sibling .jpg on
-// disk yet, extract it once (byte-for-byte copy via CGImageSource,
-// no re-encode) so both pipelines can be analysed side-by-side.
-// Skipped if the sibling already exists, or if the source has no
-// preview subimage (rare for iOS DNGs; possible for DNGs from other
-// sources — logged but not fatal).
-const ensureDngJpegSibling = (dngPath: string, cli: string): void => {
-  const jpgPath = dngPath.replace(/\.dng$/i, '.jpg');
-  if (fs.existsSync(jpgPath)) return;
-  try {
-    execFileSync(cli, ['extract-dng-preview-jpeg', dngPath, jpgPath], {
-      encoding: 'utf-8',
-    });
-    process.stderr.write(
-      `  extracted preview JPEG: ${path.basename(jpgPath)}\n`,
-    );
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    process.stderr.write(
-      `  preview-JPEG extraction skipped for ${path.basename(dngPath)}: ${msg.split('\n')[0]}\n`,
-    );
+// preview in a subimage. When a DNG doesn't already have a real sibling
+// .jpg on disk, extract that preview once so both pipelines can be
+// analysed side-by-side.
+//
+// The extracted JPEG goes into a WRITABLE cache dir (under the run's
+// output dir), NOT next to the DNG — the fixtures tree is usually a
+// read-only Google Drive mount, so writing in place fails. The returned
+// photo ParsedFixture therefore reads pixels from the cache (`path`)
+// but carries the DNG's sibling .jpg location as `sourcePath`, so it
+// still groups with its DNG by shared stem in the report.
+//
+// Returns:
+//   - null when a real sibling .jpg already exists (the scan's second
+//     pass will pick it up in place), or when extraction fails / the
+//     DNG has no preview subimage (logged, non-fatal).
+//   - a photo ParsedFixture pointing at the cache copy otherwise.
+const ensureDngJpegSibling = (
+  dngPath: string,
+  cli: string,
+  root: string,
+  cacheDir: string,
+): ParsedFixture | null => {
+  const siblingPath = dngPath.replace(/\.dng$/i, '.jpg');
+  if (fs.existsSync(siblingPath)) return null;
+  // Flatten the path relative to the fixtures root into the cache
+  // filename so DNGs that share a basename across subdirs don't collide.
+  const rel = path.relative(root, dngPath);
+  const cacheName = rel.replace(/[\\/]+/g, '__').replace(/\.dng$/i, '.jpg');
+  const cachePath = path.join(cacheDir, cacheName);
+  if (!fs.existsSync(cachePath)) {
+    try {
+      fs.mkdirSync(cacheDir, {recursive: true});
+      execFileSync(cli, ['extract-dng-preview-jpeg', dngPath, cachePath], {
+        encoding: 'utf-8',
+      });
+      process.stderr.write(`  extracted preview JPEG → cache: ${cacheName}\n`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      process.stderr.write(
+        `  preview-JPEG extraction skipped for ${path.basename(dngPath)}: ${msg.split('\n')[0]}\n`,
+      );
+      return null;
+    }
   }
+  // Parse tokens/format from the LOGICAL sibling name (.jpg → photo),
+  // then redirect the readable file to the cache copy.
+  const parsed = parseFixtureFilename(siblingPath);
+  if (!parsed) return null;
+  return {...parsed, path: cachePath, sourcePath: siblingPath};
 };
 
 // Matches the `_burstNofM` filename token emitted by the on-device
@@ -805,6 +841,9 @@ const BURST_TAG_RE = /^burst(\d+)of(\d+)$/;
 const scanFixtures = (
   root: string,
   cli: string,
+  // Writable dir for preview JPEGs extracted out of DNGs that lack a
+  // real sibling (the fixtures tree itself is usually read-only).
+  cacheDir: string,
   // Optional predicate — when set, files whose full path fails the
   // check are skipped for BOTH the JPEG-sibling extraction pass and
   // the fixture-parse pass. Used to make --filter runs cheap:
@@ -814,6 +853,10 @@ const scanFixtures = (
 ): ParsedFixture[] => {
   const out: ParsedFixture[] = [];
   const skipped: string[] = [];
+  // Photo fixtures recovered from DNG previews into the cache. These
+  // live outside `root`, so the parse walk below won't find them —
+  // collect them here and append to the returned list.
+  const extracted: ParsedFixture[] = [];
   // Resolve a directory entry's real type, tolerating broken
   // symlinks (dangling targets throw ENOENT from statSync — a
   // stray symlink in a scanned tree shouldn't kill the whole run).
@@ -849,7 +892,8 @@ const scanFixtures = (
         entry.name.toLowerCase().endsWith('.dng') &&
         keepPath(full)
       ) {
-        ensureDngJpegSibling(full, cli);
+        const photo = ensureDngJpegSibling(full, cli, root, cacheDir);
+        if (photo) extracted.push(photo);
       }
     }
   };
@@ -874,7 +918,7 @@ const scanFixtures = (
   for (const s of skipped) {
     process.stderr.write(`skip (no recognized page): ${s}\n`);
   }
-  return out;
+  return [...out, ...extracted];
 };
 
 // ---- Output builders -------------------------------------------------------
@@ -1210,7 +1254,7 @@ const buildPaperMeasurement = (
   outcome: MunsellChartOutcome,
 ): CellMeasurement | null => {
   if (outcome.kind !== 'success') return null;
-  if (!isLightBgPath(fixture.path)) return null;
+  if (!isLightBgPath(fixture.sourcePath ?? fixture.path)) return null;
   const g = outcome.result.grid;
   const r = g?.paperMedianR;
   const gg = g?.paperMedianG;
@@ -1241,7 +1285,11 @@ const buildCaptureEntry = (
   outcome: MunsellChartOutcome,
   page: MunsellPage,
 ): unknown => {
-  const base = path.basename(fixture.path, path.extname(fixture.path));
+  // Label / source_path use the LOGICAL path (so an extracted preview
+  // reads as its DNG's sibling .jpg and groups with it), while pixel
+  // reads + metadata keep using fixture.path (the real file on disk).
+  const logicalPath = fixture.sourcePath ?? fixture.path;
+  const base = path.basename(logicalPath, path.extname(logicalPath));
   const sanitizedAnchor = anchor.displayNotation
     .replace(/\s+/g, '-')
     .replace(/\//g, '_')
@@ -1250,7 +1298,7 @@ const buildCaptureEntry = (
   const common = {
     capture_id,
     label: base,
-    source_path: fixture.path,
+    source_path: logicalPath,
     page: fixture.page,
     capture_format: fixture.format,
     reference_card: fixture.reference,
@@ -1291,7 +1339,7 @@ const buildCaptureEntry = (
   // it lives in the same domain as the other ref cards' raw values.
   const grid = outcome.result.grid;
   const paperRefEntry = (() => {
-    if (!isLightBgPath(fixture.path)) return null;
+    if (!isLightBgPath(fixture.sourcePath ?? fixture.path)) return null;
     const r = grid?.paperMedianR;
     const g = grid?.paperMedianG;
     const b = grid?.paperMedianB;
@@ -2587,6 +2635,13 @@ const {values} = parseArgs({
     // ("burst1of5") or a specific illumination ("light7") to iterate
     // faster / keep the HTML report a manageable size.
     filter: {type: 'string'},
+    // By default the HTML report references preview images as external
+    // files in a sibling `images/` dir and lazy-loads them, so the
+    // .html itself stays tiny and the browser only decodes previews as
+    // captures are expanded. Pass --inline-images to bake every preview
+    // back into the HTML as a base64 data URI (one portable file, but
+    // large + slow to load for big runs).
+    'inline-images': {type: 'boolean'},
   },
 });
 
@@ -2595,6 +2650,21 @@ const outPath = values.out;
 const emitHtml = !values['no-html'];
 if (!fixturesDir) die('missing --fixtures <dir>');
 if (!outPath) die('missing --out <path>');
+
+// Preview-image delivery for the HTML report. Default is external
+// sidecar files + lazy-load; --inline-images bakes base64 data URIs
+// into the HTML (the old self-contained behaviour). Sidecar images
+// land in `<report-dir>/images/`, referenced by the relative path
+// IMAGES_SUBDIR/<name> so the .html is portable alongside that folder.
+const inlineImages = !!values['inline-images'];
+const IMAGES_SUBDIR = 'images';
+const imagesDir = path.join(path.dirname(outPath), IMAGES_SUBDIR);
+let previewFileSeq = 0;
+
+// Writable scratch dir for preview JPEGs extracted out of DNGs whose
+// fixtures tree is read-only (the common Google-Drive-mounted case).
+// Lives under the run's output dir alongside run.json / images/.
+const jpegCacheDir = path.join(path.dirname(outPath), 'extracted-jpegs');
 
 // Default: two WB anchors per fixture — an auto-picked near-neutral
 // mid-value chip from the page, plus the physical reference card
@@ -2666,7 +2736,12 @@ const pathMatchesFilter = (p: string): boolean => {
 };
 
 process.stderr.write(`scanning ${fixturesDir}\n`);
-const allFixtures = scanFixtures(fixturesDir!, DNG_CLI, pathMatchesFilter);
+const allFixtures = scanFixtures(
+  fixturesDir!,
+  DNG_CLI,
+  jpegCacheDir,
+  pathMatchesFilter,
+);
 // Apply --override-ref post-scan so every fixture takes the same
 // reference regardless of its filename token. reference_card in the
 // JSON + which per-fixture WB sweep runs (multi expands to 4 refs)
@@ -2698,8 +2773,12 @@ if (pageFilter) {
 if (filterTokens.length > 0) {
   filterNotes.push(`filter=[${filterTokens.join(', ')}]`);
 }
+const nExtracted = allFixtures.filter(f => f.sourcePath).length;
 process.stderr.write(
   `found ${allFixtures.length} fixture(s)` +
+    (nExtracted > 0
+      ? ` (incl. ${nExtracted} preview JPEG(s) extracted to ${jpegCacheDir})`
+      : '') +
     (filterNotes.length > 0
       ? ` — filtered to ${fixtures.length} for ${filterNotes.join(' + ')}`
       : '') +
@@ -2870,9 +2949,25 @@ let nFailure = 0;
             REPORT_PREVIEW_QUALITY,
           ),
         );
+        let src: string;
+        if (inlineImages) {
+          src = `data:image/${rendered.ext};base64,${rendered.bytes.toString('base64')}`;
+        } else {
+          // One file per fixture (all WB-anchor variants of a fixture
+          // share the same preview). A monotonic sequence keeps names
+          // unique across subdirs that reuse basenames; the readable
+          // stem is kept as a prefix for debuggability.
+          if (previewFileSeq === 0) fs.mkdirSync(imagesDir, {recursive: true});
+          const safeBase = path
+            .basename(fixture.path)
+            .replace(/\.[^.]+$/, '')
+            .replace(/[^A-Za-z0-9._-]/g, '_');
+          const fname = `${safeBase}-${previewFileSeq++}.${rendered.ext}`;
+          fs.writeFileSync(path.join(imagesDir, fname), rendered.bytes);
+          src = `${IMAGES_SUBDIR}/${fname}`;
+        }
         previewImage = {
-          base64: rendered.bytes.toString('base64'),
-          ext: rendered.ext,
+          src,
           encodedWidth: rendered.width,
           encodedHeight: rendered.height,
           coordWidth: previewCoord.width,
@@ -2893,7 +2988,7 @@ let nFailure = 0;
     // whitemask border ring, which only samples paper there).
     // A user-provided --refs list is used verbatim.
     const perFixtureRefs = fixture.reference === 'multi' && !values.refs
-      ? (isLightBgPath(fixture.path)
+      ? (isLightBgPath(fixture.sourcePath ?? fixture.path)
           ? [REF_AUTO, 'whibal', 'postit', 'greycard', 'white', 'paper']
           : [REF_AUTO, 'whibal', 'postit', 'greycard', 'white'])
       : refNotations;
@@ -3020,15 +3115,36 @@ let nFailure = 0;
     const reportPath = outPath!.endsWith('.json')
       ? outPath!.replace(/\.json$/, '.html')
       : `${outPath}.html`;
-    const html = timer.time('report.render', () =>
-      renderHtmlReport(runMeta, captureContexts),
+    // The report is a light index (run.html) plus one sections/<id>.js
+    // per capture group — the browser injects a section's body only when
+    // it's expanded, so the index stays small and RAM bounded even for
+    // thousands of captures.
+    const bundle = timer.time('report.render', () =>
+      renderReportBundle(runMeta, captureContexts),
     );
-    timer.time('report.write', () => fs.writeFileSync(reportPath, html));
-    const reportBytes = fs.statSync(reportPath).size;
+    const sectionsDir = path.join(path.dirname(reportPath), 'sections');
+    timer.time('report.write', () => {
+      fs.writeFileSync(reportPath, bundle.index);
+      if (bundle.sections.length > 0) {
+        fs.mkdirSync(sectionsDir, {recursive: true});
+        for (const s of bundle.sections) {
+          fs.writeFileSync(path.join(sectionsDir, `${s.id}.js`), s.js);
+        }
+      }
+    });
+    const indexBytes = fs.statSync(reportPath).size;
+    const sectionBytes = bundle.sections.reduce(
+      (n, s) => n + Buffer.byteLength(s.js),
+      0,
+    );
     process.stderr.write(
       `wrote ${captures.length} capture(s) (${nSuccess} success, ${nFailure} failure)\n` +
         `  json:   ${outPath}\n` +
-        `  report: ${reportPath}  (${(reportBytes / 1024 / 1024).toFixed(1)} MB)\n`,
+        `  report: ${reportPath}  (${(indexBytes / 1024 / 1024).toFixed(1)} MB index)\n` +
+        `  bodies: ${sectionsDir}/  (${bundle.sections.length} file(s), ${(sectionBytes / 1024 / 1024).toFixed(1)} MB, loaded on expand)\n` +
+        (inlineImages
+          ? `  images: inlined (base64)\n`
+          : `  images: ${imagesDir}/  (${previewFileSeq} file(s), lazy-loaded)\n`),
     );
   } else {
     process.stderr.write(

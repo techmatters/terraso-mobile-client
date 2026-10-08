@@ -3,15 +3,20 @@
 # Batch report generator for the Munsell chart-validator fixtures.
 # Runs analyze-fixtures (per-capture grid + JSON export) then
 # render-munsell-error (polar error filmstrip) on a directory of
-# DNG/JPEG captures, writing all outputs to `$FIXTURES/results/`.
+# DNG/JPEG captures, writing all outputs to the results dir
+# (`$FIXTURES/results/` by default, or --out-dir).
 # Opens the two HTMLs in the default browser when done.
 #
 # Usage:
-#   scripts/report-munsell-fixtures.sh                   # gdrive default
-#   scripts/report-munsell-fixtures.sh <fixtures-dir>    # custom
+#   scripts/report-munsell-fixtures.sh                        # gdrive default
+#   scripts/report-munsell-fixtures.sh <fixtures-dir>         # custom
+#   scripts/report-munsell-fixtures.sh <fixtures-dir> --out-dir <dir>
 #
-# Any additional args after the fixtures dir are forwarded to
-# analyze-fixtures (e.g. --guide-shift-x -0.1 --guide-scale 0.9).
+# --out-dir <dir>  Write run.json + the HTML reports here instead of
+#                  $FIXTURES/results. Consumed by this wrapper (not
+#                  forwarded). Any OTHER args after the fixtures dir are
+#                  forwarded to analyze-fixtures (e.g. --guide-shift-x
+#                  -0.1 --guide-scale 0.9).
 
 set -euo pipefail
 
@@ -33,7 +38,34 @@ if [ ! -d "$FIXTURES" ]; then
   exit 1
 fi
 
+# Pull --out-dir out of the remaining args (it's ours, not an
+# analyze-fixtures flag). Everything else is left in PASSTHRU to
+# forward verbatim. Default output dir is $FIXTURES/results.
 OUT="$FIXTURES/results"
+PASSTHRU=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --out-dir)
+      if [ $# -lt 2 ]; then
+        echo "error: --out-dir requires a directory argument" >&2
+        exit 1
+      fi
+      OUT="$2"
+      shift 2
+      ;;
+    --out-dir=*)
+      OUT="${1#*=}"
+      shift
+      ;;
+    *)
+      PASSTHRU+=("$1")
+      shift
+      ;;
+  esac
+done
+# Guard empty-array expansion for bash 3.2 (macOS default) under set -u.
+set -- ${PASSTHRU[@]+"${PASSTHRU[@]}"}
+
 mkdir -p "$OUT"
 
 # Locate dev-client (this script lives in dev-client/scripts/).
