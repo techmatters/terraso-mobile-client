@@ -3,8 +3,12 @@
 # Updates the app version number across all relevant files.
 # Creates a new branch from main and makes the version changes.
 #
-# Usage: ./scripts/update-version.sh [version]
-# Example: ./scripts/update-version.sh 1.4.3
+# Usage: npm run update-version -- <version>
+#        OR
+#.       ./scripts/update-version.sh <version>
+# Example: npm run update-version -- 1.4.3
+#          OR
+#          ./scripts/update-version.sh 1.4.3
 #
 # If no version is provided, suggests incrementing the patch version.
 #
@@ -29,8 +33,8 @@ if [ -z "$1" ]; then
   echo "Current version: $CURRENT_VERSION"
   echo "Suggested next version: $SUGGESTED_VERSION"
   echo ""
-  echo "Usage: $0 <version>"
-  echo "Example: $0 $SUGGESTED_VERSION"
+  echo "Usage: npm run update-version -- <version>"
+  echo "Example: npm run update-version -- $SUGGESTED_VERSION"
   exit 0
 fi
 
