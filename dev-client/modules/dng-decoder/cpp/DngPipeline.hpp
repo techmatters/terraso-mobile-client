@@ -56,6 +56,15 @@ struct RoiReduced {
   LinearRgbF meanUnclamped;
   LinearRgbF dominant;
   LinearRgbF variance;
+  // Clipped-pixel-excluded siblings of `mean` / `dominant`: the same
+  // reducers computed over only the ROI pixels whose sensor read was
+  // NOT saturated (no channel at the raw well cap). On a chip with a
+  // few blown pixels (specular fleck, partial highlight) these recover
+  // a truer colour; on a fully saturated chip there is nothing to keep,
+  // so they fall back to the all-pixel `mean` / `dominant`. Experimental
+  // — emitted alongside the normal reducers so the two can be compared.
+  LinearRgbF meanNoClip;
+  LinearRgbF dominantNoClip;
 };
 
 // Decode a single ROI. Averages the demosaiced patch and applies the

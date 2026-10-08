@@ -73,6 +73,9 @@ bool dngDecoderDecodeRoisReducedWithVar(
     double* outMeanUncR, double* outMeanUncG, double* outMeanUncB,
     double* outDomR, double* outDomG, double* outDomB,
     double* outVarR, double* outVarG, double* outVarB,
+    // Clipped-pixel-excluded mean + dominant (see RoiReduced::meanNoClip).
+    double* outMeanNoClipR, double* outMeanNoClipG, double* outMeanNoClipB,
+    double* outDomNoClipR, double* outDomNoClipG, double* outDomNoClipB,
     const char** errorOut);
 
 // Standalone median-cut dominant for a caller-supplied linear-sRGB pixel

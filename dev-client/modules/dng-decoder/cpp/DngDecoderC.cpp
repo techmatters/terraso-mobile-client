@@ -129,11 +129,15 @@ bool dngDecoderDecodeRoisReducedWithVar(
     double* outMeanUncR, double* outMeanUncG, double* outMeanUncB,
     double* outDomR, double* outDomG, double* outDomB,
     double* outVarR, double* outVarG, double* outVarB,
+    double* outMeanNoClipR, double* outMeanNoClipG, double* outMeanNoClipB,
+    double* outDomNoClipR, double* outDomNoClipG, double* outDomNoClipB,
     const char** errorOut) {
   if (!path || !rois || !outMeanR || !outMeanG || !outMeanB ||
       !outMeanUncR || !outMeanUncG || !outMeanUncB ||
       !outDomR || !outDomG || !outDomB ||
-      !outVarR || !outVarG || !outVarB || count < 0) {
+      !outVarR || !outVarG || !outVarB ||
+      !outMeanNoClipR || !outMeanNoClipG || !outMeanNoClipB ||
+      !outDomNoClipR || !outDomNoClipG || !outDomNoClipB || count < 0) {
     if (errorOut) *errorOut = stashError("null argument");
     return false;
   }
@@ -158,6 +162,12 @@ bool dngDecoderDecodeRoisReducedWithVar(
       outVarR[i] = red.variance.r;
       outVarG[i] = red.variance.g;
       outVarB[i] = red.variance.b;
+      outMeanNoClipR[i] = red.meanNoClip.r;
+      outMeanNoClipG[i] = red.meanNoClip.g;
+      outMeanNoClipB[i] = red.meanNoClip.b;
+      outDomNoClipR[i] = red.dominantNoClip.r;
+      outDomNoClipG[i] = red.dominantNoClip.g;
+      outDomNoClipB[i] = red.dominantNoClip.b;
     }
     if (errorOut) *errorOut = nullptr;
     return true;

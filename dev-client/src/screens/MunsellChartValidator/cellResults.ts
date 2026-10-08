@@ -58,6 +58,12 @@ export type CellMeasurement = {
   // (JPEG path, Swift iOS DNG path, older on-device shims); those
   // fall back to `rawLinearRgb`.
   rawLinearRgbUnclamped?: {r: number; g: number; b: number} | null;
+  // Optional clipped-pixel-excluded siblings of rawLinearRgb /
+  // rawLinearRgbDominant: same reducers over only the ROI pixels whose
+  // sensor read wasn't saturated. Experimental; populated only by the
+  // Node analyzer's C++ CLI batch path, null everywhere else.
+  rawLinearRgbNoClip?: {r: number; g: number; b: number} | null;
+  rawLinearRgbDominantNoClip?: {r: number; g: number; b: number} | null;
 };
 
 export type MunsellCellResult = {

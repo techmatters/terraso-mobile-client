@@ -343,6 +343,10 @@ type LinearRgbReducedWithVar = LinearRgbReduced & {
   // fixtures) returns null so downstream callers can fall back to
   // the clamped mean when this isn't available.
   meanUnclamped: LinearRgb | null;
+  // Clipped-pixel-excluded mean + dominant (RoiReduced::meanNoClip).
+  // C++ CLI batch endpoint only; null on the Swift / photo paths.
+  meanNoClip: LinearRgb | null;
+  dominantNoClip: LinearRgb | null;
 };
 
 class NodeDecoder implements DngDecoderLike {
@@ -436,6 +440,8 @@ class NodeDecoder implements DngDecoderLike {
           ...r,
           variance: null,
           meanUnclamped: null,
+          meanNoClip: null,
+          dominantNoClip: null,
         })),
       );
     }
@@ -459,6 +465,12 @@ class NodeDecoder implements DngDecoderLike {
         varianceR?: number;
         varianceG?: number;
         varianceB?: number;
+        meanNoClipR?: number;
+        meanNoClipG?: number;
+        meanNoClipB?: number;
+        dominantNoClipR?: number;
+        dominantNoClipG?: number;
+        dominantNoClipB?: number;
       }>
     >;
     return raw.map(inner =>
@@ -476,6 +488,18 @@ class NodeDecoder implements DngDecoderLike {
           r.varianceG !== undefined &&
           r.varianceB !== undefined
             ? {r: r.varianceR, g: r.varianceG, b: r.varianceB}
+            : null,
+        meanNoClip:
+          r.meanNoClipR !== undefined &&
+          r.meanNoClipG !== undefined &&
+          r.meanNoClipB !== undefined
+            ? {r: r.meanNoClipR, g: r.meanNoClipG, b: r.meanNoClipB}
+            : null,
+        dominantNoClip:
+          r.dominantNoClipR !== undefined &&
+          r.dominantNoClipG !== undefined &&
+          r.dominantNoClipB !== undefined
+            ? {r: r.dominantNoClipR, g: r.dominantNoClipG, b: r.dominantNoClipB}
             : null,
       })),
     );
@@ -1506,6 +1530,8 @@ const buildCaptureEntry = (
     cells: results.map((r, i) => {
       const dom = measurements[i].rawLinearRgbDominant;
       const unc = measurements[i].rawLinearRgbUnclamped;
+      const noclip = measurements[i].rawLinearRgbNoClip;
+      const domNoclip = measurements[i].rawLinearRgbDominantNoClip;
       return {
         physical_row: r.cell.rowIdx,
         physical_col: r.cell.colIdx,
@@ -1532,6 +1558,17 @@ const buildCaptureEntry = (
         // Filmstrip's mean/dominant radio flips downstream ΔE math to
         // use this in place of raw_linear_rgb.
         raw_linear_rgb_dominant: finiteTriple(dom) ? [dom.r, dom.g, dom.b] : null,
+        // Experimental clipped-pixel-excluded siblings of the two reducers
+        // above (RoiReduced::meanNoClip): same reducers computed over only
+        // the non-saturated ROI pixels. C++ CLI (Android RAW) path only;
+        // null on iOS Swift + photo paths. Emitted so mean-vs-noclip can
+        // be compared offline.
+        raw_linear_rgb_noclip: finiteTriple(noclip)
+          ? [noclip.r, noclip.g, noclip.b]
+          : null,
+        raw_linear_rgb_dominant_noclip: finiteTriple(domNoclip)
+          ? [domNoclip.r, domNoclip.g, domNoclip.b]
+          : null,
         measured_linear_rgb: [
           r.measuredLinearRgb.r,
           r.measuredLinearRgb.g,

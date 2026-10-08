@@ -681,16 +681,34 @@ export const analyzeMunsellChart = async (
   // (5/6+ value) get the true post-WB signal into downstream ΔE math
   // instead of the clipped-to-1.0 mean.
   let measuredUnclamped: ({r: number; g: number; b: number} | null)[] = [];
+  // Clipped-pixel-excluded mean + dominant. Experimental; only the C++
+  // CLI batch path (Node analyzer) computes them, so they're read off the
+  // reduced result with a cast and stay null everywhere else (iOS Swift
+  // path, photo path, on-device Nitro decoder — none expose the field).
+  let measuredNoClip: ({r: number; g: number; b: number} | null)[] = [];
+  let measuredDominantNoClip: ({r: number; g: number; b: number} | null)[] = [];
   try {
     if (format === 'raw') {
       const reduced = decoder.decodeDngRoisReduced(imagePath, dngRois);
       measured = reduced.map(r => r.mean);
       measuredDominant = reduced.map(r => r.dominant);
       measuredUnclamped = reduced.map(r => r.meanUnclamped ?? null);
+      measuredNoClip = reduced.map(
+        r =>
+          (r as {meanNoClip?: {r: number; g: number; b: number} | null})
+            .meanNoClip ?? null,
+      );
+      measuredDominantNoClip = reduced.map(
+        r =>
+          (r as {dominantNoClip?: {r: number; g: number; b: number} | null})
+            .dominantNoClip ?? null,
+      );
     } else {
       measured = decoder.decodePhotoRois(imagePath, dngRois);
       measuredDominant = dngRois.map(() => null);
       measuredUnclamped = dngRois.map(() => null);
+      measuredNoClip = dngRois.map(() => null);
+      measuredDominantNoClip = dngRois.map(() => null);
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -732,6 +750,8 @@ export const analyzeMunsellChart = async (
     rawLinearRgb: measured[idx],
     rawLinearRgbDominant: measuredDominant[idx],
     rawLinearRgbUnclamped: measuredUnclamped[idx],
+    rawLinearRgbNoClip: measuredNoClip[idx],
+    rawLinearRgbDominantNoClip: measuredDominantNoClip[idx],
   }));
 
   // 5. Colour preview for the validation view. RAW → renderPreview

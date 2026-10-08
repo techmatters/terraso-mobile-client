@@ -384,6 +384,16 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
   const uint64_t total = uint64_t(roi.w) * roi.h;
   std::vector<LinearRgbF> pixels;
   pixels.reserve(size_t(total));
+  // Clipped-pixel-excluded accumulators: a parallel sensor-space sum
+  // and pixel list that skip any pixel whose sensor read is saturated
+  // (a channel at the raw well cap, which readSensorPixel reports as a
+  // normalised value of 1.0). SAT_THRESH < 1 catches values the demosaic
+  // averaged just under the cap.
+  constexpr double SAT_THRESH = 0.999;
+  std::array<double, 3> sensorSumNoClip{0, 0, 0};
+  uint64_t countNoClip = 0;
+  std::vector<LinearRgbF> pixelsNoClip;
+  pixelsNoClip.reserve(size_t(total));
 
   for (uint32_t j = 0; j < roi.h; ++j) {
     for (uint32_t i = 0; i < roi.w; ++i) {
@@ -397,17 +407,29 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
       // the dominant colour reducer stays inside display range.
       const std::array<double, 3> linRaw =
           sensorToLinearSrgbUnclamped(dng, s);
-      pixels.push_back({
+      const LinearRgbF clampedPix{
           std::clamp(linRaw[0], 0.0, 1.0),
           std::clamp(linRaw[1], 0.0, 1.0),
           std::clamp(linRaw[2], 0.0, 1.0),
-      });
+      };
+      pixels.push_back(clampedPix);
       linearSum[0] += linRaw[0];
       linearSum[1] += linRaw[1];
       linearSum[2] += linRaw[2];
       linearSumSq[0] += linRaw[0] * linRaw[0];
       linearSumSq[1] += linRaw[1] * linRaw[1];
       linearSumSq[2] += linRaw[2] * linRaw[2];
+      // Keep this pixel for the no-clip reducers only if no sensor
+      // channel is saturated.
+      const bool saturated =
+          s[0] >= SAT_THRESH || s[1] >= SAT_THRESH || s[2] >= SAT_THRESH;
+      if (!saturated) {
+        sensorSumNoClip[0] += s[0];
+        sensorSumNoClip[1] += s[1];
+        sensorSumNoClip[2] += s[2];
+        ++countNoClip;
+        pixelsNoClip.push_back(clampedPix);
+      }
     }
   }
 
@@ -427,6 +449,18 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
   // Dominant via median-cut on the already-pipelined per-pixel values.
   const LinearRgbF dominant = dominantLinearRgb(pixels);
 
+  // Clipped-pixel-excluded reducers. If every pixel was saturated there
+  // is nothing to keep, so fall back to the all-pixel results.
+  const LinearRgbF meanNoClip =
+      countNoClip > 0
+          ? sensorToLinearSrgb(dng,
+                               {sensorSumNoClip[0] / double(countNoClip),
+                                sensorSumNoClip[1] / double(countNoClip),
+                                sensorSumNoClip[2] / double(countNoClip)})
+          : mean;
+  const LinearRgbF dominantNoClip =
+      pixelsNoClip.empty() ? dominant : dominantLinearRgb(pixelsNoClip);
+
   // Per-channel variance over the linear-sRGB per-pixel triples.
   // Using the linear-sRGB stream (rather than sensor-native) means the
   // number is directly comparable to `mean` and `dominant` for
@@ -441,7 +475,8 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
       std::max(0.0, linearSumSq[2] * invN - meanLin.b * meanLin.b),
   };
 
-  return {mean, meanUnclamped, dominant, variance};
+  return {mean,     meanUnclamped,  dominant,
+          variance, meanNoClip,     dominantNoClip};
 }
 
 namespace {
