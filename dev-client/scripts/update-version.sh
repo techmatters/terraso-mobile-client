@@ -3,9 +3,9 @@
 # Updates the app version number across all relevant files.
 # Creates a new branch from main and makes the version changes.
 #
-# Usage: npm run update-version -- [version]
+# Usage: npm run update-version -- <version>
 #        OR
-#.       ./scripts/update-version.sh [version]
+#.       ./scripts/update-version.sh <version>
 # Example: npm run update-version -- 1.4.3
 #          OR
 #          ./scripts/update-version.sh 1.4.3
