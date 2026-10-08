@@ -75,6 +75,16 @@ bool dngDecoderDecodeRoisReducedWithVar(
     double* outVarR, double* outVarG, double* outVarB,
     const char** errorOut);
 
+// Standalone median-cut dominant for a caller-supplied linear-sRGB pixel
+// buffer. Used by the iOS path, which decodes RAW via CIRAWFilter (not the
+// C++ DNG parser) and so can't call dngDecoderDecodeRoisReduced, but still
+// wants the SAME dominant as Android. `rgb` is interleaved R,G,B floats
+// (3*count values) in [0,1] linear sRGB. Writes the dominant linear-sRGB
+// colour to outRgb[0..2]. Returns false only on empty/NULL input; a
+// single-pixel buffer returns that pixel.
+bool dngDecoderDominantLinearRgb(const float* rgb, int32_t count,
+                                 double* outRgb);
+
 // Render a sub-sampled preview from the DNG at path. On success, sets
 // *outWidth, *outHeight, and allocates *outBytes (caller must free
 // with dngDecoderFreePreview). *outByteCount = *outWidth * *outHeight * 4.

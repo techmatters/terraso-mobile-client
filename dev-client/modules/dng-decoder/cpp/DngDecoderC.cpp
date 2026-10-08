@@ -3,9 +3,11 @@
 #include <cstring>
 #include <exception>
 #include <string>
+#include <vector>
 
 #include "DngParser.hpp"
 #include "DngPipeline.hpp"
+#include "MedianCut.hpp"
 
 namespace {
 
@@ -207,6 +209,23 @@ bool dngDecoderRenderPreviewRgba(const char* path, int32_t maxDim,
 
 void dngDecoderFreePreview(uint32_t* bytes) {
   delete[] bytes;
+}
+
+bool dngDecoderDominantLinearRgb(const float* rgb, int32_t count,
+                                 double* outRgb) {
+  if (!rgb || !outRgb || count <= 0) return false;
+  std::vector<dngdecoder::LinearRgbF> pixels;
+  pixels.reserve(static_cast<size_t>(count));
+  for (int32_t i = 0; i < count; ++i) {
+    pixels.push_back({static_cast<double>(rgb[i * 3]),
+                      static_cast<double>(rgb[i * 3 + 1]),
+                      static_cast<double>(rgb[i * 3 + 2])});
+  }
+  const dngdecoder::LinearRgbF dom = dngdecoder::dominantLinearRgb(pixels);
+  outRgb[0] = dom.r;
+  outRgb[1] = dom.g;
+  outRgb[2] = dom.b;
+  return true;
 }
 
 }  // extern "C"

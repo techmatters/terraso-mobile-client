@@ -71,6 +71,7 @@ export const PipelineColumn = ({
   photoRect,
   preview,
   measuredLinearRgb,
+  measuredLabel = '↓ avg',
   finalCss,
   finalLabel,
 }: {
@@ -78,6 +79,9 @@ export const PipelineColumn = ({
   photoRect: PreviewRect;
   preview: {uri: string; width: number; height: number};
   measuredLinearRgb: LinearRgb;
+  // Reducer the measured swatch came from ('↓ avg' / '↓ dominant'). Defaults
+  // to avg for callers that don't expose the reducer toggle.
+  measuredLabel?: string;
   finalCss: string;
   finalLabel: string;
 }) => {
@@ -89,7 +93,7 @@ export const PipelineColumn = ({
       </Text>
       <RoiCropSquare rect={photoRect} preview={preview} />
       <Text variant="caption">photo</Text>
-      <Text variant="body2">↓ avg</Text>
+      <Text variant="body2">{measuredLabel}</Text>
       <ColorSquare css={measuredCss} />
       <Text variant="caption">measured rgb</Text>
       <Text variant="body2">↓ correction</Text>

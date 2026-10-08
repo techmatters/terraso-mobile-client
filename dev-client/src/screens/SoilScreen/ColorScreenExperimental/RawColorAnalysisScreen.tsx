@@ -543,6 +543,7 @@ const ResultView = ({
           photoRect={refRect}
           preview={preview}
           measuredLinearRgb={card}
+          measuredLabel={reducer === 'dominant' ? '↓ dominant' : '↓ avg'}
           finalCss={linearRgbToCss(selectedRef.linearRgb)}
           finalLabel="ref card"
         />
@@ -551,6 +552,7 @@ const ResultView = ({
           photoRect={sampleRect}
           preview={preview}
           measuredLinearRgb={sample}
+          measuredLabel={reducer === 'dominant' ? '↓ dominant' : '↓ avg'}
           finalCss={rgb255ToCss(munsellChipRgb255)}
           finalLabel="result (chip)"
         />
