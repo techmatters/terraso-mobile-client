@@ -772,8 +772,10 @@ function nearestChipNotation(measRgb) {
 // or a ref card's raw linear-sRGB should go through these — flipping
 // state.reducer between 'mean' and 'dominant' then re-runs all
 // downstream math on the picked reducer. When state.reducer is
-// 'dominant' but the sample/ref has no dominant (legacy runs, photo
-// path), fall back to mean so nothing silently disappears.
+// 'dominant' but the sample/ref has no dominant (photo path — the
+// analyzer emits null there), fall back to mean so nothing silently
+// disappears. The RAW path (both iOS and Android) now always carries a
+// real median-cut dominant, so this fallback only fires for photos.
 function rawOfSample(s) {
   return state.reducer === 'dominant' && s.rawRgbDominant
     ? s.rawRgbDominant

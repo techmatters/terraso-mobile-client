@@ -316,6 +316,17 @@ const parseReducedJson = (json: string): LinearRgbReduced[] => {
   }));
 };
 
+// A linear-RGB triple is only usable if all three channels are finite.
+// The Apple CIRAWFilter RAW path (and the photo path) don't compute a
+// median-cut dominant, so the dominant object can carry undefined
+// channels — emit a clean `null` for those rather than leaking
+// `[null, null, null]` into the JSON, which downstream reducers would
+// otherwise mistake for a real value and feed into the ΔE math.
+const finiteTriple = (
+  o?: {r: number; g: number; b: number} | null,
+): o is {r: number; g: number; b: number} =>
+  !!o && [o.r, o.g, o.b].every(v => typeof v === 'number' && isFinite(v));
+
 // Analyzer-local extension of LinearRgbReduced with per-channel
 // linear-sRGB variance across the ROI's pixels. Only produced by the
 // C++ CLI's decode-dng-rois-batch endpoint (mac-only); the on-device
@@ -1406,7 +1417,7 @@ const buildCaptureEntry = (
                 slot.linearRgbUnclamped.b,
               ]
             : null,
-          raw_linear_rgb_dominant: slot.linearRgbDominant
+          raw_linear_rgb_dominant: finiteTriple(slot.linearRgbDominant)
             ? [
                 slot.linearRgbDominant.r,
                 slot.linearRgbDominant.g,
@@ -1457,7 +1468,9 @@ const buildCaptureEntry = (
               fixture.reference,
             sample_rect: refCardRect,
             raw_linear_rgb: [refCardRaw.r, refCardRaw.g, refCardRaw.b],
-            raw_linear_rgb_dominant: outcome.result.testSwatchLinearRgbDominant
+            raw_linear_rgb_dominant: finiteTriple(
+              outcome.result.testSwatchLinearRgbDominant,
+            )
               ? [
                   outcome.result.testSwatchLinearRgbDominant.r,
                   outcome.result.testSwatchLinearRgbDominant.g,
@@ -1518,7 +1531,7 @@ const buildCaptureEntry = (
         // CellMeasurement.rawLinearRgbDominant note in cellResults.ts).
         // Filmstrip's mean/dominant radio flips downstream ΔE math to
         // use this in place of raw_linear_rgb.
-        raw_linear_rgb_dominant: dom ? [dom.r, dom.g, dom.b] : null,
+        raw_linear_rgb_dominant: finiteTriple(dom) ? [dom.r, dom.g, dom.b] : null,
         measured_linear_rgb: [
           r.measuredLinearRgb.r,
           r.measuredLinearRgb.g,

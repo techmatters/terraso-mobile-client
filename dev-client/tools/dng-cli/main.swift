@@ -141,6 +141,112 @@ func decodeDngRois(dngPath: String, rois: [Roi]) throws -> [LinearRgb] {
   return try decodeCiImageRois(ciImage, rois: rois)
 }
 
+// Render a cropped ROI to a CPU-side linear-sRGB float buffer and run the
+// shared C++ median-cut (dngcli_dominant_linear_rgb → dominantLinearRgb),
+// so the CLI's RAW path returns the SAME "dominant" as the on-device app
+// (HybridDngDecoder.swift) and the Android C++ path. The ROI is downscaled
+// so its longest side is <= 256px to bound memory/CPU; median-cut bins
+// into a 32³ histogram, so modest downsampling doesn't move the dominant.
+func dominantColor(
+  of cropped: CIImage, context: CIContext, linearSpace: CGColorSpace
+) throws -> LinearRgb {
+  let maxSide: CGFloat = 256
+  let longSide = max(cropped.extent.width, cropped.extent.height)
+  let scale = longSide > maxSide ? maxSide / longSide : 1.0
+  let image =
+    scale < 1.0
+    ? cropped.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+    : cropped
+  let rect = image.extent
+  let w = Int(rect.width.rounded())
+  let h = Int(rect.height.rounded())
+  guard w > 0, h > 0 else {
+    throw CliError.msg("degenerate ROI for dominant")
+  }
+  var rgba = [Float](repeating: 0, count: w * h * 4)
+  context.render(
+    image, toBitmap: &rgba,
+    rowBytes: w * 4 * MemoryLayout<Float>.size,
+    bounds: rect,
+    format: .RGBAf, colorSpace: linearSpace)
+  // Interleave RGB (strip alpha) for the C bridge.
+  var rgb = [Float](repeating: 0, count: w * h * 3)
+  for i in 0..<(w * h) {
+    rgb[i * 3] = rgba[i * 4]
+    rgb[i * 3 + 1] = rgba[i * 4 + 1]
+    rgb[i * 3 + 2] = rgba[i * 4 + 2]
+  }
+  var out: [Double] = [0, 0, 0]
+  guard dngcli_dominant_linear_rgb(rgb, Int32(w * h), &out) else {
+    throw CliError.msg("dominantLinearRgb returned false")
+  }
+  return LinearRgb(r: clamp01(out[0]), g: clamp01(out[1]), b: clamp01(out[2]))
+}
+
+// RAW-path dual reducer: per-ROI mean (area-average) AND a real median-cut
+// dominant, on the linear-sRGB pixels CIRAWFilter produces. Only the RAW
+// path computes dominant — the photo path leaves it equal to the mean (the
+// analyzer nulls photo dominant anyway, and "use raw values for raw
+// images" is the whole point). Shares the crop + mean math with
+// decodeCiImageRois; adds the dominant render per ROI.
+func decodeDngRoisReduced(dngPath: String, rois: [Roi]) throws
+  -> [LinearRgbReduced]
+{
+  let url = URL(fileURLWithPath: stripFileScheme(dngPath))
+  guard let rawFilter = CIRAWFilter(imageURL: url) else {
+    throw CliError.msg("CIRAWFilter could not open DNG at \(url.path)")
+  }
+  configureRawFilter(rawFilter)
+  guard let ciImage = rawFilter.outputImage else {
+    throw CliError.msg("CIRAWFilter produced no outputImage")
+  }
+  let extent = ciImage.extent
+  guard let linearSpace = CGColorSpace(name: CGColorSpace.linearSRGB) else {
+    throw CliError.msg("linearSRGB color space unavailable")
+  }
+  let context = CIContext(options: [
+    .workingColorSpace: linearSpace,
+    .outputColorSpace: linearSpace,
+  ])
+  var results: [LinearRgbReduced] = []
+  results.reserveCapacity(rois.count)
+  for roi in rois {
+    let cropRect = CGRect(
+      x: extent.minX + CGFloat(roi.x),
+      y: extent.maxY - CGFloat(roi.y + roi.h),
+      width: CGFloat(roi.w),
+      height: CGFloat(roi.h)
+    )
+    let cropped = ciImage.cropped(to: cropRect)
+    let avg = CIFilter.areaAverage()
+    avg.inputImage = cropped
+    avg.extent = cropRect
+    guard let averaged = avg.outputImage else {
+      throw CliError.msg("CIAreaAverage produced no output for ROI")
+    }
+    var bitmap: [Float] = [0, 0, 0, 0]
+    context.render(
+      averaged, toBitmap: &bitmap,
+      rowBytes: MemoryLayout<Float>.size * 4,
+      bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+      format: .RGBAf, colorSpace: linearSpace)
+    let mean = LinearRgb(
+      r: clamp01(Double(bitmap[0])),
+      g: clamp01(Double(bitmap[1])),
+      b: clamp01(Double(bitmap[2])))
+    // Dominant: median-cut over the ROI pixels; fall back to the mean on a
+    // degenerate (zero-area) crop.
+    let dominant =
+      (try? dominantColor(
+        of: cropped, context: context, linearSpace: linearSpace)) ?? mean
+    results.append(
+      LinearRgbReduced(
+        r: mean.r, g: mean.g, b: mean.b,
+        dominantR: dominant.r, dominantG: dominant.g, dominantB: dominant.b))
+  }
+  return results
+}
+
 // Load a JPEG/HEIC/PNG file as a CIImage in the same fixed orientation
 // the DNG path produces: sensor-native pixels rotated 90° CW. The DNG
 // decoder forces `rawFilter.orientation = .right` unconditionally
@@ -508,20 +614,15 @@ case "decode-dng-rois":
   } catch {
     die("failed to parse rois json: \(error.localizedDescription)")
   }
-  let results: [LinearRgb]
+  // RAW path emits a REAL median-cut dominant (not the mean placeholder) —
+  // same algorithm as the app + the Android C++ path.
+  let reduced: [LinearRgbReduced]
   do {
-    results = try decodeDngRois(dngPath: dngPath, rois: rois)
+    reduced = try decodeDngRoisReduced(dngPath: dngPath, rois: rois)
   } catch CliError.msg(let m) {
     die(m)
   } catch {
     die("unexpected error: \(error.localizedDescription)")
-  }
-  // Emit mean AND placeholder-dominant fields so downstream parsers see
-  // the same schema as the C++ CLI (see LinearRgbReduced above).
-  let reduced = results.map {
-    LinearRgbReduced(
-      r: $0.r, g: $0.g, b: $0.b,
-      dominantR: $0.r, dominantG: $0.g, dominantB: $0.b)
   }
   writeJson(reduced)
 

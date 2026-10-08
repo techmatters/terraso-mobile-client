@@ -1,0 +1,229 @@
+# Munsell capture findings & recommendations
+
+Analysis of the Aug 2026 soil-colour test runs (`run.json`: 6813
+captures across Pixel 7, Pixel 4, iPhone 16 Pro Max; RAW + JPEG; the
+multi-reference WB sweep described in
+[munsell-multishot.md](./munsell-multishot.md)). Goal: minimise ΔE2000
+for **both** Android and Apple.
+
+**Methodology.** Per-capture ΔE = median ΔE2000 over the chart's
+non-reference, non-excluded chips. Device from `image_metadata.model`.
+WB-reference labels: `autochip` = WB anchored on an **on-chart neutral
+chip** (an in-scene neutral, lit identically to the chips being
+measured); `greycard` / `whibal` / `white` / `postit` = the external
+reference cards taped alongside the chart. ΔE excludes the WB anchor
+chip itself.
+
+---
+
+## TL;DR
+
+- The single biggest lever is **not the phone** — it's using an
+  **in-scene mid-grey neutral** for white balance instead of an
+  external card. It helps both phones and both formats, and makes the
+  result nearly illumination-independent.
+- Android RAW's weakness is **highlight clipping** (no HDR fusion on a
+  single RAW), not an inherent colour problem. Protect the highlights
+  and Pixel 7 RAW gets close to iPhone.
+- **Illumination (sun/shade/mixed) barely matters** once WB is an
+  in-scene neutral and nothing clips. "Shade is best" is not supported.
+- Recommended path for Android: **ROI-space exposure fusion** — bracket
+  exposures and merge per-patch in radiance space (no pixel alignment).
+
+**Best achievable today** (RAW + on-chart neutral WB + no clipping):
+
+| Device | median ΔE | (greycard-RAW, what we'd been judging by) |
+|---|---|---|
+| iPhone 16 Pro Max | **2.6** | 4.8 |
+| Pixel 7 | **4.7** | 7.0 |
+| Pixel 4 | 5.4 *(n=13, low confidence)* | 9.5 |
+
+---
+
+## 1. Biggest lever: an in-scene neutral for white balance
+
+On-chart neutral (`autochip`) beats every external card, for every
+device and format. On Pixel 7 RAW, non-clipped, by light condition:
+
+| light | autochip | greycard |
+|---|---|---|
+| mixed | 4.8 | 5.4 |
+| sun | 4.7 | 8.0 |
+| shade | 4.7 | 11.0 |
+
+The in-scene neutral is lit identically to the chips, so it cancels the
+illuminant perfectly and the result is **illumination-invariant**. The
+external greycard is lit slightly differently and its error grows in
+flatter/shade light.
+
+**But the Munsell-chip anchor is a lab-only upper bound — not what ships.**
+In the field there is no Munsell chart, so `autochip`'s ~4.7 is the best
+case, not the practical target. The realistic options and what the data
+says about them:
+
+- **A grey card or WhiBal held in-frame** — what most users can do. In
+  this dataset those in-frame external cards gave **~6–7 on Pixel 7 RAW**
+  (greycard 7.0, whibal 7.2) and **~4.8–6 on iPhone RAW**. Better than
+  nothing; short of the 4.7 upper bound. Placement (adjacent, coplanar to
+  the soil), spectral neutrality, and a sensible grey level all help close
+  the gap.
+- **Mind the card's brightness.** An 85%-grey or WhiBal card is *light* and
+  will clip in bright sun at the exposure that properly exposes dark soil —
+  exactly the one case the §6 fusion safeguard addresses. **Pure white is a
+  trap** (iPhone white 33, Pixel 4 white 44). A mid-grey is safer.
+- **No card at all** — accuracy suffers and there isn't much we can do;
+  the least-bad fallback is **white paper photographed in open shade**
+  (diffuse light, no clipping).
+
+**Product translation.** Don't require a specific pro card. *Suggest*
+users include a neutral reference — an 85% grey card, a WhiBal, or white
+paper in shade — co-located and coplanar with the soil, and lit the same.
+
+## 2. Android RAW's problem is highlight clipping, not the phone
+
+Android RAW is a **single exposure with no fusion**, so clipped
+highlights lose colour permanently. iPhone's fusion exposes highlights
+well without wrecking colour — which is why iPhone RAW is clean.
+
+Pixel 7 RAW (greycard), median ΔE:
+
+| exposure | median ΔE |
+|---|---|
+| well-exposed | ~5–6 |
+| >10% of cells clipped | **23.7** |
+| ISO ≤ 60 | 6.2 |
+| ISO 61–150 | 23.3 |
+| ISO 151–400 | 28.4 |
+
+Brighter raw = worse (rawLum quartiles 5.5 → 16.1). The high-ISO /
+long-exposure manual shots (sweep shots 6–9) are the ones that clipped
+and inflated ΔE. **Expose to protect the highlights**; slightly dark is
+fine, clipped is fatal.
+
+## 3. Illumination barely matters (shade is a red herring)
+
+Once WB is an in-scene neutral and nothing clips, shade ≈ sun ≈ mixed
+≈ 4.7 (table in §1). Shade only *looked* worst because **31% of shade
+shots clipped** (vs 4–5% in sun/mixed) and the greycard reference is
+illumination-sensitive. Any even, diffuse light is fine; just avoid
+conditions that blow out the brightest patch.
+
+## 4. Multi-shot averaging helps — modestly
+
+Pixel 7 RAW greycard: burst-averaged 5.9 vs single-frame 7.5. Real but
+small, and only once exposure is right. The earlier "multi-shot didn't
+help" impression is because those sessions were also clipping / high-ISO.
+
+## 5. Recommended capture recipes
+
+- **iPhone:** RAW + in-scene mid-grey neutral WB → ~2.6. Already good.
+- **Pixel / Android (target ~4.5–4.7):**
+  1. In-scene mid-grey neutral for WB (§1).
+  2. Protect highlights — manual/locked exposure, or AE with **−1 to −2
+     EV**, so the brightest relevant patch stays below sensor saturation.
+  3. Low ISO (≤ ~60) with a correspondingly longer shutter on a steady
+     mount.
+  4. Burst-average several same-exposure frames to denoise (§4).
+  5. Do **not** add brighter "manual" exposures — those are what clipped
+     and wrecked ΔE. Exposure bracketing/fusion is a safeguard only (§6),
+     not a ΔE lever here.
+
+The residual iPhone (2.6) vs Pixel 7 (4.7) gap is the cleaner
+sensor/fusion — likely not fully closable, but ~4.7 is a large
+improvement over the 7–16 we were seeing.
+
+## 6. ROI-space exposure fusion — validated, and it is NOT the lever
+
+The idea was to emulate iPhone's fusion cheaply: since the output is ~30
+ROI colours (not a sharp image), pixels are never blended across frames,
+so **no deghosting / sub-pixel alignment is needed**. We implemented and
+tested it offline on the Pixel 7 bracket sets (auto burst + manual sweep
+shots 6–9).
+
+**Result: no measurable ΔE benefit on this data.** Per-chip fusion (pick
+each chip's longest non-clipped exposure, merge in radiance space, WB
+from the on-chart neutral) scored median ΔE **7.36 — identical to the
+auto frame alone (7.36)**; 0.00 median per-scene improvement.
+
+Why, and when it *would* help:
+
+- **Radiance is exposure-invariant.** `raw / (exposureTime · ISO-gain)`
+  estimates the same scene radiance regardless of exposure, so merging
+  exposures only changes the answer where a frame **clips** (loses a
+  channel) or is **noise-limited**.
+- **The auto exposure never clipped** — 0 of 64 scenes had a clipped chip
+  in the auto frame. The auto frame is the *shortest* exposure, so it
+  already protects highlights. All the clipping that inflated ΔE came from
+  the *manual, longer-exposure* shots (6–9) — i.e. from over-exposing on
+  purpose, not from a dynamic-range limit.
+- The ΔE floor here (~7 greycard, ~4.7 on-chart neutral) is **systematic**
+  (WB reference / illuminant / sensor colour transform). Exposure fusion
+  cannot touch systematic error — every exposure of the same scene shares
+  it.
+
+**So fusion is a safeguard, not a primary lever.** Keep it in reserve for
+the one case it addresses: a scene whose dynamic range exceeds a single
+exposure, forcing a choice between clipped highlights and noisy shadows —
+e.g. the new **mid-grey neutral patch in bright direct sun** might clip at
+the exposure that properly exposes dark soil. There, adding a *shorter*
+frame and doing the per-ROI radiance merge above recovers the clipped
+patch. It did not arise in this (controlled) dataset.
+
+What *does* pay off from multi-shot: **averaging several same-exposure
+frames** (burst) for noise (§4) — distinct from bracketing.
+
+## 7. Bad captures
+
+`~/Downloads/munsell0826/bad-captures.csv` lists flagged
+fixture×format units with a reason, so a few can be pulled into
+`run.html` to eyeball:
+
+| reason | count |
+|---|---|
+| SKEWED (registration off-frame) | 405 |
+| FAILED_REGISTRATION | 216 |
+| CLIPPED_OVEREXPOSED | 183 |
+| TOO_DARK | 21 |
+| POOR_REGISTRATION | 10 |
+
+## Android capture — options still worth exploring
+
+- **Drop clipped pixels inside the reducer.** When a chip has only a *few*
+  saturated pixels (specular fleck, partial highlight), excluding any pixel
+  with a maxed channel before the mean/median-cut should improve that
+  chip's estimate. Cheap to add to the reduction loop (compute both ways
+  and compare). Won't recover a *fully* clipped chip — nothing can — so the
+  gain is on borderline chips. Needs a re-decode to test (per-pixel data
+  isn't in run.json); a filtered re-run on the clipped captures is a quick
+  first check.
+- **Low-ISO-on-a-tripod vs high-ISO handheld burst.** Noise ∝ 1/√(total
+  photons), so a single long low-ISO exposure and N short high-ISO frames
+  reach similar SNR at similar total integration time. The per-ROI averaging
+  insight (§6) means **handheld burst needs no pixel alignment** — each
+  frame is registered independently and only ~30 ROI colours are averaged —
+  so handheld multi-frame is viable and more practical than a tripod. Lean
+  handheld burst at auto exposure; reserve a steady mount for very dim light.
+- **Add *darker* bracket frames, not brighter ones.** The brighter manual
+  shots (6–9) only added clipping and hurt (§2). *Darker* frames are the
+  useful direction: cheap highlight insurance, especially for a light
+  (85%/WhiBal) reference card in bright sun. Combined with per-ROI fusion
+  (§6) they recover any clipped patch without the downside.
+
+## Open questions / next steps
+
+- ~~Validate ROI-space fusion~~ **Done** (§6): no ΔE benefit on this data
+  (auto exposure never clipped); keep as a high-dynamic-range safeguard
+  only. The real lever is the WB reference.
+- ~~Make `dominant` real on iOS RAW~~ **Done**: the standalone `dng-cli`
+  now links the shared C++ median-cut (`dngcli_dominant_linear_rgb`) and
+  computes a real dominant on the Apple CIRAWFilter path, matching the app
+  + Android. Re-run the analyzer to populate it into `run.json`. (Note:
+  where dominant is real, it was marginally *worse* than mean — 10.3 vs
+  8.7 on Android — so mean stays the default until proven otherwise.)
+- **Characterise the field grey/WhiBal card** (spectral neutrality + grey
+  level) so its WB residual is understood; a too-light card clips in sun.
+- Try **clipped-pixel exclusion** in the reducer (above) on a filtered
+  re-run.
+- Collect more Pixel 4 (n=13) before trusting its numbers.
+- Illumination-evenness bar chart in `run.html` still uses a comparability
+  scale; a per-capture adaptive scale is a pending nicety (not blocking).
