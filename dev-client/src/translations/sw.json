@@ -1759,8 +1759,8 @@
     "sign_out": {
         "confirm_body": "Una uhakika unataka kutoka?",
         "confirm_action": "Toka",
-        "blocked_title": "Haiwezi Kuondoka",
-        "blocked_body": "Una mabadiliko ambayo hayajasawazishwa ambayo yanahitaji kupakiwa kabla ya kutoka. Tafadhali unganisha kwenye intaneti na usubiri data yako isawazishwe."
+        "unsynced_body": "Una mabadiliko ambayo bado hayajapakiwa. Ukitoka sasa, mabadiliko hayo yatapotea. Toka hata hivyo?",
+        "unsynced_action": "Toka hata hivyo"
     },
     "account": {
         "google_login": "Ingia ukitumia Google",

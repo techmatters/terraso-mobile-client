@@ -1759,8 +1759,8 @@
     "sign_out": {
         "confirm_body": "¿Estás seguro de querer cerrar sesión?",
         "confirm_action": "Cerrar sesión",
-        "blocked_title": "No se puede cerrar sesión",
-        "blocked_body": "Tienes cambios sin sincronizar que deben cargarse antes de cerrar sesión. Conéctate a internet y espera a que se sincronicen tus datos."
+        "unsynced_body": "Tienes cambios que aún no se han cargado. Si cierras sesión ahora, se perderán esos cambios. ¿Cerrar sesión de todos modos?",
+        "unsynced_action": "Cerrar sesión de todos modos"
     },
     "account": {
         "google_login": "Ingresar con Google",

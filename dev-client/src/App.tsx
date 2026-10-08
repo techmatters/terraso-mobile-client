@@ -42,6 +42,7 @@ import {AppWrappers} from 'terraso-mobile-client/app/AppWrappers';
 import {wrapSentry} from 'terraso-mobile-client/app/Sentry';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {createStore} from 'terraso-mobile-client/store';
+import {flushDataIfBackendChanged} from 'terraso-mobile-client/store/backendSwitch';
 import {
   loadPersistedReduxState,
   patchPersistedReduxState,
@@ -83,6 +84,12 @@ if (persistedReduxState) {
   persistedReduxState = patchPersistedReduxState(persistedReduxState);
 }
 const store = createStore(persistedReduxState);
+
+// If the backend server changed since the last launch, log out to flush
+// data/tokens that belong to a different server. A first launch with nothing
+// stored only records the baseline and does not log out. Runs before anything
+// renders or syncs.
+flushDataIfBackendChanged(store.dispatch);
 
 /* Developer FYI: To enable the Little Snitch tool to simulate offline mode without losing connection to Metro:
  * - Uncomment the code below

@@ -15,21 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo, useRef} from 'react';
+import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {signOut} from 'terraso-client-shared/account/accountSlice';
-
-import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
-import {ActionsModal} from 'terraso-mobile-client/components/modals/ActionsModal';
 import {ConfirmModal} from 'terraso-mobile-client/components/modals/ConfirmModal';
-import {
-  ModalHandle,
-  ModalProps,
-} from 'terraso-mobile-client/components/modals/Modal';
-import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {ModalProps} from 'terraso-mobile-client/components/modals/Modal';
 import {useDispatch} from 'terraso-mobile-client/store';
-import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
+import {performLogout} from 'terraso-mobile-client/store/performLogout';
 import {useUnsyncedSiteIds} from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 
 export type LogoutModalProps = Pick<ModalProps, 'trigger'>;
@@ -38,54 +30,25 @@ export function SignOutModal({trigger}: LogoutModalProps) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const unsyncedSiteIds = useUnsyncedSiteIds();
+  // Unsynced changes no longer block sign-out — we warn that they will be
+  // lost and let the user proceed (the logout wipes local data regardless).
   const hasUnsyncedChanges = unsyncedSiteIds.length > 0;
 
-  const onSignOut = useCallback(() => {
-    dispatch(userLoggedOut());
-    dispatch(signOut());
-  }, [dispatch]);
-
-  if (hasUnsyncedChanges) {
-    return <SignOutBlockedModal trigger={trigger} />;
-  }
+  const onSignOut = useCallback(() => performLogout(dispatch), [dispatch]);
 
   return (
     <ConfirmModal
       trigger={trigger}
-      body={t('sign_out.confirm_body')}
-      actionLabel={t('sign_out.confirm_action')}
-      destructive={false}
+      body={t(
+        hasUnsyncedChanges ? 'sign_out.unsynced_body' : 'sign_out.confirm_body',
+      )}
+      actionLabel={t(
+        hasUnsyncedChanges
+          ? 'sign_out.unsynced_action'
+          : 'sign_out.confirm_action',
+      )}
+      destructive={hasUnsyncedChanges}
       handleConfirm={onSignOut}
     />
-  );
-}
-
-function SignOutBlockedModal({trigger}: LogoutModalProps) {
-  const {t} = useTranslation();
-  const ref = useRef<ModalHandle>(null);
-
-  const onClose = useCallback(() => ref.current?.onClose(), []);
-
-  const actions = useMemo(
-    () => (
-      <DialogButton
-        label={t('general.close')}
-        type="default"
-        onPress={onClose}
-      />
-    ),
-    [onClose, t],
-  );
-
-  return (
-    <ActionsModal
-      ref={ref}
-      trigger={trigger}
-      title={t('sign_out.blocked_title')}
-      actions={actions}>
-      <Text variant="body1" alignSelf="flex-start">
-        {t('sign_out.blocked_body')}
-      </Text>
-    </ActionsModal>
   );
 }
