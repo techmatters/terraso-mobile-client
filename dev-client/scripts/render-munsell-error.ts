@@ -91,13 +91,19 @@ type Sample = {
   // median-cut; also legacy runs that predate the dominant emit).
   // The 'reducer' radio flips downstream ΔE math from rawRgb to this.
   rawRgbDominant: [number, number, number] | null;
+  // Clipped-pixel-excluded siblings (RoiReduced::meanNoClip): the mean /
+  // dominant over only the non-saturated ROI pixels. Null on non-RAW /
+  // iOS Swift / legacy runs. The 'exclude clipped' reducer options use
+  // these and fall back to their all-pixel counterparts when absent.
+  rawRgbNoClip: [number, number, number] | null;
+  rawRgbDominantNoClip: [number, number, number] | null;
   // Physical-card measurements from THIS shutter, keyed by card
   // name ('whibal' | 'postit' | 'greycard'). Used as reference
   // points for the client-side WB fit; missing entries just mean
   // that card wasn't visible in this capture and can't be picked.
   // `rawDominant` is the per-card median-cut companion of `raw`;
   // null on photo-path fixtures + legacy runs.
-  refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]; rawDominant: [number, number, number] | null}};
+  refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]; rawDominant: [number, number, number] | null; rawNoClip: [number, number, number] | null; rawDominantNoClip: [number, number, number] | null}};
   // Shot kind bucket, derived from the label:
   //   'burst1of5' … 'burstNofM' — individual burst frames
   //   'burstavgofN'             — the synthetic averaged capture
@@ -236,6 +242,8 @@ for (const cap of runDoc.captures) {
         // wbRgbScaleFromReference in cellResults.ts.
         raw: rc.raw_linear_rgb_unclamped ?? rc.raw_linear_rgb,
         rawDominant: rc.raw_linear_rgb_dominant ?? null,
+        rawNoClip: rc.raw_linear_rgb_noclip ?? null,
+        rawDominantNoClip: rc.raw_linear_rgb_dominant_noclip ?? null,
       };
     }
   }
@@ -257,6 +265,8 @@ for (const cap of runDoc.captures) {
           // anchor happens to be a bright chip.
           raw: anchorCell.raw_linear_rgb_unclamped ?? anchorCell.raw_linear_rgb,
           rawDominant: anchorCell.raw_linear_rgb_dominant ?? null,
+          rawNoClip: anchorCell.raw_linear_rgb_noclip ?? null,
+          rawDominantNoClip: anchorCell.raw_linear_rgb_dominant_noclip ?? null,
         };
       }
     }
@@ -286,6 +296,8 @@ for (const cap of runDoc.captures) {
       // wbRgbScaleFromReference note for the direction of the bias.
       rawRgb: cell.raw_linear_rgb_unclamped ?? cell.raw_linear_rgb,
       rawRgbDominant: cell.raw_linear_rgb_dominant ?? null,
+      rawRgbNoClip: cell.raw_linear_rgb_noclip ?? null,
+      rawRgbDominantNoClip: cell.raw_linear_rgb_dominant_noclip ?? null,
       refOptions,
       captureType: captureTypeOf(cap.label ?? ''),
       illumination: illuminationOf(sourcePath, cap.environment?.tags ?? []),
@@ -456,9 +468,13 @@ const html = `<!DOCTYPE html>
           <code>mean</code> = per-channel arithmetic average (default).
           <code>dominant</code> = median-cut posterise, biggest colour
           cluster in the ROI — matches the legacy JPEG dominantColor
-          path and is robust to off-tone flecks. Flips WB fit, ΔE,
-          rankings, all downstream math. Samples without a dominant
-          (photo-path, legacy runs) fall back silently to mean.
+          path and is robust to off-tone flecks. The
+          <code>exclude clipped pixels</code> variants recompute the same
+          reducer over only the non-saturated ROI pixels (RAW/Android
+          only; a safety net for partially-blown chips). Flips WB fit,
+          ΔE, rankings, all downstream math. Samples missing the picked
+          reducer (photo-path, iOS, legacy runs) fall back silently to
+          mean.
         </div>
       </fieldset>
       <fieldset id="ctl-first-ref">
@@ -777,14 +793,28 @@ function nearestChipNotation(measRgb) {
 // disappears. The RAW path (both iOS and Android) now always carries a
 // real median-cut dominant, so this fallback only fires for photos.
 function rawOfSample(s) {
-  return state.reducer === 'dominant' && s.rawRgbDominant
-    ? s.rawRgbDominant
-    : s.rawRgb;
+  switch (state.reducer) {
+    case 'dominant':
+      return s.rawRgbDominant || s.rawRgb;
+    case 'mean_noclip':
+      return s.rawRgbNoClip || s.rawRgb;
+    case 'dominant_noclip':
+      return s.rawRgbDominantNoClip || s.rawRgbDominant || s.rawRgb;
+    default:
+      return s.rawRgb;
+  }
 }
 function rawOfRef(ref) {
-  return state.reducer === 'dominant' && ref.rawDominant
-    ? ref.rawDominant
-    : ref.raw;
+  switch (state.reducer) {
+    case 'dominant':
+      return ref.rawDominant || ref.raw;
+    case 'mean_noclip':
+      return ref.rawNoClip || ref.raw;
+    case 'dominant_noclip':
+      return ref.rawDominantNoClip || ref.rawDominant || ref.raw;
+    default:
+      return ref.raw;
+  }
 }
 
 // Client-side WB fit. Two modes: single-ref (gain-only, forced
@@ -1438,7 +1468,9 @@ function initControls() {
   makeRadioGroup(
     document.getElementById('ctl-reducer'), 'reducer',
     [{value: 'mean', label: 'mean (per-channel average)'},
-     {value: 'dominant', label: 'dominant (median-cut biggest cluster)'}],
+     {value: 'dominant', label: 'dominant (median-cut biggest cluster)'},
+     {value: 'mean_noclip', label: 'mean — exclude clipped pixels'},
+     {value: 'dominant_noclip', label: 'dominant — exclude clipped pixels'}],
     () => state.reducer,
     v => { state.reducer = v; },
   );
