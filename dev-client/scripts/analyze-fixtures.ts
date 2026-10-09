@@ -30,6 +30,7 @@
 //     [--refs "10YR 5/1,10YR 6/1"]     # default: 10YR 5/1
 
 import {execFileSync} from 'child_process';
+import jpegJs from 'jpeg-js';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -537,15 +538,49 @@ class NodeDecoder implements DngDecoderLike {
     format: 'raw' | 'photo',
     quality = 85,
   ): {bytes: Buffer; ext: 'jpg' | 'png'; width: number; height: number} {
+    // Android RAW: render the display preview through the SAME C++ pipeline
+    // the analysis uses (ForwardMatrix), not CIRAWFilter, so the picture in
+    // run.html matches the measured numbers. The C++ CLI has no image
+    // encoder, so pull display-gamma sRGB bytes via read-preview-rgb and
+    // JPEG-encode here. iOS RAW + all JPEG fixtures stay on the Swift path
+    // below (CIRAWFilter / CIImage).
+    if (format === 'raw' && this.supportsBatch) {
+      const binPath = path.join(this.tmpDir, `preview-${this.ctr++}.bin`);
+      const out = execFileSync(
+        this.dngCliPath,
+        ['read-preview-rgb', imagePath, String(maxDim), binPath],
+        {encoding: 'utf-8'},
+      );
+      const h = JSON.parse(out) as {width: number; height: number};
+      const rgb = fs.readFileSync(binPath);
+      fs.unlinkSync(binPath);
+      const n = h.width * h.height;
+      const rgba = Buffer.alloc(n * 4);
+      for (let i = 0; i < n; i++) {
+        rgba[i * 4] = rgb[i * 3];
+        rgba[i * 4 + 1] = rgb[i * 3 + 1];
+        rgba[i * 4 + 2] = rgb[i * 3 + 2];
+        rgba[i * 4 + 3] = 255;
+      }
+      const jpg = jpegJs.encode(
+        {data: rgba, width: h.width, height: h.height},
+        quality,
+      ).data;
+      return {
+        bytes: Buffer.from(jpg),
+        ext: 'jpg',
+        width: h.width,
+        height: h.height,
+      };
+    }
+
     const ext = 'jpg' as const;
     const outPath = path.join(this.tmpDir, `preview-${this.ctr++}.${ext}`);
     const subcommand =
       format === 'raw' ? 'render-preview' : 'render-preview-photo';
-    // Display-only preview for the HTML report — always routed
-    // through the Swift CLI regardless of platform. The analysis
-    // pixels for Android DNGs still come from the C++ CLI via
-    // decodeDngRois / readPreviewRgb above; this rendering is just
-    // for the report's "here's what the shot looked like" panel.
+    // iOS RAW display preview — routed through the Swift CLI (CIRAWFilter).
+    // The analysis pixels for Android DNGs come from the C++ CLI; this
+    // rendering is just the report's "here's what the shot looked like".
     const stdout = execFileSync(
       this.photoCliPath,
       [subcommand, imagePath, String(maxDim), outPath, String(quality)],

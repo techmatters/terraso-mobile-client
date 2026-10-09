@@ -219,8 +219,9 @@ Color pipelines: **iOS → Apple CIRAWFilter**; **Android → our C++ DNG
 pipeline** (WB ÷AsShotNeutral → **ForwardMatrix2** → Bradford D50→D65 → sRGB —
 spec-correct, deliberately *not* inverting ColorMatrix, which collapses to
 garbage for Pixel). All analysis values are post-embedded-matrix. The
-run.html *display* preview for Android is rendered by CIRAWFilter, not the
-C++ pipeline — cosmetic, but the picture ≠ the pixels the ΔE used.
+run.html *display* preview for Android now renders through the **C++
+pipeline** too (`read-preview-rgb` → `jpeg-js`), so the picture matches the
+pixels the ΔE used; iOS stays on CIRAWFilter.
 
 A/B via `analyze-fixtures --force-decoder swift|cpp` (runs every raw through
 one pipeline), self-anchor median ΔE:
