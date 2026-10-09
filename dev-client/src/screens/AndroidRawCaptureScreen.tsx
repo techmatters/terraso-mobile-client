@@ -81,39 +81,36 @@ const SHUTTER_PRESETS_NS = [
   1_000_000_000, // 1s
 ] as const;
 
-// MULTI (research data-gen) session: a symmetric exposure bracket for
-// offline characterization. Production ships a trimmed subset once the data
-// says which exposures/averaging actually help.
-//   - A big AE-auto burst at 0 EV (AE+AWB locked) — the baseline, and the
-//     frames we average to choose a production burst size.
-//   - A few frames at each ±EV so per-ROI fusion can use DARKER frames for
-//     bright patches (grey card / light soil — no clipping) and BRIGHTER
-//     frames for dark soil (more photons → less shadow noise, the main
-//     Pixel weakness). A +EV frame only helps when fused per-ROI, not judged
-//     whole-frame (its highlights clip). See docs/munsell-capture-findings.md.
+// MULTI (research data-gen) session: an exposure bracket DERIVED from the
+// burst's locked exposure, for offline characterization. Production ships a
+// trimmed subset once the data says which exposures/averaging actually help.
+//   - A big AE-auto burst (AE+AWB locked) — the ×1 baseline, and the frames
+//     we average to choose a production burst size + gauge shadow-noise
+//     reduction.
+//   - Replicate frames at each bracket STOP. Native reads the burst's locked
+//     (iso, shutter) and fires manual shots at shutter × 2^stops (iso held),
+//     so every level is a PRECISE stop offset in both directions — unlike AE
+//     compensation, which the Pixel caps at its ~1/40 preview shutter and so
+//     cannot brighten the RAW (measured: +1 EV → 0 change). DARKER levels
+//     protect highlights (grey card / light soil); BRIGHTER levels add
+//     photons for dark soil (less shadow noise — the Pixel's main weakness),
+//     and now actually reach the RAW via a longer manual shutter. Brighter
+//     levels clamp at the sensor's max exposure time (filename records the
+//     real shutter). See docs/munsell-capture-findings.md + munsell-multishot.md.
 const MULTI_SESSION_BURST_COUNT = 10;
-const MULTI_SESSION_EV_LEVELS = [-2, -1, 1, 2] as const; // 0 EV = the burst
-const MULTI_SESSION_FRAMES_PER_EV = 3;
+// Bracket levels as STOPS from the burst's locked exposure (readable);
+// converted to linear shutter multipliers (2^stops) for the native API.
+// Negative = darker, positive = brighter. Tune freely — a −0.5 fine step is
+// included since AE comp's overshoot (−1 EV measured as −1.9 stops) made the
+// old coarse ladder hard to reason about; multipliers remove that guesswork.
+const MULTI_SESSION_BRACKET_STOPS = [-2, -1, -0.5, 1, 2] as const;
+const MULTI_SESSION_BRACKET_MULTIPLIERS = MULTI_SESSION_BRACKET_STOPS.map(s =>
+  Math.pow(2, s),
+);
+const MULTI_SESSION_BRACKET_FRAMES_PER_LEVEL = 3;
 const MULTI_SESSION_TOTAL =
   MULTI_SESSION_BURST_COUNT +
-  MULTI_SESSION_EV_LEVELS.length * MULTI_SESSION_FRAMES_PER_EV;
-
-// Convert a target EV (stops below/above metered) to the device's
-// CONTROL_AE_EXPOSURE_COMPENSATION integer index, clamped to its range.
-// EV = idx × step, so idx = EV × stepDen / stepNum.
-const evStopsToAeIndex = (
-  stops: number,
-  caps: CaptureCapabilities | null,
-): number => {
-  if (caps == null || caps.aeCompensationStepNum === 0) return 0;
-  const idx = Math.round(
-    (stops * caps.aeCompensationStepDen) / caps.aeCompensationStepNum,
-  );
-  return Math.max(
-    caps.aeCompensationMin,
-    Math.min(caps.aeCompensationMax, idx),
-  );
-};
+  MULTI_SESSION_BRACKET_STOPS.length * MULTI_SESSION_BRACKET_FRAMES_PER_LEVEL;
 
 // Full-screen React Navigation route for Android RAW capture. Owns the
 // native RawCameraAndroidView (which drives CameraSessionManager via
@@ -185,6 +182,13 @@ export const AndroidRawCaptureScreen = () => {
     setActiveRoiPresetIndex(next);
   }, []);
   const [isCapturing, setIsCapturing] = useState(false);
+  // MULTI-session progress ("n / m"), driven by the native onProgress
+  // callback. Null outside a MULTI session (single-shot / burst flows
+  // reuse the same overlay but don't report per-shot progress).
+  const [multiProgress, setMultiProgress] = useState<{
+    done: number;
+    total: number;
+  } | null>(null);
   const [caps, setCaps] = useState<CaptureCapabilities | null>(null);
   const [evIndex, setEvIndex] = useState(0);
   const [burstOn, setBurstOn] = useState(false);
@@ -362,8 +366,8 @@ export const AndroidRawCaptureScreen = () => {
   }, [isCapturing, buildOptions, burstOn, navigation]);
 
   // MULTI-session shutter. Fires the full research-collection sweep
-  // (0-EV burst + a symmetric ±EV bracket) via captureSession, which
-  // writes to MediaStore.Downloads/soilcap/session_<ts>/. On
+  // (AE-locked burst + a derived exposure bracket) via captureSession,
+  // which writes to MediaStore.Downloads/soilcap/session_<ts>/. On
   // completion pops back one screen (to the page picker) so the user
   // can select the next Munsell card without re-navigating. Does NOT
   // invoke the analysis callback — this is a data-collection flow, all
@@ -371,30 +375,30 @@ export const AndroidRawCaptureScreen = () => {
   const runMultiSession = useCallback(async () => {
     if (isCapturing) return;
     setIsCapturing(true);
+    setMultiProgress({done: 0, total: MULTI_SESSION_TOTAL});
     try {
       // Pull the current session context (page / bg / refcard /
       // illuminant / note) from the RawColorToolsScreen persistence.
       // Empty fields skip cleanly in the native filename builder.
       const context = getMultishotSessionContext();
-      // Symmetric EV bracket: FRAMES_PER_EV auto-AE shots at each ±EV
-      // level (0 EV is the burst above). Omitting iso/shutter keeps AE
-      // auto so each shot meters the scene, then biases by the EV index.
-      const bracketShots = MULTI_SESSION_EV_LEVELS.flatMap(ev =>
-        Array.from({length: MULTI_SESSION_FRAMES_PER_EV}, () => ({
-          aeCompensation: evStopsToAeIndex(ev, caps),
-        })),
-      );
+      // The bracket is derived natively: captureSession reads the burst's
+      // locked (iso, shutter) and fires FRAMES_PER_LEVEL manual shots at
+      // shutter × each multiplier. No AE-comp indices to compute here.
       console.log(
         `[AndroidRawCaptureScreen] captureSession start ` +
-          `(${MULTI_SESSION_BURST_COUNT} burst@0EV + ` +
-          `${bracketShots.length} bracket [${MULTI_SESSION_EV_LEVELS.join(
-            ',',
-          )} EV ×${MULTI_SESSION_FRAMES_PER_EV}]) ` +
+          `(${MULTI_SESSION_BURST_COUNT} burst + ` +
+          `${MULTI_SESSION_BRACKET_STOPS.length} bracket levels [` +
+          `${MULTI_SESSION_BRACKET_STOPS.join(',')} stops] ` +
+          `×${MULTI_SESSION_BRACKET_FRAMES_PER_LEVEL}) ` +
           `context=${JSON.stringify(context)}`,
       );
       const frames = await RawCameraAndroidHybrid.captureSession({
         burstCount: MULTI_SESSION_BURST_COUNT,
-        manualShots: bracketShots,
+        manualShots: [],
+        bracketMultipliers: MULTI_SESSION_BRACKET_MULTIPLIERS,
+        bracketFramesPerLevel: MULTI_SESSION_BRACKET_FRAMES_PER_LEVEL,
+        onProgress: (completed, total) =>
+          setMultiProgress({done: completed, total}),
         context,
       });
       console.log(
@@ -412,8 +416,9 @@ export const AndroidRawCaptureScreen = () => {
       Alert.alert('Multi-shot session failed', String(err));
     } finally {
       setIsCapturing(false);
+      setMultiProgress(null);
     }
-  }, [isCapturing, navigation, caps]);
+  }, [isCapturing, navigation]);
 
   // Structure kept close to the earlier RawCameraAndroidTestScreen that
   // we know worked — ScreenScaffold + AppBar chrome, view inside a
@@ -598,6 +603,11 @@ export const AndroidRawCaptureScreen = () => {
           <View style={styles.progressOverlay} pointerEvents="auto">
             <View style={styles.progressBox}>
               <Text style={styles.progressTitle}>Capturing…</Text>
+              {multiProgress && (
+                <Text style={styles.progressCount}>
+                  {multiProgress.done} / {multiProgress.total}
+                </Text>
+              )}
               <Text style={styles.progressSubtitle}>Hold the phone still.</Text>
             </View>
           </View>
@@ -970,6 +980,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: '700',
+    marginBottom: 6,
+  },
+  progressCount: {
+    color: 'white',
+    fontSize: 32,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
     marginBottom: 6,
   },
   progressSubtitle: {

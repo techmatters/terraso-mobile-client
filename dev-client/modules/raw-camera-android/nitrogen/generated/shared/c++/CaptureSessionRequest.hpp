@@ -35,8 +35,9 @@ namespace margelo::nitro::rawcameraandroid { struct SessionContext; }
 
 #include "SessionShot.hpp"
 #include <vector>
-#include "SessionContext.hpp"
 #include <optional>
+#include <functional>
+#include "SessionContext.hpp"
 
 namespace margelo::nitro::rawcameraandroid {
 
@@ -47,14 +48,17 @@ namespace margelo::nitro::rawcameraandroid {
   public:
     double burstCount     SWIFT_PRIVATE;
     std::vector<SessionShot> manualShots     SWIFT_PRIVATE;
+    std::optional<std::vector<double>> bracketMultipliers     SWIFT_PRIVATE;
+    std::optional<double> bracketFramesPerLevel     SWIFT_PRIVATE;
+    std::optional<std::function<void(double /* completed */, double /* total */)>> onProgress     SWIFT_PRIVATE;
     std::optional<SessionContext> context     SWIFT_PRIVATE;
 
   public:
     CaptureSessionRequest() = default;
-    explicit CaptureSessionRequest(double burstCount, std::vector<SessionShot> manualShots, std::optional<SessionContext> context): burstCount(burstCount), manualShots(manualShots), context(context) {}
+    explicit CaptureSessionRequest(double burstCount, std::vector<SessionShot> manualShots, std::optional<std::vector<double>> bracketMultipliers, std::optional<double> bracketFramesPerLevel, std::optional<std::function<void(double /* completed */, double /* total */)>> onProgress, std::optional<SessionContext> context): burstCount(burstCount), manualShots(manualShots), bracketMultipliers(bracketMultipliers), bracketFramesPerLevel(bracketFramesPerLevel), onProgress(onProgress), context(context) {}
 
   public:
-    friend bool operator==(const CaptureSessionRequest& lhs, const CaptureSessionRequest& rhs) = default;
+    // CaptureSessionRequest is not equatable because these properties are not equatable: onProgress
   };
 
 } // namespace margelo::nitro::rawcameraandroid
@@ -69,6 +73,9 @@ namespace margelo::nitro {
       return margelo::nitro::rawcameraandroid::CaptureSessionRequest(
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "burstCount"))),
         JSIConverter<std::vector<margelo::nitro::rawcameraandroid::SessionShot>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "manualShots"))),
+        JSIConverter<std::optional<std::vector<double>>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "bracketMultipliers"))),
+        JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "bracketFramesPerLevel"))),
+        JSIConverter<std::optional<std::function<void(double, double)>>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "onProgress"))),
         JSIConverter<std::optional<margelo::nitro::rawcameraandroid::SessionContext>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "context")))
       );
     }
@@ -76,6 +83,9 @@ namespace margelo::nitro {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "burstCount"), JSIConverter<double>::toJSI(runtime, arg.burstCount));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "manualShots"), JSIConverter<std::vector<margelo::nitro::rawcameraandroid::SessionShot>>::toJSI(runtime, arg.manualShots));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "bracketMultipliers"), JSIConverter<std::optional<std::vector<double>>>::toJSI(runtime, arg.bracketMultipliers));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "bracketFramesPerLevel"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.bracketFramesPerLevel));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "onProgress"), JSIConverter<std::optional<std::function<void(double, double)>>>::toJSI(runtime, arg.onProgress));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "context"), JSIConverter<std::optional<margelo::nitro::rawcameraandroid::SessionContext>>::toJSI(runtime, arg.context));
       return obj;
     }
@@ -89,6 +99,9 @@ namespace margelo::nitro {
       }
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "burstCount")))) return false;
       if (!JSIConverter<std::vector<margelo::nitro::rawcameraandroid::SessionShot>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "manualShots")))) return false;
+      if (!JSIConverter<std::optional<std::vector<double>>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "bracketMultipliers")))) return false;
+      if (!JSIConverter<std::optional<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "bracketFramesPerLevel")))) return false;
+      if (!JSIConverter<std::optional<std::function<void(double, double)>>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "onProgress")))) return false;
       if (!JSIConverter<std::optional<margelo::nitro::rawcameraandroid::SessionContext>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "context")))) return false;
       return true;
     }

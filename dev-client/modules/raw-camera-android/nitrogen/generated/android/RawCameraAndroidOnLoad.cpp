@@ -16,6 +16,7 @@
 #include <NitroModules/HybridObjectRegistry.hpp>
 
 #include "JHybridRawCameraAndroidSpec.hpp"
+#include "JFunc_void_double_double.hpp"
 #include <NitroModules/DefaultConstructableObject.hpp>
 
 namespace margelo::nitro::rawcameraandroid {
@@ -41,6 +42,7 @@ void registerAllNatives() {
 
   // Register native JNI methods
   margelo::nitro::rawcameraandroid::JHybridRawCameraAndroidSpec::CxxPart::registerNatives();
+  margelo::nitro::rawcameraandroid::JFunc_void_double_double_cxx::registerNatives();
 
   // Register Nitro Hybrid Objects
   HybridObjectRegistry::registerHybridObjectConstructor(

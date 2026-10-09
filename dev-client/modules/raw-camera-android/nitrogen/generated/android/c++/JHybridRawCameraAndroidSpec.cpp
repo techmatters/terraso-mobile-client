@@ -35,6 +35,9 @@ namespace margelo::nitro::rawcameraandroid { struct SessionContext; }
 #include "JCaptureSessionRequest.hpp"
 #include "SessionShot.hpp"
 #include "JSessionShot.hpp"
+#include <functional>
+#include "JFunc_void_double_double.hpp"
+#include <NitroModules/JNICallable.hpp>
 #include "SessionContext.hpp"
 #include "JSessionContext.hpp"
 

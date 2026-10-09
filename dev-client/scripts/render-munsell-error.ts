@@ -169,19 +169,27 @@ const bgOf = (p: string): string => {
 };
 
 // Derive the capture-type bucket from a fixture label. Matches:
-//   burstavgofN     → 'burstavgofN'  (synthetic averaged burst)
-//   burstNofM       → 'burstNofM'    (individual burst frame)
+//   burstavgofN      → 'burstavgofN'    (synthetic averaged burst)
+//   burstNofM        → 'burstNofM'      (individual burst frame)
+//   bracket_ev<stops> → 'bracket_ev<stops>' (derived exposure-bracket
+//                       shot — all replicates of a level share this bucket
+//                       so the 3 reps of e.g. ev-1 compare as a unit)
 //   manual_isoX_shutY → 'manual_isoX_shutY'
-//   anything else   → 'single'
-// Case-insensitive on the pattern names; keeps whatever iso/shut
+//   anything else    → 'single'
+// Case-insensitive on the pattern names; keeps whatever iso/shut/ev
 // values the label actually carries so parameter variants stay
-// distinct (e.g. iso100_shut33ms vs iso100_shut67ms).
+// distinct (e.g. iso100_shut33ms vs iso100_shut67ms, ev-1 vs ev+2).
 const captureTypeOf = (label: string): string => {
   const lower = label.toLowerCase();
   let m = lower.match(/burstavgof(\d+)/);
   if (m) return `burstavgof${m[1]}`;
   m = lower.match(/burst(\d+)of(\d+)/);
   if (m) return `burst${m[1]}of${m[2]}`;
+  // Derived exposure-bracket shot (see docs/munsell-multishot.md). The
+  // `ev<stops>` token is the TRUE stop offset; strip the `_rep<i>of<N>`
+  // replicate suffix so all reps of a level land in one bucket.
+  m = lower.match(/bracket_ev([+-]?[0-9.]+)/);
+  if (m) return `bracket_ev${m[1]}`;
   m = lower.match(/manual_iso(\d+)_shut([a-z0-9]+)/);
   if (m) return `manual_iso${m[1]}_shut${m[2]}`;
   return 'single';
@@ -1097,9 +1105,13 @@ const state = {
   format: 'all',
   // Max illumination unevenness (max-of-col-range, row-range across
   // matched-grid inliers). Samples from captures above this threshold
-  // are hidden. Slider max = 100 = show all. Default 20 = only
-  // evenly-lit captures.
-  maxUneven: 20,
+  // are hidden. Slider max = 100 = show all (maps to Infinity below).
+  // Default 100 (show everything): the unevenness metric inflates with
+  // exposure (brighter frames clip the card, reading as more "uneven"),
+  // so a low default silently drops the bright end of an exposure
+  // bracket — see docs/munsell-multishot.md. Raise the floor manually
+  // when you specifically want to gate on even lighting.
+  maxUneven: 100,
   // Excluded-chips filter (checkbox). Defaults to ON when the
   // excluded list is non-empty so users see the "cleanest" view by
   // default; uncheck to bring them back in.
@@ -2235,6 +2247,28 @@ function renderPolar(filtered) {
     facetLabel + ' (' + totalValues + ' value bins total)';
 }
 
+// Capture-type ordering rank. Returns [group, subkey] so the
+// captureType axis reads in a sensible shot order instead of
+// lexicographically: burst frames (by index) → burst-avg → bracket
+// (by TRUE stop offset, −2 … +2) → manual → single. Returns null for
+// anything that isn't a capture-type token (so other axes are
+// unaffected). See captureTypeOf.
+function captureTypeRank(s) {
+  const str = String(s);
+  // NB: use [0-9] not \d — this function is embedded into the report
+  // HTML as a template-literal string, where a lone backslash in \d is
+  // swallowed (becomes a literal 'd'). Character classes survive intact.
+  let m = str.match(/^burst([0-9]+)of([0-9]+)$/i);
+  if (m) return [0, Number(m[1])];
+  m = str.match(/^burstavgof([0-9]+)$/i);
+  if (m) return [1, Number(m[1])];
+  m = str.match(/^bracket_ev([+-]?[0-9.]+)$/i);
+  if (m) return [2, Number(m[1])]; // sort by stops: −2,−1,−0.5,+1,+2
+  if (/^manual/i.test(str)) return [3, 0];
+  if (str === 'single') return [4, 0];
+  return null;
+}
+
 // Numeric-aware axis sort — falls back to string compare when either
 // side isn't numeric (e.g. 'raw' vs 'photo'). Also parses a leading
 // numeric prefix so bucket labels like '2–4' and '20+' sort by their
@@ -2244,6 +2278,10 @@ function sortAxisValues(arr) {
   return arr.slice().sort((a, b) => {
     const na = Number(a), nb = Number(b);
     if (!isNaN(na) && !isNaN(nb)) return na - nb;
+    // Capture-type tokens (burst / burstavg / bracket_ev / manual /
+    // single) order by shot kind then by index/stops, not lexically.
+    const ca = captureTypeRank(a), cb = captureTypeRank(b);
+    if (ca && cb) return ca[0] - cb[0] || ca[1] - cb[1];
     const pa = parseFloat(String(a));
     const pb = parseFloat(String(b));
     const pna = isNaN(pa), pnb = isNaN(pb);

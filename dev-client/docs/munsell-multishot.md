@@ -12,42 +12,49 @@ via `adb pull`.
 
 ## What one press captures
 
-Every MULTI session fires a **symmetric exposure bracket** against the
-same physical scene — a research-characterization set (production will ship
-a trimmed subset once the data says which exposures/averaging help):
+Every MULTI session fires a **burst + a derived exposure bracket** against
+the same physical scene — a research-characterization set (production will
+ship a trimmed subset once the data says which exposures/averaging help):
 
-| #     | Kind    | Exposure                      | Purpose |
-|-------|---------|-------------------------------|---------|
-| 1–10  | burst   | AE-auto (0 EV), AE+AWB locked | Baseline; average for noise + pick a production burst size |
-| 11–13 | auto-AE | −2 EV                         | Highlight protection (bright patches / grey card don't clip) |
-| 14–16 | auto-AE | −1 EV                         | ″ |
-| 17–19 | auto-AE | +1 EV                         | Dark-soil shadow recovery (more photons → less noise) |
-| 20–22 | auto-AE | +2 EV                         | ″ |
+| #     | Kind    | Exposure                               | Purpose |
+|-------|---------|----------------------------------------|---------|
+| 1–10  | burst   | AE-auto (×1), AE+AWB locked            | Baseline; average for noise + pick a production burst size |
+| 11–13 | bracket | ×0.25 shutter (−2 stops)               | Highlight protection (bright patches / grey card don't clip) |
+| 14–16 | bracket | ×0.5 shutter (−1 stop)                 | ″ |
+| 17–19 | bracket | ×0.71 shutter (−0.5 stop)              | ″ (fine step) |
+| 20–22 | bracket | ×2 shutter (+1 stop)                   | Dark-soil shadow recovery (more photons → less noise) |
+| 23–25 | bracket | ×4 shutter (+2 stops)                  | ″ |
 
-The ±EV frames use `CONTROL_AE_EXPOSURE_COMPENSATION` via the new
-`SessionShot.aeCompensation` field (index computed from the device's EV
-step in `AndroidRawCaptureScreen.tsx`): the camera meters, then biases the
-exposure N stops. **Offline, per-ROI fusion** uses DARKER frames for bright
-patches (no clip) and BRIGHTER frames for dark soil (shadow SNR) — a +EV
-frame only helps when fused per-ROI, not judged whole-frame (its highlights
-clip). Knobs: `MULTI_SESSION_BURST_COUNT`, `MULTI_SESSION_EV_LEVELS`,
-`MULTI_SESSION_FRAMES_PER_EV`.
+The bracket is **derived natively**: after the AE-locked burst settles on an
+(iso, shutter), `captureSession` reads that locked exposure and fires
+`bracketFramesPerLevel` **manual** shots per level at `shutter × multiplier`
+(iso held). Multipliers are linear light ratios (`2^stops`). This is PRECISE
+in both directions and — critically — **brighter levels actually reach the
+RAW** via a longer manual shutter. Brighter levels clamp at the sensor's
+max exposure time; the filename records the real (post-clamp) shutter.
+Knobs: `MULTI_SESSION_BURST_COUNT`, `MULTI_SESSION_BRACKET_STOPS`,
+`MULTI_SESSION_BRACKET_FRAMES_PER_LEVEL`
+(→ `CaptureSessionRequest.bracketMultipliers` / `bracketFramesPerLevel`).
+**Offline, per-ROI fusion** uses DARKER frames for bright patches (no clip)
+and BRIGHTER frames for dark soil (shadow SNR).
 
-**Why this replaces the old sweep.** The previous manual shots went
-*brighter via absolute fixed (iso, shutter)* and were judged whole-frame —
-which clipped and inflated ΔE (see docs/munsell-capture-findings.md). The
-new shots are *meter-relative* (adapt to lighting) and used in fusion, so
-both darker (anti-clip) and brighter (anti-noise) frames earn their place.
+**Why multipliers, not AE compensation.** An earlier revision biased the
+bracket with `CONTROL_AE_EXPOSURE_COMPENSATION` (`SessionShot.aeCompensation`,
+still supported for explicit `manualShots`). A Pixel 6a test proved it
+unusable for a symmetric bracket: AE comp **overshoots darker** (−1 EV
+measured as −1.9 stops) and — because the Pixel's AE refuses to lengthen the
+shutter past its ~1/40 preview ceiling — **does not brighten the RAW at all**
+(+1 EV → 0 change, +2 EV → +0.3 stop). Deriving manual shutters from the
+burst's locked exposure sidesteps both problems: exact stops, and genuine
+brighter frames. See docs/munsell-capture-findings.md.
 
-**Verify on-device.** Confirm the ±EV frames actually move the *RAW*
-(sensor ExposureTime/ISO), not just the JPEG tone — earlier notes flagged
-that EV comp doesn't always reach the sensor on these phones. Check the DNG
-ExposureTime/ISO of the bracket shots vs the burst; if AE won't shift, fall
-back to deriving manual (iso, shutter) shots from the burst's locked
-exposure.
+**Note on shadow noise.** Averaging the 10-frame ×1 burst reduces shadow
+noise by √10 ≈ 3.2× — more than a single +2-stop frame (√4 = 2×) and without
+clipping. The brighter bracket levels are for *stacking on top of* that for
+the very darkest soils; expect averaging to be the primary lever.
 
-Total data per session: ~22 DNG + 22 JPEG ≈ **~450 MB** — brace/steady for
-the ~20s hold, and see "Storage and transfer" below for batching.
+Total data per session: ~25 DNG + ~25 JPEG ≈ **~700 MB** — brace/steady for
+the ~25s hold, and see "Storage and transfer" below for batching.
 
 ## Where the files land
 
@@ -84,7 +91,7 @@ the HAL used for that shot (not just what was requested).
 ### Filename token schema
 
 ```
-<seq>_<device>[_<page>][_<bg>][_ref<card>][_light<slug>]_<kind>_iso<n>_shut<X>[_burst<i>of<N>][_awblock].<ext>
+<seq>_<device>[_<page>][_<bg>][_ref<card>][_light<slug>]_<kind>[_ev<stops>][_rep<i>of<N>]_iso<n>_shut<X>[_burst<i>of<N>][_awblock].<ext>
 ```
 
 | Token | Source | Optional? | Example |
@@ -95,7 +102,9 @@ the HAL used for that shot (not just what was requested).
 | `<bg>` | Background paper from Session context | if set (`light` / `dark`) | `light`, `dark` |
 | `ref<card>` | Reference-card layout from Session context | if set | `refmulti`, `refgreycard`, `refwhibal`, `refpostit`, `refwhite`, `refnone` |
 | `light<slug>` | Illuminant type from Session context | if set | `lightsun`, `lightshade`, `lightled3000k`, `lightflash` |
-| `<kind>` | `auto` (burst frame, no manual override) or `manual` (iso+shutter forced) | required | `auto`, `manual` |
+| `<kind>` | `auto` (burst / no override), `manual` (explicit iso+shutter), or `bracket` (derived exposure-multiplier shot) | required | `auto`, `manual`, `bracket` |
+| `ev<stops>` | **True** stop offset of a derived bracket shot (`log2` of the shutter multiplier), signed | bracket shots only | `ev-1`, `ev+2`, `ev-0.5` |
+| `rep<i>of<N>` | Replicate index within a bracket level (for averaging) | bracket shots, N>1 | `rep2of3` |
 | `iso<n>` | **Actual** ISO from `TotalCaptureResult.SENSOR_SENSITIVITY` (post-AE) | required | `iso61`, `iso199`, `iso395` |
 | `shut<X>` | **Actual** shutter from `TotalCaptureResult.SENSOR_EXPOSURE_TIME`, rounded human-readable | required | `shut25ms`, `shut67ms`, `shut500us` |
 | `burst<i>of<N>` | Position within auto burst (auto shots only) | for burst frames | `burst3of5` |
@@ -169,10 +178,13 @@ Sample:
       "actual": {"iso": 61, "shutter_ns": 25000000, "ae_mode": 1, "awb_mode": 1, "ae_locked": true, "awb_locked": true}
     },
     {
-      "filename": "06_pixel6a_10YR_dark_refmulti_lightsun_manual_iso100_shut33ms",
-      "kind": "manual",
-      "requested": {"iso": 100, "shutter_ns": 33333000, "ae_lock": false, "awb_lock": false},
-      "actual": {"iso": 100, "shutter_ns": 33333000, "ae_mode": 0, "awb_mode": 1, "ae_locked": false, "awb_locked": false}
+      "filename": "14_pixel6a_10YR_dark_refmulti_lightsun_bracket_ev-1_rep1of3_iso61_shut13ms",
+      "kind": "bracket",
+      "bracket_stops": -1.0000,
+      "bracket_rep": 1,
+      "bracket_rep_total": 3,
+      "requested": {"iso": 61, "shutter_ns": 12500000, "ae_lock": false, "awb_lock": false},
+      "actual": {"iso": 61, "shutter_ns": 12500000, "ae_mode": 0, "awb_mode": 1, "ae_locked": false, "awb_locked": false}
     }
   ]
 }
@@ -185,6 +197,11 @@ Notes:
   shows what the HAL reported doing (`SENSOR_SENSITIVITY` and
   `SENSOR_EXPOSURE_TIME` from `TotalCaptureResult`, plus AE/AWB state).
   These diverge whenever AE was on and picked its own values.
+- `kind: "bracket"` shots carry `bracket_stops` (the true stop offset
+  from the burst's locked exposure) plus `bracket_rep` / `bracket_rep_total`.
+  Their `requested.shutter_ns` is the burst's locked shutter × `2^stops`
+  (clamped to the sensor max); compare with `actual.shutter_ns` to see
+  whether a brighter level hit the clamp.
 - `ae_mode` values match Camera2 constants: 0 = OFF, 1 = ON, etc.
 - Best-effort write: if the sidecar fails, the shot files are still
   fully usable (redundant with filename tokens).

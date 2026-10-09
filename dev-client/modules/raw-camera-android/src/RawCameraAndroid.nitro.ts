@@ -89,6 +89,29 @@ export type CaptureSessionRequest = {
   // shot's (iso, shutterNs) are applied together. Empty list is OK
   // (burst-only session).
   manualShots: SessionShot[];
+  // Exposure bracket derived FROM the burst's locked exposure. After
+  // the AE-locked burst settles on an (iso, shutter), the session fires
+  // manual shots at `shutter × multiplier` (iso held at the burst's
+  // value) for each multiplier here. Multipliers are linear light
+  // ratios: 0.5 = −1 stop, 0.25 = −2, 2 = +1, 4 = +2, 0.71 ≈ −0.5.
+  // This is PRECISE in both directions and — unlike AE compensation,
+  // which the Pixel caps at its ~1/40 preview shutter — can actually
+  // brighten the RAW (longer manual shutter). Brighter multipliers are
+  // clamped to the sensor's max exposure time; the filename records the
+  // ACTUAL (post-clamp) shutter. Requires burstCount > 0 (the bracket
+  // has nothing to derive from otherwise); ignored when empty/omitted.
+  // See docs/munsell-multishot.md.
+  bracketMultipliers?: number[];
+  // How many frames to fire at EACH bracket multiplier (replicates for
+  // noise averaging). 0 or omitted → no bracket. The burst itself is
+  // the ×1 level, so it isn't repeated here.
+  bracketFramesPerLevel?: number;
+  // Progress callback, invoked once as EACH shot finishes writing, with
+  // the 1-based count completed so far and the session total. Lets the UI
+  // show "n / m" during the ~25s session so the user knows it's alive.
+  // Invoked from a background (capture) thread — the JS handler should do
+  // nothing but a setState (RN marshals it to the JS thread safely).
+  onProgress?: (completed: number, total: number) => void;
   // Optional user-set metadata baked into filenames + session.json.
   // All context fields optional; whatever's set becomes part of the
   // filename tokens. When omitted, filenames fall back to the minimal

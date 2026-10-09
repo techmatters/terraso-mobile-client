@@ -258,7 +258,7 @@ object CameraSessionManager {
                 sessionTotal = 0,
                 deviceSlug = deviceSlug(),
                 contextTokens = emptyList(),
-            ).first
+            ).photo
         }
 
     // Capture N frames in rapid succession with AE + AWB locked so all
@@ -290,7 +290,7 @@ object CameraSessionManager {
                             sessionTotal = 0,
                             deviceSlug = device,
                             contextTokens = emptyList(),
-                        ).first
+                        ).photo
                     )
                 }
             } finally {
@@ -326,21 +326,37 @@ object CameraSessionManager {
         mutex.withLock {
             val burstCount = request.burstCount.toInt()
             val manualShots = request.manualShots
+            val bracketMultipliers = request.bracketMultipliers ?: DoubleArray(0)
+            val bracketFrames = (request.bracketFramesPerLevel ?: 0.0).toInt()
             require(burstCount in 0..20) { "captureSession: burstCount must be 0..20, got $burstCount" }
             require(manualShots.size <= 20) { "captureSession: too many manual shots (max 20)" }
+            require(bracketMultipliers.size <= 12) { "captureSession: too many bracket multipliers (max 12)" }
+            require(bracketFrames in 0..10) { "captureSession: bracketFramesPerLevel must be 0..10, got $bracketFrames" }
             require(burstCount > 0 || manualShots.isNotEmpty()) {
                 "captureSession: nothing to shoot"
             }
+            // The bracket derives from the burst's locked exposure, so it
+            // needs a burst to measure. If a bracket was requested with no
+            // burst, we simply skip it (logged) rather than fail the whole
+            // session.
+            val bracketEnabled =
+                burstCount > 0 && bracketFrames > 0 && bracketMultipliers.isNotEmpty()
+            if (!bracketEnabled && bracketFrames > 0 && bracketMultipliers.isNotEmpty() && burstCount == 0) {
+                Log.w(TAG, "captureSession: bracket requested but burstCount==0 — skipping bracket")
+            }
+            val bracketShotCount =
+                if (bracketEnabled) bracketMultipliers.size * bracketFrames else 0
             val sessionStamp = timestampNowCompact()
             val sessionSubdir = "session_$sessionStamp"
             val context = request.context
             val device = deviceSlug()
             val contextTokens = buildSessionContextTokens(context)
-            val totalShots = burstCount + manualShots.size
+            val totalShots = burstCount + manualShots.size + bracketShotCount
             Log.i(
                 TAG,
                 "captureSession: starting subdir=$sessionSubdir burst=$burstCount manual=${manualShots.size} " +
-                    "device=$device ctx=$contextTokens",
+                    "bracket=${if (bracketEnabled) "${bracketMultipliers.size}×$bracketFrames" else "none"} " +
+                    "total=$totalShots device=$device ctx=$contextTokens",
             )
             val results = ArrayList<CapturedPhoto>(totalShots)
             // Per-shot structured metadata accumulator for session.json.
@@ -349,12 +365,30 @@ object CameraSessionManager {
                 if (shotJsonEntries.isNotEmpty()) shotJsonEntries.append(",\n")
                 shotJsonEntries.append(json)
             }
+            // Running sequence number across burst → manual → bracket so
+            // filenames sort in capture order regardless of shot kind.
+            var seq = 0
+            // The exposure the AE locked onto for the burst. Captured from
+            // the FIRST burst frame's TotalCaptureResult and used as the
+            // ×1 anchor for the derived bracket below.
+            var lockedIso: Int? = null
+            var lockedShutterNs: Long? = null
+            // Best-effort JS progress callback, fired after each shot lands
+            // so the UI can show "seq / total" during the long session.
+            val onProgress = request.onProgress
+            fun reportProgress() {
+                try {
+                    onProgress?.invoke(seq.toDouble(), totalShots.toDouble())
+                } catch (e: Throwable) {
+                    Log.w(TAG, "captureSession: onProgress callback threw", e)
+                }
+            }
             try {
                 // Auto-AE burst first.
                 for (i in 1..burstCount) {
                     Log.i(TAG, "captureSession: burst frame $i/$burstCount")
-                    val seq = i
-                    val (photo, shotJson) = captureLocked(
+                    seq++
+                    val outcome = captureLocked(
                         options = CaptureOptions(null, null, null, null),
                         burstStamp = sessionStamp,
                         burstIdx = i,
@@ -365,10 +399,19 @@ object CameraSessionManager {
                         deviceSlug = device,
                         contextTokens = contextTokens,
                     )
-                    results.add(photo)
-                    appendShotJson(shotJson)
+                    results.add(outcome.photo)
+                    appendShotJson(outcome.shotJson)
+                    reportProgress()
+                    if (i == 1) {
+                        lockedIso = outcome.actual.iso
+                        lockedShutterNs = outcome.actual.shutterNs
+                        Log.i(
+                            TAG,
+                            "captureSession: burst locked exposure iso=$lockedIso shutterNs=$lockedShutterNs",
+                        )
+                    }
                 }
-                // Manual sweep.
+                // Manual sweep (explicit caller-supplied shots).
                 for ((mIdx, shot) in manualShots.withIndex()) {
                     Log.i(
                         TAG,
@@ -385,8 +428,8 @@ object CameraSessionManager {
                         sensorSensitivity = shot.sensorSensitivity,
                         skipJpeg = null,
                     )
-                    val seq = burstCount + mIdx + 1
-                    val (photo, shotJson) = captureLocked(
+                    seq++
+                    val outcome = captureLocked(
                         options = opts,
                         burstStamp = sessionStamp,
                         burstIdx = 0, // 0 = not a burst frame; distinguishes manual shots
@@ -397,8 +440,67 @@ object CameraSessionManager {
                         deviceSlug = device,
                         contextTokens = contextTokens,
                     )
-                    results.add(photo)
-                    appendShotJson(shotJson)
+                    results.add(outcome.photo)
+                    appendShotJson(outcome.shotJson)
+                    reportProgress()
+                }
+                // Derived exposure bracket. Each multiplier scales the
+                // burst's locked shutter (iso held) — a manual shot, so AE
+                // is off and the exposure is exactly what we ask for (up to
+                // the sensor's max-exposure clamp for the brightest levels).
+                if (bracketEnabled && lockedShutterNs != null && lockedIso != null) {
+                    val baseShutter = lockedShutterNs!!
+                    val baseIso = lockedIso!!
+                    val expRange = boundCharacteristics?.get(
+                        CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE
+                    )
+                    for (mult in bracketMultipliers) {
+                        if (mult <= 0.0) {
+                            Log.w(TAG, "captureSession: skipping non-positive bracket multiplier $mult")
+                            continue
+                        }
+                        val stops = Math.log(mult) / Math.log(2.0)
+                        val target = Math.round(baseShutter * mult)
+                        val clamped =
+                            if (expRange != null) target.coerceIn(expRange.lower, expRange.upper)
+                            else target
+                        if (clamped != target) {
+                            Log.w(
+                                TAG,
+                                "captureSession: bracket ×$mult shutter ${target}ns clamped to " +
+                                    "${clamped}ns (sensor limit) — level loses some of its stop",
+                            )
+                        }
+                        for (rep in 1..bracketFrames) {
+                            Log.i(
+                                TAG,
+                                "captureSession: bracket ×$mult (${"%.2f".format(Locale.US, stops)} stops) " +
+                                    "rep $rep/$bracketFrames shutterNs=$clamped iso=$baseIso",
+                            )
+                            val opts = CaptureOptions(
+                                aeCompensation = null,
+                                sensorExposureTimeNs = clamped.toDouble(),
+                                sensorSensitivity = baseIso.toDouble(),
+                                skipJpeg = null,
+                            )
+                            seq++
+                            val outcome = captureLocked(
+                                options = opts,
+                                burstStamp = sessionStamp,
+                                burstIdx = 0,
+                                burstTotal = 0,
+                                sessionSubdir = sessionSubdir,
+                                sessionSeq = seq,
+                                sessionTotal = totalShots,
+                                deviceSlug = device,
+                                contextTokens = contextTokens,
+                                bracketInfo = BracketInfo(stops, rep, bracketFrames),
+                            )
+                            results.add(outcome.photo)
+                            appendShotJson(outcome.shotJson)
+                            reportProgress()
+                        }
+                    }
                 }
             } finally {
                 resetCameraStateLocked()
@@ -469,7 +571,11 @@ object CameraSessionManager {
         sessionTotal: Int,
         deviceSlug: String,
         contextTokens: List<String>,
-    ): Pair<CapturedPhoto, String> {
+        // Non-null only for derived exposure-bracket shots (session
+        // mode): carries the true stop offset + replicate index so the
+        // filename / session.json self-label the bracket level.
+        bracketInfo: BracketInfo? = null,
+    ): CaptureOutcome {
         Log.i(
             TAG,
             "captureLocked: entered opts=$options burst=$burstIdx/$burstTotal session=$sessionSubdir",
@@ -646,6 +752,7 @@ object CameraSessionManager {
                         actual = actual,
                         burstIdx = burstIdx,
                         burstTotal = burstTotal,
+                        bracketInfo = bracketInfo,
                     )
                     val jpegPath: String? =
                         if (jpegSaveOk) {
@@ -671,8 +778,9 @@ object CameraSessionManager {
                         burstTotal = burstTotal,
                         options = effectiveOptions,
                         actual = actual,
+                        bracketInfo = bracketInfo,
                     )
-                    Pair(photo, shotJson)
+                    CaptureOutcome(photo, shotJson, actual)
                 } else {
                     // Non-session (single-shot / plain burst / cacheDir).
                     val stem = nonSessionStem!!
@@ -684,7 +792,7 @@ object CameraSessionManager {
                     val dngFile = File(context.cacheDir, "$stem.dng")
                     val photo = writeDngFile(image, characteristics, totalResult, dngFile, jpegPath)
                     image.close()
-                    Pair(photo, "")
+                    CaptureOutcome(photo, "", extractActualSensorParams(totalResult))
                 }
             }
         } finally {
@@ -1440,6 +1548,7 @@ object CameraSessionManager {
         actual: ActualSensorParams,
         burstIdx: Int,
         burstTotal: Int,
+        bracketInfo: BracketInfo? = null,
     ): String {
         val parts = mutableListOf<String>()
         // Zero-pad seq so lexical sort matches capture order for
@@ -1448,8 +1557,18 @@ object CameraSessionManager {
         parts.add(seq.toString().padStart(seqWidth, '0'))
         parts.add(deviceSlug)
         parts.addAll(contextTokens)
-        val kind = if (burstTotal > 1) "auto" else if (options.sensorSensitivity != null) "manual" else "auto"
+        val kind =
+            if (bracketInfo != null) "bracket"
+            else if (burstTotal > 1) "auto"
+            else if (options.sensorSensitivity != null) "manual"
+            else "auto"
         parts.add(kind)
+        // Bracket level: the TRUE stop offset from the burst's locked
+        // exposure (ev-1 / ev+1 / ev-0.5 …) plus the replicate index.
+        bracketInfo?.let {
+            parts.add("ev" + formatSignedStops(it.stops))
+            if (it.repTotal > 1) parts.add("rep${it.repIdx}of${it.repTotal}")
+        }
         actual.iso?.let { parts.add("iso$it") }
         actual.shutterNs?.let { parts.add("shut${formatShutter(it)}") }
         if (burstTotal > 1) parts.add("burst${burstIdx}of${burstTotal}")
@@ -1496,6 +1615,26 @@ object CameraSessionManager {
         val awbMode: Int?,
         val awbLocked: Boolean,
         val aeLocked: Boolean,
+    )
+
+    // What captureLocked hands back: the photo, this shot's session.json
+    // entry (empty string for non-session shots), and the sensor params
+    // the shot actually resolved to (so captureSession can anchor the
+    // derived bracket on the burst's locked exposure).
+    private data class CaptureOutcome(
+        val photo: CapturedPhoto,
+        val shotJson: String,
+        val actual: ActualSensorParams,
+    )
+
+    // Label for one derived exposure-bracket shot. `stops` is the TRUE
+    // stop offset from the burst's locked exposure (log2 of the shutter
+    // multiplier) — distinct from AE-compensation EV, which the Pixel
+    // caps. repIdx/repTotal track replicate frames at the same level.
+    private data class BracketInfo(
+        val stops: Double,
+        val repIdx: Int,
+        val repTotal: Int,
     )
 
     private fun extractActualSensorParams(r: TotalCaptureResult): ActualSensorParams =
@@ -1562,8 +1701,13 @@ object CameraSessionManager {
         burstTotal: Int,
         options: CaptureOptions,
         actual: ActualSensorParams,
+        bracketInfo: BracketInfo? = null,
     ): String {
-        val kind = if (burstTotal > 1) "auto_burst" else if (options.sensorSensitivity != null) "manual" else "auto_single"
+        val kind =
+            if (bracketInfo != null) "bracket"
+            else if (burstTotal > 1) "auto_burst"
+            else if (options.sensorSensitivity != null) "manual"
+            else "auto_single"
         val requested = buildString {
             append('{')
             options.aeCompensation?.let { append("\"ae_comp_idx\":").append(it.toInt()).append(',') }
@@ -1586,7 +1730,12 @@ object CameraSessionManager {
         val burstJson =
             if (burstTotal > 1) ",\"burst_idx\":$burstIdx,\"burst_total\":$burstTotal"
             else ""
-        return "{\"filename\":\"$stem\",\"kind\":\"$kind\"$burstJson,\"requested\":$requested,\"actual\":$actualJson}"
+        val bracketJson =
+            bracketInfo?.let {
+                ",\"bracket_stops\":${"%.4f".format(Locale.US, it.stops)}" +
+                    ",\"bracket_rep\":${it.repIdx},\"bracket_rep_total\":${it.repTotal}"
+            } ?: ""
+        return "{\"filename\":\"$stem\",\"kind\":\"$kind\"$burstJson$bracketJson,\"requested\":$requested,\"actual\":$actualJson}"
     }
 
     // Write session.json (and note.txt if the user typed one) into the
@@ -1697,8 +1846,16 @@ object CameraSessionManager {
     //   idx -3 → "-1"
     private fun formatEv(idx: Int, stepNum: Int, stepDen: Int): String {
         if (idx == 0) return "0"
-        val evStops = idx.toDouble() * stepNum / stepDen
-        val rounded = Math.round(evStops * 100.0) / 100.0
+        return formatSignedStops(idx.toDouble() * stepNum / stepDen)
+    }
+
+    // Format a stop offset as a signed string, up to two decimals with
+    // trailing zeros dropped. Examples: 0.0→"0", 1.0→"+1", -1.0→"-1",
+    // -0.5→"-0.5", 0.33→"+0.33". Shared by formatEv (AE-comp labels) and
+    // the derived-bracket stem/JSON.
+    private fun formatSignedStops(stops: Double): String {
+        val rounded = Math.round(stops * 100.0) / 100.0
+        if (rounded == 0.0) return "0"
         val body =
             if (rounded == rounded.toLong().toDouble()) {
                 rounded.toLong().toString()

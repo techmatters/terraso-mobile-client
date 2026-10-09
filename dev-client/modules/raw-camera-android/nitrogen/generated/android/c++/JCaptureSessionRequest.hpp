@@ -10,10 +10,13 @@
 #include <fbjni/fbjni.h>
 #include "CaptureSessionRequest.hpp"
 
+#include "JFunc_void_double_double.hpp"
 #include "JSessionContext.hpp"
 #include "JSessionShot.hpp"
 #include "SessionContext.hpp"
 #include "SessionShot.hpp"
+#include <NitroModules/JNICallable.hpp>
+#include <functional>
 #include <optional>
 #include <string>
 #include <vector>
@@ -41,6 +44,12 @@ namespace margelo::nitro::rawcameraandroid {
       double burstCount = this->getFieldValue(fieldBurstCount);
       static const auto fieldManualShots = clazz->getField<jni::JArrayClass<JSessionShot>>("manualShots");
       jni::local_ref<jni::JArrayClass<JSessionShot>> manualShots = this->getFieldValue(fieldManualShots);
+      static const auto fieldBracketMultipliers = clazz->getField<jni::JArrayDouble>("bracketMultipliers");
+      jni::local_ref<jni::JArrayDouble> bracketMultipliers = this->getFieldValue(fieldBracketMultipliers);
+      static const auto fieldBracketFramesPerLevel = clazz->getField<jni::JDouble>("bracketFramesPerLevel");
+      jni::local_ref<jni::JDouble> bracketFramesPerLevel = this->getFieldValue(fieldBracketFramesPerLevel);
+      static const auto fieldOnProgress = clazz->getField<JFunc_void_double_double::javaobject>("onProgress");
+      jni::local_ref<JFunc_void_double_double::javaobject> onProgress = this->getFieldValue(fieldOnProgress);
       static const auto fieldContext = clazz->getField<JSessionContext>("context");
       jni::local_ref<JSessionContext> context = this->getFieldValue(fieldContext);
       return CaptureSessionRequest(
@@ -55,6 +64,22 @@ namespace margelo::nitro::rawcameraandroid {
           }
           return __vector;
         }(manualShots),
+        bracketMultipliers != nullptr ? std::make_optional([&]() {
+          size_t __size = bracketMultipliers->size();
+          std::vector<double> __vector(__size);
+          bracketMultipliers->getRegion(0, __size, __vector.data());
+          return __vector;
+        }()) : std::nullopt,
+        bracketFramesPerLevel != nullptr ? std::make_optional(bracketFramesPerLevel->value()) : std::nullopt,
+        onProgress != nullptr ? std::make_optional([&]() -> std::function<void(double /* completed */, double /* total */)> {
+          if (onProgress->isInstanceOf(JFunc_void_double_double_cxx::javaClassStatic())) [[likely]] {
+            auto downcast = jni::static_ref_cast<JFunc_void_double_double_cxx::javaobject>(onProgress);
+            return downcast->cthis()->getFunction();
+          } else {
+            auto onProgressRef = jni::make_global(onProgress);
+            return JNICallable<JFunc_void_double_double, void(double, double)>(std::move(onProgressRef));
+          }
+        }()) : std::nullopt,
         context != nullptr ? std::make_optional(context->toCpp()) : std::nullopt
       );
     }
@@ -65,7 +90,7 @@ namespace margelo::nitro::rawcameraandroid {
      */
     [[maybe_unused]]
     static jni::local_ref<JCaptureSessionRequest::javaobject> fromCpp(const CaptureSessionRequest& value) {
-      using JSignature = JCaptureSessionRequest(double, jni::alias_ref<jni::JArrayClass<JSessionShot>>, jni::alias_ref<JSessionContext>);
+      using JSignature = JCaptureSessionRequest(double, jni::alias_ref<jni::JArrayClass<JSessionShot>>, jni::alias_ref<jni::JArrayDouble>, jni::alias_ref<jni::JDouble>, jni::alias_ref<JFunc_void_double_double::javaobject>, jni::alias_ref<JSessionContext>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
@@ -81,6 +106,14 @@ namespace margelo::nitro::rawcameraandroid {
           }
           return __array;
         }(value.manualShots),
+        value.bracketMultipliers.has_value() ? [&]() {
+          size_t __size = value.bracketMultipliers.value().size();
+          jni::local_ref<jni::JArrayDouble> __array = jni::JArrayDouble::newArray(__size);
+          __array->setRegion(0, __size, value.bracketMultipliers.value().data());
+          return __array;
+        }() : nullptr,
+        value.bracketFramesPerLevel.has_value() ? jni::JDouble::valueOf(value.bracketFramesPerLevel.value()) : nullptr,
+        value.onProgress.has_value() ? JFunc_void_double_double_cxx::fromCpp(value.onProgress.value()) : nullptr,
         value.context.has_value() ? JSessionContext::fromCpp(value.context.value()) : nullptr
       );
     }

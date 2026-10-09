@@ -172,6 +172,35 @@ patch. It did not arise in this (controlled) dataset.
 What *does* pay off from multi-shot: **averaging several same-exposure
 frames** (burst) for noise (§4) — distinct from bracketing.
 
+## 6b. AE exposure compensation can't drive a bracket on the Pixel (measured)
+
+Pixel 6a test (indoor LED, one MULTI session, 22 DNGs, read back via
+`exiftool` ExposureTime×ISO vs the burst baseline):
+
+| requested AE comp | measured RAW offset | shutter behaviour |
+|---|---|---|
+| −2 EV | **−3.4 stops** | shortens freely (overshoots) |
+| −1 EV | **−1.9 stops** | shortens freely (overshoots) |
+| +1 EV | **≈ 0** (0.95×) | shutter *shortens* 1/40→1/60, ISO nudges up — nets flat |
+| +2 EV | **+0.3 stop** | shutter pinned at 1/40, tiny ISO bump |
+
+Two takeaways:
+
+- **Darker works but overshoots** (the index→stops mapping / AE metering
+  roughly doubles the requested stops), so AE comp is imprecise.
+- **Brighter does not reach the RAW at all.** The AE refuses to lengthen the
+  shutter past its ~1/40 preview ceiling, so it cannot add light — it only
+  trades shutter for ISO. +1/+2 EV frames came back as near-duplicates of the
+  baseline.
+
+**Consequence:** the research bracket is now **derived from the burst's
+locked exposure as manual shutter multipliers** (`shutter × 2^stops`, ISO
+held) instead of AE comp — precise in both directions, and brighter levels
+genuinely add photons via a longer manual shutter (clamped at the sensor's
+max exposure time). See docs/munsell-multishot.md. For shadow noise,
+remember averaging the ×1 burst (√N) beats a single brighter frame (§4) and
+doesn't clip; brighter levels are for *stacking on top of* that.
+
 ## 7. Bad captures
 
 `~/Downloads/munsell0826/bad-captures.csv` lists flagged

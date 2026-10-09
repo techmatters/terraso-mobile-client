@@ -26,15 +26,31 @@ data class CaptureSessionRequest(
   val manualShots: Array<SessionShot>,
   @DoNotStrip
   @Keep
+  val bracketMultipliers: DoubleArray?,
+  @DoNotStrip
+  @Keep
+  val bracketFramesPerLevel: Double?,
+  @DoNotStrip
+  @Keep
+  val onProgress: Func_void_double_double?,
+  @DoNotStrip
+  @Keep
   val context: SessionContext?
 ) {
-  /* primary constructor */
+  /**
+   * Create a new instance of CaptureSessionRequest from Kotlin
+   */
+  constructor(burstCount: Double, manualShots: Array<SessionShot>, bracketMultipliers: DoubleArray?, bracketFramesPerLevel: Double?, onProgress: ((completed: Double, total: Double) -> Unit)?, context: SessionContext?):
+         this(burstCount, manualShots, bracketMultipliers, bracketFramesPerLevel, onProgress?.let { Func_void_double_double_java(it) }, context)
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is CaptureSessionRequest) return false
     return Objects.deepEquals(this.burstCount, other.burstCount)
       && Objects.deepEquals(this.manualShots, other.manualShots)
+      && Objects.deepEquals(this.bracketMultipliers, other.bracketMultipliers)
+      && Objects.deepEquals(this.bracketFramesPerLevel, other.bracketFramesPerLevel)
+      && Objects.deepEquals(this.onProgress, other.onProgress)
       && Objects.deepEquals(this.context, other.context)
   }
 
@@ -42,6 +58,9 @@ data class CaptureSessionRequest(
     return arrayOf<Any?>(
       burstCount,
       manualShots,
+      bracketMultipliers,
+      bracketFramesPerLevel,
+      onProgress,
       context
     ).contentDeepHashCode()
   }
@@ -54,8 +73,8 @@ data class CaptureSessionRequest(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(burstCount: Double, manualShots: Array<SessionShot>, context: SessionContext?): CaptureSessionRequest {
-      return CaptureSessionRequest(burstCount, manualShots, context)
+    private fun fromCpp(burstCount: Double, manualShots: Array<SessionShot>, bracketMultipliers: DoubleArray?, bracketFramesPerLevel: Double?, onProgress: Func_void_double_double?, context: SessionContext?): CaptureSessionRequest {
+      return CaptureSessionRequest(burstCount, manualShots, bracketMultipliers, bracketFramesPerLevel, onProgress, context)
     }
   }
 }
