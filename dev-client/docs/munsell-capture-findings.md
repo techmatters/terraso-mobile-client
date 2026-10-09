@@ -250,3 +250,35 @@ fixture×format units with a reason, so a few can be pulled into
 - Collect more Pixel 4 (n=13) before trusting its numbers.
 - Illumination-evenness bar chart in `run.html` still uses a comparability
   scale; a per-capture adaptive scale is a pending nicety (not blocking).
+- Dominant algorithm: the Swift paths downscale each ROI to ≤256px before
+  the (shared C++) median-cut; the Android C++ path uses all pixels. Since
+  median-cut bins to a coarse 5-bit histogram this is assumed negligible, so
+  the downscale is left as-is rather than unified. Also, "5 vboxes" is a
+  tunable constant, not a principled stop — an adaptive stop (split until box
+  variance/share stabilises) is worth trying via the offline histogram tool.
+
+## Device & reference-card notes
+
+- **Why iPhone beats Pixel — two separate effects.** (1) *Reference match*:
+  iPhone's sensor renders the reference cards closer to the hardcoded
+  "true" values than Pixel's does, so WB-from-a-card is more accurate on
+  iPhone. (2) *Irreducible floor*: even with the `self` anchor (an on-chart
+  neutral — removes the WB-reference error, and a mid chip doesn't clip),
+  iPhone still beats Pixel 7 **3.3 vs 5.4 ΔE**. That ~2 ΔE residual is
+  sensor + colour-science quality: Apple's computational/ProRAW pipeline
+  (via CIRAWFilter) is cleaner and better colour-characterised than Pixel's
+  rawer DNG readout decoded through our C++ matrix.
+- **Why postit is catastrophic on Pixel (18) but OK on iPhone (8).** The
+  Post-it is a *saturated* yellow, and saturated colours are rendered very
+  differently by sensors with different spectral response / colour matrices
+  (measured postit B:R is 0.64 on iPhone vs 0.44 on Pixel 7). WB anchored on
+  a single hardcoded value (`POST_IT_YELLOW = 0.9542, 0.887, 0.362`) can't be
+  right for both; it's biased for Pixel, so Pixel's postit-WB is badly off.
+  `scripts/calibrate-ref-card.mjs` was built to quantify exactly this
+  disagreement. Lesson: never WB off a saturated reference — use a neutral
+  (grey/WhiBal), which all sensors agree on and which stays device-robust.
+- **"other" device = iPhone.** The viewer buckets device by path/filename
+  token; the iPhone multi-ref captures live in a `…/RAW Images/` folder with
+  filenames like `10R_RAW_light_multi.dng` (no device slug), so they fall to
+  "other" — but their metadata model is `iPhone 16 Pro Max`. Fix (optional):
+  have `deviceOf` prefer `image_metadata.model` when present.
