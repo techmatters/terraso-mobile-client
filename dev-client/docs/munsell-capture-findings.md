@@ -231,11 +231,20 @@ fixture×format units with a reason, so a few can be pulled into
   robustness payoff here. Dominant's advantage only shows on **non-uniform**
   ROIs (textured soil, specular flecks, partial card coverage), which this
   validation chart doesn't have — so the chart can't demonstrate it, and
-  **mean stays the default** for chip validation. Caveat: dominant is
-  **RAW-only** in the analyzer (the photo/CIImage path leaves it null and
-  falls back to mean), so toggling mean↔dominant shows no change on JPEG.
-  If we want to evaluate dominant on the photo path, that needs a median-cut
-  added to `decodePhotoRois`.
+  **mean stays the default** for chip validation.
+- ~~JPEG dominant~~ **Added + measured.** The Swift photo path now computes
+  a real median-cut dominant (for raw-less cameras). On JPEG it's **also
+  marginally worse than mean** (6.79 vs 6.74) — same quantisation story as
+  RAW. So for raw-less cameras, **JPEG mean** is the right default.
+- ~~Soft-dominant reducer idea~~ **Framework built; converges on chips.**
+  `analyze-fixtures --emit-histograms` now emits a per-ROI colour histogram
+  (`raw_histogram`), and `scripts/munsell-reducer-experiment.js` reconstructs
+  any reducer (mean / mode / soft-dominant variants / median-cut) from it and
+  compares ΔE — no re-decode needed. On the current uniform chips **every
+  reducer converges to ~6.6–6.8 ΔE**: soft-dominant reverts to mean because a
+  pure chip is a single colour cluster. The experiment only discriminates on
+  **textured real-soil captures** (multi-cluster patches) — capture some with
+  a reference patch and re-run the script to actually test soft-dominant.
 - **Characterise the field grey/WhiBal card** (spectral neutrality + grey
   level) so its WB residual is understood; a too-light card clips in sun.
 - Collect more Pixel 4 (n=13) before trusting its numbers.
