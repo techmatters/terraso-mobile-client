@@ -188,14 +188,18 @@ fixture×format units with a reason, so a few can be pulled into
 
 ## Android capture — options still worth exploring
 
-- **Drop clipped pixels inside the reducer.** When a chip has only a *few*
-  saturated pixels (specular fleck, partial highlight), excluding any pixel
-  with a maxed channel before the mean/median-cut should improve that
-  chip's estimate. Cheap to add to the reduction loop (compute both ways
-  and compare). Won't recover a *fully* clipped chip — nothing can — so the
-  gain is on borderline chips. Needs a re-decode to test (per-pixel data
-  isn't in run.json); a filtered re-run on the clipped captures is a quick
-  first check.
+- ~~Drop clipped pixels inside the reducer.~~ **Implemented + measured — not
+  worth it.** The reducer now computes clipped-pixel-excluded siblings of
+  both mean and dominant (`raw_linear_rgb_noclip` /
+  `raw_linear_rgb_dominant_noclip`, exposed as reducer options in
+  `munsell-error.html`). On the full dataset it's **a wash, even slightly
+  negative**: over the cells that actually clip, median ΔE goes 8.01→8.06
+  (mean) and 12.03→12.22 (dominant), and only ~39% of clipped cells improve.
+  The big win I first reported (31.6→26.3) was a biased subset — only the
+  *severely* over-exposed `manual,lightshade` shots. So excluding clipped
+  pixels helps only badly-blown captures (which shouldn't be taken) and
+  mildly *hurts* elsewhere (fewer pixels = noisier estimate). Confirms the
+  real fix is to **not clip** (§2), not to post-process clipped pixels.
 - **Low-ISO-on-a-tripod vs high-ISO handheld burst.** Noise ∝ 1/√(total
   photons), so a single long low-ISO exposure and N short high-ISO frames
   reach similar SNR at similar total integration time. The per-ROI averaging
@@ -217,13 +221,23 @@ fixture×format units with a reason, so a few can be pulled into
 - ~~Make `dominant` real on iOS RAW~~ **Done**: the standalone `dng-cli`
   now links the shared C++ median-cut (`dngcli_dominant_linear_rgb`) and
   computes a real dominant on the Apple CIRAWFilter path, matching the app
-  + Android. Re-run the analyzer to populate it into `run.json`. (Note:
-  where dominant is real, it was marginally *worse* than mean — 10.3 vs
-  8.7 on Android — so mean stays the default until proven otherwise.)
+  + Android.
+- **Reducer: mean beats dominant on this data — and that's expected.**
+  Across devices, `dominant` is ~0.7 ΔE *worse* than `mean` (iPhone RAW
+  5.9→6.6, Pixel 7 9.8→10.6). Munsell chips are flat, uniform patches, so
+  `mean` is the precise average while median-cut bins into a coarse 5-bit
+  histogram and returns the biggest cluster's centroid — a quantisation
+  *jitter* (~0.011/channel, ~0 luminance bias), pure noise with no
+  robustness payoff here. Dominant's advantage only shows on **non-uniform**
+  ROIs (textured soil, specular flecks, partial card coverage), which this
+  validation chart doesn't have — so the chart can't demonstrate it, and
+  **mean stays the default** for chip validation. Caveat: dominant is
+  **RAW-only** in the analyzer (the photo/CIImage path leaves it null and
+  falls back to mean), so toggling mean↔dominant shows no change on JPEG.
+  If we want to evaluate dominant on the photo path, that needs a median-cut
+  added to `decodePhotoRois`.
 - **Characterise the field grey/WhiBal card** (spectral neutrality + grey
   level) so its WB residual is understood; a too-light card clips in sun.
-- Try **clipped-pixel exclusion** in the reducer (above) on a filtered
-  re-run.
 - Collect more Pixel 4 (n=13) before trusting its numbers.
 - Illumination-evenness bar chart in `run.html` still uses a comparability
   scale; a per-capture adaptive scale is a pending nicety (not blocking).
