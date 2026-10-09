@@ -121,11 +121,19 @@ type Sample = {
   illumination: string;
 };
 
-// Recognise device from either the directory path (legacy fixtures
-// organised by device folder) OR the enriched-filename token (e.g.
-// `pixel6a`, `pixel7`, `iphone14pro`). Path wins when both are set
-// because it's the more explicit categorisation for existing batches.
-const deviceOf = (p: string): string => {
+// Recognise device from the camera model (image_metadata.model) when
+// present — the most reliable signal, since some batches live in
+// device-agnostic folders with no device token in the path/filename
+// (e.g. the multi-ref iPhone DNGs under `…/RAW Images/`, which otherwise
+// fall to "other"). Falls back to the directory path OR the enriched-
+// filename token (`pixel6a`, `pixel7`, `iphone14pro`).
+const deviceOf = (p: string, model?: string | null): string => {
+  if (model) {
+    if (/iphone/i.test(model)) return 'iPhone';
+    const pm = model.match(/pixel\s*(\d+[a-z]*)/i);
+    if (pm) return 'Pixel ' + pm[1].toLowerCase();
+    return model;
+  }
   if (p.includes('iPhone')) return 'iPhone';
   if (p.includes('Pixel 4')) return 'Pixel 4';
   if (p.includes('Pixel 6a')) return 'Pixel 6a';
@@ -286,7 +294,7 @@ for (const cap of runDoc.captures) {
       tags: cap.environment?.tags ?? [],
       fixtureLabel: cap.label ?? '',
       format,
-      device: deviceOf(sourcePath),
+      device: deviceOf(sourcePath, cap.image_metadata?.model),
       bg: bgOf(sourcePath),
       illumUnevenness,
       expectedRgb: cell.expected_linear_rgb,
