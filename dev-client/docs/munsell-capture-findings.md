@@ -280,5 +280,32 @@ fixture×format units with a reason, so a few can be pulled into
 - **"other" device = iPhone.** The viewer buckets device by path/filename
   token; the iPhone multi-ref captures live in a `…/RAW Images/` folder with
   filenames like `10R_RAW_light_multi.dng` (no device slug), so they fall to
-  "other" — but their metadata model is `iPhone 16 Pro Max`. Fix (optional):
-  have `deviceOf` prefer `image_metadata.model` when present.
+  "other" — but their metadata model is `iPhone 16 Pro Max`. **Fixed:**
+  `deviceOf` now prefers `image_metadata.model`.
+
+## Intrinsic color science — can a per-device profile help? (No, not here)
+
+Tested fitting a per-device color correction (3×3, 3×3+offset, degree-2
+root-polynomial) that maps measured → true Munsell, trained on half the
+captures and evaluated on the held-out half
+(`scripts/munsell-color-correction-experiment.js`). Result, median ΔE:
+
+| WB anchor | iPhone base → best | Pixel 7 base → best |
+|---|---|---|
+| greycard | 8.6 → **5.8** | 8.0 → 8.0 |
+| self (ideal) | 3.6 → 3.6 | 4.6 → 4.6 |
+
+**A per-device matrix does not fix intrinsic color science once WB is good.**
+The iPhone gain in the greycard row is the matrix *partially re-doing the
+white balance* (greycard WB is imperfect) — with a proper in-scene neutral
+(`self`) there's no systematic bias left, so the matrix (and the root-poly)
+add nothing (3.6→3.6, 4.6→4.6). The self-anchor floor is therefore
+**scatter** — sensor noise, demosaic, per-chip metamerism — not a correctable
+linear transform. A fitted profile is just a worse substitute for good WB
+(the neutral's 3.6 beats the matrix's 5.8). Adobe's DCP tables would likely
+be no different here (and the phone DNG already carries the manufacturer
+matrix we apply); their nonlinear `HueSatMap` could matter only if real soil
+shows **per-hue structured** error, which the chart's narrow gamut can't
+show. Levers for the floor stay: in-scene neutral WB, don't clip, and
+**burst-average to cut noise**. Caveat: single global matrix on a narrow
+gamut — a per-illuminant matrix or a wider color target could differ.
