@@ -2734,6 +2734,9 @@ const {values} = parseArgs({
     // reducer experiments. Off by default — it bloats run.json and only the
     // Swift (photo + iOS RAW) path computes it. Sets DNG_CLI_EMIT_HIST=1.
     'emit-histograms': {type: 'boolean'},
+    // Experimental A/B: force all raw decode through one pipeline.
+    // 'cpp' (our ForwardMatrix) | 'swift' (Apple CIRAWFilter).
+    'force-decoder': {type: 'string'},
   },
 });
 
@@ -2902,19 +2905,27 @@ const iosDecoder = new NodeDecoder(DNG_CLI);
 // Android DNGs — that would give "Apple decoding an Android
 // capture" results and invalidate the raw-vs-jpeg A/B measurement
 // that this whole pipeline exists to make.
+// Experimental: force EVERY raw fixture through one decoder regardless of
+// platform. 'cpp' = our C++ DNG pipeline (ForwardMatrix); 'swift' = Apple
+// CIRAWFilter. Lets us A/B the two pipelines on the same captures to split
+// "pipeline" from "sensor" in the iPhone-vs-Pixel gap. Default: platform-
+// native routing (iOS→Swift, Android→C++).
+const forceDecoder = values['force-decoder'] as 'cpp' | 'swift' | undefined;
 const hasAndroidFixture = fixtures.some(f => f.platform === 'android');
-if (hasAndroidFixture && !fs.existsSync(DNG_CLI_CPP)) {
+const needCpp = hasAndroidFixture || forceDecoder === 'cpp';
+if (needCpp && !fs.existsSync(DNG_CLI_CPP)) {
   die(
-    `Android fixtures detected but dng-cli-cpp not built at\n` +
-      `  ${DNG_CLI_CPP}\n` +
-      `Run: npm run build:dng-cli-cpp`,
+    `dng-cli-cpp not built at\n  ${DNG_CLI_CPP}\nRun: npm run build:dng-cli-cpp`,
   );
 }
-const androidDecoder = hasAndroidFixture
+const androidDecoder = needCpp
   ? new NodeDecoder(DNG_CLI_CPP, DNG_CLI, /*supportsBatch*/ true)
   : null;
-const decoderFor = (f: ParsedFixture) =>
-  f.platform === 'android' ? androidDecoder! : iosDecoder;
+const decoderFor = (f: ParsedFixture) => {
+  if (forceDecoder === 'swift') return iosDecoder;
+  if (forceDecoder === 'cpp') return androidDecoder!;
+  return f.platform === 'android' ? androidDecoder! : iosDecoder;
+};
 const captures: CaptureJsonEntry[] = [];
 const captureContexts: CaptureContext[] = [];
 let nSuccess = 0;

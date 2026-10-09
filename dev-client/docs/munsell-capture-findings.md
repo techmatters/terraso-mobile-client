@@ -213,6 +213,34 @@ fixture×format units with a reason, so a few can be pulled into
   (85%/WhiBal) reference card in bright sun. Combined with per-ROI fusion
   (§6) they recover any clipped patch without the downside.
 
+## Pipeline vs sensor — CIRAWFilter vs our C++
+
+Color pipelines: **iOS → Apple CIRAWFilter**; **Android → our C++ DNG
+pipeline** (WB ÷AsShotNeutral → **ForwardMatrix2** → Bradford D50→D65 → sRGB —
+spec-correct, deliberately *not* inverting ColorMatrix, which collapses to
+garbage for Pixel). All analysis values are post-embedded-matrix. The
+run.html *display* preview for Android is rendered by CIRAWFilter, not the
+C++ pipeline — cosmetic, but the picture ≠ the pixels the ΔE used.
+
+A/B via `analyze-fixtures --force-decoder swift|cpp` (runs every raw through
+one pipeline), self-anchor median ΔE:
+
+| | default (native) | force-swift (CIRAWFilter) |
+|---|---|---|
+| Pixel 7 | 4.40 (our C++) | 4.66 (CoreImage) |
+| iPhone | 3.67 | 3.67 |
+
+- **Our C++ ≈ (slightly better than) CoreImage on Pixel** (4.40 vs 4.66) — the
+  pipeline is correct; no reason to move Android to CoreImage.
+- **The iPhone→Pixel gap is the sensor, not the pipeline**: through the
+  *same* CIRAWFilter, iPhone still wins (3.67 vs 4.66). iPhone ProRAW arrives
+  already demosaiced + **denoised** + colour-processed (`AsShotNeutral
+  [1,1,1]`); Pixel's is a rawer Bayer file CIRAWFilter can't retro-fix. The
+  denoise head-start is the irreducible part → **burst-average on Android**.
+- Note: the C++ parser can't read iPhone ProRAW (`comp=7` lossless-JPEG), so
+  "iPhone through C++" isn't possible; the same-CIRAWFilter test is the clean
+  substitute.
+
 ## Open questions / next steps
 
 - ~~Validate ROI-space fusion~~ **Done** (§6): no ΔE benefit on this data
