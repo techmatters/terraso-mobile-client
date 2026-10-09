@@ -81,17 +81,22 @@ const SHUTTER_PRESETS_NS = [
   1_000_000_000, // 1s
 ] as const;
 
-// MULTI (research data-gen) session: a highlight-protected bracket.
-//   - The burst is the AE baseline (0 EV), averaged for noise.
-//   - The extra shots are auto-AE biased DARKER (−1, −2 EV) so highlights
-//     don't clip, adapting to the scene. Offline per-ROI fusion uses the
-//     brighter burst for shadows and the darker frames for highlights.
-// Replaces the old BRIGHTER fixed sweep, which only ever clipped (see
-// docs/munsell-capture-findings.md).
-const MULTI_SESSION_BURST_COUNT = 8;
-const MULTI_SESSION_EV_STOPS = [-1, -2] as const;
+// MULTI (research data-gen) session: a symmetric exposure bracket for
+// offline characterization. Production ships a trimmed subset once the data
+// says which exposures/averaging actually help.
+//   - A big AE-auto burst at 0 EV (AE+AWB locked) — the baseline, and the
+//     frames we average to choose a production burst size.
+//   - A few frames at each ±EV so per-ROI fusion can use DARKER frames for
+//     bright patches (grey card / light soil — no clipping) and BRIGHTER
+//     frames for dark soil (more photons → less shadow noise, the main
+//     Pixel weakness). A +EV frame only helps when fused per-ROI, not judged
+//     whole-frame (its highlights clip). See docs/munsell-capture-findings.md.
+const MULTI_SESSION_BURST_COUNT = 10;
+const MULTI_SESSION_EV_LEVELS = [-2, -1, 1, 2] as const; // 0 EV = the burst
+const MULTI_SESSION_FRAMES_PER_EV = 3;
 const MULTI_SESSION_TOTAL =
-  MULTI_SESSION_BURST_COUNT + MULTI_SESSION_EV_STOPS.length;
+  MULTI_SESSION_BURST_COUNT +
+  MULTI_SESSION_EV_LEVELS.length * MULTI_SESSION_FRAMES_PER_EV;
 
 // Convert a target EV (stops below/above metered) to the device's
 // CONTROL_AE_EXPOSURE_COMPENSATION integer index, clamped to its range.
@@ -357,8 +362,8 @@ export const AndroidRawCaptureScreen = () => {
   }, [isCapturing, buildOptions, burstOn, navigation]);
 
   // MULTI-session shutter. Fires the full research-collection sweep
-  // (5 burst @ auto + 4 manual iso/shutter combos) via captureSession,
-  // which writes to MediaStore.Downloads/soilcap/session_<ts>/. On
+  // (0-EV burst + a symmetric ±EV bracket) via captureSession, which
+  // writes to MediaStore.Downloads/soilcap/session_<ts>/. On
   // completion pops back one screen (to the page picker) so the user
   // can select the next Munsell card without re-navigating. Does NOT
   // invoke the analysis callback — this is a data-collection flow, all
@@ -371,18 +376,25 @@ export const AndroidRawCaptureScreen = () => {
       // illuminant / note) from the RawColorToolsScreen persistence.
       // Empty fields skip cleanly in the native filename builder.
       const context = getMultishotSessionContext();
+      // Symmetric EV bracket: FRAMES_PER_EV auto-AE shots at each ±EV
+      // level (0 EV is the burst above). Omitting iso/shutter keeps AE
+      // auto so each shot meters the scene, then biases by the EV index.
+      const bracketShots = MULTI_SESSION_EV_LEVELS.flatMap(ev =>
+        Array.from({length: MULTI_SESSION_FRAMES_PER_EV}, () => ({
+          aeCompensation: evStopsToAeIndex(ev, caps),
+        })),
+      );
       console.log(
         `[AndroidRawCaptureScreen] captureSession start ` +
-          `(${MULTI_SESSION_BURST_COUNT} burst + ${MULTI_SESSION_EV_STOPS.length} darker EV) ` +
+          `(${MULTI_SESSION_BURST_COUNT} burst@0EV + ` +
+          `${bracketShots.length} bracket [${MULTI_SESSION_EV_LEVELS.join(
+            ',',
+          )} EV ×${MULTI_SESSION_FRAMES_PER_EV}]) ` +
           `context=${JSON.stringify(context)}`,
       );
       const frames = await RawCameraAndroidHybrid.captureSession({
         burstCount: MULTI_SESSION_BURST_COUNT,
-        // Auto-AE shots biased darker (−1, −2 EV) — highlight protection
-        // that adapts to the scene. Omitting iso/shutter keeps AE auto.
-        manualShots: MULTI_SESSION_EV_STOPS.map(stops => ({
-          aeCompensation: evStopsToAeIndex(stops, caps),
-        })),
+        manualShots: bracketShots,
         context,
       });
       console.log(

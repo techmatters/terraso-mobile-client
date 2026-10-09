@@ -12,38 +12,42 @@ via `adb pull`.
 
 ## What one press captures
 
-Every MULTI session fires a **highlight-protected bracket** against the
-same physical scene: a bigger AE-auto burst (the baseline, averaged for
-noise) plus two auto-AE frames biased DARKER so highlights don't clip.
+Every MULTI session fires a **symmetric exposure bracket** against the
+same physical scene — a research-characterization set (production will ship
+a trimmed subset once the data says which exposures/averaging help):
 
-| #    | Kind    | Exposure                       | Purpose |
-|------|---------|--------------------------------|---------|
-| 1–8  | burst   | AE-auto (0 EV), AE+AWB locked  | Baseline; average the 8 for noise |
-| 9    | auto-AE | −1 EV (meter − 1 stop)         | Highlight protection, adapts to scene |
-| 10   | auto-AE | −2 EV (meter − 2 stops)        | Deeper highlight protection |
+| #     | Kind    | Exposure                      | Purpose |
+|-------|---------|-------------------------------|---------|
+| 1–10  | burst   | AE-auto (0 EV), AE+AWB locked | Baseline; average for noise + pick a production burst size |
+| 11–13 | auto-AE | −2 EV                         | Highlight protection (bright patches / grey card don't clip) |
+| 14–16 | auto-AE | −1 EV                         | ″ |
+| 17–19 | auto-AE | +1 EV                         | Dark-soil shadow recovery (more photons → less noise) |
+| 20–22 | auto-AE | +2 EV                         | ″ |
 
-The darker frames use `CONTROL_AE_EXPOSURE_COMPENSATION` via the new
+The ±EV frames use `CONTROL_AE_EXPOSURE_COMPENSATION` via the new
 `SessionShot.aeCompensation` field (index computed from the device's EV
-step in `AndroidRawCaptureScreen.tsx`): the camera meters, then aims N
-stops darker. Offline, per-ROI fusion uses the brighter burst for shadows
-and the darker frames for any patch that would otherwise clip.
+step in `AndroidRawCaptureScreen.tsx`): the camera meters, then biases the
+exposure N stops. **Offline, per-ROI fusion** uses DARKER frames for bright
+patches (no clip) and BRIGHTER frames for dark soil (shadow SNR) — a +EV
+frame only helps when fused per-ROI, not judged whole-frame (its highlights
+clip). Knobs: `MULTI_SESSION_BURST_COUNT`, `MULTI_SESSION_EV_LEVELS`,
+`MULTI_SESSION_FRAMES_PER_EV`.
 
-**Why this replaces the old brighter sweep.** The previous manual shots
-went *brighter* (longer shutter / higher ISO) — which is exactly what
-clipped and inflated ΔE (see docs/munsell-capture-findings.md). The data
-lever is the opposite: never clip, then denoise by averaging the burst.
+**Why this replaces the old sweep.** The previous manual shots went
+*brighter via absolute fixed (iso, shutter)* and were judged whole-frame —
+which clipped and inflated ΔE (see docs/munsell-capture-findings.md). The
+new shots are *meter-relative* (adapt to lighting) and used in fusion, so
+both darker (anti-clip) and brighter (anti-noise) frames earn their place.
 
-**Verify on-device.** Confirm the −1/−2 EV frames actually produce a
-*darker RAW* (shorter sensor exposure), not just a JPEG tone shift —
-earlier notes flagged that EV comp doesn't always reach the sensor on
-these phones. Check ExposureTime/ISO in the DNGs of shots 9–10 vs the
-burst; if AE won't go darker, fall back to deriving manual (iso, shutter)
-darker shots from the burst's locked exposure. Tune the burst size and EV
-steps (`MULTI_SESSION_BURST_COUNT`, `MULTI_SESSION_EV_STOPS`) as the
-offline results dictate.
+**Verify on-device.** Confirm the ±EV frames actually move the *RAW*
+(sensor ExposureTime/ISO), not just the JPEG tone — earlier notes flagged
+that EV comp doesn't always reach the sensor on these phones. Check the DNG
+ExposureTime/ISO of the bracket shots vs the burst; if AE won't shift, fall
+back to deriving manual (iso, shutter) shots from the burst's locked
+exposure.
 
-Total data per session: 9 DNG + 9 JPEG ≈ **~200 MB**. See "Storage
-and transfer" below for batching guidance.
+Total data per session: ~22 DNG + 22 JPEG ≈ **~450 MB** — brace/steady for
+the ~20s hold, and see "Storage and transfer" below for batching.
 
 ## Where the files land
 
