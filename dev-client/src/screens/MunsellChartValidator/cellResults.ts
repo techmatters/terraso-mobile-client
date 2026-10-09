@@ -64,6 +64,10 @@ export type CellMeasurement = {
   // Node analyzer's C++ CLI batch path, null everywhere else.
   rawLinearRgbNoClip?: {r: number; g: number; b: number} | null;
   rawLinearRgbDominantNoClip?: {r: number; g: number; b: number} | null;
+  // Optional flat [binIndex, count, …] color histogram of the ROI (6-bit
+  // sRGB-gamma bins). Populated only by the Node analyzer on request, for
+  // offline reducer experiments.
+  histogram?: number[] | null;
 };
 
 export type MunsellCellResult = {

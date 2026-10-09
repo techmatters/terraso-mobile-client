@@ -44,6 +44,11 @@ export type LinearRgbReduced = {
   mean: LinearRgb;
   dominant: LinearRgb;
   meanUnclamped?: LinearRgb | null;
+  // Flat [binIndex, count, …] 6-bit-per-channel sRGB-gamma histogram of the
+  // ROI pixels (biggest cluster first). Only populated by the Node analyzer
+  // when histogram emission is requested; undefined everywhere else. Used
+  // for offline reducer experiments (mean / median-cut / soft-dominant / …).
+  histogram?: number[];
 };
 export type PreviewImage = {uri: string; width: number; height: number};
 export type PreviewRgb = {
@@ -60,6 +65,11 @@ export interface DngDecoderLike {
   decodeDngRois(dngPath: string, rois: Roi[]): LinearRgb[];
   decodeDngRoisReduced(dngPath: string, rois: Roi[]): LinearRgbReduced[];
   decodePhotoRois(imagePath: string, rois: Roi[]): LinearRgb[];
+  // Optional dual-reducer photo decode (mean + real median-cut dominant,
+  // and an optional histogram). The Node analyzer implements it so the
+  // photo path gets a dominant too; on-device decoders may omit it, in
+  // which case chartAnalysis falls back to decodePhotoRois (mean only).
+  decodePhotoRoisReduced?(imagePath: string, rois: Roi[]): LinearRgbReduced[];
   readPreviewRgb(dngPath: string, maxDim: number): PreviewRgb;
   readPreviewRgbPhoto(imagePath: string, maxDim: number): PreviewRgb;
   renderPreview(dngPath: string, maxDim: number): PreviewImage;

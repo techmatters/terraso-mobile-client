@@ -687,6 +687,9 @@ export const analyzeMunsellChart = async (
   // path, photo path, on-device Nitro decoder — none expose the field).
   let measuredNoClip: ({r: number; g: number; b: number} | null)[] = [];
   let measuredDominantNoClip: ({r: number; g: number; b: number} | null)[] = [];
+  // Per-ROI color histogram (flat [binIndex, count, …]). Experimental;
+  // only the Node analyzer populates it (on request), null elsewhere.
+  let measuredHistogram: (number[] | null)[] = [];
   try {
     if (format === 'raw') {
       const reduced = decoder.decodeDngRoisReduced(imagePath, dngRois);
@@ -703,12 +706,24 @@ export const analyzeMunsellChart = async (
           (r as {dominantNoClip?: {r: number; g: number; b: number} | null})
             .dominantNoClip ?? null,
       );
+      measuredHistogram = reduced.map(r => r.histogram ?? null);
+    } else if (decoder.decodePhotoRoisReduced) {
+      // Photo path with a real dominant (+ optional histogram) — raw-less
+      // cameras get the dominant reducer too.
+      const reduced = decoder.decodePhotoRoisReduced(imagePath, dngRois);
+      measured = reduced.map(r => r.mean);
+      measuredDominant = reduced.map(r => r.dominant);
+      measuredUnclamped = dngRois.map(() => null);
+      measuredNoClip = dngRois.map(() => null);
+      measuredDominantNoClip = dngRois.map(() => null);
+      measuredHistogram = reduced.map(r => r.histogram ?? null);
     } else {
       measured = decoder.decodePhotoRois(imagePath, dngRois);
       measuredDominant = dngRois.map(() => null);
       measuredUnclamped = dngRois.map(() => null);
       measuredNoClip = dngRois.map(() => null);
       measuredDominantNoClip = dngRois.map(() => null);
+      measuredHistogram = dngRois.map(() => null);
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -752,6 +767,7 @@ export const analyzeMunsellChart = async (
     rawLinearRgbUnclamped: measuredUnclamped[idx],
     rawLinearRgbNoClip: measuredNoClip[idx],
     rawLinearRgbDominantNoClip: measuredDominantNoClip[idx],
+    histogram: measuredHistogram[idx],
   }));
 
   // 5. Colour preview for the validation view. RAW → renderPreview

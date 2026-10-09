@@ -43,9 +43,10 @@ struct LinearRgb: Encodable {
 
 // Mirror of the C++ CLI's per-ROI output shape: `r/g/b` = per-channel
 // mean, `dominantR/dominantG/dominantB` = median-cut "biggest cluster".
-// The Apple CIRAWFilter path only computes the mean, so the dominant
-// fields are emitted equal to the mean as a placeholder — keeps the
-// JSON schema stable for the analyzer.
+// `histogram` is a flat [binIndex, count, ...] 6-bit-per-channel gamma
+// histogram of the ROI pixels (biggest cluster first), empty unless the
+// analyzer requests it via DNG_CLI_EMIT_HIST=1 — it lets offline reducer
+// experiments run on the captured distribution without re-decoding.
 struct LinearRgbReduced: Encodable {
   let r: Double
   let g: Double
@@ -53,6 +54,7 @@ struct LinearRgbReduced: Encodable {
   let dominantR: Double
   let dominantG: Double
   let dominantB: Double
+  var histogram: [Int] = []
 }
 
 enum CliError: Error {
@@ -147,9 +149,13 @@ func decodeDngRois(dngPath: String, rois: [Roi]) throws -> [LinearRgb] {
 // (HybridDngDecoder.swift) and the Android C++ path. The ROI is downscaled
 // so its longest side is <= 256px to bound memory/CPU; median-cut bins
 // into a 32³ histogram, so modest downsampling doesn't move the dominant.
-func dominantColor(
-  of cropped: CIImage, context: CIContext, linearSpace: CGColorSpace
-) throws -> LinearRgb {
+// Render a cropped ROI to a CPU-side interleaved linear-sRGB RGB float
+// buffer (alpha stripped), downscaled so its longest side is <= 256px to
+// bound memory/CPU. Shared by the median-cut dominant and the histogram
+// so both see the same pixels.
+func roiRgbBuffer(
+  _ cropped: CIImage, context: CIContext, linearSpace: CGColorSpace
+) throws -> (rgb: [Float], count: Int) {
   let maxSide: CGFloat = 256
   let longSide = max(cropped.extent.width, cropped.extent.height)
   let scale = longSide > maxSide ? maxSide / longSide : 1.0
@@ -160,46 +166,57 @@ func dominantColor(
   let rect = image.extent
   let w = Int(rect.width.rounded())
   let h = Int(rect.height.rounded())
-  guard w > 0, h > 0 else {
-    throw CliError.msg("degenerate ROI for dominant")
-  }
+  guard w > 0, h > 0 else { throw CliError.msg("degenerate ROI") }
   var rgba = [Float](repeating: 0, count: w * h * 4)
   context.render(
     image, toBitmap: &rgba,
     rowBytes: w * 4 * MemoryLayout<Float>.size,
-    bounds: rect,
-    format: .RGBAf, colorSpace: linearSpace)
-  // Interleave RGB (strip alpha) for the C bridge.
+    bounds: rect, format: .RGBAf, colorSpace: linearSpace)
   var rgb = [Float](repeating: 0, count: w * h * 3)
   for i in 0..<(w * h) {
     rgb[i * 3] = rgba[i * 4]
     rgb[i * 3 + 1] = rgba[i * 4 + 1]
     rgb[i * 3 + 2] = rgba[i * 4 + 2]
   }
+  return (rgb, w * h)
+}
+
+// Median-cut dominant over an interleaved RGB buffer, via the shared C++.
+func dominantFromBuffer(_ rgb: [Float], count: Int) -> LinearRgb? {
+  guard count > 0 else { return nil }
   var out: [Double] = [0, 0, 0]
-  guard dngcli_dominant_linear_rgb(rgb, Int32(w * h), &out) else {
-    throw CliError.msg("dominantLinearRgb returned false")
-  }
+  guard dngcli_dominant_linear_rgb(rgb, Int32(count), &out) else { return nil }
   return LinearRgb(r: clamp01(out[0]), g: clamp01(out[1]), b: clamp01(out[2]))
 }
 
-// RAW-path dual reducer: per-ROI mean (area-average) AND a real median-cut
-// dominant, on the linear-sRGB pixels CIRAWFilter produces. Only the RAW
-// path computes dominant — the photo path leaves it equal to the mean (the
-// analyzer nulls photo dominant anyway, and "use raw values for raw
-// images" is the whole point). Shares the crop + mean math with
-// decodeCiImageRois; adds the dominant render per ROI.
-func decodeDngRoisReduced(dngPath: String, rois: [Roi]) throws
+// 6-bit-per-channel sRGB-gamma histogram of an ROI. Flat [binIndex, count,
+// …] sorted by count descending; binIndex = (r6<<12)|(g6<<6)|b6 over gamma
+// 0..63. Lets offline reducer experiments run on the captured distribution.
+func roiHistogram(_ rgb: [Float], count: Int) -> [Int] {
+  func bin(_ v: Float) -> Int {
+    let lv = Double(max(0, min(1, v)))
+    let g = lv <= 0.0031308 ? 12.92 * lv : 1.055 * pow(lv, 1.0 / 2.4) - 0.055
+    return max(0, min(63, Int((g * 63.0).rounded())))
+  }
+  var m: [Int: Int] = [:]
+  for i in 0..<count {
+    let idx = (bin(rgb[i * 3]) << 12) | (bin(rgb[i * 3 + 1]) << 6)
+      | bin(rgb[i * 3 + 2])
+    m[idx, default: 0] += 1
+  }
+  return m.sorted { $0.value > $1.value }.flatMap { [$0.key, $0.value] }
+}
+
+let emitHistograms =
+  ProcessInfo.processInfo.environment["DNG_CLI_EMIT_HIST"] == "1"
+
+// Shared mean + median-cut dominant (+ optional histogram) reducer over an
+// already-loaded CIImage, so the RAW (CIRAWFilter) and photo (CIImage)
+// paths agree. Both now compute a REAL dominant — "use raw values for raw
+// images" for RAW, and the photo path gets dominant too (raw-less cameras).
+func decodeCiImageRoisReduced(_ ciImage: CIImage, rois: [Roi]) throws
   -> [LinearRgbReduced]
 {
-  let url = URL(fileURLWithPath: stripFileScheme(dngPath))
-  guard let rawFilter = CIRAWFilter(imageURL: url) else {
-    throw CliError.msg("CIRAWFilter could not open DNG at \(url.path)")
-  }
-  configureRawFilter(rawFilter)
-  guard let ciImage = rawFilter.outputImage else {
-    throw CliError.msg("CIRAWFilter produced no outputImage")
-  }
   let extent = ciImage.extent
   guard let linearSpace = CGColorSpace(name: CGColorSpace.linearSRGB) else {
     throw CliError.msg("linearSRGB color space unavailable")
@@ -234,17 +251,42 @@ func decodeDngRoisReduced(dngPath: String, rois: [Roi]) throws
       r: clamp01(Double(bitmap[0])),
       g: clamp01(Double(bitmap[1])),
       b: clamp01(Double(bitmap[2])))
-    // Dominant: median-cut over the ROI pixels; fall back to the mean on a
-    // degenerate (zero-area) crop.
-    let dominant =
-      (try? dominantColor(
-        of: cropped, context: context, linearSpace: linearSpace)) ?? mean
+    var dominant = mean
+    var hist: [Int] = []
+    if let buf = try? roiRgbBuffer(
+      cropped, context: context, linearSpace: linearSpace)
+    {
+      dominant = dominantFromBuffer(buf.rgb, count: buf.count) ?? mean
+      if emitHistograms { hist = roiHistogram(buf.rgb, count: buf.count) }
+    }
     results.append(
       LinearRgbReduced(
         r: mean.r, g: mean.g, b: mean.b,
-        dominantR: dominant.r, dominantG: dominant.g, dominantB: dominant.b))
+        dominantR: dominant.r, dominantG: dominant.g, dominantB: dominant.b,
+        histogram: hist))
   }
   return results
+}
+
+func decodeDngRoisReduced(dngPath: String, rois: [Roi]) throws
+  -> [LinearRgbReduced]
+{
+  let url = URL(fileURLWithPath: stripFileScheme(dngPath))
+  guard let rawFilter = CIRAWFilter(imageURL: url) else {
+    throw CliError.msg("CIRAWFilter could not open DNG at \(url.path)")
+  }
+  configureRawFilter(rawFilter)
+  guard let ciImage = rawFilter.outputImage else {
+    throw CliError.msg("CIRAWFilter produced no outputImage")
+  }
+  return try decodeCiImageRoisReduced(ciImage, rois: rois)
+}
+
+func decodePhotoRoisReduced(imagePath: String, rois: [Roi]) throws
+  -> [LinearRgbReduced]
+{
+  let ciImage = try loadPhotoAsCiImage(imagePath)
+  return try decodeCiImageRoisReduced(ciImage, rois: rois)
 }
 
 // Load a JPEG/HEIC/PNG file as a CIImage in the same fixed orientation
@@ -658,18 +700,15 @@ case "decode-photo-rois":
   } catch {
     die("failed to parse rois json: \(error.localizedDescription)")
   }
-  let results: [LinearRgb]
+  // Photo path now emits a REAL median-cut dominant (+ optional histogram),
+  // same as the RAW path — so raw-less cameras get the dominant reducer too.
+  let reduced: [LinearRgbReduced]
   do {
-    results = try decodePhotoRois(imagePath: imagePath, rois: rois)
+    reduced = try decodePhotoRoisReduced(imagePath: imagePath, rois: rois)
   } catch CliError.msg(let m) {
     die(m)
   } catch {
     die("unexpected error: \(error.localizedDescription)")
-  }
-  let reduced = results.map {
-    LinearRgbReduced(
-      r: $0.r, g: $0.g, b: $0.b,
-      dominantR: $0.r, dominantG: $0.g, dominantB: $0.b)
   }
   writeJson(reduced)
 

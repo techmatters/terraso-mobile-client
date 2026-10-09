@@ -586,6 +586,39 @@ class NodeDecoder implements DngDecoderLike {
     return JSON.parse(out);
   }
 
+  // Dual-reducer photo decode: mean + a REAL median-cut dominant (so the
+  // photo path gets the dominant reducer too — matters for raw-less
+  // cameras), plus an optional per-ROI histogram when --emit-histograms is
+  // set (DNG_CLI_EMIT_HIST=1 to the CLI) for offline reducer experiments.
+  decodePhotoRoisReduced(imagePath: string, rois: Roi[]): LinearRgbReduced[] {
+    const out = execFileSync(
+      this.photoCliPath,
+      ['decode-photo-rois', imagePath, JSON.stringify(rois)],
+      {
+        encoding: 'utf-8',
+        maxBuffer: 64 * 1024 * 1024,
+        env: emitHistograms
+          ? {...process.env, DNG_CLI_EMIT_HIST: '1'}
+          : process.env,
+      },
+    );
+    const raw = JSON.parse(out) as Array<{
+      r: number;
+      g: number;
+      b: number;
+      dominantR: number;
+      dominantG: number;
+      dominantB: number;
+      histogram?: number[];
+    }>;
+    return raw.map(r => ({
+      mean: {r: r.r, g: r.g, b: r.b},
+      dominant: {r: r.dominantR, g: r.dominantG, b: r.dominantB},
+      meanUnclamped: null,
+      histogram: r.histogram,
+    }));
+  }
+
   readPreviewRgbPhoto(imagePath: string, maxDim: number): PreviewRgb {
     const binPath = path.join(this.tmpDir, `preview-${this.ctr++}.bin`);
     const out = execFileSync(
@@ -1569,6 +1602,11 @@ const buildCaptureEntry = (
         raw_linear_rgb_dominant_noclip: finiteTriple(domNoclip)
           ? [domNoclip.r, domNoclip.g, domNoclip.b]
           : null,
+        // Experimental per-ROI color histogram (flat [binIndex, count, …],
+        // 6-bit sRGB-gamma bins), only when --emit-histograms is set.
+        ...(emitHistograms
+          ? {raw_histogram: measurements[i].histogram ?? null}
+          : {}),
         measured_linear_rgb: [
           r.measuredLinearRgb.r,
           r.measuredLinearRgb.g,
@@ -2692,12 +2730,19 @@ const {values} = parseArgs({
     // back into the HTML as a base64 data URI (one portable file, but
     // large + slow to load for big runs).
     'inline-images': {type: 'boolean'},
+    // Emit a per-ROI color histogram (raw_histogram cell field) for offline
+    // reducer experiments. Off by default — it bloats run.json and only the
+    // Swift (photo + iOS RAW) path computes it. Sets DNG_CLI_EMIT_HIST=1.
+    'emit-histograms': {type: 'boolean'},
   },
 });
 
 const fixturesDir = values.fixtures;
 const outPath = values.out;
 const emitHtml = !values['no-html'];
+// Experimental: emit per-ROI color histograms into run.json cells (and
+// request them from the Swift CLI). Gated because they bloat run.json.
+const emitHistograms = !!values['emit-histograms'];
 if (!fixturesDir) die('missing --fixtures <dir>');
 if (!outPath) die('missing --out <path>');
 
