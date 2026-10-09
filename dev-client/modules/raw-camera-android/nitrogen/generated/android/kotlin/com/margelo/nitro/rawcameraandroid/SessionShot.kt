@@ -23,7 +23,10 @@ data class SessionShot(
   val sensorExposureTimeNs: Double?,
   @DoNotStrip
   @Keep
-  val sensorSensitivity: Double?
+  val sensorSensitivity: Double?,
+  @DoNotStrip
+  @Keep
+  val aeCompensation: Double?
 ) {
   /* primary constructor */
 
@@ -32,12 +35,14 @@ data class SessionShot(
     if (other !is SessionShot) return false
     return Objects.deepEquals(this.sensorExposureTimeNs, other.sensorExposureTimeNs)
       && Objects.deepEquals(this.sensorSensitivity, other.sensorSensitivity)
+      && Objects.deepEquals(this.aeCompensation, other.aeCompensation)
   }
 
   override fun hashCode(): Int {
     return arrayOf<Any?>(
       sensorExposureTimeNs,
-      sensorSensitivity
+      sensorSensitivity,
+      aeCompensation
     ).contentDeepHashCode()
   }
 
@@ -49,8 +54,8 @@ data class SessionShot(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(sensorExposureTimeNs: Double?, sensorSensitivity: Double?): SessionShot {
-      return SessionShot(sensorExposureTimeNs, sensorSensitivity)
+    private fun fromCpp(sensorExposureTimeNs: Double?, sensorSensitivity: Double?, aeCompensation: Double?): SessionShot {
+      return SessionShot(sensorExposureTimeNs, sensorSensitivity, aeCompensation)
     }
   }
 }

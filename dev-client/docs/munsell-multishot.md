@@ -12,48 +12,35 @@ via `adb pull`.
 
 ## What one press captures
 
-Every MULTI session fires 9 shots against the same physical scene:
+Every MULTI session fires a **highlight-protected bracket** against the
+same physical scene: a bigger AE-auto burst (the baseline, averaged for
+noise) plus two auto-AE frames biased DARKER so highlights don't clip.
 
-| # | Kind    | Shutter | ISO | Purpose |
-|---|---------|---------|-----|---------|
-| 1 | burst 1/5 | AE-auto | AE-auto | Baseline auto-exposure |
-| 2 | burst 2/5 | AE-auto | AE-auto | (AE + AWB locked to shot 1) |
-| 3 | burst 3/5 | AE-auto | AE-auto | Sibling for offline averaging |
-| 4 | burst 4/5 | AE-auto | AE-auto | Same |
-| 5 | burst 5/5 | AE-auto | AE-auto | Same |
-| 6 | manual  | 1/30    | 100 | 2× shutter vs the AE baseline — real photon count doubling |
-| 7 | manual  | 1/15    | 100 | 4× shutter — characterises where highlight clipping begins |
-| 8 | manual  | 1/60    | 400 | Same brightness as #7 but via ISO instead of shutter |
-| 9 | manual  | 1/30    | 200 | Mid-point handheld tradeoff |
+| #    | Kind    | Exposure                       | Purpose |
+|------|---------|--------------------------------|---------|
+| 1–8  | burst   | AE-auto (0 EV), AE+AWB locked  | Baseline; average the 8 for noise |
+| 9    | auto-AE | −1 EV (meter − 1 stop)         | Highlight protection, adapts to scene |
+| 10   | auto-AE | −2 EV (meter − 2 stops)        | Deeper highlight protection |
 
-Rationale for the sweep:
+The darker frames use `CONTROL_AE_EXPOSURE_COMPENSATION` via the new
+`SessionShot.aeCompensation` field (index computed from the device's EV
+step in `AndroidRawCaptureScreen.tsx`): the camera meters, then aims N
+stops darker. Offline, per-ROI fusion uses the brighter burst for shadows
+and the darker frames for any patch that would otherwise clip.
 
-- **Auto burst (1–5).** Locks AE + AWB before firing so all frames
-  share identical sensor state, then averages nicely in offline
-  analysis. See docs/munsell-dark-sensor.md option #3 for the shot-
-  noise justification. Skipping the (1/60, ISO 100) baseline single
-  shot — the auto burst covers that regime.
-- **Manual shutter sweep (6, 7).** Isolates the effect of longer
-  exposure on RAW SNR. Shot noise is Poisson: √2 shot noise
-  reduction per doubling of collected photons.
-- **ISO vs shutter comparison (7 vs 8).** Same total brightness
-  achieved two ways. If shot 8 has visibly more noise than shot 7,
-  shutter wins for static scenes; if similar, ISO is a viable
-  substitute for handheld cases where longer shutter risks blur.
-- **Handheld sweet spot (9).** (1/30, ISO 200) is the compromise most
-  photographers land on for handheld low-light — worth including as
-  the "what a reasonable end-user would set" reference.
+**Why this replaces the old brighter sweep.** The previous manual shots
+went *brighter* (longer shutter / higher ISO) — which is exactly what
+clipped and inflated ΔE (see docs/munsell-capture-findings.md). The data
+lever is the opposite: never clip, then denoise by averaging the burst.
 
-Not included:
-
-- **EV compensation.** Prior tests showed EV mostly doesn't reach RAW
-  in bright scenes — AE hits its safe-handheld budget quickly, and
-  the ISP fakes the rest in JPEG post-hoc. Not useful for RAW
-  research. See docs/munsell-dark-sensor.md diagnostic section.
-- **Very slow shutters (>1/8s).** Would require a tripod; out of
-  scope for research on the typical handheld workflow.
-- **Very high ISO (>800).** Interesting for extreme-dim scenes; add
-  later once we know how (1/60, ISO 400) looks.
+**Verify on-device.** Confirm the −1/−2 EV frames actually produce a
+*darker RAW* (shorter sensor exposure), not just a JPEG tone shift —
+earlier notes flagged that EV comp doesn't always reach the sensor on
+these phones. Check ExposureTime/ISO in the DNGs of shots 9–10 vs the
+burst; if AE won't go darker, fall back to deriving manual (iso, shutter)
+darker shots from the burst's locked exposure. Tune the burst size and EV
+steps (`MULTI_SESSION_BURST_COUNT`, `MULTI_SESSION_EV_STOPS`) as the
+offline results dictate.
 
 Total data per session: 9 DNG + 9 JPEG ≈ **~200 MB**. See "Storage
 and transfer" below for batching guidance.

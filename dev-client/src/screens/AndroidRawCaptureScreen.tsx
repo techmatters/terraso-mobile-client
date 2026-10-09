@@ -81,22 +81,34 @@ const SHUTTER_PRESETS_NS = [
   1_000_000_000, // 1s
 ] as const;
 
-// Fixed sweep for MULTI (research-data collection) sessions. See
-// docs/munsell-multishot.md for rationale on each row.
-//   1. (1/30, ISO 100) — 2× shutter vs the burst's implicit auto baseline
-//   2. (1/15, ISO 100) — 4× shutter, characterises clipping onset
-//   3. (1/60, ISO 400) — same brightness as row 2 via ISO instead of shutter
-//   4. (1/30, ISO 200) — mid-point handheld tradeoff
-const MULTI_SESSION_BURST_COUNT = 5;
-const MULTI_SESSION_MANUAL_SHOTS: readonly {iso: number; shutterNs: number}[] =
-  [
-    {iso: 100, shutterNs: 33_333_000}, // 1/30
-    {iso: 100, shutterNs: 66_667_000}, // 1/15
-    {iso: 400, shutterNs: 16_667_000}, // 1/60
-    {iso: 200, shutterNs: 33_333_000}, // 1/30
-  ];
+// MULTI (research data-gen) session: a highlight-protected bracket.
+//   - The burst is the AE baseline (0 EV), averaged for noise.
+//   - The extra shots are auto-AE biased DARKER (−1, −2 EV) so highlights
+//     don't clip, adapting to the scene. Offline per-ROI fusion uses the
+//     brighter burst for shadows and the darker frames for highlights.
+// Replaces the old BRIGHTER fixed sweep, which only ever clipped (see
+// docs/munsell-capture-findings.md).
+const MULTI_SESSION_BURST_COUNT = 8;
+const MULTI_SESSION_EV_STOPS = [-1, -2] as const;
 const MULTI_SESSION_TOTAL =
-  MULTI_SESSION_BURST_COUNT + MULTI_SESSION_MANUAL_SHOTS.length;
+  MULTI_SESSION_BURST_COUNT + MULTI_SESSION_EV_STOPS.length;
+
+// Convert a target EV (stops below/above metered) to the device's
+// CONTROL_AE_EXPOSURE_COMPENSATION integer index, clamped to its range.
+// EV = idx × step, so idx = EV × stepDen / stepNum.
+const evStopsToAeIndex = (
+  stops: number,
+  caps: CaptureCapabilities | null,
+): number => {
+  if (caps == null || caps.aeCompensationStepNum === 0) return 0;
+  const idx = Math.round(
+    (stops * caps.aeCompensationStepDen) / caps.aeCompensationStepNum,
+  );
+  return Math.max(
+    caps.aeCompensationMin,
+    Math.min(caps.aeCompensationMax, idx),
+  );
+};
 
 // Full-screen React Navigation route for Android RAW capture. Owns the
 // native RawCameraAndroidView (which drives CameraSessionManager via
@@ -361,14 +373,15 @@ export const AndroidRawCaptureScreen = () => {
       const context = getMultishotSessionContext();
       console.log(
         `[AndroidRawCaptureScreen] captureSession start ` +
-          `(${MULTI_SESSION_BURST_COUNT} burst + ${MULTI_SESSION_MANUAL_SHOTS.length} manual) ` +
+          `(${MULTI_SESSION_BURST_COUNT} burst + ${MULTI_SESSION_EV_STOPS.length} darker EV) ` +
           `context=${JSON.stringify(context)}`,
       );
       const frames = await RawCameraAndroidHybrid.captureSession({
         burstCount: MULTI_SESSION_BURST_COUNT,
-        manualShots: MULTI_SESSION_MANUAL_SHOTS.map(m => ({
-          sensorSensitivity: m.iso,
-          sensorExposureTimeNs: m.shutterNs,
+        // Auto-AE shots biased darker (−1, −2 EV) — highlight protection
+        // that adapts to the scene. Omitting iso/shutter keeps AE auto.
+        manualShots: MULTI_SESSION_EV_STOPS.map(stops => ({
+          aeCompensation: evStopsToAeIndex(stops, caps),
         })),
         context,
       });
@@ -388,7 +401,7 @@ export const AndroidRawCaptureScreen = () => {
     } finally {
       setIsCapturing(false);
     }
-  }, [isCapturing, navigation]);
+  }, [isCapturing, navigation, caps]);
 
   // Structure kept close to the earlier RawCameraAndroidTestScreen that
   // we know worked — ScreenScaffold + AppBar chrome, view inside a

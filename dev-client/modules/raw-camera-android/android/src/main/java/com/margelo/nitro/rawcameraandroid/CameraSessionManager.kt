@@ -377,7 +377,10 @@ object CameraSessionManager {
                             "shutterNs=${shot.sensorExposureTimeNs?.toLong()}",
                     )
                     val opts = CaptureOptions(
-                        aeCompensation = null,
+                        // Auto-AE shots can carry an EV bias (darker/brighter);
+                        // applyCaptureOptions leaves AE auto when there's no
+                        // manual (iso, shutterNs) and applies the EV index.
+                        aeCompensation = shot.aeCompensation,
                         sensorExposureTimeNs = shot.sensorExposureTimeNs,
                         sensorSensitivity = shot.sensorSensitivity,
                         skipJpeg = null,

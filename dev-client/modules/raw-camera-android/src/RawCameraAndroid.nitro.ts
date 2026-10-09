@@ -40,13 +40,20 @@ export type CaptureOptions = {
 
 // One "shot" descriptor inside a captureSession request. Either a
 // (iso, shutterNs) pair for a manual-exposure shot, or omit both for
-// an auto-AE shot. See captureSession() below.
+// an auto-AE shot (optionally biased darker/brighter via
+// aeCompensation). See captureSession() below.
 export type SessionShot = {
   // Manual sensor exposure time in nanoseconds. Omit (with
   // sensorSensitivity) for an auto-AE shot.
   sensorExposureTimeNs?: number;
   // Manual ISO. Omit (with sensorExposureTimeNs) for an auto-AE shot.
   sensorSensitivity?: number;
+  // CONTROL_AE_EXPOSURE_COMPENSATION index for an auto-AE shot — the
+  // camera meters, then aims this many steps darker/brighter (EV in
+  // stops = index × step; query getCaptureCapabilities for the step).
+  // Used to shoot highlight-protected darker frames (−1/−2 EV) that
+  // adapt to the scene. Ignored when a manual (iso, shutterNs) is set.
+  aeCompensation?: number;
 };
 
 // User-supplied metadata that gets baked into the session filenames
