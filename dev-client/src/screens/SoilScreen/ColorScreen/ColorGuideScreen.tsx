@@ -59,10 +59,22 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
       <Paragraph variant="body1">
         {t('soil.color.guide.step1.content')}
       </Paragraph>
+      <Paragraph variant="body1">
+        {t('soil.color.guide.step1.general_intro')}
+      </Paragraph>
       <BulletList
-        data={[1, 2, 3, 4, 5]}
+        data={[1, 2, 3]}
         renderItem={i => (
-          <Text>{t(`soil.color.guide.step1.bullets.${i}`)}</Text>
+          <Text>{t(`soil.color.guide.step1.general_bullets.${i}`)}</Text>
+        )}
+      />
+      <Paragraph variant="body1">
+        {t('soil.color.guide.step1.postit_intro')}
+      </Paragraph>
+      <BulletList
+        data={[1, 2]}
+        renderItem={i => (
+          <Text>{t(`soil.color.guide.step1.postit_bullets.${i}`)}</Text>
         )}
       />
       <Box width="100%" alignItems="center">
