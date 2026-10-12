@@ -55,6 +55,9 @@ const CLIP = 0.999; // hottest-channel level at/above which a chip is "clipped"
 const J = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 const caps = J.captures || [];
 const excluded = new Set(J.excluded_chips || []);
+// Fixtures the analyzer flagged (manually or auto WB-anchor outliers) —
+// skip them so a bad-registration capture doesn't contaminate a level.
+const excludedCards = new Set(J.excluded_cards || []);
 
 // ---- small helpers -------------------------------------------------------
 const mean = a => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : null);
@@ -117,6 +120,7 @@ const scenes = new Map();
 let usedCaps = 0;
 for (const cap of caps) {
   if (cap.capture_format !== 'raw') continue;
+  if (excludedCards.has(cap.label)) continue; // skip flagged / anchor-outlier captures
   if (!refMatches(cap)) continue;
   const lvl = levelOf(cap.label);
   if (!lvl) continue;
@@ -125,23 +129,35 @@ for (const cap of caps) {
   if (!scenes.has(sk)) scenes.set(sk, new Map());
   const byLevel = scenes.get(sk);
   if (!byLevel.has(lvl.level))
-    byLevel.set(lvl.level, {stops: lvl.stops, de: [], light: [], dark: [], hi: [], ref: []});
+    byLevel.set(lvl.level, {stops: lvl.stops, repDE: [], repLight: [], repDark: [], hi: [], ref: [], nCells: 0});
   const acc = byLevel.get(lvl.level);
   // WB-anchor headroom: the detected reference-card ROI the WB was derived
   // from (cap.ref_card). Only clamped values are stored, so this saturates
   // at 1.0 — still a usable "is the anchor near clipping" signal.
   const anchor = cap.ref_card?.raw_linear_rgb;
   if (anchor) acc.ref.push(Math.max(anchor[0], anchor[1], anchor[2]));
+  // Collect THIS rep's chips, then reduce to one ΔE per rep before pooling.
+  // A single failed capture (e.g. a bad registration transform) is then one
+  // value the across-rep metric can reject, not a third of the pooled cells.
+  const capDE = [];
+  const capLight = [];
+  const capDark = [];
   for (const cell of cap.cells || []) {
     if (cell.is_reference) continue; // reference chips aren't scored
     const unc = cell.raw_linear_rgb_unclamped || cell.raw_linear_rgb;
     const hot = unc ? Math.max(unc[0], unc[1], unc[2]) : null;
     if (cell.delta_e == null) continue;
     if (excluded.has(cell.expected_notation)) continue;
-    acc.de.push(cell.delta_e);
-    if (hot != null) acc.hi.push(hot);
+    if (hot != null) acc.hi.push(hot); // features stay pooled across reps
+    capDE.push(cell.delta_e);
     const v = valueOf(cell.expected_notation);
-    if (v != null) (v >= LIGHT_VALUE ? acc.light : acc.dark).push(cell.delta_e);
+    if (v != null) (v >= LIGHT_VALUE ? capLight : capDark).push(cell.delta_e);
+  }
+  if (capDE.length) {
+    acc.repDE.push(mean(capDE));
+    acc.nCells += capDE.length;
+    if (capLight.length) acc.repLight.push(mean(capLight));
+    if (capDark.length) acc.repDark.push(mean(capDark));
   }
 }
 
@@ -155,12 +171,17 @@ if (!scenes.size) {
 
 // Per-(scene, level) feature record.
 function featuresFor(acc) {
+  // ΔE aggregates reduce per-rep first (acc.repDE), so --metric median is
+  // robust to a whole failed rep; `repSpread` surfaces rep disagreement (a
+  // registration-failure flag).
   return {
     stops: acc.stops,
-    n: acc.de.length,
-    meanDE: agg(acc.de),
-    lightDE: agg(acc.light),
-    darkDE: agg(acc.dark),
+    n: acc.nCells,
+    reps: acc.repDE.length,
+    meanDE: agg(acc.repDE),
+    lightDE: agg(acc.repLight),
+    darkDE: agg(acc.repDark),
+    repSpread: acc.repDE.length > 1 ? Math.max(...acc.repDE) - Math.min(...acc.repDE) : 0,
     clipFrac: acc.hi.length ? acc.hi.filter(h => h >= CLIP).length / acc.hi.length : null,
     hiP99: pct(acc.hi, 99),
     hiMax: acc.hi.length ? Math.max(...acc.hi) : null,
@@ -240,7 +261,8 @@ for (const sc of sceneRecords) {
   console.log(`SCENE ${sc.key}   (best = ${sc.best ? sc.best.level : '—'})`);
   console.log(
     '  ' +
-      ['level'.padEnd(11), 'ΔE'.padStart(6), 'ΔElight'.padStart(8), 'ΔEdark'.padStart(7),
+      ['level'.padEnd(11), 'ΔE'.padStart(6), 'reps'.padStart(5), 'repSpd'.padStart(7),
+       'ΔElight'.padStart(8), 'ΔEdark'.padStart(7),
        'clip%'.padStart(7), 'hiP99'.padStart(7), 'hiMax'.padStart(7), 'loP10'.padStart(7),
        'refHot'.padStart(7), 'blkNorm'.padStart(8)].join(''),
   );
@@ -250,6 +272,8 @@ for (const sc of sceneRecords) {
       star +
         l.level.padEnd(11) +
         f(l.meanDE) +
+        String(l.reps).padStart(5) +
+        f(l.repSpread, 7, 1) +
         f(l.lightDE, 8) +
         f(l.darkDE, 7) +
         f(l.clipFrac == null ? null : l.clipFrac * 100, 7, 1) +

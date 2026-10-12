@@ -690,6 +690,17 @@ const EXCLUDED_CHIPS = new Set(${JSON.stringify(runDoc.excluded_chips ?? [])});
 // registration / mis-framed shots that should be filtered out of
 // analyses by default. Match against sample.fixtureLabel.
 const EXCLUDED_CARDS = new Set(${JSON.stringify(runDoc.excluded_cards ?? [])});
+// Subset of EXCLUDED_CARDS the analyzer flagged automatically as WB-anchor
+// chroma outliers (bad registration / specular / off-card anchor). Shown
+// distinctly from manually-curated exclusions. {label → {ratio, median}}.
+const AUTO_EXCLUDED_CARDS = new Map(
+  ${JSON.stringify(
+    (runDoc.auto_excluded_cards ?? []).map((a: any) => [
+      a.label,
+      {ratio: a.ratio, cohortMedian: a.cohortMedian},
+    ]),
+  )}
+);
 
 // Lookup: hue string ("10YR", "5R", …) → representative Chip. Used
 // by the hue-mode XY chart to draw a swatch strip below the delta
@@ -1800,6 +1811,22 @@ function initControls() {
   const cardsPreview = cardsList.length <= 8
     ? cardsList
     : cardsList.slice(0, 8).concat(['+ ' + (cardsList.length - 8) + ' more']);
+  // How many of the flagged fixtures were AUTO-detected as WB-anchor
+  // outliers (vs manually curated in excluded-cards.json).
+  const autoCount = cardsList.filter(n => AUTO_EXCLUDED_CARDS.has(n)).length;
+  const autoNote = autoCount
+    ? '<div style="font-size:11px; color:#b26a00; margin-top:2px;">⚠ ' +
+        autoCount + ' auto-flagged as WB-anchor outlier' +
+        (autoCount === 1 ? '' : 's') +
+        ' (bad registration / specular / off-card anchor)</div>'
+    : '';
+  const mark = n =>
+    AUTO_EXCLUDED_CARDS.has(n)
+      ? '<code title="auto: anchor ratio ' +
+        AUTO_EXCLUDED_CARDS.get(n).ratio.toFixed(2) + ' vs cohort ' +
+        AUTO_EXCLUDED_CARDS.get(n).cohortMedian.toFixed(2) +
+        '" style="color:#b26a00">' + n + ' ⚠</code>'
+      : '<code>' + n + '</code>';
   const cardsListHtml = EXCLUDED_CARDS.size === 0
     ? '<div style="font-size:11px;color:#888">' +
         'No fixtures flagged. Edit <code>scripts/excluded-cards.json</code> ' +
@@ -1808,9 +1835,10 @@ function initControls() {
         (state.excludeFlaggedCards ? 'checked' : '') + '>' +
         ' Exclude ' + EXCLUDED_CARDS.size + ' flagged fixture' +
         (EXCLUDED_CARDS.size === 1 ? '' : 's') + '</label>' +
+        autoNote +
         '<div style="font-size:11px; color:#888; margin-top:2px; ' +
         'word-break:break-all;">' +
-        cardsPreview.map(n => '<code>' + n + '</code>').join(', ') +
+        cardsPreview.map(mark).join(', ') +
         '</div>';
   excludedCardsEl.innerHTML =
     '<legend>' + excludedCardsEl.querySelector('legend').textContent + '</legend>' +

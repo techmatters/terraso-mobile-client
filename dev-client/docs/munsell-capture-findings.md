@@ -201,6 +201,40 @@ max exposure time). See docs/munsell-multishot.md. For shadow noise,
 remember averaging the ×1 burst (√N) beats a single brighter frame (§4) and
 doesn't clip; brighter levels are for *stacking on top of* that.
 
+## 6c. Registration robustness — the real outdoor failure mode
+
+Outdoor sun captures (Pixel 6a, 7.5YR multi-card, Oct 2026) exposed a
+failure that dwarfs any exposure effect: **the chart matcher occasionally
+produces a confident-but-wrong transform.** Two of 21 frames had the grid
+shifted off the chips, which parked the grey-card WB-anchor ROI off the
+card → a near-flat WB gain → every chip blown (ΔE 21–24 vs ~7 for the good
+siblings). It is *not* exposure, noise, glare, or clipping — it's WB.
+
+The matcher's own confidence signals **do not catch it**: the worst frame
+had inlier_ratio 0.93 (normal), and `cell_size_px` has ±30% scatter even on
+good frames, so neither discriminates. Chasing this at the matcher level is
+a losing battle.
+
+**The clean detector is downstream: WB-anchor chroma vs the session cohort.**
+In a fixed scene the raw grey card has a consistent channel cast (R:B ≈ 1.39
+here); a mislocated/ specular/off-card anchor reads abnormally neutral
+(1.05, 1.17). Flagging captures whose anchor max/min-channel ratio deviates
+>12% from the session median cleanly separated the 2 bad from all 24 good,
+no false positives — and it's cause-agnostic (catches misregistration,
+specular, or off-card ROIs alike).
+
+This is implemented: `analyze-fixtures` auto-flags these (`flagAnchorOutliers`)
+and folds them into `excluded_cards` + a separate `auto_excluded_cards`, so
+the filmstrip (default-on filter, with a ⚠ marker) and the exposure
+experiment both drop them automatically. The experiment also aggregates
+per-rep (`--metric median`, `repSpd` column) as a second line of defence
+when replicates exist.
+
+**Implication:** the next real lever outdoors is a matte reference card
+(no specular) + specular/registration-robust WB, not exposure. Expect
+occasional registration failures on real soil too; rely on replicates +
+the anchor-outlier filter rather than trusting any single capture.
+
 ## 7. Bad captures
 
 `~/Downloads/munsell0826/bad-captures.csv` lists flagged

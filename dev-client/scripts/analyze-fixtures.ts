@@ -328,6 +328,79 @@ const finiteTriple = (
 ): o is {r: number; g: number; b: number} =>
   !!o && [o.r, o.g, o.b].every(v => typeof v === 'number' && isFinite(v));
 
+// Auto-detect captures whose WB-anchor ROI is a chroma outlier vs its
+// session cohort. This is the clean, cause-agnostic signature of a bad
+// registration transform / specular glint / off-card ROI: the anchor
+// reads an abnormal colour balance (e.g. abnormally neutral) relative to
+// the other exposures of the same scene. The matcher's own confidence
+// signals (inlier ratio, cell size) miss these confident-but-wrong fits —
+// see docs/munsell-capture-findings.md. Returns one entry per flagged
+// fixture label; callers fold these into excluded_cards so every
+// downstream view (filmstrip default-on filter, exposure experiment)
+// drops them.
+type AnchorOutlier = {
+  label: string;
+  scene: string;
+  ratio: number;
+  cohortMedian: number;
+};
+const flagAnchorOutliers = (captures: any[]): AnchorOutlier[] => {
+  const ANCHOR_SLOT = 'greycard'; // the WB reference the research flow uses
+  const DEV = 0.12; // |ratio/cohortMedian − 1| above this ⇒ outlier
+  const MIN_COHORT = 4; // need enough same-scene reps for a stable median
+  const sceneOf = (c: any): string => {
+    const m = String(c.source_path || '').match(/session_[0-9A-Za-z-]+/);
+    if (m) return m[0];
+    return (
+      [c.image_metadata?.model, c.page, c.reference_card]
+        .filter(Boolean)
+        .join('|') || 'scene'
+    );
+  };
+  // max/min channel ratio of the anchor ROI (chroma proxy; 1 = neutral).
+  const ratioOf = (c: any): number | null => {
+    const slot = (c.ref_cards || []).find((s: any) => s?.name === ANCHOR_SLOT);
+    const rgb = slot?.raw_linear_rgb;
+    if (!Array.isArray(rgb) || rgb.length < 3) return null;
+    const mn = Math.min(rgb[0], rgb[1], rgb[2]);
+    const mx = Math.max(rgb[0], rgb[1], rgb[2]);
+    return mn > 1e-6 && isFinite(mx) ? mx / mn : null;
+  };
+  // One ratio per physical raw capture (dedupe the per-anchor/-format
+  // duplicate entries by source_path).
+  const perCapture = new Map<
+    string,
+    {label: string; scene: string; ratio: number}
+  >();
+  for (const c of captures) {
+    if (c.capture_format !== 'raw' || !c.source_path) continue;
+    if (perCapture.has(c.source_path)) continue;
+    const ratio = ratioOf(c);
+    if (ratio == null) continue;
+    perCapture.set(c.source_path, {label: c.label, scene: sceneOf(c), ratio});
+  }
+  const byScene = new Map<string, {label: string; ratio: number}[]>();
+  for (const v of perCapture.values()) {
+    if (!byScene.has(v.scene)) byScene.set(v.scene, []);
+    byScene.get(v.scene)!.push({label: v.label, ratio: v.ratio});
+  }
+  const median = (a: number[]): number => {
+    const s = [...a].sort((x, y) => x - y);
+    const m = s.length >> 1;
+    return s.length % 2 ? s[m] : 0.5 * (s[m - 1] + s[m]);
+  };
+  const out: AnchorOutlier[] = [];
+  for (const [scene, items] of byScene) {
+    if (items.length < MIN_COHORT) continue;
+    const cohortMedian = median(items.map(i => i.ratio));
+    for (const it of items) {
+      if (Math.abs(it.ratio / cohortMedian - 1) > DEV)
+        out.push({label: it.label, scene, ratio: it.ratio, cohortMedian});
+    }
+  }
+  return out;
+};
+
 // Analyzer-local extension of LinearRgbReduced with per-channel
 // linear-sRGB variance across the ROI's pixels. Only produced by the
 // C++ CLI's decode-dng-rois-batch endpoint (mac-only); the on-device
@@ -3233,6 +3306,27 @@ let nFailure = 0;
     `excluded cards: ${excludedCards.length ? excludedCards.join(', ') : '(none)'}\n`,
   );
 
+  // Auto-flag anchor-outlier captures (bad registration / specular / off-
+  // card WB anchor) and fold them into excludedCards so every downstream
+  // view drops them by default. Kept separately in auto_excluded_cards so
+  // the filmstrip can label them as auto-flagged (vs manually curated).
+  const autoExcludedCards = flagAnchorOutliers(captures);
+  for (const a of autoExcludedCards) {
+    if (!excludedCards.includes(a.label)) excludedCards.push(a.label);
+  }
+  process.stderr.write(
+    autoExcludedCards.length
+      ? `auto-excluded ${autoExcludedCards.length} anchor-outlier capture(s): ` +
+          autoExcludedCards
+            .map(
+              a =>
+                `${a.label} (anchor ratio ${a.ratio.toFixed(2)} vs cohort ${a.cohortMedian.toFixed(2)})`,
+            )
+            .join('; ') +
+          '\n'
+      : 'auto-excluded anchor outliers: (none)\n',
+  );
+
   const runMeta = {
     schema_version: SCHEMA_VERSION,
     generated_at: new Date().toISOString(),
@@ -3242,6 +3336,7 @@ let nFailure = 0;
     n_failure: nFailure,
     excluded_chips: excludedChips,
     excluded_cards: excludedCards,
+    auto_excluded_cards: autoExcludedCards,
   };
   const output = {...runMeta, captures};
 
