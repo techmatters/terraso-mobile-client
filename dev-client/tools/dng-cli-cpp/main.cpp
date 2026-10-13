@@ -26,6 +26,8 @@
 // See docs/android-raw-path.md for the full motivation.
 
 #include "DngDecoderC.h"
+#include "DngParser.hpp"
+#include "DngPipeline.hpp"
 
 #include <cstdint>
 #include <cstdio>
@@ -262,8 +264,41 @@ int cmdDecodeDngRoisBatch(int argc, char** argv) {
   std::vector<double> vR(total), vG(total), vB(total);
   std::vector<double> nmR(total), nmG(total), nmB(total);
   std::vector<double> ndR(total), ndG(total), ndB(total);
+  // Per-flat-ROI colour histograms; populated only in emit mode (below),
+  // empty otherwise. See DngPipeline decodeRoiReduced histogramOut.
+  std::vector<std::vector<int>> hists;
+  const bool emitHist = []() {
+    const char* e = std::getenv("DNG_CLI_EMIT_HIST");
+    return e != nullptr && std::strcmp(e, "1") == 0;
+  }();
   const char* err = nullptr;
-  if (total > 0) {
+  if (total > 0 && emitHist) {
+    // Offline histogram mode: bypass the scalar-only C ABI and call the
+    // C++ pipeline directly (one parseDng, per-ROI decodeRoiReduced). The
+    // numbers are identical — the C ABI wraps the same function — but we
+    // also get each ROI's colour histogram in the same pixel pass.
+    try {
+      dngdecoder::ParsedDng dng = dngdecoder::parseDng(path);
+      hists.resize(total);
+      for (size_t k = 0; k < total; ++k) {
+        const dngdecoder::RoiPx roi{
+            static_cast<uint32_t>(flat[k * 4 + 0]),
+            static_cast<uint32_t>(flat[k * 4 + 1]),
+            static_cast<uint32_t>(flat[k * 4 + 2]),
+            static_cast<uint32_t>(flat[k * 4 + 3])};
+        const dngdecoder::RoiReduced r =
+            dngdecoder::decodeRoiReduced(dng, roi, &hists[k]);
+        mR[k] = r.mean.r;           mG[k] = r.mean.g;           mB[k] = r.mean.b;
+        muR[k] = r.meanUnclamped.r; muG[k] = r.meanUnclamped.g; muB[k] = r.meanUnclamped.b;
+        dR[k] = r.dominant.r;       dG[k] = r.dominant.g;       dB[k] = r.dominant.b;
+        vR[k] = r.variance.r;       vG[k] = r.variance.g;       vB[k] = r.variance.b;
+        nmR[k] = r.meanNoClip.r;    nmG[k] = r.meanNoClip.g;    nmB[k] = r.meanNoClip.b;
+        ndR[k] = r.dominantNoClip.r; ndG[k] = r.dominantNoClip.g; ndB[k] = r.dominantNoClip.b;
+      }
+    } catch (const std::exception& e) {
+      die(std::string("decodeRoiReduced (emit-hist) failed: ") + e.what());
+    }
+  } else if (total > 0) {
     if (!dngDecoderDecodeRoisReducedWithVar(
             path.c_str(), flat.data(), static_cast<int32_t>(total), mR.data(),
             mG.data(), mB.data(), muR.data(), muG.data(), muB.data(),
@@ -319,6 +354,15 @@ int cmdDecodeDngRoisBatch(int argc, char** argv) {
       writeDouble(out, ndG[k]);
       out += ",\"dominantNoClipB\":";
       writeDouble(out, ndB[k]);
+      if (emitHist) {
+        out += ",\"histogram\":[";
+        const std::vector<int>& h = hists[k];
+        for (size_t hi = 0; hi < h.size(); ++hi) {
+          if (hi) out += ",";
+          out += std::to_string(h[hi]);
+        }
+        out += "]";
+      }
       out += "}";
     }
     out += "]";

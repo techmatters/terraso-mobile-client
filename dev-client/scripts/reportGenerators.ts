@@ -133,6 +133,8 @@ export type CaptureJsonEntry = {
     expected_linear_rgb: [number, number, number] | null;
     measured_linear_rgb: [number, number, number] | null;
     delta_e: number | null;
+    // Per-slot colour histogram (RAW path) — powers the hover inspector.
+    raw_histogram?: number[] | null;
   }> | null;
   // exiftool-derived camera + DNG-tag summary (see analyze-fixtures
   // extractImageMetadata for exact fields). Null when the prefetch
@@ -173,8 +175,14 @@ export type CellJsonEntry = {
   // Median-cut dominant reducer companion (see analyzer + filmstrip
   // reducer radio). Null on photo-path fixtures.
   raw_linear_rgb_dominant?: [number, number, number] | null;
+  // Clipped-pixel-excluded reducers (optional).
+  raw_linear_rgb_noclip?: [number, number, number] | null;
   measured_linear_rgb: [number, number, number];
   delta_e: number;
+  // Flat [binIndex, count, …] 6-bit sRGB-gamma colour histogram of the
+  // ROI; present when analyze-fixtures ran with histograms. Powers the
+  // hover inspector.
+  raw_histogram?: number[] | null;
   sample_rect: {x: number; y: number; w: number; h: number};
   is_reference: boolean;
 };
@@ -206,6 +214,97 @@ const deltaEColor = (deltaE: number): string => {
   if (deltaE < 6) return '#e6f5c8';
   if (deltaE < 12) return '#f5e6c8';
   return '#f5c8c8';
+};
+
+// ---- Hover-inspector payload (per-patch colour + histogram) --------------
+// 6-bit sRGB-gamma bin of a linear value — matches the CLI roiHistogram so
+// the mean/dominant markers land on the right histogram bucket.
+const bin6c = (lin: number): number => {
+  const c = Math.max(0, Math.min(1, lin));
+  const g = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+  return Math.max(0, Math.min(63, Math.round(g * 63)));
+};
+// Decode a flat [binIndex, count, …] 6-bit joint histogram into 3×64
+// per-channel marginals + total pixel count.
+const histMarginals = (
+  flat?: number[] | null,
+): {r: number[]; g: number[]; b: number[]; px: number} | null => {
+  if (!flat || flat.length < 2) return null;
+  const r = new Array(64).fill(0);
+  const g = new Array(64).fill(0);
+  const b = new Array(64).fill(0);
+  let px = 0;
+  for (let i = 0; i + 1 < flat.length; i += 2) {
+    const idx = flat[i];
+    const c = flat[i + 1];
+    r[(idx >> 12) & 63] += c;
+    g[(idx >> 6) & 63] += c;
+    b[idx & 63] += c;
+    px += c;
+  }
+  return {r, g, b, px};
+};
+// Escape a JSON string for a single-quoted HTML attribute.
+const escAttr = (s: string): string =>
+  s.replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/</g, '&lt;');
+type Triple = [number, number, number] | null | undefined;
+// Build the compact per-patch payload embedded in a <g data-ph='…'> for the
+// hover inspector. Swatch colours are POST-WB (reducer raw × per-cell gain)
+// so they compare to `expected`; histogram markers stay in RAW 6-bit space
+// (the histogram is of raw pixels). The client renders swatches + per-reducer
+// ΔE + the marginal bars from this.
+const patchPayloadAttr = (p: {
+  title: string;
+  meas: string | null;
+  de: number | null;
+  expected: Triple;
+  rawMean: Triple;
+  measMean: Triple;
+  rawDominant: Triple;
+  rawNoClip: Triple;
+  hist?: number[] | null;
+}): string => {
+  const gain: [number, number, number] | null =
+    p.rawMean && p.measMean
+      ? [
+          p.rawMean[0] > 1e-6 ? p.measMean[0] / p.rawMean[0] : 1,
+          p.rawMean[1] > 1e-6 ? p.measMean[1] / p.rawMean[1] : 1,
+          p.rawMean[2] > 1e-6 ? p.measMean[2] / p.rawMean[2] : 1,
+        ]
+      : null;
+  const wb = (raw: Triple): [number, number, number] | null =>
+    raw && gain ? [raw[0] * gain[0], raw[1] * gain[1], raw[2] * gain[2]] : null;
+  const m = histMarginals(p.hist);
+  const round3 = (t: Triple): [number, number, number] | null =>
+    t ? [+t[0].toFixed(4), +t[1].toFixed(4), +t[2].toFixed(4)] : null;
+  const obj = {
+    t: p.title,
+    m: p.meas,
+    de: p.de,
+    e: round3(p.expected),
+    mn: round3(p.measMean),
+    dm: round3(wb(p.rawDominant)),
+    nc: round3(wb(p.rawNoClip)),
+    h: m
+      ? {
+          r: m.r,
+          g: m.g,
+          b: m.b,
+          px: m.px,
+          mb: p.rawMean
+            ? [bin6c(p.rawMean[0]), bin6c(p.rawMean[1]), bin6c(p.rawMean[2])]
+            : null,
+          db: p.rawDominant
+            ? [
+                bin6c(p.rawDominant[0]),
+                bin6c(p.rawDominant[1]),
+                bin6c(p.rawDominant[2]),
+              ]
+            : null,
+        }
+      : null,
+  };
+  return escAttr(JSON.stringify(obj));
 };
 
 // ---- Lab + ΔE2000 breakdown --------------------------------------------
@@ -754,17 +853,27 @@ export const renderResultGridSvg = (
         );
         continue;
       }
-      el.push(
-        renderResultCell(
-          x + CELL_GAP / 2,
-          y + CELL_GAP / 2,
-          CELL_W - CELL_GAP,
-          CELL_H - CELL_GAP,
-          cell,
-          referenceNotation,
-          excludedSet,
-        ),
+      const cellSvg = renderResultCell(
+        x + CELL_GAP / 2,
+        y + CELL_GAP / 2,
+        CELL_W - CELL_GAP,
+        CELL_H - CELL_GAP,
+        cell,
+        referenceNotation,
+        excludedSet,
       );
+      const ph = patchPayloadAttr({
+        title: cell.expected_notation,
+        meas: cell.measured_notation,
+        de: cell.delta_e,
+        expected: cell.expected_linear_rgb,
+        rawMean: cell.raw_linear_rgb,
+        measMean: cell.measured_linear_rgb,
+        rawDominant: cell.raw_linear_rgb_dominant,
+        rawNoClip: cell.raw_linear_rgb_noclip,
+        hist: cell.raw_histogram,
+      });
+      el.push(`<g class="ph" data-ph='${ph}'>${cellSvg}</g>`);
     }
   }
 
@@ -790,16 +899,26 @@ export const renderResultGridSvg = (
     );
     jsonEntry.ref_cards.forEach((slot, i) => {
       const cellX = LABEL_W + CELL_W * i + CELL_GAP / 2;
-      el.push(
-        renderRefCardCell(
-          cellX,
-          refY + CELL_GAP / 2,
-          CELL_W - CELL_GAP,
-          REF_ROW_H - CELL_GAP,
-          slot,
-          wbAnchorSlot === slot.name,
-        ),
+      const refSvg = renderRefCardCell(
+        cellX,
+        refY + CELL_GAP / 2,
+        CELL_W - CELL_GAP,
+        REF_ROW_H - CELL_GAP,
+        slot,
+        wbAnchorSlot === slot.name,
       );
+      const ph = patchPayloadAttr({
+        title: slot.display_name || slot.name,
+        meas: null,
+        de: slot.delta_e,
+        expected: slot.expected_linear_rgb,
+        rawMean: slot.raw_linear_rgb,
+        measMean: slot.measured_linear_rgb,
+        rawDominant: slot.raw_linear_rgb_dominant,
+        rawNoClip: null,
+        hist: slot.raw_histogram,
+      });
+      el.push(`<g class="ph" data-ph='${ph}'>${refSvg}</g>`);
     });
   } else if (jsonEntry.ref_card) {
     el.push(
@@ -1133,9 +1252,27 @@ export const renderReportBundle = (
       border: 1px solid #bbb; border-radius: 4px; background: #f5f5f5; }
     #filter-bar button:hover { background: #ececec; }
     #filter-count { color: #666; font-variant-numeric: tabular-nums; }
+    /* Hover inspector (per-patch colour + histogram). */
+    .ph { cursor: help; }
+    #ph-tip {
+      position: fixed; z-index: 1000; pointer-events: none; display: none;
+      background: #fff; border: 1px solid #bbb; border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25); padding: 8px 10px;
+      font-family: sans-serif; font-size: 12px; color: #222; max-width: 320px;
+    }
+    #ph-tip .ph-h { font-weight: 700; margin-bottom: 6px; }
+    #ph-tip .ph-sw { display: flex; gap: 8px; margin-bottom: 6px; }
+    #ph-tip .ph-sw div { text-align: center; }
+    #ph-tip .ph-sw .sw {
+      width: 34px; height: 24px; border: 1px solid #999; border-radius: 3px;
+    }
+    #ph-tip .ph-sw .lb { font-size: 10px; color: #555; }
+    #ph-tip .ph-sw .de { font-size: 11px; font-weight: 600; }
+    #ph-tip .ph-foot { color: #777; font-size: 10px; margin-top: 4px; }
   </style>
 </head>
 <body>
+  <div id="ph-tip"></div>
   <h1>Munsell Chart Validator — regression report</h1>
   ${renderFilterBar(groupList)}
   <table class="meta">
@@ -1270,6 +1407,96 @@ export const renderReportBundle = (
       window.addEventListener('hashchange', openHashTarget);
       openHashTarget();
       applyFilters();
+    })();
+
+    // Hover inspector: show a patch's colour swatches (expected / mean /
+    // dominant / noclip, post-WB), per-reducer ΔE, and per-channel colour
+    // histogram with mean (|) + dominant (o) markers. Data rides inline on
+    // each <g data-ph> (set by patchPayloadAttr). One delegated listener.
+    (function () {
+      var tip = document.getElementById('ph-tip');
+      if (!tip) return;
+      function enc(v) {
+        var c = Math.max(0, Math.min(1, v));
+        var g = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+        return Math.round(g * 255);
+      }
+      function hex(t) {
+        if (!t) return '#cccccc';
+        return '#' + [0, 1, 2].map(function (i) {
+          return ('0' + enc(t[i]).toString(16)).slice(-2);
+        }).join('');
+      }
+      function lab(t) {
+        var r = Math.max(0, t[0]), g = Math.max(0, t[1]), b = Math.max(0, t[2]);
+        var X = 0.4124 * r + 0.3576 * g + 0.1805 * b;
+        var Y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        var Z = 0.0193 * r + 0.1192 * g + 0.9505 * b;
+        var d = 6 / 29;
+        function f(u) { return u > d * d * d ? Math.cbrt(u) : u / (3 * d * d) + 4 / 29; }
+        var fx = f(X / 0.95047), fy = f(Y), fz = f(Z / 1.08883);
+        return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+      }
+      function de00(l1, l2) {
+        var L1 = l1[0], a1 = l1[1], b1 = l1[2], L2 = l2[0], a2 = l2[1], b2 = l2[2];
+        var C1 = Math.hypot(a1, b1), C2 = Math.hypot(a2, b2), aC = (C1 + C2) / 2;
+        var G = 0.5 * (1 - Math.sqrt(Math.pow(aC, 7) / (Math.pow(aC, 7) + Math.pow(25, 7))));
+        var a1p = a1 * (1 + G), a2p = a2 * (1 + G);
+        var C1p = Math.hypot(a1p, b1), C2p = Math.hypot(a2p, b2), aCp = (C1p + C2p) / 2;
+        function h(ap, bp) { if (ap === 0 && bp === 0) return 0; var x = Math.atan2(bp, ap) * 180 / Math.PI; return x < 0 ? x + 360 : x; }
+        var h1 = h(a1p, b1), h2 = h(a2p, b2), dL = L2 - L1, dC = C2p - C1p, dh;
+        if (C1p * C2p === 0) dh = 0; else { var dd = h2 - h1; dh = dd > 180 ? dd - 360 : dd < -180 ? dd + 360 : dd; }
+        var dH = 2 * Math.sqrt(C1p * C2p) * Math.sin(dh * Math.PI / 360), ah;
+        if (C1p * C2p === 0) ah = h1 + h2; else { var da = Math.abs(h1 - h2); ah = da > 180 ? (h1 + h2 + 360) / 2 : (h1 + h2) / 2; }
+        var T = 1 - 0.17 * Math.cos((ah - 30) * Math.PI / 180) + 0.24 * Math.cos(2 * ah * Math.PI / 180) + 0.32 * Math.cos((3 * ah + 6) * Math.PI / 180) - 0.2 * Math.cos((4 * ah - 63) * Math.PI / 180);
+        var aLp = (L1 + L2) / 2, SL = 1 + 0.015 * Math.pow(aLp - 50, 2) / Math.sqrt(20 + Math.pow(aLp - 50, 2)), SC = 1 + 0.045 * aCp, SH = 1 + 0.015 * aCp * T;
+        var dTh = 30 * Math.exp(-Math.pow((ah - 275) / 25, 2)), RC = 2 * Math.sqrt(Math.pow(aCp, 7) / (Math.pow(aCp, 7) + Math.pow(25, 7))), RT = -RC * Math.sin(2 * dTh * Math.PI / 180);
+        return Math.sqrt(Math.pow(dL / SL, 2) + Math.pow(dC / SC, 2) + Math.pow(dH / SH, 2) + RT * (dC / SC) * (dH / SH));
+      }
+      function swatch(lbl, t, exp) {
+        if (!t) return '';
+        var de = exp && t ? ' <span class="de">' + de00(lab(t), lab(exp)).toFixed(1) + '</span>' : '';
+        return '<div><div class="sw" style="background:' + hex(t) + '"></div><div class="lb">' + lbl + '</div>' + de + '</div>';
+      }
+      function bars(h) {
+        if (!h) return '<div class="ph-foot">(no histogram — photo ref or --no-emit-histograms)</div>';
+        var chans = [['R', '#c62828', h.r, 0], ['G', '#2e7d32', h.g, 1], ['B', '#1565c0', h.b, 2]];
+        var H = 22;
+        var rows = chans.map(function (ch) {
+          var arr = ch[2], mx = Math.max.apply(null, arr) || 1, rects = '';
+          for (var i = 0; i < 64; i++) { var bh = arr[i] / mx * H; rects += '<rect x="' + (i * 2) + '" y="' + (H - bh) + '" width="2" height="' + bh + '" fill="' + ch[1] + '"/>'; }
+          var mk = '';
+          if (h.mb) mk += '<line x1="' + (h.mb[ch[3]] * 2 + 1) + '" x2="' + (h.mb[ch[3]] * 2 + 1) + '" y1="0" y2="' + H + '" stroke="#000" stroke-width="1"/>';
+          if (h.db) mk += '<circle cx="' + (h.db[ch[3]] * 2 + 1) + '" cy="4" r="3.5" fill="none" stroke="#000" stroke-width="1.2"/>';
+          return '<div style="display:flex;align-items:center;gap:4px"><span style="width:10px;font-weight:600;color:' + ch[1] + '">' + ch[0] + '</span><svg width="128" height="' + H + '" style="background:#f6f6f6;border:1px solid #eee">' + rects + mk + '</svg></div>';
+        }).join('');
+        return rows + '<div class="ph-foot">| mean &nbsp; o dominant &nbsp;&middot;&nbsp; ' + (h.px || 0) + ' px</div>';
+      }
+      function render(o) {
+        var head = o.t + (o.m ? ' &rarr; ' + o.m : '') + (o.de != null ? ' &middot; ΔE ' + o.de.toFixed(1) : '');
+        var sw = '<div class="ph-sw">' + swatch('exp', o.e, null) + swatch('mean', o.mn, o.e) + swatch('dom', o.dm, o.e) + swatch('noclip', o.nc, o.e) + '</div>';
+        return '<div class="ph-h">' + head + '</div>' + sw + bars(o.h);
+      }
+      document.addEventListener('mouseover', function (e) {
+        var g = e.target.closest ? e.target.closest('[data-ph]') : null;
+        if (!g) return;
+        var o;
+        try { o = JSON.parse(g.getAttribute('data-ph')); } catch (err) { return; }
+        tip.innerHTML = render(o);
+        tip.style.display = 'block';
+      });
+      document.addEventListener('mousemove', function (e) {
+        if (tip.style.display !== 'block') return;
+        var x = e.clientX + 14, y = e.clientY + 14;
+        var w = tip.offsetWidth, hh = tip.offsetHeight;
+        if (x + w > window.innerWidth) x = e.clientX - w - 14;
+        if (y + hh > window.innerHeight) y = e.clientY - hh - 14;
+        tip.style.left = x + 'px'; tip.style.top = y + 'px';
+      });
+      document.addEventListener('mouseout', function (e) {
+        var g = e.target.closest ? e.target.closest('[data-ph]') : null;
+        if (g) tip.style.display = 'none';
+      });
     })();
   </script>
 </body>

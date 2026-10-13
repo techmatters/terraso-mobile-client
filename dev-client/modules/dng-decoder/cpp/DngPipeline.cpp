@@ -7,7 +7,9 @@
 #include <chrono>
 #include <cmath>
 #include <cstdio>
+#include <map>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
 namespace dngdecoder {
@@ -347,7 +349,8 @@ std::array<double, 3> readSensorPixel(const ParsedDng& dng,
 
 }  // namespace
 
-RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
+RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn,
+                            std::vector<int>* histogramOut) {
   if (roiIn.w == 0 || roiIn.h == 0) {
     throw std::runtime_error("DNG pipeline: empty ROI");
   }
@@ -474,6 +477,35 @@ RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roiIn) {
       std::max(0.0, linearSumSq[1] * invN - meanLin.g * meanLin.g),
       std::max(0.0, linearSumSq[2] * invN - meanLin.b * meanLin.b),
   };
+
+  // Optional 6-bit-per-channel sRGB-gamma histogram of the clamped
+  // linear-sRGB pixels (the same `pixels` the median-cut dominant saw),
+  // flat [binIndex, count, …] sorted by count descending. Format matches
+  // tools/dng-cli/main.swift roiHistogram so the RAW C++ path and the
+  // photo/iOS Swift path produce identical distributions for offline
+  // reducer experiments.
+  if (histogramOut != nullptr) {
+    auto bin6 = [](double lv) -> int {
+      lv = std::clamp(lv, 0.0, 1.0);
+      const double g = lv <= 0.0031308 ? 12.92 * lv
+                                       : 1.055 * std::pow(lv, 1.0 / 2.4) - 0.055;
+      return std::clamp(static_cast<int>(std::lround(g * 63.0)), 0, 63);
+    };
+    std::map<int, int> counts;
+    for (const LinearRgbF& p : pixels) {
+      const int idx = (bin6(p.r) << 12) | (bin6(p.g) << 6) | bin6(p.b);
+      ++counts[idx];
+    }
+    std::vector<std::pair<int, int>> sorted(counts.begin(), counts.end());
+    std::sort(sorted.begin(), sorted.end(),
+              [](const auto& a, const auto& b) { return a.second > b.second; });
+    histogramOut->clear();
+    histogramOut->reserve(sorted.size() * 2);
+    for (const auto& kv : sorted) {
+      histogramOut->push_back(kv.first);
+      histogramOut->push_back(kv.second);
+    }
+  }
 
   return {mean,     meanUnclamped,  dominant,
           variance, meanNoClip,     dominantNoClip};

@@ -523,7 +523,15 @@ class NodeDecoder implements DngDecoderLike {
     const out = execFileSync(
       this.dngCliPath,
       ['decode-dng-rois-batch', dngPath, JSON.stringify(roiSets)],
-      {encoding: 'utf-8', maxBuffer: 64 * 1024 * 1024},
+      {
+        encoding: 'utf-8',
+        maxBuffer: 64 * 1024 * 1024,
+        // Emit per-ROI colour histograms (RAW C++ path) when requested —
+        // mirrors the photo CLI. See DngPipeline decodeRoiReduced.
+        env: emitHistograms
+          ? {...process.env, DNG_CLI_EMIT_HIST: '1'}
+          : process.env,
+      },
     );
     const raw = JSON.parse(out) as Array<
       Array<{
@@ -545,11 +553,13 @@ class NodeDecoder implements DngDecoderLike {
         dominantNoClipR?: number;
         dominantNoClipG?: number;
         dominantNoClipB?: number;
+        histogram?: number[];
       }>
     >;
     return raw.map(inner =>
       inner.map(r => ({
         mean: {r: r.r, g: r.g, b: r.b},
+        histogram: r.histogram,
         meanUnclamped:
           r.meanUnclampedR !== undefined &&
           r.meanUnclampedG !== undefined &&
@@ -1589,6 +1599,11 @@ const buildCaptureEntry = (
                 slot.linearRgbDominant.b,
               ]
             : null,
+          // Per-slot colour histogram (RAW path) for the report's hover
+          // inspector — same format as the cells' raw_histogram.
+          ...(emitHistograms
+            ? {raw_histogram: slot.histogram ?? null}
+            : {}),
           expected_linear_rgb: expected
             ? [expected.r, expected.g, expected.b]
             : null,
@@ -2838,10 +2853,13 @@ const {values} = parseArgs({
     // back into the HTML as a base64 data URI (one portable file, but
     // large + slow to load for big runs).
     'inline-images': {type: 'boolean'},
-    // Emit a per-ROI color histogram (raw_histogram cell field) for offline
-    // reducer experiments. Off by default — it bloats run.json and only the
-    // Swift (photo + iOS RAW) path computes it. Sets DNG_CLI_EMIT_HIST=1.
+    // Per-ROI colour histograms (raw_histogram on cells + ref-card slots)
+    // for the report's hover inspector + offline reducer experiments. ON by
+    // default now that both the RAW C++ path and the photo/iOS Swift path
+    // compute them (sets DNG_CLI_EMIT_HIST=1). Pass --no-emit-histograms to
+    // skip (smaller run.json) when you don't need the distributions.
     'emit-histograms': {type: 'boolean'},
+    'no-emit-histograms': {type: 'boolean'},
     // Experimental A/B: force all raw decode through one pipeline.
     // 'cpp' (our ForwardMatrix) | 'swift' (Apple CIRAWFilter).
     'force-decoder': {type: 'string'},
@@ -2851,9 +2869,11 @@ const {values} = parseArgs({
 const fixturesDir = values.fixtures;
 const outPath = values.out;
 const emitHtml = !values['no-html'];
-// Experimental: emit per-ROI color histograms into run.json cells (and
-// request them from the Swift CLI). Gated because they bloat run.json.
-const emitHistograms = !!values['emit-histograms'];
+// Emit per-ROI colour histograms into run.json (cells + ref-card slots)
+// and request them from both CLIs. On by default; --no-emit-histograms
+// opts out (smaller run.json). --emit-histograms is still accepted for
+// explicitness / backwards compatibility.
+const emitHistograms = !values['no-emit-histograms'];
 if (!fixturesDir) die('missing --fixtures <dir>');
 if (!outPath) die('missing --out <path>');
 

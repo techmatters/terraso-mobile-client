@@ -140,6 +140,12 @@ export type MunsellChartResult = {
     // Median-cut dominant companion. Populated on RAW path; null on
     // photo path (see CellMeasurement.rawLinearRgbDominant note).
     linearRgbDominant: {r: number; g: number; b: number} | null;
+    // Flat [binIndex, count, …] 6-bit sRGB-gamma colour histogram of the
+    // slot ROI, when histogram emission is requested (RAW path only for
+    // now; null on the photo path + when not requested). Same format as
+    // CellMeasurement.histogram. Lets the report inspect ref-patch colour
+    // distributions the same way it does chips.
+    histogram: number[] | null;
     rect: {x: number; y: number; w: number; h: number};
     // Union of every rect the multi-card sweep considered for this
     // slot — the "search area" over which the H×V grid was scanned.
@@ -805,6 +811,9 @@ export const analyzeMunsellChart = async (
   // decoder can't produce one (photo, iOS Swift DNG).
   let matchedSampleValuesUnclamped:
     ({r: number; g: number; b: number} | null)[] | null = null;
+  // Per-slot colour histogram (RAW path, when requested). Parallel to
+  // matchedSampleValues; null entries where the decoder can't produce one.
+  let matchedSampleValuesHistogram: (number[] | null)[] | null = null;
   if (grid.matchedSampleRects) {
     const sampleDngRois = grid.matchedSampleRects.map(r => ({
       x: Math.round(r.x * scaleX),
@@ -820,6 +829,7 @@ export const analyzeMunsellChart = async (
         matchedSampleValuesUnclamped = reduced.map(
           r => r.meanUnclamped ?? null,
         );
+        matchedSampleValuesHistogram = reduced.map(r => r.histogram ?? null);
       } else {
         matchedSampleValues = decoder.decodePhotoRois(imagePath, sampleDngRois);
         matchedSampleValuesDominant = sampleDngRois.map(() => null);
@@ -868,6 +878,7 @@ export const analyzeMunsellChart = async (
             linearRgbUnclamped:
               matchedSampleValuesUnclamped?.[valueIdx] ?? null,
             linearRgbDominant: matchedSampleValuesDominant?.[valueIdx] ?? null,
+            histogram: matchedSampleValuesHistogram?.[valueIdx] ?? null,
             rect: rectAtIdx(rectIdx),
             // Search area only known after the analyzer's post-hoc
             // sweep runs (see maybeSweepMultiCardOffset in

@@ -77,7 +77,14 @@ LinearRgbF decodeRoi(const ParsedDng& dng, const RoiPx& roi);
 // per-pixel linear-sRGB values as input to the median-cut binning.
 // The returned `mean` is byte-identical to what decodeRoi returns
 // for the same ROI (modulo double-precision rounding).
-RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roi);
+// When `histogramOut` is non-null, it is filled with a 6-bit-per-channel
+// sRGB-gamma colour histogram of the ROI's clamped linear-sRGB pixels,
+// as a flat [binIndex, count, …] list sorted by count descending, where
+// binIndex = (r6<<12)|(g6<<6)|b6. Byte-compatible with the Swift CLI's
+// roiHistogram so offline reducer experiments see the same distribution
+// on RAW (C++ path) and photo/iOS (Swift path). Null (default) skips it.
+RoiReduced decodeRoiReduced(const ParsedDng& dng, const RoiPx& roi,
+                            std::vector<int>* histogramOut = nullptr);
 
 // Sub-sampled preview render. Produces an ARGB8888 buffer (each
 // uint32_t = 0xFF__RRGGBB) suitable for direct Bitmap.ARGB_8888
