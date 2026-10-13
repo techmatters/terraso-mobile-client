@@ -97,13 +97,16 @@ type Sample = {
   // these and fall back to their all-pixel counterparts when absent.
   rawRgbNoClip: [number, number, number] | null;
   rawRgbDominantNoClip: [number, number, number] | null;
+  // Histogram-derived trimmed mean (average of the main cluster, outlier
+  // tail rejected). Null on runs without histograms.
+  rawRgbTrimmed: [number, number, number] | null;
   // Physical-card measurements from THIS shutter, keyed by card
   // name ('whibal' | 'postit' | 'greycard'). Used as reference
   // points for the client-side WB fit; missing entries just mean
   // that card wasn't visible in this capture and can't be picked.
   // `rawDominant` is the per-card median-cut companion of `raw`;
   // null on photo-path fixtures + legacy runs.
-  refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]; rawDominant: [number, number, number] | null; rawNoClip: [number, number, number] | null; rawDominantNoClip: [number, number, number] | null}};
+  refOptions: {[name: string]: {expected: [number, number, number]; raw: [number, number, number]; rawDominant: [number, number, number] | null; rawNoClip: [number, number, number] | null; rawDominantNoClip: [number, number, number] | null; rawTrimmed: [number, number, number] | null}};
   // Shot kind bucket, derived from the label:
   //   'burst1of5' … 'burstNofM' — individual burst frames
   //   'burstavgofN'             — the synthetic averaged capture
@@ -260,6 +263,7 @@ for (const cap of runDoc.captures) {
         rawDominant: rc.raw_linear_rgb_dominant ?? null,
         rawNoClip: rc.raw_linear_rgb_noclip ?? null,
         rawDominantNoClip: rc.raw_linear_rgb_dominant_noclip ?? null,
+        rawTrimmed: rc.raw_linear_rgb_trimmed ?? null,
       };
     }
   }
@@ -283,6 +287,7 @@ for (const cap of runDoc.captures) {
           rawDominant: anchorCell.raw_linear_rgb_dominant ?? null,
           rawNoClip: anchorCell.raw_linear_rgb_noclip ?? null,
           rawDominantNoClip: anchorCell.raw_linear_rgb_dominant_noclip ?? null,
+          rawTrimmed: anchorCell.raw_linear_rgb_trimmed ?? null,
         };
       }
     }
@@ -313,6 +318,7 @@ for (const cap of runDoc.captures) {
       rawRgb: cell.raw_linear_rgb_unclamped ?? cell.raw_linear_rgb,
       rawRgbDominant: cell.raw_linear_rgb_dominant ?? null,
       rawRgbNoClip: cell.raw_linear_rgb_noclip ?? null,
+      rawRgbTrimmed: cell.raw_linear_rgb_trimmed ?? null,
       rawRgbDominantNoClip: cell.raw_linear_rgb_dominant_noclip ?? null,
       refOptions,
       captureType: captureTypeOf(cap.label ?? ''),
@@ -819,12 +825,20 @@ function nearestChipNotation(measRgb) {
 // analyzer emits null there), fall back to mean so nothing silently
 // disappears. The RAW path (both iOS and Android) now always carries a
 // real median-cut dominant, so this fallback only fires for photos.
-// The four reducer keys, used by the 'reducer' split axis.
-const REDUCERS = ['mean', 'dominant', 'mean_noclip', 'dominant_noclip'];
+// The reducer keys, used by the 'reducer' split axis.
+const REDUCERS = [
+  'mean',
+  'trimmed',
+  'dominant',
+  'mean_noclip',
+  'dominant_noclip',
+];
 function rawOfSampleWith(s, reducer) {
   switch (reducer) {
     case 'dominant':
       return s.rawRgbDominant || s.rawRgb;
+    case 'trimmed':
+      return s.rawRgbTrimmed || s.rawRgb;
     case 'mean_noclip':
       return s.rawRgbNoClip || s.rawRgb;
     case 'dominant_noclip':
@@ -837,6 +851,8 @@ function rawOfRefWith(ref, reducer) {
   switch (reducer) {
     case 'dominant':
       return ref.rawDominant || ref.raw;
+    case 'trimmed':
+      return ref.rawTrimmed || ref.raw;
     case 'mean_noclip':
       return ref.rawNoClip || ref.raw;
     case 'dominant_noclip':
@@ -1512,6 +1528,7 @@ function initControls() {
   makeRadioGroup(
     document.getElementById('ctl-reducer'), 'reducer',
     [{value: 'mean', label: 'mean (per-channel average)'},
+     {value: 'trimmed', label: 'trimmed mean (main cluster, drop outliers)'},
      {value: 'dominant', label: 'dominant (median-cut biggest cluster)'},
      {value: 'mean_noclip', label: 'mean — exclude clipped pixels'},
      {value: 'dominant_noclip', label: 'dominant — exclude clipped pixels'}],

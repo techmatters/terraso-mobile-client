@@ -135,6 +135,7 @@ export type CaptureJsonEntry = {
     delta_e: number | null;
     // Per-slot colour histogram (RAW path) — powers the hover inspector.
     raw_histogram?: number[] | null;
+    raw_linear_rgb_trimmed?: [number, number, number] | null;
   }> | null;
   // exiftool-derived camera + DNG-tag summary (see analyze-fixtures
   // extractImageMetadata for exact fields). Null when the prefetch
@@ -177,6 +178,8 @@ export type CellJsonEntry = {
   raw_linear_rgb_dominant?: [number, number, number] | null;
   // Clipped-pixel-excluded reducers (optional).
   raw_linear_rgb_noclip?: [number, number, number] | null;
+  // Histogram-derived trimmed mean (optional).
+  raw_linear_rgb_trimmed?: [number, number, number] | null;
   measured_linear_rgb: [number, number, number];
   delta_e: number;
   // Flat [binIndex, count, …] 6-bit sRGB-gamma colour histogram of the
@@ -270,6 +273,7 @@ const patchPayloadAttr = (p: {
   measMean: Triple;
   rawDominant: Triple;
   rawNoClip: Triple;
+  rawTrimmed: Triple;
   hist?: number[] | null;
 }): string => {
   const gain: [number, number, number] | null =
@@ -290,6 +294,7 @@ const patchPayloadAttr = (p: {
     de: p.de,
     e: round3(p.expected),
     mn: round3(p.measMean),
+    tr: round3(wb(p.rawTrimmed)),
     dm: round3(wb(p.rawDominant)),
     nc: round3(wb(p.rawNoClip)),
     h: histPalette(p.hist, gain, 24),
@@ -676,6 +681,7 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
           measMean: cell.measured_linear_rgb,
           rawDominant: cell.raw_linear_rgb_dominant,
           rawNoClip: cell.raw_linear_rgb_noclip,
+          rawTrimmed: cell.raw_linear_rgb_trimmed,
           hist: cell.raw_histogram,
         });
         const hit = `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" fill="none" pointer-events="all"/>`;
@@ -735,6 +741,7 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
               measMean: ref.measured_linear_rgb,
               rawDominant: ref.raw_linear_rgb_dominant,
               rawNoClip: null,
+              rawTrimmed: ref.raw_linear_rgb_trimmed,
               hist: ref.raw_histogram,
             });
             const hit = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" pointer-events="all"/>`;
@@ -899,6 +906,7 @@ export const renderResultGridSvg = (
         measMean: cell.measured_linear_rgb,
         rawDominant: cell.raw_linear_rgb_dominant,
         rawNoClip: cell.raw_linear_rgb_noclip,
+        rawTrimmed: cell.raw_linear_rgb_trimmed,
         hist: cell.raw_histogram,
       });
       // Transparent hit rect ON TOP so the whole cell is hoverable;
@@ -948,6 +956,7 @@ export const renderResultGridSvg = (
         measMean: slot.measured_linear_rgb,
         rawDominant: slot.raw_linear_rgb_dominant,
         rawNoClip: null,
+        rawTrimmed: slot.raw_linear_rgb_trimmed,
         hist: slot.raw_histogram,
       });
       const hit = `<rect x="${cellX}" y="${refY + CELL_GAP / 2}" width="${CELL_W - CELL_GAP}" height="${REF_ROW_H - CELL_GAP}" fill="none" pointer-events="all"/>`;
@@ -1517,7 +1526,7 @@ export const renderReportBundle = (
       }
       function render(o) {
         var head = o.t + (o.m ? ' &rarr; ' + o.m : '') + (o.de != null ? ' &middot; ΔE ' + o.de.toFixed(1) : '');
-        var sw = '<div class="ph-sw">' + swatch('exp', o.e, null) + swatch('mean', o.mn, o.e) + swatch('dom', o.dm, o.e) + swatch('noclip', o.nc, o.e) + '</div>';
+        var sw = '<div class="ph-sw">' + swatch('exp', o.e, null) + swatch('mean', o.mn, o.e) + swatch('trim', o.tr, o.e) + swatch('dom', o.dm, o.e) + swatch('noclip', o.nc, o.e) + '</div>';
         return '<div class="ph-h">' + head + '</div>' + sw + palette(o.h);
       }
       // Manual ancestor walk instead of closest() — robust across

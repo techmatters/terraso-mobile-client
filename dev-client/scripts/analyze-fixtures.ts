@@ -328,6 +328,71 @@ const finiteTriple = (
 ): o is {r: number; g: number; b: number} =>
   !!o && [o.r, o.g, o.b].every(v => typeof v === 'number' && isFinite(v));
 
+// Histogram-derived TRIMMED MEAN reducer: average only the ROI pixels in
+// the main colour cluster, rejecting the far-outlier tail (specular glints,
+// edge-straddle pixels, true texture). Keeps the plain mean's noise
+// averaging (√N) while dropping the outliers that bias it — the "average
+// the real colours only" reducer. Computed from the 6-bit histogram (the
+// pixel distribution itself): centre = per-channel weighted median; keep
+// bins within K × the weighted-median distance from it; weighted-average
+// the kept bins. Returns clamped linear-sRGB (same frame as raw_linear_rgb)
+// or null when there's no histogram. K=3 ≈ a Hampel outlier cutoff.
+const trimmedMeanFromHistogram = (
+  flat?: number[] | null,
+  K = 3,
+): [number, number, number] | null => {
+  if (!flat || flat.length < 2) return null;
+  const ung = (v6: number): number => {
+    const c = v6 / 63;
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  };
+  const bins: {c: [number, number, number]; w: number}[] = [];
+  let total = 0;
+  for (let i = 0; i + 1 < flat.length; i += 2) {
+    const idx = flat[i];
+    const w = flat[i + 1];
+    bins.push({
+      c: [ung((idx >> 12) & 63), ung((idx >> 6) & 63), ung(idx & 63)],
+      w,
+    });
+    total += w;
+  }
+  if (!bins.length || total === 0) return null;
+  // Weighted median of (value, weight) pairs against the ROI's total weight.
+  const wmedian = (vw: [number, number][]): number => {
+    const s = [...vw].sort((a, b) => a[0] - b[0]);
+    let acc = 0;
+    const half = total / 2;
+    for (const [v, w] of s) {
+      acc += w;
+      if (acc >= half) return v;
+    }
+    return s[s.length - 1][0];
+  };
+  const center = [0, 1, 2].map(ch => wmedian(bins.map(b => [b.c[ch], b.w]))) as [
+    number,
+    number,
+    number,
+  ];
+  const dist = (c: [number, number, number]): number =>
+    Math.hypot(c[0] - center[0], c[1] - center[1], c[2] - center[2]);
+  const medDist = wmedian(bins.map(b => [dist(b.c), b.w]));
+  const thresh = K * medDist;
+  let sr = 0;
+  let sg = 0;
+  let sb = 0;
+  let n = 0;
+  for (const b of bins) {
+    if (medDist < 1e-9 || dist(b.c) <= thresh) {
+      sr += b.c[0] * b.w;
+      sg += b.c[1] * b.w;
+      sb += b.c[2] * b.w;
+      n += b.w;
+    }
+  }
+  return n > 0 ? [sr / n, sg / n, sb / n] : center;
+};
+
 // Auto-detect captures whose WB-anchor ROI is a chroma outlier vs its
 // session cohort. This is the clean, cause-agnostic signature of a bad
 // registration transform / specular glint / off-card ROI: the anchor
@@ -1602,7 +1667,12 @@ const buildCaptureEntry = (
           // Per-slot colour histogram (RAW path) for the report's hover
           // inspector — same format as the cells' raw_histogram.
           ...(emitHistograms
-            ? {raw_histogram: slot.histogram ?? null}
+            ? {
+                raw_histogram: slot.histogram ?? null,
+                raw_linear_rgb_trimmed: trimmedMeanFromHistogram(
+                  slot.histogram,
+                ),
+              }
             : {}),
           expected_linear_rgb: expected
             ? [expected.r, expected.g, expected.b]
@@ -1728,7 +1798,15 @@ const buildCaptureEntry = (
         // Experimental per-ROI color histogram (flat [binIndex, count, …],
         // 6-bit sRGB-gamma bins), only when --emit-histograms is set.
         ...(emitHistograms
-          ? {raw_histogram: measurements[i].histogram ?? null}
+          ? {
+              raw_histogram: measurements[i].histogram ?? null,
+              // Trimmed-mean reducer (histogram-derived); see
+              // trimmedMeanFromHistogram. Compared on the filmstrip's
+              // ROI-reducer axis alongside mean / dominant / noclip.
+              raw_linear_rgb_trimmed: trimmedMeanFromHistogram(
+                measurements[i].histogram,
+              ),
+            }
           : {}),
         measured_linear_rgb: [
           r.measuredLinearRgb.r,
