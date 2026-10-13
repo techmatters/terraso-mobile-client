@@ -217,32 +217,40 @@ const deltaEColor = (deltaE: number): string => {
 };
 
 // ---- Hover-inspector payload (per-patch colour + histogram) --------------
-// 6-bit sRGB-gamma bin of a linear value — matches the CLI roiHistogram so
-// the mean/dominant markers land on the right histogram bucket.
-const bin6c = (lin: number): number => {
-  const c = Math.max(0, Math.min(1, lin));
-  const g = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
-  return Math.max(0, Math.min(63, Math.round(g * 63)));
+// gamma (0..63 sRGB) → linear, for decoding a 6-bit histogram bin.
+const ungamma6 = (v6: number): number => {
+  const c = v6 / 63;
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 };
-// Decode a flat [binIndex, count, …] 6-bit joint histogram into 3×64
-// per-channel marginals + total pixel count.
-const histMarginals = (
-  flat?: number[] | null,
-): {r: number[]; g: number[]; b: number[]; px: number} | null => {
+// Turn a flat [binIndex, count, …] 6-bit histogram into a proportional
+// colour-cluster palette: the top-N most-common colours, each as a
+// post-WB hex (reducer colours get the same per-cell gain) + its fraction
+// of the ROI. Shows uniform (one wide band) vs textured/specular (several
+// bands) at a glance — and the leftmost band IS the median-cut dominant's
+// neighbourhood.
+const histPalette = (
+  flat: number[] | null | undefined,
+  gain: [number, number, number] | null,
+  topN: number,
+): {px: number; nc: number; pal: [string, number][]} | null => {
   if (!flat || flat.length < 2) return null;
-  const r = new Array(64).fill(0);
-  const g = new Array(64).fill(0);
-  const b = new Array(64).fill(0);
+  const pairs: [number, number][] = [];
   let px = 0;
   for (let i = 0; i + 1 < flat.length; i += 2) {
-    const idx = flat[i];
-    const c = flat[i + 1];
-    r[(idx >> 12) & 63] += c;
-    g[(idx >> 6) & 63] += c;
-    b[idx & 63] += c;
-    px += c;
+    pairs.push([flat[i], flat[i + 1]]);
+    px += flat[i + 1];
   }
-  return {r, g, b, px};
+  pairs.sort((a, b) => b[1] - a[1]); // CLI already sorts, but be safe
+  const pal: [string, number][] = pairs.slice(0, topN).map(([idx, count]) => {
+    let lin: [number, number, number] = [
+      ungamma6((idx >> 12) & 63),
+      ungamma6((idx >> 6) & 63),
+      ungamma6(idx & 63),
+    ];
+    if (gain) lin = [lin[0] * gain[0], lin[1] * gain[1], lin[2] * gain[2]];
+    return [linearToHex(lin), +(count / px).toFixed(4)];
+  });
+  return {px, nc: pairs.length, pal};
 };
 // Escape a JSON string for a single-quoted HTML attribute.
 const escAttr = (s: string): string =>
@@ -274,7 +282,6 @@ const patchPayloadAttr = (p: {
       : null;
   const wb = (raw: Triple): [number, number, number] | null =>
     raw && gain ? [raw[0] * gain[0], raw[1] * gain[1], raw[2] * gain[2]] : null;
-  const m = histMarginals(p.hist);
   const round3 = (t: Triple): [number, number, number] | null =>
     t ? [+t[0].toFixed(4), +t[1].toFixed(4), +t[2].toFixed(4)] : null;
   const obj = {
@@ -285,24 +292,7 @@ const patchPayloadAttr = (p: {
     mn: round3(p.measMean),
     dm: round3(wb(p.rawDominant)),
     nc: round3(wb(p.rawNoClip)),
-    h: m
-      ? {
-          r: m.r,
-          g: m.g,
-          b: m.b,
-          px: m.px,
-          mb: p.rawMean
-            ? [bin6c(p.rawMean[0]), bin6c(p.rawMean[1]), bin6c(p.rawMean[2])]
-            : null,
-          db: p.rawDominant
-            ? [
-                bin6c(p.rawDominant[0]),
-                bin6c(p.rawDominant[1]),
-                bin6c(p.rawDominant[2]),
-              ]
-            : null,
-        }
-      : null,
+    h: histPalette(p.hist, gain, 24),
   };
   return escAttr(JSON.stringify(obj));
 };
@@ -667,12 +657,30 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
     }
 
     if (result) {
-      // Red rects on per-cell sample positions.
-      for (const r of result.previewRects) {
-        parts.push(
-          `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" stroke="#ff2020" stroke-width="2" fill="none"/>`,
-        );
-      }
+      // Red rects on per-cell sample positions — hoverable (same per-chip
+      // inspector as the result grid). previewRects[i] ↔ cells[i].
+      const ovCells = cap.jsonEntry.cells;
+      result.previewRects.forEach((r, i) => {
+        const rect = `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" stroke="#ff2020" stroke-width="2" fill="none"/>`;
+        const cell = ovCells[i];
+        if (!cell) {
+          parts.push(rect);
+          return;
+        }
+        const ph = patchPayloadAttr({
+          title: cell.expected_notation,
+          meas: cell.measured_notation,
+          de: cell.delta_e,
+          expected: cell.expected_linear_rgb,
+          rawMean: cell.raw_linear_rgb,
+          measMean: cell.measured_linear_rgb,
+          rawDominant: cell.raw_linear_rgb_dominant,
+          rawNoClip: cell.raw_linear_rgb_noclip,
+          hist: cell.raw_histogram,
+        });
+        const hit = `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" fill="none" pointer-events="all"/>`;
+        parts.push(`<g class="ph" data-ph='${ph}'>${rect}${hit}</g>`);
+      });
 
       // Ref-card sample rect (same red as chip rects). Skipped in
       // multi mode — the 3 cyan multiRefCards rects below already
@@ -696,7 +704,10 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
       // signal the sweep range wasn't wide enough for this slot.
       const multi = result.multiRefCards;
       if (multi) {
-        for (const slot of multi) {
+        // ref_cards[i] ↔ multi[i] (same MULTI_CARD_POINTS order; 'paper'
+        // is appended after, so the first N line up).
+        const ovRefs = cap.jsonEntry.ref_cards ?? [];
+        multi.forEach((slot, i) => {
           if (slot.searchArea) {
             const sa = slot.searchArea;
             parts.push(
@@ -705,17 +716,34 @@ export const renderWhitemaskOverlaySvg = (cap: CaptureContext): string => {
             );
           }
           const {x, y, w, h} = slot.rect;
-          parts.push(
+          const box =
             `<rect x="${x}" y="${y}" width="${w}" height="${h}" ` +
-              `stroke="#00c8d0" stroke-width="2" fill="none"/>`,
-          );
-          parts.push(
+            `stroke="#00c8d0" stroke-width="2" fill="none"/>`;
+          const label =
             `<text x="${x + w + 4}" y="${y + h / 2 + 4}" ` +
-              `font-family="sans-serif" font-size="14" ` +
-              `fill="#00c8d0" stroke="#003b40" stroke-width="0.5">` +
-              `${esc(slot.name)}</text>`,
-          );
-        }
+            `font-family="sans-serif" font-size="14" ` +
+            `fill="#00c8d0" stroke="#003b40" stroke-width="0.5">` +
+            `${esc(slot.name)}</text>`;
+          const ref = ovRefs[i];
+          if (ref && ref.name === slot.name) {
+            const ph = patchPayloadAttr({
+              title: ref.display_name || ref.name,
+              meas: null,
+              de: ref.delta_e,
+              expected: ref.expected_linear_rgb,
+              rawMean: ref.raw_linear_rgb,
+              measMean: ref.measured_linear_rgb,
+              rawDominant: ref.raw_linear_rgb_dominant,
+              rawNoClip: null,
+              hist: ref.raw_histogram,
+            });
+            const hit = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" pointer-events="all"/>`;
+            parts.push(`<g class="ph" data-ph='${ph}'>${box}${hit}</g>${label}`);
+          } else {
+            parts.push(box);
+            parts.push(label);
+          }
+        });
       }
     }
 
@@ -873,10 +901,10 @@ export const renderResultGridSvg = (
         rawNoClip: cell.raw_linear_rgb_noclip,
         hist: cell.raw_histogram,
       });
-      // Transparent hit rect ON TOP so the whole cell (not just painted
-      // swatch pixels) is hoverable/clickable; fill rgba(0,0,0,0) still
-      // receives pointer events (unlike fill="none").
-      const hit = `<rect x="${x + CELL_GAP / 2}" y="${y + CELL_GAP / 2}" width="${CELL_W - CELL_GAP}" height="${CELL_H - CELL_GAP}" fill="rgba(0,0,0,0)"/>`;
+      // Transparent hit rect ON TOP so the whole cell is hoverable;
+      // pointer-events="all" makes a fill="none" rect a hit target in
+      // every browser (rgba() fill is rejected by Safari).
+      const hit = `<rect x="${x + CELL_GAP / 2}" y="${y + CELL_GAP / 2}" width="${CELL_W - CELL_GAP}" height="${CELL_H - CELL_GAP}" fill="none" pointer-events="all"/>`;
       el.push(`<g class="ph" data-ph='${ph}'>${cellSvg}${hit}</g>`);
     }
   }
@@ -922,7 +950,7 @@ export const renderResultGridSvg = (
         rawNoClip: null,
         hist: slot.raw_histogram,
       });
-      const hit = `<rect x="${cellX}" y="${refY + CELL_GAP / 2}" width="${CELL_W - CELL_GAP}" height="${REF_ROW_H - CELL_GAP}" fill="rgba(0,0,0,0)"/>`;
+      const hit = `<rect x="${cellX}" y="${refY + CELL_GAP / 2}" width="${CELL_W - CELL_GAP}" height="${REF_ROW_H - CELL_GAP}" fill="none" pointer-events="all"/>`;
       el.push(`<g class="ph" data-ph='${ph}'>${refSvg}${hit}</g>`);
     });
   } else if (jsonEntry.ref_card) {
@@ -1463,24 +1491,27 @@ export const renderReportBundle = (
         var de = exp && t ? ' <span class="de">' + de00(lab(t), lab(exp)).toFixed(1) + '</span>' : '';
         return '<div><div class="sw" style="background:' + hex(t) + '"></div><div class="lb">' + lbl + '</div>' + de + '</div>';
       }
-      function bars(h) {
-        if (!h) return '<div class="ph-foot">(no histogram — photo ref or --no-emit-histograms)</div>';
-        var chans = [['R', '#c62828', h.r, 0], ['G', '#2e7d32', h.g, 1], ['B', '#1565c0', h.b, 2]];
-        var H = 22;
-        var rows = chans.map(function (ch) {
-          var arr = ch[2], mx = Math.max.apply(null, arr) || 1, rects = '';
-          for (var i = 0; i < 64; i++) { var bh = arr[i] / mx * H; rects += '<rect x="' + (i * 2) + '" y="' + (H - bh) + '" width="2" height="' + bh + '" fill="' + ch[1] + '"/>'; }
-          var mk = '';
-          if (h.mb) mk += '<line x1="' + (h.mb[ch[3]] * 2 + 1) + '" x2="' + (h.mb[ch[3]] * 2 + 1) + '" y1="0" y2="' + H + '" stroke="#000" stroke-width="1"/>';
-          if (h.db) mk += '<circle cx="' + (h.db[ch[3]] * 2 + 1) + '" cy="4" r="3.5" fill="none" stroke="#000" stroke-width="1.2"/>';
-          return '<div style="display:flex;align-items:center;gap:4px"><span style="width:10px;font-weight:600;color:' + ch[1] + '">' + ch[0] + '</span><svg width="128" height="' + H + '" style="background:#f6f6f6;border:1px solid #eee">' + rects + mk + '</svg></div>';
-        }).join('');
-        return rows + '<div class="ph-foot">| mean &nbsp; o dominant &nbsp;&middot;&nbsp; ' + (h.px || 0) + ' px</div>';
+      // Proportional colour-cluster palette: the ROI's top-N colours as a
+      // stacked bar, each segment's width = how common it is (post-WB, so
+      // it matches the swatches). One wide band => uniform patch; several
+      // bands => texture / specular / edge straddle (where dominant drifts
+      // from mean). Leftmost = most common ≈ the median-cut dominant.
+      function palette(h) {
+        if (!h || !h.pal || !h.pal.length) return '<div class="ph-foot">(no histogram — photo ref or --no-emit-histograms)</div>';
+        var W = 240, Hh = 20, x = 0, segs = '';
+        for (var i = 0; i < h.pal.length; i++) {
+          var w = h.pal[i][1] * W;
+          segs += '<rect x="' + x.toFixed(2) + '" y="0" width="' + Math.max(0.5, w).toFixed(2) + '" height="' + Hh + '" fill="' + h.pal[i][0] + '"/>';
+          x += w;
+        }
+        var covered = Math.round(h.pal.reduce(function (s, p) { return s + p[1]; }, 0) * 100);
+        return '<div style="margin-top:4px"><svg width="' + W + '" height="' + Hh + '" style="border:1px solid #ccc;border-radius:3px">' + segs + '</svg></div>'
+          + '<div class="ph-foot">top ' + h.pal.length + ' of ' + h.nc + ' colour clusters (' + covered + '% of px) &middot; ' + (h.px || 0) + ' px &middot; width = frequency, left = most common</div>';
       }
       function render(o) {
         var head = o.t + (o.m ? ' &rarr; ' + o.m : '') + (o.de != null ? ' &middot; ΔE ' + o.de.toFixed(1) : '');
         var sw = '<div class="ph-sw">' + swatch('exp', o.e, null) + swatch('mean', o.mn, o.e) + swatch('dom', o.dm, o.e) + swatch('noclip', o.nc, o.e) + '</div>';
-        return '<div class="ph-h">' + head + '</div>' + sw + bars(o.h);
+        return '<div class="ph-h">' + head + '</div>' + sw + palette(o.h);
       }
       // Manual ancestor walk instead of closest() — robust across
       // SVG/Safari where element.closest has been flaky. Walks parentNode
