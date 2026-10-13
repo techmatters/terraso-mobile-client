@@ -819,8 +819,10 @@ function nearestChipNotation(measRgb) {
 // analyzer emits null there), fall back to mean so nothing silently
 // disappears. The RAW path (both iOS and Android) now always carries a
 // real median-cut dominant, so this fallback only fires for photos.
-function rawOfSample(s) {
-  switch (state.reducer) {
+// The four reducer keys, used by the 'reducer' split axis.
+const REDUCERS = ['mean', 'dominant', 'mean_noclip', 'dominant_noclip'];
+function rawOfSampleWith(s, reducer) {
+  switch (reducer) {
     case 'dominant':
       return s.rawRgbDominant || s.rawRgb;
     case 'mean_noclip':
@@ -831,8 +833,8 @@ function rawOfSample(s) {
       return s.rawRgb;
   }
 }
-function rawOfRef(ref) {
-  switch (state.reducer) {
+function rawOfRefWith(ref, reducer) {
+  switch (reducer) {
     case 'dominant':
       return ref.rawDominant || ref.raw;
     case 'mean_noclip':
@@ -843,16 +845,19 @@ function rawOfRef(ref) {
       return ref.raw;
   }
 }
+const rawOfSample = s => rawOfSampleWith(s, state.reducer);
+const rawOfRef = ref => rawOfRefWith(ref, state.reducer);
 
 // Client-side WB fit. Two modes: single-ref (gain-only, forced
 // through origin) and two-ref (gain + offset). Per-channel — computed
 // independently for R, G, B. Returns null if the refs aren't
 // available in this sample's shot (missing card, etc.); caller
 // drops the sample.
-function computeWB(refOptions, firstRef, secondRef) {
+function computeWB(refOptions, firstRef, secondRef, reducer) {
+  const red = reducer ?? state.reducer;
   const ref1 = refOptions[firstRef];
   if (!ref1) return null;
-  const raw1 = rawOfRef(ref1);
+  const raw1 = rawOfRefWith(ref1, red);
   if (secondRef === 'none' || !refOptions[secondRef]) {
     return {
       gain: [
@@ -864,7 +869,7 @@ function computeWB(refOptions, firstRef, secondRef) {
     };
   }
   const ref2 = refOptions[secondRef];
-  const raw2 = rawOfRef(ref2);
+  const raw2 = rawOfRefWith(ref2, red);
   const gain = [0, 0, 0];
   const offset = [0, 0, 0];
   for (let k = 0; k < 3; k++) {
@@ -1253,6 +1258,13 @@ const HEATMAP_AXIS_OPTIONS = [
   // wins for this device/scene" as a heatmap. Second-ref is ignored
   // in this mode (each virtual sample uses single-ref gain).
   {value: 'anchor',      label: 'WB anchor (splits sample per ref card)'},
+  // ROI reducer split — one row/col per reducer (mean / dominant /
+  // mean_noclip / dominant_noclip). Like the anchor split, it expands each
+  // sample into one virtual copy per reducer, each re-running WB + ΔE on
+  // that reducer's RGB (ref card included). Lets you see mean-vs-dominant
+  // head-to-head per chip/value/chroma — e.g. WHERE dominant loses to mean.
+  // OVERRIDES the global "ROI reducer" radio while active.
+  {value: 'reducer',     label: 'ROI reducer (mean / dominant / noclip)'},
   {value: 'unevenness',  label: 'illum unevenness (2-wide buckets)'},
   {value: 'signal',      label: 'signal (greycard min R/G/B, 0.05 buckets)'},
 ];
@@ -1293,6 +1305,7 @@ function axisValueOf(s, axis) {
     case 'captureType':return s.captureType;
     case 'illumination':return s.illumination;
     case 'anchor':     return s.anchor ?? null;
+    case 'reducer':    return s.reducer ?? null;
     case 'expValue':   return exp ? exp.value : null;
     case 'meaValue':   return mea ? mea.value : null;
     case 'expChroma':  return exp ? exp.chroma : null;
@@ -1878,6 +1891,16 @@ function filterSamples() {
     state.facetAxis === 'anchor' ||
     state.rowAxis === 'anchor' ||
     state.colAxis === 'anchor';
+  // Reducer-splitting mode: when any axis is 'reducer', expand each sample
+  // into one virtual copy per reducer (mean / dominant / …), each with its
+  // ΔE recomputed on that reducer's RGB. Composes with anchor-split (cross
+  // product) and with the single-anchor path. Non-split → just the picked
+  // reducer (one value, behaves exactly as before).
+  const splitByReducer =
+    state.facetAxis === 'reducer' ||
+    state.rowAxis === 'reducer' ||
+    state.colAxis === 'reducer';
+  const reducers = splitByReducer ? REDUCERS : [state.reducer];
 
   // First pass — apply per-sample filters (format, device, bg, card,
   // uneven), recompute WB-derived measured / ΔE. Skip excluded-chip
@@ -1903,36 +1926,38 @@ function filterSamples() {
     if (excludeFlagged && EXCLUDED_CHIPS.has(s.expected)) continue;
     if (excludeFlaggedFixtures && EXCLUDED_CARDS.has(s.fixtureLabel)) continue;
 
-    const rawIn = rawOfSample(s);
-    if (state.ccmApplied && state.ccm) {
-      // CCM path: no anchor, no WB. Always one copy per sample even
-      // in split mode — anchor axis is meaningless when CCM is in
-      // effect (measurement doesn't depend on anchor choice).
-      const measuredRgb = applyCCM(rawIn, state.ccm.matrix);
-      const measured = nearestChipNotation(measuredRgb);
-      const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
-      passed.push({...s, measured, measuredRgb, deltaE, anchor: 'ccm'});
-      continue;
-    }
-    if (splitByAnchor) {
-      // Emit one virtual sample per available anchor on this shot.
-      // Second-ref intentionally 'none' — the point of this mode is
-      // to compare anchors individually.
-      for (const name of Object.keys(s.refOptions)) {
-        const wb = computeWB(s.refOptions, name, 'none');
+    for (const red of reducers) {
+      const rawIn = rawOfSampleWith(s, red);
+      if (state.ccmApplied && state.ccm) {
+        // CCM path: no anchor, no WB. One copy per reducer (measurement
+        // depends on the reducer's RGB) but not per anchor (CCM doesn't
+        // use an anchor).
+        const measuredRgb = applyCCM(rawIn, state.ccm.matrix);
+        const measured = nearestChipNotation(measuredRgb);
+        const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
+        passed.push({...s, measured, measuredRgb, deltaE, anchor: 'ccm', reducer: red});
+        continue;
+      }
+      if (splitByAnchor) {
+        // Emit one virtual sample per available anchor on this shot.
+        // Second-ref intentionally 'none' — the point of this mode is
+        // to compare anchors individually.
+        for (const name of Object.keys(s.refOptions)) {
+          const wb = computeWB(s.refOptions, name, 'none', red);
+          if (!wb) continue;
+          const measuredRgb = applyWB(rawIn, wb);
+          const measured = nearestChipNotation(measuredRgb);
+          const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
+          passed.push({...s, measured, measuredRgb, deltaE, anchor: name, reducer: red});
+        }
+      } else {
+        const wb = computeWB(s.refOptions, firstRef, secondRef, red);
         if (!wb) continue;
         const measuredRgb = applyWB(rawIn, wb);
         const measured = nearestChipNotation(measuredRgb);
         const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
-        passed.push({...s, measured, measuredRgb, deltaE, anchor: name});
+        passed.push({...s, measured, measuredRgb, deltaE, anchor: firstRef, reducer: red});
       }
-    } else {
-      const wb = computeWB(s.refOptions, firstRef, secondRef);
-      if (!wb) continue;
-      const measuredRgb = applyWB(rawIn, wb);
-      const measured = nearestChipNotation(measuredRgb);
-      const deltaE = deltaE2000(rgbToLab(measuredRgb), rgbToLab(s.expectedRgb));
-      passed.push({...s, measured, measuredRgb, deltaE, anchor: firstRef});
     }
   }
 
@@ -2686,7 +2711,10 @@ function renderChannels(filtered) {
       // the reducer they picked. 'measured' is already computed through
       // rawOfSample upstream in filterSamples, so it doesn't need
       // re-routing here.
-      const src = channelSource === 'raw' ? rawOfSample(s) : s.measuredRgb;
+      const src =
+        channelSource === 'raw'
+          ? rawOfSampleWith(s, s.reducer ?? state.reducer)
+          : s.measuredRgb;
       if (!s.expectedRgb || !src) continue;
       for (const c of CHANNELS) {
         const x = Math.round(s.expectedRgb[c.idx] * 1000) / 1000;
