@@ -1498,15 +1498,22 @@ export const renderReportBundle = (
       // from mean). Leftmost = most common ≈ the median-cut dominant.
       function palette(h) {
         if (!h || !h.pal || !h.pal.length) return '<div class="ph-foot">(no histogram — photo ref or --no-emit-histograms)</div>';
-        var W = 240, Hh = 20, x = 0, segs = '';
+        var W = 240, Hh = 20, x = 0, segs = '', frac = 0;
         for (var i = 0; i < h.pal.length; i++) {
           var w = h.pal[i][1] * W;
           segs += '<rect x="' + x.toFixed(2) + '" y="0" width="' + Math.max(0.5, w).toFixed(2) + '" height="' + Hh + '" fill="' + h.pal[i][0] + '"/>';
-          x += w;
+          x += w; frac += h.pal[i][1];
         }
-        var covered = Math.round(h.pal.reduce(function (s, p) { return s + p[1]; }, 0) * 100);
+        // Explicit "other" tail (the rarer clusters beyond the top-N) as a
+        // hatched grey block so the leftover isn't mistaken for a colour.
+        var rest = h.nc - h.pal.length;
+        if (x < W - 0.5 && rest > 0) {
+          segs += '<rect x="' + x.toFixed(2) + '" y="0" width="' + (W - x).toFixed(2) + '" height="' + Hh + '" fill="#e6e6e6"/>'
+            + '<line x1="' + x.toFixed(2) + '" y1="' + Hh + '" x2="' + W + '" y2="0" stroke="#bbb" stroke-width="1"/>';
+        }
+        var covered = Math.round(frac * 100);
         return '<div style="margin-top:4px"><svg width="' + W + '" height="' + Hh + '" style="border:1px solid #ccc;border-radius:3px">' + segs + '</svg></div>'
-          + '<div class="ph-foot">top ' + h.pal.length + ' of ' + h.nc + ' colour clusters (' + covered + '% of px) &middot; ' + (h.px || 0) + ' px &middot; width = frequency, left = most common</div>';
+          + '<div class="ph-foot">top ' + h.pal.length + ' colour clusters = ' + covered + '% of px; hatched grey = ' + rest + ' rarer clusters &middot; ' + (h.px || 0) + ' px &middot; width = frequency, left = most common</div>';
       }
       function render(o) {
         var head = o.t + (o.m ? ' &rarr; ' + o.m : '') + (o.de != null ? ' &middot; ΔE ' + o.de.toFixed(1) : '');
