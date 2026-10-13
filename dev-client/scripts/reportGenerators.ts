@@ -873,7 +873,11 @@ export const renderResultGridSvg = (
         rawNoClip: cell.raw_linear_rgb_noclip,
         hist: cell.raw_histogram,
       });
-      el.push(`<g class="ph" data-ph='${ph}'>${cellSvg}</g>`);
+      // Transparent hit rect ON TOP so the whole cell (not just painted
+      // swatch pixels) is hoverable/clickable; fill rgba(0,0,0,0) still
+      // receives pointer events (unlike fill="none").
+      const hit = `<rect x="${x + CELL_GAP / 2}" y="${y + CELL_GAP / 2}" width="${CELL_W - CELL_GAP}" height="${CELL_H - CELL_GAP}" fill="rgba(0,0,0,0)"/>`;
+      el.push(`<g class="ph" data-ph='${ph}'>${cellSvg}${hit}</g>`);
     }
   }
 
@@ -918,7 +922,8 @@ export const renderResultGridSvg = (
         rawNoClip: null,
         hist: slot.raw_histogram,
       });
-      el.push(`<g class="ph" data-ph='${ph}'>${refSvg}</g>`);
+      const hit = `<rect x="${cellX}" y="${refY + CELL_GAP / 2}" width="${CELL_W - CELL_GAP}" height="${REF_ROW_H - CELL_GAP}" fill="rgba(0,0,0,0)"/>`;
+      el.push(`<g class="ph" data-ph='${ph}'>${refSvg}${hit}</g>`);
     });
   } else if (jsonEntry.ref_card) {
     el.push(
@@ -1253,7 +1258,7 @@ export const renderReportBundle = (
     #filter-bar button:hover { background: #ececec; }
     #filter-count { color: #666; font-variant-numeric: tabular-nums; }
     /* Hover inspector (per-patch colour + histogram). */
-    .ph { cursor: help; }
+    .ph { cursor: pointer; }
     #ph-tip {
       position: fixed; z-index: 1000; pointer-events: none; display: none;
       background: #fff; border: 1px solid #bbb; border-radius: 6px;
@@ -1477,25 +1482,47 @@ export const renderReportBundle = (
         var sw = '<div class="ph-sw">' + swatch('exp', o.e, null) + swatch('mean', o.mn, o.e) + swatch('dom', o.dm, o.e) + swatch('noclip', o.nc, o.e) + '</div>';
         return '<div class="ph-h">' + head + '</div>' + sw + bars(o.h);
       }
-      document.addEventListener('mouseover', function (e) {
-        var g = e.target.closest ? e.target.closest('[data-ph]') : null;
-        if (!g) return;
+      // Manual ancestor walk instead of closest() — robust across
+      // SVG/Safari where element.closest has been flaky. Walks parentNode
+      // (works on SVG elements) until it finds [data-ph] or runs out.
+      function findPh(node) {
+        while (node && node.nodeType === 1) {
+          if (node.getAttribute && node.getAttribute('data-ph')) return node;
+          node = node.parentNode;
+        }
+        return null;
+      }
+      function position(x, y) {
+        var w = tip.offsetWidth, hh = tip.offsetHeight;
+        var nx = x + 14, ny = y + 14;
+        if (nx + w > window.innerWidth) nx = x - w - 14;
+        if (ny + hh > window.innerHeight) ny = y - hh - 14;
+        tip.style.left = Math.max(4, nx) + 'px';
+        tip.style.top = Math.max(4, ny) + 'px';
+      }
+      function show(g, x, y) {
         var o;
         try { o = JSON.parse(g.getAttribute('data-ph')); } catch (err) { return; }
         tip.innerHTML = render(o);
         tip.style.display = 'block';
-      });
+        position(x, y);
+      }
+      function hide() { tip.style.display = 'none'; curG = null; }
+      // Click pins the card (survives mouse-leave); click elsewhere unpins.
+      var pinned = false;
+      var curG = null; // last patch rendered — avoids re-render thrash per pixel
       document.addEventListener('mousemove', function (e) {
-        if (tip.style.display !== 'block') return;
-        var x = e.clientX + 14, y = e.clientY + 14;
-        var w = tip.offsetWidth, hh = tip.offsetHeight;
-        if (x + w > window.innerWidth) x = e.clientX - w - 14;
-        if (y + hh > window.innerHeight) y = e.clientY - hh - 14;
-        tip.style.left = x + 'px'; tip.style.top = y + 'px';
+        if (pinned) return;
+        var g = findPh(e.target);
+        if (g) {
+          if (g !== curG) { curG = g; show(g, e.clientX, e.clientY); }
+          else position(e.clientX, e.clientY);
+        } else if (tip.style.display === 'block') hide();
       });
-      document.addEventListener('mouseout', function (e) {
-        var g = e.target.closest ? e.target.closest('[data-ph]') : null;
-        if (g) tip.style.display = 'none';
+      document.addEventListener('click', function (e) {
+        var g = findPh(e.target);
+        if (g) { pinned = true; curG = g; show(g, e.clientX, e.clientY); }
+        else { pinned = false; hide(); }
       });
     })();
   </script>
