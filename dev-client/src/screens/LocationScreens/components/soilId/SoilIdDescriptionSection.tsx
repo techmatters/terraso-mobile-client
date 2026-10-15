@@ -70,6 +70,7 @@ const useOverviewPages = (): CarouselPage[] => {
           </CarouselHeading>
           <CarouselText>{t(`site.soil_id.overview.${key}.info`)}</CarouselText>
           {extra}
+          <View style={styles.spacerSm} />
         </View>
       ),
     });
@@ -95,7 +96,7 @@ const useOverviewPages = (): CarouselPage[] => {
         'page_4',
         OVERVIEW_ART[3],
         <>
-          <View style={styles.spacerMd} />
+          <View style={styles.spacerSm} />
           <View style={styles.pageAction}>
             <CloseModalButton label={t('general.carousel.got_it')} />
           </View>
@@ -155,8 +156,5 @@ const styles = StyleSheet.create({
   },
   spacerSm: {
     height: theme.space.sm,
-  },
-  spacerMd: {
-    height: theme.space.md,
   },
 });
