@@ -12,11 +12,6 @@ msgid "welcome##title"
 msgstr "Ласкаво просимо до LandPKS Soil ID"
 
 #: 
-#, fuzzy
-msgid "welcome##next##title"
-msgstr "Майбутні версії включатимуть:"
-
-#: 
 msgid "search##placeholder"
 msgstr "Пошук на карті"
 
@@ -699,27 +694,22 @@ msgstr "Лінійний"
 #: 
 #, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "Нове в цьому випуску:"
+msgstr "Нове у версії {{version}}:"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Максимальну глибину ґрунту збільшено до 300 см"
+msgstr "Перемикачі стали помітнішими та однаковими в усіх операційних системах"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Спрощено видалення облікового запису"
+msgstr "Виправлено помилку під час створення ділянки зі спливаючого вікна тимчасового розташування"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Додано опцію «неафілійовані» до фільтра списку ділянок"
-
-#: 
-#, fuzzy
-msgid "welcome##next##bullet_1"
-msgstr "Покращення модуля кольору ґрунту"
+msgstr "Виправлено помилку, через яку іноді не вдавалося визначити висоту"
 
 #: 
 msgid "welcome##learn_more"
@@ -4718,11 +4708,6 @@ msgstr "У вас є несинхронізовані зміни, які пот�
 
 #: 
 #, fuzzy
-msgid "welcome##version_includes##bullet_4"
-msgstr "Виправлено помилку, через яку під час видалення ділянки коротко з'являлося попередження"
-
-#: 
-#, fuzzy
 msgid "projects##tabs##export"
 msgstr "Експорт"
 
@@ -4960,21 +4945,6 @@ msgstr "Виникла проблема з визначенням кольору
 
 #: 
 #, fuzzy
-msgid "welcome##version_includes##bullet_5"
-msgstr "Оновлено функціональність текстових полів"
-
-#: 
-#, fuzzy
-msgid "welcome##version_includes##bullet_6"
-msgstr "Додано атрибуцію Mapbox"
-
-#: 
-#, fuzzy
-msgid "welcome##version_includes##bullet_7"
-msgstr "Оновлено посилання на новий вебсайт LandPKS"
-
-#: 
-#, fuzzy
 msgid "projects##sites##transfer_offline"
 msgstr "Перенесення сайтів доступне лише в режимі онлайн."
 
@@ -5015,11 +4985,96 @@ msgstr "Обліковий запис, пов'язаний із {{email}}, бу�
 
 #: 
 #, fuzzy
-msgid "welcome##version_includes##bullet_8"
-msgstr "Покращення алгоритму Soil ID"
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} створено видаленим користувачем"
 
 #: 
 #, fuzzy
-msgid "site##notes##note_attribution_deleted_author"
-msgstr "{{createdAt}} створено видаленим користувачем"
+msgid "welcome##soil_id_changes##title"
+msgstr "Зміни в алгоритмі Soil ID"
+
+#: 
+#, fuzzy
+msgid "welcome##soil_id_changes##description"
+msgstr "Ми оновили спосіб, яким алгоритм Soil ID обчислює оцінку властивостей ґрунту на основі спостережень користувача щодо схилу, гранулометричного складу, об'єму уламків гірської породи та кольору. Відвідайте свої ділянки або експортуйте дані, щоб побачити оновлені оцінки відповідності Soil ID."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_1##title"
+msgstr "Визначення ґрунту має значення!"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_1##info"
+msgstr "Визначення ґрунту має вирішальне значення для рішень щодо стійкого управління земельними ресурсами в сільському господарстві, будівництві, плануванні землекористування, відновленні тощо."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_2##title"
+msgstr "Дані про ґрунт, підтверджені в полі"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_2##info"
+msgstr "Карти ґрунтів дають відправну точку, але їхні прогнози не завжди точні для конкретної ділянки. Soil ID порівнює ці прогнози з польовими спостереженнями, щоб упорядкувати найбільш імовірні варіанти ґрунту."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##title"
+msgstr "Обладнання для ґрунтового розрізу"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##info"
+msgstr "Спостереження збирають, копаючи ґрунтовий розріз. До базового обладнання входять лопата, пляшка з водою, сито та колірний еталон. Корисні посібники доступні в застосунку на кожному кроці. Відвідайте Центр знань LandPKS, щоб отримати навчальні матеріали та повний посібник користувача для завантаження."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##link_text"
+msgstr "Центр знань"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##link_url"
+msgstr "https://landpotential.org/knowledge?_app=landpks-soil-id&_topics=soil-identification&_language=english&_resource_type=tutorial"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_4##title"
+msgstr "Уточнення відповідності ґрунту"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_4##info"
+msgstr "У міру введення спостережень Soil ID повторно впорядковує варіанти ґрунту. Торкніться варіанту ґрунту, щоб дізнатися про нього більше. Коли ви впевнені у виборі, натисніть кнопку «Оцінити відповідність», щоб підтвердити цей ґрунт для ділянки."
+
+#: 
+#, fuzzy
+msgid "settings##clear_soil_id_cache"
+msgstr "Очистити кеш збігів Soil ID"
+
+#: 
+#, fuzzy
+msgid "settings##soil_id_version"
+msgstr "Алгоритм Soil ID {{version}}"
+
+#: 
+#, fuzzy
+msgid "general##cleared"
+msgstr "Очищено!"
+
+#: 
+#, fuzzy
+msgid "general##carousel##overview"
+msgstr "Огляд"
+
+#: 
+#, fuzzy
+msgid "general##carousel##page_indicator"
+msgstr "Сторінка {{current}} з {{total}}"
+
+#: 
+#, fuzzy
+msgid "general##carousel##got_it"
+msgstr "Зрозуміло!"
 

@@ -14,7 +14,7 @@ msgstr "Bienvenido a LandPKS Soil ID"
 #: 
 #, fuzzy
 msgid "welcome##next##title"
-msgstr "¿Qué sigue?"
+msgstr "Las próximas versiones incluirán:"
 
 #: 
 msgid "search##placeholder"
@@ -681,27 +681,27 @@ msgstr "Lineal"
 #: 
 #, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "Esta versión incluye:"
+msgstr "Novedades de esta versión:"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Sin conexión: creación de sitios y edición de metadatos y notas habilitadas"
+msgstr "La profundidad máxima del suelo aumentó a 300 cm"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Nuevo idioma: suajili"
+msgstr "Eliminación de cuenta simplificada"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Traducciones mejoradas para ucraniano, georgiano y español"
+msgstr "Se añadió la opción «sin afiliación» al filtro de la lista de sitios"
 
 #: 
 #, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "pH del suelo"
+msgstr "Mejoras en el módulo de color del suelo"
 
 #: 
 msgid "welcome##learn_more"
@@ -712,8 +712,9 @@ msgid "welcome##link_text"
 msgstr "LandPKS de Terraso"
 
 #: 
+#, fuzzy
 msgid "welcome##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "welcome##get_started"
@@ -850,7 +851,7 @@ msgstr "No se puede obtener el mapa del suelo"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS no pudo obtener el mapa de suelos para esta ubicación. Intenta cerrar y volver a abrir la aplicación. Si el problema persiste, inténtalo de nuevo más tarde o envía una solicitud de soporte a través del sitio web landpks.terraso.org."
+msgstr "LandPKS no pudo obtener el mapa de suelos para esta ubicación. Intenta cerrar y volver a abrir la aplicación. Si el problema persiste, inténtalo de nuevo más tarde o envía una solicitud de soporte a través del sitio web landpotential.org."
 
 #: 
 msgid "site##soil_id##matches##no_map_data_title"
@@ -1373,8 +1374,9 @@ msgid "general##info##privacy_item4"
 msgstr "<bold>La configuración de privacidad de un proyecto determina la privacidad de sus sitios asociados.</bold> Los sitios que pertenecen a un proyecto privado son visibles para los miembros del equipo del proyecto. Un administrador de proyectos puede cambiar la privacidad en cualquier momento."
 
 #: 
+#, fuzzy
 msgid "general##info##data_portal_link_url"
-msgstr "https://landpks.terraso.org/portal"
+msgstr "https://landpotential.org/data-portal"
 
 #: 
 msgid "general##info##data_portal_link_text"
@@ -2256,12 +2258,12 @@ msgstr "<bold>Más información y guías</bold> en:\n"
 #: 
 #, fuzzy
 msgid "info##link_label"
-msgstr "landpks.terraso.org"
+msgstr "landpotential.org"
 
 #: 
 #, fuzzy
 msgid "info##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "projects##search##lastModAsc"
@@ -2396,8 +2398,9 @@ msgid "general##help##label"
 msgstr "Ayuda y soporte"
 
 #: 
+#, fuzzy
 msgid "general##help##url"
-msgstr "https://landpks.terraso.org/help/"
+msgstr "https://landpotential.org/help/"
 
 #: 
 msgid "general##tos##label"
@@ -2435,8 +2438,9 @@ msgid "errors##sync_conflict##body"
 msgstr "Este proyecto ha cambiado. Más información y ayuda en el sitio web de LandPKS."
 
 #: 
+#, fuzzy
 msgid "errors##sync_conflict##support_url"
-msgstr "https://landpks.terraso.org/help/synchronization-conflict/"
+msgstr "https://landpotential.org/help/synchronization-conflict/"
 
 #: 
 msgid "projects##offline_create"
@@ -2473,8 +2477,9 @@ msgstr "<bold>¿Necesitas ayuda?</bold>\n"
 "Consulta a un experto en suelos para ayudar a interpretar las observaciones y determinar una coincidencia de suelo. Más sobre las predicciones de mapas de suelos y las coincidencias de Soil ID en el sitio web:"
 
 #: 
+#, fuzzy
 msgid "site##soil_id##matches##info##description##learn_more_url"
-msgstr "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+msgstr "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
 
 #: 
 msgid "site##soil_id##soil_info##description_title"
@@ -4655,8 +4660,9 @@ msgid "slope##info##data_region_text_global_or_unknown"
 msgstr "Las características de la pendiente ayudan a determinar el potencial de erosión del suelo, su capacidad para retener agua, etc."
 
 #: 
+#, fuzzy
 msgid "general##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
+msgstr "https://terraso.org/privacy-policy/"
 
 #: 
 msgid "general##privacy_policy_link_text"
@@ -4719,7 +4725,7 @@ msgstr "Tienes cambios sin sincronizar que deben cargarse antes de cerrar sesió
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "Mensaje de error más descriptivo para conflictos de sincronización"
+msgstr "Se corrigió un error que mostraba brevemente una alerta al eliminar un sitio"
 
 #: 
 #, fuzzy
@@ -4962,17 +4968,17 @@ msgstr "Hubo un problema al identificar el color del suelo. Asegúrate de seguir
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_5"
-msgstr "Experiencia mejorada al buscar coordenadas en el mapa"
+msgstr "Mejoras en el funcionamiento de los campos de texto"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_6"
-msgstr "Se solucionó un problema por el cual los usuarios que cerraban sesión y volvían a iniciar sesión con una cuenta diferente veían temporalmente los datos de la primera cuenta"
+msgstr "Se añadió la atribución de Mapbox"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_7"
-msgstr "Se solucionó un error por el cual el módulo de color fallaba con fotos sobreexpuestas"
+msgstr "Se actualizaron los enlaces al nuevo sitio web de LandPKS"
 
 #: 
 #, fuzzy
@@ -5013,4 +5019,14 @@ msgstr "Cuenta eliminada"
 #, fuzzy
 msgid "account_deleted##body"
 msgstr "La cuenta asociada a {{email}} ha sido eliminada. Si esto se hizo por error, contacta a nuestro equipo de soporte."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_8"
+msgstr "Mejoras en el algoritmo de Soil ID"
+
+#: 
+#, fuzzy
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} por un usuario eliminado"
 
