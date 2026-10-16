@@ -14,7 +14,7 @@ msgstr "კეთილი იყოს თქვენი მობრძან
 #: 
 #, fuzzy
 msgid "welcome##next##title"
-msgstr "რა არის შემდეგი?"
+msgstr "მომავალი ვერსიები მოიცავს:"
 
 #: 
 msgid "search##placeholder"
@@ -674,28 +674,29 @@ msgid "slope##shape##info##linear"
 msgstr "ხაზოვანი"
 
 #: 
+#, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "ეს ვერსია მოიცავს:"
+msgstr "ახალი ამ გამოშვებაში:"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "ხაზგარეშე რეჟიმში: საიტების შექმნა, საიტის მეტამონაცემებისა და შენიშვნების რედაქტირება ჩართულია"
+msgstr "ნიადაგის მაქსიმალური სიღრმე გაიზარდა 300 სმ-მდე"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "ახალი ენა: სუაჰილი"
+msgstr "ანგარიშის წაშლის პროცესი გამარტივდა"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "გაუმჯობესებული თარგმანები უკრაინული, ქართული და ესპანური ენებისთვის"
+msgstr "საიტების სიის ფილტრს დაემატა „არააფილირებული“ ვარიანტი"
 
 #: 
 #, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "ნიადაგის pH"
+msgstr "ნიადაგის ფერის მოდულის გაუმჯობესებები"
 
 #: 
 msgid "welcome##learn_more"
@@ -706,8 +707,9 @@ msgid "welcome##link_text"
 msgstr "LandPKS ტერასოდან"
 
 #: 
+#, fuzzy
 msgid "welcome##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "welcome##get_started"
@@ -840,8 +842,9 @@ msgid "site##soil_id##matches##error_generic_title"
 msgstr "ნიადაგის რუკის მოძიება შეუძლებელია"
 
 #: 
+#, fuzzy
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS-მა ვერ შეძლო ამ მდებარეობისთვის ნიადაგის რუკის მოძიება. სცადეთ აპლიკაციის შეჩერება და ხელახლა გაშვება. თუ პრობლემა გაგრძელდა, სცადეთ მოგვიანებით ან გაგზავნეთ დახმარების მოთხოვნა ვებსაიტის landpks.terraso.org მეშვეობით."
+msgstr "LandPKS-მა ვერ შეძლო ამ მდებარეობისთვის ნიადაგის რუკის მოძიება. სცადეთ აპლიკაციის შეჩერება და ხელახლა გაშვება. თუ პრობლემა გაგრძელდა, სცადეთ მოგვიანებით ან გაგზავნეთ დახმარების მოთხოვნა ვებსაიტის landpotential.org მეშვეობით."
 
 #: 
 msgid "site##soil_id##matches##no_map_data_title"
@@ -1347,8 +1350,9 @@ msgid "general##info##privacy_item4"
 msgstr "<bold>პროექტის კონფიდენციალურობის პარამეტრი განსაზღვრავს მისი შვილობილი საიტების კონფიდენციალურობას.</bold> კერძო პროექტს მიკუთვნებული საიტები ხილულია პროექტის გუნდის წევრებისთვის. პროექტის მენეჯერს შეუძლია კონფიდენციალურობის შეცვლა ნებისმიერ დროს."
 
 #: 
+#, fuzzy
 msgid "general##info##data_portal_link_url"
-msgstr "https://landpks.terraso.org/portal"
+msgstr "https://landpotential.org/data-portal"
 
 #: 
 msgid "general##info##data_portal_link_text"
@@ -2216,12 +2220,14 @@ msgstr "<bold>დამატებითი ინფორმაციის�
 "<icon />"
 
 #: 
+#, fuzzy
 msgid "info##link_label"
-msgstr "landpks.terraso.org"
+msgstr "landpotential.org"
 
 #: 
+#, fuzzy
 msgid "info##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "projects##search##lastModAsc"
@@ -2353,8 +2359,9 @@ msgid "general##help##label"
 msgstr "დახმარება და მხარდაჭერა"
 
 #: 
+#, fuzzy
 msgid "general##help##url"
-msgstr "https://landpks.terraso.org/help/"
+msgstr "https://landpotential.org/help/"
 
 #: 
 msgid "general##tos##label"
@@ -2391,8 +2398,9 @@ msgid "errors##sync_conflict##body"
 msgstr "ეს პროექტი შეიცვალა. შეიტყვეთ მეტი და მიიღეთ მხარდაჭერა LandPKS-ის ვებსაიტზე."
 
 #: 
+#, fuzzy
 msgid "errors##sync_conflict##support_url"
-msgstr "https://landpks.terraso.org/help/synchronization-conflict/"
+msgstr "https://landpotential.org/help/synchronization-conflict/"
 
 #: 
 msgid "projects##offline_create"
@@ -2429,8 +2437,9 @@ msgstr "\n"
 "დაკვირვებების ინტერპრეტაციისა და ნიადაგის შესაბამისობის დასადგენად, მიმართეთ ნიადაგის ექსპერტს. ნიადაგის რუკის პროგნოზებისა და Soil ID შესაბამისობის შესახებ დამატებითი ინფორმაციის მიღება შეგიძლიათ ვებსაიტზე:"
 
 #: 
+#, fuzzy
 msgid "site##soil_id##matches##info##description##learn_more_url"
-msgstr "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+msgstr "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
 
 #: 
 msgid "site##soil_id##soil_info##description_title"
@@ -4590,8 +4599,9 @@ msgid "slope##info##data_region_text_global_or_unknown"
 msgstr "ფერდობის მახასიათებლები ხელს უწყობს ნიადაგის ეროზიული პოტენციალის, წყლის შეკავების უნარის და სხვა ფაქტორების დადგენას."
 
 #: 
+#, fuzzy
 msgid "general##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
+msgstr "https://terraso.org/privacy-policy/"
 
 #: 
 msgid "general##privacy_policy_link_text"
@@ -4648,7 +4658,7 @@ msgstr "თქვენ გაქვთ გაუსინქრონებე�
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "უფრო დეტალური შეცდომის შეტყობინება სინქრონიზაციის კონფლიქტებისთვის"
+msgstr "გასწორდა შეცდომა, რომლის გამოც საიტის წაშლისას მოკლედ ჩნდებოდა შეტყობინება"
 
 #: 
 msgid "projects##tabs##export"
@@ -4845,17 +4855,17 @@ msgstr "ნიადაგის ფერის იდენტიფიცი�
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_5"
-msgstr "გაუმჯობესებული გამოცდილება რუკაზე კოორდინატების ძიებისას"
+msgstr "ტექსტური ველების ფუნქციონალის განახლებები"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_6"
-msgstr "გასწორდა პრობლემა, რომლის გამოც სხვა ანგარიშზე გადასვლისას მომხმარებლები დროებით ხედავდნენ პირველი ანგარიშის მონაცემებს"
+msgstr "დაემატა Mapbox-ის ატრიბუცია"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_7"
-msgstr "გასწორდა შეცდომა, რომლის გამოც ფერის მოდული იჭედებოდა ჭარბად დაექსპონირებულ ფოტოებზე"
+msgstr "ბმულები განახლდა LandPKS-ის ახალ ვებგვერდზე"
 
 #: 
 #, fuzzy
@@ -4896,4 +4906,14 @@ msgstr "ანგარიში წაშლილია"
 #, fuzzy
 msgid "account_deleted##body"
 msgstr "{{email}}-თან დაკავშირებული ანგარიში წაშლილია. თუ ეს შეცდომით მოხდა, დაუკავშირდით ჩვენს მხარდაჭერის გუნდს."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_8"
+msgstr "Soil ID-ის ალგორითმის გაუმჯობესებები"
+
+#: 
+#, fuzzy
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} წაშლილი მომხმარებლის მიერ"
 

@@ -674,23 +674,23 @@ msgstr "Linear"
 
 #: 
 msgid "welcome##version_includes##title"
-msgstr "This version includes:"
+msgstr "New in this release:"
 
 #: 
 msgid "welcome##version_includes##bullet_1"
-msgstr "Offline: enabled site creation, edit site metadata and notes"
+msgstr "Max soil depth increased to 300cm"
 
 #: 
 msgid "welcome##version_includes##bullet_2"
-msgstr "New language: Swahili"
+msgstr "Streamlined account deletion"
 
 #: 
 msgid "welcome##version_includes##bullet_3"
-msgstr "Improved translations for Ukrainian, Georgian, and Spanish"
+msgstr "Added an “unaffiliated” option to filter sites list"
 
 #: 
 msgid "welcome##next##bullet_1"
-msgstr "Soil pH"
+msgstr "Improvements to the soil color module"
 
 #: 
 msgid "welcome##learn_more"
@@ -702,7 +702,7 @@ msgstr "LandPKS from Terraso"
 
 #: 
 msgid "welcome##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "welcome##get_started"
@@ -834,7 +834,7 @@ msgstr "Can’t fetch soil map"
 
 #: 
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS was unable to fetch the soil map for this location. Try stopping and restarting the app. If the issue continues, try again later or submit a support request through the website landpks.terraso.org."
+msgstr "LandPKS was unable to fetch the soil map for this location. Try stopping and restarting the app. If the issue continues, try again later or submit a support request through the website landpotential.org."
 
 #: 
 msgid "site##soil_id##matches##no_map_data_title"
@@ -1338,7 +1338,7 @@ msgstr "<bold>A project’s privacy setting determines the privacy of its affili
 
 #: 
 msgid "general##info##data_portal_link_url"
-msgstr "https://landpks.terraso.org/portal"
+msgstr "https://landpotential.org/data-portal"
 
 #: 
 msgid "general##info##data_portal_link_text"
@@ -2199,11 +2199,11 @@ msgstr "<bold>Find more information and guides</bold> at:\n"
 
 #: 
 msgid "info##link_label"
-msgstr "landpks.terraso.org"
+msgstr "landpotential.org"
 
 #: 
 msgid "info##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 msgid "projects##search##lastModAsc"
@@ -2336,7 +2336,7 @@ msgstr "Help and support"
 
 #: 
 msgid "general##help##url"
-msgstr "https://landpks.terraso.org/help/"
+msgstr "https://landpotential.org/help/"
 
 #: 
 msgid "general##tos##label"
@@ -2372,7 +2372,7 @@ msgstr "Some of your information could not be loaded or saved. This may be due t
 
 #: 
 msgid "errors##sync_conflict##support_url"
-msgstr "https://landpks.terraso.org/help/synchronization-conflict/"
+msgstr "https://landpotential.org/help/synchronization-conflict/"
 
 #: 
 msgid "projects##offline_create"
@@ -2410,7 +2410,7 @@ msgstr "\n"
 
 #: 
 msgid "site##soil_id##matches##info##description##learn_more_url"
-msgstr "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+msgstr "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
 
 #: 
 msgid "site##soil_id##soil_info##description_title"
@@ -4570,7 +4570,7 @@ msgstr "Slope characteristics help determine the soil’s erosion potential, abi
 
 #: 
 msgid "general##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
+msgstr "https://terraso.org/privacy-policy/"
 
 #: 
 msgid "general##privacy_policy_link_text"
@@ -4626,7 +4626,7 @@ msgstr "You have unsynced changes that need to be uploaded before signing out. P
 
 #: 
 msgid "welcome##version_includes##bullet_4"
-msgstr "More descriptive error message for sync conflicts"
+msgstr "Fixed a bug that flashed an alert when a user deleted a site"
 
 #: 
 msgid "projects##tabs##export"
@@ -4822,15 +4822,15 @@ msgstr "There was an issue identifying the soil color. Make sure you follow the 
 
 #: 
 msgid "welcome##version_includes##bullet_5"
-msgstr "Improved experience of searching for coordinates on map"
+msgstr "Functionality updates for text fields"
 
 #: 
 msgid "welcome##version_includes##bullet_6"
-msgstr "Fixed an issue where users who signed out and signed in with a different account temporarily saw the first account’s data"
+msgstr "Added Mapbox attribution"
 
 #: 
 msgid "welcome##version_includes##bullet_7"
-msgstr "Fixed a bug where the color module would crash with overexposed photos"
+msgstr "Updated links to new LandPKS website"
 
 #: 
 msgid "projects##sites##transfer_offline"
@@ -4863,4 +4863,12 @@ msgstr "Account deleted"
 #: 
 msgid "account_deleted##body"
 msgstr "The account associated with {{email}} has been deleted. If this was done in error, contact our support team."
+
+#: 
+msgid "welcome##version_includes##bullet_8"
+msgstr "Improvements to the Soil ID Algorithm"
+
+#: 
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} by deleted user"
 

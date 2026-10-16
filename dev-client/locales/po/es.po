@@ -12,11 +12,6 @@ msgid "welcome##title"
 msgstr "Bienvenido a LandPKS Soil ID"
 
 #: 
-#, fuzzy
-msgid "welcome##next##title"
-msgstr "Las próximas versiones incluirán:"
-
-#: 
 msgid "search##placeholder"
 msgstr "Buscar en mapa"
 
@@ -681,27 +676,22 @@ msgstr "Lineal"
 #: 
 #, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "Novedades de esta versión:"
+msgstr "Novedades de la versión {{version}}:"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "La profundidad máxima del suelo aumentó a 300 cm"
+msgstr "Los interruptores ahora son más visibles y coherentes entre sistemas operativos"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Eliminación de cuenta simplificada"
+msgstr "Se corrigió un error al crear un sitio desde la ventana emergente de una ubicación temporal"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Se añadió la opción «sin afiliación» al filtro de la lista de sitios"
-
-#: 
-#, fuzzy
-msgid "welcome##next##bullet_1"
-msgstr "Mejoras en el módulo de color del suelo"
+msgstr "Se corrigió un error por el que a veces no se podía obtener la elevación"
 
 #: 
 msgid "welcome##learn_more"
@@ -4724,11 +4714,6 @@ msgstr "Tienes cambios sin sincronizar que deben cargarse antes de cerrar sesió
 
 #: 
 #, fuzzy
-msgid "welcome##version_includes##bullet_4"
-msgstr "Se corrigió un error que mostraba brevemente una alerta al eliminar un sitio"
-
-#: 
-#, fuzzy
 msgid "projects##tabs##export"
 msgstr "Exportar"
 
@@ -4967,21 +4952,6 @@ msgstr "Hubo un problema al identificar el color del suelo. Asegúrate de seguir
 
 #: 
 #, fuzzy
-msgid "welcome##version_includes##bullet_5"
-msgstr "Mejoras en el funcionamiento de los campos de texto"
-
-#: 
-#, fuzzy
-msgid "welcome##version_includes##bullet_6"
-msgstr "Se añadió la atribución de Mapbox"
-
-#: 
-#, fuzzy
-msgid "welcome##version_includes##bullet_7"
-msgstr "Se actualizaron los enlaces al nuevo sitio web de LandPKS"
-
-#: 
-#, fuzzy
 msgid "projects##sites##transfer_offline"
 msgstr "La transferencia de sitios sólo está disponible mientras estás en línea."
 
@@ -5022,11 +4992,96 @@ msgstr "La cuenta asociada a {{email}} ha sido eliminada. Si esto se hizo por er
 
 #: 
 #, fuzzy
-msgid "welcome##version_includes##bullet_8"
-msgstr "Mejoras en el algoritmo de Soil ID"
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} por un usuario eliminado"
 
 #: 
 #, fuzzy
-msgid "site##notes##note_attribution_deleted_author"
-msgstr "{{createdAt}} por un usuario eliminado"
+msgid "welcome##soil_id_changes##title"
+msgstr "Cambios en el algoritmo de Soil ID"
+
+#: 
+#, fuzzy
+msgid "welcome##soil_id_changes##description"
+msgstr "Hemos actualizado la forma en que el algoritmo de Soil ID calcula la puntuación de las propiedades del suelo a partir de las observaciones de pendiente, textura, volumen de fragmentos de roca y color. Visita tus sitios o exporta tus datos para ver las puntuaciones de coincidencia de Soil ID actualizadas."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_1##title"
+msgstr "¡La identificación del suelo importa!"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_1##info"
+msgstr "La identificación del suelo es fundamental para tomar decisiones de manejo sostenible de la tierra en agricultura, construcción, planificación del uso del suelo, restauración y más."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_2##title"
+msgstr "Datos de suelo verificados en el campo"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_2##info"
+msgstr "Los mapas de suelo ofrecen un punto de partida, pero sus predicciones no siempre son precisas para un sitio específico. Soil ID compara esas predicciones con las observaciones de campo para ordenar las coincidencias de suelo más probables."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##title"
+msgstr "Equipo para la calicata"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##info"
+msgstr "Las observaciones se recopilan excavando una calicata. El equipo básico incluye una pala, una botella de agua, un tamiz y una referencia de color. Encuentra guías útiles en la aplicación en cada paso. Visita el Centro de Conocimiento de LandPKS para ver tutoriales y descargar la Guía del Usuario completa."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##link_text"
+msgstr "Centro de conocimiento"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##link_url"
+msgstr "https://landpotential.org/knowledge?_app=landpks-soil-id&_topics=soil-identification&_language=english&_resource_type=tutorial"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_4##title"
+msgstr "Afinar la coincidencia de suelo"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_4##info"
+msgstr "A medida que se ingresan observaciones, Soil ID vuelve a ordenar las coincidencias de suelo. Toca una coincidencia de suelo para conocer más sobre ella. Cuando tengas confianza en una coincidencia, usa el botón “Califica coincidencia” para confirmarla como el suelo del sitio."
+
+#: 
+#, fuzzy
+msgid "settings##clear_soil_id_cache"
+msgstr "Borrar caché de coincidencias de Soil ID"
+
+#: 
+#, fuzzy
+msgid "settings##soil_id_version"
+msgstr "Algoritmo Soil ID {{version}}"
+
+#: 
+#, fuzzy
+msgid "general##cleared"
+msgstr "¡Borrado!"
+
+#: 
+#, fuzzy
+msgid "general##carousel##overview"
+msgstr "Resumen"
+
+#: 
+#, fuzzy
+msgid "general##carousel##page_indicator"
+msgstr "Página {{current}} de {{total}}"
+
+#: 
+#, fuzzy
+msgid "general##carousel##got_it"
+msgstr "¡Entendido!"
 

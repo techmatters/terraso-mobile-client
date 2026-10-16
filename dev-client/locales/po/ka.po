@@ -12,11 +12,6 @@ msgid "welcome##title"
 msgstr "კეთილი იყოს თქვენი მობრძანება LandPKS Soil ID-ში"
 
 #: 
-#, fuzzy
-msgid "welcome##next##title"
-msgstr "მომავალი ვერსიები მოიცავს:"
-
-#: 
 msgid "search##placeholder"
 msgstr "რუკაზე ძიება"
 
@@ -676,27 +671,22 @@ msgstr "ხაზოვანი"
 #: 
 #, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "ახალი ამ გამოშვებაში:"
+msgstr "ახალი {{version}} ვერსიაში:"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "ნიადაგის მაქსიმალური სიღრმე გაიზარდა 300 სმ-მდე"
+msgstr "გადამრთველები გახდა უფრო თვალსაჩინო და ერთგვაროვანი ყველა ოპერაციულ სისტემაზე"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "ანგარიშის წაშლის პროცესი გამარტივდა"
+msgstr "გასწორდა შეცდომა დროებითი მდებარეობის ამომხტარი ფანჯრიდან საიტის შექმნისას"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "საიტების სიის ფილტრს დაემატა „არააფილირებული“ ვარიანტი"
-
-#: 
-#, fuzzy
-msgid "welcome##next##bullet_1"
-msgstr "ნიადაგის ფერის მოდულის გაუმჯობესებები"
+msgstr "გასწორდა შეცდომა, რომლის გამოც სიმაღლე ზოგჯერ ვერ იძებნებოდა"
 
 #: 
 msgid "welcome##learn_more"
@@ -4656,11 +4646,6 @@ msgid "sign_out##blocked_body"
 msgstr "თქვენ გაქვთ გაუსინქრონებელი ცვლილებები, რომლებიც უნდა ატვირთოთ სისტემიდან გამოსვლამდე. გთხოვთ, დაუკავშირდეთ ინტერნეტს და დაელოდოთ თქვენი მონაცემების სინქრონიზაციას."
 
 #: 
-#, fuzzy
-msgid "welcome##version_includes##bullet_4"
-msgstr "გასწორდა შეცდომა, რომლის გამოც საიტის წაშლისას მოკლედ ჩნდებოდა შეტყობინება"
-
-#: 
 msgid "projects##tabs##export"
 msgstr "ექსპორტი"
 
@@ -4854,21 +4839,6 @@ msgstr "ნიადაგის ფერის იდენტიფიცი�
 
 #: 
 #, fuzzy
-msgid "welcome##version_includes##bullet_5"
-msgstr "ტექსტური ველების ფუნქციონალის განახლებები"
-
-#: 
-#, fuzzy
-msgid "welcome##version_includes##bullet_6"
-msgstr "დაემატა Mapbox-ის ატრიბუცია"
-
-#: 
-#, fuzzy
-msgid "welcome##version_includes##bullet_7"
-msgstr "ბმულები განახლდა LandPKS-ის ახალ ვებგვერდზე"
-
-#: 
-#, fuzzy
 msgid "projects##sites##transfer_offline"
 msgstr "საიტების გადატანა ხელმისაწვდომია მხოლოდ ონლაინ რეჟიმში."
 
@@ -4909,11 +4879,96 @@ msgstr "{{email}}-თან დაკავშირებული ანგა
 
 #: 
 #, fuzzy
-msgid "welcome##version_includes##bullet_8"
-msgstr "Soil ID-ის ალგორითმის გაუმჯობესებები"
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} წაშლილი მომხმარებლის მიერ"
 
 #: 
 #, fuzzy
-msgid "site##notes##note_attribution_deleted_author"
-msgstr "{{createdAt}} წაშლილი მომხმარებლის მიერ"
+msgid "welcome##soil_id_changes##title"
+msgstr "ცვლილებები Soil ID-ის ალგორითმში"
+
+#: 
+#, fuzzy
+msgid "welcome##soil_id_changes##description"
+msgstr "განვაახლეთ, თუ როგორ ითვლის Soil ID-ის ალგორითმი ნიადაგის თვისებების ქულას მომხმარებლის მიერ ფერდობის, ტექსტურის, კლდის ფრაგმენტების მოცულობისა და ფერის დაკვირვებების საფუძველზე. მოინახულეთ თქვენი საიტები ან დააექსპორტეთ მონაცემები განახლებული Soil ID-ის შესაბამისობის ქულების სანახავად."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_1##title"
+msgstr "ნიადაგის იდენტიფიკაცია მნიშვნელოვანია!"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_1##info"
+msgstr "ნიადაგის იდენტიფიკაცია გადამწყვეტია მიწის მდგრადი მართვის გადაწყვეტილებებისთვის სოფლის მეურნეობაში, მშენებლობაში, მიწათსარგებლობის დაგეგმვაში, აღდგენაში და სხვა."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_2##title"
+msgstr "ადგილზე დადასტურებული ნიადაგის მონაცემები"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_2##info"
+msgstr "ნიადაგის რუკები საწყის წარმოდგენას იძლევა, თუმცა მათი პროგნოზები კონკრეტული საიტისთვის ყოველთვის ზუსტი არ არის. Soil ID ადარებს ამ პროგნოზებს საველე დაკვირვებებს და ალაგებს ყველაზე სავარაუდო შესატყვის ნიადაგებს."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##title"
+msgstr "ნიადაგის ორმოსთვის საჭირო აღჭურვილობა"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##info"
+msgstr "დაკვირვებები გროვდება ნიადაგის ორმოს ამოთხრით. ძირითადი აღჭურვილობა მოიცავს ბარს, წყლის ბოთლს, საცერს და ფერის ეტალონს. აპლიკაციაში ყოველ ეტაპზე ნახავთ სასარგებლო სახელმძღვანელოებს. ესტუმრეთ LandPKS-ის ცოდნის ცენტრს სასწავლო მასალებისა და სრული, ჩამოსატვირთი მომხმარებლის გზამკვლევისთვის."
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##link_text"
+msgstr "ცოდნის ცენტრი"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_3##link_url"
+msgstr "https://landpotential.org/knowledge?_app=landpks-soil-id&_topics=soil-identification&_language=english&_resource_type=tutorial"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_4##title"
+msgstr "ნიადაგის შესატყვისის დაზუსტება"
+
+#: 
+#, fuzzy
+msgid "site##soil_id##overview##page_4##info"
+msgstr "დაკვირვებების შეყვანისას Soil ID ხელახლა ალაგებს ნიადაგის შესატყვისებს. შეეხეთ შესატყვისს, რათა მეტი გაიგოთ მის შესახებ. როდესაც შესატყვისში დარწმუნებული იქნებით, გამოიყენეთ ღილაკი „შესაფასებელი შესაბამისობა“, რათა დაადასტუროთ ის ამ საიტის ნიადაგად."
+
+#: 
+#, fuzzy
+msgid "settings##clear_soil_id_cache"
+msgstr "Soil ID-ის დამთხვევების ქეშის გასუფთავება"
+
+#: 
+#, fuzzy
+msgid "settings##soil_id_version"
+msgstr "Soil ID ალგორითმი {{version}}"
+
+#: 
+#, fuzzy
+msgid "general##cleared"
+msgstr "გასუფთავდა!"
+
+#: 
+#, fuzzy
+msgid "general##carousel##overview"
+msgstr "მიმოხილვა"
+
+#: 
+#, fuzzy
+msgid "general##carousel##page_indicator"
+msgstr "გვერდი {{current}} {{total}}-დან"
+
+#: 
+#, fuzzy
+msgid "general##carousel##got_it"
+msgstr "გასაგებია!"
 

@@ -15,7 +15,7 @@ msgstr "Bienvenue sur LandPKS Soil ID"
 #: 
 #, fuzzy
 msgid "welcome##next##title"
-msgstr "Quelle est la prochaine étape ?"
+msgstr "Les prochaines versions comprendront :"
 
 #: 
 #, fuzzy
@@ -829,32 +829,32 @@ msgstr "Linéaire"
 #: 
 #, fuzzy
 msgid "welcome##version_includes##title"
-msgstr "Cette version comprend :"
+msgstr "Nouveautés de cette version :"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_1"
-msgstr "Hors ligne : création de sites et modification des métadonnées et notes activées"
+msgstr "Profondeur maximale du sol portée à 300 cm"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_2"
-msgstr "Nouvelle langue : swahili"
+msgstr "Suppression de compte simplifiée"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_3"
-msgstr "Traductions améliorées pour l'ukrainien, le géorgien et l'espagnol"
+msgstr "Ajout d'une option « non affilié » pour filtrer la liste des sites"
 
 #: 
 #, fuzzy
 msgid "welcome##next##bullet_1"
-msgstr "pH du sol"
+msgstr "Améliorations du module de couleur du sol"
 
 #: 
 #, fuzzy
 msgid "welcome##learn_more"
-msgstr "Apprenez-en plus et restez informé :"
+msgstr "Apprenez-en plus et restez informé :"
 
 #: 
 #, fuzzy
@@ -864,7 +864,7 @@ msgstr "LandPKS de Terraso"
 #: 
 #, fuzzy
 msgid "welcome##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 #, fuzzy
@@ -1027,7 +1027,7 @@ msgstr "Impossible de récupérer la carte des sols"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##error_generic_body"
-msgstr "LandPKS n'a pas pu récupérer la carte des sols pour cet emplacement. Essayez d'arrêter puis de redémarrer l'application. Si le problème persiste, réessayez ultérieurement ou envoyez une demande d'assistance via le site web landpks.terraso.org."
+msgstr "LandPKS n'a pas pu récupérer la carte des sols pour cet emplacement. Essayez d'arrêter puis de redémarrer l'application. Si le problème persiste, réessayez ultérieurement ou envoyez une demande d'assistance via le site web landpotential.org."
 
 #: 
 #, fuzzy
@@ -1656,7 +1656,7 @@ msgstr "<bold>Les paramètres de confidentialité d'un projet déterminent la co
 #: 
 #, fuzzy
 msgid "general##info##data_portal_link_url"
-msgstr "https://landpks.terraso.org/portal"
+msgstr "https://landpotential.org/data-portal"
 
 #: 
 #, fuzzy
@@ -2732,12 +2732,12 @@ msgstr "<bold>Trouvez plus d'informations et de guides</bold> à:\n"
 #: 
 #, fuzzy
 msgid "info##link_label"
-msgstr "landpks.terraso.org"
+msgstr "landpotential.org"
 
 #: 
 #, fuzzy
 msgid "info##link_url"
-msgstr "https://landpks.terraso.org/"
+msgstr "https://landpotential.org/"
 
 #: 
 #, fuzzy
@@ -2902,7 +2902,7 @@ msgstr "Aide et support"
 #: 
 #, fuzzy
 msgid "general##help##url"
-msgstr "https://landpks.terraso.org/help/"
+msgstr "https://landpotential.org/help/"
 
 #: 
 #, fuzzy
@@ -2947,7 +2947,7 @@ msgstr "Ce projet a évolué. Pour en savoir plus et obtenir de l'aide, consulte
 #: 
 #, fuzzy
 msgid "errors##sync_conflict##support_url"
-msgstr "https://landpks.terraso.org/help/synchronization-conflict/"
+msgstr "https://landpotential.org/help/synchronization-conflict/"
 
 #: 
 #, fuzzy
@@ -2993,7 +2993,7 @@ msgstr "\n"
 #: 
 #, fuzzy
 msgid "site##soil_id##matches##info##description##learn_more_url"
-msgstr "https://landpks.terraso.org/what-is-soil-id-and-why-does-it-matter/"
+msgstr "https://landpotential.org/knowledge/what-is-soil-id-and-why-does-it-matter"
 
 #: 
 #, fuzzy
@@ -5693,7 +5693,7 @@ msgstr "Les caractéristiques de la pente aident à déterminer le potentiel d�
 #: 
 #, fuzzy
 msgid "general##privacy_policy_link_url"
-msgstr "https://techmatters.org/privacy-policy/"
+msgstr "https://terraso.org/privacy-policy/"
 
 #: 
 #, fuzzy
@@ -5763,7 +5763,7 @@ msgstr "Vous avez des modifications non synchronisées qui doivent être téléc
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_4"
-msgstr "Message d'erreur plus détaillé pour les conflits de synchronisation"
+msgstr "Correction d'un bug qui affichait brièvement une alerte lors de la suppression d'un site"
 
 #: 
 #, fuzzy
@@ -6005,17 +6005,17 @@ msgstr "Un problème est survenu lors de l'identification de la couleur du sol. 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_5"
-msgstr "Expérience améliorée pour la recherche de coordonnées sur la carte"
+msgstr "Améliorations du fonctionnement des champs de texte"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_6"
-msgstr "Correction d'un problème où les utilisateurs qui se déconnectaient puis se reconnectaient avec un autre compte voyaient temporairement les données du premier compte"
+msgstr "Ajout de l'attribution Mapbox"
 
 #: 
 #, fuzzy
 msgid "welcome##version_includes##bullet_7"
-msgstr "Correction d'un bug où le module de couleur plantait avec des photos surexposées"
+msgstr "Mise à jour des liens vers le nouveau site web LandPKS"
 
 #: 
 #, fuzzy
@@ -6056,4 +6056,14 @@ msgstr "Compte supprimé"
 #, fuzzy
 msgid "account_deleted##body"
 msgstr "Le compte associé à {{email}} a été supprimé. Si cela a été fait par erreur, contactez notre équipe d'assistance."
+
+#: 
+#, fuzzy
+msgid "welcome##version_includes##bullet_8"
+msgstr "Améliorations de l'algorithme Soil ID"
+
+#: 
+#, fuzzy
+msgid "site##notes##note_attribution_deleted_author"
+msgstr "{{createdAt}} par un utilisateur supprimé"
 

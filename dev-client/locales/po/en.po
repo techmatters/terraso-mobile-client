@@ -5,44 +5,29 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-08-01T04:07:15.906Z\n"
-"PO-Revision-Date: 2026-08-01T04:07:15.907Z\n"
+"POT-Creation-Date: 2026-10-16T19:37:30.570Z\n"
+"PO-Revision-Date: 2026-10-16T19:37:30.571Z\n"
 
 msgid "welcome##title"
 msgstr "Welcome to LandPKS Soil ID"
 
 msgid "welcome##version_includes##title"
-msgstr "New in this release:"
+msgstr "New in version {{version}}:"
 
 msgid "welcome##version_includes##bullet_1"
-msgstr "Max soil depth increased to 300cm"
+msgstr "Made switches more visible and consistent across operating systems"
 
 msgid "welcome##version_includes##bullet_2"
-msgstr "Streamlined account deletion"
+msgstr "Fixed bug in creating a site from a temporary location popover"
 
 msgid "welcome##version_includes##bullet_3"
-msgstr "Added an “unaffiliated” option to filter sites list"
+msgstr "Fixed bug where elevation sometimes could not be found"
 
-msgid "welcome##version_includes##bullet_4"
-msgstr "Fixed a bug that flashed an alert when a user deleted a site"
+msgid "welcome##soil_id_changes##title"
+msgstr "Changes to the Soil ID Algorithm"
 
-msgid "welcome##version_includes##bullet_5"
-msgstr "Functionality updates for text fields"
-
-msgid "welcome##version_includes##bullet_6"
-msgstr "Added Mapbox attribution"
-
-msgid "welcome##version_includes##bullet_7"
-msgstr "Updated links to new LandPKS website"
-
-msgid "welcome##version_includes##bullet_8"
-msgstr "Improvements to the Soil ID Algorithm"
-
-msgid "welcome##next##title"
-msgstr "Future versions will include:"
-
-msgid "welcome##next##bullet_1"
-msgstr "Improvements to the soil color module"
+msgid "welcome##soil_id_changes##description"
+msgstr "We've updated how the Soil ID algorithm calculates the soil properties score from user observations of slope, texture, rock fragment volume, and color. Visit your sites or export your data to see updated Soil ID match scores."
 
 msgid "welcome##learn_more"
 msgstr "Learn more and stay updated:"
@@ -198,6 +183,36 @@ msgstr "LandPKS Soil ID uses data from soil maps and observations entered by use
 
 msgid "site##soil_id##description##site_global_or_unknown"
 msgstr "LandPKS Soil ID uses data from soil maps and observations entered by users about this site to calculate the top matches for the site’s soil. Choose the best soil match for this site to learn about soil characteristics and other descriptions."
+
+msgid "site##soil_id##overview##page_1##title"
+msgstr "Soil identification matters!"
+
+msgid "site##soil_id##overview##page_1##info"
+msgstr "Soil identification is critical to sustainable land management decisions for agriculture, construction, land use planning, restoration, and more."
+
+msgid "site##soil_id##overview##page_2##title"
+msgstr "Ground-truthed soil data"
+
+msgid "site##soil_id##overview##page_2##info"
+msgstr "Soil maps offer a starting point, but their predictions aren't always accurate for a specific site. Soil ID compares those predictions with field observations to rank the most likely soil matches."
+
+msgid "site##soil_id##overview##page_3##title"
+msgstr "Equipment for the soil pit"
+
+msgid "site##soil_id##overview##page_3##info"
+msgstr "Observations are collected by digging a soil pit. Basic equipment includes a shovel, water bottle, sieve, and color reference. Find helpful guides in the app at each step. Visit the LandPKS Knowledge Hub for tutorials and a full downloadable User Guide."
+
+msgid "site##soil_id##overview##page_3##link_text"
+msgstr "Knowledge hub"
+
+msgid "site##soil_id##overview##page_3##link_url"
+msgstr "https://landpotential.org/knowledge?_app=landpks-soil-id&_topics=soil-identification&_language=english&_resource_type=tutorial"
+
+msgid "site##soil_id##overview##page_4##title"
+msgstr "Refining the soil match"
+
+msgid "site##soil_id##overview##page_4##info"
+msgstr "As observations are entered, Soil ID re-ranks the soil matches. Tap a soil match to learn more about it. Once confident in a match, use the “Rate Match” button to confirm it as the soil for the site."
 
 msgid "site##soil_id##matches##title"
 msgstr "Soil Matches"
@@ -790,6 +805,9 @@ msgstr "Unknown user"
 msgid "settings##copy_access_token"
 msgstr "Copy JWT Access Token"
 
+msgid "settings##clear_soil_id_cache"
+msgstr "Clear soil ID match cache"
+
 msgid "settings##sign_out"
 msgstr "Sign out"
 
@@ -807,6 +825,9 @@ msgstr "staging"
 
 msgid "settings##version"
 msgstr "Version {{version}} ({{build}}) {{environment}}"
+
+msgid "settings##soil_id_version"
+msgstr "Soil ID algorithm {{version}}"
 
 msgid "settings##select_language"
 msgstr "Language: {{language}}"
@@ -852,6 +873,9 @@ msgstr "Cancel"
 
 msgid "general##copied"
 msgstr "Copied!"
+
+msgid "general##cleared"
+msgstr "Cleared!"
 
 msgid "general##add"
 msgstr "Add"
@@ -972,6 +996,15 @@ msgstr "Learn more"
 
 msgid "general##read_only"
 msgstr "Read-only"
+
+msgid "general##carousel##overview"
+msgstr "Overview"
+
+msgid "general##carousel##page_indicator"
+msgstr "Page {{current}} of {{total}}"
+
+msgid "general##carousel##got_it"
+msgstr "Got it!"
 
 msgid "permissions##camera_title"
 msgstr "LandPKS Soil ID needs to access your camera"
