@@ -37,7 +37,7 @@ const simpleHash = (str: string): string => {
 
 const welcomeContentHash = simpleHash(JSON.stringify(en.welcome));
 
-const ENV_CONFIG = Constants.expoConfig!.extra!;
+export const ENV_CONFIG = Constants.expoConfig!.extra!;
 
 setAPIConfig({
   terrasoAPIURL: ENV_CONFIG.TERRASO_BACKEND,
