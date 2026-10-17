@@ -20,7 +20,7 @@ import {useReducedMotion} from 'react-native-reanimated';
 import {useIsFocused} from '@react-navigation/native';
 
 /* Enough to catch the eye on arrival without becoming ambient motion the user has to sit with. Pair with the hook so every nudge is equally insistent. */
-export const CYCLES_PER_VISIT = 3;
+export const CYCLES_PER_VISIT = 7;
 
 /*
  * Whether an attention-getting animation should run: until the user has seen the thing it

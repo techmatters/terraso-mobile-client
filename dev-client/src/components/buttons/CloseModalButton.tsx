@@ -15,6 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {StyleSheet, View} from 'react-native';
+
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {useModal} from 'terraso-mobile-client/components/modals/Modal';
 
@@ -28,6 +30,18 @@ export const CloseModalButton = ({label}: CloseModalButtonProps) => {
 
   /* Don't render when we're outside a modal and there's nothing to dismiss */
   return modalHandle ? (
-    <ContainedButton label={label} onPress={modalHandle.onClose} />
+    <View style={styles.container}>
+      <ContainedButton label={label} onPress={modalHandle.onClose} />
+    </View>
   ) : null;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+});
