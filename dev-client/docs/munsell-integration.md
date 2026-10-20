@@ -34,7 +34,9 @@ Research paths: `scripts/` (analyze-fixtures, munsell-*-experiment, munsell-card
 - ☐ Port relevant findings docs.
 
 ### 2. RAW captures when supported (native)  — *expo bump already on main; unblocked*
-Research paths: `modules/{raw-camera-android,dng-decoder,frame-analyzer}`, `tools/dng-cli*`, `docs/{android-raw-path,raw-camera-plan}.md`. See **Native code / shared core** below for the architecture.
+**Detailed plan: [raw-capture-integration-plan.md](./raw-capture-integration-plan.md)** (slices P0–2.7).
+Research paths: `modules/{raw-camera-android,dng-decoder,frame-analyzer}`, `patches/`, `src/components/inputs/image/{RawCameraView,captureTypes,...}`, `tools/dng-cli*`, `docs/{android-raw-path,raw-camera-plan}.md`. See **Native code / shared core** below for the architecture.
+Reality check: capture already exists on **both** platforms (iOS = vision-camera + ProRAW patch; Android = `raw-camera-android` module) — this is port+harden, not green-field.
 - ☐ Land native modules with prebuild/config-plugin wiring; confirm iOS + Android build in CI.
 - ☐ RAW-capable detection + JPEG fallback path.
 - ☐ Wire decode pipeline into analysis.
