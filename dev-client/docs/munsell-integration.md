@@ -34,10 +34,12 @@ Research paths: `scripts/` (analyze-fixtures, munsell-*-experiment, munsell-card
 - ☐ Port relevant findings docs.
 
 ### 2. RAW captures when supported (native)  — *expo bump already on main; unblocked*
-Research paths: `modules/{raw-camera-android,dng-decoder,frame-analyzer}`, `tools/dng-cli*`, `docs/{android-raw-path,raw-camera-plan}.md`.
+Research paths: `modules/{raw-camera-android,dng-decoder,frame-analyzer}`, `tools/dng-cli*`, `docs/{android-raw-path,raw-camera-plan}.md`. See **Native code / shared core** below for the architecture.
 - ☐ Land native modules with prebuild/config-plugin wiring; confirm iOS + Android build in CI.
 - ☐ RAW-capable detection + JPEG fallback path.
 - ☐ Wire decode pipeline into analysis.
+- ☐ **Dedup `frame_analyzer.cpp`** — one shared copy referenced by both `frame-analyzer` and `raw-camera-android` builds (currently byte-for-byte duplicated; flagged `// DUPLICATED (temporarily)`).
+- ☐ Add a short comment/doc noting the iOS-CIRAWFilter vs Android-C++ decode split is intentional (capture-format-driven), so it isn't "fixed" later.
 
 ### 3. Algorithm — which color to use
 Research paths: `src/screens/MunsellChartValidator/{imageOps,matchAlgorithm,gridRegistration,registration,munsellChart10YR,munsellPages}.ts`, reducers.
@@ -55,9 +57,49 @@ Research paths: `CalibrateReferenceScreen.tsx`, `ManageCustomReferencesScreen.ts
 - ☐ **Open decision:** fixed set of supported cards vs user-definable custom references (deferred).
 - ☐ Port reference-calibration flow for the agreed scope.
 
+## Native code / shared core
+
+Audited 2026-10-20 (both the mobile modules and the Mac CLIs). Summary: the native
+sharing is mostly already in place and well-designed. One real copy-paste to fix;
+the iOS-vs-Android decode "duplication" is intentional and should stay.
+
+**The shared C++ core** lives in `modules/dng-decoder/cpp/` — `DngParser` (TIFF/DNG
+parse), `DngPipeline` (demosaic, white balance, ColorMatrix/ForwardMatrix → XYZ →
+linear sRGB, preview, variance), `MedianCut` (dominant color), `DngDecoderC` (thin C
+ABI). It is **pure C++17 with zero OS/JNI/Nitro/third-party includes** — portable.
+
+**What's shared vs platform-specific:**
+
+| Concern | Android (device) | iOS (device) | Mac tooling | Shared? |
+|---|---|---|---|---|
+| DNG parse + demosaic + color pipeline | C++ `DngParser`/`DngPipeline` | Apple CIRAWFilter (CoreImage) | `dng-cli-cpp` → C++; `dng-cli` → CIRAWFilter | ❌ two paths **by necessity** |
+| Dominant color (median-cut) | C++ `MedianCut` | C++ `MedianCut` (post-decode) | both CLIs bridge to C++ `MedianCut` | ✅ single impl, all callers route to it |
+| Frame analyzer (ROI luma/variance) | C++ `frame_analyzer.cpp` | C++ `frame_analyzer.cpp` | — | ⚠️ byte-for-byte duplicated → dedup (part 2) |
+| Camera capture | Kotlin camera2 (`CameraSessionManager.kt`) | (not in these modules) | — | ❌ inherently platform-specific |
+
+**Why two decode paths are correct, not duplication:** it mirrors a capture-format
+split. Android camera2 emits uncompressed CFA Bayer DNG (the hand-rolled C++ parser
+handles it); iOS emits ProRAW (lossless-JPEG, tiled LinearRaw) which the C++ parser
+**cannot** decode and which needs CIRAWFilter. The two Mac CLIs deliberately mirror
+the two device paths (`dng-cli-cpp` ≡ Android C++, `dng-cli` ≡ iOS CIRAWFilter) so
+offline fixture analysis reproduces per-platform on-device behavior (CLI chosen by
+filename token). On iOS the C++ parser/pipeline is compiled into the pod but unused
+except `MedianCut` (dominant) and the metadata bridge.
+
+**Build wiring per target:** Android CMake (C++20, globs `cpp/*.cpp`, links only
+`liblog`); iOS CocoaPods podspec (globs `cpp/`, links CoreImage/CoreGraphics/ImageIO,
+only `MedianCut`+`DngDecoderC` actually called); Mac `dng-cli-cpp` bash+clang++ (C++17,
+the 4 core files, no external deps); Mac `dng-cli` bash+swiftc (CIRAWFilter + links
+`MedianCut.o`). No external native deps anywhere (no LibRaw/libtiff/libjpeg).
+
+**Actions** (tracked in part 2 unless noted): keep the core where it is; dedup
+`frame_analyzer.cpp`; document the intentional split; *(optional)* hoist `LinearRgbF`
+into a `Color.hpp` so the Swift CLI doesn't transitively pull `DngParser`/`DngPipeline`.
+
 ## Open decisions
 
 - Algorithm: primary vs average color (part 3).
+- **Cross-platform color consistency (part 3):** iOS (CIRAWFilter/Apple ISP) and Android (linear C++ pipeline) can yield different mean colors for the same scene; the *dominant* is unified via `MedianCut` but means are not. Decide whether to reconcile, or prefer a reduction that's already platform-unified.
 - Reference cards: fixed vs user-defined (part 5).
 - Which eval scripts/tools graduate into the repo (part 1).
 
