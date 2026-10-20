@@ -15,9 +15,22 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {UNAUTHENTICATED} from 'terraso-client-shared/account/authConstants';
 import {fetchElevation} from 'terraso-client-shared/elevation/elevationService';
 
 const ELEVATION_FETCH_TIMEOUT_MS = 10000;
+
+type GetElevationOptions = {
+  /**
+   * When true, re-throw UNAUTHENTICATED errors instead of swallowing them. This
+   * lets a caller wrapped in the shared auth-retry thunk
+   * (terraso-client-shared/store/utils) refresh the access token and retry the
+   * request. All other failures (timeout, network, backend errors) are still
+   * swallowed and resolve to null. Defaults to false so the non-Redux callers
+   * (sync, resolveElevation) keep the never-throws contract.
+   */
+  rethrowUnauthenticated?: boolean;
+};
 
 // Raw call — may throw. Callers should use getElevation, which wraps this with
 // a timeout and swallows errors. Delegates to the backend soilId.elevation
@@ -32,11 +45,14 @@ const requestElevationApi = async (
 
 /**
  * Fetch elevation for coordinates.
- * Returns undefined if the request fails or times out (never throws).
+ * Returns null if the request fails or times out. Never throws, except that
+ * UNAUTHENTICATED is re-thrown when `rethrowUnauthenticated` is set (see the
+ * option docs above).
  */
 export const getElevation = async (
   latitude: number,
   longitude: number,
+  {rethrowUnauthenticated = false}: GetElevationOptions = {},
 ): Promise<number | null> => {
   const timeoutReturn = 'timeout';
   const timeoutPromise = new Promise<typeof timeoutReturn>(resolve =>
@@ -49,12 +65,22 @@ export const getElevation = async (
       timeoutPromise,
     ]);
     if (result === timeoutReturn) {
-      console.warn(`Elevation timed out for (${latitude}, ${longitude})`);
+      // console.log, not console.warn: elevation is non-critical and degrades to
+      // null (and the sync path retries later), so these failures are not
+      // actionable client-side bugs. Sentry's captureConsole only grabs
+      // warn/error, so logging at this level keeps local visibility without
+      // paging us for a harmless, expected outcome.
+      console.log(`Elevation timed out for (${latitude}, ${longitude})`);
       return null;
     }
     return result;
   } catch (error) {
-    console.warn(`Elevation errored for (${latitude}, ${longitude}): `, error);
+    if (rethrowUnauthenticated && error === UNAUTHENTICATED) {
+      // Let the auth-retry thunk wrapper refresh the token and retry.
+      throw error;
+    }
+    // console.log, not console.warn — see the timeout branch above.
+    console.log(`Elevation errored for (${latitude}, ${longitude}): `, error);
     return null;
   }
 };
