@@ -7,17 +7,35 @@ set -o pipefail
 
 print_usage() {
     echo "Usage:"
-    echo "  npm run rebuild-all-ios        # shortcut, no flags"
-    echo "  npm run rebuild-all-android    # shortcut, no flags"
-    echo "  npm run rebuild-all -- [--run-only] [--debug-logs] <ios|android>"
-    echo "  bash scripts/rebuild_all [--run-only] [--debug-logs] <ios|android>"
+    echo "  Single-terminal (self-contained, own Metro):"
+    echo "    npm run rebuild-all-ios        # shortcut, no flags"
+    echo "    npm run rebuild-all-android    # shortcut, no flags"
+    echo ""
+    echo "  Three-terminal (shared Metro on 8081 serves both platforms):"
+    echo "    npm run rebuild-all-common     # terminal 1: deps + caches + Metro"
+    echo "    npm run rebuild-native-ios     # terminal 2: build ios/, attach to 8081"
+    echo "    npm run rebuild-native-android # terminal 3: build android/, attach to 8081"
+    echo ""
+    echo "  Raw:"
+    echo "    npm run rebuild-all -- [--run-only] [--native-only] [--no-bundler] [--debug-logs] <ios|android|common>"
+    echo "    bash scripts/rebuild_all [--run-only] [--native-only] [--no-bundler] [--debug-logs] <ios|android|common>"
+    echo ""
+    echo "  Flags:"
+    echo "    --run-only     Skip all install/prebuild; reuse warm caches and existing native dir."
+    echo "    --native-only  Skip node_modules nuke + npm ci + prepare (reuse deps); still prebuild the platform."
+    echo "    --no-bundler   Don't spawn Metro; attach to the shared one already running on 8081."
+    echo "    --debug-logs   Show unfiltered build logs."
 }
 
 RUN_ONLY=false
+NATIVE_ONLY=false
+NO_BUNDLER=false
 DEBUG_LOGS=""
 while [[ "$1" == --* ]]; do
     case "$1" in
         --run-only) RUN_ONLY=true; shift ;;
+        --native-only) NATIVE_ONLY=true; shift ;;
+        --no-bundler) NO_BUNDLER=true; shift ;;
         --debug-logs) DEBUG_LOGS="--debug"; shift ;;
         *) echo "Unknown option: $1"; print_usage; exit 1 ;;
     esac
@@ -25,11 +43,22 @@ done
 
 PLATFORM="$1"
 
-# Validate argument
-if [[ "$PLATFORM" != "ios" && "$PLATFORM" != "android" ]]; then
+# Validate argument. "common" is the shared deps+Metro terminal (no native build).
+if [[ "$PLATFORM" != "ios" && "$PLATFORM" != "android" && "$PLATFORM" != "common" ]]; then
     print_usage
     exit 1
 fi
+
+# The three-terminal workflow runs the install step (npm ci / prebuild's npm
+# install) in parallel across terminals; a flock around that step serializes
+# the node_modules mutations. flock isn't on stock macOS — require it up front
+# (only when we'll actually install; --run-only needs no lock).
+if [[ "$RUN_ONLY" == false ]] && ! command -v flock >/dev/null 2>&1; then
+    echo "Error: 'flock' not found — needed to serialize the install step across terminals."
+    echo "Install it with:  brew install flock"
+    exit 1
+fi
+REBUILD_LOCKFILE="${TMPDIR:-/tmp}/landpks-rebuild.lock"
 
 # Timing: report-launch-time.js (in the pipeline) prints "App launched in Xs"
 # when Metro bundles, and touches $REBUILD_LAUNCH_MARKER. On script exit, if
@@ -53,9 +82,16 @@ cleanup() {
     SIGINT_FIRED=1
     trap - INT TERM EXIT
     echo ""
-    echo "Cleaning up Metro / xcodebuild..."
-    pids=$(lsof -ti :8081 2>/dev/null)
-    [ -n "$pids" ] && kill $pids 2>/dev/null
+    # In --no-bundler mode the Metro on 8081 belongs to the shared "common"
+    # terminal, not us — killing it would take down the other platform too.
+    # Only reap our own native build tooling in that case.
+    if [[ "$NO_BUNDLER" == true ]]; then
+        echo "Cleaning up xcodebuild (leaving shared Metro on 8081)..."
+    else
+        echo "Cleaning up Metro / xcodebuild..."
+        pids=$(lsof -ti :8081 2>/dev/null)
+        [ -n "$pids" ] && kill $pids 2>/dev/null
+    fi
     pkill -f xcodebuild 2>/dev/null
     rm -f "$REBUILD_LAUNCH_MARKER"
     exit 130
@@ -65,6 +101,19 @@ trap cleanup INT TERM
 on_exit() {
     local code=$?
     if [[ "$SIGINT_FIRED" == 1 ]]; then
+        rm -f "$REBUILD_LAUNCH_MARKER"
+        return
+    fi
+    # In --no-bundler mode the "Bundled" banner (and thus the launch marker)
+    # appears in the shared Metro terminal, not here — so success is decided
+    # by exit code alone, and we report install rather than launch.
+    if [[ "$NO_BUNDLER" == true ]]; then
+        echo ""
+        if [[ "$code" -ne 0 ]]; then
+            echo "*** Build failed after $(fmt_elapsed) ***"
+        else
+            echo "*** Built & installed in $(fmt_elapsed) (attach to shared Metro on 8081) ***"
+        fi
         rm -f "$REBUILD_LAUNCH_MARKER"
         return
     fi
@@ -110,17 +159,50 @@ EXPO_PTY_WRAPPER="node $SCRIPT_DIR/run-expo-pty.js"
 LAUNCH_TIMER="node $SCRIPT_DIR/report-launch-time.js"
 LOG_FILTER="node $SCRIPT_DIR/filter-build-logs.js $DEBUG_LOGS"
 
+# --native-only reuses the node_modules the "common" terminal installed; if
+# they're absent there's nothing to reuse.
+if [[ "$NATIVE_ONLY" == true && ! -d node_modules ]]; then
+    echo "Error: --native-only needs an existing node_modules."
+    echo "Run 'npm run rebuild-all-common' first (it installs deps and starts Metro)."
+    exit 1
+fi
+
 if [[ "$RUN_ONLY" == false ]]; then
+    # Serialize every node_modules / package-lock / Metro-cache mutation across
+    # the three terminals: the common terminal's `npm ci` and each native
+    # terminal's prebuild (which runs its own npm install). fd-based flock is
+    # auto-released by the kernel on exit/crash, so there's no stale-lock
+    # cleanup and nothing to wire into the traps. The lock covers ONLY this
+    # install block; common's resident `expo start` runs after it, unlocked, so
+    # the native builds never wait on Metro.
+    # Always announce the lock step so a build terminal is never silent. Try a
+    # non-blocking grab first; only if that fails do we print the "waiting"
+    # line and block — so the message reflects whether we actually waited.
+    exec 9>"$REBUILD_LOCKFILE"
+    echo "Acquiring build lock (serializes the install step across terminals)..."
+    if ! flock -n 9; then
+        echo "  ...another install is running; waiting for the lock (up to 10m)..."
+        if ! flock -w 600 9; then
+            echo "Error: timed out waiting for the build lock."
+            exit 1
+        fi
+    fi
+    echo "  ...build lock acquired; proceeding."
     # Install phase. Pipe through the same timing+filter stages for consistency;
     # timing stage never matches here (no "iOS Bundled" during install) but
     # filter suppresses npm deprecation warnings etc.
     {
         echo "Building from $PWD for: $PLATFORM"
 
+        # Scoped nuke: only wipe the TARGET platform's native dir so the other
+        # platform's build survives (lets ios/ and android/ coexist across
+        # terminals). node_modules is shared, platform-agnostic state — nuke it
+        # only on a full rebuild, never in --native-only (which reuses it). The
         # node_modules nuke is redundant with `npm ci` in the happy path (ci
-        # also wipes node_modules), but catches edge cases like aborted prior
-        # installs or locked files, and costs almost nothing.
-        rm -rf node_modules ios android
+        # also wipes it) but catches edge cases like aborted installs, and is
+        # cheap.
+        [[ "$NATIVE_ONLY" == false ]] && rm -rf node_modules
+        [[ "$PLATFORM" != "common" ]] && rm -rf "$PLATFORM"
 
         # Clear Gradle build cache (can cause stale artifact issues)
         if [[ "$PLATFORM" == "android" ]]; then
@@ -128,35 +210,54 @@ if [[ "$RUN_ONLY" == false ]]; then
             rm -rf ~/.gradle/caches/build-cache-1
         fi
 
-        # `npm ci` installs exactly what package-lock.json specifies and fails
-        # loudly if package.json has drifted from the lock — preferable for a
-        # clean-rebuild script, where we want reproducibility, not auto-
-        # reconcile. If you just edited package.json, run `npm install`
-        # yourself first to refresh the lock, then re-run rebuild_all.
-        npm ci
-        npm run prepare
+        if [[ "$NATIVE_ONLY" == false ]]; then
+            # `npm ci` installs exactly what package-lock.json specifies and
+            # fails loudly if package.json has drifted from the lock —
+            # preferable for a clean-rebuild script, where we want
+            # reproducibility, not auto-reconcile. If you just edited
+            # package.json, run `npm install` yourself first to refresh the
+            # lock, then re-run rebuild_all.
+            npm ci
+            npm run prepare
+
+            # Metro caches per-file transforms and a haste map of the project
+            # layout, both under $TMPDIR. After a fresh `npm install` the cached
+            # resolutions don't match node_modules anymore, causing bundling to
+            # fail with "Unable to resolve module ..." for packages that
+            # actually exist. Clear so Metro re-indexes on next start. Done only
+            # when we reinstalled deps: --run-only and --native-only reuse warm
+            # caches, and a running shared Metro owns these files — a native
+            # terminal must not wipe them out from under it.
+            echo "Clearing Metro / haste / watchman caches..."
+            rm -rf "$TMPDIR"/metro-* "$TMPDIR"/haste-map-* 2>/dev/null
+            watchman watch-del-all >/dev/null 2>&1 || true
+        fi
+
         # Pass --platform so prebuild only regenerates the target platform's
         # native directory. Default is "all", which regenerates both ios/ and
         # android/ (and runs `pod install`), wasteful when building one side.
-        # We still `rm -rf ios android` above regardless — safer to rebuild
-        # both from scratch than to end up with drifted native code.
-        npm run prebuild -- --platform "$PLATFORM"
-
-        # Metro caches per-file transforms and a haste map of the project
-        # layout, both under $TMPDIR. After a fresh `npm install` the cached
-        # resolutions don't match node_modules anymore, causing bundling to
-        # fail with "Unable to resolve module ..." for packages that actually
-        # exist. Clear so Metro re-indexes on next start. Skipped in --run-only
-        # mode because that mode exists specifically to reuse warm caches.
-        echo "Clearing Metro / haste / watchman caches..."
-        rm -rf "$TMPDIR"/metro-* "$TMPDIR"/haste-map-* 2>/dev/null
-        watchman watch-del-all >/dev/null 2>&1 || true
+        # Skipped for "common" — it owns no native dir, only deps + Metro.
+        # Kept as an if (not `[[ ]] &&`) so the block's exit status stays 0
+        # for common under `set -o pipefail`.
+        if [[ "$PLATFORM" != "common" ]]; then
+            npm run prebuild -- --platform "$PLATFORM"
+        fi
     } 2>&1 | $LAUNCH_TIMER | $LOG_FILTER
+    flock -u 9
 else
     echo "Running from $PWD for: $PLATFORM (skipping rebuild)"
 fi
 
-if [[ "$PLATFORM" == "ios" ]]; then
+if [[ "$PLATFORM" == "common" ]]; then
+    # Shared bundler: one Metro on 8081 serves JS to both apps (each requests
+    # its own output via ?platform=ios|android). Stays resident until Ctrl+C;
+    # this terminal owns the interactive keyboard shortcuts (r, m, j, ...).
+    $EXPO_PTY_WRAPPER npm run start | $LAUNCH_TIMER | $LOG_FILTER
+elif [[ "$PLATFORM" == "ios" ]]; then
+    # --no-bundler: build+install only, attach to the shared Metro on 8081
+    # instead of spawning our own.
+    IOS_ARGS=""
+    [[ "$NO_BUNDLER" == true ]] && IOS_ARGS="--no-bundler"
     # Device precedence:  IOS_DEVICE_ID env var  >  ~/.landpks-ios-device file
     # >  simulator (Expo's default when no --device flag). The file is written
     # by scripts/pick-ios-device; its first whitespace-separated token is the
@@ -164,11 +265,16 @@ if [[ "$PLATFORM" == "ios" ]]; then
     if [[ -z "$IOS_DEVICE_ID" ]] && [[ -f "$HOME/.landpks-ios-device" ]]; then
         IOS_DEVICE_ID=$(awk 'NF && $1!~/^#/ {print $1; exit}' "$HOME/.landpks-ios-device")
     fi
-    if [[ -n "$IOS_DEVICE_ID" ]]; then
-        $EXPO_PTY_WRAPPER npm run ios -- --device "$IOS_DEVICE_ID" | $LAUNCH_TIMER | $LOG_FILTER
+    [[ -n "$IOS_DEVICE_ID" ]] && IOS_ARGS="$IOS_ARGS --device $IOS_DEVICE_ID"
+    if [[ -n "$IOS_ARGS" ]]; then
+        $EXPO_PTY_WRAPPER npm run ios -- $IOS_ARGS | $LAUNCH_TIMER | $LOG_FILTER
     else
         $EXPO_PTY_WRAPPER npm run ios | $LAUNCH_TIMER | $LOG_FILTER
     fi
 else
-    $EXPO_PTY_WRAPPER npm run android | $LAUNCH_TIMER | $LOG_FILTER
+    if [[ "$NO_BUNDLER" == true ]]; then
+        $EXPO_PTY_WRAPPER npm run android -- --no-bundler | $LAUNCH_TIMER | $LOG_FILTER
+    else
+        $EXPO_PTY_WRAPPER npm run android | $LAUNCH_TIMER | $LOG_FILTER
+    fi
 fi
