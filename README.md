@@ -19,12 +19,17 @@ from development aren't useful and may even be misleading (a few values for debu
 ### macOS
 
 ```sh
-$ brew install node watchman ruby openjdk@17
+$ brew install node watchman ruby openjdk@17 flock
 $ sudo ln -sfn /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
 $ echo 'export PATH="/opt/homebrew/opt/ruby/bin:$PATH"' >> ~/.zshrc
 $ source ~/.zshrc
 $ gem install bundler
 ```
+
+`flock` is used by `scripts/rebuild_all` to serialize the install step when
+running iOS and Android rebuilds in parallel (see `npm run rebuild-all-common`
+and the three-terminal workflow). Linux ships it by default; on macOS install
+it via Homebrew as above.
 
 All users:
 
