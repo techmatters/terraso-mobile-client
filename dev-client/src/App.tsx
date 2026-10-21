@@ -56,10 +56,14 @@ import {
 //   the error, but warning still appears. See WARNINGS_TO_FIX.md Issue #7.
 // - 'Invalid size is used for setting the map view': Mapbox timing issue during app startup.
 //   Maps display correctly despite warnings. See WARNINGS_TO_FIX.md Issue #8.
+// - 'Dependencies should only be used on the web': Reanimated >= 4.6 warns when a hook gets a
+//   dependency array, which native ignores. Comes from @gorhom/bottom-sheet 5.2.14, not app code
+//   (gorhom/react-native-bottom-sheet#2785).
 const IGNORED_WARNINGS = [
   'SSRProvider',
   'is not a valid color or brush',
   'Invalid size is used for setting the map view',
+  'Dependencies should only be used on the web',
 ];
 
 // Suppress warnings in app UI (LogBox yellow boxes in development builds)

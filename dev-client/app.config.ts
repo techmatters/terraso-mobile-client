@@ -74,6 +74,7 @@ const ENV_CONFIG = {
   ] as const),
   // Optional: defaults to undefined (treated as 'false' in config/index.ts)
   POSTHOG_DEBUG: process.env.POSTHOG_DEBUG,
+  SENTRY_DEBUG: process.env.SENTRY_DEBUG,
   DEBUG_ENABLED: process.env.DEBUG_ENABLED,
   SYNC_DEBUG_ENABLED: process.env.SYNC_DEBUG_ENABLED,
   ALWAYS_SHOW_WELCOME: process.env.ALWAYS_SHOW_WELCOME,

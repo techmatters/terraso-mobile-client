@@ -31,7 +31,7 @@ const isProduction = APP_CONFIG.environment === 'production';
 
 if (APP_CONFIG.sentryEnabled) {
   Sentry.init({
-    debug: !isProduction,
+    debug: !isProduction && APP_CONFIG.sentryDebug,
     // Sentry 8 forwards native SDK logs into the JS console when debug is on; its "Serializing object" dumps include console breadcrumbs, so each log feeds the next until the app runs out of memory. Keep native logs in logcat/Xcode, as Sentry 7 did.
     onNativeLog: () => {},
     dsn: APP_CONFIG.sentryDsn,
