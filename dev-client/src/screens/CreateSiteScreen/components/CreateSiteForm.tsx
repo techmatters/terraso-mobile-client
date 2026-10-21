@@ -155,7 +155,7 @@ export const CreateSiteForm = ({
         </Column>
         <View alignItems="flex-end" margin={5}>
           <ContainedButton
-            onPress={handleSubmit}
+            onPress={() => handleSubmit()}
             disabled={isSubmitting || !isValid}
             size="lg"
             label={t('general.create')}

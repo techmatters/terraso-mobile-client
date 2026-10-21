@@ -22,9 +22,10 @@ import {
   useMemo,
   useRef,
   useState,
+  type ComponentRef,
 } from 'react';
 import {useTranslation} from 'react-i18next';
-import {Keyboard, StyleSheet, TextInput} from 'react-native';
+import {Keyboard, StyleSheet} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 
 import {FormControl, Radio} from 'native-base';
@@ -339,7 +340,7 @@ type TextInputProps = {
 };
 
 export const TextInputFilter = ({placeholder, label, name}: TextInputProps) => {
-  const ref = useRef<TextInput>(null);
+  const ref = useRef<ComponentRef<typeof Searchbar>>(null);
   const {value, setValue} = useListFilter<any>(name);
 
   const onChangeText = useCallback(

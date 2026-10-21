@@ -98,7 +98,7 @@ export const EditProjectForm = ({
             <View flexDirection="row" justifyContent="flex-end">
               <ContainedButton
                 size="lg"
-                onPress={handleSubmit}
+                onPress={() => handleSubmit()}
                 disabled={!dirty || isSubmitting || !isValid}
                 label={t('general.save')}
               />

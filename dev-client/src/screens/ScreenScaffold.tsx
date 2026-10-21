@@ -59,11 +59,7 @@ export const ScreenScaffold = ({
         styles.safeAreaContainer,
         {backgroundColor: theme.colors.primary.dark},
       ]}>
-      <StatusBar
-        barStyle="light-content"
-        translucent
-        backgroundColor={theme.colors.transparent}
-      />
+      <StatusBar barStyle="light-content" />
       <Column backgroundColor="primary.contrast" flex={1}>
         <View onLayout={onLayout}>{PropsAppBar}</View>
         <RestrictByFlag flag="FF_testing">

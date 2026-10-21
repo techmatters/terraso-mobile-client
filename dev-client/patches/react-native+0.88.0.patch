@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-native/Libraries/Animated/nodes/AnimatedNode.js b/node_modules/react-native/Libraries/Animated/nodes/AnimatedNode.js
-index 29ca679..72bafc3 100644
+index 48beae5..b586445 100644
 --- a/node_modules/react-native/Libraries/Animated/nodes/AnimatedNode.js
 +++ b/node_modules/react-native/Libraries/Animated/nodes/AnimatedNode.js
-@@ -121,6 +121,13 @@ export default class AnimatedNode {
+@@ -191,6 +191,13 @@ export default class AnimatedNode {
    }
  
    __callListeners(value: number): void {

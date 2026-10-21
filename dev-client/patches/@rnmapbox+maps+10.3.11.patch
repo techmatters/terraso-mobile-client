@@ -1,8 +1,8 @@
 diff --git a/node_modules/@rnmapbox/maps/ios/RNMBX/RNMBXImageQueue.swift b/node_modules/@rnmapbox/maps/ios/RNMBX/RNMBXImageQueue.swift
-index 0560de2..ca2d772 100644
+index 75ed0ea..4524d21 100644
 --- a/node_modules/@rnmapbox/maps/ios/RNMBX/RNMBXImageQueue.swift
 +++ b/node_modules/@rnmapbox/maps/ios/RNMBX/RNMBXImageQueue.swift
-@@ -127,6 +127,12 @@ class RNMBXImageQueue {
+@@ -151,6 +151,12 @@ class RNMBXImageQueue {
    var imageQueue : OperationQueue = {
      let result = OperationQueue()
      result.name = "comp.mapbox.RNMBX.DownloadImageQueue"

@@ -15,12 +15,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+// RNGH 3 calls into its native module on import, so unit tests need its mocks too (not just integration tests).
+import 'react-native-gesture-handler/jestSetup';
+
 // react-native-worklets 0.8+ (reanimated 4.x's peer) hard-asserts its
 // native side is initialized on import. Recursive proxy stub so any imported
 // name (createSerializable, serializableMappingCache.set, etc.) safely
 // no-ops. See jest/integration/setup.ts for the same fix on the other side.
 const mockWorkletsStub: any = new Proxy(function () {}, {
-  get: (_target, prop) => (prop === 'then' ? undefined : mockWorkletsStub),
+  get: (_target, prop) =>
+    prop === 'then' || typeof prop === 'symbol' ? undefined : mockWorkletsStub,
   apply: () => mockWorkletsStub,
 });
 jest.mock('react-native-worklets', () => mockWorkletsStub);

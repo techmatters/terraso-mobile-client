@@ -17,7 +17,7 @@
 
 import {forwardRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {TextInput as RNTextInput, StyleSheet, View} from 'react-native';
+import {StyleSheet, View, type TextInputInstance} from 'react-native';
 import {
   HelperText,
   TextInput as RNPTextInput,
@@ -72,7 +72,7 @@ export type ControlledStateProps = {
 
 export type TextFieldProps = SharedTextFieldProps & ControlledStateProps;
 
-export const TextField = forwardRef<RNTextInput, TextFieldProps>(
+export const TextField = forwardRef<TextInputInstance, TextFieldProps>(
   (
     {
       label,

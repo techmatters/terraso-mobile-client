@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {type ComponentProps} from 'react';
 import {StyleSheet} from 'react-native';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -31,7 +32,11 @@ export const GetStartedMessage = () => {
         <MaterialCommunityIcons
           name="gesture-tap"
           size={24}
-          color={convertColorProp('text.icon')}
+          color={
+            convertColorProp('text.icon') as ComponentProps<
+              typeof MaterialCommunityIcons
+            >['color']
+          }
           style={styles.communityIcon}
         />
         <View style={styles.flex}>

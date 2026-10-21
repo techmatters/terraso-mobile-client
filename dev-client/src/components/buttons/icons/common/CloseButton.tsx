@@ -16,7 +16,7 @@
  */
 
 import {forwardRef} from 'react';
-import {PressableProps, View} from 'react-native';
+import {PressableProps, type ViewInstance} from 'react-native';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
@@ -24,7 +24,7 @@ type CloseButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export const CloseButton = forwardRef<View, CloseButtonProps>(
+export const CloseButton = forwardRef<ViewInstance, CloseButtonProps>(
   ({onPress}: CloseButtonProps, ref) => {
     return (
       <IconButton

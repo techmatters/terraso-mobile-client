@@ -16,7 +16,7 @@
  */
 
 import {forwardRef} from 'react';
-import {TextInput as RNTextInput, StyleSheet} from 'react-native';
+import {StyleSheet, type TextInputInstance} from 'react-native';
 import {
   TextInput as RNPTextInput,
   TextInputProps as RNPTextInputProps,
@@ -29,7 +29,7 @@ export type TextInputProps = RNPTextInputProps;
 /**
  * @deprecated Use TextField instead
  */
-export const TextInput = forwardRef<RNTextInput, TextInputProps>(
+export const TextInput = forwardRef<TextInputInstance, TextInputProps>(
   ({mode, multiline, disabled = false, style, ...props}, ref) => {
     const styles = StyleSheet.create({
       text: {

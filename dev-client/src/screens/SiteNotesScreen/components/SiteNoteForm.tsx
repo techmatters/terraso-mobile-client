@@ -17,7 +17,7 @@
 
 import {useEffect, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Platform, StyleSheet, TextInput} from 'react-native';
+import {Platform, StyleSheet, type TextInputInstance} from 'react-native';
 
 import {FormInput} from 'terraso-mobile-client/components/form/FormInput';
 
@@ -28,7 +28,7 @@ type Props = {
 
 export const SiteNoteForm = ({content, editDisabled}: Props) => {
   const {t} = useTranslation();
-  const formInputRef = useRef<TextInput>(null);
+  const formInputRef = useRef<TextInputInstance>(null);
 
   useEffect(() => {
     if (formInputRef.current) {
