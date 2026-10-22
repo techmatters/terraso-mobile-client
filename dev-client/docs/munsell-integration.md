@@ -35,7 +35,7 @@ Research paths: `scripts/` (analyze-fixtures, munsell-*-experiment, munsell-card
 
 ### 2. RAW captures when supported (native) ◐ — *expo bump already on main; unblocked*
 **Detailed plan: [raw-capture-integration-plan.md](./raw-capture-integration-plan.md)** (slices P0–2.7).
-Progress: **P0 landed** (vision-camera + Nitro dep/patch reconciliation; both platforms build+run). TS model foundation also landed (commit `feat(raw-color): add TS foundation ...`) — standalone logic + tests for the flag, capture strategy, capture store/eviction, color reducer, and reference colors (slices 2.0/2.2/2.3/2.4), **not yet wired to native decode**. Next: slice 2.1 (port native modules + capture router). **D1 resolved — single flag:** `experimentalRawColorToggle` is the one gate for everything (RAW + algorithms + UX); porting must route research's `experimentalColorScreen` into it, not add a second flag.
+Progress: **P0 landed** (vision-camera + Nitro dep/patch reconciliation; both platforms build+run). TS model foundation also landed — standalone logic + tests for the flag, capture strategy, capture store/eviction, color reducer, and reference colors (slices 2.0/2.2/2.3/2.4), **not yet wired to native decode**. **2.1a landed** (`dng-decoder` module ported; static-green, native build pending). Slice 2.1 is split 2.1a–d (see the plan); next is 2.1b (JS capture contract + iOS end-to-end), then 2.1c (Android path), 2.1d (overlay, deferred). **D1 resolved — single flag:** `experimentalRawColorToggle` is the one gate for everything (RAW + algorithms + UX); porting must route research's `experimentalColorScreen` into it, not add a second flag.
 Research paths: `modules/{raw-camera-android,dng-decoder,frame-analyzer}`, `patches/`, `src/components/inputs/image/{RawCameraView,captureTypes,...}`, `tools/dng-cli*`, `docs/{android-raw-path,raw-camera-plan}.md`. See **Native code / shared core** below for the architecture.
 Reality check: capture already exists on **both** platforms (iOS = vision-camera + ProRAW patch; Android = `raw-camera-android` module) — this is port+harden, not green-field.
 - ☐ Land native modules with prebuild/config-plugin wiring; confirm iOS + Android build in CI.
@@ -77,7 +77,7 @@ ABI). It is **pure C++17 with zero OS/JNI/Nitro/third-party includes** — porta
 |---|---|---|---|---|
 | DNG parse + demosaic + color pipeline | C++ `DngParser`/`DngPipeline` | Apple CIRAWFilter (CoreImage) | `dng-cli-cpp` → C++; `dng-cli` → CIRAWFilter | ❌ two paths **by necessity** |
 | Dominant color (median-cut) | C++ `MedianCut` | C++ `MedianCut` (post-decode) | both CLIs bridge to C++ `MedianCut` | ✅ single impl, all callers route to it |
-| Frame analyzer (ROI luma/variance) | C++ `frame_analyzer.cpp` | C++ `frame_analyzer.cpp` | — | ⚠️ byte-for-byte duplicated → dedup (part 2) |
+| Frame analyzer (ROI luma/variance) | C++ `frame_analyzer.cpp` (in `raw-camera-android`) | C++ `frame_analyzer.cpp` (in `frame-analyzer`) | — | ⚠️ near-duplicate (code identical; comments differ) → dedup in 2.1d |
 | Camera capture | Kotlin camera2 (`CameraSessionManager.kt`) | (not in these modules) | — | ❌ inherently platform-specific |
 
 **Why two decode paths are correct, not duplication:** it mirrors a capture-format

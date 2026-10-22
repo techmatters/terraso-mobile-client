@@ -14,7 +14,7 @@ stale — verify its claims against code when porting.
   - JPEG (production): vision-camera.
 - **Capture contract** (`captureTypes.ts`): `CaptureResult` is `{kind:'jpeg'|'raw'}`; the raw variant already exposes the **"get color from ROI" seam** — `decodeRoi(roi) => {r,g,b}` — plus `jpegPath?`, `width/height`, `renderPreview(maxDim)`, `dispose()`.
 - **Decode core** (`modules/dng-decoder`, nitro API `DngDecoderHybrid`): `readMetadata`, `decodeDngRois`, `decodeDngRoisReduced` (returns per-ROI `{mean, dominant, variance}`), `renderPreview`, `readPreviewGrayscale`. Pure-C++17 engine shared across Android/iOS/Mac CLIs (see tracker "Native code / shared core").
-- **JPEG companion:** iOS DNGs carry an embedded preview (always); Android "may need to generate" one. `renderPreview` is **iOS-only today** (Android throws) — verify.
+- **JPEG companion:** iOS DNGs carry an embedded preview (always); Android "may need to generate" one. `renderPreview` **is implemented on both platforms** (Android: `nativeRenderPreview`→Bitmap→PNG, phase 5.4) — *earlier "iOS-only/Android throws" note was stale.* Still Android-unimplemented: `readPreviewGrayscale`, `readPreviewRgbPhoto`, `decodePhotoRois`, `extractDngPreviewJpeg`.
 - **Flag:** `experimentalColorScreenToggle.ts` (MMKV `useExperimentalColorScreen`, gated under `FF_testing`).
 - **Storage today:** ad-hoc `expo-file-system` `cacheDirectory` writes; no managed retention.
 - **Patches present:** vision-camera 5.1.1, react-native 0.85.3, rnmapbox, native-base.
@@ -54,11 +54,33 @@ there was no version gap — just a known-good dependency set to replicate.
 ### 2.0 — Single feature flag
 - ☐ Land the gate (D1); settings toggle. Off = zero behavior change; on = experimental color path.
 
-### 2.1 — Port native modules + capture router + patches
-- ☐ Port `modules/{dng-decoder,frame-analyzer,raw-camera-android}`, `patches/`, and `src/components/inputs/image/{RawCameraView,captureTypes,RawPickImageButton,androidRawCaptureRequest,...}`.
-- ☐ **Dedup `frame_analyzer.cpp`** to one shared copy during landing.
-- ☐ Prebuild/config-plugin wiring; CI builds both platforms.
-- ☐ Accept: capture a DNG on a RAW-capable device per platform; `decodeRoi` returns a color.
+### 2.1 — Port native modules + capture router ◐
+Survey (2026-10-22) found the capture path is navigation-coupled on Android and the
+nitrogen codegen is committed in-tree (no build-time codegen). No Expo config plugin
+is needed — the modules are plain autolinked `file:` deps. Broken into sub-slices so
+each lands green; the `frame_analyzer.cpp` dedup moves to 2.1d (the two copies only
+coexist once `frame-analyzer` lands, and they differ only in comments, not code).
+
+- **2.1a ☑ — `dng-decoder` module.** Removed stray untracked `modules/` build
+  artifacts; ported `modules/dng-decoder` (sources + committed `nitrogen/generated`);
+  added `"dng-decoder": "file:./modules/dng-decoder"`; `npm install` + `prebuild`
+  clean (iOS pod autolinks; Android autolinks at build); added `modules/` to eslint
+  `ignorePatterns` (matches research). Static green: check-ts/lint/format. *(Native
+  build verification pending.)*
+- **2.1b ☐ — JS capture contract + iOS end-to-end.** Port `captureTypes.ts`,
+  `useRawOrJpegCapture.ts` (stub as-is), `RawImagePicker.tsx`, `RawPickImageButton.tsx`,
+  trimmed `RawCameraView.tsx` (Android branch stubbed to throw). iOS `decodeRoi` works.
+- **2.1c ☐ — `raw-camera-android` + Android capture path.** Port
+  `modules/raw-camera-android`, `AndroidRawCaptureScreen.tsx`, `androidRawCaptureRequest.ts`,
+  `chartGuide.ts`; register `ANDROID_RAW_CAPTURE` (manual merge into `screenDefinitions.tsx`);
+  un-stub RawCameraView's Android branch. **Decision at this slice:** mini-port vs stub the
+  coupled research screens (`RawColorToolsScreen`, `ColorScreenExperimental/calibrateTimingLog`).
+- **2.1d ☐ (discuss first) — `frame-analyzer` + live overlay.** Optional; off the
+  `decodeRoi` path. Port `modules/frame-analyzer`, `useRoiFrameAnalyzer.ts`, `RoiOverlay.tsx`;
+  **do the `frame_analyzer.cpp` dedup here** (first moment both copies coexist).
+
+Accept (whole slice): capture a DNG on a RAW-capable device per platform; `decodeRoi`
+returns a color.
 
 ### 2.2 — Capability detection + fallback
 - ☐ Implement real `useRawOrJpegCapture` detection — iOS (vision-camera ProRAW/raw support), Android (`raw-camera-android` RAW_SENSOR capability). *(Verify doc claim that it currently returns `isRawAvailable:false` unconditionally.)*
@@ -74,8 +96,8 @@ there was no version gap — just a known-good dependency set to replicate.
 - ☐ Parity test device vs Mac CLI on a fixture.
 
 ### 2.5 — JPEG companion per platform
-- ☐ iOS: extract embedded preview JPEG. Android: generate a JPEG/preview (capture-side or an Android `renderPreview`). Unified "display image for a capture".
-- ☐ Accept: both platforms yield a viewable image for a capture. *(Verify Android `renderPreview` gap.)*
+- ☐ iOS: extract embedded preview JPEG. Android: generate a JPEG/preview (Android `renderPreview` already works; `extractDngPreviewJpeg` still Android-unimplemented). Unified "display image for a capture".
+- ☐ Accept: both platforms yield a viewable image for a capture.
 
 ### 2.6 — iOS decode-backend toggle + benchmark
 - ☐ iOS backend switch (CIRAWFilter vs C++), both compiled, one knob (D2). Document the Bayer-capture coupling.
