@@ -19,12 +19,17 @@ from development aren't useful and may even be misleading (a few values for debu
 ### macOS
 
 ```sh
-$ brew install node watchman ruby openjdk@17
+$ brew install node watchman ruby openjdk@17 flock
 $ sudo ln -sfn /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
 $ echo 'export PATH="/opt/homebrew/opt/ruby/bin:$PATH"' >> ~/.zshrc
 $ source ~/.zshrc
 $ gem install bundler
 ```
+
+`flock` is used by `scripts/rebuild_all` to serialize the install step when
+running iOS and Android rebuilds in parallel (see `npm run rebuild-all-common`
+and the three-terminal workflow). Linux ships it by default; on macOS install
+it via Homebrew as above.
 
 All users:
 
@@ -138,3 +143,68 @@ Additionally, both suites of tests have access to the `jest` directory, which co
 ### Snapshot tests
 
 A subset of our integration tests are **snapshot tests**, which are organized under `__tests/snapshot`. These run application screens in a stubbed-out test harness and compare the resulting React Native DOM tree against one stored in a corresponding snapshot file, highlighting any differences. If a snapshot needs to be updated as a result of a change, you can run `npm run test -- -u` to automatically update them from the results of a test run.
+
+# Clean rebuilds with `rebuild-all` (alternative run workflow)
+
+`npm run rebuild-all` is an alternative to `npm run ios` / `npm run android` for when you want a **clean, reproducible build** — e.g. after switching branches, changing dependencies, or hitting stale-cache errors like `Unable to resolve module ...`.
+
+Compared to the plain run commands, it:
+
+- wipes the target platform's native directory, runs `npm ci` (not `npm install`), re-runs `prebuild`, and clears the Metro / haste / watchman caches before building;
+- filters the noisy build output and prints a launch/build timing summary;
+- cleans up Metro and `xcodebuild` on Ctrl+C.
+
+It requires `flock` (installed via Homebrew in the macOS setup above; Linux ships it by default).
+
+Run `npm run rebuild-all` with no arguments to print the full usage and flag reference.
+
+## iOS
+
+```sh
+$ npm run rebuild-all-ios
+```
+
+## Android
+
+```sh
+$ npm run rebuild-all-android
+```
+
+## Both platforms at once (shared Metro)
+
+A single Metro bundler on port 8081 can serve **both** apps at the same time (each app requests its own platform bundle). This lets you develop iOS and Android side by side without rebuilding when you switch. The build is split into three parts, each in its **own terminal**:
+
+```sh
+# Terminal 1 — run first. Installs deps, clears caches, and starts the shared
+# Metro bundler on 8081. Leave this running; it owns the keyboard shortcuts.
+$ npm run rebuild-all-common
+
+# Terminal 2 — builds and installs the iOS app, then attaches to the Metro above.
+$ npm run rebuild-native-ios
+
+# Terminal 3 — builds and installs the Android app, then attaches to the Metro above.
+$ npm run rebuild-native-android
+```
+
+Start terminal 1 first; terminals 2 and 3 can then be started in any order (even simultaneously — the install steps serialize themselves via `flock`). After the initial builds, both apps stay live against the one Metro, so switching platforms needs no rebuild.
+
+This differs from the single-platform commands above in two ways: deps are installed once by `rebuild-all-common` (the native builds reuse them via `--native-only`), and the native builds don't start their own Metro (`--no-bundler`) — they attach to the shared one.
+
+## Selecting the iOS target (device or simulator)
+
+By default `rebuild-all-ios` / `rebuild-native-ios` build for the iOS simulator. To target a specific physical device or simulator:
+
+```sh
+$ npm run list-ios-devices   # show connected devices and available simulators
+$ npm run pick-ios-device    # interactively pick one; saves the UDID to ~/.landpks-ios-device
+```
+
+Once saved, subsequent iOS rebuilds automatically use that target. You can also override it per-run with the `IOS_DEVICE_ID` environment variable, which takes precedence over the saved file. With neither set, the build falls back to the default simulator.
+
+## Fast re-runs
+
+Add `--run-only` to skip the install/prebuild phase entirely and just rebuild + launch against the existing native directory and warm caches — useful for quick iteration once a clean build already succeeded:
+
+```sh
+$ npm run rebuild-all -- --run-only ios
+```
