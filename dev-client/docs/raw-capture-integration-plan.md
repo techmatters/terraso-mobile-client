@@ -67,19 +67,35 @@ coexist once `frame-analyzer` lands, and they differ only in comments, not code)
   clean (iOS pod autolinks; Android autolinks at build); added `modules/` to eslint
   `ignorePatterns` (matches research). Static green: check-ts/lint/format. *(Native
   build verification pending.)*
-- **2.1b ☐ — JS capture contract + iOS end-to-end.** Port `captureTypes.ts`,
-  `useRawOrJpegCapture.ts` (stub as-is), `RawImagePicker.tsx`, `RawPickImageButton.tsx`,
-  trimmed `RawCameraView.tsx` (Android branch stubbed to throw). iOS `decodeRoi` works.
-- **2.1c ☐ — `raw-camera-android` + Android capture path.** Port
-  `modules/raw-camera-android`, `AndroidRawCaptureScreen.tsx`, `androidRawCaptureRequest.ts`,
-  `chartGuide.ts`; register `ANDROID_RAW_CAPTURE` (manual merge into `screenDefinitions.tsx`);
-  un-stub RawCameraView's Android branch. **Decision at this slice:** mini-port vs stub the
-  coupled research screens (`RawColorToolsScreen`, `ColorScreenExperimental/calibrateTimingLog`).
-- **2.1d ☐ (discuss first) — `frame-analyzer` + live overlay.** Optional; off the
-  `decodeRoi` path. Port `modules/frame-analyzer`, `useRoiFrameAnalyzer.ts`, `RoiOverlay.tsx`;
-  **do the `frame_analyzer.cpp` dedup here** (first moment both copies coexist).
+**Capture-UX levels (decided 2026-10-22).** The camera comes in three levels:
+(1) plain preview + capture, no overlay; (2) + ROI-rectangle overlay; (3) +
+real-time per-ROI analysis. In the research code these map to `containerFormat`
+modes — `'dng'`/`'jpeg'` = level 1, `'dng-live'` = level 3 — and **level 2 does not
+exist as a mode: on iOS the overlay is drawn by the same sub-component that runs the
+analyzer, so overlay and real-time are fused.** Decision: build level 1 first as a
+small fresh component (rewrite, not a trim of the monolithic `RawCameraView`), then do
+levels 2+3 together as a whole-port of `RawCameraView`. The *degraded* "overlay but
+real-time off" state (devices that can't analyze live, esp. Android) is new glue that
+belongs with capability detection (2.2), driven by real capability rather than a mode.
 
-Accept (whole slice): capture a DNG on a RAW-capable device per platform; `decodeRoi`
+- **2.1b ☑ — capture contract + minimal iOS capture (level 1).** Ported
+  `captureTypes.ts` + `useRawOrJpegCapture.ts` (stub). Added `SimpleRawCamera.tsx` — a
+  fresh ~200-line iOS ProRAW capture (preview + shutter, no overlay/real-time/Android),
+  reusing the research capture mechanics (single-wide device, `usePhotoOutput`,
+  `capturePhoto`→`isRawPhoto`→`saveToTemporaryFileAsync`→`extractDngPreviewJpeg`) and the
+  `makeRawCaptureResult` factory, so `decodeRoi`/`renderPreview` bridge to `dng-decoder`.
+  Static green: check-ts/lint/format. *(Native build + on-device capture pending; needs a
+  trigger/call-site to exercise — TBD.)*
+- **2.1c ☐ — levels 2+3: whole-port `RawCameraView` (overlay + real-time) + Android.**
+  Port `RawCameraView`, `RawImagePicker`, `RawPickImageButton`, `RoiOverlay`,
+  `useRoiFrameAnalyzer`, the `frame-analyzer` module (iOS overlay+analysis), and the
+  Android path (`raw-camera-android`, `AndroidRawCaptureScreen`, `androidRawCaptureRequest`,
+  `chartGuide`, `ANDROID_RAW_CAPTURE` nav). Dedup `frame_analyzer.cpp` here (both copies
+  coexist). **Decision when reached:** mini-port vs stub the coupled research screens
+  (`RawColorToolsScreen`, `ColorScreenExperimental/calibrateTimingLog`). Supersedes or
+  absorbs `SimpleRawCamera`.
+
+Accept (whole 2.1): capture a DNG on a RAW-capable device per platform; `decodeRoi`
 returns a color.
 
 ### 2.2 — Capability detection + fallback
