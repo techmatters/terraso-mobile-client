@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   extends: ['@react-native', 'prettier'],
-  ignorePatterns: ['scripts/'],
+  ignorePatterns: ['scripts/', 'modules/'],
   rules: {
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
