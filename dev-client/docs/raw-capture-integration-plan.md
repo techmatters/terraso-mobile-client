@@ -33,7 +33,7 @@ stale — verify its claims against code when porting.
 
 ## Decisions to lock
 
-- **D1 — Flag:** reuse/rename the existing `experimentalColorScreen` flag as the single gate for RAW + new algorithms (vs a new `experimentalRawColor`). Keep removal-friendly. *(default: reuse)*
+- **D1 — Flag:** ✅ **resolved — single flag.** Use the already-landed `experimentalRawColorToggle` (MMKV, under `FF_testing`) as the one gate for RAW + new algorithms + experimental UX. When porting UX (workstream 4), route the research branch's `experimentalColorScreen` references into this single flag — do **not** introduce a second flag. Keep removal-friendly. (Name is incidental; not worth renaming.)
 - **D2 — iOS decode backend:** ship a single switch (e.g. a `DngDecodeBackend` const) selecting CIRAWFilter vs C++, both compiled — not literally commented out, so both keep building. **Coupling:** the C++ branch needs a **Bayer-RAW** capture; the C++ parser can't decode ProRAW (compressed/tiled LinearRaw). So "C++ on iOS" implies capturing Bayer RAW, not ProRAW.
 - **D3 — Reducer seam:** keep `CaptureResult.decodeRoi` as the public seam; back it with a `ColorReducer` selector over `decodeDngRoisReduced`'s `{mean,dominant,variance}`. One place chooses the algorithm.
 - **D4 — Eviction:** small policy interface; default keep-last-N (N=10). Age/size/free-space slot in later.
@@ -101,7 +101,7 @@ P0 → 2.0 → 2.1 → (2.2, 2.3 parallel) → 2.4 → 2.5 → 2.6; 2.7 later; m
 
 ## Open questions
 
-- Flag: reuse `experimentalColorScreen` vs a dedicated `experimentalRawColor`?
+- ~~Flag: reuse `experimentalColorScreen` vs a dedicated `experimentalRawColor`?~~ Resolved (D1): single `experimentalRawColorToggle`.
 - Storage retention specifics + whether captures associate to a site/soil sample (needed for upload).
 - iOS capture format default (ProRAW vs Bayer) for production vs the benchmark path.
 - Reference set: built-in vs user-defined (overlaps part 5).
