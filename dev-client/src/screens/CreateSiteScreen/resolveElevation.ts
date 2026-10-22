@@ -30,5 +30,10 @@ export const resolveElevation = async (
     submittedCoords.longitude !== sitePin?.longitude;
   if (!latLongWasChanged) return sitePinElevation;
   if (isOffline) return null;
+  // Deliberately does NOT opt into rethrowUnauthenticated: this runs in a plain
+  // form-submit handler, not a shared auth-retry thunk, so a re-thrown 401 would
+  // just become an unhandled rejection with nothing to refresh+retry it. A null
+  // here is fine — the new site gets its elevation backfilled on a later sync
+  // (see fetchMissingElevations / pullUserData re-queueing in syncGlobalReducer).
   return getElevation(submittedCoords.latitude, submittedCoords.longitude);
 };
