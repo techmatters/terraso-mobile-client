@@ -33,8 +33,9 @@ Research paths: `scripts/` (analyze-fixtures, munsell-*-experiment, munsell-card
 - ☐ Port the keeper scripts + a short README on running the fixture eval.
 - ☐ Port relevant findings docs.
 
-### 2. RAW captures when supported (native)  — *expo bump already on main; unblocked*
+### 2. RAW captures when supported (native) ◐ — *expo bump already on main; unblocked*
 **Detailed plan: [raw-capture-integration-plan.md](./raw-capture-integration-plan.md)** (slices P0–2.7).
+Progress: **P0 landed** (vision-camera + Nitro dep/patch reconciliation; both platforms build+run). TS model foundation also landed (commit `feat(raw-color): add TS foundation ...`) — standalone logic + tests for the flag, capture strategy, capture store/eviction, color reducer, and reference colors (slices 2.0/2.2/2.3/2.4), **not yet wired to native decode**. Next: slice 2.1 (port native modules + capture router). **Decision to confirm:** the foundation landed a *dedicated* `experimentalRawColorToggle` rather than reusing `experimentalColorScreen` (plan D1 default was reuse).
 Research paths: `modules/{raw-camera-android,dng-decoder,frame-analyzer}`, `patches/`, `src/components/inputs/image/{RawCameraView,captureTypes,...}`, `tools/dng-cli*`, `docs/{android-raw-path,raw-camera-plan}.md`. See **Native code / shared core** below for the architecture.
 Reality check: capture already exists on **both** platforms (iOS = vision-camera + ProRAW patch; Android = `raw-camera-android` module) — this is port+harden, not green-field.
 - ☐ Land native modules with prebuild/config-plugin wiring; confirm iOS + Android build in CI.

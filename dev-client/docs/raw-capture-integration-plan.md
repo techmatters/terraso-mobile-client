@@ -43,10 +43,13 @@ stale — verify its claims against code when porting.
 
 Status key: ☐ todo · ◐ in progress · ☑ landed · 🚢 merged to main
 
-### P0 — Preflight: dependency & patch reconciliation
-- ☐ Reconcile `patches/*` (vision-camera 5.1.1, RN 0.85.3) against **main's** installed versions after the expo bump; regenerate patches if versions drifted.
-- ☐ Add `react-native-vision-camera` dep if not already on main; confirm Nitro codegen tooling/version.
-- ☐ `npm ci` + patch-package apply clean; iOS + Android debug build with modules present (even if unused).
+### P0 — Preflight: dependency & patch reconciliation ☑
+Resolved more cheaply than feared: the research branch had already caught up to
+**RN 0.86.3 / Expo 57** (identical to main) and builds with the full RAW stack, so
+there was no version gap — just a known-good dependency set to replicate.
+- ☑ Reconciled `patches/*`: 3 of 4 (`@rnmapbox/maps`, `native-base`, `react-native`) already on main unchanged; only `react-native-vision-camera+5.1.1.patch` (ProRAW) was ported. (Note: `react-native+0.85.3.patch` is pre-existing on main and applies to 0.86.3 with a harmless patch-package warning — main's status quo, not this slice's concern.)
+- ☑ Added `react-native-vision-camera@5.1.1`, `react-native-vision-camera-worklets@5.1.1`, `react-native-nitro-modules@0.36.1`, `react-native-nitro-image@0.15.1` (`react-native-worklets@0.10.1` already on main). Nitro codegen pulled via nitro-modules.
+- ☑ `npm install` clean, patch-package applies the ProRAW patch cleanly; **iOS + Android debug builds run** with the new deps present (local native modules land in 2.1).
 
 ### 2.0 — Single feature flag
 - ☐ Land the gate (D1); settings toggle. Off = zero behavior change; on = experimental color path.
@@ -90,7 +93,7 @@ P0 → 2.0 → 2.1 → (2.2, 2.3 parallel) → 2.4 → 2.5 → 2.6; 2.7 later; m
 
 ## Risks / things to verify against code
 
-- **Patch/version drift** (RN 0.85.3 / vision-camera 5.1.1 patches vs main) — highest-risk preflight item.
+- ~~**Patch/version drift** (RN 0.85.3 / vision-camera 5.1.1 patches vs main) — highest-risk preflight item.~~ **Resolved in P0:** research is on RN 0.86.3 (== main); only the ProRAW patch needed porting.
 - Nitro codegen version compatibility.
 - Android `renderPreview` not implemented (affects 2.5 ROI-picker UI).
 - iOS C++ decode requires Bayer capture (ProRAW incompatible) — couples D2 to capture format.
