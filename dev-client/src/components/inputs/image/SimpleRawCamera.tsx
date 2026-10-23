@@ -17,7 +17,6 @@
 
 import {ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
 import {
-  Modal,
   Platform,
   Pressable,
   StatusBar,
@@ -25,6 +24,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import {Portal} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Camera,
@@ -103,8 +103,8 @@ export const SimpleRawCamera = (props: Props) =>
   );
 
 // ---------------------------------------------------------------------------
-// Shared presentation: a full-screen modal with the live preview and a
-// shutter / cancel control row. The platform impls supply the `preview` node
+// Shared presentation: a full-screen Portal overlay with the live preview and
+// a shutter / cancel control row. The platform impls supply the `preview` node
 // and the shutter handler.
 
 type ChromeProps = {
@@ -125,37 +125,48 @@ const CaptureChrome = ({
   isCapturing,
   onShutter,
   onCancel,
-}: ChromeProps) => (
-  <Modal visible={visible} animationType="slide" onRequestClose={onCancel}>
-    <StatusBar hidden />
-    <View style={styles.fill}>
-      {preview ?? (
-        <View style={[styles.fill, styles.center]}>
-          <Text style={styles.message}>{unavailableMessage}</Text>
-        </View>
-      )}
-      <SafeAreaView style={styles.controls} edges={['bottom']}>
-        <Pressable
-          onPress={onCancel}
-          style={styles.cancelButton}
-          accessibilityRole="button">
-          <Text style={styles.cancelText}>Cancel</Text>
-        </Pressable>
-        <Pressable
-          onPress={onShutter}
-          disabled={!canCapture || isCapturing}
-          accessibilityRole="button"
-          style={[
-            styles.shutter,
-            (!canCapture || isCapturing) && styles.shutterDisabled,
-          ]}
-        />
-        {/* Spacer to keep the shutter centered opposite the Cancel button. */}
-        <View style={styles.cancelButton} />
-      </SafeAreaView>
-    </View>
-  </Modal>
-);
+}: ChromeProps) => {
+  // Presented through a Portal (rendered at the app root via the Portal.Host
+  // in AppWrappers) rather than an RN <Modal>: on iOS the modal's separate
+  // view hierarchy prevents vision-camera's native preview layer from
+  // attaching (black viewfinder). A full-screen Portal view keeps the preview
+  // in the main hierarchy where it renders correctly. Nothing is mounted while
+  // hidden, so the camera session is released when dismissed.
+  if (!visible) {
+    return null;
+  }
+  return (
+    <Portal>
+      <View style={styles.fullscreen}>
+        <StatusBar hidden />
+        {preview ?? (
+          <View style={[styles.fill, styles.center]}>
+            <Text style={styles.message}>{unavailableMessage}</Text>
+          </View>
+        )}
+        <SafeAreaView style={styles.controls} edges={['bottom']}>
+          <Pressable
+            onPress={onCancel}
+            style={styles.cancelButton}
+            accessibilityRole="button">
+            <Text style={styles.cancelText}>Cancel</Text>
+          </Pressable>
+          <Pressable
+            onPress={onShutter}
+            disabled={!canCapture || isCapturing}
+            accessibilityRole="button"
+            style={[
+              styles.shutter,
+              (!canCapture || isCapturing) && styles.shutterDisabled,
+            ]}
+          />
+          {/* Spacer to keep the shutter centered opposite the Cancel button. */}
+          <View style={styles.cancelButton} />
+        </SafeAreaView>
+      </View>
+    </Portal>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // iOS: vision-camera + ProRAW patch.
@@ -330,6 +341,15 @@ const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
 };
 
 const styles = StyleSheet.create({
+  // Fills the whole screen from the Portal root (covers the app behind it).
+  fullscreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'black',
+  },
   fill: {flex: 1, backgroundColor: 'black'},
   center: {alignItems: 'center', justifyContent: 'center', padding: 24},
   message: {color: 'white', fontSize: 16, textAlign: 'center'},
