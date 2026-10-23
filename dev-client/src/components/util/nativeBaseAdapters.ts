@@ -303,7 +303,8 @@ export const convertNBStyles = <
     }
   }
 
-  const styleProp: ViewStyle = {};
+  // Built up key by key; RN 0.88 made ViewStyle's properties readonly.
+  const styleProp: {-readonly [K in keyof ViewStyle]: ViewStyle[K]} = {};
   const remainingProps: any = subProps ?? {};
 
   keys(props).forEach(k => {

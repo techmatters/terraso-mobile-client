@@ -126,7 +126,7 @@ export const AddTeamMemberForm = ({projectId}: FormProps) => {
             <View mt="sm" alignSelf="flex-end">
               <ContainedButton
                 rightIcon="chevron-right"
-                onPress={handleSubmit}
+                onPress={() => handleSubmit()}
                 disabled={!isValid || isSubmitting}
                 label={t('general.next')}
               />

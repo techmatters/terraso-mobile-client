@@ -41,6 +41,9 @@ export type IconProps = Omit<
 
 export type IconName = IconProps['name'];
 
+// The icon library's color type predates RN 0.88's ColorValue (which includes processed numeric colors); icon color is a text style color, which accepts both.
+type MaterialIconColor = React.ComponentProps<typeof MaterialIcon>['color'];
+
 export const Icon = ({size = 'md', color, ...props}: IconProps) => {
   const convertedColor = convertColorProp(color);
   return (
@@ -50,7 +53,9 @@ export const Icon = ({size = 'md', color, ...props}: IconProps) => {
       // DEFENSIVE FIX: Only pass color prop if it's defined to prevent
       // React Native SVG "is not a valid color or brush" errors.
       // See WARNINGS_TO_FIX.md Issue #7.
-      {...(convertedColor !== undefined && {color: convertedColor})}
+      {...(convertedColor !== undefined && {
+        color: convertedColor as MaterialIconColor,
+      })}
     />
   );
 };

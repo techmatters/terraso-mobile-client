@@ -129,7 +129,7 @@ export const Select = <T, Nullable extends boolean>({
       trigger={onOpen => (
         <Pressable
           accessibilityState={{disabled}}
-          onPress={disabled ? null : onOpen}>
+          onPress={disabled ? undefined : onOpen}>
           <Row
             justifyContent="space-between"
             alignItems="center"

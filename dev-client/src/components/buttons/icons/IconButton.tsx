@@ -16,7 +16,12 @@
  */
 
 import React, {forwardRef} from 'react';
-import {PressableProps, StyleSheet, View} from 'react-native';
+import {
+  PressableProps,
+  StyleSheet,
+  View,
+  type ViewInstance,
+} from 'react-native';
 import {Pressable} from 'react-native-gesture-handler';
 
 import MaterialIcon from '@expo/vector-icons/MaterialIcons';
@@ -47,7 +52,7 @@ export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
   onPress?: PressableProps['onPress'];
 };
 
-export const IconButton = forwardRef<View, IconButtonProps>(
+export const IconButton = forwardRef<ViewInstance, IconButtonProps>(
   (
     {
       type,

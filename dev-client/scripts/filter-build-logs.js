@@ -56,6 +56,19 @@ const NOISE_PATTERNS = [
   // iOS simulator app_launch_measurement telemetry that always fails to send
   // from the simulator. Harmless Apple-internal chatter.
   /Failed to send CA Event/,
+  // iOS 27: React Native's StatusBar still calls the deprecated UIApplication
+  // status-bar APIs, which are now no-ops. iOS picks the icon color itself
+  // (light over our dark headers), so <StatusBar barStyle> has no effect there;
+  // view-controller-based status bar styling is the replacement if needed.
+  /-\[UIApplication (setS|s)tatusBar\w*(:\w*)*\] API has been deprecated/,
+  // iOS simulator: Apple-internal Core Animation / UIKit / CoreVideo chatter.
+  // CVPixelBufferCreate -6680 is a pixel format the simulator can't back
+  // (seen with 512x512 RGBA, likely Mapbox tiles); maps render fine.
+  /cannot add handler to 0 from 0 - dropping/,
+  /implements focusItemsInRect: - caching for linear focus movement/,
+  /CVPixelBufferCreate returned err -6680/,
+  // Its wrapped second line starts with '[', which reads as a new log entry.
+  /^\[ExtendedPixelsRight = \d+, ExtendedPixelsBottom = \d+/,
   // Android: Kotlin compiler warnings from 3rd-party libraries (node_modules).
   // All upstream issues — can't fix locally. Own-code Kotlin warnings still
   // surface because they don't match this path.

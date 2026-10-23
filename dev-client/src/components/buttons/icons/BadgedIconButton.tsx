@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {forwardRef} from 'react';
-import {PressableProps, View} from 'react-native';
+import {PressableProps, type ViewInstance} from 'react-native';
 
 import {Pressable} from 'native-base';
 
@@ -31,7 +31,7 @@ type BadgedIconButtonProps = {
   onPress?: PressableProps['onPress'];
 };
 
-export const BadgedIconButton = forwardRef<View, BadgedIconButtonProps>(
+export const BadgedIconButton = forwardRef<ViewInstance, BadgedIconButtonProps>(
   (
     {
       name,

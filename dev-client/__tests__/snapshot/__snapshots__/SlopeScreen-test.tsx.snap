@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders correctly 1`] = `
 <View
@@ -82,6 +82,7 @@ exports[`renders correctly 1`] = `
                   }
                 }
                 hasLargeHeader={false}
+                iosOrientationInheritanceFixEnabled={true}
                 nativeBackButtonDismissalEnabled={false}
                 onAppear={[Function]}
                 onDisappear={[Function]}
@@ -193,50 +194,69 @@ exports[`renders correctly 1`] = `
                           }
                         />
                         <View>
-                          <View
+                          <RNGestureHandlerButton
                             accessibilityRole="button"
                             accessibilityState={
                               {
-                                "busy": undefined,
-                                "checked": undefined,
                                 "disabled": undefined,
-                                "expanded": undefined,
-                                "selected": undefined,
-                              }
-                            }
-                            accessibilityValue={
-                              {
-                                "max": undefined,
-                                "min": undefined,
-                                "now": undefined,
-                                "text": undefined,
                               }
                             }
                             accessible={true}
-                            collapsable={false}
-                            focusable={true}
-                            onBlur={[Function]}
-                            onClick={[Function]}
-                            onFocus={[Function]}
-                            onResponderGrant={[Function]}
-                            onResponderMove={[Function]}
-                            onResponderRelease={[Function]}
-                            onResponderTerminate={[Function]}
-                            onResponderTerminationRequest={[Function]}
-                            onStartShouldSetResponder={[Function]}
+                            activeUnderlayOpacity={0.105}
+                            cancelOnLeave={true}
+                            defaultOpacity={1}
+                            defaultUnderlayOpacity={0}
+                            enabled={true}
+                            gestureHitSlop={
+                              {
+                                "bottom": 0,
+                                "left": 0,
+                                "right": 0,
+                                "top": 0,
+                              }
+                            }
+                            handlerTag={1}
+                            hasLongPressHandler={false}
+                            hitSlop={
+                              {
+                                "bottom": 0,
+                                "left": 0,
+                                "right": 0,
+                                "top": 0,
+                              }
+                            }
+                            hoverAnimationInDuration={50}
+                            hoverAnimationOutDuration={100}
+                            longPressAnimationOutDuration={100}
+                            longPressDuration={500}
+                            onButtonInteractionFinished={[Function]}
+                            onButtonLongPress={[Function]}
+                            onButtonPress={[Function]}
+                            onButtonPressIn={[Function]}
+                            onButtonPressOut={[Function]}
+                            onLayout={[Function]}
+                            onStartShouldSetResponderCapture={[Function]}
+                            rippleColor="transparent"
                             style={
                               [
-                                {
-                                  "alignSelf": "flex-start",
-                                },
-                                {
-                                  "borderRadius": 100,
-                                },
-                                {
-                                  "backgroundColor": "#00000000",
-                                },
+                                {},
+                                [
+                                  {
+                                    "alignSelf": "flex-start",
+                                  },
+                                  {
+                                    "borderRadius": 100,
+                                  },
+                                  {
+                                    "backgroundColor": "#00000000",
+                                  },
+                                ],
                               ]
                             }
+                            tapAnimationInDuration={50}
+                            tapAnimationOutDuration={100}
+                            testOnly_onPress={[Function]}
+                            underlayColor="transparent"
                           >
                             <Icon
                               name="info"
@@ -256,7 +276,7 @@ exports[`renders correctly 1`] = `
                                 ]
                               }
                             />
-                          </View>
+                          </RNGestureHandlerButton>
                         </View>
                         <RCTScrollView
                           focusHook={[Function]}
@@ -301,51 +321,70 @@ exports[`renders correctly 1`] = `
                                   </Text>
                                 </View>
                                 <View>
-                                  <View
+                                  <RNGestureHandlerButton
                                     accessibilityLabel="Close"
                                     accessibilityRole="button"
                                     accessibilityState={
                                       {
-                                        "busy": undefined,
-                                        "checked": undefined,
                                         "disabled": undefined,
-                                        "expanded": undefined,
-                                        "selected": undefined,
-                                      }
-                                    }
-                                    accessibilityValue={
-                                      {
-                                        "max": undefined,
-                                        "min": undefined,
-                                        "now": undefined,
-                                        "text": undefined,
                                       }
                                     }
                                     accessible={true}
-                                    collapsable={false}
-                                    focusable={true}
-                                    onBlur={[Function]}
-                                    onClick={[Function]}
-                                    onFocus={[Function]}
-                                    onResponderGrant={[Function]}
-                                    onResponderMove={[Function]}
-                                    onResponderRelease={[Function]}
-                                    onResponderTerminate={[Function]}
-                                    onResponderTerminationRequest={[Function]}
-                                    onStartShouldSetResponder={[Function]}
+                                    activeUnderlayOpacity={0.105}
+                                    cancelOnLeave={true}
+                                    defaultOpacity={1}
+                                    defaultUnderlayOpacity={0}
+                                    enabled={true}
+                                    gestureHitSlop={
+                                      {
+                                        "bottom": 0,
+                                        "left": 0,
+                                        "right": 0,
+                                        "top": 0,
+                                      }
+                                    }
+                                    handlerTag={2}
+                                    hasLongPressHandler={false}
+                                    hitSlop={
+                                      {
+                                        "bottom": 0,
+                                        "left": 0,
+                                        "right": 0,
+                                        "top": 0,
+                                      }
+                                    }
+                                    hoverAnimationInDuration={50}
+                                    hoverAnimationOutDuration={100}
+                                    longPressAnimationOutDuration={100}
+                                    longPressDuration={500}
+                                    onButtonInteractionFinished={[Function]}
+                                    onButtonLongPress={[Function]}
+                                    onButtonPress={[Function]}
+                                    onButtonPressIn={[Function]}
+                                    onButtonPressOut={[Function]}
+                                    onLayout={[Function]}
+                                    onStartShouldSetResponderCapture={[Function]}
+                                    rippleColor="transparent"
                                     style={
                                       [
-                                        {
-                                          "alignSelf": "flex-start",
-                                        },
-                                        {
-                                          "borderRadius": 100,
-                                        },
-                                        {
-                                          "backgroundColor": "#EEEEEE",
-                                        },
+                                        {},
+                                        [
+                                          {
+                                            "alignSelf": "flex-start",
+                                          },
+                                          {
+                                            "borderRadius": 100,
+                                          },
+                                          {
+                                            "backgroundColor": "#EEEEEE",
+                                          },
+                                        ],
                                       ]
                                     }
+                                    tapAnimationInDuration={50}
+                                    tapAnimationOutDuration={100}
+                                    testOnly_onPress={[Function]}
+                                    underlayColor="transparent"
                                   >
                                     <Icon
                                       name="close"
@@ -365,7 +404,7 @@ exports[`renders correctly 1`] = `
                                         ]
                                       }
                                     />
-                                  </View>
+                                  </RNGestureHandlerButton>
                                 </View>
                               </View>
                               <Text

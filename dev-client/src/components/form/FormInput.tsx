@@ -16,7 +16,7 @@
  */
 
 import {forwardRef, memo, useImperativeHandle, useRef} from 'react';
-import {TextInput as RNTextInput} from 'react-native';
+import type {TextInputInstance} from 'react-native';
 
 import {
   FormFieldWrapper,
@@ -40,7 +40,7 @@ type Props = FormFieldWrapperProps &
 export const FormInput = memo(
   forwardRef((props: Props, ref) => {
     const {value, onChange, onBlur} = useFieldContext(props.name);
-    const inputRef = useRef<RNTextInput>(null);
+    const inputRef = useRef<TextInputInstance>(null);
 
     useImperativeHandle(ref, () => ({
       focus: () => {

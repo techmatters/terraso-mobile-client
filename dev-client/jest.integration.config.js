@@ -19,6 +19,7 @@ module.exports = {
   displayName: 'integration',
   testMatch: ['**/__tests__/**/*[.-]test.[jt]s?(x)'],
   preset: 'jest-expo',
+  resolver: '<rootDir>/jest/resolver.js',
   setupFilesAfterEnv: [
     '<rootDir>/node_modules/@rnmapbox/maps/setup-jest.js',
     '<rootDir>/jest/integration/setup.ts',

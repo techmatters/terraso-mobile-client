@@ -74,6 +74,7 @@ const ENV_CONFIG = {
   ] as const),
   // Optional: defaults to undefined (treated as 'false' in config/index.ts)
   POSTHOG_DEBUG: process.env.POSTHOG_DEBUG,
+  SENTRY_DEBUG: process.env.SENTRY_DEBUG,
   DEBUG_ENABLED: process.env.DEBUG_ENABLED,
   SYNC_DEBUG_ENABLED: process.env.SYNC_DEBUG_ENABLED,
   ALWAYS_SHOW_WELCOME: process.env.ALWAYS_SHOW_WELCOME,
@@ -257,10 +258,6 @@ const defaultConfig: ExpoConfig = {
     },
   },
   plugins: [
-    // Adopt the UIScene life cycle so the app launches on iOS/iPadOS 27 (SDK 57
-    // / RN 0.86 don't ship it; without it UIKit hard-traps at launch). Listed
-    // first so its AppDelegate mod runs last — see the plugin's header comment.
-    './plugins/withUISceneLifecycle',
     // Required as of Expo SDK 55 — previously auto-registered.
     '@sentry/react-native',
     'expo-asset',
