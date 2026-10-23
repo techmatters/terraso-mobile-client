@@ -92,6 +92,18 @@ belongs with capability detection (2.2), driven by real capability rather than a
   (opens the camera, decodes a centre ROI, alerts linear RGB), both under the FF_testing dev
   menu, non-production. Static green: check-ts/lint/format. *(Native build + on-device capture
   verification pending — user.)*
+> **Finding (2026-10-23), from the level-1 spike:** on iOS this vision-camera fork
+> does **not** render a live preview for a photo-output-only session — the viewfinder
+> is black even though capture/decode work. The iOS live preview is coupled to a
+> **video/frame output** in the session (the research `dng-live` path adds one with
+> `enablePreviewSizedOutputBuffers: true`, which the comments say piggybacks on the
+> *preview surface*; a naive frame output otherwise breaks RAW capture, which is why
+> `dng-live` engineers it carefully). So a working iOS viewfinder is only available via
+> the frame-output path below — it is NOT achievable in a minimal photo-only level-1.
+> `SimpleRawCamera` therefore has no iOS viewfinder; it validated the native stack +
+> decode only. (Android uses `RawCameraAndroidView`, a native preview view, so its
+> viewfinder is independent of this.) The first win of 2.1c is a real iOS viewfinder.
+
 - **2.1c ☐ — levels 2+3: whole-port `RawCameraView` (overlay + real-time) + Android.**
   Port `RawCameraView`, `RawImagePicker`, `RawPickImageButton`, `RoiOverlay`,
   `useRoiFrameAnalyzer`, the `frame-analyzer` module (iOS overlay+analysis), and the

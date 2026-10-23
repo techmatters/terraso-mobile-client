@@ -24,7 +24,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import {Portal} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Camera,
@@ -40,19 +39,21 @@ import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 
 /**
- * Minimal RAW capture — "level 1" of the RAW color pipeline: a plain
- * full-screen camera preview + shutter, no ROI overlay and no real-time
- * analysis. It exists to prove the capture → `decodeRoi` path end-to-end with
- * the smallest possible surface, on both platforms. The full-featured camera
- * (ROI overlay + live analysis) is ported separately from the research
- * branch's RawCameraView.
+ * Minimal RAW capture — "level 1" of the RAW color pipeline: a plain camera
+ * preview + shutter, no ROI overlay and no real-time analysis. It proves the
+ * capture → `decodeRoi` path end-to-end with the smallest possible surface, on
+ * both platforms. The full-featured camera (ROI overlay + live analysis) is
+ * ported separately from the research branch's RawCameraView.
+ *
+ * This renders *inline* and fills its container — it does NOT present itself
+ * (no Modal/Portal). Host it in something that gives it the full screen (e.g.
+ * a navigation screen). Presenting an in-tree overlay caused the opening tap's
+ * touch to leak into the shutter (auto-capture); a dedicated screen avoids that.
  *
  * Two platform implementations behind one component:
  *   - iOS: vision-camera + the ProRAW patch (usePhotoOutput / capturePhoto).
  *   - Android: the raw-camera-android Nitro module (vision-camera can't save
  *     RAW_SENSOR on Android); its native overlay is disabled for level 1.
- *
- * The capture mechanics are adapted from the research branch's RawCameraView.
  */
 
 // Builds the `raw` CaptureResult. decodeRoi/renderPreview bridge straight to
@@ -103,9 +104,9 @@ export const SimpleRawCamera = (props: Props) =>
   );
 
 // ---------------------------------------------------------------------------
-// Shared presentation: a full-screen Portal overlay with the live preview and
-// a shutter / cancel control row. The platform impls supply the `preview` node
-// and the shutter handler.
+// Shared presentation: fills the container with the live preview and a shutter
+// / cancel control row. The platform impls supply the `preview` node and the
+// shutter handler.
 
 type ChromeProps = {
   visible: boolean;
@@ -126,45 +127,47 @@ const CaptureChrome = ({
   onShutter,
   onCancel,
 }: ChromeProps) => {
-  // Presented through a Portal (rendered at the app root via the Portal.Host
-  // in AppWrappers) rather than an RN <Modal>: on iOS the modal's separate
-  // view hierarchy prevents vision-camera's native preview layer from
-  // attaching (black viewfinder). A full-screen Portal view keeps the preview
-  // in the main hierarchy where it renders correctly. Nothing is mounted while
-  // hidden, so the camera session is released when dismissed.
+  // Arm the shutter a beat after becoming visible — cheap insurance against a
+  // stray press landing the instant the camera appears.
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!visible) {
+      setArmed(false);
+      return;
+    }
+    const timer = setTimeout(() => setArmed(true), 400);
+    return () => clearTimeout(timer);
+  }, [visible]);
+
   if (!visible) {
     return null;
   }
+  const shutterDisabled = !canCapture || isCapturing || !armed;
   return (
-    <Portal>
-      <View style={styles.fullscreen}>
-        <StatusBar hidden />
-        {preview ?? (
-          <View style={[styles.fill, styles.center]}>
-            <Text style={styles.message}>{unavailableMessage}</Text>
-          </View>
-        )}
-        <SafeAreaView style={styles.controls} edges={['bottom']}>
-          <Pressable
-            onPress={onCancel}
-            style={styles.cancelButton}
-            accessibilityRole="button">
-            <Text style={styles.cancelText}>Cancel</Text>
-          </Pressable>
-          <Pressable
-            onPress={onShutter}
-            disabled={!canCapture || isCapturing}
-            accessibilityRole="button"
-            style={[
-              styles.shutter,
-              (!canCapture || isCapturing) && styles.shutterDisabled,
-            ]}
-          />
-          {/* Spacer to keep the shutter centered opposite the Cancel button. */}
-          <View style={styles.cancelButton} />
-        </SafeAreaView>
-      </View>
-    </Portal>
+    <View style={styles.fill}>
+      <StatusBar hidden />
+      {preview ?? (
+        <View style={[styles.fill, styles.center]}>
+          <Text style={styles.message}>{unavailableMessage}</Text>
+        </View>
+      )}
+      <SafeAreaView style={styles.controls} edges={['bottom']}>
+        <Pressable
+          onPress={onCancel}
+          style={styles.cancelButton}
+          accessibilityRole="button">
+          <Text style={styles.cancelText}>Cancel</Text>
+        </Pressable>
+        <Pressable
+          onPress={onShutter}
+          disabled={shutterDisabled}
+          accessibilityRole="button"
+          style={[styles.shutter, shutterDisabled && styles.shutterDisabled]}
+        />
+        {/* Spacer to keep the shutter centered opposite the Cancel button. */}
+        <View style={styles.cancelButton} />
+      </SafeAreaView>
+    </View>
   );
 };
 
@@ -327,8 +330,6 @@ const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
       onCancel={onCancel}
       unavailableMessage="Camera permission is required to capture."
       preview={
-        // Mount the native view (which binds the CameraX session) only while
-        // actually presented, so we don't hold the camera when hidden.
         hasPermission && visible ? (
           <RawCameraAndroidView
             style={StyleSheet.absoluteFill}
@@ -341,15 +342,6 @@ const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
 };
 
 const styles = StyleSheet.create({
-  // Fills the whole screen from the Portal root (covers the app behind it).
-  fullscreen: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'black',
-  },
   fill: {flex: 1, backgroundColor: 'black'},
   center: {alignItems: 'center', justifyContent: 'center', padding: 24},
   message: {color: 'white', fontSize: 16, textAlign: 'center'},
