@@ -101,6 +101,7 @@
     "posthog-react-native-session-replay": "^1.6.0",
     "promise": "^8.3.0",
     "quantize": "^1.0.2",
+    "raw-camera-android": "file:./modules/raw-camera-android",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-i18next": "^17.0.15",

@@ -15,9 +15,10 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
 import {
   Modal,
+  Platform,
   Pressable,
   StatusBar,
   StyleSheet,
@@ -34,30 +35,29 @@ import {
 } from 'react-native-vision-camera';
 
 import {DngDecoderHybrid} from 'dng-decoder';
+import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
 
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 
 /**
- * Minimal iOS RAW (ProRAW) capture — "level 1" of the RAW color pipeline:
- * a plain full-screen camera preview + shutter, no ROI overlay and no
- * real-time analysis. It exists to prove the capture → `decodeRoi` path
- * end-to-end with the smallest possible surface. The full-featured camera
- * (ROI overlay + live analysis + the Android RAW path) is ported separately
- * from the research branch's RawCameraView.
+ * Minimal RAW capture — "level 1" of the RAW color pipeline: a plain
+ * full-screen camera preview + shutter, no ROI overlay and no real-time
+ * analysis. It exists to prove the capture → `decodeRoi` path end-to-end with
+ * the smallest possible surface, on both platforms. The full-featured camera
+ * (ROI overlay + live analysis) is ported separately from the research
+ * branch's RawCameraView.
  *
- * iOS-only for now (vision-camera + the ProRAW patch). Android RAW capture
- * goes through a different native module (raw-camera-android) and lands with
- * the full port.
+ * Two platform implementations behind one component:
+ *   - iOS: vision-camera + the ProRAW patch (usePhotoOutput / capturePhoto).
+ *   - Android: the raw-camera-android Nitro module (vision-camera can't save
+ *     RAW_SENSOR on Android); its native overlay is disabled for level 1.
  *
- * The capture mechanics (single-wide device selection for reliable RAW,
- * usePhotoOutput with stable options, capturePhoto → isRawPhoto →
- * saveToTemporaryFileAsync → extractDngPreviewJpeg, and the CaptureResult
- * factory below) are adapted from the research branch's RawCameraView.
+ * The capture mechanics are adapted from the research branch's RawCameraView.
  */
 
 // Builds the `raw` CaptureResult. decodeRoi/renderPreview bridge straight to
-// the dng-decoder Nitro module; the downstream ROI/decode pipeline doesn't
-// care that this came from the minimal camera vs the full one.
+// the dng-decoder Nitro module (C++ on Android, CIRAWFilter on iOS); the
+// downstream ROI/decode pipeline doesn't care which camera produced the DNG.
 const makeRawCaptureResult = (
   dngPath: string,
   width: number,
@@ -84,6 +84,9 @@ const makeRawCaptureResult = (
   },
 });
 
+const fileUri = (p: string): string =>
+  p.startsWith('file://') ? p : `file://${p}`;
+
 type Props = {
   visible: boolean;
   // Receives the RAW CaptureResult; caller owns what to do with it (decode an
@@ -92,7 +95,72 @@ type Props = {
   onCancel: () => void;
 };
 
-export const SimpleRawCamera = ({visible, onCapture, onCancel}: Props) => {
+export const SimpleRawCamera = (props: Props) =>
+  Platform.OS === 'android' ? (
+    <AndroidRawCapture {...props} />
+  ) : (
+    <IosRawCapture {...props} />
+  );
+
+// ---------------------------------------------------------------------------
+// Shared presentation: a full-screen modal with the live preview and a
+// shutter / cancel control row. The platform impls supply the `preview` node
+// and the shutter handler.
+
+type ChromeProps = {
+  visible: boolean;
+  preview: ReactNode;
+  unavailableMessage: string;
+  canCapture: boolean;
+  isCapturing: boolean;
+  onShutter: () => void;
+  onCancel: () => void;
+};
+
+const CaptureChrome = ({
+  visible,
+  preview,
+  unavailableMessage,
+  canCapture,
+  isCapturing,
+  onShutter,
+  onCancel,
+}: ChromeProps) => (
+  <Modal visible={visible} animationType="slide" onRequestClose={onCancel}>
+    <StatusBar hidden />
+    <View style={styles.fill}>
+      {preview ?? (
+        <View style={[styles.fill, styles.center]}>
+          <Text style={styles.message}>{unavailableMessage}</Text>
+        </View>
+      )}
+      <SafeAreaView style={styles.controls} edges={['bottom']}>
+        <Pressable
+          onPress={onCancel}
+          style={styles.cancelButton}
+          accessibilityRole="button">
+          <Text style={styles.cancelText}>Cancel</Text>
+        </Pressable>
+        <Pressable
+          onPress={onShutter}
+          disabled={!canCapture || isCapturing}
+          accessibilityRole="button"
+          style={[
+            styles.shutter,
+            (!canCapture || isCapturing) && styles.shutterDisabled,
+          ]}
+        />
+        {/* Spacer to keep the shutter centered opposite the Cancel button. */}
+        <View style={styles.cancelButton} />
+      </SafeAreaView>
+    </View>
+  </Modal>
+);
+
+// ---------------------------------------------------------------------------
+// iOS: vision-camera + ProRAW patch.
+
+const IosRawCapture = ({visible, onCapture, onCancel}: Props) => {
   // Bind to a true single-camera wide device (not a virtual multi-cam
   // aggregation) — Apple's RAW support is more reliable on single-cam
   // physical devices. Fall back to the default back camera if none found.
@@ -146,16 +214,12 @@ export const SimpleRawCamera = ({visible, onCapture, onCancel}: Props) => {
         onCancel();
         return;
       }
-      const rawPath = await photo.saveToTemporaryFileAsync();
-      const rawUri = rawPath.startsWith('file://')
-        ? rawPath
-        : `file://${rawPath}`;
+      const rawUri = fileUri(await photo.saveToTemporaryFileAsync());
       // iOS AVCapturePhoto DNGs embed a full-res Apple-processed JPEG preview;
       // pull it out as a companion. Best-effort — failure shouldn't block.
       let jpegPath: string | undefined;
       try {
-        const p = DngDecoderHybrid.extractDngPreviewJpeg(rawUri);
-        jpegPath = p.startsWith('file://') ? p : `file://${p}`;
+        jpegPath = fileUri(DngDecoderHybrid.extractDngPreviewJpeg(rawUri));
       } catch (err) {
         console.warn(
           'SimpleRawCamera: preview-JPEG extraction failed; continuing without companion JPEG',
@@ -166,7 +230,7 @@ export const SimpleRawCamera = ({visible, onCapture, onCancel}: Props) => {
         makeRawCaptureResult(rawUri, photo.width, photo.height, jpegPath),
       );
     } catch (err) {
-      console.error('SimpleRawCamera: shutter failed:', err);
+      console.error('SimpleRawCamera: iOS shutter failed:', err);
       onCancel();
     } finally {
       setIsCapturing(false);
@@ -176,10 +240,19 @@ export const SimpleRawCamera = ({visible, onCapture, onCancel}: Props) => {
   const ready = !!device && hasPermission;
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onCancel}>
-      <StatusBar hidden />
-      <View style={styles.fill}>
-        {ready ? (
+    <CaptureChrome
+      visible={visible}
+      canCapture={ready}
+      isCapturing={isCapturing}
+      onShutter={capture}
+      onCancel={onCancel}
+      unavailableMessage={
+        device
+          ? 'Camera permission is required to capture.'
+          : 'No compatible camera was found on this device.'
+      }
+      preview={
+        ready ? (
           <Camera
             style={StyleSheet.absoluteFill}
             device={device}
@@ -188,36 +261,71 @@ export const SimpleRawCamera = ({visible, onCapture, onCancel}: Props) => {
             resizeMode="contain"
             enableNativeTapToFocusGesture={true}
           />
-        ) : (
-          <View style={[styles.fill, styles.center]}>
-            <Text style={styles.message}>
-              {device
-                ? 'Camera permission is required to capture.'
-                : 'No compatible camera was found on this device.'}
-            </Text>
-          </View>
-        )}
-        <SafeAreaView style={styles.controls} edges={['bottom']}>
-          <Pressable
-            onPress={onCancel}
-            style={styles.cancelButton}
-            accessibilityRole="button">
-            <Text style={styles.cancelText}>Cancel</Text>
-          </Pressable>
-          <Pressable
-            onPress={capture}
-            disabled={!ready || isCapturing}
-            accessibilityRole="button"
-            style={[
-              styles.shutter,
-              (!ready || isCapturing) && styles.shutterDisabled,
-            ]}
+        ) : null
+      }
+    />
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Android: raw-camera-android Nitro module (CameraX + DngCreator). The native
+// view owns the preview + CameraX session; capture is imperative via the
+// module-level hybrid object. The native ROI overlay is disabled for level 1.
+
+const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
+  // vision-camera's permission hook requests the OS CAMERA permission, which
+  // is what raw-camera-android needs too — reuse it rather than a second path.
+  const {hasPermission, requestPermission} = useCameraPermission();
+  const [isCapturing, setIsCapturing] = useState(false);
+
+  useEffect(() => {
+    if (visible && !hasPermission) {
+      requestPermission().catch(err => {
+        console.error('SimpleRawCamera: permission request failed:', err);
+      });
+    }
+  }, [visible, hasPermission, requestPermission]);
+
+  const capture = useCallback(async () => {
+    if (isCapturing) return;
+    setIsCapturing(true);
+    try {
+      const photo = await RawCameraAndroidHybrid.capturePhoto({});
+      onCapture(
+        makeRawCaptureResult(
+          fileUri(photo.dngPath),
+          photo.width,
+          photo.height,
+          photo.jpegPath ? fileUri(photo.jpegPath) : undefined,
+        ),
+      );
+    } catch (err) {
+      console.error('SimpleRawCamera: Android shutter failed:', err);
+      onCancel();
+    } finally {
+      setIsCapturing(false);
+    }
+  }, [isCapturing, onCapture, onCancel]);
+
+  return (
+    <CaptureChrome
+      visible={visible}
+      canCapture={hasPermission}
+      isCapturing={isCapturing}
+      onShutter={capture}
+      onCancel={onCancel}
+      unavailableMessage="Camera permission is required to capture."
+      preview={
+        // Mount the native view (which binds the CameraX session) only while
+        // actually presented, so we don't hold the camera when hidden.
+        hasPermission && visible ? (
+          <RawCameraAndroidView
+            style={StyleSheet.absoluteFill}
+            showRoiOverlay={false}
           />
-          {/* Spacer to keep the shutter centered opposite the Cancel button. */}
-          <View style={styles.cancelButton} />
-        </SafeAreaView>
-      </View>
-    </Modal>
+        ) : null
+      }
+    />
   );
 };
 
