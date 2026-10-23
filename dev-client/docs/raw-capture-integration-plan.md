@@ -84,8 +84,14 @@ belongs with capability detection (2.2), driven by real capability rather than a
   reusing the research capture mechanics (single-wide device, `usePhotoOutput`,
   `capturePhoto`→`isRawPhoto`→`saveToTemporaryFileAsync`→`extractDngPreviewJpeg`) and the
   `makeRawCaptureResult` factory, so `decodeRoi`/`renderPreview` bridge to `dng-decoder`.
-  Static green: check-ts/lint/format. *(Native build + on-device capture pending; needs a
-  trigger/call-site to exercise — TBD.)*
+  **Android level 1 also landed**: ported `modules/raw-camera-android` (CameraX +
+  DngCreator Nitro module) and made `SimpleRawCamera` dispatch per platform
+  (`RawCameraAndroidView` with `showRoiOverlay={false}` + `RawCameraAndroidHybrid.capturePhoto`);
+  the Android `CapturedPhoto` supplies its own companion JPEG, so no `extractDngPreviewJpeg`
+  there. **Dev entry (A):** `ExperimentalRawColorToggleItem` (flag on/off) + `RawCaptureTestItem`
+  (opens the camera, decodes a centre ROI, alerts linear RGB), both under the FF_testing dev
+  menu, non-production. Static green: check-ts/lint/format. *(Native build + on-device capture
+  verification pending — user.)*
 - **2.1c ☐ — levels 2+3: whole-port `RawCameraView` (overlay + real-time) + Android.**
   Port `RawCameraView`, `RawImagePicker`, `RawPickImageButton`, `RoiOverlay`,
   `useRoiFrameAnalyzer`, the `frame-analyzer` module (iOS overlay+analysis), and the
