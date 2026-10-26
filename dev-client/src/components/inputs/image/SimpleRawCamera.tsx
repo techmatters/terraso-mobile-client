@@ -15,7 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Platform,
   Pressable,
@@ -37,23 +44,31 @@ import {DngDecoderHybrid} from 'dng-decoder';
 import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
 
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import {RoiOverlay} from 'terraso-mobile-client/components/inputs/image/RoiOverlay';
+import {
+  DISPLAY_REF_ROI,
+  DISPLAY_SAMPLE_ROI,
+  useRoiFrameAnalyzer,
+} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
 
 /**
- * Minimal RAW capture — "level 1" of the RAW color pipeline: a plain camera
- * preview + shutter, no ROI overlay and no real-time analysis. It proves the
- * capture → `decodeRoi` path end-to-end with the smallest possible surface, on
- * both platforms. The full-featured camera (ROI overlay + live analysis) is
- * ported separately from the research branch's RawCameraView.
+ * In-app RAW capture: live preview + shutter, a two-ROI overlay, and real-time
+ * per-ROI analysis, backed by the dng-decoder pipeline. A minimal, clean
+ * alternative to the research RawCameraView (no CameraChrome / chart-guide
+ * baggage).
  *
- * This renders *inline* and fills its container — it does NOT present itself
- * (no Modal/Portal). Host it in something that gives it the full screen (e.g.
- * a navigation screen). Presenting an in-tree overlay caused the opening tap's
- * touch to leak into the shutter (auto-capture); a dedicated screen avoids that.
+ * Renders *inline* and fills its container — it does NOT present itself (no
+ * Modal/Portal). Host it in something that gives it the full screen (e.g. a
+ * navigation screen).
  *
  * Two platform implementations behind one component:
- *   - iOS: vision-camera + the ProRAW patch (usePhotoOutput / capturePhoto).
+ *   - iOS: vision-camera + the ProRAW patch. A vision-camera frame output
+ *     drives both the live preview AND the ROI analyzer; because that output
+ *     forces a non-RAW format, it is detached around each capture (the
+ *     onConfigured dance below). The ROI overlay is the JS RoiOverlay.
  *   - Android: the raw-camera-android Nitro module (vision-camera can't save
- *     RAW_SENSOR on Android); its native overlay is disabled for level 1.
+ *     RAW_SENSOR on Android); it owns its own native preview + overlay. The
+ *     native overlay is still disabled here pending the Android overlay wiring.
  */
 
 // Builds the `raw` CaptureResult. decodeRoi/renderPreview bridge straight to
@@ -171,6 +186,47 @@ const CaptureChrome = ({
   );
 };
 
+// iPhone rear sensor is 4:3 landscape; the DNG rotates to 3:4 portrait for
+// display. Width / height.
+const SENSOR_ASPECT = 3 / 4;
+
+// Fixed-aspect wrapper, centered and letterboxed inside its parent. Everything
+// inside shares one coordinate system: whatever fills this box fills the same
+// area as the captured sensor image (with the camera at resizeMode="contain").
+// That's what makes the ROI overlay line up with the preview (and map 1:1 to
+// the DNG) instead of being positioned against the full, wider-than-sensor
+// screen. Adapted from the research RawCameraView's SensorAspectFrame.
+const SensorAspectFrame = ({
+  aspect,
+  children,
+}: {
+  aspect: number;
+  children: ReactNode;
+}) => {
+  const [container, setContainer] = useState<{w: number; h: number} | null>(
+    null,
+  );
+  let inner: {width: number; height: number} | null = null;
+  if (container) {
+    inner =
+      container.w / container.h >= aspect
+        ? {height: container.h, width: container.h * aspect}
+        : {width: container.w, height: container.w / aspect};
+  }
+  return (
+    <View
+      style={styles.sensorFrameOuter}
+      onLayout={e =>
+        setContainer({
+          w: e.nativeEvent.layout.width,
+          h: e.nativeEvent.layout.height,
+        })
+      }>
+      {inner && <View style={inner}>{children}</View>}
+    </View>
+  );
+};
+
 // ---------------------------------------------------------------------------
 // iOS: vision-camera + ProRAW patch.
 
@@ -214,12 +270,45 @@ const IosRawCapture = ({visible, onCapture, onCancel}: Props) => {
     [],
   );
   const photoOutput = usePhotoOutput(photoOutputOptions);
-  const outputs = useMemo(() => [photoOutput], [photoOutput]);
+
+  // Real-time ROI analyzer. Its vision-camera frame output ALSO drives the
+  // iOS live preview — a photo-output-only session renders no viewfinder.
+  // Fixed ROIs for now (no preset UI).
+  const {frameOutput, refQuality, sampleQuality} = useRoiFrameAnalyzer(
+    DISPLAY_REF_ROI,
+    DISPLAY_SAMPLE_ROI,
+  );
+
+  // A frame output forces the session onto a non-RAW-capable format, so detach
+  // it around each capture: flip `detachedForCapture` → session reconfigures to
+  // a RAW-capable format (awaited via onConfigured) → shoot → reattach. Mirrors
+  // the research IosDngCameraLayer.
+  const [detachedForCapture, setDetachedForCapture] = useState(false);
+  const outputs = useMemo(
+    () => (detachedForCapture ? [photoOutput] : [photoOutput, frameOutput]),
+    [detachedForCapture, photoOutput, frameOutput],
+  );
+  const configResolveRef = useRef<(() => void) | null>(null);
+  const onConfigured = useCallback(() => {
+    const resolve = configResolveRef.current;
+    if (resolve) {
+      configResolveRef.current = null;
+      resolve();
+    }
+  }, []);
 
   const capture = useCallback(async () => {
     if (isCapturing) return;
     setIsCapturing(true);
     try {
+      // Detach the frame output and wait for the session to reconfigure to a
+      // RAW-capable format before shooting.
+      const reconfigured = new Promise<void>(resolve => {
+        configResolveRef.current = resolve;
+      });
+      setDetachedForCapture(true);
+      await reconfigured;
+
       const photo = await photoOutput.capturePhoto({}, {});
       if (!photo.isRawPhoto) {
         // Asked for DNG but got a processed photo — refuse to emit a
@@ -247,6 +336,8 @@ const IosRawCapture = ({visible, onCapture, onCancel}: Props) => {
       console.error('SimpleRawCamera: iOS shutter failed:', err);
       onCancel();
     } finally {
+      // Reattach the frame output (live preview + analysis resume).
+      setDetachedForCapture(false);
       setIsCapturing(false);
     }
   }, [isCapturing, photoOutput, onCapture, onCancel]);
@@ -267,14 +358,27 @@ const IosRawCapture = ({visible, onCapture, onCancel}: Props) => {
       }
       preview={
         ready ? (
-          <Camera
-            style={StyleSheet.absoluteFill}
-            device={device}
-            isActive={visible}
-            outputs={outputs}
-            resizeMode="contain"
-            enableNativeTapToFocusGesture={true}
-          />
+          <SensorAspectFrame aspect={SENSOR_ASPECT}>
+            <Camera
+              style={StyleSheet.absoluteFill}
+              device={device}
+              isActive={visible}
+              outputs={outputs}
+              onConfigured={onConfigured}
+              // Tie orientation to the (portrait-locked) UI, not the physical
+              // device, so the preview stays fixed to the screen and doesn't
+              // reorient when the phone is rotated.
+              orientationSource="interface"
+              resizeMode="contain"
+              enableNativeTapToFocusGesture={true}
+            />
+            <RoiOverlay
+              refRoi={DISPLAY_REF_ROI}
+              sampleRoi={DISPLAY_SAMPLE_ROI}
+              refQuality={refQuality}
+              sampleQuality={sampleQuality}
+            />
+          </SensorAspectFrame>
         ) : null
       }
     />
@@ -343,6 +447,16 @@ const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
 
 const styles = StyleSheet.create({
   fill: {flex: 1, backgroundColor: 'black'},
+  // Fills the preview area and centers the sensor-aspect box (letterboxed).
+  sensorFrameOuter: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   center: {alignItems: 'center', justifyContent: 'center', padding: 24},
   message: {color: 'white', fontSize: 16, textAlign: 'center'},
   controls: {

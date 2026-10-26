@@ -104,17 +104,30 @@ belongs with capability detection (2.2), driven by real capability rather than a
 > decode only. (Android uses `RawCameraAndroidView`, a native preview view, so its
 > viewfinder is independent of this.) The first win of 2.1c is a real iOS viewfinder.
 
-- **2.1c ☐ — levels 2+3: whole-port `RawCameraView` (overlay + real-time) + Android.**
-  Port `RawCameraView`, `RawImagePicker`, `RawPickImageButton`, `RoiOverlay`,
-  `useRoiFrameAnalyzer`, the `frame-analyzer` module (iOS overlay+analysis), and the
-  Android path (`raw-camera-android`, `AndroidRawCaptureScreen`, `androidRawCaptureRequest`,
-  `chartGuide`, `ANDROID_RAW_CAPTURE` nav). Dedup `frame_analyzer.cpp` here (both copies
-  coexist). **Decision when reached:** mini-port vs stub the coupled research screens
-  (`RawColorToolsScreen`, `ColorScreenExperimental/calibrateTimingLog`). Supersedes or
-  absorbs `SimpleRawCamera`.
+- **2.1c-a ☑ — iOS viewfinder + ROI overlay + real-time analysis.** Done by *extending
+  `SimpleRawCamera`* (not whole-porting the `RawCameraView` monolith — that approach was
+  evaluated and rejected): ported the `frame-analyzer` module (iOS-only) + `useRoiFrameAnalyzer`
+  + `RoiOverlay`; the iOS path now runs a vision-camera frame output (drives the live preview
+  AND the analyzer), detaches it around each capture (onConfigured dance) so RAW capture still
+  works, wraps camera+overlay in a `SensorAspectFrame` so the ROI boxes align 1:1 with the
+  preview/DNG, and sets `orientationSource="interface"` so the portrait-locked preview doesn't
+  spin with the phone. Confirmed on-device: viewfinder + red/green ROI quality + capture→decode.
+  > **⚠️ Hard-won lesson:** rapid Metro-reload camera churn can **wedge iOS's camera service**
+  > (black frames system-wide, even the built-in Camera app; only a **reboot** clears it). This
+  > invalidated ~15 iterations of "black preview" testing — the code was fine; the camera was
+  > wedged. When camera tests go black, **reboot before trusting the next result.** The
+  > `RawCameraView` whole-port was ported temporarily to isolate this and has been removed.
+- **2.1c-b ☐ — Android overlay.** Enable `RawCameraAndroidView`'s native ROI overlay
+  (`showRoiOverlay`) + the equivalent framing/analysis. `frame-analyzer` is iOS-only and
+  `raw-camera-android` carries its own `frame_analyzer.cpp`, so they never co-compile — the
+  "dedup" is cosmetic and deferred (no build conflict).
+- **2.1c-c ☐ — ROI preset UI + wiring into the real color flow** (size selector from
+  `ROI_PRESETS`; feed `decodeRoi` results into the experimental color screen). Clean session
+  teardown is via screen unmount (nav goBack) — adequate in production (the wedging was
+  dev-reload-only); revisit only if real-use wedging appears.
 
 Accept (whole 2.1): capture a DNG on a RAW-capable device per platform; `decodeRoi`
-returns a color.
+returns a color. **iOS done; Android capture works (2.1-level), overlay pending.**
 
 ### 2.2 — Capability detection + fallback
 - ☐ Implement real `useRawOrJpegCapture` detection — iOS (vision-camera ProRAW/raw support), Android (`raw-camera-android` RAW_SENSOR capability). *(Verify doc claim that it currently returns `isRawAvailable:false` unconditionally.)*
