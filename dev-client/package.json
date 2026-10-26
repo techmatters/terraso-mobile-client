@@ -89,6 +89,7 @@
     "expo-video": "~57.0.4",
     "expo-web-browser": "~57.0.3",
     "formik": "^2.4.6",
+    "frame-analyzer": "file:./modules/frame-analyzer",
     "haversine": "^1.1.1",
     "i18next": "^26.4.2",
     "intl-pluralrules": "^2.0.1",

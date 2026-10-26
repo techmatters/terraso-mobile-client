@@ -1,0 +1,29 @@
+{
+  "name": "frame-analyzer",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Nitro module: per-ROI Y-plane analysis (mean + variance) for the phase-8 real-time overlay. iOS-only for now; Android uses its own JNI wrapper inside raw-camera-android. See docs/raw-camera-plan.md phase 8.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src",
+    "cpp",
+    "ios",
+    "nitrogen",
+    "nitro.json",
+    "FrameAnalyzer.podspec"
+  ],
+  "scripts": {
+    "codegen": "nitrogen --path . --logLevel=info"
+  },
+  "keywords": [
+    "react-native",
+    "nitro-module",
+    "vision-camera"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-nitro-modules": "*"
+  }
+}
