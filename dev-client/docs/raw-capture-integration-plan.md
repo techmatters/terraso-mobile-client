@@ -122,18 +122,22 @@ belongs with capability detection (2.2), driven by real capability rather than a
   *oriented* (portrait) dims (short=width/long=height; DNG decodes in portrait extent while
   `result.width/height` are pre-orientation landscape). Alerts REF, SOIL, and a naive
   WB (sample÷ref). Real WB/Munsell is workstream 3.
-- **2.1c-ANDROID-BLOCKER ⛔ — RAW capture broken on Pixel 6a / Android 16.** `raw-camera-android`
-  loads and reaches `CameraSessionManager`, but **no RAW stream combo streams the preview**:
-  4-stream (preview+raw+jpeg+analysis) → `No supported surface combination` (expected); both
-  3-stream fallbacks (preview+raw+analysis AND preview+raw+jpeg, via `preferJpeg`) *bind* but
-  the preview stays `IDLE` (watchdog rebind loop), and camera-control calls
-  (`setExposureCompensationIndex`, `setCaptureRequestOptions`) time out → `takePicture` times
-  out (8 s). The 2-stream (preview+raw) fallback is never reached because the ladder stops at
-  the first config that *binds*. **No JS lever left** (tried `skipJpeg`, `preferJpeg`). Needs
-  native Kotlin work: make the bind ladder verify *streaming* not just *binding*, and/or force
-  2-stream preview+raw on this device (+ possibly a smaller RAW/preview spec) — a dedicated
-  Android/CameraX task on an OS the research module predates. JS keeps `preferJpeg`/`skipJpeg`
-  set as the right config for when it's fixed. **iOS is unaffected.**
+- **2.1c-ANDROID-BLOCKER ⛔ — RAW capture broken on Pixel 6a / Android 16 (CameraX, not stream
+  config).** `raw-camera-android` loads and binds, but **the camera session never streams any
+  frames.** Confirmed with logcat across every combo: 4-stream → `No supported surface
+  combination` (expected); 3-stream (preview+raw+analysis and preview+raw+jpeg) *bind* but the
+  preview stays `IDLE`; and — decisively — forcing **2-stream `preview+raw` ALSO binds (reports
+  "RAW capable") but stays `IDLE`.** In all cases the camera opens (`Camera2CameraController
+  Started`) yet the repeating request config shows `streams = null`, camera-control calls
+  (`setExposureCompensationIndex`, `setCaptureRequestOptions`) time out (~3 s each), and
+  `takePicture` times out (8 s). Because even the minimal preview+raw fails, **this is NOT a
+  surface-combination problem** — it's a fundamental CameraX / `camera2-pipe` (CXCP) streaming
+  failure on Android 16. The module pins **CameraX 1.4.1** (`raw-camera-android/android/build.gradle`,
+  `cameraxVersion`), which predates Android 16. **No JS or stream-config lever helps** (tried
+  `skipJpeg`, `preferJpeg`, and a native 2-stream-first reorder — all reverted). **Fix is a
+  dependency bump:** upgrade CameraX (1.4.1 → current, e.g. 1.5.x) and/or switch the backend
+  (camera2-pipe ↔ camera2), then Android rebuild — a dedicated task with CameraX API-migration
+  risk. **iOS unaffected.**
 - **2.1c-b ☐ — Android overlay.** (Blocked by the Android capture blocker above.) Enable
   `RawCameraAndroidView`'s native ROI overlay (`showRoiOverlay`). `frame-analyzer` is iOS-only
   and `raw-camera-android` carries its own `frame_analyzer.cpp`, so they never co-compile.
