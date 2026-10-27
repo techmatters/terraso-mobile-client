@@ -19,7 +19,7 @@ module.exports = {
   displayName: 'unit',
   testMatch: ['**/src/**/*.test.[jt]s?(x)'],
   preset: 'jest-expo',
-  testEnvironment: 'jsdom',
+  resolver: '<rootDir>/jest/resolver.js',
   setupFilesAfterEnv: ['<rootDir>/jest/unit/setup.ts'],
   clearMocks: true,
   transformIgnorePatterns: [

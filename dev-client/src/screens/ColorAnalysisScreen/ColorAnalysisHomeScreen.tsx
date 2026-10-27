@@ -224,7 +224,7 @@ export const ColorAnalysisHomeScreen = () => {
       <Fab
         label={t('soil.color.analyze')}
         disabled={onAnalyze === null}
-        onPress={onAnalyze}
+        onPress={onAnalyze ?? undefined}
         leftIcon="check"
       />
     </ScreenScaffold>

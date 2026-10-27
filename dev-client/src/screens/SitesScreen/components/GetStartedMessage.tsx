@@ -20,7 +20,10 @@ import {StyleSheet} from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
-import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {
+  Icon,
+  type VectorIconColor,
+} from 'terraso-mobile-client/components/icons/Icon';
 import {View} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
@@ -31,7 +34,7 @@ export const GetStartedMessage = () => {
         <MaterialCommunityIcons
           name="gesture-tap"
           size={24}
-          color={convertColorProp('text.icon')}
+          color={convertColorProp('text.icon') as VectorIconColor}
           style={styles.communityIcon}
         />
         <View style={styles.flex}>

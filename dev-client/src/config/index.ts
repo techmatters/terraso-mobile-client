@@ -89,6 +89,7 @@ export const APP_CONFIG = {
   terrasoApiHostname: ENV_CONFIG.TERRASO_BACKEND.replace('https://', ''),
   sentryDsn: ENV_CONFIG.SENTRY_DSN,
   sentryEnabled: sentryEnabled === 'true',
+  sentryDebug: ENV_CONFIG.SENTRY_DEBUG === 'true',
   environment: ENV_CONFIG.ENV,
   build: ENV_CONFIG.APP_BUILD,
   version: Constants.expoConfig!.version,

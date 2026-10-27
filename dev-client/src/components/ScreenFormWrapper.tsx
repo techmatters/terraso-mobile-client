@@ -31,6 +31,7 @@ import {
   Platform,
   View as RNView,
   StyleSheet,
+  type ViewInstance,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -88,7 +89,7 @@ const getDebugStyles = () =>
 export const ScreenFormWrapper = forwardRef(
   ({initialValues, onSubmit, onDelete, children, isSubmitting}: Props, ref) => {
     const formikRef = useRef<FormikProps<{content: string}>>(null);
-    const containerRef = useRef<RNView>(null);
+    const containerRef = useRef<ViewInstance>(null);
     const {t} = useTranslation();
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();

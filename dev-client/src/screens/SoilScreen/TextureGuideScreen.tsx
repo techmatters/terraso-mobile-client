@@ -46,6 +46,7 @@ import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/
 import {useDispatch} from 'terraso-mobile-client/store';
 
 const LENGTH_IMAGE = require('terraso-mobile-client/assets/texture/guide/length.png');
+const LENGTH_IMAGE_SOURCE = Image.resolveAssetSource(LENGTH_IMAGE);
 
 export const TextureGuideScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
@@ -354,8 +355,9 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
     aspectRatio:
-      Image.resolveAssetSource(LENGTH_IMAGE).width /
-      Image.resolveAssetSource(LENGTH_IMAGE).height,
+      LENGTH_IMAGE_SOURCE?.width && LENGTH_IMAGE_SOURCE?.height
+        ? LENGTH_IMAGE_SOURCE.width / LENGTH_IMAGE_SOURCE.height
+        : undefined,
   },
   lengthImage: {width: '100%', height: '100%'},
 });

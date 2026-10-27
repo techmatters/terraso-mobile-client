@@ -131,7 +131,7 @@ export const SiteSettingsScreen = ({siteId}: Props) => {
                   <ContainedButton
                     size="lg"
                     label={t('general.save')}
-                    onPress={handleSubmit}
+                    onPress={() => handleSubmit()}
                     disabled={!dirty || !isValid || isSubmitting}
                   />
                 </View>

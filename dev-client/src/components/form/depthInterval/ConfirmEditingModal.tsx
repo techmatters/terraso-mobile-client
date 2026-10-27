@@ -48,9 +48,8 @@ export const ConfirmEditingModal = ({
   }, [start, end, newStart, newEnd]);
 
   const buttonAction = useCallback(
-    (onOpen: () => void) =>
-      (...args: Parameters<typeof handleSubmit>) =>
-        showWarningModal ? onOpen() : handleSubmit(...args),
+    (onOpen: () => void) => () =>
+      showWarningModal ? onOpen() : handleSubmit(),
     [handleSubmit, showWarningModal],
   );
 

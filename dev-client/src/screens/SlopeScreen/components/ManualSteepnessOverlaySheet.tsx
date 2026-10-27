@@ -214,7 +214,7 @@ export const ManualSteepnessOverlaySheet = ({siteId, trigger}: Props) => {
             <Row justifyContent="flex-end" alignItems="center" space={5}>
               <ContainedButton
                 size="lg"
-                onPress={handleSubmit}
+                onPress={() => handleSubmit()}
                 label={t('general.save')}
                 disabled={!isValid || isSubmitting}
               />

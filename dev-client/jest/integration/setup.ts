@@ -32,9 +32,10 @@ jest.mock('@react-native-community/netinfo', () => mockRNCNetInfo);
 // or the mock throws "Native part of Worklets doesn't seem to be initialized".
 // The stub is a recursive proxy: any property access AND any call returns
 // the same proxy, so `foo()`, `foo.bar`, `foo.bar.baz()` all no-op cleanly.
-// The `then` special-case avoids confusing anything that duck-types Promises.
+// The `then` special-case avoids confusing anything that duck-types Promises; symbol keys (e.g. Symbol.toPrimitive) return undefined because Jest 30's global cleanup coerces globals to primitives and throws on the proxy.
 const mockWorkletsStub: any = new Proxy(function () {}, {
-  get: (_target, prop) => (prop === 'then' ? undefined : mockWorkletsStub),
+  get: (_target, prop) =>
+    prop === 'then' || typeof prop === 'symbol' ? undefined : mockWorkletsStub,
   apply: () => mockWorkletsStub,
 });
 jest.mock('react-native-worklets', () => mockWorkletsStub);
