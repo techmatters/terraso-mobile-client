@@ -1098,6 +1098,9 @@ describe('pushUserData - elevation fetch and push for sites', () => {
     expect(mockGetElevation).toHaveBeenCalledWith(
       site.latitude,
       site.longitude,
+      {
+        rethrowUnauthenticated: true,
+      },
     );
   });
 
