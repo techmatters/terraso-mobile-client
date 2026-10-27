@@ -117,10 +117,26 @@ belongs with capability detection (2.2), driven by real capability rather than a
   > invalidated ~15 iterations of "black preview" testing — the code was fine; the camera was
   > wedged. When camera tests go black, **reboot before trusting the next result.** The
   > `RawCameraView` whole-port was ported temporarily to isolate this and has been removed.
-- **2.1c-b ☐ — Android overlay.** Enable `RawCameraAndroidView`'s native ROI overlay
-  (`showRoiOverlay`) + the equivalent framing/analysis. `frame-analyzer` is iOS-only and
-  `raw-camera-android` carries its own `frame_analyzer.cpp`, so they never co-compile — the
-  "dedup" is cosmetic and deferred (no build conflict).
+- **2.1c-d ☑ (iOS) — real ref+sample ROI decode.** The capture test decodes the two
+  overlay ROIs (not a centre box): display-fractional → DNG pixel coords scaled by the
+  *oriented* (portrait) dims (short=width/long=height; DNG decodes in portrait extent while
+  `result.width/height` are pre-orientation landscape). Alerts REF, SOIL, and a naive
+  WB (sample÷ref). Real WB/Munsell is workstream 3.
+- **2.1c-ANDROID-BLOCKER ⛔ — RAW capture broken on Pixel 6a / Android 16.** `raw-camera-android`
+  loads and reaches `CameraSessionManager`, but **no RAW stream combo streams the preview**:
+  4-stream (preview+raw+jpeg+analysis) → `No supported surface combination` (expected); both
+  3-stream fallbacks (preview+raw+analysis AND preview+raw+jpeg, via `preferJpeg`) *bind* but
+  the preview stays `IDLE` (watchdog rebind loop), and camera-control calls
+  (`setExposureCompensationIndex`, `setCaptureRequestOptions`) time out → `takePicture` times
+  out (8 s). The 2-stream (preview+raw) fallback is never reached because the ladder stops at
+  the first config that *binds*. **No JS lever left** (tried `skipJpeg`, `preferJpeg`). Needs
+  native Kotlin work: make the bind ladder verify *streaming* not just *binding*, and/or force
+  2-stream preview+raw on this device (+ possibly a smaller RAW/preview spec) — a dedicated
+  Android/CameraX task on an OS the research module predates. JS keeps `preferJpeg`/`skipJpeg`
+  set as the right config for when it's fixed. **iOS is unaffected.**
+- **2.1c-b ☐ — Android overlay.** (Blocked by the Android capture blocker above.) Enable
+  `RawCameraAndroidView`'s native ROI overlay (`showRoiOverlay`). `frame-analyzer` is iOS-only
+  and `raw-camera-android` carries its own `frame_analyzer.cpp`, so they never co-compile.
 - **2.1c-c ☐ — ROI preset UI + wiring into the real color flow** (size selector from
   `ROI_PRESETS`; feed `decodeRoi` results into the experimental color screen). Clean session
   teardown is via screen unmount (nav goBack) — adequate in production (the wedging was

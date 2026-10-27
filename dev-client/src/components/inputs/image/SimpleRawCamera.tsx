@@ -388,7 +388,13 @@ const IosRawCapture = ({visible, onCapture, onCancel}: Props) => {
 // ---------------------------------------------------------------------------
 // Android: raw-camera-android Nitro module (CameraX + DngCreator). The native
 // view owns the preview + CameraX session; capture is imperative via the
-// module-level hybrid object. The native ROI overlay is disabled for level 1.
+// module-level hybrid object. The native ROI overlay is disabled for now.
+//
+// KNOWN BLOCKER (Pixel 6a / Android 16): no RAW stream combo streams the
+// preview — the 3-stream fallbacks bind but stay IDLE and capture times out.
+// Needs native CameraSessionManager work (verify-streaming ladder / force
+// 2-stream preview+raw). See docs/raw-capture-integration-plan.md
+// "2.1c-ANDROID-BLOCKER". iOS is unaffected.
 
 const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
   // vision-camera's permission hook requests the OS CAMERA permission, which
@@ -408,7 +414,11 @@ const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
     if (isCapturing) return;
     setIsCapturing(true);
     try {
-      const photo = await RawCameraAndroidHybrid.capturePhoto({});
+      // skipJpeg: the view binds with preferJpeg=false (keeps the ImageAnalysis
+      // stream for the overlay), which drops the JPEG ImageCapture on the
+      // 4-stream fallback — so a JPEG capture would hang. We only need the RAW
+      // DNG here anyway.
+      const photo = await RawCameraAndroidHybrid.capturePhoto({skipJpeg: true});
       onCapture(
         makeRawCaptureResult(
           fileUri(photo.dngPath),
@@ -438,6 +448,11 @@ const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
           <RawCameraAndroidView
             style={StyleSheet.absoluteFill}
             showRoiOverlay={false}
+            // preferJpeg: drop the ImageAnalysis stream (we don't use Android
+            // live analysis here) in favour of JPEG on the 3-stream fallback.
+            // On Pixel 6a / Android 16 the preview+raw+analysis combo binds but
+            // doesn't stream the preview; preview+raw+jpeg may stream instead.
+            preferJpeg={true}
           />
         ) : null
       }
