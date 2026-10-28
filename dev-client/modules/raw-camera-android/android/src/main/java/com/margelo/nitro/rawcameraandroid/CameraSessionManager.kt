@@ -40,7 +40,9 @@ import androidx.camera.core.UseCaseGroup
 import androidx.camera.core.ViewPort
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import com.google.common.util.concurrent.ListenableFuture
 import com.margelo.nitro.NitroModules
 import java.io.File
@@ -54,6 +56,7 @@ import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
@@ -110,6 +113,30 @@ object CameraSessionManager {
         Log.i(TAG, "provider: got ProcessCameraProvider")
         p
     }
+
+    // Manager-owned lifecycle. We bind the camera to THIS rather than
+    // ProcessLifecycleOwner so we can force a true camera-device close
+    // + reopen on demand — the only thing that recovers the intermittent
+    // "camera bound but preview never reaches STREAMING" state on some
+    // devices (Pixel 6a / Android 16). Bound to the process lifecycle,
+    // provider.unbindAll() only drops use cases and keeps the device
+    // open, so a wedged session can't be rebuilt; backgrounding the app
+    // (which drives ProcessLifecycleOwner → STOPPED) was the only cure.
+    // hardResetAndRebind() replicates that programmatically by bouncing
+    // this registry below STARTED and back. All state mutations happen
+    // on the main thread (LifecycleRegistry requirement).
+    private val cameraLifecycleOwner =
+        object : LifecycleOwner {
+            val registry = LifecycleRegistry(this)
+
+            override val lifecycle: Lifecycle
+                get() = registry
+        }
+
+    // How long to leave the camera device closed during a hard reset so
+    // the HAL actually releases it before we reopen. An immediate reopen
+    // reuses the same wedged device; ~600ms reliably lets it settle.
+    private const val HARD_RESET_CLOSE_DELAY_MS = 600L
 
     // Dedicated background executor for the ImageAnalysis keep-alive
     // analyzer. Using the main-thread executor stalls the repeating
@@ -235,6 +262,31 @@ object CameraSessionManager {
             // Don't rebind eagerly — no view + no capture request means
             // no reason to keep the camera open. Next capturePhoto will
             // rebind lazily.
+        }
+    }
+
+    // Force the camera DEVICE to close and reopen, then rebind. This is
+    // the heavy-hammer recovery for the "bound but preview never reaches
+    // STREAMING" race: a plain unbindAll()/rebind keeps the wedged device
+    // open (we're bound to our own lifecycle, not the Activity's), so it
+    // never recovers. Driving the lifecycle below STARTED makes CameraX
+    // actually close the device — the same thing backgrounding the app
+    // does — and after a short settle we reopen and rebind with whatever
+    // surface provider is currently attached. Called by the view's
+    // watchdog when STREAMING doesn't arrive.
+    suspend fun hardResetAndRebind() {
+        mutex.withLock {
+            Log.i(TAG, "hardReset: closing camera device (lifecycle → CREATED)")
+            unbindAllLocked()
+            withContext(Dispatchers.Main) {
+                cameraLifecycleOwner.registry.currentState =
+                    Lifecycle.State.CREATED
+            }
+            delay(HARD_RESET_CLOSE_DELAY_MS)
+            Log.i(TAG, "hardReset: reopening + rebinding")
+            // ensureBoundLocked() flips the lifecycle back to RESUMED and
+            // rebinds (with Preview if a surface provider is attached).
+            ensureBoundLocked()
         }
     }
 
@@ -1194,6 +1246,12 @@ object CameraSessionManager {
         val camera =
             withContext(Dispatchers.Main) {
                 var lastError: IllegalArgumentException? = null
+                // CameraX opens the device only while the bound lifecycle
+                // is at least STARTED. Ensure ours is RESUMED before
+                // binding (it may have been parked at CREATED by a prior
+                // hard reset, or still INITIALIZED on first bind).
+                cameraLifecycleOwner.registry.currentState =
+                    Lifecycle.State.RESUMED
                 Log.i(
                     TAG,
                     "ensureBound: trying bind combos (preview=${preview != null})"
@@ -1201,7 +1259,7 @@ object CameraSessionManager {
                 for (a in attempts) {
                     try {
                         val c = provider.bindToLifecycle(
-                            ProcessLifecycleOwner.get(),
+                            cameraLifecycleOwner,
                             CameraSelector.DEFAULT_BACK_CAMERA,
                             buildGroup(a.first, a.second),
                         )

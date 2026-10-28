@@ -40,6 +40,8 @@ import {
   usePhotoOutput,
 } from 'react-native-vision-camera';
 
+import {deleteAsync} from 'expo-file-system/legacy';
+
 import {DngDecoderHybrid} from 'dng-decoder';
 import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
 
@@ -50,6 +52,8 @@ import {
   DISPLAY_SAMPLE_ROI,
   useRoiFrameAnalyzer,
 } from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 /**
  * In-app RAW capture: live preview + shutter, a two-ROI overlay, and real-time
@@ -94,9 +98,15 @@ const makeRawCaptureResult = (
     return {uri: preview.uri, width: preview.width, height: preview.height};
   },
   dispose: () => {
-    // Temp DNG/JPEG live in a cache dir the OS may reclaim; leave the sweep
-    // to the OS for now (matches the research behavior). Revisit once the
-    // managed capture store (slice 2.3) owns retention.
+    // Delete the temp DNG + companion JPEG. These live in a cache dir the
+    // OS would eventually reclaim, but the auto-test loop captures hundreds
+    // of ~24 MB DNGs in a session, so we free each one as soon as the
+    // caller is done with it. Fire-and-forget + idempotent so a missing
+    // file (already swept, never written) is a no-op, not a throw.
+    deleteAsync(dngPath, {idempotent: true}).catch(() => {});
+    if (jpegPath) {
+      deleteAsync(jpegPath, {idempotent: true}).catch(() => {});
+    }
   },
 });
 
@@ -109,6 +119,15 @@ type Props = {
   // ROI, show the preview, etc.).
   onCapture: (result: CaptureResult) => void;
   onCancel: () => void;
+  // Dev stress-test hook (Android only). When provided, the chrome shows an
+  // "Auto" toggle; once the preview is live it captures repeatedly and feeds
+  // each result (or null on a failed/timed-out shot) to onShot instead of
+  // onCapture, until stopped. onShot returns a one-line status to display and
+  // is responsible for disposing the result (so temp files don't pile up).
+  onShot?: (
+    result: CaptureResult | null,
+    index: number,
+  ) => Promise<string> | string;
 };
 
 export const SimpleRawCamera = (props: Props) =>
@@ -396,11 +415,34 @@ const IosRawCapture = ({visible, onCapture, onCancel}: Props) => {
 // 2-stream preview+raw). See docs/raw-capture-integration-plan.md
 // "2.1c-ANDROID-BLOCKER". iOS is unaffected.
 
-const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
+const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
   // vision-camera's permission hook requests the OS CAMERA permission, which
   // is what raw-camera-android needs too — reuse it rather than a second path.
   const {hasPermission, requestPermission} = useCameraPermission();
   const [isCapturing, setIsCapturing] = useState(false);
+  // Arm the shutter a beat after becoming visible — cheap insurance against a
+  // stray press landing the instant the camera appears.
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!visible) {
+      setArmed(false);
+      return;
+    }
+    const timer = setTimeout(() => setArmed(true), 400);
+    return () => clearTimeout(timer);
+  }, [visible]);
+
+  // [rawcap] lifecycle instrumentation — temporary, for debugging the
+  // intermittent "no preview, returns immediately" attach race. Logs mount/
+  // unmount and every visible/permission transition so a failing run can be
+  // told apart from a healthy one in logcat. Grep tag: [rawcap].
+  useEffect(() => {
+    console.log('[rawcap] mount');
+    return () => console.log('[rawcap] unmount');
+  }, []);
+  useEffect(() => {
+    console.log('[rawcap] state', {visible, hasPermission, armed});
+  }, [visible, hasPermission, armed]);
 
   useEffect(() => {
     if (visible && !hasPermission) {
@@ -410,58 +452,243 @@ const AndroidRawCapture = ({visible, onCapture, onCancel}: Props) => {
     }
   }, [visible, hasPermission, requestPermission]);
 
-  const capture = useCallback(async () => {
+  // Kick the CameraX session into a proper bind once the native view is up.
+  // getCaptureCapabilities() runs ensureBound() native-side; without it we
+  // rely solely on the view's own window-attach bind, which can lose a race
+  // on the very first frame (the preview half-binds and stays IDLE, then
+  // capturePhoto reuses the wedged session and times out — exactly the
+  // Pixel 6a symptom). The working RawColorTools flows all call this on mount
+  // with a single retry to cover the attach race; mirror that here.
+  useEffect(() => {
+    if (!visible || !hasPermission) return;
+    let cancelled = false;
+    const attempt = async (retryLeft: number): Promise<void> => {
+      try {
+        console.log('[rawcap] kick: getCaptureCapabilities', {retryLeft});
+        await RawCameraAndroidHybrid.getCaptureCapabilities();
+        console.log('[rawcap] kick: bound OK');
+      } catch (err) {
+        if (retryLeft > 0 && !cancelled) {
+          console.log('[rawcap] kick: failed, retrying', {retryLeft});
+          await new Promise<void>(r => setTimeout(r, 300));
+          if (!cancelled) return attempt(retryLeft - 1);
+        }
+        if (!cancelled) {
+          console.warn('[rawcap] kick: gave up', err);
+        }
+      }
+    };
+    attempt(2);
+    return () => {
+      cancelled = true;
+    };
+  }, [visible, hasPermission]);
+
+  // One RAW capture. Returns the result, or null if the shot failed/timed
+  // out. Does NOT call onCapture/onCancel — callers decide (manual shutter
+  // navigates on a result; the auto loop just tallies and keeps going).
+  const captureOnce = useCallback(async (): Promise<CaptureResult | null> => {
+    console.log('[rawcap] capturePhoto start');
+    try {
+      // skipJpeg: we only need the RAW DNG here, and skipping the JPEG halves
+      // the native pipeline stages on the critical path.
+      const photo = await RawCameraAndroidHybrid.capturePhoto({skipJpeg: true});
+      console.log('[rawcap] capturePhoto ok', {
+        w: photo.width,
+        h: photo.height,
+      });
+      return makeRawCaptureResult(
+        fileUri(photo.dngPath),
+        photo.width,
+        photo.height,
+        photo.jpegPath ? fileUri(photo.jpegPath) : undefined,
+      );
+    } catch (err) {
+      console.error('[rawcap] capturePhoto FAILED:', err);
+      return null;
+    }
+  }, []);
+
+  const manualShutter = useCallback(async () => {
     if (isCapturing) return;
     setIsCapturing(true);
     try {
-      // skipJpeg: the view binds with preferJpeg=false (keeps the ImageAnalysis
-      // stream for the overlay), which drops the JPEG ImageCapture on the
-      // 4-stream fallback — so a JPEG capture would hang. We only need the RAW
-      // DNG here anyway.
-      const photo = await RawCameraAndroidHybrid.capturePhoto({skipJpeg: true});
-      onCapture(
-        makeRawCaptureResult(
-          fileUri(photo.dngPath),
-          photo.width,
-          photo.height,
-          photo.jpegPath ? fileUri(photo.jpegPath) : undefined,
-        ),
-      );
-    } catch (err) {
-      console.error('SimpleRawCamera: Android shutter failed:', err);
-      onCancel();
+      const result = await captureOnce();
+      if (result) {
+        onCapture(result);
+      } else {
+        onCancel();
+      }
     } finally {
       setIsCapturing(false);
     }
-  }, [isCapturing, onCapture, onCancel]);
+  }, [isCapturing, captureOnce, onCapture, onCancel]);
 
+  // --- Dev auto-test loop: capture → onShot → repeat until stopped. ---
+  const autoRunningRef = useRef(false);
+  const [autoRunning, setAutoRunning] = useState(false);
+  const [shotCount, setShotCount] = useState(0);
+  const [lastStatus, setLastStatus] = useState('');
+  // Remounting the native view (bump its React key) fully tears it down and
+  // recreates it — a brand-new PreviewView / SurfaceTexture / onAttachedTo
+  // Window, i.e. exactly what leaving and reopening the screen does. That
+  // "full view re-create + retry" is the only thing shown to recover the
+  // intermittent CameraX session-start race (a device-level reset does not).
+  // We bump this after a failed shot to give the next attempt a fresh view.
+  const [remountKey, setRemountKey] = useState(0);
+  const remountView = useCallback(() => setRemountKey(k => k + 1), []);
+  // How many times the preview stream race has forced a recovery remount this
+  // run — i.e. how often the race actually fires. Surfaced in the banner so we
+  // can measure its frequency (and whether a SurfaceView switch reduces it).
+  const [raceCount, setRaceCount] = useState(0);
+
+  const stopAuto = useCallback(() => {
+    autoRunningRef.current = false;
+    setAutoRunning(false);
+  }, []);
+
+  const startAuto = useCallback(() => {
+    if (!onShot || autoRunningRef.current) return;
+    autoRunningRef.current = true;
+    setAutoRunning(true);
+    setShotCount(0);
+    setRaceCount(0);
+    setLastStatus('starting…');
+    (async () => {
+      let i = 0;
+      while (autoRunningRef.current) {
+        setIsCapturing(true);
+        const result = await captureOnce();
+        let status: string;
+        try {
+          status = await onShot(result, i);
+        } catch (e) {
+          status = `onShot error: ${String(e)}`;
+        }
+        setIsCapturing(false);
+        i += 1;
+        setShotCount(i);
+        setLastStatus(status);
+        if (!autoRunningRef.current) break;
+        if (!result) {
+          // Stuck preview → the shot timed out. Recreate the native view
+          // (fresh PreviewView/surface) and give it time to attach + stream
+          // before the next attempt, mirroring a screen reopen.
+          setRaceCount(n => n + 1);
+          setLastStatus(`${status} · remounting preview…`);
+          remountView();
+          await new Promise<void>(r => setTimeout(r, 3000));
+        } else {
+          // Small gap so the preview keeps streaming between shots and the UI
+          // can repaint the running tally.
+          await new Promise<void>(r => setTimeout(r, 400));
+        }
+      }
+    })().catch(() => {});
+  }, [onShot, captureOnce, remountView]);
+
+  // Stop the loop if the screen goes away mid-run (back / nav / blur).
+  useEffect(() => {
+    if (!visible) {
+      autoRunningRef.current = false;
+      setAutoRunning(false);
+    }
+  }, [visible]);
+
+  if (!visible) {
+    return null;
+  }
+
+  // CameraX is picky about its RN host. The research module's own screen
+  // documents that the native view must live inside a ScreenScaffold + AppBar
+  // with a plain flex:1 container — deviating (a bare full-screen View, a
+  // hidden StatusBar, or nesting the view in a fixed-size wrapper) silently
+  // leaves CameraX bound-but-never-streaming, so takePicture times out. That
+  // is exactly the Pixel 6a symptom we hit with the shared CaptureChrome, so
+  // Android gets this bespoke host instead of CaptureChrome. The native view
+  // stays flat/absoluteFill; shutter + cancel float over it.
+  const shutterDisabled =
+    !hasPermission || isCapturing || !armed || autoRunning;
+  const cancel = () => {
+    stopAuto();
+    onCancel();
+  };
   return (
-    <CaptureChrome
-      visible={visible}
-      canCapture={hasPermission}
-      isCapturing={isCapturing}
-      onShutter={capture}
-      onCancel={onCancel}
-      unavailableMessage="Camera permission is required to capture."
-      preview={
-        hasPermission && visible ? (
+    <ScreenScaffold AppBar={<AppBar title="RAW capture" />}>
+      <View style={styles.androidContainer}>
+        {hasPermission ? (
           <RawCameraAndroidView
+            // Bumping the key fully remounts the native view (fresh
+            // PreviewView/surface) — our recovery for the CameraX stream race.
+            key={remountKey}
             style={StyleSheet.absoluteFill}
             showRoiOverlay={false}
             // preferJpeg: drop the ImageAnalysis stream (we don't use Android
             // live analysis here) in favour of JPEG on the 3-stream fallback.
-            // On Pixel 6a / Android 16 the preview+raw+analysis combo binds but
-            // doesn't stream the preview; preview+raw+jpeg may stream instead.
             preferJpeg={true}
           />
-        ) : null
-      }
-    />
+        ) : (
+          <View style={[styles.fill, styles.center]}>
+            <Text style={styles.message}>
+              Camera permission is required to capture.
+            </Text>
+          </View>
+        )}
+        {autoRunning && (
+          <SafeAreaView style={styles.statusBanner} edges={['top']}>
+            <Text style={styles.statusText}>
+              Auto-test · shot {shotCount} · races {raceCount}
+              {shotCount > 0
+                ? ` (${Math.round((raceCount / shotCount) * 100)}%)`
+                : ''}
+            </Text>
+            <Text style={styles.statusText} numberOfLines={2}>
+              {lastStatus}
+            </Text>
+          </SafeAreaView>
+        )}
+        <SafeAreaView style={styles.controls} edges={['bottom']}>
+          <Pressable
+            onPress={cancel}
+            style={styles.cancelButton}
+            accessibilityRole="button">
+            <Text style={styles.cancelText}>Cancel</Text>
+          </Pressable>
+          <Pressable
+            onPress={manualShutter}
+            disabled={shutterDisabled}
+            accessibilityRole="button"
+            style={[styles.shutter, shutterDisabled && styles.shutterDisabled]}
+          />
+          {onShot ? (
+            <Pressable
+              onPress={autoRunning ? stopAuto : startAuto}
+              disabled={!hasPermission || !armed}
+              accessibilityRole="button"
+              style={[
+                styles.autoButton,
+                autoRunning && styles.autoButtonActive,
+                !hasPermission || !armed ? styles.shutterDisabled : null,
+              ]}>
+              <Text style={styles.autoButtonText}>
+                {autoRunning ? 'Stop' : 'Auto'}
+              </Text>
+            </Pressable>
+          ) : (
+            // Spacer to keep the shutter centered opposite Cancel.
+            <View style={styles.cancelButton} />
+          )}
+        </SafeAreaView>
+      </View>
+    </ScreenScaffold>
   );
 };
 
 const styles = StyleSheet.create({
   fill: {flex: 1, backgroundColor: 'black'},
+  // Plain flex:1 container for the Android native view — see the note on the
+  // Android render path. Must NOT be a fixed-size wrapper.
+  androidContainer: {flex: 1, backgroundColor: 'black'},
   // Fills the preview area and centers the sensor-aspect box (letterboxed).
   sensorFrameOuter: {
     position: 'absolute',
@@ -496,4 +723,27 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.5)',
   },
   shutterDisabled: {opacity: 0.4},
+  autoButton: {
+    width: 80,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.6)',
+  },
+  autoButtonActive: {backgroundColor: 'rgba(220,40,40,0.85)'},
+  autoButtonText: {color: 'white', fontSize: 16, fontWeight: '600'},
+  // Running auto-test tally pinned just under the AppBar.
+  statusBanner: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+  },
+  statusText: {color: 'white', fontSize: 14},
 });

@@ -146,9 +146,19 @@ constructor(
             TAG,
             "attach: complete (+${SystemClock.elapsedRealtime() - t0}ms)",
         )
-        // Watchdog runs in a separate coroutine so the current job can
-        // complete cleanly. Cancels itself early via the observer if
-        // STREAMING arrives.
+        armWatchdog(rebindAttemptsLeft)
+    }
+
+    // Arms (or re-arms) the STREAMING watchdog in its own coroutine so the
+    // current job can complete cleanly; it cancels early via the observer
+    // if STREAMING arrives. If frames haven't started within WATCHDOG_MS,
+    // escalate to a hard reset — close + reopen the camera DEVICE — then
+    // re-arm with one fewer attempt. A plain surface detach/reattach does
+    // NOT recover the "bound but never STREAMING" state on affected
+    // devices (we stay bound to our own lifecycle, so the device never
+    // closes); only a real device close does. Bounded so a genuinely
+    // broken camera eventually stops retrying.
+    private fun armWatchdog(rebindAttemptsLeft: Int) {
         watchdogJob?.cancel()
         watchdogJob =
             scope.launch {
@@ -164,23 +174,22 @@ constructor(
                     Log.w(
                         TAG,
                         "watchdog: stayed ${lastStreamState} for ${WATCHDOG_MS}ms " +
-                            "and no rebind attempts left — giving up",
+                            "and no reset attempts left — giving up",
                     )
                     return@launch
                 }
                 Log.w(
                     TAG,
                     "watchdog: preview stayed ${lastStreamState} for " +
-                        "${WATCHDOG_MS}ms, forcing rebind " +
-                        "(${rebindAttemptsLeft - 1} retries left after this)",
+                        "${WATCHDOG_MS}ms, forcing camera hard reset " +
+                        "(${rebindAttemptsLeft - 1} attempts left after this)",
                 )
-                // Detach + reattach — session manager rebuilds the
-                // whole CameraX binding, which usually breaks a stuck
-                // preview surface loose. Recursive with a decremented
-                // retry count.
-                CameraSessionManager.detachSurfaceProvider()
+                // Heavy recovery: close + reopen the camera device, then
+                // rebind with the currently-attached preview surface
+                // (hardResetAndRebind reuses the stored surface provider).
+                CameraSessionManager.hardResetAndRebind()
                 attachStartMs = SystemClock.elapsedRealtime()
-                attachAndArmWatchdog(rebindAttemptsLeft - 1)
+                armWatchdog(rebindAttemptsLeft - 1)
             }
     }
 
