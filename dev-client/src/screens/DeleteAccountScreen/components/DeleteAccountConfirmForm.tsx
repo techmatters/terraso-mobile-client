@@ -67,7 +67,7 @@ export function DeleteAccountConfirmForm({
       <Column style={styles.spacer} />
       <TranslatedParagraph
         bold
-        i18nKey="delete_account.feedback.details_label"
+        i18nKey="delete_account.feedback.details_prompt"
       />
       <TextField
         label={t('delete_account.feedback.details_label')}

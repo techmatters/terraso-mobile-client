@@ -502,7 +502,7 @@
             "error": "Email doesn't match"
         },
         "feedback": {
-            "reasons_label": "Why are you deleting your account?",
+            "reasons_prompt": "Why are you deleting your account?",
             "reasons": {
                 "no_longer_needed": "No longer needed",
                 "switched_app": "Switched to a different app",
@@ -513,7 +513,8 @@
                 "poor_support": "Poor support experience",
                 "other": "Other"
             },
-            "details_label": "Additional Details"
+            "details_prompt": "Is there additional feedback you'd like to share with us?",
+            "details_label": "Additional details"
         },
         "pending": {
             "p0": "<bold>{{email}}</bold>",

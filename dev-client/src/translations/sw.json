@@ -1748,7 +1748,7 @@
             "error": "Barua pepe hazilingani"
         },
         "feedback": {
-            "reasons_label": "Kwa nini unafuta akaunti yako?",
+            "reasons_prompt": "Kwa nini unafuta akaunti yako?",
             "reasons": {
                 "no_longer_needed": "Siihitaji tena",
                 "switched_app": "Nimehamia programu nyingine",
@@ -1759,6 +1759,7 @@
                 "poor_support": "Huduma duni ya usaidizi",
                 "other": "Nyingine"
             },
+            "details_prompt": "Je, una maoni mengine ungependa kushiriki nasi?",
             "details_label": "Maelezo ya ziada"
         },
         "pending": {

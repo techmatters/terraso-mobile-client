@@ -1748,7 +1748,7 @@
             "error": "L'e-mail ne correspond pas"
         },
         "feedback": {
-            "reasons_label": "Pourquoi supprimez-vous votre compte ?",
+            "reasons_prompt": "Pourquoi supprimez-vous votre compte ?",
             "reasons": {
                 "no_longer_needed": "Je n'en ai plus besoin",
                 "switched_app": "J'utilise une autre application",
@@ -1759,6 +1759,7 @@
                 "poor_support": "Mauvaise expérience avec l'assistance",
                 "other": "Autre"
             },
+            "details_prompt": "Souhaitez-vous nous faire part d'autres commentaires ?",
             "details_label": "Détails supplémentaires"
         },
         "pending": {

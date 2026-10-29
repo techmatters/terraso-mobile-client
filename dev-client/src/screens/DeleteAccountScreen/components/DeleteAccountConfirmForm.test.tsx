@@ -62,7 +62,7 @@ const renderForm = (props: Partial<DeleteAccountConfirmFormProps> = {}) => {
 
 const deleteButton = () => screen.getByRole('button', {name: 'Delete'});
 const emailField = () => screen.getByLabelText(/Email address/);
-const detailsField = () => screen.getByLabelText('Additional Details');
+const detailsField = () => screen.getByLabelText('Additional details');
 const checkReason = (name: string) =>
   fireEvent.press(screen.getByRole('checkbox', {name}));
 

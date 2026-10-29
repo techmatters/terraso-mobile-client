@@ -44,7 +44,7 @@ export function DeleteAccountReasonsField({
 
   return (
     <CheckboxList
-      label={t('delete_account.feedback.reasons_label')}
+      label={t('delete_account.feedback.reasons_prompt')}
       options={DELETE_ACCOUNT_REASONS}
       optionKey={reasonKey}
       renderValue={renderReason}

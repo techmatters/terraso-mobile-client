@@ -1748,7 +1748,7 @@
             "error": "El email no coincide"
         },
         "feedback": {
-            "reasons_label": "¿Por qué eliminas tu cuenta?",
+            "reasons_prompt": "¿Por qué eliminas tu cuenta?",
             "reasons": {
                 "no_longer_needed": "Ya no la necesito",
                 "switched_app": "Cambié a otra aplicación",
@@ -1759,6 +1759,7 @@
                 "poor_support": "Mala experiencia con el soporte",
                 "other": "Otro"
             },
+            "details_prompt": "¿Hay algún otro comentario que quieras compartir con nosotros?",
             "details_label": "Detalles adicionales"
         },
         "pending": {
