@@ -37,3 +37,8 @@ jest.mock('react-native-worklets', () => mockWorkletsStub);
 jest.mock('expo-media-library', () => ({
   createAssetAsync: jest.fn(() => Promise.resolve()),
 }));
+
+// react-native-keyboard-controller needs its native module; the package ships a jest mock.
+jest.mock('react-native-keyboard-controller', () =>
+  require('react-native-keyboard-controller/jest'),
+);

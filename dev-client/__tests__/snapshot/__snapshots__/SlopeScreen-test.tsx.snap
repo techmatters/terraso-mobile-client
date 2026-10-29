@@ -8,477 +8,163 @@ exports[`renders correctly 1`] = `
     }
   }
 >
-  <RNCSafeAreaProvider
-    onInsetsChange={[Function]}
-    style={
-      [
-        {
-          "flex": 1,
-        },
-        undefined,
-      ]
-    }
+  <KeyboardProvider
+    navigationBarTranslucent={true}
+    preserveEdgeToEdge={true}
+    statusBarTranslucent={true}
   >
-    <View
-      collapsable={false}
-      pointerEvents="box-none"
+    <RNCSafeAreaProvider
+      onInsetsChange={[Function]}
       style={
-        {
-          "flex": 1,
-        }
+        [
+          {
+            "flex": 1,
+          },
+          undefined,
+        ]
       }
     >
-      <RNCSafeAreaProvider
-        onInsetsChange={[Function]}
+      <View
+        collapsable={false}
+        pointerEvents="box-none"
         style={
-          [
-            {
-              "flex": 1,
-            },
-            undefined,
-          ]
+          {
+            "flex": 1,
+          }
         }
       >
-        <View
-          collapsable={false}
-          pointerEvents="box-none"
+        <RNCSafeAreaProvider
+          onInsetsChange={[Function]}
           style={
-            {
-              "flex": 1,
-            }
+            [
+              {
+                "flex": 1,
+              },
+              undefined,
+            ]
           }
         >
           <View
-            onLayout={[Function]}
+            collapsable={false}
+            pointerEvents="box-none"
             style={
-              [
-                {
-                  "flex": 1,
-                },
-                undefined,
-              ]
+              {
+                "flex": 1,
+              }
             }
           >
-            <RNSScreenStack
+            <View
+              onLayout={[Function]}
               style={
-                {
-                  "flex": 1,
-                }
+                [
+                  {
+                    "flex": 1,
+                  },
+                  undefined,
+                ]
               }
             >
-              <RNSScreen
-                activityState={2}
-                androidResetScreenShadowStateOnOrientationChangeEnabled={true}
-                aria-hidden={false}
-                collapsable={false}
-                fullScreenSwipeEnabled="undefined"
-                fullScreenSwipeShadowEnabled={true}
-                gestureResponseDistance={
-                  {
-                    "bottom": -1,
-                    "end": -1,
-                    "start": -1,
-                    "top": -1,
-                  }
-                }
-                hasLargeHeader={false}
-                iosOrientationInheritanceFixEnabled={true}
-                nativeBackButtonDismissalEnabled={false}
-                onAppear={[Function]}
-                onDisappear={[Function]}
-                onDismissed={[Function]}
-                onGestureCancel={[Function]}
-                onHeaderBackButtonClicked={[Function]}
-                onHeaderHeightChange={[Function]}
-                onNativeDismissCancelled={[Function]}
-                onSheetDetentChanged={[Function]}
-                onTransitionProgress={[Function]}
-                onWillAppear={[Function]}
-                onWillDisappear={[Function]}
-                replaceAnimation="push"
-                screenId="SITE_TABS-stable-nanoid-id"
-                sheetAllowedDetents={
-                  [
-                    1,
-                  ]
-                }
-                sheetCornerRadius={-1}
-                sheetDefaultResizeAnimationEnabled={true}
-                sheetElevation={24}
-                sheetExpandsWhenScrolledToEdge={true}
-                sheetGrabberVisible={false}
-                sheetInitialDetent={0}
-                sheetInitialDetentIndex={0}
-                sheetLargestUndimmedDetent={-1}
-                sheetLargestUndimmedDetentIndex={-1}
-                sheetShouldOverflowTopInset={false}
-                stackPresentation="push"
+              <RNSScreenStack
                 style={
                   {
-                    "bottom": 0,
-                    "left": 0,
-                    "position": "absolute",
-                    "right": 0,
-                    "top": 0,
-                    "zIndex": undefined,
+                    "flex": 1,
                   }
                 }
-                swipeDirection="horizontal"
-                synchronousShadowStateUpdatesEnabled={true}
               >
-                <RNSScreenContentWrapper
+                <RNSScreen
+                  activityState={2}
+                  androidResetScreenShadowStateOnOrientationChangeEnabled={true}
+                  aria-hidden={false}
                   collapsable={false}
-                  style={
+                  fullScreenSwipeEnabled="undefined"
+                  fullScreenSwipeShadowEnabled={true}
+                  gestureResponseDistance={
+                    {
+                      "bottom": -1,
+                      "end": -1,
+                      "start": -1,
+                      "top": -1,
+                    }
+                  }
+                  hasLargeHeader={false}
+                  iosOrientationInheritanceFixEnabled={true}
+                  nativeBackButtonDismissalEnabled={false}
+                  onAppear={[Function]}
+                  onDisappear={[Function]}
+                  onDismissed={[Function]}
+                  onGestureCancel={[Function]}
+                  onHeaderBackButtonClicked={[Function]}
+                  onHeaderHeightChange={[Function]}
+                  onNativeDismissCancelled={[Function]}
+                  onSheetDetentChanged={[Function]}
+                  onTransitionProgress={[Function]}
+                  onWillAppear={[Function]}
+                  onWillDisappear={[Function]}
+                  replaceAnimation="push"
+                  screenId="SITE_TABS-stable-nanoid-id"
+                  sheetAllowedDetents={
                     [
-                      {
-                        "flex": 1,
-                      },
-                      [
-                        {
-                          "backgroundColor": "rgb(242, 242, 242)",
-                        },
-                        undefined,
-                      ],
+                      1,
                     ]
                   }
+                  sheetCornerRadius={-1}
+                  sheetDefaultResizeAnimationEnabled={true}
+                  sheetElevation={24}
+                  sheetExpandsWhenScrolledToEdge={true}
+                  sheetGrabberVisible={false}
+                  sheetInitialDetent={0}
+                  sheetInitialDetentIndex={0}
+                  sheetLargestUndimmedDetent={-1}
+                  sheetLargestUndimmedDetentIndex={-1}
+                  sheetShouldOverflowTopInset={false}
+                  stackPresentation="push"
+                  style={
+                    {
+                      "bottom": 0,
+                      "left": 0,
+                      "position": "absolute",
+                      "right": 0,
+                      "top": 0,
+                      "zIndex": undefined,
+                    }
+                  }
+                  swipeDirection="horizontal"
+                  synchronousShadowStateUpdatesEnabled={true}
                 >
-                  <RCTScrollView
-                    contentContainerStyle={
+                  <RNSScreenContentWrapper
+                    collapsable={false}
+                    style={
                       [
-                        {},
                         {
-                          "dataSet": {},
+                          "flex": 1,
                         },
-                        {},
+                        [
+                          {
+                            "backgroundColor": "rgb(242, 242, 242)",
+                          },
+                          undefined,
+                        ],
                       ]
                     }
-                    dataSet={{}}
-                    style={
-                      {
-                        "backgroundColor": "#E0E0E0",
-                      }
-                    }
                   >
-                    <View>
-                      <View
-                        style={
-                          [
-                            {
-                              "flexDirection": "row",
-                            },
-                            {
-                              "alignItems": "center",
-                              "backgroundColor": "#FFFFFF",
-                              "padding": 15,
-                            },
-                          ]
-                        }
-                      >
-                        <Text
-                          lineHeight="32px"
-                          style={
-                            {
-                              "color": "#1A202C",
-                              "fontSize": 20,
-                              "fontWeight": "500",
-                            }
-                          }
-                        >
-                          Slope
-                        </Text>
-                        <View
-                          style={
-                            {
-                              "marginLeft": 6,
-                            }
-                          }
-                        />
-                        <View>
-                          <RNGestureHandlerButton
-                            accessibilityRole="button"
-                            accessibilityState={
-                              {
-                                "disabled": undefined,
-                              }
-                            }
-                            accessible={true}
-                            activeUnderlayOpacity={0.105}
-                            cancelOnLeave={true}
-                            defaultOpacity={1}
-                            defaultUnderlayOpacity={0}
-                            enabled={true}
-                            gestureHitSlop={
-                              {
-                                "bottom": 0,
-                                "left": 0,
-                                "right": 0,
-                                "top": 0,
-                              }
-                            }
-                            handlerTag={1}
-                            hasLongPressHandler={false}
-                            hitSlop={
-                              {
-                                "bottom": 0,
-                                "left": 0,
-                                "right": 0,
-                                "top": 0,
-                              }
-                            }
-                            hoverAnimationInDuration={50}
-                            hoverAnimationOutDuration={100}
-                            longPressAnimationOutDuration={100}
-                            longPressDuration={500}
-                            onButtonInteractionFinished={[Function]}
-                            onButtonLongPress={[Function]}
-                            onButtonPress={[Function]}
-                            onButtonPressIn={[Function]}
-                            onButtonPressOut={[Function]}
-                            onLayout={[Function]}
-                            onStartShouldSetResponderCapture={[Function]}
-                            rippleColor="transparent"
-                            style={
-                              [
-                                {},
-                                [
-                                  {
-                                    "alignSelf": "flex-start",
-                                  },
-                                  {
-                                    "borderRadius": 100,
-                                  },
-                                  {
-                                    "backgroundColor": "#00000000",
-                                  },
-                                ],
-                              ]
-                            }
-                            tapAnimationInDuration={50}
-                            tapAnimationOutDuration={100}
-                            testOnly_onPress={[Function]}
-                            underlayColor="transparent"
-                          >
-                            <Icon
-                              name="info"
-                              size={20}
-                              style={
-                                [
-                                  {
-                                    "textAlign": "center",
-                                    "verticalAlign": "middle",
-                                  },
-                                  {
-                                    "padding": 4,
-                                  },
-                                  {
-                                    "color": "#001923B3",
-                                  },
-                                ]
-                              }
-                            />
-                          </RNGestureHandlerButton>
-                        </View>
-                        <RCTScrollView
-                          focusHook={[Function]}
-                        >
-                          <View>
-                            <View
-                              style={
-                                {
-                                  "padding": 16,
-                                }
-                              }
-                            >
-                              <View
-                                style={
-                                  {
-                                    "alignContent": "space-evenly",
-                                    "alignItems": "center",
-                                    "flexDirection": "row",
-                                    "marginBottom": 16,
-                                  }
-                                }
-                              >
-                                <View
-                                  style={
-                                    {
-                                      "flex": 1,
-                                      "marginRight": "auto",
-                                    }
-                                  }
-                                >
-                                  <Text
-                                    lineHeight="32px"
-                                    style={
-                                      {
-                                        "color": "#1A202C",
-                                        "fontSize": 24,
-                                        "fontWeight": "700",
-                                      }
-                                    }
-                                  >
-                                    Slope
-                                  </Text>
-                                </View>
-                                <View>
-                                  <RNGestureHandlerButton
-                                    accessibilityLabel="Close"
-                                    accessibilityRole="button"
-                                    accessibilityState={
-                                      {
-                                        "disabled": undefined,
-                                      }
-                                    }
-                                    accessible={true}
-                                    activeUnderlayOpacity={0.105}
-                                    cancelOnLeave={true}
-                                    defaultOpacity={1}
-                                    defaultUnderlayOpacity={0}
-                                    enabled={true}
-                                    gestureHitSlop={
-                                      {
-                                        "bottom": 0,
-                                        "left": 0,
-                                        "right": 0,
-                                        "top": 0,
-                                      }
-                                    }
-                                    handlerTag={2}
-                                    hasLongPressHandler={false}
-                                    hitSlop={
-                                      {
-                                        "bottom": 0,
-                                        "left": 0,
-                                        "right": 0,
-                                        "top": 0,
-                                      }
-                                    }
-                                    hoverAnimationInDuration={50}
-                                    hoverAnimationOutDuration={100}
-                                    longPressAnimationOutDuration={100}
-                                    longPressDuration={500}
-                                    onButtonInteractionFinished={[Function]}
-                                    onButtonLongPress={[Function]}
-                                    onButtonPress={[Function]}
-                                    onButtonPressIn={[Function]}
-                                    onButtonPressOut={[Function]}
-                                    onLayout={[Function]}
-                                    onStartShouldSetResponderCapture={[Function]}
-                                    rippleColor="transparent"
-                                    style={
-                                      [
-                                        {},
-                                        [
-                                          {
-                                            "alignSelf": "flex-start",
-                                          },
-                                          {
-                                            "borderRadius": 100,
-                                          },
-                                          {
-                                            "backgroundColor": "#EEEEEE",
-                                          },
-                                        ],
-                                      ]
-                                    }
-                                    tapAnimationInDuration={50}
-                                    tapAnimationOutDuration={100}
-                                    testOnly_onPress={[Function]}
-                                    underlayColor="transparent"
-                                  >
-                                    <Icon
-                                      name="close"
-                                      size={24}
-                                      style={
-                                        [
-                                          {
-                                            "textAlign": "center",
-                                            "verticalAlign": "middle",
-                                          },
-                                          {
-                                            "padding": 12,
-                                          },
-                                          {
-                                            "color": "#001923B3",
-                                          },
-                                        ]
-                                      }
-                                    />
-                                  </RNGestureHandlerButton>
-                                </View>
-                              </View>
-                              <Text
-                                letterSpacing="0.15px"
-                                lineHeight="24px"
-                                style={
-                                  {
-                                    "color": "#1A202C",
-                                    "fontSize": 16,
-                                    "fontWeight": "400",
-                                  }
-                                }
-                              >
-                                Describe the characteristics of the slope of the land on which the site is located.
-
-Instructions on how to collect each observation are available on each observation entry screen.
-
-Slope characteristics help determine the soil’s erosion potential, ability to hold water, and more.
-                              </Text>
-                            </View>
-                          </View>
-                        </RCTScrollView>
-                      </View>
-                      <View
-                        style={
-                          [
-                            {
-                              "backgroundColor": "#616161",
-                              "height": 0.5,
-                            },
-                            undefined,
-                            false,
-                            false,
-                            [
-                              {
-                                "backgroundColor": "#E0E0E0",
-                                "height": 2,
-                              },
-                              undefined,
-                            ],
-                          ]
-                        }
-                      />
-                      <View
-                        accessibilityState={
+                    <RCTScrollView
+                      contentContainerStyle={
+                        [
+                          {},
                           {
-                            "busy": undefined,
-                            "checked": undefined,
-                            "disabled": undefined,
-                            "expanded": undefined,
-                            "selected": undefined,
-                          }
+                            "dataSet": {},
+                          },
+                          {},
+                        ]
+                      }
+                      dataSet={{}}
+                      style={
+                        {
+                          "backgroundColor": "#E0E0E0",
                         }
-                        accessibilityValue={
-                          {
-                            "max": undefined,
-                            "min": undefined,
-                            "now": undefined,
-                            "text": undefined,
-                          }
-                        }
-                        accessible={true}
-                        collapsable={false}
-                        focusable={true}
-                        onBlur={[Function]}
-                        onClick={[Function]}
-                        onFocus={[Function]}
-                        onResponderGrant={[Function]}
-                        onResponderMove={[Function]}
-                        onResponderRelease={[Function]}
-                        onResponderTerminate={[Function]}
-                        onResponderTerminationRequest={[Function]}
-                        onStartShouldSetResponder={[Function]}
-                      >
+                      }
+                    >
+                      <View>
                         <View
                           style={
                             [
@@ -486,229 +172,549 @@ Slope characteristics help determine the soil’s erosion potential, ability to 
                                 "flexDirection": "row",
                               },
                               {
-                                "backgroundColor": "#E2FFE5",
-                                "padding": 15,
-                              },
-                            ]
-                          }
-                        >
-                          <View
-                            style={
-                              {
-                                "width": 37,
-                              }
-                            }
-                          >
-                            <Icon
-                              color="#00582B"
-                              name="check-circle"
-                              size={24}
-                              style={
-                                {
-                                  "marginTop": -3,
-                                }
-                              }
-                            />
-                          </View>
-                          <Text
-                            letterSpacing="0.17px"
-                            lineHeight="20px"
-                            style={
-                              {
-                                "color": "#1A202C",
-                                "fontSize": 14,
-                                "fontWeight": "700",
-                                "textTransform": "uppercase",
-                              }
-                            }
-                          >
-                            Steepness
-                          </Text>
-                          <View
-                            style={
-                              {
-                                "flex": 1,
-                              }
-                            }
-                          />
-                          <Text
-                            letterSpacing="0.17px"
-                            lineHeight="20px"
-                            style={
-                              {
-                                "color": "#1A202C",
-                                "fontSize": 14,
-                                "fontWeight": "400",
-                              }
-                            }
-                          >
-                            Flat 0–2%
-                          </Text>
-                        </View>
-                      </View>
-                      <View
-                        style={
-                          [
-                            {
-                              "backgroundColor": "#616161",
-                              "height": 0.5,
-                            },
-                            undefined,
-                            false,
-                            false,
-                            [
-                              {
-                                "backgroundColor": "#E0E0E0",
-                                "height": 2,
-                              },
-                              undefined,
-                            ],
-                          ]
-                        }
-                      />
-                      <View
-                        accessibilityState={
-                          {
-                            "busy": undefined,
-                            "checked": undefined,
-                            "disabled": undefined,
-                            "expanded": undefined,
-                            "selected": undefined,
-                          }
-                        }
-                        accessibilityValue={
-                          {
-                            "max": undefined,
-                            "min": undefined,
-                            "now": undefined,
-                            "text": undefined,
-                          }
-                        }
-                        accessible={true}
-                        collapsable={false}
-                        focusable={true}
-                        onBlur={[Function]}
-                        onClick={[Function]}
-                        onFocus={[Function]}
-                        onResponderGrant={[Function]}
-                        onResponderMove={[Function]}
-                        onResponderRelease={[Function]}
-                        onResponderTerminate={[Function]}
-                        onResponderTerminationRequest={[Function]}
-                        onStartShouldSetResponder={[Function]}
-                      >
-                        <View
-                          style={
-                            [
-                              {
-                                "flexDirection": "row",
-                              },
-                              {
+                                "alignItems": "center",
                                 "backgroundColor": "#FFFFFF",
                                 "padding": 15,
                               },
                             ]
                           }
                         >
-                          <View
-                            style={
-                              {
-                                "width": 37,
-                              }
-                            }
-                          >
-                            <Icon
-                              name="radio-button-unchecked"
-                              size={24}
-                              style={
-                                {
-                                  "marginTop": -3,
-                                }
-                              }
-                            />
-                          </View>
                           <Text
-                            letterSpacing="0.17px"
-                            lineHeight="20px"
+                            lineHeight="32px"
                             style={
                               {
                                 "color": "#1A202C",
-                                "fontSize": 14,
-                                "fontWeight": "700",
-                                "textTransform": "uppercase",
+                                "fontSize": 20,
+                                "fontWeight": "500",
                               }
                             }
                           >
-                            Shape
+                            Slope
                           </Text>
                           <View
                             style={
                               {
-                                "flex": 1,
+                                "marginLeft": 6,
                               }
                             }
                           />
+                          <View>
+                            <RNGestureHandlerButton
+                              accessibilityRole="button"
+                              accessibilityState={
+                                {
+                                  "disabled": undefined,
+                                }
+                              }
+                              accessible={true}
+                              activeUnderlayOpacity={0.105}
+                              cancelOnLeave={true}
+                              defaultOpacity={1}
+                              defaultUnderlayOpacity={0}
+                              enabled={true}
+                              gestureHitSlop={
+                                {
+                                  "bottom": 0,
+                                  "left": 0,
+                                  "right": 0,
+                                  "top": 0,
+                                }
+                              }
+                              handlerTag={1}
+                              hasLongPressHandler={false}
+                              hitSlop={
+                                {
+                                  "bottom": 0,
+                                  "left": 0,
+                                  "right": 0,
+                                  "top": 0,
+                                }
+                              }
+                              hoverAnimationInDuration={50}
+                              hoverAnimationOutDuration={100}
+                              longPressAnimationOutDuration={100}
+                              longPressDuration={500}
+                              onButtonInteractionFinished={[Function]}
+                              onButtonLongPress={[Function]}
+                              onButtonPress={[Function]}
+                              onButtonPressIn={[Function]}
+                              onButtonPressOut={[Function]}
+                              onLayout={[Function]}
+                              onStartShouldSetResponderCapture={[Function]}
+                              rippleColor="transparent"
+                              style={
+                                [
+                                  {},
+                                  [
+                                    {
+                                      "alignSelf": "flex-start",
+                                    },
+                                    {
+                                      "borderRadius": 100,
+                                    },
+                                    {
+                                      "backgroundColor": "#00000000",
+                                    },
+                                  ],
+                                ]
+                              }
+                              tapAnimationInDuration={50}
+                              tapAnimationOutDuration={100}
+                              testOnly_onPress={[Function]}
+                              underlayColor="transparent"
+                            >
+                              <Icon
+                                name="info"
+                                size={20}
+                                style={
+                                  [
+                                    {
+                                      "textAlign": "center",
+                                      "verticalAlign": "middle",
+                                    },
+                                    {
+                                      "padding": 4,
+                                    },
+                                    {
+                                      "color": "#001923B3",
+                                    },
+                                  ]
+                                }
+                              />
+                            </RNGestureHandlerButton>
+                          </View>
+                          <RCTScrollView
+                            focusHook={[Function]}
+                          >
+                            <View>
+                              <View
+                                style={
+                                  {
+                                    "padding": 16,
+                                  }
+                                }
+                              >
+                                <View
+                                  style={
+                                    {
+                                      "alignContent": "space-evenly",
+                                      "alignItems": "center",
+                                      "flexDirection": "row",
+                                      "marginBottom": 16,
+                                    }
+                                  }
+                                >
+                                  <View
+                                    style={
+                                      {
+                                        "flex": 1,
+                                        "marginRight": "auto",
+                                      }
+                                    }
+                                  >
+                                    <Text
+                                      lineHeight="32px"
+                                      style={
+                                        {
+                                          "color": "#1A202C",
+                                          "fontSize": 24,
+                                          "fontWeight": "700",
+                                        }
+                                      }
+                                    >
+                                      Slope
+                                    </Text>
+                                  </View>
+                                  <View>
+                                    <RNGestureHandlerButton
+                                      accessibilityLabel="Close"
+                                      accessibilityRole="button"
+                                      accessibilityState={
+                                        {
+                                          "disabled": undefined,
+                                        }
+                                      }
+                                      accessible={true}
+                                      activeUnderlayOpacity={0.105}
+                                      cancelOnLeave={true}
+                                      defaultOpacity={1}
+                                      defaultUnderlayOpacity={0}
+                                      enabled={true}
+                                      gestureHitSlop={
+                                        {
+                                          "bottom": 0,
+                                          "left": 0,
+                                          "right": 0,
+                                          "top": 0,
+                                        }
+                                      }
+                                      handlerTag={2}
+                                      hasLongPressHandler={false}
+                                      hitSlop={
+                                        {
+                                          "bottom": 0,
+                                          "left": 0,
+                                          "right": 0,
+                                          "top": 0,
+                                        }
+                                      }
+                                      hoverAnimationInDuration={50}
+                                      hoverAnimationOutDuration={100}
+                                      longPressAnimationOutDuration={100}
+                                      longPressDuration={500}
+                                      onButtonInteractionFinished={[Function]}
+                                      onButtonLongPress={[Function]}
+                                      onButtonPress={[Function]}
+                                      onButtonPressIn={[Function]}
+                                      onButtonPressOut={[Function]}
+                                      onLayout={[Function]}
+                                      onStartShouldSetResponderCapture={[Function]}
+                                      rippleColor="transparent"
+                                      style={
+                                        [
+                                          {},
+                                          [
+                                            {
+                                              "alignSelf": "flex-start",
+                                            },
+                                            {
+                                              "borderRadius": 100,
+                                            },
+                                            {
+                                              "backgroundColor": "#EEEEEE",
+                                            },
+                                          ],
+                                        ]
+                                      }
+                                      tapAnimationInDuration={50}
+                                      tapAnimationOutDuration={100}
+                                      testOnly_onPress={[Function]}
+                                      underlayColor="transparent"
+                                    >
+                                      <Icon
+                                        name="close"
+                                        size={24}
+                                        style={
+                                          [
+                                            {
+                                              "textAlign": "center",
+                                              "verticalAlign": "middle",
+                                            },
+                                            {
+                                              "padding": 12,
+                                            },
+                                            {
+                                              "color": "#001923B3",
+                                            },
+                                          ]
+                                        }
+                                      />
+                                    </RNGestureHandlerButton>
+                                  </View>
+                                </View>
+                                <Text
+                                  letterSpacing="0.15px"
+                                  lineHeight="24px"
+                                  style={
+                                    {
+                                      "color": "#1A202C",
+                                      "fontSize": 16,
+                                      "fontWeight": "400",
+                                    }
+                                  }
+                                >
+                                  Describe the characteristics of the slope of the land on which the site is located.
+
+Instructions on how to collect each observation are available on each observation entry screen.
+
+Slope characteristics help determine the soil’s erosion potential, ability to hold water, and more.
+                                </Text>
+                              </View>
+                            </View>
+                          </RCTScrollView>
+                        </View>
+                        <View
+                          style={
+                            [
+                              {
+                                "backgroundColor": "#616161",
+                                "height": 0.5,
+                              },
+                              undefined,
+                              false,
+                              false,
+                              [
+                                {
+                                  "backgroundColor": "#E0E0E0",
+                                  "height": 2,
+                                },
+                                undefined,
+                              ],
+                            ]
+                          }
+                        />
+                        <View
+                          accessibilityState={
+                            {
+                              "busy": undefined,
+                              "checked": undefined,
+                              "disabled": undefined,
+                              "expanded": undefined,
+                              "selected": undefined,
+                            }
+                          }
+                          accessibilityValue={
+                            {
+                              "max": undefined,
+                              "min": undefined,
+                              "now": undefined,
+                              "text": undefined,
+                            }
+                          }
+                          accessible={true}
+                          collapsable={false}
+                          focusable={true}
+                          onBlur={[Function]}
+                          onClick={[Function]}
+                          onFocus={[Function]}
+                          onResponderGrant={[Function]}
+                          onResponderMove={[Function]}
+                          onResponderRelease={[Function]}
+                          onResponderTerminate={[Function]}
+                          onResponderTerminationRequest={[Function]}
+                          onStartShouldSetResponder={[Function]}
+                        >
+                          <View
+                            style={
+                              [
+                                {
+                                  "flexDirection": "row",
+                                },
+                                {
+                                  "backgroundColor": "#E2FFE5",
+                                  "padding": 15,
+                                },
+                              ]
+                            }
+                          >
+                            <View
+                              style={
+                                {
+                                  "width": 37,
+                                }
+                              }
+                            >
+                              <Icon
+                                color="#00582B"
+                                name="check-circle"
+                                size={24}
+                                style={
+                                  {
+                                    "marginTop": -3,
+                                  }
+                                }
+                              />
+                            </View>
+                            <Text
+                              letterSpacing="0.17px"
+                              lineHeight="20px"
+                              style={
+                                {
+                                  "color": "#1A202C",
+                                  "fontSize": 14,
+                                  "fontWeight": "700",
+                                  "textTransform": "uppercase",
+                                }
+                              }
+                            >
+                              Steepness
+                            </Text>
+                            <View
+                              style={
+                                {
+                                  "flex": 1,
+                                }
+                              }
+                            />
+                            <Text
+                              letterSpacing="0.17px"
+                              lineHeight="20px"
+                              style={
+                                {
+                                  "color": "#1A202C",
+                                  "fontSize": 14,
+                                  "fontWeight": "400",
+                                }
+                              }
+                            >
+                              Flat 0–2%
+                            </Text>
+                          </View>
+                        </View>
+                        <View
+                          style={
+                            [
+                              {
+                                "backgroundColor": "#616161",
+                                "height": 0.5,
+                              },
+                              undefined,
+                              false,
+                              false,
+                              [
+                                {
+                                  "backgroundColor": "#E0E0E0",
+                                  "height": 2,
+                                },
+                                undefined,
+                              ],
+                            ]
+                          }
+                        />
+                        <View
+                          accessibilityState={
+                            {
+                              "busy": undefined,
+                              "checked": undefined,
+                              "disabled": undefined,
+                              "expanded": undefined,
+                              "selected": undefined,
+                            }
+                          }
+                          accessibilityValue={
+                            {
+                              "max": undefined,
+                              "min": undefined,
+                              "now": undefined,
+                              "text": undefined,
+                            }
+                          }
+                          accessible={true}
+                          collapsable={false}
+                          focusable={true}
+                          onBlur={[Function]}
+                          onClick={[Function]}
+                          onFocus={[Function]}
+                          onResponderGrant={[Function]}
+                          onResponderMove={[Function]}
+                          onResponderRelease={[Function]}
+                          onResponderTerminate={[Function]}
+                          onResponderTerminationRequest={[Function]}
+                          onStartShouldSetResponder={[Function]}
+                        >
+                          <View
+                            style={
+                              [
+                                {
+                                  "flexDirection": "row",
+                                },
+                                {
+                                  "backgroundColor": "#FFFFFF",
+                                  "padding": 15,
+                                },
+                              ]
+                            }
+                          >
+                            <View
+                              style={
+                                {
+                                  "width": 37,
+                                }
+                              }
+                            >
+                              <Icon
+                                name="radio-button-unchecked"
+                                size={24}
+                                style={
+                                  {
+                                    "marginTop": -3,
+                                  }
+                                }
+                              />
+                            </View>
+                            <Text
+                              letterSpacing="0.17px"
+                              lineHeight="20px"
+                              style={
+                                {
+                                  "color": "#1A202C",
+                                  "fontSize": 14,
+                                  "fontWeight": "700",
+                                  "textTransform": "uppercase",
+                                }
+                              }
+                            >
+                              Shape
+                            </Text>
+                            <View
+                              style={
+                                {
+                                  "flex": 1,
+                                }
+                              }
+                            />
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </RCTScrollView>
-                </RNSScreenContentWrapper>
-                <RNSScreenStackHeaderConfig
-                  backButtonInCustomView={false}
-                  backTitleFontFamily="System"
-                  backTitleVisible={true}
-                  backgroundColor="rgb(255, 255, 255)"
-                  color="rgb(0, 122, 255)"
-                  consumeBottomInset={true}
-                  consumeLeftInset={true}
-                  consumeRightInset={true}
-                  consumeTopInset={true}
-                  direction="ltr"
-                  disableBackButtonMenu={false}
-                  hidden={false}
-                  hideBackButton={false}
-                  hideShadow={false}
-                  largeTitleFontFamily="System"
-                  largeTitleFontWeight="700"
-                  largeTitleHideShadow={false}
-                  legacyTopInsetBehavior={false}
-                  pointerEvents="box-none"
-                  style={
-                    {
-                      "alignItems": "center",
-                      "flexDirection": "row",
-                      "justifyContent": "space-between",
-                      "position": "absolute",
-                      "width": "100%",
+                    </RCTScrollView>
+                  </RNSScreenContentWrapper>
+                  <RNSScreenStackHeaderConfig
+                    backButtonInCustomView={false}
+                    backTitleFontFamily="System"
+                    backTitleVisible={true}
+                    backgroundColor="rgb(255, 255, 255)"
+                    color="rgb(0, 122, 255)"
+                    consumeBottomInset={true}
+                    consumeLeftInset={true}
+                    consumeRightInset={true}
+                    consumeTopInset={true}
+                    direction="ltr"
+                    disableBackButtonMenu={false}
+                    hidden={false}
+                    hideBackButton={false}
+                    hideShadow={false}
+                    largeTitleFontFamily="System"
+                    largeTitleFontWeight="700"
+                    largeTitleHideShadow={false}
+                    legacyTopInsetBehavior={false}
+                    pointerEvents="box-none"
+                    style={
+                      {
+                        "alignItems": "center",
+                        "flexDirection": "row",
+                        "justifyContent": "space-between",
+                        "position": "absolute",
+                        "width": "100%",
+                      }
                     }
-                  }
-                  synchronousShadowStateUpdatesEnabled={true}
-                  title="SITE_TABS"
-                  titleColor="rgb(28, 28, 30)"
-                  titleFontFamily="System"
-                  titleFontWeight="600"
-                  topInsetEnabled={false}
-                  translucent={false}
-                />
-              </RNSScreen>
-            </RNSScreenStack>
+                    synchronousShadowStateUpdatesEnabled={true}
+                    title="SITE_TABS"
+                    titleColor="rgb(28, 28, 30)"
+                    titleFontFamily="System"
+                    titleFontWeight="600"
+                    topInsetEnabled={false}
+                    translucent={false}
+                  />
+                </RNSScreen>
+              </RNSScreenStack>
+            </View>
           </View>
-        </View>
-        <View
-          collapsable={false}
-          pointerEvents="box-none"
-          style={
-            {
-              "bottom": 0,
-              "left": 0,
-              "position": "absolute",
-              "right": 0,
-              "top": 0,
+          <View
+            collapsable={false}
+            pointerEvents="box-none"
+            style={
+              {
+                "bottom": 0,
+                "left": 0,
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
             }
-          }
-        />
-      </RNCSafeAreaProvider>
-    </View>
-  </RNCSafeAreaProvider>
+          />
+        </RNCSafeAreaProvider>
+      </View>
+    </RNCSafeAreaProvider>
+  </KeyboardProvider>
 </View>
 `;
