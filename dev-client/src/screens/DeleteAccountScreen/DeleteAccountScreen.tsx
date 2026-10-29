@@ -16,12 +16,13 @@
  */
 
 import {useTranslation} from 'react-i18next';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 
 import {ScreenBackButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenBackButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {BottomInsetScrollView} from 'terraso-mobile-client/components/safeview/BottomInsetScrollView';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
+import {useBottomInsetPadding} from 'terraso-mobile-client/hooks/useBottomInsetPadding';
 import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {DeleteAccountConfirmContent} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountConfirmContent';
@@ -29,15 +30,21 @@ import {DeleteAccountConfirmForm} from 'terraso-mobile-client/screens/DeleteAcco
 import {DeleteAccountPendingContent} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountPendingContent';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
+/* Gap kept between the keyboard and the focused field, so the field's error text stays visible too. */
+const KEYBOARD_BOTTOM_OFFSET = 32;
+
 export function DeleteAccountScreen() {
   const {t} = useTranslation();
   const {user, isPending, isSaving, requestDeletion} =
     useUserDeletionRequests();
   const isOffline = useIsOffline();
+  const bottomInsetPadding = useBottomInsetPadding();
 
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenBackButton />} />}>
-      <BottomInsetScrollView>
+      <KeyboardAwareScrollView
+        bottomOffset={KEYBOARD_BOTTOM_OFFSET}
+        contentContainerStyle={bottomInsetPadding}>
         <ScreenContentSection title={t('delete_account.title')}>
           {user &&
             (isPending ? (
@@ -54,7 +61,7 @@ export function DeleteAccountScreen() {
               </Column>
             ))}
         </ScreenContentSection>
-      </BottomInsetScrollView>
+      </KeyboardAwareScrollView>
     </ScreenScaffold>
   );
 }
