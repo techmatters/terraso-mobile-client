@@ -16,13 +16,13 @@
  */
 
 import {useTranslation} from 'react-i18next';
-import {ScrollView} from 'react-native-gesture-handler';
 
 import {ScreenBackButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenBackButton';
 import {ScreenContentSection} from 'terraso-mobile-client/components/content/ScreenContentSection';
 import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {BottomInsetScrollView} from 'terraso-mobile-client/components/safeview/BottomInsetScrollView';
 import {useIsOffline} from 'terraso-mobile-client/hooks/connectivityHooks';
-import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest.ts';
+import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionRequest';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {DeleteAccountConfirmContent} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountConfirmContent';
 import {DeleteAccountConfirmForm} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountConfirmForm';
@@ -37,7 +37,7 @@ export function DeleteAccountScreen() {
 
   return (
     <ScreenScaffold AppBar={<AppBar LeftButton={<ScreenBackButton />} />}>
-      <ScrollView>
+      <BottomInsetScrollView>
         <ScreenContentSection title={t('delete_account.title')}>
           {user &&
             (isPending ? (
@@ -54,7 +54,7 @@ export function DeleteAccountScreen() {
               </Column>
             ))}
         </ScreenContentSection>
-      </ScrollView>
+      </BottomInsetScrollView>
     </ScreenScaffold>
   );
 }
