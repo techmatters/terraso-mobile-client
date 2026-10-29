@@ -1747,6 +1747,21 @@
             "delete": "Futa",
             "error": "Barua pepe hazilingani"
         },
+        "feedback": {
+            "reasons_prompt": "Kwa nini unafuta akaunti yako?",
+            "reasons": {
+                "no_longer_needed": "Siihitaji tena",
+                "switched_app": "Nimehamia programu nyingine",
+                "missing_features": "Inakosa vipengele ninavyohitaji",
+                "difficult_to_use": "Ni ngumu kutumia",
+                "errors_or_bugs": "Hitilafu au kasoro",
+                "privacy_concerns": "Wasiwasi kuhusu faragha au data",
+                "poor_support": "Huduma duni ya usaidizi",
+                "other": "Nyingine"
+            },
+            "details_prompt": "Je, una maoni mengine ungependa kushiriki nasi?",
+            "details_label": "Maelezo ya ziada"
+        },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
             "p1": "Ombi lako la kufuta akaunti limetumwa."

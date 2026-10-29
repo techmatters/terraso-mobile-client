@@ -49,7 +49,6 @@ export function DeleteAccountConfirmContent({
         />
         <TranslatedParagraph i18nKey="delete_account.confirm.p3" />
         <TranslatedBulletList i18nKeys={['delete_account.confirm.p4.b0']} />
-        <TranslatedParagraph i18nKey="delete_account.confirm.p5" />
       </View>
     </Column>
   );

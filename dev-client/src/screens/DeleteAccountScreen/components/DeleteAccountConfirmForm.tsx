@@ -17,19 +17,27 @@
 
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {StyleSheet} from 'react-native';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
 
 import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButton';
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {DeleteAccountReasonsField} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountReasonsField';
+import {
+  DeleteAccountFeedback,
+  DeleteAccountReason,
+} from 'terraso-mobile-client/screens/DeleteAccountScreen/deleteAccountFeedback';
+import {theme} from 'terraso-mobile-client/theme';
 
 export type DeleteAccountConfirmFormProps = {
   user: User;
   isSaving: boolean;
   isOffline: boolean;
-  onConfirm: () => void;
+  onConfirm: (feedback: DeleteAccountFeedback) => void;
 };
 
 export function DeleteAccountConfirmForm({
@@ -46,8 +54,28 @@ export function DeleteAccountConfirmForm({
   const [value, setValue] = useState('');
   const isEmailConfirmed = email === value;
 
+  const [reasons, setReasons] = useState<DeleteAccountReason[]>([]);
+  const [details, setDetails] = useState('');
+  const confirm = useCallback(
+    () => onConfirm({reasons, details: details.trim()}),
+    [onConfirm, reasons, details],
+  );
+
   return (
-    <Column space="24px">
+    <Column>
+      <DeleteAccountReasonsField value={reasons} onValueChange={setReasons} />
+      <Column style={styles.spacer} />
+      <TranslatedParagraph
+        bold
+        i18nKey="delete_account.feedback.details_prompt"
+      />
+      <TextField
+        label={t('delete_account.feedback.details_label')}
+        value={details}
+        onChangeText={setDetails}
+        multiline={true}
+      />
+      <TranslatedParagraph i18nKey="delete_account.confirm.p5" />
       <TextField
         label={t('general.email_label')}
         value={value}
@@ -63,7 +91,7 @@ export function DeleteAccountConfirmForm({
           label={t('delete_account.confirm.cancel')}
         />
         <DialogButton
-          onPress={onConfirm}
+          onPress={confirm}
           disabled={!isEmailConfirmed || isSaving || isOffline}
           type="destructive"
           label={t('delete_account.confirm.delete')}
@@ -72,3 +100,9 @@ export function DeleteAccountConfirmForm({
     </Column>
   );
 }
+
+const styles = StyleSheet.create({
+  spacer: {
+    height: theme.space.md,
+  },
+});

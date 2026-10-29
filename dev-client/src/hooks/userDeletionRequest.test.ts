@@ -27,6 +27,11 @@ import {useUserDeletionRequests} from 'terraso-mobile-client/hooks/userDeletionR
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
 
+const mockCapture = jest.fn();
+jest.mock('terraso-mobile-client/app/posthog/posthogInstance', () => ({
+  getPostHogInstance: () => ({capture: mockCapture}),
+}));
+
 jest.mock('terraso-mobile-client/store', () => ({
   useDispatch: jest.fn(),
   useSelector: jest.fn(),
@@ -60,6 +65,8 @@ const aUser = {
   profileImage: '',
   preferences: {} as Record<string, string>,
 };
+
+const noFeedback = {reasons: [], details: ''};
 
 const mockState = (user: typeof aUser | null) => {
   mockUseSelector.mockImplementation(selector =>
@@ -100,7 +107,7 @@ describe('useUserDeletionRequests', () => {
 
     const {result} = renderHook(() => useUserDeletionRequests());
     await act(async () => {
-      await result.current.requestDeletion();
+      await result.current.requestDeletion(noFeedback);
     });
 
     // userLoggedOut + signOut + setAccountDeletedEmail were dispatched.
@@ -127,12 +134,70 @@ describe('useUserDeletionRequests', () => {
 
     const {result} = renderHook(() => useUserDeletionRequests());
     await act(async () => {
-      await result.current.requestDeletion();
+      await result.current.requestDeletion(noFeedback);
     });
 
     expect(userLoggedOut).not.toHaveBeenCalled();
     expect(signOut).not.toHaveBeenCalled();
     expect(setAccountDeletedEmail).not.toHaveBeenCalled();
+  });
+
+  it('sends the feedback to PostHog with the user email', async () => {
+    mockState(aUser);
+    dispatch.mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({kind: 'blocked'}),
+    });
+
+    const {result} = renderHook(() => useUserDeletionRequests());
+    await act(async () => {
+      await result.current.requestDeletion({
+        reasons: ['errors_or_bugs', 'other'],
+        details: 'It crashed',
+      });
+    });
+
+    expect(mockCapture).toHaveBeenCalledTimes(1);
+    expect(mockCapture).toHaveBeenCalledWith('user_delete_feedback', {
+      email: aUser.email,
+      reasons: ['errors_or_bugs', 'other'],
+      details: 'It crashed',
+    });
+  });
+
+  it('sends the feedback event even when no feedback was given', async () => {
+    mockState(aUser);
+    dispatch.mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({kind: 'blocked'}),
+    });
+
+    const {result} = renderHook(() => useUserDeletionRequests());
+    await act(async () => {
+      await result.current.requestDeletion(noFeedback);
+    });
+
+    expect(mockCapture).toHaveBeenCalledWith('user_delete_feedback', {
+      email: aUser.email,
+      reasons: [],
+      details: '',
+    });
+  });
+
+  it('sends the feedback before the delete mutation, while the user is still identified', async () => {
+    mockState(aUser);
+    dispatch.mockReturnValue({
+      unwrap: jest
+        .fn()
+        .mockResolvedValue({kind: 'deleted', email: aUser.email}),
+    });
+
+    const {result} = renderHook(() => useUserDeletionRequests());
+    await act(async () => {
+      await result.current.requestDeletion(noFeedback);
+    });
+
+    const [captureOrder] = mockCapture.mock.invocationCallOrder;
+    const [firstDispatchOrder] = dispatch.mock.invocationCallOrder;
+    expect(captureOrder).toBeLessThan(firstDispatchOrder);
   });
 
   it('isSaving flips during the in-flight mutation', async () => {
@@ -146,7 +211,7 @@ describe('useUserDeletionRequests', () => {
     const {result} = renderHook(() => useUserDeletionRequests());
     expect(result.current.isSaving).toBe(false);
     act(() => {
-      result.current.requestDeletion();
+      result.current.requestDeletion(noFeedback);
     });
     await waitFor(() => expect(result.current.isSaving).toBe(true));
 
