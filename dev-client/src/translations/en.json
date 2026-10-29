@@ -501,6 +501,20 @@
             "delete": "Delete",
             "error": "Email doesn't match"
         },
+        "feedback": {
+            "reasons_label": "Why are you deleting your account?",
+            "reasons": {
+                "no_longer_needed": "No longer needed",
+                "switched_app": "Switched to a different app",
+                "missing_features": "Missing needed features",
+                "difficult_to_use": "Difficult to use",
+                "errors_or_bugs": "Errors or bugs",
+                "privacy_concerns": "Privacy or data concerns",
+                "poor_support": "Poor support experience",
+                "other": "Other"
+            },
+            "details_label": "Additional Details"
+        },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
             "p1": "Your account deletion request has been sent."
