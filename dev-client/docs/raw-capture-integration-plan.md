@@ -122,22 +122,29 @@ belongs with capability detection (2.2), driven by real capability rather than a
   *oriented* (portrait) dims (short=width/long=height; DNG decodes in portrait extent while
   `result.width/height` are pre-orientation landscape). Alerts REF, SOIL, and a naive
   WB (sample÷ref). Real WB/Munsell is workstream 3.
-- **2.1c-ANDROID-BLOCKER ⛔ — RAW capture broken on Pixel 6a / Android 16 (CameraX, not stream
-  config).** `raw-camera-android` loads and binds, but **the camera session never streams any
-  frames.** Confirmed with logcat across every combo: 4-stream → `No supported surface
-  combination` (expected); 3-stream (preview+raw+analysis and preview+raw+jpeg) *bind* but the
-  preview stays `IDLE`; and — decisively — forcing **2-stream `preview+raw` ALSO binds (reports
-  "RAW capable") but stays `IDLE`.** In all cases the camera opens (`Camera2CameraController
-  Started`) yet the repeating request config shows `streams = null`, camera-control calls
-  (`setExposureCompensationIndex`, `setCaptureRequestOptions`) time out (~3 s each), and
-  `takePicture` times out (8 s). Because even the minimal preview+raw fails, **this is NOT a
-  surface-combination problem** — it's a fundamental CameraX / `camera2-pipe` (CXCP) streaming
-  failure on Android 16. The module pins **CameraX 1.4.1** (`raw-camera-android/android/build.gradle`,
-  `cameraxVersion`), which predates Android 16. **No JS or stream-config lever helps** (tried
-  `skipJpeg`, `preferJpeg`, and a native 2-stream-first reorder — all reverted). **Fix is a
-  dependency bump:** upgrade CameraX (1.4.1 → current, e.g. 1.5.x) and/or switch the backend
-  (camera2-pipe ↔ camera2), then Android rebuild — a dedicated task with CameraX API-migration
-  risk. **iOS unaffected.**
+- **2.1c-ANDROID-CAPTURE ☑ — RESOLVED. RAW capture works on Pixel 6a / Android 16.** Two
+  distinct bugs, both in how the (byte-identical-to-research) native module was *hosted/driven* —
+  NOT a CameraX version/device issue (all branches pin CameraX 1.4.1):
+    1. *Black preview / takePicture timeout, every time* — the shared `CaptureChrome` hosted the
+       native view in a bare `View` + hidden `StatusBar`; the research module documents this
+       leaves CameraX bound-but-never-streaming. Fix: Android hosts `RawCameraAndroidView` in a
+       `ScreenScaffold` + `AppBar` (plain flex:1, no hidden StatusBar, no fixed-size wrapper).
+    2. *Intermittent (~30–50% per attach) black preview → takePicture timeout* — **a React Native
+       layout bug, not a camera race.** RN's Yoga engine lays out the native `ViewGroup` but does
+       NOT run Android `measure`/`onLayout` on the preview Surface/TextureView that CameraX
+       inserts inside `PreviewView`; it intermittently stays `0x0`, so the Surface is never
+       created, the camera never reaches `STREAMING`, and capture times out (~20s). Signature:
+       `onAttachedToWindow: view size=0x0`. **Fix: override `RawCameraAndroidView.requestLayout()`
+       to post an explicit `measure()`+`layout()`** (the standard RN-native-view workaround that
+       vision-camera et al. use). Took the stress test from ~30–50% failures to **0 races**.
+  Dead ends ruled out along the way (all reverted): CameraX version bump, camera-device
+  lifecycle hard-reset, 2-stream reorder, and `SurfaceView`/PERFORMANCE mode (never streams in
+  this RN host — TextureView/COMPATIBLE is required).
+  **Reference:** a retry-based safety net (native fast-fail-on-not-streaming guard + JS
+  auto-remount-on-failure + race counter) was validated on top of the `requestLayout` fix and is
+  preserved at commit **`de447bdb`**. Since races are 0 with the layout fix, it is slated for
+  removal in a follow-up commit (pending an extended 0-race confirmation run); restore it from
+  `de447bdb` if a future device needs retry recovery. **iOS unaffected.**
 - **2.1c-b ☐ — Android overlay.** (Blocked by the Android capture blocker above.) Enable
   `RawCameraAndroidView`'s native ROI overlay (`showRoiOverlay`). `frame-analyzer` is iOS-only
   and `raw-camera-android` carries its own `frame_analyzer.cpp`, so they never co-compile.
