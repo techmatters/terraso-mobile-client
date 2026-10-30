@@ -432,18 +432,6 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
     return () => clearTimeout(timer);
   }, [visible]);
 
-  // [rawcap] lifecycle instrumentation — temporary, for debugging the
-  // intermittent "no preview, returns immediately" attach race. Logs mount/
-  // unmount and every visible/permission transition so a failing run can be
-  // told apart from a healthy one in logcat. Grep tag: [rawcap].
-  useEffect(() => {
-    console.log('[rawcap] mount');
-    return () => console.log('[rawcap] unmount');
-  }, []);
-  useEffect(() => {
-    console.log('[rawcap] state', {visible, hasPermission, armed});
-  }, [visible, hasPermission, armed]);
-
   useEffect(() => {
     if (visible && !hasPermission) {
       requestPermission().catch(err => {
@@ -453,28 +441,22 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
   }, [visible, hasPermission, requestPermission]);
 
   // Kick the CameraX session into a proper bind once the native view is up.
-  // getCaptureCapabilities() runs ensureBound() native-side; without it we
-  // rely solely on the view's own window-attach bind, which can lose a race
-  // on the very first frame (the preview half-binds and stays IDLE, then
-  // capturePhoto reuses the wedged session and times out — exactly the
-  // Pixel 6a symptom). The working RawColorTools flows all call this on mount
-  // with a single retry to cover the attach race; mirror that here.
+  // getCaptureCapabilities() runs ensureBound() native-side so the session is
+  // warm before the first shutter press. Mirrors the research RawColorTools
+  // flows (one retry covers the attach race). Harmless if already bound.
   useEffect(() => {
     if (!visible || !hasPermission) return;
     let cancelled = false;
     const attempt = async (retryLeft: number): Promise<void> => {
       try {
-        console.log('[rawcap] kick: getCaptureCapabilities', {retryLeft});
         await RawCameraAndroidHybrid.getCaptureCapabilities();
-        console.log('[rawcap] kick: bound OK');
       } catch (err) {
         if (retryLeft > 0 && !cancelled) {
-          console.log('[rawcap] kick: failed, retrying', {retryLeft});
           await new Promise<void>(r => setTimeout(r, 300));
           if (!cancelled) return attempt(retryLeft - 1);
         }
         if (!cancelled) {
-          console.warn('[rawcap] kick: gave up', err);
+          console.warn('SimpleRawCamera: capability probe failed', err);
         }
       }
     };
@@ -488,15 +470,10 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
   // out. Does NOT call onCapture/onCancel — callers decide (manual shutter
   // navigates on a result; the auto loop just tallies and keeps going).
   const captureOnce = useCallback(async (): Promise<CaptureResult | null> => {
-    console.log('[rawcap] capturePhoto start');
     try {
       // skipJpeg: we only need the RAW DNG here, and skipping the JPEG halves
       // the native pipeline stages on the critical path.
       const photo = await RawCameraAndroidHybrid.capturePhoto({skipJpeg: true});
-      console.log('[rawcap] capturePhoto ok', {
-        w: photo.width,
-        h: photo.height,
-      });
       return makeRawCaptureResult(
         fileUri(photo.dngPath),
         photo.width,
@@ -504,7 +481,7 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
         photo.jpegPath ? fileUri(photo.jpegPath) : undefined,
       );
     } catch (err) {
-      console.error('[rawcap] capturePhoto FAILED:', err);
+      console.error('SimpleRawCamera: Android capture failed:', err);
       return null;
     }
   }, []);
@@ -529,18 +506,6 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
   const [autoRunning, setAutoRunning] = useState(false);
   const [shotCount, setShotCount] = useState(0);
   const [lastStatus, setLastStatus] = useState('');
-  // Remounting the native view (bump its React key) fully tears it down and
-  // recreates it — a brand-new PreviewView / SurfaceTexture / onAttachedTo
-  // Window, i.e. exactly what leaving and reopening the screen does. That
-  // "full view re-create + retry" is the only thing shown to recover the
-  // intermittent CameraX session-start race (a device-level reset does not).
-  // We bump this after a failed shot to give the next attempt a fresh view.
-  const [remountKey, setRemountKey] = useState(0);
-  const remountView = useCallback(() => setRemountKey(k => k + 1), []);
-  // How many times the preview stream race has forced a recovery remount this
-  // run — i.e. how often the race actually fires. Surfaced in the banner so we
-  // can measure its frequency (and whether a SurfaceView switch reduces it).
-  const [raceCount, setRaceCount] = useState(0);
 
   const stopAuto = useCallback(() => {
     autoRunningRef.current = false;
@@ -552,7 +517,6 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
     autoRunningRef.current = true;
     setAutoRunning(true);
     setShotCount(0);
-    setRaceCount(0);
     setLastStatus('starting…');
     (async () => {
       let i = 0;
@@ -570,25 +534,12 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
         setShotCount(i);
         setLastStatus(status);
         if (!autoRunningRef.current) break;
-        if (!result) {
-          // Stuck preview → the shot timed out. Recreate the native view
-          // (fresh PreviewView/surface) and give it time to attach + stream
-          // before the next attempt, mirroring a screen reopen.
-          setRaceCount(n => n + 1);
-          setLastStatus(`${status} · remounting preview…`);
-          remountView();
-          // Brief settle so the fresh native view mounts + attaches; the
-          // native capture guard then waits for STREAMING (up to ~2.5s) on the
-          // next shot, so we don't need a long fixed delay here.
-          await new Promise<void>(r => setTimeout(r, 600));
-        } else {
-          // Small gap so the preview keeps streaming between shots and the UI
-          // can repaint the running tally.
-          await new Promise<void>(r => setTimeout(r, 400));
-        }
+        // Small gap so the preview keeps streaming between shots and the UI
+        // can repaint the running tally.
+        await new Promise<void>(r => setTimeout(r, 400));
       }
     })().catch(() => {});
-  }, [onShot, captureOnce, remountView]);
+  }, [onShot, captureOnce]);
 
   // Stop the loop if the screen goes away mid-run (back / nav / blur).
   useEffect(() => {
@@ -621,9 +572,6 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
       <View style={styles.androidContainer}>
         {hasPermission ? (
           <RawCameraAndroidView
-            // Bumping the key fully remounts the native view (fresh
-            // PreviewView/surface) — our recovery for the CameraX stream race.
-            key={remountKey}
             style={StyleSheet.absoluteFill}
             showRoiOverlay={false}
             // preferJpeg: drop the ImageAnalysis stream (we don't use Android
@@ -639,12 +587,7 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
         )}
         {autoRunning && (
           <SafeAreaView style={styles.statusBanner} edges={['top']}>
-            <Text style={styles.statusText}>
-              Auto-test · shot {shotCount} · races {raceCount}
-              {shotCount > 0
-                ? ` (${Math.round((raceCount / shotCount) * 100)}%)`
-                : ''}
-            </Text>
+            <Text style={styles.statusText}>Auto-test · shot {shotCount}</Text>
             <Text style={styles.statusText} numberOfLines={2}>
               {lastStatus}
             </Text>

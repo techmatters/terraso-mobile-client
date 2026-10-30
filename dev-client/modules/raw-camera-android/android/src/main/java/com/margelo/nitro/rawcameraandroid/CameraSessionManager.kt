@@ -40,9 +40,7 @@ import androidx.camera.core.UseCaseGroup
 import androidx.camera.core.ViewPort
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.common.util.concurrent.ListenableFuture
 import com.margelo.nitro.NitroModules
 import java.io.File
@@ -56,14 +54,12 @@ import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.withTimeoutOrNull
 
 // Process-wide CameraX session for the RAW capture pipeline. Two
 // callers touch this:
@@ -114,30 +110,6 @@ object CameraSessionManager {
         Log.i(TAG, "provider: got ProcessCameraProvider")
         p
     }
-
-    // Manager-owned lifecycle. We bind the camera to THIS rather than
-    // ProcessLifecycleOwner so we can force a true camera-device close
-    // + reopen on demand — the only thing that recovers the intermittent
-    // "camera bound but preview never reaches STREAMING" state on some
-    // devices (Pixel 6a / Android 16). Bound to the process lifecycle,
-    // provider.unbindAll() only drops use cases and keeps the device
-    // open, so a wedged session can't be rebuilt; backgrounding the app
-    // (which drives ProcessLifecycleOwner → STOPPED) was the only cure.
-    // hardResetAndRebind() replicates that programmatically by bouncing
-    // this registry below STARTED and back. All state mutations happen
-    // on the main thread (LifecycleRegistry requirement).
-    private val cameraLifecycleOwner =
-        object : LifecycleOwner {
-            val registry = LifecycleRegistry(this)
-
-            override val lifecycle: Lifecycle
-                get() = registry
-        }
-
-    // How long to leave the camera device closed during a hard reset so
-    // the HAL actually releases it before we reopen. An immediate reopen
-    // reuses the same wedged device; ~600ms reliably lets it settle.
-    private const val HARD_RESET_CLOSE_DELAY_MS = 600L
 
     // Dedicated background executor for the ImageAnalysis keep-alive
     // analyzer. Using the main-thread executor stalls the repeating
@@ -196,26 +168,6 @@ object CameraSessionManager {
     // discard-only ImageAnalysis.
     @Volatile private var currentSurfaceProvider: Preview.SurfaceProvider? = null
 
-    // Whether the attached preview is actually streaming frames (PreviewView
-    // StreamState == STREAMING). Pushed by the view's stream-state observer.
-    // Used to fail a capture FAST when the preview is wedged (the intermittent
-    // CameraX start race): rather than grind through ~20s of camera-control
-    // and takePicture timeouts on a session that will never produce a frame,
-    // we abort in a couple seconds so the JS side can remount + retry quickly.
-    @Volatile private var previewStreaming: Boolean = false
-
-    // How long a capture waits for a freshly-attached preview to start
-    // streaming before giving up. A healthy attach reaches STREAMING in
-    // ~300–500ms; 2.5s leaves generous margin while keeping a wedged-preview
-    // failure fast (vs the ~20s full-timeout path).
-    private const val PREVIEW_STREAM_WAIT_MS = 2_500L
-
-    // Called by the view's stream-state observer (and on detach) so the
-    // capture path knows whether frames are actually flowing.
-    fun setPreviewStreaming(streaming: Boolean) {
-        previewStreaming = streaming
-    }
-
     // Phase-8 real-time overlay callback. Called on the
     // analysisExecutor thread (background). The view is responsible
     // for hopping to main + invalidate. Null when no view is
@@ -268,8 +220,6 @@ object CameraSessionManager {
     suspend fun attachSurfaceProvider(sp: Preview.SurfaceProvider) {
         mutex.withLock {
             currentSurfaceProvider = sp
-            // Fresh surface → not streaming yet until the observer says so.
-            previewStreaming = false
             Log.i(TAG, "attachSurfaceProvider: rebinding with Preview")
             unbindAllLocked()
             ensureBoundLocked()
@@ -280,37 +230,11 @@ object CameraSessionManager {
     suspend fun detachSurfaceProvider() {
         mutex.withLock {
             currentSurfaceProvider = null
-            previewStreaming = false
             Log.i(TAG, "detachSurfaceProvider: rebinding without preview")
             unbindAllLocked()
             // Don't rebind eagerly — no view + no capture request means
             // no reason to keep the camera open. Next capturePhoto will
             // rebind lazily.
-        }
-    }
-
-    // Force the camera DEVICE to close and reopen, then rebind. This is
-    // the heavy-hammer recovery for the "bound but preview never reaches
-    // STREAMING" race: a plain unbindAll()/rebind keeps the wedged device
-    // open (we're bound to our own lifecycle, not the Activity's), so it
-    // never recovers. Driving the lifecycle below STARTED makes CameraX
-    // actually close the device — the same thing backgrounding the app
-    // does — and after a short settle we reopen and rebind with whatever
-    // surface provider is currently attached. Called by the view's
-    // watchdog when STREAMING doesn't arrive.
-    suspend fun hardResetAndRebind() {
-        mutex.withLock {
-            Log.i(TAG, "hardReset: closing camera device (lifecycle → CREATED)")
-            unbindAllLocked()
-            withContext(Dispatchers.Main) {
-                cameraLifecycleOwner.registry.currentState =
-                    Lifecycle.State.CREATED
-            }
-            delay(HARD_RESET_CLOSE_DELAY_MS)
-            Log.i(TAG, "hardReset: reopening + rebinding")
-            // ensureBoundLocked() flips the lifecycle back to RESUMED and
-            // rebinds (with Preview if a surface provider is attached).
-            ensureBoundLocked()
         }
     }
 
@@ -322,9 +246,8 @@ object CameraSessionManager {
     // shutter) override. Both are applied to the camera-control state
     // before the capture is triggered. State is reset after each capture
     // so the next call starts from a known baseline — see resetCameraStateLocked.
-    suspend fun capture(options: CaptureOptions): CapturedPhoto {
-        awaitPreviewStreamingOrThrow()
-        return mutex.withLock {
+    suspend fun capture(options: CaptureOptions): CapturedPhoto =
+        mutex.withLock {
             captureLocked(
                 options,
                 burstStamp = null,
@@ -337,31 +260,6 @@ object CameraSessionManager {
                 contextTokens = emptyList(),
             ).photo
         }
-    }
-
-    // Fast-fail guard for the intermittent CameraX start race. When a preview
-    // surface is attached but frames aren't flowing, a capture would otherwise
-    // hang through ~20s of camera-control + takePicture timeouts on a session
-    // that will never produce an image. Instead, wait briefly for STREAMING
-    // and, if it doesn't arrive, throw immediately so the JS side can remount
-    // the view and retry fast. Deliberately NOT inside the mutex: it only
-    // polls a volatile, and holding the lock here would stall the view's
-    // own rebind/observer work that we're waiting on. No preview attached
-    // (blind capture) → nothing to wait for, proceed.
-    private suspend fun awaitPreviewStreamingOrThrow() {
-        if (currentSurfaceProvider == null || previewStreaming) return
-        val streamed =
-            withTimeoutOrNull(PREVIEW_STREAM_WAIT_MS) {
-                while (!previewStreaming) delay(50)
-                true
-            } ?: false
-        if (!streamed) {
-            throw IllegalStateException(
-                "preview not streaming after ${PREVIEW_STREAM_WAIT_MS}ms — " +
-                    "aborting capture (CameraX stream race); caller should remount + retry",
-            )
-        }
-    }
 
     // Capture N frames in rapid succession with AE + AWB locked so all
     // frames share identical sensor state. If `options` sets manual
@@ -1296,12 +1194,6 @@ object CameraSessionManager {
         val camera =
             withContext(Dispatchers.Main) {
                 var lastError: IllegalArgumentException? = null
-                // CameraX opens the device only while the bound lifecycle
-                // is at least STARTED. Ensure ours is RESUMED before
-                // binding (it may have been parked at CREATED by a prior
-                // hard reset, or still INITIALIZED on first bind).
-                cameraLifecycleOwner.registry.currentState =
-                    Lifecycle.State.RESUMED
                 Log.i(
                     TAG,
                     "ensureBound: trying bind combos (preview=${preview != null})"
@@ -1309,7 +1201,7 @@ object CameraSessionManager {
                 for (a in attempts) {
                     try {
                         val c = provider.bindToLifecycle(
-                            cameraLifecycleOwner,
+                            ProcessLifecycleOwner.get(),
                             CameraSelector.DEFAULT_BACK_CAMERA,
                             buildGroup(a.first, a.second),
                         )
