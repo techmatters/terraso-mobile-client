@@ -83,11 +83,6 @@ constructor(
         val dtMs = SystemClock.elapsedRealtime() - attachStartMs
         Log.i(TAG, "previewStreamState → $s (+${dtMs}ms since attach)")
         lastStreamState = s
-        // Let the capture path fast-fail when frames aren't flowing instead of
-        // hanging ~20s on a wedged session (CameraX start race).
-        CameraSessionManager.setPreviewStreaming(
-            s == PreviewView.StreamState.STREAMING,
-        )
     }
 
     // Time to wait for the preview to reach STREAMING before assuming
@@ -104,16 +99,17 @@ constructor(
     }
 
     // THE fix for the intermittent "preview never STREAMs / takePicture hangs"
-    // race. React Native's Yoga layout engine lays out *this* view, but it does
-    // NOT run Android's measure/layout pass on children that native code adds
-    // imperatively — and CameraX inserts its preview Surface/TextureView inside
-    // PreviewView after bind. Without a forced pass that child intermittently
-    // stays 0x0, so its Surface is never created, the camera never starts
-    // streaming, and every capture then times out. Overriding requestLayout()
-    // to post an explicit measure()+layout() of our subtree forces the Surface
-    // to be sized and created every time. This is the standard RN-native-view
-    // workaround (react-native-vision-camera and other RN camera libs do the
-    // same). See docs/raw-capture-integration-plan.md (Android stream race).
+    // race on this device. React Native's Yoga layout engine lays out *this*
+    // view, but it does NOT run Android's measure/onLayout pass on children
+    // that native code adds imperatively — and CameraX inserts its preview
+    // Surface/TextureView inside PreviewView after bind. Without a forced pass
+    // that child intermittently stays 0x0, so its Surface is never created,
+    // the camera never starts streaming, and every capture then times out
+    // (signature: "onAttachedToWindow: view size=0x0"). Overriding
+    // requestLayout() to post an explicit measure()+layout() of our subtree
+    // forces the Surface to be sized and created every time. This is the
+    // standard RN-native-view workaround (react-native-vision-camera and
+    // other RN camera libraries do the same).
     private val measureAndLayout =
         Runnable {
             measure(
@@ -182,19 +178,9 @@ constructor(
             TAG,
             "attach: complete (+${SystemClock.elapsedRealtime() - t0}ms)",
         )
-        armWatchdog(rebindAttemptsLeft)
-    }
-
-    // Arms (or re-arms) the STREAMING watchdog in its own coroutine so the
-    // current job can complete cleanly; it cancels early via the observer
-    // if STREAMING arrives. If frames haven't started within WATCHDOG_MS,
-    // escalate to a hard reset — close + reopen the camera DEVICE — then
-    // re-arm with one fewer attempt. A plain surface detach/reattach does
-    // NOT recover the "bound but never STREAMING" state on affected
-    // devices (we stay bound to our own lifecycle, so the device never
-    // closes); only a real device close does. Bounded so a genuinely
-    // broken camera eventually stops retrying.
-    private fun armWatchdog(rebindAttemptsLeft: Int) {
+        // Watchdog runs in a separate coroutine so the current job can
+        // complete cleanly. Cancels itself early via the observer if
+        // STREAMING arrives.
         watchdogJob?.cancel()
         watchdogJob =
             scope.launch {
@@ -210,22 +196,23 @@ constructor(
                     Log.w(
                         TAG,
                         "watchdog: stayed ${lastStreamState} for ${WATCHDOG_MS}ms " +
-                            "and no reset attempts left — giving up",
+                            "and no rebind attempts left — giving up",
                     )
                     return@launch
                 }
                 Log.w(
                     TAG,
                     "watchdog: preview stayed ${lastStreamState} for " +
-                        "${WATCHDOG_MS}ms, forcing camera hard reset " +
-                        "(${rebindAttemptsLeft - 1} attempts left after this)",
+                        "${WATCHDOG_MS}ms, forcing rebind " +
+                        "(${rebindAttemptsLeft - 1} retries left after this)",
                 )
-                // Heavy recovery: close + reopen the camera device, then
-                // rebind with the currently-attached preview surface
-                // (hardResetAndRebind reuses the stored surface provider).
-                CameraSessionManager.hardResetAndRebind()
+                // Detach + reattach — session manager rebuilds the
+                // whole CameraX binding, which usually breaks a stuck
+                // preview surface loose. Recursive with a decremented
+                // retry count.
+                CameraSessionManager.detachSurfaceProvider()
                 attachStartMs = SystemClock.elapsedRealtime()
-                armWatchdog(rebindAttemptsLeft - 1)
+                attachAndArmWatchdog(rebindAttemptsLeft - 1)
             }
     }
 

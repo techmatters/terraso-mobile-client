@@ -140,11 +140,13 @@ belongs with capability detection (2.2), driven by real capability rather than a
   Dead ends ruled out along the way (all reverted): CameraX version bump, camera-device
   lifecycle hard-reset, 2-stream reorder, and `SurfaceView`/PERFORMANCE mode (never streams in
   this RN host — TextureView/COMPATIBLE is required).
-  **Reference:** a retry-based safety net (native fast-fail-on-not-streaming guard + JS
-  auto-remount-on-failure + race counter) was validated on top of the `requestLayout` fix and is
-  preserved at commit **`de447bdb`**. Since races are 0 with the layout fix, it is slated for
-  removal in a follow-up commit (pending an extended 0-race confirmation run); restore it from
-  `de447bdb` if a future device needs retry recovery. **iOS unaffected.**
+  Validated: a 292/292 auto-test run at **0 races** on Pixel 6a / Android 16 with the
+  `requestLayout` fix alone. **Reference:** a retry-based safety net (native
+  fast-fail-on-not-streaming guard + JS auto-remount-on-failure + race counter) was validated on
+  top of the fix and is preserved at commit **`de447bdb`**; it was then removed (races are 0
+  without it) to keep the native-module diff vs. the research copy to just the one-method
+  `requestLayout` override. Restore from `de447bdb` if a future device ever needs retry recovery.
+  **iOS unaffected.**
 - **2.1c-b ☐ — Android overlay.** (Blocked by the Android capture blocker above.) Enable
   `RawCameraAndroidView`'s native ROI overlay (`showRoiOverlay`). `frame-analyzer` is iOS-only
   and `raw-camera-android` carries its own `frame_analyzer.cpp`, so they never co-compile.
