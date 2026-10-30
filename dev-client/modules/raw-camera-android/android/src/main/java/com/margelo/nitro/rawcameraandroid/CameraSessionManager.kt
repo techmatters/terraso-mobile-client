@@ -63,6 +63,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 
 // Process-wide CameraX session for the RAW capture pipeline. Two
 // callers touch this:
@@ -195,6 +196,26 @@ object CameraSessionManager {
     // discard-only ImageAnalysis.
     @Volatile private var currentSurfaceProvider: Preview.SurfaceProvider? = null
 
+    // Whether the attached preview is actually streaming frames (PreviewView
+    // StreamState == STREAMING). Pushed by the view's stream-state observer.
+    // Used to fail a capture FAST when the preview is wedged (the intermittent
+    // CameraX start race): rather than grind through ~20s of camera-control
+    // and takePicture timeouts on a session that will never produce a frame,
+    // we abort in a couple seconds so the JS side can remount + retry quickly.
+    @Volatile private var previewStreaming: Boolean = false
+
+    // How long a capture waits for a freshly-attached preview to start
+    // streaming before giving up. A healthy attach reaches STREAMING in
+    // ~300–500ms; 2.5s leaves generous margin while keeping a wedged-preview
+    // failure fast (vs the ~20s full-timeout path).
+    private const val PREVIEW_STREAM_WAIT_MS = 2_500L
+
+    // Called by the view's stream-state observer (and on detach) so the
+    // capture path knows whether frames are actually flowing.
+    fun setPreviewStreaming(streaming: Boolean) {
+        previewStreaming = streaming
+    }
+
     // Phase-8 real-time overlay callback. Called on the
     // analysisExecutor thread (background). The view is responsible
     // for hopping to main + invalidate. Null when no view is
@@ -247,6 +268,8 @@ object CameraSessionManager {
     suspend fun attachSurfaceProvider(sp: Preview.SurfaceProvider) {
         mutex.withLock {
             currentSurfaceProvider = sp
+            // Fresh surface → not streaming yet until the observer says so.
+            previewStreaming = false
             Log.i(TAG, "attachSurfaceProvider: rebinding with Preview")
             unbindAllLocked()
             ensureBoundLocked()
@@ -257,6 +280,7 @@ object CameraSessionManager {
     suspend fun detachSurfaceProvider() {
         mutex.withLock {
             currentSurfaceProvider = null
+            previewStreaming = false
             Log.i(TAG, "detachSurfaceProvider: rebinding without preview")
             unbindAllLocked()
             // Don't rebind eagerly — no view + no capture request means
@@ -298,8 +322,9 @@ object CameraSessionManager {
     // shutter) override. Both are applied to the camera-control state
     // before the capture is triggered. State is reset after each capture
     // so the next call starts from a known baseline — see resetCameraStateLocked.
-    suspend fun capture(options: CaptureOptions): CapturedPhoto =
-        mutex.withLock {
+    suspend fun capture(options: CaptureOptions): CapturedPhoto {
+        awaitPreviewStreamingOrThrow()
+        return mutex.withLock {
             captureLocked(
                 options,
                 burstStamp = null,
@@ -312,6 +337,31 @@ object CameraSessionManager {
                 contextTokens = emptyList(),
             ).photo
         }
+    }
+
+    // Fast-fail guard for the intermittent CameraX start race. When a preview
+    // surface is attached but frames aren't flowing, a capture would otherwise
+    // hang through ~20s of camera-control + takePicture timeouts on a session
+    // that will never produce an image. Instead, wait briefly for STREAMING
+    // and, if it doesn't arrive, throw immediately so the JS side can remount
+    // the view and retry fast. Deliberately NOT inside the mutex: it only
+    // polls a volatile, and holding the lock here would stall the view's
+    // own rebind/observer work that we're waiting on. No preview attached
+    // (blind capture) → nothing to wait for, proceed.
+    private suspend fun awaitPreviewStreamingOrThrow() {
+        if (currentSurfaceProvider == null || previewStreaming) return
+        val streamed =
+            withTimeoutOrNull(PREVIEW_STREAM_WAIT_MS) {
+                while (!previewStreaming) delay(50)
+                true
+            } ?: false
+        if (!streamed) {
+            throw IllegalStateException(
+                "preview not streaming after ${PREVIEW_STREAM_WAIT_MS}ms — " +
+                    "aborting capture (CameraX stream race); caller should remount + retry",
+            )
+        }
+    }
 
     // Capture N frames in rapid succession with AE + AWB locked so all
     // frames share identical sensor state. If `options` sets manual

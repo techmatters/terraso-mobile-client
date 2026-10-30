@@ -83,6 +83,11 @@ constructor(
         val dtMs = SystemClock.elapsedRealtime() - attachStartMs
         Log.i(TAG, "previewStreamState → $s (+${dtMs}ms since attach)")
         lastStreamState = s
+        // Let the capture path fast-fail when frames aren't flowing instead of
+        // hanging ~20s on a wedged session (CameraX start race).
+        CameraSessionManager.setPreviewStreaming(
+            s == PreviewView.StreamState.STREAMING,
+        )
     }
 
     // Time to wait for the preview to reach STREAMING before assuming
@@ -96,6 +101,37 @@ constructor(
     init {
         addView(previewView)
         addView(overlay) // draw order: overlay after preview → drawn on top
+    }
+
+    // THE fix for the intermittent "preview never STREAMs / takePicture hangs"
+    // race. React Native's Yoga layout engine lays out *this* view, but it does
+    // NOT run Android's measure/layout pass on children that native code adds
+    // imperatively — and CameraX inserts its preview Surface/TextureView inside
+    // PreviewView after bind. Without a forced pass that child intermittently
+    // stays 0x0, so its Surface is never created, the camera never starts
+    // streaming, and every capture then times out. Overriding requestLayout()
+    // to post an explicit measure()+layout() of our subtree forces the Surface
+    // to be sized and created every time. This is the standard RN-native-view
+    // workaround (react-native-vision-camera and other RN camera libs do the
+    // same). See docs/raw-capture-integration-plan.md (Android stream race).
+    private val measureAndLayout =
+        Runnable {
+            measure(
+                android.view.View.MeasureSpec.makeMeasureSpec(
+                    width,
+                    android.view.View.MeasureSpec.EXACTLY,
+                ),
+                android.view.View.MeasureSpec.makeMeasureSpec(
+                    height,
+                    android.view.View.MeasureSpec.EXACTLY,
+                ),
+            )
+            layout(left, top, right, bottom)
+        }
+
+    override fun requestLayout() {
+        super.requestLayout()
+        post(measureAndLayout)
     }
 
     override fun onAttachedToWindow() {

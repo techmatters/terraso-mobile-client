@@ -577,7 +577,10 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
           setRaceCount(n => n + 1);
           setLastStatus(`${status} · remounting preview…`);
           remountView();
-          await new Promise<void>(r => setTimeout(r, 3000));
+          // Brief settle so the fresh native view mounts + attaches; the
+          // native capture guard then waits for STREAMING (up to ~2.5s) on the
+          // next shot, so we don't need a long fixed delay here.
+          await new Promise<void>(r => setTimeout(r, 600));
         } else {
           // Small gap so the preview keeps streaming between shots and the UI
           // can repaint the running tally.
