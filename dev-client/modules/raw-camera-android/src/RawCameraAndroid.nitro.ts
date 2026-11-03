@@ -138,6 +138,15 @@ export type CaptureCapabilities = {
   sensorSensitivityMax: number;
 };
 
+// SPIKE (feasibility test for the decoupled-analyzer design): a separate
+// analyzer HybridObject that can be injected into the camera and called from
+// the native frame thread. `probe` is a trivial stand-in that logs its thread
+// and returns width*height — just enough to prove the inject-and-call-off-
+// thread path works before building the real analyzeYPlane analyzer.
+export interface FrameAnalyzer extends HybridObject<{android: 'kotlin'}> {
+  probe(width: number, height: number): number;
+}
+
 // Android-only RAW capture API. Companion to the native RawCameraAndroidView
 // (a Fabric view manager) which owns the CameraX Preview surface — the
 // two share a single CameraX session under the hood, bound at the module
@@ -169,6 +178,14 @@ export interface RawCameraAndroid
    * Rejects if the session isn't bound yet.
    */
   getCaptureCapabilities(): Promise<CaptureCapabilities>;
+
+  /**
+   * SPIKE: inject a FrameAnalyzer HybridObject. The camera stores the
+   * reference and calls it from a native background thread (proving the
+   * decoupled-analyzer path). Pass the analyzer created in JS via
+   * NitroModules.createHybridObject('FrameAnalyzer').
+   */
+  setAnalyzer(analyzer: FrameAnalyzer): void;
 
   /**
    * Research-data-collection shutter: fires N auto-AE burst frames

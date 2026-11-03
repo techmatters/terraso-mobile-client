@@ -43,6 +43,10 @@ abstract class HybridRawCameraAndroidSpec: HybridObject() {
   
   @DoNotStrip
   @Keep
+  abstract fun setAnalyzer(analyzer: HybridFrameAnalyzerSpec): Unit
+  
+  @DoNotStrip
+  @Keep
   abstract fun captureSession(request: CaptureSessionRequest): Promise<Array<CapturedPhoto>>
 
   // Default implementation of `HybridObject.toString()`

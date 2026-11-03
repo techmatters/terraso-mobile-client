@@ -168,6 +168,11 @@ object CameraSessionManager {
     // discard-only ImageAnalysis.
     @Volatile private var currentSurfaceProvider: Preview.SurfaceProvider? = null
 
+    // SPIKE: analyzer injected from JS via HybridRawCameraAndroid.setAnalyzer.
+    // The capture path calls it from a background coroutine to prove a Nitro
+    // HybridObject can be passed in and invoked off the JS thread.
+    @Volatile var spikeAnalyzer: HybridFrameAnalyzerSpec? = null
+
     // Phase-8 real-time overlay callback. Called on the
     // analysisExecutor thread (background). The view is responsible
     // for hopping to main + invalidate. Null when no view is
@@ -248,17 +253,30 @@ object CameraSessionManager {
     // so the next call starts from a known baseline — see resetCameraStateLocked.
     suspend fun capture(options: CaptureOptions): CapturedPhoto =
         mutex.withLock {
-            captureLocked(
-                options,
-                burstStamp = null,
-                burstIdx = 0,
-                burstTotal = 0,
-                sessionSubdir = null,
-                sessionSeq = 0,
-                sessionTotal = 0,
-                deviceSlug = deviceSlug(),
-                contextTokens = emptyList(),
-            ).photo
+            val photo =
+                captureLocked(
+                    options,
+                    burstStamp = null,
+                    burstIdx = 0,
+                    burstTotal = 0,
+                    sessionSubdir = null,
+                    sessionSeq = 0,
+                    sessionTotal = 0,
+                    deviceSlug = deviceSlug(),
+                    contextTokens = emptyList(),
+                ).photo
+            // SPIKE: call the injected Nitro analyzer from this background
+            // coroutine. A non-null, correct result logged off the JS thread
+            // proves the inject-and-call-off-thread path.
+            spikeAnalyzer?.let {
+                val r = it.probe(photo.width, photo.height)
+                Log.i(
+                    TAG,
+                    "spike: injected analyzer.probe(${photo.width},${photo.height})=$r " +
+                        "from thread=${Thread.currentThread().name}",
+                )
+            }
+            photo
         }
 
     // Capture N frames in rapid succession with AE + AWB locked so all
@@ -1377,6 +1395,7 @@ object CameraSessionManager {
             "CAPTURE result: sensorCropRegion=${cropRegion} " +
                 "distortionMode=${distortionMode} stabilizationMode=${stabilizationMode}"
         )
+        val dngWriteStartMs = SystemClock.elapsedRealtime()
         DngCreator(characteristics, result).use { creator ->
             val sensorOrientation =
                 characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
@@ -1385,10 +1404,11 @@ object CameraSessionManager {
                 creator.writeImage(stream, underlyingImage)
             }
         }
+        val dngSaveMs = SystemClock.elapsedRealtime() - dngWriteStartMs
         Log.i(
             TAG,
             "DNG written: path=${outFile.absolutePath} size=${outFile.length()} " +
-                "width=${image.width} height=${image.height}"
+                "width=${image.width} height=${image.height} save=${dngSaveMs}ms"
         )
         return CapturedPhoto(
             dngPath = "file://${outFile.absolutePath}",

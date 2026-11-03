@@ -43,7 +43,11 @@ import {
 import {deleteAsync} from 'expo-file-system/legacy';
 
 import {DngDecoderHybrid} from 'dng-decoder';
-import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
+import {
+  createFrameAnalyzer,
+  RawCameraAndroidHybrid,
+  RawCameraAndroidView,
+} from 'raw-camera-android';
 
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RoiOverlay} from 'terraso-mobile-client/components/inputs/image/RoiOverlay';
@@ -93,6 +97,11 @@ const makeRawCaptureResult = (
     const [rgb] = await DngDecoderHybrid.decodeDngRois(dngPath, [roi]);
     return rgb;
   },
+  // One parse, all ROIs — vs decodeRoi which re-parses the DNG per call.
+  // NOTE: decodeDngRois is a *synchronous* Nitro call, so it blocks the JS
+  // thread for the whole decode. A later slice should make the native decode
+  // Promise-based (off-thread) so the UI doesn't freeze during it.
+  decodeRois: async rois => DngDecoderHybrid.decodeDngRois(dngPath, rois),
   renderPreview: async maxDim => {
     const preview = await DngDecoderHybrid.renderPreview(dngPath, maxDim);
     return {uri: preview.uri, width: preview.width, height: preview.height};
@@ -466,14 +475,28 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
     };
   }, [visible, hasPermission]);
 
+  // SPIKE: inject a FrameAnalyzer HybridObject once so the native capture path
+  // can call it off the JS thread — feasibility test for the decoupled,
+  // injectable analyzer design. (Harmless no-op once the spike is removed.)
+  useEffect(() => {
+    const analyzer = createFrameAnalyzer();
+    if (analyzer) {
+      RawCameraAndroidHybrid.setAnalyzer(analyzer);
+    }
+  }, []);
+
   // One RAW capture. Returns the result, or null if the shot failed/timed
   // out. Does NOT call onCapture/onCancel — callers decide (manual shutter
   // navigates on a result; the auto loop just tallies and keeps going).
   const captureOnce = useCallback(async (): Promise<CaptureResult | null> => {
     try {
-      // skipJpeg: we only need the RAW DNG here, and skipping the JPEG halves
-      // the native pipeline stages on the critical path.
-      const photo = await RawCameraAndroidHybrid.capturePhoto({skipJpeg: true});
+      // skipJpeg:false → capture RAW + the companion HAL JPEG (the raw+jpeg
+      // path). The native log reports the JPEG's added cost (jpeg=NNNms).
+      const t0 = Date.now();
+      const photo = await RawCameraAndroidHybrid.capturePhoto({
+        skipJpeg: false,
+      });
+      console.log(`[rawperf] capturePhoto ${Date.now() - t0}ms`);
       return makeRawCaptureResult(
         fileUri(photo.dngPath),
         photo.width,

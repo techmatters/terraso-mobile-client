@@ -17,6 +17,7 @@ namespace margelo::nitro::rawcameraandroid {
       prototype.registerHybridMethod("capturePhoto", &HybridRawCameraAndroidSpec::capturePhoto);
       prototype.registerHybridMethod("captureBurst", &HybridRawCameraAndroidSpec::captureBurst);
       prototype.registerHybridMethod("getCaptureCapabilities", &HybridRawCameraAndroidSpec::getCaptureCapabilities);
+      prototype.registerHybridMethod("setAnalyzer", &HybridRawCameraAndroidSpec::setAnalyzer);
       prototype.registerHybridMethod("captureSession", &HybridRawCameraAndroidSpec::captureSession);
     });
   }

@@ -2,13 +2,17 @@ import {Platform} from 'react-native';
 
 import {NitroModules} from 'react-native-nitro-modules';
 
-import type {RawCameraAndroid} from './RawCameraAndroid.nitro';
+import type {
+  FrameAnalyzer,
+  RawCameraAndroid,
+} from './RawCameraAndroid.nitro';
 
 export type {
   CaptureCapabilities,
   CaptureOptions,
   CaptureSessionRequest,
   CapturedPhoto,
+  FrameAnalyzer,
   RawCameraAndroid,
   SessionContext,
   SessionShot,
@@ -39,3 +43,10 @@ export const RawCameraAndroidHybrid: RawCameraAndroid =
   Platform.OS === 'android'
     ? NitroModules.createHybridObject<RawCameraAndroid>('RawCameraAndroid')
     : platformStub;
+
+// SPIKE: factory for the injectable analyzer HybridObject. Android-only;
+// returns null off-platform so callers can Platform-gate the inject.
+export const createFrameAnalyzer = (): FrameAnalyzer | null =>
+  Platform.OS === 'android'
+    ? NitroModules.createHybridObject<FrameAnalyzer>('FrameAnalyzer')
+    : null;

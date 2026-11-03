@@ -57,6 +57,7 @@ namespace margelo::nitro::rawcameraandroid {
     std::shared_ptr<Promise<CapturedPhoto>> capturePhoto(const CaptureOptions& options) override;
     std::shared_ptr<Promise<std::vector<CapturedPhoto>>> captureBurst(double count, const CaptureOptions& options) override;
     std::shared_ptr<Promise<CaptureCapabilities>> getCaptureCapabilities() override;
+    void setAnalyzer(const std::shared_ptr<HybridFrameAnalyzerSpec>& analyzer) override;
     std::shared_ptr<Promise<std::vector<CapturedPhoto>>> captureSession(const CaptureSessionRequest& request) override;
 
   private:
