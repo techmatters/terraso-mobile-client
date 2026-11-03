@@ -43,11 +43,7 @@ import {
 import {deleteAsync} from 'expo-file-system/legacy';
 
 import {DngDecoderHybrid} from 'dng-decoder';
-import {
-  createFrameAnalyzer,
-  RawCameraAndroidHybrid,
-  RawCameraAndroidView,
-} from 'raw-camera-android';
+import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
 
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {RoiOverlay} from 'terraso-mobile-client/components/inputs/image/RoiOverlay';
@@ -474,16 +470,6 @@ const AndroidRawCapture = ({visible, onCapture, onCancel, onShot}: Props) => {
       cancelled = true;
     };
   }, [visible, hasPermission]);
-
-  // SPIKE: inject a FrameAnalyzer HybridObject once so the native capture path
-  // can call it off the JS thread — feasibility test for the decoupled,
-  // injectable analyzer design. (Harmless no-op once the spike is removed.)
-  useEffect(() => {
-    const analyzer = createFrameAnalyzer();
-    if (analyzer) {
-      RawCameraAndroidHybrid.setAnalyzer(analyzer);
-    }
-  }, []);
 
   // One RAW capture. Returns the result, or null if the shot failed/timed
   // out. Does NOT call onCapture/onCancel — callers decide (manual shutter

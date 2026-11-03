@@ -3,17 +3,21 @@ import {Platform} from 'react-native';
 import {NitroModules} from 'react-native-nitro-modules';
 
 import type {
+  AnalyzerRoi,
   FrameAnalyzer,
   RawCameraAndroid,
+  RoiLumaStats,
 } from './RawCameraAndroid.nitro';
 
 export type {
+  AnalyzerRoi,
   CaptureCapabilities,
   CaptureOptions,
   CaptureSessionRequest,
   CapturedPhoto,
   FrameAnalyzer,
   RawCameraAndroid,
+  RoiLumaStats,
   SessionContext,
   SessionShot,
 } from './RawCameraAndroid.nitro';
@@ -44,9 +48,20 @@ export const RawCameraAndroidHybrid: RawCameraAndroid =
     ? NitroModules.createHybridObject<RawCameraAndroid>('RawCameraAndroid')
     : platformStub;
 
-// SPIKE: factory for the injectable analyzer HybridObject. Android-only;
-// returns null off-platform so callers can Platform-gate the inject.
-export const createFrameAnalyzer = (): FrameAnalyzer | null =>
-  Platform.OS === 'android'
-    ? NitroModules.createHybridObject<FrameAnalyzer>('FrameAnalyzer')
-    : null;
+// Create + configure the injectable live-frame analyzer. Android-only;
+// returns null off-platform so callers can Platform-gate. Pass the result to
+// RawCameraAndroidHybrid.setAnalyzer(); the camera pumps frames into it and it
+// emits per-ROI luma stats via onStats.
+export const createRoiAnalyzer = (
+  rois: AnalyzerRoi[],
+  onStats: (stats: RoiLumaStats[]) => void,
+): FrameAnalyzer | null => {
+  if (Platform.OS !== 'android') {
+    return null;
+  }
+  const analyzer = NitroModules.createHybridObject<FrameAnalyzer>(
+    'FrameAnalyzer',
+  );
+  analyzer.configure(rois, onStats);
+  return analyzer;
+};

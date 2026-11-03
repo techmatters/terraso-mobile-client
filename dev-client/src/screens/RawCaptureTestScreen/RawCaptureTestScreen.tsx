@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useMemo, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -24,16 +24,21 @@ import {
   StyleSheet,
   Text,
   View,
+  type ViewStyle,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useIsFocused} from '@react-navigation/native';
 
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
-import {RawColorCamera} from 'terraso-mobile-client/components/inputs/image/rawColorCamera';
+import {
+  createRoiAnalyzer,
+  RawColorCamera,
+} from 'terraso-mobile-client/components/inputs/image/rawColorCamera';
 import type {
   LinearRgb,
   RawColorCameraHandle,
+  RoiStats,
 } from 'terraso-mobile-client/components/inputs/image/rawColorCamera.types';
 import {SimpleRawCamera} from 'terraso-mobile-client/components/inputs/image/SimpleRawCamera';
 import {
@@ -46,6 +51,21 @@ import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigatio
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 const f = (n: number) => n.toFixed(3);
+
+// Live ROI overlay box, positioned by fractional ROI; green when well-framed
+// (low luma variance), red otherwise, grey until the first stat arrives.
+const roiBoxStyle = (
+  roi: {x: number; y: number; w: number; h: number},
+  color: string,
+): ViewStyle => ({
+  position: 'absolute',
+  left: `${roi.x * 100}%`,
+  top: `${roi.y * 100}%`,
+  width: `${roi.w * 100}%`,
+  height: `${roi.h * 100}%`,
+  borderWidth: 3,
+  borderColor: color,
+});
 
 // Sanity-check a decoded soil colour (see earlier notes): flag all-black,
 // all-white/saturated, or channels-all-equal (grey) — applied to the SAMPLE
@@ -109,6 +129,18 @@ function AndroidRawColorTest() {
   const [shotCount, setShotCount] = useState(0);
   const [lastStatus, setLastStatus] = useState('');
   const autoRef = useRef(false);
+
+  // Live framing analysis: the injected analyzer emits per-ROI luma stats; we
+  // draw the overlay (red/green per ROI) from them. Created once.
+  const [quality, setQuality] = useState<RoiStats[]>([]);
+  const analyzer = useMemo(
+    () =>
+      createRoiAnalyzer({
+        rois: [DISPLAY_REF_ROI, DISPLAY_SAMPLE_ROI],
+        onStats: setQuality,
+      }) ?? undefined,
+    [],
+  );
 
   // Decode both ROIs (fractional — the camera maps to pixels internally),
   // white-balance, and alert. Shows the "Analyzing…" overlay during decode.
@@ -211,10 +243,28 @@ function AndroidRawColorTest() {
         <RawColorCamera
           ref={camRef}
           active={isFocused}
-          request={{raw: true, jpeg: 'always'}}
+          request={{raw: true, jpeg: 'always', analyze: analyzer}}
           style={StyleSheet.absoluteFill}
-          onError={e => console.warn('RawColorCamera error:', e)}
-        />
+          onError={e => console.warn('RawColorCamera error:', e)}>
+          {/* Live ROI overlay, drawn from the analyzer's onStats. Approx
+              alignment over the FILL_CENTER preview — enough to see the
+              red/green framing feedback update live. */}
+          {[DISPLAY_REF_ROI, DISPLAY_SAMPLE_ROI].map((roi, i) => {
+            const stat = quality.find(s => s.roi === i);
+            const color = stat
+              ? stat.variance < 500
+                ? '#22ee22'
+                : '#ee2222'
+              : 'rgba(255,255,255,0.5)';
+            return (
+              <View
+                key={i}
+                pointerEvents="none"
+                style={roiBoxStyle(roi, color)}
+              />
+            );
+          })}
+        </RawColorCamera>
         {autoRunning && (
           <SafeAreaView style={styles.statusBanner} edges={['top']}>
             <Text style={styles.statusText}>Auto-test · shot {shotCount}</Text>

@@ -140,6 +140,10 @@ namespace margelo::nitro::rawcameraandroid {
     static const auto method = _javaPart->javaClassStatic()->getMethod<void(jni::alias_ref<JHybridFrameAnalyzerSpec::JavaPart> /* analyzer */)>("setAnalyzer");
     method(_javaPart, std::dynamic_pointer_cast<JHybridFrameAnalyzerSpec>(analyzer)->getJavaPart());
   }
+  void JHybridRawCameraAndroidSpec::clearAnalyzer() {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<void()>("clearAnalyzer");
+    method(_javaPart);
+  }
   std::shared_ptr<Promise<std::vector<CapturedPhoto>>> JHybridRawCameraAndroidSpec::captureSession(const CaptureSessionRequest& request) {
     static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<JCaptureSessionRequest> /* request */)>("captureSession");
     auto __result = method(_javaPart, JCaptureSessionRequest::fromCpp(request));

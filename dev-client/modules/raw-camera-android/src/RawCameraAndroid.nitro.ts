@@ -138,13 +138,25 @@ export type CaptureCapabilities = {
   sensorSensitivityMax: number;
 };
 
-// SPIKE (feasibility test for the decoupled-analyzer design): a separate
-// analyzer HybridObject that can be injected into the camera and called from
-// the native frame thread. `probe` is a trivial stand-in that logs its thread
-// and returns width*height — just enough to prove the inject-and-call-off-
-// thread path works before building the real analyzeYPlane analyzer.
+// Fractional ROI (0..1) in the portrait sensor-aspect preview frame.
+export type AnalyzerRoi = {x: number; y: number; w: number; h: number};
+
+// Per-ROI luma stats for live framing feedback — NOT color (color comes from
+// the post-capture RAW decode). `mean` is 0..255; low `variance` = uniform /
+// well-framed. `roi` is the index into the configured ROIs.
+export type RoiLumaStats = {roi: number; mean: number; variance: number};
+
+// Injectable live-frame analyzer. Configured from JS with the ROIs to watch +
+// an onStats sink; the camera pumps each analysis frame into it natively (off
+// the JS thread), it maps its fractional ROIs to the sensor Y-plane, computes
+// luma mean+variance, and emits onStats (throttled) to JS. The per-frame feed
+// is a native-only call from CameraSessionManager (no per-frame JS hop); only
+// configure + the onStats callback cross the JS boundary.
 export interface FrameAnalyzer extends HybridObject<{android: 'kotlin'}> {
-  probe(width: number, height: number): number;
+  configure(
+    rois: AnalyzerRoi[],
+    onStats: (stats: RoiLumaStats[]) => void,
+  ): void;
 }
 
 // Android-only RAW capture API. Companion to the native RawCameraAndroidView
@@ -180,12 +192,12 @@ export interface RawCameraAndroid
   getCaptureCapabilities(): Promise<CaptureCapabilities>;
 
   /**
-   * SPIKE: inject a FrameAnalyzer HybridObject. The camera stores the
-   * reference and calls it from a native background thread (proving the
-   * decoupled-analyzer path). Pass the analyzer created in JS via
-   * NitroModules.createHybridObject('FrameAnalyzer').
+   * Inject the live-frame analyzer. While bound with an analysis stream, the
+   * camera pumps each frame into it (native, off the JS thread). Create via
+   * createRoiAnalyzer() in JS. Call clearAnalyzer() to detach.
    */
   setAnalyzer(analyzer: FrameAnalyzer): void;
+  clearAnalyzer(): void;
 
   /**
    * Research-data-collection shutter: fires N auto-AE burst frames

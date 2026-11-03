@@ -34,10 +34,13 @@ class HybridRawCameraAndroid : HybridRawCameraAndroidSpec() {
         return Promise.async { CameraSessionManager.captureSession(request) }
     }
 
-    // SPIKE: stash the injected analyzer in the shared session so the native
-    // capture path can call it from a background thread (feasibility test for
-    // the decoupled-analyzer design).
+    // Inject the live-frame analyzer; the analysis callback pumps frames into
+    // it off the JS thread. See CameraSessionManager.analyzeFrame.
     override fun setAnalyzer(analyzer: HybridFrameAnalyzerSpec) {
-        CameraSessionManager.spikeAnalyzer = analyzer
+        CameraSessionManager.injectedAnalyzer = analyzer
+    }
+
+    override fun clearAnalyzer() {
+        CameraSessionManager.injectedAnalyzer = null
     }
 }
