@@ -28,6 +28,8 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+import {Directory, File, Paths} from 'expo-file-system';
+
 import {useIsFocused} from '@react-navigation/native';
 
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
@@ -36,6 +38,7 @@ import {
   RawColorCamera,
 } from 'terraso-mobile-client/components/inputs/image/rawColorCamera';
 import type {
+  CaptureRequest,
   LinearRgb,
   RawColorCameraHandle,
   RoiStats,
@@ -119,6 +122,26 @@ export function RawCaptureTestScreen() {
 // ---------------------------------------------------------------------------
 // Android: the new RawColorCamera API.
 
+// Auto stress test: cycle through capture configurations, N shots each,
+// remounting the camera between modes (= reopening the screen, which is what
+// real use does — a fresh session bound for that mode). Every SAVE_EVERY-th
+// shot exercises the persist path (save → verify → delete, so nothing
+// accumulates). Includes a JPEG-only (no-RAW) mode that simulates a device
+// without RAW support (native binds preview+jpeg, captures a JPEG only).
+const SHOTS_PER_MODE = 25;
+const SAVE_EVERY = 100;
+// Wait after a mode remount for the new session to acquire + bind before
+// capturing (mimics a user opening the screen and waiting a beat).
+const REMOUNT_SETTLE_MS = 2000;
+const SHOT_GAP_MS = 400;
+
+type AutoMode = {
+  label: string;
+  request: CaptureRequest;
+  /** Whether to decode the SAMPLE ROI (requires a RAW/DNG). */
+  decode: boolean;
+};
+
 function AndroidRawColorTest() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -128,6 +151,8 @@ function AndroidRawColorTest() {
   const [autoRunning, setAutoRunning] = useState(false);
   const [shotCount, setShotCount] = useState(0);
   const [lastStatus, setLastStatus] = useState('');
+  // Which auto mode is mounted right now; also the camera's remount key.
+  const [modeIdx, setModeIdx] = useState(0);
   const autoRef = useRef(false);
 
   // Live framing analysis: the injected analyzer emits per-ROI luma stats; we
@@ -141,6 +166,49 @@ function AndroidRawColorTest() {
       }) ?? undefined,
     [],
   );
+
+  // The capture configurations the Auto stress test rotates through. Each is
+  // bound by remounting the camera (reopen semantics), so this exercises the
+  // full bind + capture path per mode, not just a capture() option.
+  const autoModes = useMemo<AutoMode[]>(
+    () => [
+      {
+        label: 'RAW+JPEG +analysis',
+        request: {raw: true, jpeg: 'always', analyze: analyzer},
+        decode: true,
+      },
+      {
+        label: 'RAW only +analysis',
+        request: {raw: true, jpeg: 'never', analyze: analyzer},
+        decode: true,
+      },
+      {
+        label: 'RAW+JPEG no-analysis',
+        request: {raw: true, jpeg: 'always'},
+        decode: true,
+      },
+      {
+        // Simulates a phone that can't do RAW: binds preview+jpeg(+analysis),
+        // captures a JPEG only (no DNG → nothing to decode).
+        label: 'JPEG only (no RAW)',
+        request: {raw: false, jpeg: 'always', analyze: analyzer},
+        decode: false,
+      },
+    ],
+    [analyzer],
+  );
+
+  // Managed cache subdir for the periodic save test (created lazily, files
+  // deleted right after each save so it never accumulates).
+  const saveDir = useMemo(() => {
+    const d = new Directory(Paths.cache, 'rawAutoSaveTest');
+    try {
+      d.create({idempotent: true});
+    } catch {
+      // already exists / best effort
+    }
+    return d;
+  }, []);
 
   // Decode both ROIs (fractional — the camera maps to pixels internally),
   // white-balance, and alert. Shows the "Analyzing…" overlay during decode.
@@ -194,42 +262,80 @@ function AndroidRawColorTest() {
     autoRef.current = true;
     setAutoRunning(true);
     setShotCount(0);
+    setModeIdx(0);
     setLastStatus('starting…');
+    const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+    // Exercise the persist path without accumulating: copy out, confirm the
+    // files landed, delete them.
+    const saveAndDelete = async (
+      cap: Awaited<ReturnType<RawColorCameraHandle['capture']>>,
+    ): Promise<string> => {
+      const written = await cap.save({dir: saveDir.uri});
+      const uris = [written.dngUri, written.jpegUri].filter(
+        (u): u is string => !!u,
+      );
+      let bytes = 0;
+      for (const uri of uris) {
+        try {
+          const file = new File(uri);
+          bytes += file.size ?? 0;
+          file.delete();
+        } catch {
+          // best effort
+        }
+      }
+      return ` · saved+deleted ${uris.length} file(s), ${bytes}B`;
+    };
     let susp = 0;
     let fail = 0;
+    let global = 0;
     (async () => {
-      let i = 0;
+      let m = 0;
       while (autoRef.current) {
-        const cam = camRef.current;
-        if (!cam) {
-          break;
-        }
-        let status: string;
-        try {
-          const cap = await cam.capture();
-          try {
-            const [sample] = await cap.decodeRois([DISPLAY_SAMPLE_ROI]);
-            const v = checkSampleColor(sample);
-            if (!v.ok) susp += 1;
-            status =
-              `${v.ok ? '✓' : '⚠'} shot ${i}: ` +
-              `r${f(sample.r)} g${f(sample.g)} b${f(sample.b)}` +
-              `${v.ok ? '' : ` — ${v.note}`}`;
-          } finally {
-            cap.dispose();
+        const mode = autoModes[m % autoModes.length];
+        setModeIdx(m % autoModes.length);
+        setLastStatus(`→ mode: ${mode.label} (remounting…)`);
+        await sleep(REMOUNT_SETTLE_MS); // let the fresh session bind
+        for (let s = 0; s < SHOTS_PER_MODE && autoRef.current; s += 1) {
+          const cam = camRef.current;
+          if (!cam) {
+            await sleep(300); // remount not ready yet; retry
+            continue;
           }
-        } catch (err) {
-          fail += 1;
-          status = `✗ shot ${i}: ${String(err)}`;
+          global += 1;
+          let status: string;
+          try {
+            const cap = await cam.capture();
+            try {
+              const saveNote =
+                global % SAVE_EVERY === 0 ? await saveAndDelete(cap) : '';
+              if (mode.decode) {
+                const [sample] = await cap.decodeRois([DISPLAY_SAMPLE_ROI]);
+                const v = checkSampleColor(sample);
+                if (!v.ok) susp += 1;
+                status =
+                  `${v.ok ? '✓' : '⚠'} ${mode.label} #${global}: ` +
+                  `r${f(sample.r)} g${f(sample.g)} b${f(sample.b)}` +
+                  `${v.ok ? '' : ` — ${v.note}`}${saveNote}`;
+              } else {
+                status = `✓ ${mode.label} #${global}: captured${saveNote}`;
+              }
+            } finally {
+              cap.dispose();
+            }
+          } catch (err) {
+            fail += 1;
+            status = `✗ ${mode.label} #${global}: ${String(err)}`;
+          }
+          setShotCount(global);
+          setLastStatus(`${status}  (susp ${susp}, fail ${fail} / ${global})`);
+          if (!autoRef.current) break;
+          await sleep(SHOT_GAP_MS);
         }
-        i += 1;
-        setShotCount(i);
-        setLastStatus(`${status}  (susp ${susp}, fail ${fail} / ${i})`);
-        if (!autoRef.current) break;
-        await new Promise<void>(r => setTimeout(r, 400));
+        m += 1;
       }
     })().catch(() => {});
-  }, []);
+  }, [autoModes, saveDir]);
 
   const cancel = useCallback(() => {
     stopAuto();
@@ -237,13 +343,20 @@ function AndroidRawColorTest() {
   }, [stopAuto, navigation]);
 
   const shutterDisabled = analyzing || autoRunning;
+  // While Auto runs, the request (and key) follow the current mode so the
+  // camera remounts per mode. Idle/manual framing uses the full analysis bind.
+  const activeRequest: CaptureRequest = autoRunning
+    ? autoModes[modeIdx].request
+    : {raw: true, jpeg: 'always', analyze: analyzer};
+  const camKey = autoRunning ? `auto-${modeIdx}` : 'manual';
   return (
     <ScreenScaffold AppBar={<AppBar title="RAW capture (new API)" />}>
       <View style={styles.fill}>
         <RawColorCamera
+          key={camKey}
           ref={camRef}
           active={isFocused}
-          request={{raw: true, jpeg: 'always', analyze: analyzer}}
+          request={activeRequest}
           style={StyleSheet.absoluteFill}
           onError={e => console.warn('RawColorCamera error:', e)}>
           {/* Live ROI overlay, drawn from the analyzer's onStats. Approx
@@ -267,7 +380,9 @@ function AndroidRawColorTest() {
         </RawColorCamera>
         {autoRunning && (
           <SafeAreaView style={styles.statusBanner} edges={['top']}>
-            <Text style={styles.statusText}>Auto-test · shot {shotCount}</Text>
+            <Text style={styles.statusText}>
+              Auto-test · {autoModes[modeIdx]?.label} · shot {shotCount}
+            </Text>
             <Text style={styles.statusText} numberOfLines={2}>
               {lastStatus}
             </Text>
