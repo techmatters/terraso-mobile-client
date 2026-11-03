@@ -29,23 +29,45 @@ import {File} from 'expo-file-system';
 import {deleteAsync} from 'expo-file-system/legacy';
 
 import {DngDecoderHybrid} from 'dng-decoder';
-import {RawCameraAndroidHybrid, RawCameraAndroidView} from 'raw-camera-android';
+import {
+  createRoiAnalyzer as createNativeRoiAnalyzer,
+  RawCameraAndroidHybrid,
+  RawCameraAndroidView,
+  type FrameAnalyzer as NativeFrameAnalyzer,
+} from 'raw-camera-android';
 
 import type {
   Capture,
+  FrameAnalyzer,
   LinearRgb,
   RawColorCameraHandle,
   RawColorCameraProps,
   Roi,
+  RoiAnalyzerConfig,
   SaveOptions,
 } from 'terraso-mobile-client/components/inputs/image/rawColorCamera.types';
 
-// Slice 2: the reusable RAW color camera, implemented on the proven Android
-// capture engine (raw-camera-android). It is intentionally HEADLESS — preview
-// + overlay children only; the host supplies the shutter UI and calls
-// capture() via ref. The iOS engine, the native preview+analysis->raw+jpeg
-// switch, and the injected-analyzer live feed land in later slices; until then
-// request.analyze is accepted but not yet wired, and iOS renders a placeholder.
+/**
+ * Create the injectable live-frame analyzer (the app passes the result as
+ * request.analyze). The analyzer owns its ROIs + emits per-ROI luma stats via
+ * onStats while framing; draw your overlay from those. Returns null off
+ * Android (iOS analyzer is a later slice).
+ */
+export const createRoiAnalyzer = (
+  cfg: RoiAnalyzerConfig,
+): FrameAnalyzer | null =>
+  createNativeRoiAnalyzer(
+    cfg.rois,
+    cfg.onStats,
+  ) as unknown as FrameAnalyzer | null;
+
+// The reusable RAW color camera, on the proven Android capture engine
+// (raw-camera-android). Intentionally HEADLESS — preview + overlay children
+// only; the host supplies the shutter UI and calls capture() via ref.
+// request.analyze (Slice 3a) binds preview+raw+analysis and injects the live
+// analyzer (RAW-only capture while analyzing). Still to come: the native
+// preview+analysis->raw+jpeg shutter switch (3b) and the iOS engine (Slice 4;
+// iOS currently renders a placeholder — the test uses SimpleRawCamera there).
 
 const fileUri = (p: string): string =>
   p.startsWith('file://') ? p : `file://${p}`;
@@ -143,7 +165,24 @@ export const RawColorCamera = forwardRef<
   // preferJpeg governs the native 3-stream fallback: keep JPEG unless the
   // caller never wants it. (The real preview+analysis<->raw+jpeg switch is a
   // later native slice; today the bind is static.)
-  const wantJpeg = request.jpeg !== 'never';
+  // With live analysis we bind preview+raw+analysis (3 streams) — no room for
+  // the JPEG stream too, so RAW-only capture while analyzing (JPEG is cheap +
+  // optional; the raw+jpeg switch is a later slice). Without analysis we keep
+  // the JPEG per the policy.
+  const analyze = request.analyze;
+  const wantJpeg = !analyze && request.jpeg !== 'never';
+
+  // Inject / detach the live analyzer. The camera's analysis callback pumps
+  // frames into it off the JS thread; it emits onStats.
+  useEffect(() => {
+    if (!active || !hasPermission || Platform.OS !== 'android' || !analyze) {
+      return;
+    }
+    RawCameraAndroidHybrid.setAnalyzer(
+      analyze as unknown as NativeFrameAnalyzer,
+    );
+    return () => RawCameraAndroidHybrid.clearAnalyzer();
+  }, [active, hasPermission, analyze]);
 
   // Warm the session + report resolved capabilities once bound.
   useEffect(() => {
@@ -159,7 +198,7 @@ export const RawColorCamera = forwardRef<
             rawAvailable: true,
             willCaptureRaw: request.raw !== false,
             willCaptureJpeg: wantJpeg,
-            analysisActive: false, // analyzer feed lands in a later slice
+            analysisActive: !!analyze,
             switchesAtCapture: false,
           });
         }
@@ -172,7 +211,15 @@ export const RawColorCamera = forwardRef<
     return () => {
       cancelled = true;
     };
-  }, [active, hasPermission, request.raw, wantJpeg, onCapabilities, onError]);
+  }, [
+    active,
+    hasPermission,
+    request.raw,
+    wantJpeg,
+    analyze,
+    onCapabilities,
+    onError,
+  ]);
 
   useImperativeHandle(
     ref,

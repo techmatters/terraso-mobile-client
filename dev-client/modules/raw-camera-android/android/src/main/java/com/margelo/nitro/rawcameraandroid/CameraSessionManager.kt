@@ -168,10 +168,10 @@ object CameraSessionManager {
     // discard-only ImageAnalysis.
     @Volatile private var currentSurfaceProvider: Preview.SurfaceProvider? = null
 
-    // SPIKE: analyzer injected from JS via HybridRawCameraAndroid.setAnalyzer.
-    // The capture path calls it from a background coroutine to prove a Nitro
-    // HybridObject can be passed in and invoked off the JS thread.
-    @Volatile var spikeAnalyzer: HybridFrameAnalyzerSpec? = null
+    // Injected live-frame analyzer (via HybridRawCameraAndroid.setAnalyzer).
+    // The analysis callback (analyzeFrame) pumps each frame into it off the JS
+    // thread. Cast to the impl for the native-only onFrameNative feed.
+    @Volatile var injectedAnalyzer: HybridFrameAnalyzerSpec? = null
 
     // Phase-8 real-time overlay callback. Called on the
     // analysisExecutor thread (background). The view is responsible
@@ -253,30 +253,17 @@ object CameraSessionManager {
     // so the next call starts from a known baseline — see resetCameraStateLocked.
     suspend fun capture(options: CaptureOptions): CapturedPhoto =
         mutex.withLock {
-            val photo =
-                captureLocked(
-                    options,
-                    burstStamp = null,
-                    burstIdx = 0,
-                    burstTotal = 0,
-                    sessionSubdir = null,
-                    sessionSeq = 0,
-                    sessionTotal = 0,
-                    deviceSlug = deviceSlug(),
-                    contextTokens = emptyList(),
-                ).photo
-            // SPIKE: call the injected Nitro analyzer from this background
-            // coroutine. A non-null, correct result logged off the JS thread
-            // proves the inject-and-call-off-thread path.
-            spikeAnalyzer?.let {
-                val r = it.probe(photo.width, photo.height)
-                Log.i(
-                    TAG,
-                    "spike: injected analyzer.probe(${photo.width},${photo.height})=$r " +
-                        "from thread=${Thread.currentThread().name}",
-                )
-            }
-            photo
+            captureLocked(
+                options,
+                burstStamp = null,
+                burstIdx = 0,
+                burstTotal = 0,
+                sessionSubdir = null,
+                sessionSeq = 0,
+                sessionTotal = 0,
+                deviceSlug = deviceSlug(),
+                contextTokens = emptyList(),
+            ).photo
         }
 
     // Capture N frames in rapid succession with AE + AWB locked so all
@@ -1911,31 +1898,41 @@ object CameraSessionManager {
     // still fires but we don't waste JNI + native cycles on a frame
     // no one will look at.
     private fun analyzeFrame(proxy: ImageProxy) {
-        val listener = frameColorListener ?: return
+        val listener = frameColorListener
+        val analyzer = injectedAnalyzer as? HybridFrameAnalyzer
+        // Skip entirely when nobody's looking (native overlay OR injected
+        // analyzer) — the repeating request still fires, we just don't burn
+        // JNI cycles on a frame no one will use.
+        if (listener == null && analyzer == null) return
         if (proxy.format != ImageFormat.YUV_420_888) return
         val yPlane = proxy.planes[0]
         val w = proxy.width
         val h = proxy.height
 
-        // JS-driven display-space ROIs, rotated to sensor-space for the
-        // Y-plane read. Pixel 6a/7 rear cam is landscape 4:3 with
-        // rotationDegrees=90 (portrait-up display), which maps a display
-        // rect (dx, dy, dw, dh) to a sensor rect (dy, dx, dh, dw) —
-        // simple axis swap, no mirroring. If we ever expose a front-cam
-        // path we'll need to branch on the orientation here.
-        val ref = analyzerRefRoi
-        val refCode = analyzeRoiToCode(
-            yPlane, w, h,
-            (ref[1] * w).toInt(), (ref[0] * h).toInt(),
-            (ref[3] * w).toInt(), (ref[2] * h).toInt(),
-        )
-        val sample = analyzerSampleRoi
-        val sampleCode = analyzeRoiToCode(
-            yPlane, w, h,
-            (sample[1] * w).toInt(), (sample[0] * h).toInt(),
-            (sample[3] * w).toInt(), (sample[2] * h).toInt(),
-        )
-        listener(refCode, sampleCode)
+        // Legacy native-overlay path (RoiOverlayView). JS-driven display-space
+        // ROIs, rotated to sensor-space for the Y-plane read. Pixel 6a/7 rear
+        // cam is landscape 4:3 with rotationDegrees=90 (portrait-up display),
+        // which maps a display rect (dx, dy, dw, dh) to a sensor rect
+        // (dy, dx, dh, dw) — simple axis swap, no mirroring.
+        if (listener != null) {
+            val ref = analyzerRefRoi
+            val refCode = analyzeRoiToCode(
+                yPlane, w, h,
+                (ref[1] * w).toInt(), (ref[0] * h).toInt(),
+                (ref[3] * w).toInt(), (ref[2] * h).toInt(),
+            )
+            val sample = analyzerSampleRoi
+            val sampleCode = analyzeRoiToCode(
+                yPlane, w, h,
+                (sample[1] * w).toInt(), (sample[0] * h).toInt(),
+                (sample[3] * w).toInt(), (sample[2] * h).toInt(),
+            )
+            listener(refCode, sampleCode)
+        }
+
+        // Injected-analyzer path (RawColorCamera): the analyzer owns its ROIs
+        // + the same axis-swap mapping and emits onStats to JS.
+        analyzer?.onFrameNative(yPlane.buffer, yPlane.rowStride, w, h)
     }
 
     private fun analyzeRoiToCode(

@@ -13,9 +13,15 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
+// Forward declaration of `AnalyzerRoi` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct AnalyzerRoi; }
+// Forward declaration of `RoiLumaStats` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { struct RoiLumaStats; }
 
-
-
+#include "AnalyzerRoi.hpp"
+#include <vector>
+#include "RoiLumaStats.hpp"
+#include <functional>
 
 namespace margelo::nitro::rawcameraandroid {
 
@@ -48,7 +54,7 @@ namespace margelo::nitro::rawcameraandroid {
 
     public:
       // Methods
-      virtual double probe(double width, double height) = 0;
+      virtual void configure(const std::vector<AnalyzerRoi>& rois, const std::function<void(const std::vector<RoiLumaStats>& /* stats */)>& onStats) = 0;
 
     protected:
       // Hybrid Setup

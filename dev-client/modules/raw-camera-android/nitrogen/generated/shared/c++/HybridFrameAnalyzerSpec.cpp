@@ -14,7 +14,7 @@ namespace margelo::nitro::rawcameraandroid {
     HybridObject::loadHybridMethods();
     // load custom methods/properties
     registerHybrids(this, [](Prototype& prototype) {
-      prototype.registerHybridMethod("probe", &HybridFrameAnalyzerSpec::probe);
+      prototype.registerHybridMethod("configure", &HybridFrameAnalyzerSpec::configure);
     });
   }
 

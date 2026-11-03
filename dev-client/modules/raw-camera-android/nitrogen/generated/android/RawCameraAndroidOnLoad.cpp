@@ -16,6 +16,7 @@
 #include <NitroModules/HybridObjectRegistry.hpp>
 
 #include "JHybridFrameAnalyzerSpec.hpp"
+#include "JFunc_void_std__vector_RoiLumaStats_.hpp"
 #include "JHybridRawCameraAndroidSpec.hpp"
 #include "JFunc_void_double_double.hpp"
 #include <NitroModules/DefaultConstructableObject.hpp>
@@ -51,6 +52,7 @@ void registerAllNatives() {
 
   // Register native JNI methods
   margelo::nitro::rawcameraandroid::JHybridFrameAnalyzerSpec::CxxPart::registerNatives();
+  margelo::nitro::rawcameraandroid::JFunc_void_std__vector_RoiLumaStats__cxx::registerNatives();
   margelo::nitro::rawcameraandroid::JHybridRawCameraAndroidSpec::CxxPart::registerNatives();
   margelo::nitro::rawcameraandroid::JFunc_void_double_double_cxx::registerNatives();
 

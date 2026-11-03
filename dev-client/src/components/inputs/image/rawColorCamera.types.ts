@@ -42,14 +42,17 @@ export type Roi = {x: number; y: number; w: number; h: number};
 /** Linear (pre-gamma) RGB, ~0..1. */
 export type LinearRgb = {r: number; g: number; b: number};
 
-/** Per-ROI live stats emitted by an analyzer while framing. */
+/**
+ * Per-ROI live stats emitted by an analyzer while framing. These are
+ * Y-plane (luma) stats — a *framing-quality* signal, NOT color. The
+ * authoritative color is always the post-capture RAW decode (decodeRois).
+ */
 export type RoiStats = {
   /** Index into the analyzer's configured ROIs. */
   roi: number;
-  /** Per-channel mean over the ROI, in the preview color space (approximate;
-   * the authoritative color is the post-capture RAW decode). */
-  mean: LinearRgb;
-  /** Luma variance — a framing-quality proxy (low = uniform/well-framed). */
+  /** Mean luma over the ROI (0..255). */
+  mean: number;
+  /** Luma variance — low = uniform/well-framed (drives red/green feedback). */
   variance: number;
 };
 
