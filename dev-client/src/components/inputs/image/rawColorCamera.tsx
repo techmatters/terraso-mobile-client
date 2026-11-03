@@ -97,23 +97,32 @@ const roiToPixels = (roi: Roi, width: number, height: number) => {
  * so the single parse disappears too.
  */
 const makeCapture = (
-  dngUri: string,
+  dngUri: string | undefined,
   jpegUri: string | undefined,
   width: number,
   height: number,
 ): Capture => ({
   width,
   height,
-  hasRaw: true,
+  hasRaw: dngUri != null,
   hasJpeg: jpegUri != null,
-  decodeRois: async (rois: Roi[]): Promise<LinearRgb[]> =>
+  decodeRois: async (rois: Roi[]): Promise<LinearRgb[]> => {
+    if (!dngUri) {
+      throw new Error(
+        'decodeRois: this capture has no RAW/DNG (jpeg-only) — nothing to decode',
+      );
+    }
     // One parse, all ROIs. NOTE: decodeDngRois is synchronous native (blocks
     // the JS thread); off-thread decode is a later slice.
-    DngDecoderHybrid.decodeDngRois(
+    return DngDecoderHybrid.decodeDngRois(
       dngUri,
       rois.map(r => roiToPixels(r, width, height)),
-    ),
+    );
+  },
   renderPreview: async maxDim => {
+    if (!dngUri) {
+      throw new Error('renderPreview: this capture has no RAW/DNG (jpeg-only)');
+    }
     const p = await DngDecoderHybrid.renderPreview(dngUri, maxDim);
     return {uri: p.uri, width: p.width, height: p.height};
   },
@@ -131,7 +140,7 @@ const makeCapture = (
       new File(srcUri).copy(dest);
       return dest.uri;
     };
-    if (opts?.dng !== false) {
+    if (dngUri && opts?.dng !== false) {
       result.dngUri = copyInto(dngUri);
     }
     if (jpegUri && opts?.jpeg !== false) {
@@ -140,7 +149,9 @@ const makeCapture = (
     return result;
   },
   dispose: () => {
-    deleteAsync(dngUri, {idempotent: true}).catch(() => {});
+    if (dngUri) {
+      deleteAsync(dngUri, {idempotent: true}).catch(() => {});
+    }
     if (jpegUri) {
       deleteAsync(jpegUri, {idempotent: true}).catch(() => {});
     }
@@ -163,9 +174,12 @@ export const RawColorCamera = forwardRef<
   }, [active, hasPermission, requestPermission, onError]);
 
   const analyze = request.analyze;
+  // No-RAW simulation: bind preview+jpeg(+analysis), capture a JPEG only.
+  const rawless = request.raw === false;
   // FRAMING bind: with an analyzer we bind preview+raw+analysis (3-stream cap,
   // no room for JPEG too); without one we keep JPEG per policy
-  // (preview+raw+jpeg). Drives the native view's preferJpeg.
+  // (preview+raw+jpeg). Drives the native view's preferJpeg. (Ignored in
+  // rawless mode — that path has no RAW stream to trade against.)
   const framingPreferJpeg = !analyze && request.jpeg !== 'never';
   // CAPTURE: want the JPEG unless policy is 'never' — even while analysis is
   // bound, the native side does a shutter switch (3b) to grab RAW+JPEG and
@@ -196,10 +210,10 @@ export const RawColorCamera = forwardRef<
         if (!cancelled) {
           onCapabilities?.({
             rawAvailable: true,
-            willCaptureRaw: request.raw !== false,
-            willCaptureJpeg: captureWantsJpeg,
+            willCaptureRaw: !rawless,
+            willCaptureJpeg: rawless || captureWantsJpeg,
             analysisActive: !!analyze,
-            switchesAtCapture: !!analyze && captureWantsJpeg,
+            switchesAtCapture: !rawless && !!analyze && captureWantsJpeg,
           });
         }
       } catch (err) {
@@ -214,7 +228,7 @@ export const RawColorCamera = forwardRef<
   }, [
     active,
     hasPermission,
-    request.raw,
+    rawless,
     captureWantsJpeg,
     analyze,
     onCapabilities,
@@ -231,8 +245,9 @@ export const RawColorCamera = forwardRef<
         // Sensor is read out + files are on disk → safe to move. (A later
         // slice fires this at the exact sensor-done instant natively.)
         opts?.onCaptured?.();
+        // rawless (no-RAW) captures return an empty dngPath → jpeg-only.
         return makeCapture(
-          fileUri(photo.dngPath),
+          photo.dngPath ? fileUri(photo.dngPath) : undefined,
           photo.jpegPath ? fileUri(photo.jpegPath) : undefined,
           photo.width,
           photo.height,
@@ -261,9 +276,10 @@ export const RawColorCamera = forwardRef<
         style={StyleSheet.absoluteFill}
         showRoiOverlay={false}
         preferJpeg={framingPreferJpeg}
+        rawless={rawless}
       />
     );
-  }, [active, hasPermission, framingPreferJpeg]);
+  }, [active, hasPermission, framingPreferJpeg, rawless]);
 
   return (
     <View style={[styles.fill, style]}>

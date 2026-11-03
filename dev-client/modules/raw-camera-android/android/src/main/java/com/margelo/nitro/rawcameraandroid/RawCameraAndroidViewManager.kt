@@ -79,6 +79,13 @@ class RawCameraAndroidViewManager : SimpleViewManager<RawCameraAndroidView>() {
         view.setPreferJpegOverAnalysis(prefer)
     }
 
+    // When true, bind WITHOUT the RAW stream (preview + jpeg [+ analysis])
+    // and capture a JPEG only — simulates a device that can't do RAW.
+    @ReactProp(name = "rawless", defaultBoolean = false)
+    fun setRawless(view: RawCameraAndroidView, rawless: Boolean) {
+        view.setRawless(rawless)
+    }
+
     // Per-view accumulator: view instance → [refXYWH, sampleXYWH].
     // WeakHashMap so a destroyed view doesn't leak. Every prop write
     // updates one slot and re-pushes the current tuple.

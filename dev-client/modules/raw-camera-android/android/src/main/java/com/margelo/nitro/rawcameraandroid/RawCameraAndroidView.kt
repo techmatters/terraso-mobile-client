@@ -268,6 +268,13 @@ constructor(
         CameraSessionManager.setPreferJpegOverAnalysis(prefer)
     }
 
+    // Prop forwarder for the `rawless` view manager prop. Like preferJpeg,
+    // applied BEFORE onAttachedToWindow's bind so ensureBoundLocked picks the
+    // no-RAW (preview + jpeg) path. See CameraSessionManager.setRawlessMode.
+    fun setRawless(rawless: Boolean) {
+        CameraSessionManager.setRawlessMode(rawless)
+    }
+
     companion object {
         private const val TAG = "RawCameraAndroid.View"
     }

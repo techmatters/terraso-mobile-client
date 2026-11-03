@@ -157,6 +157,24 @@ object CameraSessionManager {
     fun setPreferJpegOverAnalysis(prefer: Boolean) {
         preferJpegOverAnalysis = prefer
     }
+
+    // When true, the session binds WITHOUT the RAW ImageCapture —
+    // preview + JPEG (+ analysis), and capture() produces a JPEG only
+    // (no DNG). Simulates a device that can't do RAW so the non-RAW
+    // app path can be exercised on RAW-capable hardware. Set via the
+    // view manager prop `rawless` on RawCameraAndroidView (applied
+    // before onAttachedToWindow's bind, so ensureBoundLocked sees it).
+    @Volatile private var rawlessMode: Boolean = false
+    // True when the currently-bound session is a rawless (no-RAW) one,
+    // so ensureRawlessBoundLocked can short-circuit on cache hits.
+    private var boundRawlessActive: Boolean = false
+
+    fun setRawlessMode(rawless: Boolean) {
+        if (rawlessMode != rawless) {
+            Log.i(TAG, "setRawlessMode: $rawless")
+        }
+        rawlessMode = rawless
+    }
     private var boundPreview: Preview? = null
     private var boundAnalysis: ImageAnalysis? = null
     private var boundCharacteristics: CameraCharacteristics? = null
@@ -253,6 +271,12 @@ object CameraSessionManager {
     // so the next call starts from a known baseline — see resetCameraStateLocked.
     suspend fun capture(options: CaptureOptions): CapturedPhoto =
         mutex.withLock {
+            // No-RAW simulation: when rawlessMode is set the session is bound
+            // preview+jpeg(+analysis) with no RAW stream, so produce a JPEG
+            // only (no DNG, no DngCreator, no TotalCaptureResult wait).
+            if (rawlessMode) {
+                return@withLock captureJpegOnlyLocked(options)
+            }
             // raw+jpeg shutter switch (slice 3b): if the caller wants the JPEG
             // but we're bound for live analysis (preview+raw+analysis, no jpeg
             // stream), reconfigure to preview+raw+jpeg for the shot, then
@@ -608,7 +632,15 @@ object CameraSessionManager {
             "captureLocked: entered opts=$options burst=$burstIdx/$burstTotal session=$sessionSubdir",
         )
         requireCameraPermission()
-        val (imageCapture, jpegCapture, characteristics) = ensureBoundLocked()
+        val bound = ensureBoundLocked()
+        // captureLocked is the RAW path; capture() routes rawless sessions to
+        // captureJpegOnlyLocked before reaching here, so rawCapture is present.
+        val imageCapture = bound.rawCapture
+            ?: throw IllegalStateException(
+                "captureLocked reached with no RAW capture bound (rawless session?)"
+            )
+        val jpegCapture = bound.jpegCapture
+        val characteristics = bound.characteristics
 
         val evStep = characteristics.get(
             CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP
@@ -1036,12 +1068,16 @@ object CameraSessionManager {
     }
 
     private data class BoundSession(
-        val rawCapture: ImageCapture,
+        // Null in rawless (no-RAW simulation) sessions — see rawlessMode.
+        val rawCapture: ImageCapture?,
         val jpegCapture: ImageCapture,
         val characteristics: CameraCharacteristics,
     )
 
     private suspend fun ensureBoundLocked(): BoundSession {
+        if (rawlessMode) {
+            return ensureRawlessBoundLocked()
+        }
         boundImageCapture?.let { ic ->
             boundJpegCapture?.let { jc ->
                 boundCharacteristics?.let { chars ->
@@ -1305,7 +1341,160 @@ object CameraSessionManager {
         boundPreview = preview
         boundAnalysis = if (analysisWasBound) analysis else null
         boundCharacteristics = characteristics
+        boundRawlessActive = false
         return BoundSession(imageCapture, jpegCapture, characteristics)
+    }
+
+    // No-RAW (rawless) session: binds preview + JPEG (+ analysis) with NO
+    // RAW_SENSOR stream — the companion to ensureBoundLocked that simulates a
+    // device without RAW capability. capture() routes here via
+    // captureJpegOnlyLocked when rawlessMode is set. Mirrors the preview /
+    // analysis construction of the RAW path (same WYSIWYG + ViewPort) minus
+    // the RAW ImageCapture and the RAW-capability requirement.
+    private suspend fun ensureRawlessBoundLocked(): BoundSession {
+        if (boundRawlessActive) {
+            boundJpegCapture?.let { jc ->
+                boundCharacteristics?.let { chars ->
+                    return BoundSession(null, jc, chars)
+                }
+            }
+        }
+        Log.i(TAG, "ensureBound(rawless): initializing JPEG-only session…")
+
+        val jpegBuilder = ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+        val jpegCapture = jpegBuilder.build()
+
+        val surface = currentSurfaceProvider
+        val preview: Preview? =
+            if (surface != null) {
+                val previewBuilder = Preview.Builder()
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                applyWysiwygRequestOptions(Camera2Interop.Extender(previewBuilder))
+                previewBuilder.build().also { p ->
+                    withContext(Dispatchers.Main) { p.setSurfaceProvider(surface) }
+                }
+            } else {
+                null
+            }
+        val analysisBuilder = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+        applyWysiwygRequestOptions(Camera2Interop.Extender(analysisBuilder))
+        val analysis: ImageAnalysis =
+            analysisBuilder.build().also { a ->
+                a.setAnalyzer(analysisExecutor) { proxy ->
+                    try {
+                        analyzeFrame(proxy)
+                    } finally {
+                        proxy.close()
+                    }
+                }
+            }
+
+        val viewPort = ViewPort.Builder(Rational(3, 4), Surface.ROTATION_0)
+            .setScaleType(ViewPort.FILL_CENTER)
+            .build()
+        val buildGroup = { includeAnalysis: Boolean ->
+            val b = UseCaseGroup.Builder().setViewPort(viewPort)
+            b.addUseCase(jpegCapture)
+            if (includeAnalysis) b.addUseCase(analysis)
+            if (preview != null) b.addUseCase(preview)
+            b.build()
+        }
+        // preview + jpeg (+ analysis). No RAW, so no 3-stream constraint —
+        // analysis can ride alongside. Drop analysis if even that fails.
+        val attempts =
+            if (preview != null) {
+                listOf(
+                    Pair(true, "rawless 3-stream (preview + jpeg + analysis)"),
+                    Pair(false, "rawless 2-stream (preview + jpeg)"),
+                )
+            } else {
+                listOf(Pair(true, "rawless headless (jpeg + analysis)"))
+            }
+        var boundCombo: Pair<Boolean, String>? = null
+        val camera =
+            withContext(Dispatchers.Main) {
+                var lastError: IllegalArgumentException? = null
+                for (a in attempts) {
+                    try {
+                        val c = provider.bindToLifecycle(
+                            ProcessLifecycleOwner.get(),
+                            CameraSelector.DEFAULT_BACK_CAMERA,
+                            buildGroup(a.first),
+                        )
+                        Log.i(TAG, "ensureBound(rawless): bound ${a.second}")
+                        boundCombo = a
+                        return@withContext c
+                    } catch (e: IllegalArgumentException) {
+                        Log.w(TAG, "ensureBound(rawless): ${a.second} failed", e)
+                        lastError = e
+                    }
+                }
+                throw lastError ?: IllegalStateException("no viable rawless bind")
+            }
+        val cameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
+        val characteristics = fetchCharacteristics(cameraInfo)
+
+        boundCamera = camera
+        boundImageCapture = null
+        boundJpegCapture = jpegCapture
+        boundPreview = preview
+        boundAnalysis = if (boundCombo?.first == true) analysis else null
+        boundCharacteristics = characteristics
+        jpegBound = true
+        boundRawlessActive = true
+        return BoundSession(null, jpegCapture, characteristics)
+    }
+
+    // JPEG-only capture for rawless sessions: a single JPEG takePicture to the
+    // app cache, no RAW/DNG. Returns a CapturedPhoto with an empty dngPath so
+    // the JS side resolves hasRaw=false (the non-RAW app path).
+    private suspend fun captureJpegOnlyLocked(options: CaptureOptions): CapturedPhoto {
+        requireCameraPermission()
+        val bound = ensureBoundLocked() // rawlessMode → ensureRawlessBoundLocked
+        val jpegCapture = bound.jpegCapture
+        val characteristics = bound.characteristics
+        applyCaptureOptionsLocked(
+            clampOptions(options, characteristics),
+            lockAeAwbForBurst = false,
+        )
+        val stem = timestampNowCompact()
+        val jpegFile = File(context.cacheDir, "RawCameraAndroid_${stem}_jpegonly.jpg")
+        val jpegOptions = ImageCapture.OutputFileOptions.Builder(jpegFile).build()
+        val executor = ContextCompat.getMainExecutor(context)
+        try {
+            val startMs = SystemClock.elapsedRealtime()
+            withTimeout(TAKE_PICTURE_TIMEOUT_MS) {
+                withContext(Dispatchers.Main) {
+                    takePictureWithOptionsSuspending(jpegCapture, jpegOptions, executor)
+                }
+            }
+            val opts = android.graphics.BitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+            }
+            android.graphics.BitmapFactory.decodeFile(jpegFile.absolutePath, opts)
+            Log.i(
+                TAG,
+                "captureJpegOnly: wrote ${jpegFile.name} " +
+                    "size=${jpegFile.length()} ${opts.outWidth}x${opts.outHeight} " +
+                    "jpeg=${SystemClock.elapsedRealtime() - startMs}ms",
+            )
+            return CapturedPhoto(
+                dngPath = "",
+                jpegPath = "file://${jpegFile.absolutePath}",
+                width = opts.outWidth.toDouble(),
+                height = opts.outHeight.toDouble(),
+            )
+        } finally {
+            resetCameraStateLocked()
+            if (currentSurfaceProvider == null) {
+                Log.i(TAG, "captureJpegOnly: no attached view, releasing session")
+                unbindAllLocked()
+            }
+        }
     }
 
     // Must be called with mutex held.
@@ -1325,6 +1514,7 @@ object CameraSessionManager {
         boundAnalysis = null
         boundCharacteristics = null
         jpegBound = false
+        boundRawlessActive = false
     }
 
     private fun fetchCharacteristics(camera2Info: Camera2CameraInfo): CameraCharacteristics {

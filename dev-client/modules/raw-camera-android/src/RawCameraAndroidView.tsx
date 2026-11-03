@@ -40,6 +40,11 @@ export type RawCameraAndroidViewProps = ViewProps & {
   // 'raw+evenness' capture mode. Only matters on devices where the
   // 4-stream (P+R+JPEG+Analysis) bind fails (e.g. Pixel 7).
   preferJpeg?: boolean;
+
+  // When true, bind WITHOUT the RAW stream (preview + jpeg [+ analysis]) and
+  // capture a JPEG only (no DNG) — simulates a device that can't do RAW, so
+  // the non-RAW app path can be exercised on RAW-capable hardware.
+  rawless?: boolean;
 };
 
 const NativeRawCameraAndroidView: ComponentType<RawCameraAndroidViewProps> =
