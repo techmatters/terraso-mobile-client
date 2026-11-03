@@ -33,8 +33,10 @@ target_sources(
   # Autolinking Setup
   ../nitrogen/generated/android/RawCameraAndroidOnLoad.cpp
   # Shared Nitrogen C++ sources
+  ../nitrogen/generated/shared/c++/HybridFrameAnalyzerSpec.cpp
   ../nitrogen/generated/shared/c++/HybridRawCameraAndroidSpec.cpp
   # Android-specific Nitrogen C++ sources
+  ../nitrogen/generated/android/c++/JHybridFrameAnalyzerSpec.cpp
   ../nitrogen/generated/android/c++/JHybridRawCameraAndroidSpec.cpp
 )
 

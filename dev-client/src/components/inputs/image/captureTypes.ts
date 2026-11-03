@@ -62,6 +62,16 @@ export type CaptureResult =
         h: number;
       }): Promise<{r: number; g: number; b: number}>;
       /**
+       * Decode multiple ROIs in a SINGLE pass — the DNG is parsed once and
+       * every ROI is sampled from that one parse, instead of re-parsing the
+       * 24MB file per ROI (what calling decodeRoi N times does). Returns one
+       * {r,g,b} per input ROI, in order. A later slice moves this onto an
+       * in-memory parsed handle so even the single parse disappears.
+       */
+      decodeRois(
+        rois: {x: number; y: number; w: number; h: number}[],
+      ): Promise<{r: number; g: number; b: number}[]>;
+      /**
        * Render the DNG to a display-ready PNG scaled to fit `maxDim` on
        * the longer edge. Used by the ROI-picker UI. iOS-only for now;
        * Android throws (see HybridDngDecoder.kt).

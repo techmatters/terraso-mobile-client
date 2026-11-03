@@ -15,8 +15,8 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useRef} from 'react';
-import {Alert} from 'react-native';
+import {useCallback, useRef, useState} from 'react';
+import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
 
 import {useIsFocused} from '@react-navigation/native';
 
@@ -86,23 +86,41 @@ export function RawCaptureTestScreen() {
   const navigation = useNavigation();
   // Deactivate the camera when the screen loses focus (e.g. after goBack).
   const isFocused = useIsFocused();
+  // Shown while decoding the captured DNG (the slow part). Keeps the user on
+  // the camera screen with an "Analyzing…" overlay instead of a blank wait.
+  const [analyzing, setAnalyzing] = useState(false);
 
   const onCapture = useCallback(
     async (result: CaptureResult) => {
-      navigation.goBack();
       if (result.kind !== 'raw') {
+        navigation.goBack();
         Alert.alert(
           'Unexpected capture',
           `Expected a RAW result, got "${result.kind}".`,
         );
         return;
       }
+      // capturePhoto has already resolved → sensor is read out, DNG on disk:
+      // the phone is safe to move now; the decode below is motion-safe. (A
+      // later slice fires a native onCaptured at the exact sensor-done instant.)
+      console.log('[rawperf] CAPTURED — safe to move; decoding…');
+      setAnalyzing(true);
+      // Yield so the "Analyzing…" overlay mounts + paints before the
+      // *synchronous* decode blocks the JS thread. (The spinner is a native
+      // view, so it keeps animating through the block. Async decode later
+      // removes the block entirely.)
+      await new Promise<void>(r => setTimeout(r, 0));
+      let title: string;
+      let body: string;
       try {
-        const ref = await result.decodeRoi(
+        const td = Date.now();
+        // One-pass decode: parse the DNG once, sample both ROIs.
+        const [ref, sample] = await result.decodeRois([
           roiToPixels(result, DISPLAY_REF_ROI),
-        );
-        const sample = await result.decodeRoi(
           roiToPixels(result, DISPLAY_SAMPLE_ROI),
+        ]);
+        console.log(
+          `[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms (1 parse, both ROIs)`,
         );
         // Naive white balance: divide the sample (soil) by the reference's
         // channels (assumes the ref ROI frames a neutral card), then normalize
@@ -114,18 +132,21 @@ export function RawCaptureTestScreen() {
           b: sample.b / (ref.b + eps),
         };
         const wbMax = Math.max(wb.r, wb.g, wb.b) || 1;
-        Alert.alert(
-          'RAW ref + sample (linear RGB)',
+        title = 'RAW ref + sample (linear RGB)';
+        body =
           `REF   r ${f(ref.r)}  g ${f(ref.g)}  b ${f(ref.b)}\n` +
-            `SOIL  r ${f(sample.r)}  g ${f(sample.g)}  b ${f(sample.b)}\n\n` +
-            `WB soil (÷ref, normalized):\n` +
-            `  r ${f(wb.r / wbMax)}  g ${f(wb.g / wbMax)}  b ${f(wb.b / wbMax)}`,
-        );
+          `SOIL  r ${f(sample.r)}  g ${f(sample.g)}  b ${f(sample.b)}\n\n` +
+          `WB soil (÷ref, normalized):\n` +
+          `  r ${f(wb.r / wbMax)}  g ${f(wb.g / wbMax)}  b ${f(wb.b / wbMax)}`;
       } catch (err) {
-        Alert.alert('Decode failed', String(err));
+        title = 'Decode failed';
+        body = String(err);
       } finally {
         result.dispose();
+        setAnalyzing(false);
       }
+      navigation.goBack();
+      Alert.alert(title, body);
     },
     [navigation],
   );
@@ -152,9 +173,11 @@ export function RawCaptureTestScreen() {
         return `✗ shot ${index}: CAPTURE FAILED ${tally()}`;
       }
       try {
+        const td = Date.now();
         const sample = await result.decodeRoi(
           roiToPixels(result, DISPLAY_SAMPLE_ROI),
         );
+        console.log(`[rawperf] decode sample ${Date.now() - td}ms`);
         const verdict = checkSampleColor(sample);
         if (!verdict.ok) suspiciousRef.current += 1;
         const mark = verdict.ok ? '✓' : '⚠';
@@ -175,11 +198,34 @@ export function RawCaptureTestScreen() {
   );
 
   return (
-    <SimpleRawCamera
-      visible={isFocused}
-      onCapture={onCapture}
-      onCancel={onCancel}
-      onShot={onShot}
-    />
+    <View style={styles.fill}>
+      <SimpleRawCamera
+        visible={isFocused}
+        onCapture={onCapture}
+        onCancel={onCancel}
+        onShot={onShot}
+      />
+      {analyzing && (
+        <View style={styles.analyzingOverlay}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.analyzingText}>Analyzing…</Text>
+        </View>
+      )}
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  fill: {flex: 1},
+  analyzingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.55)',
+  },
+  analyzingText: {color: 'white', fontSize: 18, marginTop: 12},
+});

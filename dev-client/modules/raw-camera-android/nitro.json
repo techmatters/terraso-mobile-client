@@ -14,6 +14,12 @@
         "language": "kotlin",
         "implementationClassName": "HybridRawCameraAndroid"
       }
+    },
+    "FrameAnalyzer": {
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "HybridFrameAnalyzer"
+      }
     }
   },
   "ignorePaths": ["**/node_modules"]

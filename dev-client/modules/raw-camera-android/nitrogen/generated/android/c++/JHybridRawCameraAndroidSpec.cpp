@@ -13,6 +13,8 @@ namespace margelo::nitro::rawcameraandroid { struct CapturedPhoto; }
 namespace margelo::nitro::rawcameraandroid { struct CaptureCapabilities; }
 // Forward declaration of `CaptureOptions` to properly resolve imports.
 namespace margelo::nitro::rawcameraandroid { struct CaptureOptions; }
+// Forward declaration of `HybridFrameAnalyzerSpec` to properly resolve imports.
+namespace margelo::nitro::rawcameraandroid { class HybridFrameAnalyzerSpec; }
 // Forward declaration of `CaptureSessionRequest` to properly resolve imports.
 namespace margelo::nitro::rawcameraandroid { struct CaptureSessionRequest; }
 // Forward declaration of `SessionShot` to properly resolve imports.
@@ -31,6 +33,9 @@ namespace margelo::nitro::rawcameraandroid { struct SessionContext; }
 #include "JCaptureCapabilities.hpp"
 #include "CaptureOptions.hpp"
 #include "JCaptureOptions.hpp"
+#include <memory>
+#include "HybridFrameAnalyzerSpec.hpp"
+#include "JHybridFrameAnalyzerSpec.hpp"
 #include "CaptureSessionRequest.hpp"
 #include "JCaptureSessionRequest.hpp"
 #include "SessionShot.hpp"
@@ -130,6 +135,10 @@ namespace margelo::nitro::rawcameraandroid {
       });
       return __promise;
     }();
+  }
+  void JHybridRawCameraAndroidSpec::setAnalyzer(const std::shared_ptr<HybridFrameAnalyzerSpec>& analyzer) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<void(jni::alias_ref<JHybridFrameAnalyzerSpec::JavaPart> /* analyzer */)>("setAnalyzer");
+    method(_javaPart, std::dynamic_pointer_cast<JHybridFrameAnalyzerSpec>(analyzer)->getJavaPart());
   }
   std::shared_ptr<Promise<std::vector<CapturedPhoto>>> JHybridRawCameraAndroidSpec::captureSession(const CaptureSessionRequest& request) {
     static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<JCaptureSessionRequest> /* request */)>("captureSession");

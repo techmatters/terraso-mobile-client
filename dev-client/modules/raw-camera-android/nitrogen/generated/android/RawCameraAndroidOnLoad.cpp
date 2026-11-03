@@ -15,6 +15,7 @@
 #include <fbjni/fbjni.h>
 #include <NitroModules/HybridObjectRegistry.hpp>
 
+#include "JHybridFrameAnalyzerSpec.hpp"
 #include "JHybridRawCameraAndroidSpec.hpp"
 #include "JFunc_void_double_double.hpp"
 #include <NitroModules/DefaultConstructableObject.hpp>
@@ -35,12 +36,21 @@ struct JHybridRawCameraAndroidSpecImpl: public jni::JavaClass<JHybridRawCameraAn
     return javaPart->getJHybridRawCameraAndroidSpec();
   }
 };
+struct JHybridFrameAnalyzerSpecImpl: public jni::JavaClass<JHybridFrameAnalyzerSpecImpl, JHybridFrameAnalyzerSpec::JavaPart> {
+  static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/rawcameraandroid/HybridFrameAnalyzer;";
+  static std::shared_ptr<JHybridFrameAnalyzerSpec> create() {
+    static const auto constructorFn = javaClassStatic()->getConstructor<JHybridFrameAnalyzerSpecImpl::javaobject()>();
+    jni::local_ref<JHybridFrameAnalyzerSpec::JavaPart> javaPart = javaClassStatic()->newObject(constructorFn);
+    return javaPart->getJHybridFrameAnalyzerSpec();
+  }
+};
 
 void registerAllNatives() {
   using namespace margelo::nitro;
   using namespace margelo::nitro::rawcameraandroid;
 
   // Register native JNI methods
+  margelo::nitro::rawcameraandroid::JHybridFrameAnalyzerSpec::CxxPart::registerNatives();
   margelo::nitro::rawcameraandroid::JHybridRawCameraAndroidSpec::CxxPart::registerNatives();
   margelo::nitro::rawcameraandroid::JFunc_void_double_double_cxx::registerNatives();
 
@@ -49,6 +59,12 @@ void registerAllNatives() {
     "RawCameraAndroid",
     []() -> std::shared_ptr<HybridObject> {
       return JHybridRawCameraAndroidSpecImpl::create();
+    }
+  );
+  HybridObjectRegistry::registerHybridObjectConstructor(
+    "FrameAnalyzer",
+    []() -> std::shared_ptr<HybridObject> {
+      return JHybridFrameAnalyzerSpecImpl::create();
     }
   );
 }
