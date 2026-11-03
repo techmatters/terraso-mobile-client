@@ -155,6 +155,69 @@ belongs with capability detection (2.2), driven by real capability rather than a
   teardown is via screen unmount (nav goBack) — adequate in production (the wedging was
   dev-reload-only); revisit only if real-use wedging appears.
 
+- **2.1e ◐ — reusable `RawColorCamera` API (decoupling camera / analyzer / overlay).**
+  The capture test originally drove `RawCameraAndroidView` + `RawCameraAndroidHybrid`
+  directly. 2.1e factors that into a reusable, headless component with a three-piece
+  contract — **camera** (preview + `capture()`), **analyzer** (injected frame sink, owns
+  its own ROIs), **overlay** (app-owned `children`) — so the "can't have
+  preview+analysis+raw+jpeg at once" constraint lives in one place, invisible to callers.
+  Built Android-first (iOS parity is Slice 4 below); sliced so each lands green.
+    - **Slice 1+2 ☑ — contract + component + `Capture`.** `rawColorCamera.types.ts`
+      (the authoritative contract) + `rawColorCamera.tsx` (`forwardRef` component on the
+      proven CameraX engine; `capture()` returns a `Capture` with `decodeRois` /
+      `renderPreview` / `save` / `dispose`; fractional ROIs mapped to DNG pixels
+      internally). Commit **`e972a995`**.
+    - **Slice 3a ☑ — injectable live analyzer.** `createRoiAnalyzer({rois,onStats})`
+      wraps a native Nitro `FrameAnalyzer`; the camera pumps frames into it off-thread
+      (`setAnalyzer`/`clearAnalyzer`) and it emits per-ROI luma stats. Binds
+      preview+raw+analysis. Commit **`1a1909c1`**.
+    - **Slice 3b ☑ — raw+jpeg shutter switch.** When a shot wants the JPEG but the
+      session is bound for analysis (3-stream cap, no room for a JPEG stream), the native
+      side reconfigures preview+raw+analysis → preview+raw+jpeg for the shot, captures
+      RAW+JPEG, then restores analysis (preview reuses its surface across the rebinds).
+      Validated on Pixel 6a (`raw=172ms jpeg=100ms`, overlay resumes). Commit **`723ca5f2`**.
+    - **JPEG-only / `rawless` ☑ (local, pending commit) — no-RAW device simulation.**
+      A `rawless` view prop binds **preview+jpeg(+analysis) with no RAW stream** and
+      `capture()` produces a JPEG only (no DNG) — implements the capability model's
+      "No RAW → JPEG only" row on RAW-capable hardware, so the non-RAW app path is
+      testable. New `ensureRawlessBoundLocked()` / `captureJpegOnlyLocked()` in
+      `CameraSessionManager`; the RAW path (`ensureBoundLocked`/`captureLocked`/3b switch)
+      is untouched. `Capture.hasRaw=false`; `decodeRois()` throws a clear jpeg-only error.
+    - **Auto stress harness ☑ (local) — mode-cycling + periodic persist.** The test's
+      "Auto" cycles the capture configs (RAW+JPEG+analysis, RAW-only, RAW+JPEG no-analysis,
+      JPEG-only), N shots each, **remounting the camera between modes** (= reopening the
+      screen — real-use bind path, not a mid-session reconfigure), and every 100th shot
+      exercises `save()`→verify→delete. First soak: 11 shots, 0 errors.
+    - **Slice 4 ☐ — iOS parity.** Bring iOS onto `RawColorCamera` reusing its existing
+      vision-camera analyzer + detach-at-shutter capture, behind the same contract. iOS
+      still runs the legacy `SimpleRawCamera` flow until then.
+    - **Slice 5 ☐ — cleanup.** Strip the `[rawperf]` timing logs; retire `SimpleRawCamera`
+      once iOS migrates.
+
+  **API at a glance** (source of truth: [`rawColorCamera.types.ts`](../src/components/inputs/image/rawColorCamera.types.ts)):
+  ```tsx
+  <RawColorCamera
+    active                                   // false → release the camera
+    request={{ raw?, jpeg?: 'always'|'fallback'|'never', analyze? }}
+    ref={camRef}                             // camRef.current.capture(opts?) → Promise<Capture>
+    onCapabilities={caps => …}               // what the request resolved to on this device
+  >
+    {overlay}                                {/* app-owned, drawn from analyzer onStats */}
+  </RawColorCamera>
+
+  const analyzer = createRoiAnalyzer({ rois, onStats });   // inject via request.analyze
+  const cap = await camRef.current.capture({ onCaptured });// fires at "safe to move"
+  const [ref, soil] = await cap.decodeRois([refRoi, soilRoi]);
+  await cap.save({ dir });                                 // optional persist → { dngUri?, jpegUri? }
+  cap.dispose();                                           // free buffers + unsaved temps
+  ```
+  **Files:**
+  - Contract — [`src/components/inputs/image/rawColorCamera.types.ts`](../src/components/inputs/image/rawColorCamera.types.ts)
+  - Component + `Capture`/`createRoiAnalyzer` — [`src/components/inputs/image/rawColorCamera.tsx`](../src/components/inputs/image/rawColorCamera.tsx)
+  - Android engine — [`modules/raw-camera-android`](../modules/raw-camera-android) (`CameraSessionManager.kt` = bind ladder + capture + rawless; `RawCameraAndroidView(Manager).kt` = native preview + props)
+  - DNG decode — [`modules/dng-decoder`](../modules/dng-decoder) (`decodeDngRois`, `renderPreview`)
+  - Dev test harness — [`src/screens/RawCaptureTestScreen/RawCaptureTestScreen.tsx`](../src/screens/RawCaptureTestScreen/RawCaptureTestScreen.tsx)
+
 Accept (whole 2.1): capture a DNG on a RAW-capable device per platform; `decodeRoi`
 returns a color. **iOS done; Android capture works (2.1-level), overlay pending.**
 
