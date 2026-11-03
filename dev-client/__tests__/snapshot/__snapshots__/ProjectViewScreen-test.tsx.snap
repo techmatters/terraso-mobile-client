@@ -8,11 +8,7 @@ exports[`renders correctly 1`] = `
     }
   }
 >
-  <KeyboardProvider
-    navigationBarTranslucent={true}
-    preserveEdgeToEdge={true}
-    statusBarTranslucent={true}
-  >
+  <KeyboardProvider>
     <RNCSafeAreaProvider
       onInsetsChange={[Function]}
       style={

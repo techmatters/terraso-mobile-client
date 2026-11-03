@@ -59,11 +59,7 @@ export const AppWrappers = ({store, children}: Props) => {
 
   return (
     <GestureHandlerRootView style={styles.gestureHandler}>
-      {/* The app already draws edge-to-edge on Android, so tell the provider the bars are translucent rather than letting it pad for them. */}
-      <KeyboardProvider
-        statusBarTranslucent={true}
-        navigationBarTranslucent={true}
-        preserveEdgeToEdge={true}>
+      <KeyboardProvider>
         <Provider store={store}>
           <SiteTabJumpContextProvider>
             <NavigationContainer
