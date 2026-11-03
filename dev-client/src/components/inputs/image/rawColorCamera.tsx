@@ -162,15 +162,15 @@ export const RawColorCamera = forwardRef<
     }
   }, [active, hasPermission, requestPermission, onError]);
 
-  // preferJpeg governs the native 3-stream fallback: keep JPEG unless the
-  // caller never wants it. (The real preview+analysis<->raw+jpeg switch is a
-  // later native slice; today the bind is static.)
-  // With live analysis we bind preview+raw+analysis (3 streams) — no room for
-  // the JPEG stream too, so RAW-only capture while analyzing (JPEG is cheap +
-  // optional; the raw+jpeg switch is a later slice). Without analysis we keep
-  // the JPEG per the policy.
   const analyze = request.analyze;
-  const wantJpeg = !analyze && request.jpeg !== 'never';
+  // FRAMING bind: with an analyzer we bind preview+raw+analysis (3-stream cap,
+  // no room for JPEG too); without one we keep JPEG per policy
+  // (preview+raw+jpeg). Drives the native view's preferJpeg.
+  const framingPreferJpeg = !analyze && request.jpeg !== 'never';
+  // CAPTURE: want the JPEG unless policy is 'never' — even while analysis is
+  // bound, the native side does a shutter switch (3b) to grab RAW+JPEG and
+  // restore analysis. So the JPEG is available regardless of the framing bind.
+  const captureWantsJpeg = request.jpeg !== 'never';
 
   // Inject / detach the live analyzer. The camera's analysis callback pumps
   // frames into it off the JS thread; it emits onStats.
@@ -197,9 +197,9 @@ export const RawColorCamera = forwardRef<
           onCapabilities?.({
             rawAvailable: true,
             willCaptureRaw: request.raw !== false,
-            willCaptureJpeg: wantJpeg,
+            willCaptureJpeg: captureWantsJpeg,
             analysisActive: !!analyze,
-            switchesAtCapture: false,
+            switchesAtCapture: !!analyze && captureWantsJpeg,
           });
         }
       } catch (err) {
@@ -215,7 +215,7 @@ export const RawColorCamera = forwardRef<
     active,
     hasPermission,
     request.raw,
-    wantJpeg,
+    captureWantsJpeg,
     analyze,
     onCapabilities,
     onError,
@@ -226,7 +226,7 @@ export const RawColorCamera = forwardRef<
     (): RawColorCameraHandle => ({
       capture: async opts => {
         const photo = await RawCameraAndroidHybrid.capturePhoto({
-          skipJpeg: !wantJpeg,
+          skipJpeg: !captureWantsJpeg,
         });
         // Sensor is read out + files are on disk → safe to move. (A later
         // slice fires this at the exact sensor-done instant natively.)
@@ -239,7 +239,7 @@ export const RawColorCamera = forwardRef<
         );
       },
     }),
-    [wantJpeg],
+    [captureWantsJpeg],
   );
 
   const preview = useMemo<ReactNode>(() => {
@@ -260,10 +260,10 @@ export const RawColorCamera = forwardRef<
       <RawCameraAndroidView
         style={StyleSheet.absoluteFill}
         showRoiOverlay={false}
-        preferJpeg={wantJpeg}
+        preferJpeg={framingPreferJpeg}
       />
     );
-  }, [active, hasPermission, wantJpeg]);
+  }, [active, hasPermission, framingPreferJpeg]);
 
   return (
     <View style={[styles.fill, style]}>

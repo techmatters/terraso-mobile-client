@@ -253,17 +253,39 @@ object CameraSessionManager {
     // so the next call starts from a known baseline — see resetCameraStateLocked.
     suspend fun capture(options: CaptureOptions): CapturedPhoto =
         mutex.withLock {
-            captureLocked(
-                options,
-                burstStamp = null,
-                burstIdx = 0,
-                burstTotal = 0,
-                sessionSubdir = null,
-                sessionSeq = 0,
-                sessionTotal = 0,
-                deviceSlug = deviceSlug(),
-                contextTokens = emptyList(),
-            ).photo
+            // raw+jpeg shutter switch (slice 3b): if the caller wants the JPEG
+            // but we're bound for live analysis (preview+raw+analysis, no jpeg
+            // stream), reconfigure to preview+raw+jpeg for the shot, then
+            // restore analysis. Preview reuses its surface provider across the
+            // rebinds, so it only briefly pauses. Only triggers when analysis
+            // is actually bound AND a jpeg is wanted.
+            val switchForJpeg = options.skipJpeg != true && boundAnalysis != null
+            if (switchForJpeg) {
+                Log.i(TAG, "capture: analysis->jpeg switch for the shot")
+                preferJpegOverAnalysis = true
+                unbindAllLocked()
+                ensureBoundLocked()
+            }
+            try {
+                captureLocked(
+                    options,
+                    burstStamp = null,
+                    burstIdx = 0,
+                    burstTotal = 0,
+                    sessionSubdir = null,
+                    sessionSeq = 0,
+                    sessionTotal = 0,
+                    deviceSlug = deviceSlug(),
+                    contextTokens = emptyList(),
+                ).photo
+            } finally {
+                if (switchForJpeg) {
+                    Log.i(TAG, "capture: restoring analysis bind")
+                    preferJpegOverAnalysis = false
+                    unbindAllLocked()
+                    ensureBoundLocked()
+                }
+            }
         }
 
     // Capture N frames in rapid succession with AE + AWB locked so all
