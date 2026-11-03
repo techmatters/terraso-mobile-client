@@ -16,50 +16,253 @@
  */
 
 import {useCallback, useRef, useState} from 'react';
-import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useIsFocused} from '@react-navigation/native';
 
 import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
+import {RawColorCamera} from 'terraso-mobile-client/components/inputs/image/rawColorCamera';
+import type {
+  LinearRgb,
+  RawColorCameraHandle,
+} from 'terraso-mobile-client/components/inputs/image/rawColorCamera.types';
 import {SimpleRawCamera} from 'terraso-mobile-client/components/inputs/image/SimpleRawCamera';
 import {
   DISPLAY_REF_ROI,
   DISPLAY_SAMPLE_ROI,
   type FractionalRoi,
 } from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
+import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 
 const f = (n: number) => n.toFixed(3);
 
-type Rgb = {r: number; g: number; b: number};
-
-// Sanity-check a decoded soil colour. Linear RGB is ~0..1. A plausible soil
-// sample is a non-grey, non-clipped colour; flag the degenerate cases that
-// almost always mean the decode (or the whole capture) went wrong:
-//   - essentially black (sensor got no light / wrong ROI)
-//   - essentially white / saturated (blown out)
-//   - all three channels ~equal (grey placeholder, or a decode that returned
-//     a single value broadcast to r=g=b)
-// NOTE: only applied to the SAMPLE ROI — the reference card is meant to be
-// near-neutral, so "channels ~equal" is expected there, not suspicious.
-const checkSampleColor = (c: Rgb): {ok: boolean; note: string} => {
+// Sanity-check a decoded soil colour (see earlier notes): flag all-black,
+// all-white/saturated, or channels-all-equal (grey) — applied to the SAMPLE
+// only, since the reference card is meant to be near-neutral.
+const checkSampleColor = (c: LinearRgb): {ok: boolean; note: string} => {
   const max = Math.max(c.r, c.g, c.b);
   const min = Math.min(c.r, c.g, c.b);
   const mean = (c.r + c.g + c.b) / 3;
   if (max < 0.02) return {ok: false, note: 'all black'};
-  if (max <= 1.5 && min > 0.95)
+  if (max <= 1.5 && min > 0.95) {
     return {ok: false, note: 'all white / saturated'};
+  }
   if ((max - min) / (mean + 1e-6) < 0.02) {
     return {ok: false, note: 'channels ~equal (grey?)'};
   }
   return {ok: true, note: 'ok'};
 };
 
-// Scale a display-fractional ROI into DNG pixel coords. The DNG decodes in
-// PORTRAIT extent (CIRAWFilter honors orientation), but result.width/height
-// are the pre-orientation LANDSCAPE dims — so map the display-fractional ROI
-// (a fraction of the portrait sensor-aspect frame) onto the oriented dims:
-// short side = width, long side = height. Portrait-locked, so min/max suffices.
+const wbAlertBody = (ref: LinearRgb, sample: LinearRgb): string => {
+  const eps = 1e-6;
+  const wb = {
+    r: sample.r / (ref.r + eps),
+    g: sample.g / (ref.g + eps),
+    b: sample.b / (ref.b + eps),
+  };
+  const wbMax = Math.max(wb.r, wb.g, wb.b) || 1;
+  return (
+    `REF   r ${f(ref.r)}  g ${f(ref.g)}  b ${f(ref.b)}\n` +
+    `SOIL  r ${f(sample.r)}  g ${f(sample.g)}  b ${f(sample.b)}\n\n` +
+    `WB soil (÷ref, normalized):\n` +
+    `  r ${f(wb.r / wbMax)}  g ${f(wb.g / wbMax)}  b ${f(wb.b / wbMax)}`
+  );
+};
+
+/**
+ * Dev-only full-screen RAW capture smoke test, flag-gated via the dev menu.
+ *
+ * Android exercises the NEW RawColorCamera API (ref.capture() → Capture →
+ * decodeRois, with an "Analyzing…" overlay during decode and an Auto stress
+ * loop). iOS still runs the legacy SimpleRawCamera flow — its RawColorCamera
+ * engine is a later slice.
+ */
+export function RawCaptureTestScreen() {
+  return Platform.OS === 'android' ? (
+    <AndroidRawColorTest />
+  ) : (
+    <IosLegacyTest />
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Android: the new RawColorCamera API.
+
+function AndroidRawColorTest() {
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const camRef = useRef<RawColorCameraHandle>(null);
+
+  const [analyzing, setAnalyzing] = useState(false);
+  const [autoRunning, setAutoRunning] = useState(false);
+  const [shotCount, setShotCount] = useState(0);
+  const [lastStatus, setLastStatus] = useState('');
+  const autoRef = useRef(false);
+
+  // Decode both ROIs (fractional — the camera maps to pixels internally),
+  // white-balance, and alert. Shows the "Analyzing…" overlay during decode.
+  const manualShutter = useCallback(async () => {
+    const cam = camRef.current;
+    if (!cam || analyzing) {
+      return;
+    }
+    let cap;
+    try {
+      cap = await cam.capture({
+        onCaptured: () => console.log('[rawperf] CAPTURED — safe to move'),
+      });
+    } catch (err) {
+      Alert.alert('Capture failed', String(err));
+      return;
+    }
+    setAnalyzing(true);
+    await new Promise<void>(r => setTimeout(r, 0)); // let the overlay paint
+    let title: string;
+    let body: string;
+    try {
+      const td = Date.now();
+      const [ref, sample] = await cap.decodeRois([
+        DISPLAY_REF_ROI,
+        DISPLAY_SAMPLE_ROI,
+      ]);
+      console.log(`[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms`);
+      title = 'RAW ref + sample (linear RGB)';
+      body = wbAlertBody(ref, sample);
+    } catch (err) {
+      title = 'Decode failed';
+      body = String(err);
+    } finally {
+      cap.dispose();
+      setAnalyzing(false);
+    }
+    navigation.goBack();
+    Alert.alert(title, body);
+  }, [analyzing, navigation]);
+
+  const stopAuto = useCallback(() => {
+    autoRef.current = false;
+    setAutoRunning(false);
+  }, []);
+
+  const startAuto = useCallback(() => {
+    if (autoRef.current) {
+      return;
+    }
+    autoRef.current = true;
+    setAutoRunning(true);
+    setShotCount(0);
+    setLastStatus('starting…');
+    let susp = 0;
+    let fail = 0;
+    (async () => {
+      let i = 0;
+      while (autoRef.current) {
+        const cam = camRef.current;
+        if (!cam) {
+          break;
+        }
+        let status: string;
+        try {
+          const cap = await cam.capture();
+          try {
+            const [sample] = await cap.decodeRois([DISPLAY_SAMPLE_ROI]);
+            const v = checkSampleColor(sample);
+            if (!v.ok) susp += 1;
+            status =
+              `${v.ok ? '✓' : '⚠'} shot ${i}: ` +
+              `r${f(sample.r)} g${f(sample.g)} b${f(sample.b)}` +
+              `${v.ok ? '' : ` — ${v.note}`}`;
+          } finally {
+            cap.dispose();
+          }
+        } catch (err) {
+          fail += 1;
+          status = `✗ shot ${i}: ${String(err)}`;
+        }
+        i += 1;
+        setShotCount(i);
+        setLastStatus(`${status}  (susp ${susp}, fail ${fail} / ${i})`);
+        if (!autoRef.current) break;
+        await new Promise<void>(r => setTimeout(r, 400));
+      }
+    })().catch(() => {});
+  }, []);
+
+  const cancel = useCallback(() => {
+    stopAuto();
+    navigation.goBack();
+  }, [stopAuto, navigation]);
+
+  const shutterDisabled = analyzing || autoRunning;
+  return (
+    <ScreenScaffold AppBar={<AppBar title="RAW capture (new API)" />}>
+      <View style={styles.fill}>
+        <RawColorCamera
+          ref={camRef}
+          active={isFocused}
+          request={{raw: true, jpeg: 'always'}}
+          style={StyleSheet.absoluteFill}
+          onError={e => console.warn('RawColorCamera error:', e)}
+        />
+        {autoRunning && (
+          <SafeAreaView style={styles.statusBanner} edges={['top']}>
+            <Text style={styles.statusText}>Auto-test · shot {shotCount}</Text>
+            <Text style={styles.statusText} numberOfLines={2}>
+              {lastStatus}
+            </Text>
+          </SafeAreaView>
+        )}
+        <SafeAreaView style={styles.controls} edges={['bottom']}>
+          <Pressable
+            onPress={cancel}
+            style={styles.sideButton}
+            accessibilityRole="button">
+            <Text style={styles.sideText}>Cancel</Text>
+          </Pressable>
+          <Pressable
+            onPress={manualShutter}
+            disabled={shutterDisabled}
+            accessibilityRole="button"
+            style={[styles.shutter, shutterDisabled && styles.disabled]}
+          />
+          <Pressable
+            onPress={autoRunning ? stopAuto : startAuto}
+            disabled={analyzing}
+            accessibilityRole="button"
+            style={[
+              styles.autoButton,
+              autoRunning && styles.autoButtonActive,
+              analyzing && styles.disabled,
+            ]}>
+            <Text style={styles.sideText}>{autoRunning ? 'Stop' : 'Auto'}</Text>
+          </Pressable>
+        </SafeAreaView>
+        {analyzing && (
+          <View style={styles.analyzingOverlay}>
+            <ActivityIndicator size="large" color="#fff" />
+            <Text style={styles.analyzingText}>Analyzing…</Text>
+          </View>
+        )}
+      </View>
+    </ScreenScaffold>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// iOS: legacy SimpleRawCamera flow (unchanged; its RawColorCamera engine is a
+// later slice). Uses the old pixel-coord decodeRoi.
+
 const roiToPixels = (
   dims: {width: number; height: number},
   roi: FractionalRoi,
@@ -74,70 +277,32 @@ const roiToPixels = (
   };
 };
 
-/**
- * Dev-only full-screen RAW capture smoke test. Presented as its own navigation
- * screen (not an in-tree overlay) so the opening tap completes on the previous
- * screen and can't leak into the shutter. On capture it decodes the same two
- * ROIs the overlay shows (reference + sample), white-balances the sample
- * against the reference, and alerts the result. Reached only via the
- * flag-gated dev menu item (RawCaptureTestItem).
- */
-export function RawCaptureTestScreen() {
+function IosLegacyTest() {
   const navigation = useNavigation();
-  // Deactivate the camera when the screen loses focus (e.g. after goBack).
   const isFocused = useIsFocused();
-  // Shown while decoding the captured DNG (the slow part). Keeps the user on
-  // the camera screen with an "Analyzing…" overlay instead of a blank wait.
   const [analyzing, setAnalyzing] = useState(false);
 
   const onCapture = useCallback(
     async (result: CaptureResult) => {
       if (result.kind !== 'raw') {
         navigation.goBack();
-        Alert.alert(
-          'Unexpected capture',
-          `Expected a RAW result, got "${result.kind}".`,
-        );
+        Alert.alert('Unexpected capture', `Got "${result.kind}".`);
         return;
       }
-      // capturePhoto has already resolved → sensor is read out, DNG on disk:
-      // the phone is safe to move now; the decode below is motion-safe. (A
-      // later slice fires a native onCaptured at the exact sensor-done instant.)
       console.log('[rawperf] CAPTURED — safe to move; decoding…');
       setAnalyzing(true);
-      // Yield so the "Analyzing…" overlay mounts + paints before the
-      // *synchronous* decode blocks the JS thread. (The spinner is a native
-      // view, so it keeps animating through the block. Async decode later
-      // removes the block entirely.)
       await new Promise<void>(r => setTimeout(r, 0));
       let title: string;
       let body: string;
       try {
         const td = Date.now();
-        // One-pass decode: parse the DNG once, sample both ROIs.
         const [ref, sample] = await result.decodeRois([
           roiToPixels(result, DISPLAY_REF_ROI),
           roiToPixels(result, DISPLAY_SAMPLE_ROI),
         ]);
-        console.log(
-          `[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms (1 parse, both ROIs)`,
-        );
-        // Naive white balance: divide the sample (soil) by the reference's
-        // channels (assumes the ref ROI frames a neutral card), then normalize
-        // so the brightest channel is 1. A real WB/Munsell pass is workstream 3.
-        const eps = 1e-6;
-        const wb = {
-          r: sample.r / (ref.r + eps),
-          g: sample.g / (ref.g + eps),
-          b: sample.b / (ref.b + eps),
-        };
-        const wbMax = Math.max(wb.r, wb.g, wb.b) || 1;
+        console.log(`[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms`);
         title = 'RAW ref + sample (linear RGB)';
-        body =
-          `REF   r ${f(ref.r)}  g ${f(ref.g)}  b ${f(ref.b)}\n` +
-          `SOIL  r ${f(sample.r)}  g ${f(sample.g)}  b ${f(sample.b)}\n\n` +
-          `WB soil (÷ref, normalized):\n` +
-          `  r ${f(wb.r / wbMax)}  g ${f(wb.g / wbMax)}  b ${f(wb.b / wbMax)}`;
+        body = wbAlertBody(ref, sample);
       } catch (err) {
         title = 'Decode failed';
         body = String(err);
@@ -153,57 +318,12 @@ export function RawCaptureTestScreen() {
 
   const onCancel = useCallback(() => navigation.goBack(), [navigation]);
 
-  // Auto stress-test: one capture per iteration, decode the SOIL ROI, sanity-
-  // check it, delete the temp DNG, and return a one-line status (with running
-  // tallies) for the on-screen banner. Does NOT navigate away — the loop runs
-  // until the user hits Stop/Cancel. Used to shake out the intermittent
-  // Android preview-stream race.
-  const suspiciousRef = useRef(0);
-  const failRef = useRef(0);
-  const onShot = useCallback(
-    async (result: CaptureResult | null, index: number): Promise<string> => {
-      if (index === 0) {
-        suspiciousRef.current = 0;
-        failRef.current = 0;
-      }
-      const tally = () =>
-        `(susp ${suspiciousRef.current}, fail ${failRef.current} / ${index + 1})`;
-      if (!result || result.kind !== 'raw') {
-        failRef.current += 1;
-        return `✗ shot ${index}: CAPTURE FAILED ${tally()}`;
-      }
-      try {
-        const td = Date.now();
-        const sample = await result.decodeRoi(
-          roiToPixels(result, DISPLAY_SAMPLE_ROI),
-        );
-        console.log(`[rawperf] decode sample ${Date.now() - td}ms`);
-        const verdict = checkSampleColor(sample);
-        if (!verdict.ok) suspiciousRef.current += 1;
-        const mark = verdict.ok ? '✓' : '⚠';
-        const soil = `r${f(sample.r)} g${f(sample.g)} b${f(sample.b)}`;
-        return `${mark} shot ${index}: ${soil}${
-          verdict.ok ? '' : ` — ${verdict.note}`
-        } ${tally()}`;
-      } catch (err) {
-        failRef.current += 1;
-        return `✗ shot ${index}: decode error ${String(err)} ${tally()}`;
-      } finally {
-        // Free the temp DNG (+JPEG) immediately — a long run captures
-        // hundreds of ~24 MB files.
-        result.dispose();
-      }
-    },
-    [],
-  );
-
   return (
     <View style={styles.fill}>
       <SimpleRawCamera
         visible={isFocused}
         onCapture={onCapture}
         onCancel={onCancel}
-        onShot={onShot}
       />
       {analyzing && (
         <View style={styles.analyzingOverlay}>
@@ -216,7 +336,50 @@ export function RawCaptureTestScreen() {
 }
 
 const styles = StyleSheet.create({
-  fill: {flex: 1},
+  fill: {flex: 1, backgroundColor: 'black'},
+  controls: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+  },
+  sideButton: {width: 80},
+  sideText: {color: 'white', fontSize: 16},
+  shutter: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: 'white',
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,0.5)',
+  },
+  autoButton: {
+    width: 80,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.6)',
+  },
+  autoButtonActive: {backgroundColor: 'rgba(220,40,40,0.85)'},
+  disabled: {opacity: 0.4},
+  statusBanner: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+  },
+  statusText: {color: 'white', fontSize: 14},
   analyzingOverlay: {
     position: 'absolute',
     top: 0,
