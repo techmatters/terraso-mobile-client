@@ -15,14 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {CheckboxList} from 'terraso-mobile-client/components/inputs/CheckboxList';
 import {
   DELETE_ACCOUNT_REASONS,
   DeleteAccountReason,
-} from 'terraso-mobile-client/screens/DeleteAccountScreen/deleteAccountFeedback';
+} from 'terraso-mobile-client/model/account/deleteAccountFeedback';
 
 export type DeleteAccountReasonsFieldProps = {
   value: DeleteAccountReason[];
@@ -36,20 +36,22 @@ export function DeleteAccountReasonsField({
   onValueChange,
 }: DeleteAccountReasonsFieldProps) {
   const {t} = useTranslation();
-  const renderReason = useCallback(
-    (reason: DeleteAccountReason) =>
-      t(`delete_account.feedback.reasons.${reason}`),
-    [t],
-  );
+  const renderReason = (reason: DeleteAccountReason) =>
+    t(`delete_account.feedback.reasons.${reason}`);
 
   return (
-    <CheckboxList
-      label={t('delete_account.feedback.reasons_prompt')}
-      options={DELETE_ACCOUNT_REASONS}
-      optionKey={reasonKey}
-      renderValue={renderReason}
-      value={value}
-      onValueChange={onValueChange}
-    />
+    <>
+      <TranslatedParagraph
+        bold
+        i18nKey="delete_account.feedback.reasons_prompt"
+      />
+      <CheckboxList
+        options={DELETE_ACCOUNT_REASONS}
+        optionKey={reasonKey}
+        renderValue={renderReason}
+        value={value}
+        onValueChange={onValueChange}
+      />
+    </>
   );
 }

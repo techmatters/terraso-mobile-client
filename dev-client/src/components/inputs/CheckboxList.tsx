@@ -15,15 +15,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 
 import {StandardCheckbox} from 'terraso-mobile-client/components/inputs/StandardCheckbox';
 import {Text} from 'terraso-mobile-client/components/NativeBaseAdapters';
 
-/* Shared by any multi-select control, so a different presentation (e.g. a dropdown) can replace CheckboxList without changing callers. */
-export type MultiSelectProps<T> = {
-  label: string;
+export type CheckboxListProps<T> = {
   options: readonly T[];
   optionKey: (option: T) => string;
   renderValue: (option: T) => string;
@@ -32,34 +29,26 @@ export type MultiSelectProps<T> = {
 };
 
 export const CheckboxList = <T,>({
-  label,
   options,
   optionKey,
   renderValue,
   value,
   onValueChange,
-}: MultiSelectProps<T>) => {
-  const selectedKeys = useMemo(
-    () => new Set(value.map(optionKey)),
-    [value, optionKey],
-  );
+}: CheckboxListProps<T>) => {
+  const selectedKeys = new Set(value.map(optionKey));
 
   /* Rebuilt from `options` so the selection always stays in display order, regardless of the order boxes were checked. */
-  const toggle = useCallback(
-    (toggledKey: string) =>
-      onValueChange(
-        options.filter(option => {
-          const key = optionKey(option);
-          const isSelected = selectedKeys.has(key);
-          return key === toggledKey ? !isSelected : isSelected;
-        }),
-      ),
-    [options, optionKey, selectedKeys, onValueChange],
-  );
+  const toggle = (toggledKey: string) =>
+    onValueChange(
+      options.filter(option => {
+        const key = optionKey(option);
+        const isSelected = selectedKeys.has(key);
+        return key === toggledKey ? !isSelected : isSelected;
+      }),
+    );
 
   return (
-    <View style={styles.container}>
-      <Text variant="body1-strong">{label}</Text>
+    <View>
       {options.map(option => {
         const key = optionKey(option);
         const optionLabel = renderValue(option);
@@ -89,9 +78,6 @@ export const CheckboxList = <T,>({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 0,
-  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

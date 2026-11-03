@@ -33,6 +33,8 @@ export const PROJECT_NAME_MAX_LENGTH = 50;
 export const PROJECT_DESCRIPTION_MAX_LENGTH = 72;
 export const DEPTH_LABEL_MAX_LENGTH = 10;
 export const SITE_NOTE_MIN_LENGTH = 3;
+/* Generous so it never cuts off real feedback; only guards against pasted walls of text. */
+export const DELETE_ACCOUNT_FEEDBACK_MAX_LENGTH = 5000;
 
 export const BOTTOM_BAR_SIZE = '10%';
 export const PROJECT_DEFAULT_MEASUREMENT_UNITS: MeasurementUnit = 'METRIC';

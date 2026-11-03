@@ -22,11 +22,10 @@ import {
   isAccountDeletionPending,
   setAccountDeletedEmail,
   signOut,
-  User,
 } from 'terraso-client-shared/account/accountSlice';
 
 import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
-import {DeleteAccountFeedback} from 'terraso-mobile-client/screens/DeleteAccountScreen/deleteAccountFeedback';
+import {DeleteAccountFeedback} from 'terraso-mobile-client/model/account/deleteAccountFeedback';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
 
@@ -62,7 +61,7 @@ export const useUserDeletionRequests = () => {
   const requestDeletion = useCallback(
     async (feedback: DeleteAccountFeedback) => {
       if (!user) return;
-      captureDeletionFeedback(user, feedback);
+      captureDeletionFeedback(feedback);
       setIsSaving(true);
       try {
         const result = await dispatch(deleteUserAccount(user.id)).unwrap();
@@ -83,12 +82,6 @@ export const useUserDeletionRequests = () => {
   return {user, isPending, requestDeletion, isSaving};
 };
 
-const captureDeletionFeedback = (
-  user: User,
-  {reasons, details}: DeleteAccountFeedback,
-) =>
-  getPostHogInstance()?.capture('user_delete_feedback', {
-    email: user.email,
-    reasons,
-    details,
-  });
+/* No email property: PostHog already links the event to the user's person record via identify(). */
+const captureDeletionFeedback = ({reasons, details}: DeleteAccountFeedback) =>
+  getPostHogInstance()?.capture('user_delete_feedback', {reasons, details});

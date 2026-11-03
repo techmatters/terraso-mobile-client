@@ -142,7 +142,7 @@ describe('useUserDeletionRequests', () => {
     expect(setAccountDeletedEmail).not.toHaveBeenCalled();
   });
 
-  it('sends the feedback to PostHog with the user email', async () => {
+  it('sends the feedback to PostHog', async () => {
     mockState(aUser);
     dispatch.mockReturnValue({
       unwrap: jest.fn().mockResolvedValue({kind: 'blocked'}),
@@ -158,7 +158,6 @@ describe('useUserDeletionRequests', () => {
 
     expect(mockCapture).toHaveBeenCalledTimes(1);
     expect(mockCapture).toHaveBeenCalledWith('user_delete_feedback', {
-      email: aUser.email,
       reasons: ['errors_or_bugs', 'other'],
       details: 'It crashed',
     });
@@ -176,7 +175,6 @@ describe('useUserDeletionRequests', () => {
     });
 
     expect(mockCapture).toHaveBeenCalledWith('user_delete_feedback', {
-      email: aUser.email,
       reasons: [],
       details: '',
     });
