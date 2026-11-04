@@ -55,6 +55,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -96,6 +97,15 @@ object CameraSessionManager {
     // never fires and we'd deadlock the capture path. Time out and
     // proceed with whatever state the camera actually converged to.
     private const val APPLY_OPTIONS_TIMEOUT_MS = 3_000L
+    // A capture (takePicture) can intermittently time out when the session
+    // isn't STREAMING yet — most often right after a 3b analysis->jpeg switch
+    // rebind (the new session is bound but not yet delivering frames), so the
+    // RAW request never completes. Retry by fully rebinding a FRESH session
+    // (the conservative, device-uniform open+bind path) and settling briefly so
+    // it reaches STREAMING before re-capturing. A retry can't wedge the way a
+    // hot stream-swap can, and a stuck session is recovered by the rebind.
+    private const val CAPTURE_MAX_RETRIES = 2 // 3 attempts total
+    private const val CAPTURE_RETRY_SETTLE_MS = 350L
 
     private val context: Context
         get() =
@@ -291,17 +301,41 @@ object CameraSessionManager {
                 ensureBoundLocked()
             }
             try {
-                captureLocked(
-                    options,
-                    burstStamp = null,
-                    burstIdx = 0,
-                    burstTotal = 0,
-                    sessionSubdir = null,
-                    sessionSeq = 0,
-                    sessionTotal = 0,
-                    deviceSlug = deviceSlug(),
-                    contextTokens = emptyList(),
-                ).photo
+                // Bounded retry (approach A): on a capture failure (typically a
+                // takePicture timeout against a not-yet-streaming session), fully
+                // rebind a fresh session + settle, then re-capture. Each attempt
+                // uses only the conservative open+bind path, so it can't wedge.
+                var lastError: Throwable? = null
+                for (attempt in 0..CAPTURE_MAX_RETRIES) {
+                    if (attempt > 0) {
+                        Log.w(
+                            TAG,
+                            "capture: retry $attempt/$CAPTURE_MAX_RETRIES after failure; fresh rebind + settle",
+                        )
+                        unbindAllLocked()
+                        ensureBoundLocked()
+                        delay(CAPTURE_RETRY_SETTLE_MS)
+                    }
+                    try {
+                        return@withLock captureLocked(
+                            options,
+                            burstStamp = null,
+                            burstIdx = 0,
+                            burstTotal = 0,
+                            sessionSubdir = null,
+                            sessionSeq = 0,
+                            sessionTotal = 0,
+                            deviceSlug = deviceSlug(),
+                            contextTokens = emptyList(),
+                        ).photo
+                    } catch (e: kotlinx.coroutines.CancellationException) {
+                        throw e // never swallow structured-concurrency cancellation
+                    } catch (e: Exception) {
+                        lastError = e
+                        Log.w(TAG, "capture: attempt ${attempt + 1} failed", e)
+                    }
+                }
+                throw lastError ?: RuntimeException("capture failed after retries")
             } finally {
                 if (switchForJpeg) {
                     Log.i(TAG, "capture: restoring analysis bind")
