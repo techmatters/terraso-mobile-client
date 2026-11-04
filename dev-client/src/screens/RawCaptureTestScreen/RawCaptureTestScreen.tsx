@@ -103,27 +103,16 @@ const wbAlertBody = (ref: LinearRgb, sample: LinearRgb): string => {
 /**
  * Dev-only full-screen RAW capture smoke test, flag-gated via the dev menu.
  *
- * Both platforms now use the RawColorCamera API (ref.capture() → Capture →
- * decodeRois, with an "Analyzing…" overlay during decode and the live red/green
- * ROI overlay while framing). Android adds the Auto stress loop + mode cycling.
+ * One shared harness on both platforms (RawColorCamera: ref.capture() →
+ * Capture → decodeRois, "Analyzing…" overlay during decode, live red/green ROI
+ * overlay while framing, and an Auto soak). The only per-platform difference is
+ * the Auto mode list + whether modes remount the camera between them — plain
+ * data (getPlatformTestConfig), not different UX code.
  */
 export function RawCaptureTestScreen() {
-  return Platform.OS === 'android' ? (
-    <AndroidRawColorTest />
-  ) : (
-    <IosRawColorTest />
-  );
+  return <RawColorTest />;
 }
 
-// ---------------------------------------------------------------------------
-// Android: the new RawColorCamera API.
-
-// Auto stress test: cycle through capture configurations, N shots each,
-// remounting the camera between modes (= reopening the screen, which is what
-// real use does — a fresh session bound for that mode). Every SAVE_EVERY-th
-// shot exercises the persist path (save → verify → delete, so nothing
-// accumulates). Includes a JPEG-only (no-RAW) mode that simulates a device
-// without RAW support (native binds preview+jpeg, captures a JPEG only).
 const SHOTS_PER_MODE = 25;
 const SAVE_EVERY = 100;
 // Wait after a mode remount for the new session to acquire + bind before
@@ -138,7 +127,52 @@ type AutoMode = {
   decode: boolean;
 };
 
-function AndroidRawColorTest() {
+// Per-platform Auto config. Android cycles the full capture-configuration
+// matrix, remounting between modes (= reopening the screen — the real bind
+// path, and the only way to exercise the native stream/rawless swaps). iOS has
+// no rawless/stream-swap modes to exercise, and rapidly reconfiguring the
+// vision-camera session risks wedging the camera service, so it runs a single
+// mode in place with no remount. `manualRequest` is the idle/framing bind (full
+// analysis) shared by both.
+const getPlatformTestConfig = (
+  manualRequest: CaptureRequest,
+  analyzer: CaptureRequest['analyze'],
+): {modes: AutoMode[]; cycleWithRemount: boolean} => {
+  if (Platform.OS === 'android') {
+    return {
+      cycleWithRemount: true,
+      modes: [
+        {label: 'RAW+JPEG +analysis', request: manualRequest, decode: true},
+        {
+          label: 'RAW only +analysis',
+          request: {raw: true, jpeg: 'never', analyze: analyzer},
+          decode: true,
+        },
+        {
+          label: 'RAW+JPEG no-analysis',
+          request: {raw: true, jpeg: 'always'},
+          decode: true,
+        },
+        {
+          // Simulates a phone that can't do RAW: binds preview+jpeg(+analysis),
+          // captures a JPEG only (no DNG → nothing to decode).
+          label: 'JPEG only (no RAW)',
+          request: {raw: false, jpeg: 'always', analyze: analyzer},
+          decode: false,
+        },
+      ],
+    };
+  }
+  // iOS: single mode, no remount (see above).
+  return {
+    cycleWithRemount: false,
+    modes: [
+      {label: 'RAW+JPEG +analysis', request: manualRequest, decode: true},
+    ],
+  };
+};
+
+function RawColorTest() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const camRef = useRef<RawColorCameraHandle>(null);
@@ -163,35 +197,14 @@ function AndroidRawColorTest() {
     [],
   );
 
-  // The capture configurations the Auto stress test rotates through. Each is
-  // bound by remounting the camera (reopen semantics), so this exercises the
-  // full bind + capture path per mode, not just a capture() option.
-  const autoModes = useMemo<AutoMode[]>(
-    () => [
-      {
-        label: 'RAW+JPEG +analysis',
-        request: {raw: true, jpeg: 'always', analyze: analyzer},
-        decode: true,
-      },
-      {
-        label: 'RAW only +analysis',
-        request: {raw: true, jpeg: 'never', analyze: analyzer},
-        decode: true,
-      },
-      {
-        label: 'RAW+JPEG no-analysis',
-        request: {raw: true, jpeg: 'always'},
-        decode: true,
-      },
-      {
-        // Simulates a phone that can't do RAW: binds preview+jpeg(+analysis),
-        // captures a JPEG only (no DNG → nothing to decode).
-        label: 'JPEG only (no RAW)',
-        request: {raw: false, jpeg: 'always', analyze: analyzer},
-        decode: false,
-      },
-    ],
+  // Idle/framing bind (full analysis) — also the shared capture request.
+  const manualRequest = useMemo<CaptureRequest>(
+    () => ({raw: true, jpeg: 'always', analyze: analyzer}),
     [analyzer],
+  );
+  const {modes: autoModes, cycleWithRemount} = useMemo(
+    () => getPlatformTestConfig(manualRequest, analyzer),
+    [manualRequest, analyzer],
   );
 
   // Managed cache subdir for the periodic save test (created lazily, files
@@ -289,9 +302,13 @@ function AndroidRawColorTest() {
       let m = 0;
       while (autoRef.current) {
         const mode = autoModes[m % autoModes.length];
-        setModeIdx(m % autoModes.length);
-        setLastStatus(`→ mode: ${mode.label} (remounting…)`);
-        await sleep(REMOUNT_SETTLE_MS); // let the fresh session bind
+        // Only reconfigure/remount when the platform cycles modes (Android).
+        // iOS keeps the one bind up and just repeats capture in place.
+        if (cycleWithRemount) {
+          setModeIdx(m % autoModes.length);
+          setLastStatus(`→ mode: ${mode.label} (remounting…)`);
+          await sleep(REMOUNT_SETTLE_MS); // let the fresh session bind
+        }
         for (let s = 0; s < SHOTS_PER_MODE && autoRef.current; s += 1) {
           const cam = camRef.current;
           if (!cam) {
@@ -331,7 +348,7 @@ function AndroidRawColorTest() {
         m += 1;
       }
     })().catch(() => {});
-  }, [autoModes, saveDir]);
+  }, [autoModes, cycleWithRemount, saveDir]);
 
   const cancel = useCallback(() => {
     stopAuto();
@@ -339,12 +356,13 @@ function AndroidRawColorTest() {
   }, [stopAuto, navigation]);
 
   const shutterDisabled = analyzing || autoRunning;
-  // While Auto runs, the request (and key) follow the current mode so the
-  // camera remounts per mode. Idle/manual framing uses the full analysis bind.
+  // While Auto runs, the request (and key) follow the current mode. Remounting
+  // (Android) rebinds per mode; on iOS the key stays fixed so the session is
+  // never torn down mid-soak. Idle framing uses the full-analysis bind.
   const activeRequest: CaptureRequest = autoRunning
     ? autoModes[modeIdx].request
-    : {raw: true, jpeg: 'always', analyze: analyzer};
-  const camKey = autoRunning ? `auto-${modeIdx}` : 'manual';
+    : manualRequest;
+  const camKey = autoRunning && cycleWithRemount ? `auto-${modeIdx}` : 'manual';
   return (
     <ScreenScaffold AppBar={<AppBar title="RAW capture (new API)" />}>
       <View style={styles.fill}>
@@ -355,9 +373,9 @@ function AndroidRawColorTest() {
           request={activeRequest}
           style={StyleSheet.absoluteFill}
           onError={e => console.warn('RawColorCamera error:', e)}>
-          {/* Live ROI overlay, drawn from the analyzer's onStats. Approx
-              alignment over the FILL_CENTER preview — enough to see the
-              red/green framing feedback update live. */}
+          {/* Live ROI overlay, drawn from the analyzer's onStats. Rendered
+              inside the shared sensor-aspect frame, so the boxes align 1:1 with
+              the preview (and the captured DNG) on both platforms. */}
           {[DISPLAY_REF_ROI, DISPLAY_SAMPLE_ROI].map((roi, i) => {
             const stat = quality.find(s => s.roi === i);
             const color = stat
@@ -408,123 +426,6 @@ function AndroidRawColorTest() {
             ]}>
             <Text style={styles.sideText}>{autoRunning ? 'Stop' : 'Auto'}</Text>
           </Pressable>
-        </SafeAreaView>
-        {analyzing && (
-          <View style={styles.analyzingOverlay}>
-            <ActivityIndicator size="large" color="#fff" />
-            <Text style={styles.analyzingText}>Analyzing…</Text>
-          </View>
-        )}
-      </View>
-    </ScreenScaffold>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// iOS: the new RawColorCamera API (Slice 4a preview + capture, 4b live
-// analysis). decodeRois takes FRACTIONAL ROIs (the component maps to DNG
-// pixels internally), so no roiToPixels dance here.
-
-function IosRawColorTest() {
-  const navigation = useNavigation();
-  const isFocused = useIsFocused();
-  const camRef = useRef<RawColorCameraHandle>(null);
-  const [analyzing, setAnalyzing] = useState(false);
-
-  // Live framing analysis (Slice 4b): the injected analyzer emits per-ROI luma
-  // stats; we draw the overlay (red/green per ROI) from them. Created once.
-  const [quality, setQuality] = useState<RoiStats[]>([]);
-  const analyzer = useMemo(
-    () =>
-      createRoiAnalyzer({
-        rois: [DISPLAY_REF_ROI, DISPLAY_SAMPLE_ROI],
-        onStats: setQuality,
-      }) ?? undefined,
-    [],
-  );
-
-  const shutter = useCallback(async () => {
-    const cam = camRef.current;
-    if (!cam || analyzing) {
-      return;
-    }
-    let cap;
-    try {
-      cap = await cam.capture({
-        onCaptured: () => console.log('[rawperf] CAPTURED — safe to move'),
-      });
-    } catch (err) {
-      Alert.alert('Capture failed', String(err));
-      return;
-    }
-    setAnalyzing(true);
-    await new Promise<void>(r => setTimeout(r, 0)); // let the overlay paint
-    let title: string;
-    let body: string;
-    try {
-      const td = Date.now();
-      const [ref, sample] = await cap.decodeRois([
-        DISPLAY_REF_ROI,
-        DISPLAY_SAMPLE_ROI,
-      ]);
-      console.log(`[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms`);
-      title = 'RAW ref + sample (linear RGB)';
-      body = wbAlertBody(ref, sample);
-    } catch (err) {
-      title = 'Decode failed';
-      body = String(err);
-    } finally {
-      cap.dispose();
-      setAnalyzing(false);
-    }
-    navigation.goBack();
-    Alert.alert(title, body);
-  }, [analyzing, navigation]);
-
-  const cancel = useCallback(() => navigation.goBack(), [navigation]);
-
-  return (
-    <ScreenScaffold AppBar={<AppBar title="RAW capture (new API)" />}>
-      <View style={styles.fill}>
-        <RawColorCamera
-          ref={camRef}
-          active={isFocused}
-          request={{raw: true, jpeg: 'always', analyze: analyzer}}
-          style={StyleSheet.absoluteFill}
-          onError={e => console.warn('RawColorCamera error:', e)}>
-          {/* Live ROI overlay, drawn from the analyzer's onStats. On iOS the
-              children render inside the sensor-aspect frame, so these align 1:1
-              with the preview (and the captured DNG). */}
-          {[DISPLAY_REF_ROI, DISPLAY_SAMPLE_ROI].map((roi, i) => {
-            const stat = quality.find(s => s.roi === i);
-            const color = stat
-              ? stat.variance < 500
-                ? '#22ee22'
-                : '#ee2222'
-              : 'rgba(255,255,255,0.5)';
-            return (
-              <View
-                key={i}
-                pointerEvents="none"
-                style={roiBoxStyle(roi, color)}
-              />
-            );
-          })}
-        </RawColorCamera>
-        <SafeAreaView style={styles.controls} edges={['bottom']}>
-          <Pressable
-            onPress={cancel}
-            style={styles.sideButton}
-            accessibilityRole="button">
-            <Text style={styles.sideText}>Cancel</Text>
-          </Pressable>
-          <Pressable
-            onPress={shutter}
-            disabled={analyzing}
-            accessibilityRole="button"
-            style={[styles.shutter, analyzing && styles.disabled]}
-          />
-          <View style={styles.sideButton} />
         </SafeAreaView>
         {analyzing && (
           <View style={styles.analyzingOverlay}>
