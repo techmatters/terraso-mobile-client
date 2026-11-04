@@ -29,6 +29,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {Directory, File, Paths} from 'expo-file-system';
+import {useKeepAwake} from 'expo-keep-awake';
 
 import {useIsFocused} from '@react-navigation/native';
 
@@ -173,6 +174,13 @@ const getPlatformTestConfig = (
 };
 
 function RawColorTest() {
+  // Keep the device awake + unlocked while this dev screen is open — handy for
+  // long Auto soaks and so a native rebuild can install without the phone
+  // having to be unlocked first. App-scoped (iOS isIdleTimerDisabled / Android
+  // equivalent); auto-reverts the moment you leave the screen. No global
+  // Auto-Lock change.
+  useKeepAwake();
+
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const camRef = useRef<RawColorCameraHandle>(null);
