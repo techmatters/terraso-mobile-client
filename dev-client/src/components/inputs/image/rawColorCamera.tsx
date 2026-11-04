@@ -191,6 +191,47 @@ const makeCapture = (
   },
 });
 
+// iPhone rear sensor is 4:3 landscape; the DNG rotates to 3:4 portrait for
+// display. width / height. (The Android native ViewPort also crops to 3:4.)
+const SENSOR_ASPECT = 3 / 4;
+
+// Fixed-aspect wrapper, centered + letterboxed inside its parent, so the
+// preview, the overlay children, and the captured DNG all share one coordinate
+// system. Used by BOTH engines so the live overlay lines up with the preview
+// (and maps 1:1 to the DNG) identically on each platform — iOS letterboxes via
+// resizeMode="contain"; Android's native 3:4 ViewPort fills this 3:4 box
+// exactly (no crop).
+const SensorAspectFrame = ({
+  aspect,
+  children,
+}: {
+  aspect: number;
+  children: ReactNode;
+}) => {
+  const [container, setContainer] = useState<{w: number; h: number} | null>(
+    null,
+  );
+  let inner: {width: number; height: number} | null = null;
+  if (container) {
+    inner =
+      container.w / container.h >= aspect
+        ? {height: container.h, width: container.h * aspect}
+        : {width: container.w, height: container.w / aspect};
+  }
+  return (
+    <View
+      style={styles.sensorFrameOuter}
+      onLayout={e =>
+        setContainer({
+          w: e.nativeEvent.layout.width,
+          h: e.nativeEvent.layout.height,
+        })
+      }>
+      {inner && <View style={inner}>{children}</View>}
+    </View>
+  );
+};
+
 // ---------------------------------------------------------------------------
 // Android engine: the raw-camera-android CameraX/Nitro module (vision-camera
 // can't save RAW_SENSOR on Android). Owns its own native preview + overlay.
@@ -310,8 +351,10 @@ const AndroidRawColorEngine = forwardRef<
 
   return (
     <View style={[styles.fill, style]}>
-      {preview}
-      {children}
+      <SensorAspectFrame aspect={SENSOR_ASPECT}>
+        {preview}
+        {children}
+      </SensorAspectFrame>
     </View>
   );
 });
@@ -324,45 +367,6 @@ const AndroidRawColorEngine = forwardRef<
 // SimpleRawCamera iOS path, reshaped as the headless RawColorCamera contract.
 // Slice 4a: preview + capture. Slice 4b: the same frame output also runs the
 // live ROI analyzer when request.analyze is present (useIosFrameAnalyzer).
-
-// iPhone rear sensor is 4:3 landscape; the DNG rotates to 3:4 portrait for
-// display. width / height.
-const SENSOR_ASPECT = 3 / 4;
-
-// Fixed-aspect wrapper, centered + letterboxed inside its parent, so the
-// preview, the overlay children, and the captured DNG all share one coordinate
-// system (camera at resizeMode="contain"). That's what lets a fractional ROI
-// overlay line up with the preview and map 1:1 to the DNG.
-const SensorAspectFrame = ({
-  aspect,
-  children,
-}: {
-  aspect: number;
-  children: ReactNode;
-}) => {
-  const [container, setContainer] = useState<{w: number; h: number} | null>(
-    null,
-  );
-  let inner: {width: number; height: number} | null = null;
-  if (container) {
-    inner =
-      container.w / container.h >= aspect
-        ? {height: container.h, width: container.h * aspect}
-        : {width: container.w, height: container.w / aspect};
-  }
-  return (
-    <View
-      style={styles.sensorFrameOuter}
-      onLayout={e =>
-        setContainer({
-          w: e.nativeEvent.layout.width,
-          h: e.nativeEvent.layout.height,
-        })
-      }>
-      {inner && <View style={inner}>{children}</View>}
-    </View>
-  );
-};
 
 // Generalized iOS ROI frame analyzer: ONE vision-camera frame output that both
 // (a) drives the live preview and (b) — when `rois` is non-empty — runs the
