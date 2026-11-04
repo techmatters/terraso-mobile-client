@@ -58,8 +58,8 @@ there was no version gap — just a known-good dependency set to replicate.
 Survey (2026-10-22) found the capture path is navigation-coupled on Android and the
 nitrogen codegen is committed in-tree (no build-time codegen). No Expo config plugin
 is needed — the modules are plain autolinked `file:` deps. Broken into sub-slices so
-each lands green; the `frame_analyzer.cpp` dedup moves to 2.1d (the two copies only
-coexist once `frame-analyzer` lands, and they differ only in comments, not code).
+each lands green; the `frame_analyzer.cpp` dedup is 2.1d (☑ — now a single shared
+source compiled by both modules).
 
 - **2.1a ☑ — `dng-decoder` module.** Removed stray untracked `modules/` build
   artifacts; ported `modules/dng-decoder` (sources + committed `nitrogen/generated`);
@@ -148,12 +148,22 @@ belongs with capability detection (2.2), driven by real capability rather than a
   `requestLayout` override. Restore from `de447bdb` if a future device ever needs retry recovery.
   **iOS unaffected.**
 - **2.1c-b ☐ — Android overlay.** (Blocked by the Android capture blocker above.) Enable
-  `RawCameraAndroidView`'s native ROI overlay (`showRoiOverlay`). `frame-analyzer` is iOS-only
-  and `raw-camera-android` carries its own `frame_analyzer.cpp`, so they never co-compile.
+  `RawCameraAndroidView`'s native ROI overlay (`showRoiOverlay`). (The analyzer core is now
+  shared — see 2.1d — but it's the same pure function either way; this is about the native
+  overlay rendering, not the math.)
 - **2.1c-c ☐ — ROI preset UI + wiring into the real color flow** (size selector from
   `ROI_PRESETS`; feed `decodeRoi` results into the experimental color screen). Clean session
   teardown is via screen unmount (nav goBack) — adequate in production (the wedging was
   dev-reload-only); revisit only if real-use wedging appears.
+- **2.1d ☑ — dedup `frame_analyzer.cpp`.** The byte-identical (comments aside) luma
+  analyzer core is now a single shared source: `modules/frame-analyzer/cpp/frame_analyzer.{cpp,h}`.
+  The iOS `FrameAnalyzer` pod compiles it as before (its `cpp/**` glob); the Android
+  `raw-camera-android` CMake now references the same file by relative path
+  (`../../frame-analyzer/cpp/frame_analyzer.cpp`) + adds it to the include path, and its
+  local copy is deleted. Only the thin platform ABI wrappers stay separate
+  (`frame_analyzer_c.*` for Swift, `frame_analyzer_jni.cpp` for JNI). Change the analyzer
+  math in one place now. (The display→sensor ROI rotation is still duplicated — JS worklet
+  on iOS vs Kotlin on Android — but that's cross-language, not practically shareable.)
 
 - **2.1e ◐ — reusable `RawColorCamera` API (decoupling camera / analyzer / overlay).**
   The capture test originally drove `RawCameraAndroidView` + `RawCameraAndroidHybrid`

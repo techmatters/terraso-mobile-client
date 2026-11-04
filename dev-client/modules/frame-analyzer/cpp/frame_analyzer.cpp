@@ -1,7 +1,6 @@
-// DUPLICATED (temporarily) from
-// modules/raw-camera-android/android/src/main/cpp/frame_analyzer.cpp.
-// Consolidate once the iOS overlay lands, per docs/raw-camera-plan.md
-// phase 8.4 follow-up.
+// Shared, platform-neutral Y-plane ROI analyzer — the single copy, compiled by
+// both the iOS FrameAnalyzer pod and the Android raw-camera-android CMake
+// build. See frame_analyzer.h for the sharing note.
 
 #include "frame_analyzer.h"
 
