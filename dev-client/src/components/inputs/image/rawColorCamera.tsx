@@ -17,18 +17,30 @@
 
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
+  useState,
   type ReactNode,
 } from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import {useCameraPermission} from 'react-native-vision-camera';
+import {runOnJS, useSharedValue} from 'react-native-reanimated';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraDevices,
+  useCameraPermission,
+  useFrameOutput,
+  usePhotoOutput,
+} from 'react-native-vision-camera';
 
 import {File} from 'expo-file-system';
 import {deleteAsync} from 'expo-file-system/legacy';
 
 import {DngDecoderHybrid} from 'dng-decoder';
+import {FrameAnalyzerHybrid} from 'frame-analyzer';
 import {
   createRoiAnalyzer as createNativeRoiAnalyzer,
   RawCameraAndroidHybrid,
@@ -44,30 +56,51 @@ import type {
   RawColorCameraProps,
   Roi,
   RoiAnalyzerConfig,
+  RoiStats,
   SaveOptions,
 } from 'terraso-mobile-client/components/inputs/image/rawColorCamera.types';
+import {rotateDisplayRoiToSensor} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
+
+// iOS can't inject a native frame sink (vision-camera binds the analyzer as a
+// frame-processor worklet, not an imperative object — see the Slice 4 notes).
+// So on iOS createRoiAnalyzer returns a plain CONFIG CARRIER: the iOS engine
+// reads {rois, onStats} off request.analyze and drives its own worklet. The
+// external FrameAnalyzer contract is identical; only the plumbing differs.
+type IosFrameAnalyzer = FrameAnalyzer & {
+  __iosConfig: {rois: Roi[]; onStats: (stats: RoiStats[]) => void};
+};
 
 /**
  * Create the injectable live-frame analyzer (the app passes the result as
  * request.analyze). The analyzer owns its ROIs + emits per-ROI luma stats via
- * onStats while framing; draw your overlay from those. Returns null off
- * Android (iOS analyzer is a later slice).
+ * onStats while framing; draw your overlay from those.
+ *   - Android: a native Nitro frame sink the camera pushes frames into.
+ *   - iOS: a config carrier the iOS engine's worklet reads (4b).
  */
 export const createRoiAnalyzer = (
   cfg: RoiAnalyzerConfig,
-): FrameAnalyzer | null =>
-  createNativeRoiAnalyzer(
-    cfg.rois,
-    cfg.onStats,
-  ) as unknown as FrameAnalyzer | null;
+): FrameAnalyzer | null => {
+  if (Platform.OS === 'android') {
+    return createNativeRoiAnalyzer(
+      cfg.rois,
+      cfg.onStats,
+    ) as unknown as FrameAnalyzer | null;
+  }
+  const carrier: IosFrameAnalyzer = {
+    __iosConfig: {rois: cfg.rois, onStats: cfg.onStats},
+    dispose: () => {},
+  };
+  return carrier;
+};
 
-// The reusable RAW color camera, on the proven Android capture engine
-// (raw-camera-android). Intentionally HEADLESS — preview + overlay children
-// only; the host supplies the shutter UI and calls capture() via ref.
-// request.analyze (Slice 3a) binds preview+raw+analysis and injects the live
-// analyzer (RAW-only capture while analyzing). Still to come: the native
-// preview+analysis->raw+jpeg shutter switch (3b) and the iOS engine (Slice 4;
-// iOS currently renders a placeholder — the test uses SimpleRawCamera there).
+// The reusable RAW color camera. Intentionally HEADLESS — preview + overlay
+// children only; the host supplies the shutter UI and calls capture() via ref.
+// One contract, two engines underneath (picked by Platform at the bottom):
+//   - Android: the raw-camera-android CameraX/Nitro module (3a analyzer feed,
+//     3b raw+jpeg shutter switch, rawless/jpeg-only).
+//   - iOS: vision-camera + ProRAW (4a preview + capture, 4b live analysis via
+//     a frame-processor worklet).
+// The Capture (below) is shared: both engines decode via dng-decoder.
 
 const fileUri = (p: string): string =>
   p.startsWith('file://') ? p : `file://${p}`;
@@ -158,10 +191,14 @@ const makeCapture = (
   },
 });
 
-export const RawColorCamera = forwardRef<
+// ---------------------------------------------------------------------------
+// Android engine: the raw-camera-android CameraX/Nitro module (vision-camera
+// can't save RAW_SENSOR on Android). Owns its own native preview + overlay.
+
+const AndroidRawColorEngine = forwardRef<
   RawColorCameraHandle,
   RawColorCameraProps
->(function RawColorCamera(
+>(function AndroidRawColorEngine(
   {active, request, children, onCapabilities, onError, style},
   ref,
 ) {
@@ -258,16 +295,6 @@ export const RawColorCamera = forwardRef<
   );
 
   const preview = useMemo<ReactNode>(() => {
-    if (Platform.OS !== 'android') {
-      return (
-        <View style={[styles.fill, styles.center]}>
-          <Text style={styles.message}>
-            RawColorCamera: iOS engine lands in a later slice — use
-            SimpleRawCamera on iOS for now.
-          </Text>
-        </View>
-      );
-    }
     if (!active || !hasPermission) {
       return null;
     }
@@ -289,8 +316,328 @@ export const RawColorCamera = forwardRef<
   );
 });
 
+// ---------------------------------------------------------------------------
+// iOS engine: vision-camera + the ProRAW patch. A vision-camera frame output
+// drives the live preview (a photo-output-only session renders no viewfinder);
+// because that output forces a non-RAW format, it's detached around each
+// capture (the onConfigured dance). Mechanics ported verbatim from the proven
+// SimpleRawCamera iOS path, reshaped as the headless RawColorCamera contract.
+// Slice 4a: preview + capture. Slice 4b: the same frame output also runs the
+// live ROI analyzer when request.analyze is present (useIosFrameAnalyzer).
+
+// iPhone rear sensor is 4:3 landscape; the DNG rotates to 3:4 portrait for
+// display. width / height.
+const SENSOR_ASPECT = 3 / 4;
+
+// Fixed-aspect wrapper, centered + letterboxed inside its parent, so the
+// preview, the overlay children, and the captured DNG all share one coordinate
+// system (camera at resizeMode="contain"). That's what lets a fractional ROI
+// overlay line up with the preview and map 1:1 to the DNG.
+const SensorAspectFrame = ({
+  aspect,
+  children,
+}: {
+  aspect: number;
+  children: ReactNode;
+}) => {
+  const [container, setContainer] = useState<{w: number; h: number} | null>(
+    null,
+  );
+  let inner: {width: number; height: number} | null = null;
+  if (container) {
+    inner =
+      container.w / container.h >= aspect
+        ? {height: container.h, width: container.h * aspect}
+        : {width: container.w, height: container.w / aspect};
+  }
+  return (
+    <View
+      style={styles.sensorFrameOuter}
+      onLayout={e =>
+        setContainer({
+          w: e.nativeEvent.layout.width,
+          h: e.nativeEvent.layout.height,
+        })
+      }>
+      {inner && <View style={inner}>{children}</View>}
+    </View>
+  );
+};
+
+// Generalized iOS ROI frame analyzer: ONE vision-camera frame output that both
+// (a) drives the live preview and (b) — when `rois` is non-empty — runs the
+// native Y-plane analyzer over each ROI and emits per-ROI {mean,variance} to
+// `onStats` via runOnJS (throttled to every other frame, like Android). With
+// no ROIs it's preview-only (just disposes each frame). This is iOS's
+// expression of the injected FrameAnalyzer contract — createRoiAnalyzer carries
+// {rois,onStats} and the engine feeds them here.
+function useIosFrameAnalyzer(
+  rois: Roi[],
+  onStats: ((stats: RoiStats[]) => void) | undefined,
+) {
+  const roisShared = useSharedValue<Roi[]>(rois);
+  const frameParity = useSharedValue(0);
+  // Write shared values in an effect, not render (reanimated strict-mode).
+  useEffect(() => {
+    roisShared.value = rois;
+  }, [rois, roisShared]);
+
+  // Stable JS sink the worklet invokes via runOnJS.
+  const emit = useCallback((stats: RoiStats[]) => onStats?.(stats), [onStats]);
+
+  return useFrameOutput({
+    // See useRoiFrameAnalyzer: these two keep RAW capture compatible on iOS.
+    pixelFormat: 'native',
+    enablePreviewSizedOutputBuffers: true,
+    onFrame: frame => {
+      'worklet';
+      try {
+        const rs = roisShared.value;
+        if (rs.length === 0) {
+          return; // preview-only — no analysis configured
+        }
+        // Process every other frame (~half the capture rate to the overlay).
+        frameParity.value = frameParity.value === 0 ? 1 : 0;
+        if (frameParity.value !== 0) {
+          return;
+        }
+        if (!frame.isPlanar) {
+          return;
+        }
+        const planes = frame.getPlanes();
+        if (planes.length === 0) {
+          return;
+        }
+        const yPlane = planes[0];
+        const buf = yPlane.getPixelBuffer();
+        const w = yPlane.width;
+        const h = yPlane.height;
+        const stride = yPlane.bytesPerRow;
+        const out: RoiStats[] = [];
+        for (let i = 0; i < rs.length; i += 1) {
+          const s = rotateDisplayRoiToSensor(rs[i], frame.orientation);
+          const st = FrameAnalyzerHybrid.analyzeYPlane(
+            buf,
+            stride,
+            w,
+            h,
+            Math.round(s.x * w),
+            Math.round(s.y * h),
+            Math.round(s.w * w),
+            Math.round(s.h * h),
+          );
+          out.push({roi: i, mean: st.mean, variance: st.variance});
+        }
+        runOnJS(emit)(out);
+      } finally {
+        frame.dispose();
+      }
+    },
+  });
+}
+
+const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
+  function IosRawColorEngine(
+    {active, request, children, onCapabilities, onError, style},
+    ref,
+  ) {
+    const {hasPermission, requestPermission} = useCameraPermission();
+
+    // Prefer a true single-wide physical back camera (Apple RAW is most
+    // reliable there, not on a virtual multi-cam aggregate); fall back to
+    // the default back camera.
+    const defaultDevice = useCameraDevice('back');
+    const allDevices = useCameraDevices();
+    const singleWideDevice = useMemo(
+      () =>
+        allDevices.find(
+          d =>
+            d.position === 'back' &&
+            d.type === 'wide-angle' &&
+            !d.isVirtualDevice,
+        ),
+      [allDevices],
+    );
+    const device = singleWideDevice ?? defaultDevice;
+
+    useEffect(() => {
+      if (active && !hasPermission) {
+        requestPermission().catch(err => onError?.(err as Error));
+      }
+    }, [active, hasPermission, requestPermission, onError]);
+
+    // Stable identity — vision-camera diffs photo-output options by identity to
+    // decide whether to reconfigure; a fresh object each render loops.
+    const photoOutputOptions = useMemo(
+      () => ({
+        targetResolution: {width: 4032, height: 3024},
+        containerFormat: 'dng' as const,
+      }),
+      [],
+    );
+    const photoOutput = usePhotoOutput(photoOutputOptions);
+
+    // Live analysis config carried on request.analyze (createRoiAnalyzer). No
+    // config → the frame output is preview-only.
+    const analyze = request.analyze as IosFrameAnalyzer | undefined;
+    const analyzerConfig = analyze?.__iosConfig;
+    const analyzerRois = useMemo(
+      () => analyzerConfig?.rois ?? [],
+      [analyzerConfig],
+    );
+    // ONE frame output drives both the preview AND (when ROIs are present) the
+    // live analyzer. iOS needs a frame output to render the viewfinder at all.
+    const frameOutput = useIosFrameAnalyzer(
+      analyzerRois,
+      analyzerConfig?.onStats,
+    );
+
+    // A frame output forces a non-RAW format, so detach it around each capture:
+    // flip detachedForCapture → session reconfigures to a RAW-capable format
+    // (awaited via onConfigured) → shoot → reattach.
+    const [detachedForCapture, setDetachedForCapture] = useState(false);
+    const outputs = useMemo(
+      () => (detachedForCapture ? [photoOutput] : [photoOutput, frameOutput]),
+      [detachedForCapture, photoOutput, frameOutput],
+    );
+    const configResolveRef = useRef<(() => void) | null>(null);
+    const onConfigured = useCallback(() => {
+      const resolve = configResolveRef.current;
+      if (resolve) {
+        configResolveRef.current = null;
+        resolve();
+      }
+    }, []);
+
+    const wantJpeg = request.jpeg !== 'never';
+    useEffect(() => {
+      if (!active || !hasPermission) {
+        return;
+      }
+      onCapabilities?.({
+        rawAvailable: true,
+        willCaptureRaw: request.raw !== false,
+        willCaptureJpeg: wantJpeg,
+        analysisActive: analyzerRois.length > 0,
+        // The detach/reconfigure to a RAW-capable format IS a shutter-time
+        // switch (same role as Android's 3b stream swap).
+        switchesAtCapture: true,
+      });
+    }, [
+      active,
+      hasPermission,
+      request.raw,
+      wantJpeg,
+      analyzerRois.length,
+      onCapabilities,
+    ]);
+
+    const capturingRef = useRef(false);
+    useImperativeHandle(
+      ref,
+      (): RawColorCameraHandle => ({
+        capture: async opts => {
+          if (capturingRef.current) {
+            throw new Error('capture already in progress');
+          }
+          capturingRef.current = true;
+          try {
+            // Detach the frame output + await the RAW-capable reconfigure.
+            const reconfigured = new Promise<void>(resolve => {
+              configResolveRef.current = resolve;
+            });
+            setDetachedForCapture(true);
+            await reconfigured;
+
+            const photo = await photoOutput.capturePhoto({}, {});
+            if (!photo.isRawPhoto) {
+              // Asked for DNG but got a processed photo — refuse to emit a
+              // JPEG-shaped result from RAW data.
+              throw new Error(
+                'expected a RAW photo but received a processed one',
+              );
+            }
+            const rawUri = fileUri(await photo.saveToTemporaryFileAsync());
+            // iOS DNGs embed a full-res Apple-processed JPEG preview; pull it
+            // out as the companion (best-effort). Skipped when jpeg:'never'.
+            let jpegUri: string | undefined;
+            if (wantJpeg) {
+              try {
+                jpegUri = fileUri(
+                  DngDecoderHybrid.extractDngPreviewJpeg(rawUri),
+                );
+              } catch (err) {
+                onError?.(err as Error);
+              }
+            }
+            // Sensor read out + files on disk → safe to move.
+            opts?.onCaptured?.();
+            return makeCapture(rawUri, jpegUri, photo.width, photo.height);
+          } finally {
+            // Reattach the frame output (preview resumes).
+            setDetachedForCapture(false);
+            capturingRef.current = false;
+          }
+        },
+      }),
+      [photoOutput, wantJpeg, onError],
+    );
+
+    const ready = !!device && hasPermission && active;
+    return (
+      <View style={[styles.fill, style]}>
+        {ready ? (
+          <SensorAspectFrame aspect={SENSOR_ASPECT}>
+            <Camera
+              style={StyleSheet.absoluteFill}
+              device={device}
+              isActive={active}
+              outputs={outputs}
+              onConfigured={onConfigured}
+              // Portrait-locked: tie orientation to the UI, not the device.
+              orientationSource="interface"
+              resizeMode="contain"
+              enableNativeTapToFocusGesture={true}
+            />
+            {children}
+          </SensorAspectFrame>
+        ) : (
+          <View style={[styles.fill, styles.center]}>
+            <Text style={styles.message}>
+              {device
+                ? 'Camera permission is required to capture.'
+                : 'No compatible camera was found on this device.'}
+            </Text>
+          </View>
+        )}
+      </View>
+    );
+  },
+);
+
+// Public component: one contract, platform-specific engine underneath.
+export const RawColorCamera = forwardRef<
+  RawColorCameraHandle,
+  RawColorCameraProps
+>(function RawColorCamera(props, ref) {
+  return Platform.OS === 'android' ? (
+    <AndroidRawColorEngine ref={ref} {...props} />
+  ) : (
+    <IosRawColorEngine ref={ref} {...props} />
+  );
+});
+
 const styles = StyleSheet.create({
   fill: {flex: 1, backgroundColor: 'black'},
   center: {alignItems: 'center', justifyContent: 'center', padding: 24},
   message: {color: 'white', fontSize: 16, textAlign: 'center'},
+  sensorFrameOuter: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

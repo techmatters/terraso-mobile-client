@@ -142,7 +142,7 @@ export const DISPLAY_SAMPLE_ROI = ROI_PRESETS[DEFAULT_ROI_PRESET_INDEX].sample;
 //   sensor_x = 1 - y - h,  sensor_y = x,  sensor_w = h,  sensor_h = w
 //
 // The other cases follow by analogous derivations.
-function rotateDisplayRoiToSensor(
+export function rotateDisplayRoiToSensor(
   roi: FractionalRoi,
   orientation: 'up' | 'right' | 'down' | 'left',
 ): FractionalRoi {
