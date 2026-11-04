@@ -32,7 +32,6 @@ import {Directory, File, Paths} from 'expo-file-system';
 
 import {useIsFocused} from '@react-navigation/native';
 
-import {CaptureResult} from 'terraso-mobile-client/components/inputs/image/captureTypes';
 import {
   createRoiAnalyzer,
   RawColorCamera,
@@ -43,11 +42,9 @@ import type {
   RawColorCameraHandle,
   RoiStats,
 } from 'terraso-mobile-client/components/inputs/image/rawColorCamera.types';
-import {SimpleRawCamera} from 'terraso-mobile-client/components/inputs/image/SimpleRawCamera';
 import {
   DISPLAY_REF_ROI,
   DISPLAY_SAMPLE_ROI,
-  type FractionalRoi,
 } from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -106,16 +103,15 @@ const wbAlertBody = (ref: LinearRgb, sample: LinearRgb): string => {
 /**
  * Dev-only full-screen RAW capture smoke test, flag-gated via the dev menu.
  *
- * Android exercises the NEW RawColorCamera API (ref.capture() → Capture →
- * decodeRois, with an "Analyzing…" overlay during decode and an Auto stress
- * loop). iOS still runs the legacy SimpleRawCamera flow — its RawColorCamera
- * engine is a later slice.
+ * Both platforms now use the RawColorCamera API (ref.capture() → Capture →
+ * decodeRois, with an "Analyzing…" overlay during decode and the live red/green
+ * ROI overlay while framing). Android adds the Auto stress loop + mode cycling.
  */
 export function RawCaptureTestScreen() {
   return Platform.OS === 'android' ? (
     <AndroidRawColorTest />
   ) : (
-    <IosLegacyTest />
+    <IosRawColorTest />
   );
 }
 
@@ -425,78 +421,119 @@ function AndroidRawColorTest() {
 }
 
 // ---------------------------------------------------------------------------
-// iOS: legacy SimpleRawCamera flow (unchanged; its RawColorCamera engine is a
-// later slice). Uses the old pixel-coord decodeRoi.
+// iOS: the new RawColorCamera API (Slice 4a preview + capture, 4b live
+// analysis). decodeRois takes FRACTIONAL ROIs (the component maps to DNG
+// pixels internally), so no roiToPixels dance here.
 
-const roiToPixels = (
-  dims: {width: number; height: number},
-  roi: FractionalRoi,
-) => {
-  const effW = Math.min(dims.width, dims.height);
-  const effH = Math.max(dims.width, dims.height);
-  return {
-    x: Math.round(roi.x * effW),
-    y: Math.round(roi.y * effH),
-    w: Math.round(roi.w * effW),
-    h: Math.round(roi.h * effH),
-  };
-};
-
-function IosLegacyTest() {
+function IosRawColorTest() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const camRef = useRef<RawColorCameraHandle>(null);
   const [analyzing, setAnalyzing] = useState(false);
 
-  const onCapture = useCallback(
-    async (result: CaptureResult) => {
-      if (result.kind !== 'raw') {
-        navigation.goBack();
-        Alert.alert('Unexpected capture', `Got "${result.kind}".`);
-        return;
-      }
-      console.log('[rawperf] CAPTURED — safe to move; decoding…');
-      setAnalyzing(true);
-      await new Promise<void>(r => setTimeout(r, 0));
-      let title: string;
-      let body: string;
-      try {
-        const td = Date.now();
-        const [ref, sample] = await result.decodeRois([
-          roiToPixels(result, DISPLAY_REF_ROI),
-          roiToPixels(result, DISPLAY_SAMPLE_ROI),
-        ]);
-        console.log(`[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms`);
-        title = 'RAW ref + sample (linear RGB)';
-        body = wbAlertBody(ref, sample);
-      } catch (err) {
-        title = 'Decode failed';
-        body = String(err);
-      } finally {
-        result.dispose();
-        setAnalyzing(false);
-      }
-      navigation.goBack();
-      Alert.alert(title, body);
-    },
-    [navigation],
+  // Live framing analysis (Slice 4b): the injected analyzer emits per-ROI luma
+  // stats; we draw the overlay (red/green per ROI) from them. Created once.
+  const [quality, setQuality] = useState<RoiStats[]>([]);
+  const analyzer = useMemo(
+    () =>
+      createRoiAnalyzer({
+        rois: [DISPLAY_REF_ROI, DISPLAY_SAMPLE_ROI],
+        onStats: setQuality,
+      }) ?? undefined,
+    [],
   );
 
-  const onCancel = useCallback(() => navigation.goBack(), [navigation]);
+  const shutter = useCallback(async () => {
+    const cam = camRef.current;
+    if (!cam || analyzing) {
+      return;
+    }
+    let cap;
+    try {
+      cap = await cam.capture({
+        onCaptured: () => console.log('[rawperf] CAPTURED — safe to move'),
+      });
+    } catch (err) {
+      Alert.alert('Capture failed', String(err));
+      return;
+    }
+    setAnalyzing(true);
+    await new Promise<void>(r => setTimeout(r, 0)); // let the overlay paint
+    let title: string;
+    let body: string;
+    try {
+      const td = Date.now();
+      const [ref, sample] = await cap.decodeRois([
+        DISPLAY_REF_ROI,
+        DISPLAY_SAMPLE_ROI,
+      ]);
+      console.log(`[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms`);
+      title = 'RAW ref + sample (linear RGB)';
+      body = wbAlertBody(ref, sample);
+    } catch (err) {
+      title = 'Decode failed';
+      body = String(err);
+    } finally {
+      cap.dispose();
+      setAnalyzing(false);
+    }
+    navigation.goBack();
+    Alert.alert(title, body);
+  }, [analyzing, navigation]);
+
+  const cancel = useCallback(() => navigation.goBack(), [navigation]);
 
   return (
-    <View style={styles.fill}>
-      <SimpleRawCamera
-        visible={isFocused}
-        onCapture={onCapture}
-        onCancel={onCancel}
-      />
-      {analyzing && (
-        <View style={styles.analyzingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
-          <Text style={styles.analyzingText}>Analyzing…</Text>
-        </View>
-      )}
-    </View>
+    <ScreenScaffold AppBar={<AppBar title="RAW capture (new API)" />}>
+      <View style={styles.fill}>
+        <RawColorCamera
+          ref={camRef}
+          active={isFocused}
+          request={{raw: true, jpeg: 'always', analyze: analyzer}}
+          style={StyleSheet.absoluteFill}
+          onError={e => console.warn('RawColorCamera error:', e)}>
+          {/* Live ROI overlay, drawn from the analyzer's onStats. On iOS the
+              children render inside the sensor-aspect frame, so these align 1:1
+              with the preview (and the captured DNG). */}
+          {[DISPLAY_REF_ROI, DISPLAY_SAMPLE_ROI].map((roi, i) => {
+            const stat = quality.find(s => s.roi === i);
+            const color = stat
+              ? stat.variance < 500
+                ? '#22ee22'
+                : '#ee2222'
+              : 'rgba(255,255,255,0.5)';
+            return (
+              <View
+                key={i}
+                pointerEvents="none"
+                style={roiBoxStyle(roi, color)}
+              />
+            );
+          })}
+        </RawColorCamera>
+        <SafeAreaView style={styles.controls} edges={['bottom']}>
+          <Pressable
+            onPress={cancel}
+            style={styles.sideButton}
+            accessibilityRole="button">
+            <Text style={styles.sideText}>Cancel</Text>
+          </Pressable>
+          <Pressable
+            onPress={shutter}
+            disabled={analyzing}
+            accessibilityRole="button"
+            style={[styles.shutter, analyzing && styles.disabled]}
+          />
+          <View style={styles.sideButton} />
+        </SafeAreaView>
+        {analyzing && (
+          <View style={styles.analyzingOverlay}>
+            <ActivityIndicator size="large" color="#fff" />
+            <Text style={styles.analyzingText}>Analyzing…</Text>
+          </View>
+        )}
+      </View>
+    </ScreenScaffold>
   );
 }
 
