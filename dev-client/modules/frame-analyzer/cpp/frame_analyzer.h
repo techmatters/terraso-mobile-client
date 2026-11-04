@@ -25,12 +25,13 @@ struct RoiLumaStats {
 //
 // Integer arithmetic in the hot loop (u32/u64 accumulators). On ARM64
 // with __ARM_NEON, uses 16-wide vector loads + u8×u8→u16 mull for
-// sum-of-squares. Scalar fallback everywhere else (simulator).
+// sum-of-squares. Scalar fallback on non-ARM (iOS simulator / x86 emulator).
 //
-// DUPLICATED (temporarily) from
-// modules/raw-camera-android/android/src/main/cpp/frame_analyzer.h —
-// consolidate once the iOS overlay lands, per docs/raw-camera-plan.md
-// phase 8.4 follow-up.
+// SHARED SOURCE: this file (modules/frame-analyzer/cpp) is the single copy,
+// compiled by BOTH the iOS FrameAnalyzer pod (via FrameAnalyzer.podspec) and
+// the Android raw-camera-android CMake build (which references it by relative
+// path). Keep it platform-neutral — the only platform-specific pieces are the
+// thin wrappers (frame_analyzer_c.* for Swift, frame_analyzer_jni.cpp for JNI).
 void analyzeRoiLuma(
     const uint8_t* yPlane,
     size_t rowStride,
