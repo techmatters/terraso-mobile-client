@@ -31,6 +31,7 @@ import {CopyAccessTokenItem} from 'terraso-mobile-client/screens/UserSettingsScr
 import {DataExportItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DataExportItem';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
+import {KeepAwakeToggleItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/KeepAwakeToggleItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
 import {SelectLanguageItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SelectLanguageItem';
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
@@ -63,6 +64,7 @@ export function UserSettingsScreen() {
                 <RestrictByFlag flag="FF_testing">
                   <CopyAccessTokenItem />
                   <ClearSoilIdCacheItem />
+                  <KeepAwakeToggleItem />
                 </RestrictByFlag>
               </>
             )}
