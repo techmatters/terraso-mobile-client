@@ -15,38 +15,13 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useEffect} from 'react';
-import {useSharedValue} from 'react-native-reanimated';
-import type {SharedValue} from 'react-native-reanimated';
-import {useFrameOutput} from 'react-native-vision-camera';
-
-import {FrameAnalyzerHybrid} from 'frame-analyzer';
-
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 
-// Phase-8.4 iOS real-time analyzer. Wraps vision-camera's useFrameOutput
-// with a worklet that runs the Nitro-hosted C++ Y-plane analyzer for two
-// hardcoded ROIs and publishes per-ROI colour codes to shared values the
-// overlay reads via reanimated.
-//
-// The ROIs are baked into this hook for phase 8.4 first cut (same
-// hardcoded pair as Android phase 8.2). Phase 8.3-equivalent will let JS
-// callers pass them in and drive both the overlay + analyzer from a
-// single source.
-
-// Variance value at which "match quality" bottoms out to 0.
-// Anything at or below this variance maps linearly to a bar-fill from
-// 1.0 (variance=0, perfectly uniform) down to 0.0 (variance≥MAX). Also
-// the border-flip threshold: quality > 0 → green, quality == 0 → red.
-//
-// Value in squared-luma units. Standard deviation (√var) is on the
-// 0..255 luma scale and is easier to reason about: MAX_VARIANCE=500 →
-// std ≈ 22, i.e. ~9% of the full range. Truly uniform surfaces typically
-// come in around std 5..15 (var 25..225); a real card with fibre or a
-// slight shadow gradient sits in std 15..25 (var 225..625). 500 keeps
-// good-in-practice framings inside the green band; earlier value of
-// 200 was aggressive enough that even nicely-framed cards read red.
-const MAX_VARIANCE = 500;
+// ROI definitions + helpers for the RAW color capture flow: the preset
+// rectangles (persisted selection) and the display→sensor rotation worklet.
+// (The live frame-processor hook that used to live here moved into
+// RawColorCamera's iOS engine — useIosFrameAnalyzer — when iOS adopted the
+// shared RawColorCamera API; this module now just holds the ROI data + math.)
 
 export type FractionalRoi = {x: number; y: number; w: number; h: number};
 
@@ -157,104 +132,4 @@ export function rotateDisplayRoiToSensor(
     case 'left':
       return {x: roi.y, y: 1 - roi.x - roi.w, w: roi.h, h: roi.w};
   }
-}
-
-export type UseRoiFrameAnalyzerResult = {
-  frameOutput: ReturnType<typeof useFrameOutput>;
-  // Match-quality per ROI as a 0..1 SharedValue. 0 means "too much
-  // variance to trust", 1 means "perfectly uniform". RoiOverlay uses
-  // it for both bar fill and border colour.
-  refQuality: SharedValue<number>;
-  sampleQuality: SharedValue<number>;
-};
-
-export function useRoiFrameAnalyzer(
-  refRoi: FractionalRoi,
-  sampleRoi: FractionalRoi,
-): UseRoiFrameAnalyzerResult {
-  const refQuality = useSharedValue(0);
-  const sampleQuality = useSharedValue(0);
-  // Copy the roi objects into shared values so the worklet reads them
-  // by identity — using the props directly in the worklet closure
-  // pins whatever object identity happened to exist at hook-creation
-  // time, and later re-renders with a new roi object wouldn't reach
-  // the worklet.
-  const refRoiShared = useSharedValue(refRoi);
-  const sampleRoiShared = useSharedValue(sampleRoi);
-  // Update in an effect, not during render — reanimated's strict mode warns
-  // about writing a shared value's `.value` while React is rendering.
-  useEffect(() => {
-    refRoiShared.value = refRoi;
-    sampleRoiShared.value = sampleRoi;
-  }, [refRoi, sampleRoi, refRoiShared, sampleRoiShared]);
-
-  const frameOutput = useFrameOutput({
-    // Both settings below preserve RAW-capture compatibility on iOS.
-    // Adding a frame output can force vision-camera to pick an
-    // AVCaptureDeviceFormat that supports video streaming but not RAW
-    // photo capture, breaking DNG capture with a "PhotoOutput does not
-    // support raw capture" error. Two mitigations:
-    //   - `pixelFormat: 'native'` (the default): don't force a YUV
-    //     conversion that might rule out RAW-capable Formats. iPhone
-    //     rear-cam native pixel format is YCbCr biplanar, which the
-    //     analyzer still reads via getPlanes()[0].
-    //   - `enablePreviewSizedOutputBuffers: true`: piggyback on the
-    //     preview surface's buffer instead of allocating a separate
-    //     video-stream size that would constrain Format selection.
-    pixelFormat: 'native',
-    enablePreviewSizedOutputBuffers: true,
-    onFrame: frame => {
-      'worklet';
-      try {
-        if (!frame.isPlanar) return;
-        const planes = frame.getPlanes();
-        if (planes.length === 0) return;
-        const yPlane = planes[0];
-        const buf = yPlane.getPixelBuffer();
-        const w = yPlane.width;
-        const h = yPlane.height;
-        const stride = yPlane.bytesPerRow;
-        const refSensor = rotateDisplayRoiToSensor(
-          refRoiShared.value,
-          frame.orientation,
-        );
-        const sampleSensor = rotateDisplayRoiToSensor(
-          sampleRoiShared.value,
-          frame.orientation,
-        );
-        const refStats = FrameAnalyzerHybrid.analyzeYPlane(
-          buf,
-          stride,
-          w,
-          h,
-          Math.round(refSensor.x * w),
-          Math.round(refSensor.y * h),
-          Math.round(refSensor.w * w),
-          Math.round(refSensor.h * h),
-        );
-        const sampleStats = FrameAnalyzerHybrid.analyzeYPlane(
-          buf,
-          stride,
-          w,
-          h,
-          Math.round(sampleSensor.x * w),
-          Math.round(sampleSensor.y * h),
-          Math.round(sampleSensor.w * w),
-          Math.round(sampleSensor.h * h),
-        );
-        refQuality.value = Math.max(
-          0,
-          Math.min(1, 1 - refStats.variance / MAX_VARIANCE),
-        );
-        sampleQuality.value = Math.max(
-          0,
-          Math.min(1, 1 - sampleStats.variance / MAX_VARIANCE),
-        );
-      } finally {
-        frame.dispose();
-      }
-    },
-  });
-
-  return {frameOutput, refQuality, sampleQuality};
 }
