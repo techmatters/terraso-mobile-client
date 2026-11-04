@@ -339,6 +339,15 @@ function RawColorTest() {
           } catch (err) {
             fail += 1;
             status = `✗ ${mode.label} #${global}: ${String(err)}`;
+            // Halt the soak on the first failure so the evidence survives:
+            // the app stops shooting, so this error stays at the tail of the
+            // (small) logcat buffer, and the banner holds the mode + error.
+            // console.error also drops it into logcat under ReactNativeJS.
+            console.error(
+              `[rawperf] AUTO FAILURE #${global} (${mode.label}): ${String(err)}`,
+            );
+            autoRef.current = false;
+            setAutoRunning(false);
           }
           setShotCount(global);
           setLastStatus(`${status}  (susp ${susp}, fail ${fail} / ${global})`);
