@@ -210,8 +210,7 @@
   "expo": {
     "autolinking": {
       "exclude": [
-        "expo-application",
-        "expo-keep-awake"
+        "expo-application"
       ]
     }
   },
