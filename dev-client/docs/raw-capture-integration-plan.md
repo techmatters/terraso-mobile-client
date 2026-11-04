@@ -176,23 +176,38 @@ belongs with capability detection (2.2), driven by real capability rather than a
       side reconfigures preview+raw+analysis → preview+raw+jpeg for the shot, captures
       RAW+JPEG, then restores analysis (preview reuses its surface across the rebinds).
       Validated on Pixel 6a (`raw=172ms jpeg=100ms`, overlay resumes). Commit **`723ca5f2`**.
-    - **JPEG-only / `rawless` ☑ (local, pending commit) — no-RAW device simulation.**
+    - **JPEG-only / `rawless` ☑ — no-RAW device simulation.**
       A `rawless` view prop binds **preview+jpeg(+analysis) with no RAW stream** and
       `capture()` produces a JPEG only (no DNG) — implements the capability model's
       "No RAW → JPEG only" row on RAW-capable hardware, so the non-RAW app path is
       testable. New `ensureRawlessBoundLocked()` / `captureJpegOnlyLocked()` in
       `CameraSessionManager`; the RAW path (`ensureBoundLocked`/`captureLocked`/3b switch)
       is untouched. `Capture.hasRaw=false`; `decodeRois()` throws a clear jpeg-only error.
-    - **Auto stress harness ☑ (local) — mode-cycling + periodic persist.** The test's
+      Commit **`70fd23ed`**.
+    - **Auto stress harness ☑ — mode-cycling + periodic persist.** The test's
       "Auto" cycles the capture configs (RAW+JPEG+analysis, RAW-only, RAW+JPEG no-analysis,
       JPEG-only), N shots each, **remounting the camera between modes** (= reopening the
       screen — real-use bind path, not a mid-session reconfigure), and every 100th shot
-      exercises `save()`→verify→delete. First soak: 11 shots, 0 errors.
-    - **Slice 4 ☐ — iOS parity.** Bring iOS onto `RawColorCamera` reusing its existing
-      vision-camera analyzer + detach-at-shutter capture, behind the same contract. iOS
-      still runs the legacy `SimpleRawCamera` flow until then.
+      exercises `save()`→verify→delete. Validated on Pixel 6a: 125 shots across all four
+      modes, 0 errors. Commit **`70fd23ed`** (later unified with iOS — see below).
+    - **Slice 4 ☑ (4a+4b) — iOS parity.** `RawColorCamera` is now a platform dispatcher
+      over two engines: `AndroidRawColorEngine` (CameraX/Nitro, unchanged) and
+      `IosRawColorEngine` (vision-camera + ProRAW, ported from the proven `SimpleRawCamera`
+      path — single-wide device, `usePhotoOutput` DNG, the detach-at-capture `onConfigured`
+      dance). 4a = preview + capture; 4b = live analysis via a frame-processor worklet
+      (`useIosFrameAnalyzer`) emitting per-ROI `{mean,variance}` through `runOnJS`. iOS can't
+      inject a native frame sink, so `createRoiAnalyzer` returns a config carrier on iOS;
+      the external `FrameAnalyzer` contract is identical. `makeCapture` is shared (both
+      decode via `dng-decoder`, fractional ROIs). Commit **`09908225`**.
+    - **Parity polish ☑ — shared layout + unified harness.** `SensorAspectFrame` lifted
+      into `RawColorCamera` so both engines render preview + overlay in the same 3:4 box
+      (ROI boxes align 1:1 with preview + DNG on both platforms) — commit **`36f858ba`**.
+      The two test harnesses collapsed into one `RawColorTest`; the only per-platform
+      difference is the Auto mode list + whether modes remount (iOS: single mode, no
+      remount, to avoid wedging the vision-camera session). iOS gains the Auto soak —
+      commit **`1dc2684f`**.
     - **Slice 5 ☐ — cleanup.** Strip the `[rawperf]` timing logs; retire `SimpleRawCamera`
-      once iOS migrates.
+      (now orphaned) once this all settles.
 
   **API at a glance** (source of truth: [`rawColorCamera.types.ts`](../src/components/inputs/image/rawColorCamera.types.ts)):
   ```tsx
