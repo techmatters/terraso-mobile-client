@@ -19,7 +19,7 @@ import {fireEvent, render, screen} from '@testing-library/react-native';
 
 import {
   CheckboxList,
-  MultiSelectProps,
+  CheckboxListProps,
 } from 'terraso-mobile-client/components/inputs/CheckboxList';
 
 type Fruit = {id: string; name: string};
@@ -30,11 +30,10 @@ const FRUITS: Fruit[] = [
   {id: 'cherry', name: 'Cherry'},
 ];
 
-const renderList = (props: Partial<MultiSelectProps<Fruit>> = {}) => {
+const renderList = (props: Partial<CheckboxListProps<Fruit>> = {}) => {
   const onValueChange = jest.fn();
   render(
     <CheckboxList
-      label="Pick fruit"
       options={FRUITS}
       optionKey={fruit => fruit.id}
       renderValue={fruit => fruit.name}
@@ -49,10 +48,9 @@ const renderList = (props: Partial<MultiSelectProps<Fruit>> = {}) => {
 const checkbox = (name: string) => screen.getByRole('checkbox', {name});
 
 describe('CheckboxList', () => {
-  test('renders the label and one checkbox per option', () => {
+  test('renders one checkbox per option', () => {
     renderList();
 
-    expect(screen.getByText('Pick fruit')).toBeOnTheScreen();
     expect(screen.getAllByRole('checkbox')).toHaveLength(FRUITS.length);
   });
 

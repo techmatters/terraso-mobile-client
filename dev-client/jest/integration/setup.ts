@@ -154,3 +154,8 @@ global.console.warn = jest.fn();
 // for native base animations. Would be nice to figure out how to disable this
 // For now, just silence
 global.console.error = jest.fn();
+
+// react-native-keyboard-controller needs its native module; the package ships a jest mock.
+jest.mock('react-native-keyboard-controller', () =>
+  require('react-native-keyboard-controller/jest'),
+);

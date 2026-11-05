@@ -18,6 +18,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {KeyboardProvider} from 'react-native-keyboard-controller';
 import {PaperProvider, Portal} from 'react-native-paper';
 import {Provider} from 'react-redux';
 
@@ -58,43 +59,45 @@ export const AppWrappers = ({store, children}: Props) => {
 
   return (
     <GestureHandlerRootView style={styles.gestureHandler}>
-      <Provider store={store}>
-        <SiteTabJumpContextProvider>
-          <NavigationContainer
-            ref={navRef}
-            // uncomment to enable screen stack debugging
-            // onStateChange={console.log}
-          >
-            <ConnectivityContextProvider>
-              <PostHog navRef={navRef}>
-                <HeaderHeightProvider>
-                  <BottomSheetModalProvider>
-                    <PaperProvider theme={paperTheme}>
-                      <NativeBaseProvider theme={theme}>
-                        <Portal.Host>
-                          <BottomSheetModalProvider>
-                            <GeospatialProvider>
-                              <PendingSiteCalloutProvider>
-                                <ForegroundPermissionsProvider>
-                                  <SyncNotificationContextProvider>
-                                    <SoilIdMatchContextProvider>
-                                      {children}
-                                    </SoilIdMatchContextProvider>
-                                  </SyncNotificationContextProvider>
-                                </ForegroundPermissionsProvider>
-                              </PendingSiteCalloutProvider>
-                            </GeospatialProvider>
-                          </BottomSheetModalProvider>
-                        </Portal.Host>
-                      </NativeBaseProvider>
-                    </PaperProvider>
-                  </BottomSheetModalProvider>
-                </HeaderHeightProvider>
-              </PostHog>
-            </ConnectivityContextProvider>
-          </NavigationContainer>
-        </SiteTabJumpContextProvider>
-      </Provider>
+      <KeyboardProvider>
+        <Provider store={store}>
+          <SiteTabJumpContextProvider>
+            <NavigationContainer
+              ref={navRef}
+              // uncomment to enable screen stack debugging
+              // onStateChange={console.log}
+            >
+              <ConnectivityContextProvider>
+                <PostHog navRef={navRef}>
+                  <HeaderHeightProvider>
+                    <BottomSheetModalProvider>
+                      <PaperProvider theme={paperTheme}>
+                        <NativeBaseProvider theme={theme}>
+                          <Portal.Host>
+                            <BottomSheetModalProvider>
+                              <GeospatialProvider>
+                                <PendingSiteCalloutProvider>
+                                  <ForegroundPermissionsProvider>
+                                    <SyncNotificationContextProvider>
+                                      <SoilIdMatchContextProvider>
+                                        {children}
+                                      </SoilIdMatchContextProvider>
+                                    </SyncNotificationContextProvider>
+                                  </ForegroundPermissionsProvider>
+                                </PendingSiteCalloutProvider>
+                              </GeospatialProvider>
+                            </BottomSheetModalProvider>
+                          </Portal.Host>
+                        </NativeBaseProvider>
+                      </PaperProvider>
+                    </BottomSheetModalProvider>
+                  </HeaderHeightProvider>
+                </PostHog>
+              </ConnectivityContextProvider>
+            </NavigationContainer>
+          </SiteTabJumpContextProvider>
+        </Provider>
+      </KeyboardProvider>
     </GestureHandlerRootView>
   );
 };

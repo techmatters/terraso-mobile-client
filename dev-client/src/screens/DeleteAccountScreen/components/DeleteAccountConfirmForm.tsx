@@ -17,7 +17,7 @@
 
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {User} from 'terraso-client-shared/account/accountSlice';
 
@@ -25,12 +25,13 @@ import {DialogButton} from 'terraso-mobile-client/components/buttons/DialogButto
 import {TranslatedParagraph} from 'terraso-mobile-client/components/content/typography/TranslatedParagraph';
 import {TextField} from 'terraso-mobile-client/components/inputs/TextField';
 import {Column, Row} from 'terraso-mobile-client/components/NativeBaseAdapters';
-import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
-import {DeleteAccountReasonsField} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountReasonsField';
+import {DELETE_ACCOUNT_FEEDBACK_MAX_LENGTH} from 'terraso-mobile-client/constants';
 import {
   DeleteAccountFeedback,
   DeleteAccountReason,
-} from 'terraso-mobile-client/screens/DeleteAccountScreen/deleteAccountFeedback';
+} from 'terraso-mobile-client/model/account/deleteAccountFeedback';
+import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
+import {DeleteAccountReasonsField} from 'terraso-mobile-client/screens/DeleteAccountScreen/components/DeleteAccountReasonsField';
 import {theme} from 'terraso-mobile-client/theme';
 
 export type DeleteAccountConfirmFormProps = {
@@ -64,7 +65,7 @@ export function DeleteAccountConfirmForm({
   return (
     <Column>
       <DeleteAccountReasonsField value={reasons} onValueChange={setReasons} />
-      <Column style={styles.spacer} />
+      <View style={styles.spacer} />
       <TranslatedParagraph
         bold
         i18nKey="delete_account.feedback.details_prompt"
@@ -74,6 +75,7 @@ export function DeleteAccountConfirmForm({
         value={details}
         onChangeText={setDetails}
         multiline={true}
+        maxLength={DELETE_ACCOUNT_FEEDBACK_MAX_LENGTH}
       />
       <TranslatedParagraph i18nKey="delete_account.confirm.p5" />
       <TextField
