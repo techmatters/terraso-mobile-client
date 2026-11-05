@@ -105,7 +105,10 @@ object CameraSessionManager {
     // it reaches STREAMING before re-capturing. A retry can't wedge the way a
     // hot stream-swap can, and a stuck session is recovered by the rebind.
     private const val CAPTURE_MAX_RETRIES = 2 // 3 attempts total
-    private const val CAPTURE_RETRY_SETTLE_MS = 350L
+    // Max time to wait for a freshly (re)bound session to reach STREAMING
+    // (onActive) before capturing. Normally active in tens of ms; on timeout we
+    // proceed anyway and let the retry catch it.
+    private const val SESSION_ACTIVE_TIMEOUT_MS = 2_000L
 
     private val context: Context
         get() =
@@ -154,6 +157,12 @@ object CameraSessionManager {
     // supported surface combination" for the 4-stream config — we
     // drop JPEG on fallback and callers must skip it in that mode.
     @Volatile private var jpegBound: Boolean = false
+
+    // True while the bound CameraCaptureSession is actively streaming (the
+    // repeating preview request is running). Set by the session StateCallback
+    // (onActive/onClosed) in ensureBoundLocked; reset on unbind. A capture
+    // waits for this after a (re)bind — see awaitSessionActiveLocked.
+    @Volatile private var sessionActive: Boolean = false
 
     // When true, ensureBoundLocked() tries the "keep JPEG, drop
     // Analysis" 3-stream fallback BEFORE the "drop JPEG, keep
@@ -299,6 +308,9 @@ object CameraSessionManager {
                 preferJpegOverAnalysis = true
                 unbindAllLocked()
                 ensureBoundLocked()
+                // Primary fix: don't shoot until the rebound session is actually
+                // streaming (the retry below is the backstop for HAL hiccups).
+                awaitSessionActiveLocked(SESSION_ACTIVE_TIMEOUT_MS)
             }
             try {
                 // Bounded retry (approach A): on a capture failure (typically a
@@ -310,11 +322,11 @@ object CameraSessionManager {
                     if (attempt > 0) {
                         Log.w(
                             TAG,
-                            "capture: retry $attempt/$CAPTURE_MAX_RETRIES after failure; fresh rebind + settle",
+                            "capture: retry $attempt/$CAPTURE_MAX_RETRIES after failure; fresh rebind",
                         )
                         unbindAllLocked()
                         ensureBoundLocked()
-                        delay(CAPTURE_RETRY_SETTLE_MS)
+                        awaitSessionActiveLocked(SESSION_ACTIVE_TIMEOUT_MS)
                     }
                     try {
                         return@withLock captureLocked(
@@ -1157,6 +1169,29 @@ object CameraSessionManager {
                     }
                 }
             )
+        // Session readiness: onActive fires when the session starts processing
+        // the repeating (preview) request — i.e. it's actually STREAMING. We
+        // wait for this after a (re)bind before firing a still capture, so the
+        // takePicture doesn't race a bound-but-not-yet-streaming session (the
+        // root cause of the intermittent 3b-switch takePicture timeout). See
+        // awaitSessionActiveLocked.
+        imageCaptureExt.setSessionStateCallback(
+                object : CameraCaptureSession.StateCallback() {
+                    override fun onConfigured(session: CameraCaptureSession) {}
+
+                    override fun onConfigureFailed(session: CameraCaptureSession) {
+                        sessionActive = false
+                    }
+
+                    override fun onActive(session: CameraCaptureSession) {
+                        sessionActive = true
+                    }
+
+                    override fun onClosed(session: CameraCaptureSession) {
+                        sessionActive = false
+                    }
+                }
+            )
         val imageCapture = builder.build()
 
         // Companion JPEG ImageCapture. Uses HAL default processing
@@ -1549,6 +1584,28 @@ object CameraSessionManager {
         boundCharacteristics = null
         jpegBound = false
         boundRawlessActive = false
+        sessionActive = false
+    }
+
+    // Wait (with mutex held) for the freshly (re)bound session to reach
+    // STREAMING (onActive). Normally tens of ms; on timeout we proceed anyway
+    // and let the capture retry recover. This is the primary fix for the
+    // intermittent 3b-switch takePicture timeout — don't capture before ready.
+    private suspend fun awaitSessionActiveLocked(timeoutMs: Long) {
+        if (sessionActive) return
+        val start = SystemClock.elapsedRealtime()
+        while (!sessionActive && SystemClock.elapsedRealtime() - start < timeoutMs) {
+            delay(15)
+        }
+        val waited = SystemClock.elapsedRealtime() - start
+        if (sessionActive) {
+            Log.i(TAG, "awaitSessionActive: streaming after ${waited}ms")
+        } else {
+            Log.w(
+                TAG,
+                "awaitSessionActive: not active after ${timeoutMs}ms; proceeding (retry will catch)",
+            )
+        }
     }
 
     private fun fetchCharacteristics(camera2Info: Camera2CameraInfo): CameraCharacteristics {
