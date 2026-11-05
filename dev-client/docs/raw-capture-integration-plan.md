@@ -186,12 +186,34 @@ belongs with capability detection (2.2), driven by real capability rather than a
       side reconfigures preview+raw+analysis → preview+raw+jpeg for the shot, captures
       RAW+JPEG, then restores analysis (preview reuses its surface across the rebinds).
       Validated on Pixel 6a (`raw=172ms jpeg=100ms`, overlay resumes). Commit **`723ca5f2`**.
-    - **3b reliability ☑ — retry on takePicture timeout (approach A).** A long soak hit
-      an intermittent (~1/50 of switch-captures) `takePicture timed out (8s)` in
-      RAW+JPEG+analysis mode: the switch rebind occasionally left the session not-yet-
-      STREAMING. Fix: a bounded retry (3 attempts) that fully rebinds a FRESH session +
-      350ms settle and re-captures — only the conservative open+bind path, so it can't
-      wedge. Commit **`ae5e722f`**.
+    - **3b reliability ☑ — retry through the reconfigure race (both platforms).** Long
+      soaks hit an intermittent (~1/50 of switch-captures) failure where the capture
+      fired before the (re)configured session was ready: Android `takePicture timed out
+      (8s)` after the switch rebind (session not-yet-STREAMING); iOS `PhotoOutput does not
+      support raw capture` after the detach dance (reconfigured to a non-DNG format). Fix:
+      a bounded retry (3 attempts) that forces a FRESH reconfigure and re-captures —
+      Android fully rebinds (conservative open+bind path, can't wedge; commit
+      **`ae5e722f`**), iOS reattaches→re-detaches to re-pick a RAW-capable format (commit
+      **`76ec7316`**). **Validated 2026-11-05: Android 1438 + iOS 3847 iterations, 0
+      failures** (tag `raw-capture-reliable-2026-11-05`).
+      > **Root-fix follow-ups (retry is the backstop, not the mechanism).** The retry
+      > masks "captured before ready"; the cleaner primary fixes: **Android** — wait for
+      > the capture session to be *active/streaming* after the rebind (CameraX session
+      > `onActive` callback) before `takePicture`. **iOS** — do NOT blanket-pin a DNG
+      > format (that breaks jpeg-only requests + devices without RAW, e.g. old iPhones);
+      > instead select a RAW-capable format *only when RAW is requested and the device
+      > supports it*, i.e. fold it into capability detection (2.2). Keep the retry as the
+      > defensive backstop either way.
+      > **Rejected — light stream-swap (approach C).** Swapping only analysis↔jpeg via
+      > `provider.unbind` + a standalone `bindToLifecycle` (keeping preview+raw bound, to
+      > avoid the device close/reopen + reduce the shutter glitch) **wedged the camera on
+      > Pixel**: a standalone bind drops the `UseCaseGroup` ViewPort → 0×0 crop → HAL AE
+      > loop (`libgcam Invalid input crop [0,0,0,0]` spam) → hard freeze holding the
+      > camera. `ViewPort` is per-bind-group, so an incremental swap can't preserve it. A
+      > "C-v2" full-group rebind is unverified and, worse, carries cross-device risk
+      > (hot-reconfigure behaviour is HAL-specific) incl. *silent* bad-crop captures on
+      > untested HALs — unacceptable for a colour-measurement app. Don't re-attempt the
+      > hot swap; keep captures on the uniform rebind path.
       > **Rejected — light stream-swap (approach C).** Swapping only analysis↔jpeg via
       > `provider.unbind` + a standalone `bindToLifecycle` (keeping preview+raw bound, to
       > avoid the device close/reopen + reduce the shutter glitch) **wedged the camera on
