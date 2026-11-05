@@ -195,6 +195,15 @@ const makeCapture = (
 // display. width / height. (The Android native ViewPort also crops to 3:4.)
 const SENSOR_ASPECT = 3 / 4;
 
+// iOS capture retry (analog of Android approach A). The detach dance can
+// reconfigure to a non-DNG format ("PhotoOutput does not support raw capture");
+// retry by forcing a fresh reconfigure. SETTLE = pause after the detach
+// reconfigure before shooting (let the RAW format go active); RETRY_SETTLE =
+// pause after reattaching before re-detaching on a retry.
+const IOS_CAPTURE_MAX_RETRIES = 2; // 3 attempts total
+const IOS_CAPTURE_SETTLE_MS = 150;
+const IOS_CAPTURE_RETRY_SETTLE_MS = 300;
+
 // Fixed-aspect wrapper, centered + letterboxed inside its parent, so the
 // preview, the overlay children, and the captured DNG all share one coordinate
 // system. Used by BOTH engines so the live overlay lines up with the preview
@@ -545,38 +554,71 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
             throw new Error('capture already in progress');
           }
           capturingRef.current = true;
-          try {
-            // Detach the frame output + await the RAW-capable reconfigure.
-            const reconfigured = new Promise<void>(resolve => {
+          const sleep = (ms: number) =>
+            new Promise<void>(r => setTimeout(r, ms));
+          // Wait for the session to reconfigure to the given outputs (the
+          // onConfigured callback resolves this). Returns a promise set up
+          // BEFORE the state change so we can't miss the event.
+          const reconfigureTo = async (detached: boolean) => {
+            const done = new Promise<void>(resolve => {
               configResolveRef.current = resolve;
             });
-            setDetachedForCapture(true);
-            await reconfigured;
-
-            const photo = await photoOutput.capturePhoto({}, {});
-            if (!photo.isRawPhoto) {
-              // Asked for DNG but got a processed photo — refuse to emit a
-              // JPEG-shaped result from RAW data.
-              throw new Error(
-                'expected a RAW photo but received a processed one',
-              );
-            }
-            const rawUri = fileUri(await photo.saveToTemporaryFileAsync());
-            // iOS DNGs embed a full-res Apple-processed JPEG preview; pull it
-            // out as the companion (best-effort). Skipped when jpeg:'never'.
-            let jpegUri: string | undefined;
-            if (wantJpeg) {
+            setDetachedForCapture(detached);
+            await done;
+          };
+          try {
+            // Retry (iOS analog of approach A): the detach dance occasionally
+            // reconfigures to a format that doesn't support DNG ("PhotoOutput
+            // does not support raw capture"). On failure, reattach → re-detach
+            // to force a FRESH RAW-capable reconfigure, then retry.
+            let lastErr: unknown;
+            for (
+              let attempt = 0;
+              attempt <= IOS_CAPTURE_MAX_RETRIES;
+              attempt++
+            ) {
               try {
-                jpegUri = fileUri(
-                  DngDecoderHybrid.extractDngPreviewJpeg(rawUri),
-                );
+                if (attempt > 0) {
+                  console.warn(
+                    `[rawperf] iOS capture retry ${attempt}/${IOS_CAPTURE_MAX_RETRIES}: ${String(lastErr)}`,
+                  );
+                  await reconfigureTo(false); // reattach (frame output back)
+                  await sleep(IOS_CAPTURE_RETRY_SETTLE_MS);
+                }
+                await reconfigureTo(true); // detach → RAW-capable reconfigure
+                await sleep(IOS_CAPTURE_SETTLE_MS); // let the format settle
+
+                const photo = await photoOutput.capturePhoto({}, {});
+                if (!photo.isRawPhoto) {
+                  // Got a processed photo — refuse to emit a JPEG-shaped
+                  // result from RAW data; retry the reconfigure.
+                  throw new Error(
+                    'expected a RAW photo but received a processed one',
+                  );
+                }
+                const rawUri = fileUri(await photo.saveToTemporaryFileAsync());
+                // iOS DNGs embed a full-res Apple JPEG preview; pull it out as
+                // the companion (best-effort). Skipped when jpeg:'never'.
+                let jpegUri: string | undefined;
+                if (wantJpeg) {
+                  try {
+                    jpegUri = fileUri(
+                      DngDecoderHybrid.extractDngPreviewJpeg(rawUri),
+                    );
+                  } catch (err) {
+                    onError?.(err as Error);
+                  }
+                }
+                // Sensor read out + files on disk → safe to move.
+                opts?.onCaptured?.();
+                return makeCapture(rawUri, jpegUri, photo.width, photo.height);
               } catch (err) {
-                onError?.(err as Error);
+                lastErr = err;
               }
             }
-            // Sensor read out + files on disk → safe to move.
-            opts?.onCaptured?.();
-            return makeCapture(rawUri, jpegUri, photo.width, photo.height);
+            throw lastErr instanceof Error
+              ? lastErr
+              : new Error(String(lastErr));
           } finally {
             // Reattach the frame output (preview resumes).
             setDetachedForCapture(false);
