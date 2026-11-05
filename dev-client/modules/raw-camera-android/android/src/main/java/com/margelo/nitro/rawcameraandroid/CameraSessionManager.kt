@@ -339,7 +339,7 @@ object CameraSessionManager {
                             sessionTotal = 0,
                             deviceSlug = deviceSlug(),
                             contextTokens = emptyList(),
-                        ).photo
+                        ).photo.copy(retries = attempt.toDouble())
                     } catch (e: kotlinx.coroutines.CancellationException) {
                         throw e // never swallow structured-concurrency cancellation
                     } catch (e: Exception) {
@@ -1556,6 +1556,7 @@ object CameraSessionManager {
                 jpegPath = "file://${jpegFile.absolutePath}",
                 width = opts.outWidth.toDouble(),
                 height = opts.outHeight.toDouble(),
+                retries = 0.0,
             )
         } finally {
             resetCameraStateLocked()
@@ -1705,6 +1706,7 @@ object CameraSessionManager {
             jpegPath = jpegPath,
             width = image.width.toDouble(),
             height = image.height.toDouble(),
+            retries = 0.0,
         )
     }
 
@@ -1787,6 +1789,7 @@ object CameraSessionManager {
             jpegPath = jpegPath,
             width = image.width.toDouble(),
             height = image.height.toDouble(),
+            retries = 0.0,
         )
     }
 

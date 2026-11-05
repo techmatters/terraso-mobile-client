@@ -29,7 +29,10 @@ data class CapturedPhoto(
   val width: Double,
   @DoNotStrip
   @Keep
-  val height: Double
+  val height: Double,
+  @DoNotStrip
+  @Keep
+  val retries: Double
 ) {
   /* primary constructor */
 
@@ -40,6 +43,7 @@ data class CapturedPhoto(
       && Objects.deepEquals(this.jpegPath, other.jpegPath)
       && Objects.deepEquals(this.width, other.width)
       && Objects.deepEquals(this.height, other.height)
+      && Objects.deepEquals(this.retries, other.retries)
   }
 
   override fun hashCode(): Int {
@@ -47,7 +51,8 @@ data class CapturedPhoto(
       dngPath,
       jpegPath,
       width,
-      height
+      height,
+      retries
     ).contentDeepHashCode()
   }
 
@@ -59,8 +64,8 @@ data class CapturedPhoto(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(dngPath: String, jpegPath: String?, width: Double, height: Double): CapturedPhoto {
-      return CapturedPhoto(dngPath, jpegPath, width, height)
+    private fun fromCpp(dngPath: String, jpegPath: String?, width: Double, height: Double, retries: Double): CapturedPhoto {
+      return CapturedPhoto(dngPath, jpegPath, width, height, retries)
     }
   }
 }

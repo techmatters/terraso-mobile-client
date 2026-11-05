@@ -13,6 +13,9 @@ export type CapturedPhoto = {
   jpegPath?: string;
   width: number;
   height: number;
+  // How many retries the capture needed (0 = succeeded first try). Surfaced so
+  // callers can observe how often the reconfigure-race retry kicks in.
+  retries: number;
 };
 
 // Per-capture experimental knobs. All fields optional; omitted → auto.
