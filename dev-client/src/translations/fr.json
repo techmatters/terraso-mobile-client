@@ -1747,6 +1747,21 @@
             "delete": "Supprimer",
             "error": "L'e-mail ne correspond pas"
         },
+        "feedback": {
+            "reasons_prompt": "Pourquoi supprimez-vous votre compte ?",
+            "reasons": {
+                "no_longer_needed": "Je n'en ai plus besoin",
+                "switched_app": "J'utilise une autre application",
+                "missing_features": "Il manque des fonctionnalités dont j'ai besoin",
+                "difficult_to_use": "Difficile à utiliser",
+                "errors_or_bugs": "Erreurs ou bugs",
+                "privacy_concerns": "Préoccupations liées à la confidentialité ou aux données",
+                "poor_support": "Mauvaise expérience avec l'assistance",
+                "other": "Autre"
+            },
+            "details_prompt": "Souhaitez-vous nous faire part d'autres commentaires ?",
+            "details_label": "Détails supplémentaires"
+        },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
             "p1": "Votre demande de suppression de compte a été envoyée."

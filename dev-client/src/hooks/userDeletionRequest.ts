@@ -22,18 +22,25 @@ import {
   isAccountDeletionPending,
   setAccountDeletedEmail,
   signOut,
+  User,
 } from 'terraso-client-shared/account/accountSlice';
 
+import {getPostHogInstance} from 'terraso-mobile-client/app/posthog/posthogInstance';
+import {DeleteAccountFeedback} from 'terraso-mobile-client/screens/DeleteAccountScreen/deleteAccountFeedback';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {userLoggedOut} from 'terraso-mobile-client/store/logoutActions';
 
 /**
  * Hook backing the DeleteAccountScreen flow.
  *
- * `requestDeletion()` fires the UserDeleteMutation. The backend either
- * soft-deletes the account (clean path) or routes to manual cleanup via
- * a HubSpot ticket (blocked path; backend sets the pending pref + files
- * the ticket atomically).
+ * `requestDeletion(feedback)` sends the user's optional feedback to PostHog
+ * as `user_delete_feedback`, then fires the UserDeleteMutation. Feedback is
+ * sent first so it's tied to the user before the clean path logs them out;
+ * match it to the outcome via the backend's `user_delete_*` events.
+ *
+ * For the mutation, the backend either soft-deletes the account (clean
+ * path) or routes to manual cleanup via a HubSpot ticket (blocked path;
+ * backend sets the pending pref + files the ticket atomically).
  *
  * Clean path: dispatch userLoggedOut → signOut → setAccountDeletedEmail
  * in that order. userLoggedOut wipes state first; setAccountDeletedEmail
@@ -52,22 +59,36 @@ export const useUserDeletionRequests = () => {
   const [isSaving, setIsSaving] = useState(false);
   const isPending = isAccountDeletionPending(user);
 
-  const requestDeletion = useCallback(async () => {
-    if (!user) return;
-    setIsSaving(true);
-    try {
-      const result = await dispatch(deleteUserAccount(user.id)).unwrap();
-      if (result.kind === 'deleted') {
-        dispatch(userLoggedOut());
-        dispatch(signOut());
-        dispatch(setAccountDeletedEmail(result.email));
+  const requestDeletion = useCallback(
+    async (feedback: DeleteAccountFeedback) => {
+      if (!user) return;
+      captureDeletionFeedback(user, feedback);
+      setIsSaving(true);
+      try {
+        const result = await dispatch(deleteUserAccount(user.id)).unwrap();
+        if (result.kind === 'deleted') {
+          dispatch(userLoggedOut());
+          dispatch(signOut());
+          dispatch(setAccountDeletedEmail(result.email));
+        }
+        // 'blocked' is handled by the thunk's fulfilled reducer (flips the
+        // pref so DeleteAccountScreen re-renders the pending content).
+      } finally {
+        setIsSaving(false);
       }
-      // 'blocked' is handled by the thunk's fulfilled reducer (flips the
-      // pref so DeleteAccountScreen re-renders the pending content).
-    } finally {
-      setIsSaving(false);
-    }
-  }, [dispatch, user]);
+    },
+    [dispatch, user],
+  );
 
   return {user, isPending, requestDeletion, isSaving};
 };
+
+const captureDeletionFeedback = (
+  user: User,
+  {reasons, details}: DeleteAccountFeedback,
+) =>
+  getPostHogInstance()?.capture('user_delete_feedback', {
+    email: user.email,
+    reasons,
+    details,
+  });

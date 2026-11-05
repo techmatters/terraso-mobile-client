@@ -1747,6 +1747,21 @@
             "delete": "Eliminar",
             "error": "El email no coincide"
         },
+        "feedback": {
+            "reasons_prompt": "¿Por qué eliminas tu cuenta?",
+            "reasons": {
+                "no_longer_needed": "Ya no la necesito",
+                "switched_app": "Cambié a otra aplicación",
+                "missing_features": "Faltan funciones que necesito",
+                "difficult_to_use": "Es difícil de usar",
+                "errors_or_bugs": "Errores o fallas",
+                "privacy_concerns": "Preocupaciones sobre la privacidad o los datos",
+                "poor_support": "Mala experiencia con el soporte",
+                "other": "Otro"
+            },
+            "details_prompt": "¿Hay algún otro comentario que quieras compartir con nosotros?",
+            "details_label": "Detalles adicionales"
+        },
         "pending": {
             "p0": "<bold>{{email}}</bold>",
             "p1": "Tu solicitud de eliminación de cuenta ha sido enviada."
