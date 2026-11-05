@@ -235,6 +235,9 @@ function RawColorTest() {
       Alert.alert('Capture failed', String(err));
       return;
     }
+    if (cap.retries > 0) {
+      console.log(`[rawperf] capture needed ${cap.retries} retry/retries`);
+    }
     setAnalyzing(true);
     await new Promise<void>(r => setTimeout(r, 0)); // let the overlay paint
     let title: string;
@@ -305,6 +308,7 @@ function RawColorTest() {
     let susp = 0;
     let fail = 0;
     let global = 0;
+    let retries = 0; // total capture retries across the soak
     (async () => {
       let m = 0;
       while (autoRef.current) {
@@ -326,6 +330,15 @@ function RawColorTest() {
           let status: string;
           try {
             const cap = await cam.capture();
+            // Track how often the reconfigure-race retry kicked in (both
+            // platforms report it on the Capture).
+            if (cap.retries > 0) {
+              retries += cap.retries;
+              console.log(
+                `[rawperf] #${global} (${mode.label}) needed ${cap.retries} ` +
+                  `retr${cap.retries === 1 ? 'y' : 'ies'} — total ${retries}/${global}`,
+              );
+            }
             try {
               const saveNote =
                 global % SAVE_EVERY === 0 ? await saveAndDelete(cap) : '';
@@ -357,7 +370,9 @@ function RawColorTest() {
             setAutoRunning(false);
           }
           setShotCount(global);
-          setLastStatus(`${status}  (susp ${susp}, fail ${fail} / ${global})`);
+          setLastStatus(
+            `${status}  (susp ${susp}, fail ${fail}, retries ${retries} / ${global})`,
+          );
           if (!autoRef.current) break;
           await sleep(SHOT_GAP_MS);
         }

@@ -134,11 +134,13 @@ const makeCapture = (
   jpegUri: string | undefined,
   width: number,
   height: number,
+  retries: number,
 ): Capture => ({
   width,
   height,
   hasRaw: dngUri != null,
   hasJpeg: jpegUri != null,
+  retries,
   decodeRois: async (rois: Roi[]): Promise<LinearRgb[]> => {
     if (!dngUri) {
       throw new Error(
@@ -338,6 +340,7 @@ const AndroidRawColorEngine = forwardRef<
           photo.jpegPath ? fileUri(photo.jpegPath) : undefined,
           photo.width,
           photo.height,
+          photo.retries, // native-side retry count
         );
       },
     }),
@@ -611,7 +614,13 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
                 }
                 // Sensor read out + files on disk → safe to move.
                 opts?.onCaptured?.();
-                return makeCapture(rawUri, jpegUri, photo.width, photo.height);
+                return makeCapture(
+                  rawUri,
+                  jpegUri,
+                  photo.width,
+                  photo.height,
+                  attempt, // this-capture retry count (0 = first try)
+                );
               } catch (err) {
                 lastErr = err;
               }

@@ -40,11 +40,14 @@ namespace margelo::nitro::rawcameraandroid {
       double width = this->getFieldValue(fieldWidth);
       static const auto fieldHeight = clazz->getField<double>("height");
       double height = this->getFieldValue(fieldHeight);
+      static const auto fieldRetries = clazz->getField<double>("retries");
+      double retries = this->getFieldValue(fieldRetries);
       return CapturedPhoto(
         dngPath->toStdString(),
         jpegPath != nullptr ? std::make_optional(jpegPath->toStdString()) : std::nullopt,
         width,
-        height
+        height,
+        retries
       );
     }
 
@@ -54,7 +57,7 @@ namespace margelo::nitro::rawcameraandroid {
      */
     [[maybe_unused]]
     static jni::local_ref<JCapturedPhoto::javaobject> fromCpp(const CapturedPhoto& value) {
-      using JSignature = JCapturedPhoto(jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, double, double);
+      using JSignature = JCapturedPhoto(jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, double, double, double);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
@@ -62,7 +65,8 @@ namespace margelo::nitro::rawcameraandroid {
         jni::make_jstring(value.dngPath),
         value.jpegPath.has_value() ? jni::make_jstring(value.jpegPath.value()) : nullptr,
         value.width,
-        value.height
+        value.height,
+        value.retries
       );
     }
   };

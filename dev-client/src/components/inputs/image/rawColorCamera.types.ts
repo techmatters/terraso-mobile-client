@@ -116,6 +116,12 @@ export type Capture = {
   height: number;
   hasRaw: boolean;
   hasJpeg: boolean;
+  /**
+   * How many retries this capture needed before succeeding (0 = first try).
+   * Diagnostic — lets callers observe how often the reconfigure-race retry
+   * (Android session-not-streaming / iOS non-DNG reconfigure) kicks in.
+   */
+  retries: number;
   /** Decode N ROIs in a single pass. Returns one color per ROI, in order. */
   decodeRois(rois: Roi[]): Promise<LinearRgb[]>;
   /** Display-ready downscaled render of the capture (for an ROI picker, etc.). */
