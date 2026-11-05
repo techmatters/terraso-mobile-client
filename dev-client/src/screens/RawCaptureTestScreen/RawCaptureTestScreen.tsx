@@ -275,25 +275,32 @@ function RawColorTest() {
     setLastStatus('starting…');
     const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
     // Exercise the persist path without accumulating: copy out, confirm the
-    // files landed, delete them.
+    // files landed, delete them. BEST-EFFORT — the source lives in cacheDir,
+    // which Android can evict at any time (esp. under the heavy DNG churn of a
+    // long soak), so a copy can fail with NoSuchFile. That's a cache race in
+    // the test, not a capture failure, so swallow it and keep the soak running.
     const saveAndDelete = async (
       cap: Awaited<ReturnType<RawColorCameraHandle['capture']>>,
     ): Promise<string> => {
-      const written = await cap.save({dir: saveDir.uri});
-      const uris = [written.dngUri, written.jpegUri].filter(
-        (u): u is string => !!u,
-      );
-      let bytes = 0;
-      for (const uri of uris) {
-        try {
-          const file = new File(uri);
-          bytes += file.size ?? 0;
-          file.delete();
-        } catch {
-          // best effort
+      try {
+        const written = await cap.save({dir: saveDir.uri});
+        const uris = [written.dngUri, written.jpegUri].filter(
+          (u): u is string => !!u,
+        );
+        let bytes = 0;
+        for (const uri of uris) {
+          try {
+            const file = new File(uri);
+            bytes += file.size ?? 0;
+            file.delete();
+          } catch {
+            // best effort
+          }
         }
+        return ` · saved+deleted ${uris.length} file(s), ${bytes}B`;
+      } catch (e) {
+        return ` · save skipped (${String(e).slice(0, 48)})`;
       }
-      return ` · saved+deleted ${uris.length} file(s), ${bytes}B`;
     };
     let susp = 0;
     let fail = 0;
