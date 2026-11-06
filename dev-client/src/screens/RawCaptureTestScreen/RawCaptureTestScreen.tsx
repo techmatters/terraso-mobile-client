@@ -40,6 +40,7 @@ import type {
   CaptureRequest,
   LinearRgb,
   RawColorCameraHandle,
+  ResolvedCapabilities,
   RoiStats,
 } from 'terraso-mobile-client/components/inputs/image/rawColorCamera.types';
 import {
@@ -184,6 +185,10 @@ function RawColorTest() {
   // Which auto mode is mounted right now; also the camera's remount key.
   const [modeIdx, setModeIdx] = useState(0);
   const autoRef = useRef(false);
+
+  // Resolved device capabilities (rawAvailable etc.) — reported once the
+  // session binds. Lets us verify RAW detection / auto jpeg-only fallback.
+  const [caps, setCaps] = useState<ResolvedCapabilities | null>(null);
 
   // Live framing analysis: the injected analyzer emits per-ROI luma stats; we
   // draw the overlay (red/green per ROI) from them. Created once.
@@ -403,6 +408,10 @@ function RawColorTest() {
           active={isFocused}
           request={activeRequest}
           style={StyleSheet.absoluteFill}
+          onCapabilities={c => {
+            setCaps(c);
+            console.log('[rawperf] capabilities', JSON.stringify(c));
+          }}
           onError={e => console.warn('RawColorCamera error:', e)}>
           {/* Live ROI overlay, drawn from the analyzer's onStats. Rendered
               inside the shared sensor-aspect frame, so the boxes align 1:1 with
@@ -423,6 +432,17 @@ function RawColorTest() {
             );
           })}
         </RawColorCamera>
+        {caps && !autoRunning && (
+          <SafeAreaView
+            style={styles.statusBanner}
+            edges={['top']}
+            pointerEvents="none">
+            <Text style={styles.statusText}>
+              RAW {caps.rawAvailable ? '✓ available' : '✗ none → jpeg-only'} ·{' '}
+              {caps.willCaptureRaw ? 'capturing RAW' : 'capturing JPEG'}
+            </Text>
+          </SafeAreaView>
+        )}
         {autoRunning && (
           <SafeAreaView style={styles.statusBanner} edges={['top']}>
             <Text style={styles.statusText}>
