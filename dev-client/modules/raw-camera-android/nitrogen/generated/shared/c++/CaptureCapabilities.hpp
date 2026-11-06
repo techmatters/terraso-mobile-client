@@ -47,10 +47,11 @@ namespace margelo::nitro::rawcameraandroid {
     double sensorExposureTimeMaxNs     SWIFT_PRIVATE;
     double sensorSensitivityMin     SWIFT_PRIVATE;
     double sensorSensitivityMax     SWIFT_PRIVATE;
+    bool rawAvailable     SWIFT_PRIVATE;
 
   public:
     CaptureCapabilities() = default;
-    explicit CaptureCapabilities(double aeCompensationMin, double aeCompensationMax, double aeCompensationStepNum, double aeCompensationStepDen, double sensorExposureTimeMinNs, double sensorExposureTimeMaxNs, double sensorSensitivityMin, double sensorSensitivityMax): aeCompensationMin(aeCompensationMin), aeCompensationMax(aeCompensationMax), aeCompensationStepNum(aeCompensationStepNum), aeCompensationStepDen(aeCompensationStepDen), sensorExposureTimeMinNs(sensorExposureTimeMinNs), sensorExposureTimeMaxNs(sensorExposureTimeMaxNs), sensorSensitivityMin(sensorSensitivityMin), sensorSensitivityMax(sensorSensitivityMax) {}
+    explicit CaptureCapabilities(double aeCompensationMin, double aeCompensationMax, double aeCompensationStepNum, double aeCompensationStepDen, double sensorExposureTimeMinNs, double sensorExposureTimeMaxNs, double sensorSensitivityMin, double sensorSensitivityMax, bool rawAvailable): aeCompensationMin(aeCompensationMin), aeCompensationMax(aeCompensationMax), aeCompensationStepNum(aeCompensationStepNum), aeCompensationStepDen(aeCompensationStepDen), sensorExposureTimeMinNs(sensorExposureTimeMinNs), sensorExposureTimeMaxNs(sensorExposureTimeMaxNs), sensorSensitivityMin(sensorSensitivityMin), sensorSensitivityMax(sensorSensitivityMax), rawAvailable(rawAvailable) {}
 
   public:
     friend bool operator==(const CaptureCapabilities& lhs, const CaptureCapabilities& rhs) = default;
@@ -73,7 +74,8 @@ namespace margelo::nitro {
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorExposureTimeMinNs"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorExposureTimeMaxNs"))),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivityMin"))),
-        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivityMax")))
+        JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivityMax"))),
+        JSIConverter<bool>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "rawAvailable")))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::rawcameraandroid::CaptureCapabilities& arg) {
@@ -86,6 +88,7 @@ namespace margelo::nitro {
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "sensorExposureTimeMaxNs"), JSIConverter<double>::toJSI(runtime, arg.sensorExposureTimeMaxNs));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivityMin"), JSIConverter<double>::toJSI(runtime, arg.sensorSensitivityMin));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivityMax"), JSIConverter<double>::toJSI(runtime, arg.sensorSensitivityMax));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "rawAvailable"), JSIConverter<bool>::toJSI(runtime, arg.rawAvailable));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -104,6 +107,7 @@ namespace margelo::nitro {
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorExposureTimeMaxNs")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivityMin")))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "sensorSensitivityMax")))) return false;
+      if (!JSIConverter<bool>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "rawAvailable")))) return false;
       return true;
     }
   };

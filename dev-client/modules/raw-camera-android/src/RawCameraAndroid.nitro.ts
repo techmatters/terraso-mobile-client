@@ -139,6 +139,11 @@ export type CaptureCapabilities = {
   // Manual sensitivity (ISO) bounds. Zero means unknown.
   sensorSensitivityMin: number;
   sensorSensitivityMax: number;
+  // Whether the back camera advertises RAW_SENSOR capability. When false the
+  // session auto-binds jpeg-only (no RAW stream) and capture() returns a
+  // JPEG-only CapturedPhoto (empty dngPath) — callers fall back to the JPEG
+  // colour path. Detected from CameraCharacteristics without binding.
+  rawAvailable: boolean;
 };
 
 // Fractional ROI (0..1) in the portrait sensor-aspect preview frame.

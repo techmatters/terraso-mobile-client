@@ -290,10 +290,11 @@ object CameraSessionManager {
     // so the next call starts from a known baseline — see resetCameraStateLocked.
     suspend fun capture(options: CaptureOptions): CapturedPhoto =
         mutex.withLock {
-            // No-RAW simulation: when rawlessMode is set the session is bound
-            // preview+jpeg(+analysis) with no RAW stream, so produce a JPEG
-            // only (no DNG, no DngCreator, no TotalCaptureResult wait).
-            if (rawlessMode) {
+            // No-RAW path: either the caller forced it (rawlessMode, a dev
+            // simulation) OR the device can't do RAW (auto-fallback). Either
+            // way the session is bound preview+jpeg(+analysis) with no RAW
+            // stream, so produce a JPEG only (no DNG / DngCreator / result wait).
+            if (rawlessMode || !backCameraSupportsRaw()) {
                 return@withLock captureJpegOnlyLocked(options)
             }
             // raw+jpeg shutter switch (slice 3b): if the caller wants the JPEG
@@ -648,6 +649,7 @@ object CameraSessionManager {
                 sensorExposureTimeMaxNs = expRange.upper.toDouble(),
                 sensorSensitivityMin = isoRange.lower.toDouble(),
                 sensorSensitivityMax = isoRange.upper.toDouble(),
+                rawAvailable = backCameraSupportsRaw(),
             )
         }
 
@@ -1113,6 +1115,37 @@ object CameraSessionManager {
         }
     }
 
+    // Whether a back camera advertises RAW_SENSOR capability. Queried once from
+    // CameraCharacteristics (no session bind, no permission needed) + cached.
+    // Drives the automatic jpeg-only fallback on devices that can't do RAW, and
+    // is reported via getCapabilities().rawAvailable. Defensively false if the
+    // query fails.
+    @Volatile private var cachedRawSupport: Boolean? = null
+
+    private fun backCameraSupportsRaw(): Boolean {
+        cachedRawSupport?.let { return it }
+        val supported = try {
+            val cm = context.getSystemService(Context.CAMERA_SERVICE)
+                as android.hardware.camera2.CameraManager
+            cm.cameraIdList.any { id ->
+                val chars = cm.getCameraCharacteristics(id)
+                chars.get(CameraCharacteristics.LENS_FACING) ==
+                    CameraMetadata.LENS_FACING_BACK &&
+                    (chars.get(
+                        CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES
+                    ) ?: IntArray(0)).contains(
+                        CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW
+                    )
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "backCameraSupportsRaw: query failed; assuming no RAW", e)
+            false
+        }
+        cachedRawSupport = supported
+        Log.i(TAG, "backCameraSupportsRaw = $supported")
+        return supported
+    }
+
     private data class BoundSession(
         // Null in rawless (no-RAW simulation) sessions — see rawlessMode.
         val rawCapture: ImageCapture?,
@@ -1121,7 +1154,10 @@ object CameraSessionManager {
     )
 
     private suspend fun ensureBoundLocked(): BoundSession {
-        if (rawlessMode) {
+        // Forced rawless (dev) OR the device has no RAW → bind the jpeg-only
+        // session (no RAW stream). Auto-fallback keeps no-RAW devices working
+        // instead of throwing in the RAW bind path below.
+        if (rawlessMode || !backCameraSupportsRaw()) {
             return ensureRawlessBoundLocked()
         }
         boundImageCapture?.let { ic ->

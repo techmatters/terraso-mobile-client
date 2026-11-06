@@ -47,6 +47,8 @@ namespace margelo::nitro::rawcameraandroid {
       double sensorSensitivityMin = this->getFieldValue(fieldSensorSensitivityMin);
       static const auto fieldSensorSensitivityMax = clazz->getField<double>("sensorSensitivityMax");
       double sensorSensitivityMax = this->getFieldValue(fieldSensorSensitivityMax);
+      static const auto fieldRawAvailable = clazz->getField<jboolean>("rawAvailable");
+      jboolean rawAvailable = this->getFieldValue(fieldRawAvailable);
       return CaptureCapabilities(
         aeCompensationMin,
         aeCompensationMax,
@@ -55,7 +57,8 @@ namespace margelo::nitro::rawcameraandroid {
         sensorExposureTimeMinNs,
         sensorExposureTimeMaxNs,
         sensorSensitivityMin,
-        sensorSensitivityMax
+        sensorSensitivityMax,
+        static_cast<bool>(rawAvailable)
       );
     }
 
@@ -65,7 +68,7 @@ namespace margelo::nitro::rawcameraandroid {
      */
     [[maybe_unused]]
     static jni::local_ref<JCaptureCapabilities::javaobject> fromCpp(const CaptureCapabilities& value) {
-      using JSignature = JCaptureCapabilities(double, double, double, double, double, double, double, double);
+      using JSignature = JCaptureCapabilities(double, double, double, double, double, double, double, double, jboolean);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
@@ -77,7 +80,8 @@ namespace margelo::nitro::rawcameraandroid {
         value.sensorExposureTimeMinNs,
         value.sensorExposureTimeMaxNs,
         value.sensorSensitivityMin,
-        value.sensorSensitivityMax
+        value.sensorSensitivityMax,
+        value.rawAvailable
       );
     }
   };

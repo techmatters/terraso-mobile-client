@@ -41,7 +41,10 @@ data class CaptureCapabilities(
   val sensorSensitivityMin: Double,
   @DoNotStrip
   @Keep
-  val sensorSensitivityMax: Double
+  val sensorSensitivityMax: Double,
+  @DoNotStrip
+  @Keep
+  val rawAvailable: Boolean
 ) {
   /* primary constructor */
 
@@ -56,6 +59,7 @@ data class CaptureCapabilities(
       && Objects.deepEquals(this.sensorExposureTimeMaxNs, other.sensorExposureTimeMaxNs)
       && Objects.deepEquals(this.sensorSensitivityMin, other.sensorSensitivityMin)
       && Objects.deepEquals(this.sensorSensitivityMax, other.sensorSensitivityMax)
+      && Objects.deepEquals(this.rawAvailable, other.rawAvailable)
   }
 
   override fun hashCode(): Int {
@@ -67,7 +71,8 @@ data class CaptureCapabilities(
       sensorExposureTimeMinNs,
       sensorExposureTimeMaxNs,
       sensorSensitivityMin,
-      sensorSensitivityMax
+      sensorSensitivityMax,
+      rawAvailable
     ).contentDeepHashCode()
   }
 
@@ -79,8 +84,8 @@ data class CaptureCapabilities(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(aeCompensationMin: Double, aeCompensationMax: Double, aeCompensationStepNum: Double, aeCompensationStepDen: Double, sensorExposureTimeMinNs: Double, sensorExposureTimeMaxNs: Double, sensorSensitivityMin: Double, sensorSensitivityMax: Double): CaptureCapabilities {
-      return CaptureCapabilities(aeCompensationMin, aeCompensationMax, aeCompensationStepNum, aeCompensationStepDen, sensorExposureTimeMinNs, sensorExposureTimeMaxNs, sensorSensitivityMin, sensorSensitivityMax)
+    private fun fromCpp(aeCompensationMin: Double, aeCompensationMax: Double, aeCompensationStepNum: Double, aeCompensationStepDen: Double, sensorExposureTimeMinNs: Double, sensorExposureTimeMaxNs: Double, sensorSensitivityMin: Double, sensorSensitivityMax: Double, rawAvailable: Boolean): CaptureCapabilities {
+      return CaptureCapabilities(aeCompensationMin, aeCompensationMax, aeCompensationStepNum, aeCompensationStepDen, sensorExposureTimeMinNs, sensorExposureTimeMaxNs, sensorSensitivityMin, sensorSensitivityMax, rawAvailable)
     }
   }
 }

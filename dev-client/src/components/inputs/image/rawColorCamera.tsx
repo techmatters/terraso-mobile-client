@@ -306,14 +306,19 @@ const AndroidRawColorEngine = forwardRef<
     let cancelled = false;
     (async () => {
       try {
-        await RawCameraAndroidHybrid.getCaptureCapabilities();
+        const caps = await RawCameraAndroidHybrid.getCaptureCapabilities();
         if (!cancelled) {
+          // The device may not support RAW (auto-fallback to jpeg-only); report
+          // it so callers can route to the JPEG colour path.
+          const rawAvailable = caps.rawAvailable;
+          const jpegOnly = rawless || !rawAvailable;
           onCapabilities?.({
-            rawAvailable: true,
-            willCaptureRaw: !rawless,
-            willCaptureJpeg: rawless || captureWantsJpeg,
+            rawAvailable,
+            willCaptureRaw: rawAvailable && !rawless,
+            willCaptureJpeg: jpegOnly || captureWantsJpeg,
             analysisActive: !!analyze,
-            switchesAtCapture: !rawless && !!analyze && captureWantsJpeg,
+            switchesAtCapture:
+              rawAvailable && !rawless && !!analyze && captureWantsJpeg,
           });
         }
       } catch (err) {
