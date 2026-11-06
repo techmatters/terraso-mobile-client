@@ -166,20 +166,23 @@ const makeCapture = (
     // copies them to a chosen dir (default: cache, i.e. leave in place). Only
     // the requested kinds are kept.
     const result: {dngUri?: string; jpegUri?: string} = {};
-    const copyInto = (srcUri: string): string => {
+    const copyInto = async (srcUri: string): Promise<string> => {
       if (!opts?.dir) {
         return srcUri; // leave in cache
       }
       const name = stripScheme(srcUri).split('/').pop() ?? 'capture';
       const dest = new File(opts.dir, name);
-      new File(srcUri).copy(dest);
+      // AWAIT the copy: File.copy is async. Left unawaited, save() returns
+      // before the copy runs and the caller's dispose() can delete the source
+      // out from under it (NoSuchFile → an uncaught floating rejection).
+      await new File(srcUri).copy(dest);
       return dest.uri;
     };
     if (dngUri && opts?.dng !== false) {
-      result.dngUri = copyInto(dngUri);
+      result.dngUri = await copyInto(dngUri);
     }
     if (jpegUri && opts?.jpeg !== false) {
-      result.jpegUri = copyInto(jpegUri);
+      result.jpegUri = await copyInto(jpegUri);
     }
     return result;
   },
