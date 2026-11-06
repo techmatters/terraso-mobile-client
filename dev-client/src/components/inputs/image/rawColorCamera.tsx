@@ -37,7 +37,6 @@ import {
 } from 'react-native-vision-camera';
 
 import {File} from 'expo-file-system';
-import {deleteAsync} from 'expo-file-system/legacy';
 
 import {DngDecoderHybrid} from 'dng-decoder';
 import {FrameAnalyzerHybrid} from 'frame-analyzer';
@@ -187,11 +186,20 @@ const makeCapture = (
     return result;
   },
   dispose: () => {
-    if (dngUri) {
-      deleteAsync(dngUri, {idempotent: true}).catch(() => {});
-    }
-    if (jpegUri) {
-      deleteAsync(jpegUri, {idempotent: true}).catch(() => {});
+    // Synchronous, deterministic deletes. The legacy async deleteAsync was
+    // fire-and-forget, which backlogged + leaked cache files under a tight
+    // capture loop (a long soak accumulated GBs of undeleted DNGs). The new
+    // File API deletes synchronously, so each file is gone before the next
+    // capture. Best-effort: a missing file (already swept) is a no-op.
+    for (const uri of [dngUri, jpegUri]) {
+      if (!uri) {
+        continue;
+      }
+      try {
+        new File(uri).delete();
+      } catch {
+        // already gone / best effort
+      }
     }
   },
 });
