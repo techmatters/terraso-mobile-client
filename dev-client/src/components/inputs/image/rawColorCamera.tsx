@@ -498,14 +498,24 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
       }
     }, [active, hasPermission, requestPermission, onError]);
 
+    // RAW-capability detection (reactive). vision-camera has no upfront DNG
+    // query, so we optimistically request DNG; if the device rejects it ("does
+    // not support raw capture"), we flip this false — the photo output
+    // reconfigures to JPEG and capture() takes the jpeg-only path (no detach
+    // dance needed, since a non-RAW format is what JPEG wants anyway). The first
+    // capture on a genuinely no-RAW device is spent detecting; after that it
+    // captures JPEG.
+    const [deviceSupportsRaw, setDeviceSupportsRaw] = useState(true);
     // Stable identity — vision-camera diffs photo-output options by identity to
     // decide whether to reconfigure; a fresh object each render loops.
     const photoOutputOptions = useMemo(
       () => ({
         targetResolution: {width: 4032, height: 3024},
-        containerFormat: 'dng' as const,
+        containerFormat: deviceSupportsRaw
+          ? ('dng' as const)
+          : ('jpeg' as const),
       }),
-      [],
+      [deviceSupportsRaw],
     );
     const photoOutput = usePhotoOutput(photoOutputOptions);
 
@@ -546,17 +556,19 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
       if (!active || !hasPermission) {
         return;
       }
+      const willRaw = deviceSupportsRaw && request.raw !== false;
       onCapabilities?.({
-        rawAvailable: true,
-        willCaptureRaw: request.raw !== false,
-        willCaptureJpeg: wantJpeg,
+        rawAvailable: deviceSupportsRaw,
+        willCaptureRaw: willRaw,
+        willCaptureJpeg: !willRaw || wantJpeg,
         analysisActive: analyzerRois.length > 0,
-        // The detach/reconfigure to a RAW-capable format IS a shutter-time
-        // switch (same role as Android's 3b stream swap).
-        switchesAtCapture: true,
+        // Only the RAW path does the shutter-time detach/reconfigure; the
+        // jpeg-only fallback captures with the frame output still attached.
+        switchesAtCapture: willRaw,
       });
     }, [
       active,
+      deviceSupportsRaw,
       hasPermission,
       request.raw,
       wantJpeg,
@@ -586,6 +598,21 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
             await done;
           };
           try {
+            // No-RAW fallback: capture a JPEG directly. The frame output can
+            // stay attached (a non-RAW format is what JPEG wants), so no detach
+            // dance. Reached once detection has flipped deviceSupportsRaw false.
+            if (!deviceSupportsRaw) {
+              const photo = await photoOutput.capturePhoto({}, {});
+              const jpegUri = fileUri(await photo.saveToTemporaryFileAsync());
+              opts?.onCaptured?.();
+              return makeCapture(
+                undefined,
+                jpegUri,
+                photo.width,
+                photo.height,
+                0,
+              );
+            }
             // Retry (iOS analog of approach A): the detach dance occasionally
             // reconfigures to a format that doesn't support DNG ("PhotoOutput
             // does not support raw capture"). On failure, reattach → re-detach
@@ -639,6 +666,18 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
                 );
               } catch (err) {
                 lastErr = err;
+                // A genuine "does not support raw capture" is persistent (the
+                // device can't do DNG) — stop retrying and flip to JPEG so the
+                // photo output reconfigures; the caller's next capture takes the
+                // jpeg path. (Transient reconfigure misses are handled by the
+                // retry above.)
+                if (/does not support raw/i.test(String(err))) {
+                  console.warn(
+                    '[rawperf] iOS: device does not support RAW — falling back to JPEG',
+                  );
+                  setDeviceSupportsRaw(false);
+                  break;
+                }
               }
             }
             throw lastErr instanceof Error
@@ -651,7 +690,7 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
           }
         },
       }),
-      [photoOutput, wantJpeg, onError],
+      [photoOutput, wantJpeg, deviceSupportsRaw, onError],
     );
 
     const ready = !!device && hasPermission && active;
