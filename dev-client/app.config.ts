@@ -88,16 +88,19 @@ const ENV_CONFIG = {
 // http://<host>:9000/... — on a host INDEPENDENT of TERRASO_BACKEND (so we
 // can't key off the API URL's scheme). iOS App Transport Security blocks
 // cleartext by default, so those images don't render. Allow arbitrary cleartext
-// in any non-production build.
+// ONLY in development (or an unresolved local prebuild).
 //
-// Gate on `!== 'production'` rather than `=== 'development'` deliberately: the
+// Allowlist `development` + unknown rather than deny-listing `production`: the
 // dev prebuild path (scripts/rebuild_all, bare `npm run prebuild`) does NOT load
-// ~/secrets/.env, so ENV is `undefined` at native-config-generation time —
-// exact-match would silently drop the override. `undefined !== 'production'` is
-// true, so cleartext is permitted in dev/unknown. Production is safe because CI
-// sets ENV=production as a real environment variable (build-shared-ios.yml), so
-// the production prebuild evaluates this to false and ATS stays https-only.
-const allowCleartextHttp = ENV_CONFIG.ENV !== 'production';
+// ~/secrets/.env, so ENV is `undefined` at native-config-generation time — an
+// exact `=== 'development'` match would silently drop the override and break
+// local media. `!ENV_CONFIG.ENV` keeps that unresolved-local case permissive.
+// Every *named* CI environment (staging, production, and any future one) talks
+// to a real https backend and has no local S3 silo, so it stays https-only by
+// default — staging no longer inherits cleartext just for being non-production.
+// CI sets ENV as a real environment variable (build-shared-ios.yml), so those
+// prebuilds evaluate this to false and ATS stays locked down.
+const allowCleartextHttp = !ENV_CONFIG.ENV || ENV_CONFIG.ENV === 'development';
 
 let buildNumber = 1;
 const APP_BUILD = process.env.APP_BUILD;
