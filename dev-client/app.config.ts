@@ -83,6 +83,22 @@ const ENV_CONFIG = {
   FEATURE_FLAG_SECRET: process.env.FEATURE_FLAG_SECRET,
 };
 
+// Local dev loads user media (profile images + signed URLs for data-entry files
+// / story-map media) from a local S3 silo over cleartext HTTP — e.g.
+// http://<host>:9000/... — on a host INDEPENDENT of TERRASO_BACKEND (so we
+// can't key off the API URL's scheme). iOS App Transport Security blocks
+// cleartext by default, so those images don't render. Allow arbitrary cleartext
+// in any non-production build.
+//
+// Gate on `!== 'production'` rather than `=== 'development'` deliberately: the
+// dev prebuild path (scripts/rebuild_all, bare `npm run prebuild`) does NOT load
+// ~/secrets/.env, so ENV is `undefined` at native-config-generation time —
+// exact-match would silently drop the override. `undefined !== 'production'` is
+// true, so cleartext is permitted in dev/unknown. Production is safe because CI
+// sets ENV=production as a real environment variable (build-shared-ios.yml), so
+// the production prebuild evaluates this to false and ATS stays https-only.
+const allowCleartextHttp = ENV_CONFIG.ENV !== 'production';
+
 let buildNumber = 1;
 const APP_BUILD = process.env.APP_BUILD;
 
@@ -237,6 +253,13 @@ const defaultConfig: ExpoConfig = {
       'aps-environment': 'development',
     },
     infoPlist: {
+      // DEV ONLY (see allowCleartextHttp): allow arbitrary cleartext HTTP so
+      // local-silo media (http://<host>:9000/...) renders. Emitted in any
+      // non-production build; absent when ENV === 'production', so Release ATS
+      // stays https-only.
+      ...(allowCleartextHttp
+        ? {NSAppTransportSecurity: {NSAllowsArbitraryLoads: true}}
+        : {}),
       // Apple's Xcode-26 validator (ITMS-91164) rejects LSMinimumSystemVersion
       // values in the 16.0–25.x range because macOS numbering jumped from
       // 15.x straight to 26.0 (Tahoe). Must be either <16.0 or ≥26.0. This
@@ -294,17 +317,21 @@ const defaultConfig: ExpoConfig = {
       'expo-build-properties',
       {
         ios: {
-          // SDK 57's hard floor — the expo-build-properties plugin refuses
-          // anything lower with "Error: ios.deploymentTarget needs to be at
-          // least version 16.4." Presumably one of the bundled expo-*
-          // modules uses an iOS 16.4 API. Not our choice — go up if a
-          // future dep demands it, but there's no reason to go higher yet.
+          // iOS deployment floor. SDK 57's expo-build-properties hard-rejected
+          // anything below 16.4; SDK 58 dropped that validation, so 16.4 is now
+          // just our retained minimum (no longer plugin-enforced). Bump only if
+          // a future dep requires it.
           deploymentTarget: '16.4',
         },
         android: {
-          // No gradleVersion pin: SDK 57 / RN 0.86 sets the wrapper to 9.3.1
+          // No gradleVersion pin: SDK 58 / RN 0.88 sets the wrapper to 9.4.1
           // regardless of what we put here — the override was dead config.
           minSdkVersion: 26, // Required for PostHog session replay
+          // DEV ONLY (see allowCleartextHttp): permit cleartext HTTP so the
+          // local media silo (http://<host>:9000/...) loads. True in any
+          // non-production build; production stays cleartext-blocked (the API
+          // 28+ default).
+          usesCleartextTraffic: allowCleartextHttp,
         },
       },
     ],
