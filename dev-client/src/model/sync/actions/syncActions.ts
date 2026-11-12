@@ -128,7 +128,11 @@ const logPushError = (error: unknown): void => {
 /**
  * Fetches elevation for all sites that are missing it.
  * Updates Redux state with fetched elevations and returns updated site data.
- * Elevation fetch failures are non-blocking - sites continue without elevation.
+ * Non-auth fetch failures (timeout, network, backend errors) are non-blocking -
+ * sites continue without elevation and get retried on a later sync. An expired
+ * token makes getElevation re-throw UNAUTHENTICATED, which the enclosing
+ * pushUserData thunk refreshes and retries with a valid token, rather than
+ * relying on the push mutation to trip the same refresh moments later.
  */
 const fetchMissingElevations = async (
   siteData: Record<string, Site>,

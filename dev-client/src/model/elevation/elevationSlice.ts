@@ -15,8 +15,9 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
+import {createAsyncThunk} from 'terraso-client-shared/store/utils';
 import {Coords} from 'terraso-client-shared/types';
 
 import {elevationKey} from 'terraso-mobile-client/model/elevation/elevationFunctions';
@@ -63,9 +64,14 @@ const {reducer} = createSlice({
 
 const fetchElevation = createAsyncThunk(
   'elevation/fetchElevation',
-  async (coords: Coords) => {
-    return getElevation(coords.latitude, coords.longitude);
-  },
+  // The shared thunk wrapper refreshes the token and retries when getElevation
+  // re-throws UNAUTHENTICATED (signing out if the refresh itself fails). Other
+  // failures resolve to null and fall through to the fulfilled case.
+  (coords: Coords) => getElevation(coords.latitude, coords.longitude),
+  // No success message, and don't surface failures to the user: a missing
+  // elevation degrades silently to null rather than popping an error toast.
+  null,
+  false,
 );
 
 export {fetchElevation, reducer};

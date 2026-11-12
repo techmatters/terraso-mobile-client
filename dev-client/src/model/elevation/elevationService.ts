@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {UNAUTHENTICATED} from 'terraso-client-shared/account/authConstants';
 import {fetchElevation} from 'terraso-client-shared/elevation/elevationService';
 
 const ELEVATION_FETCH_TIMEOUT_MS = 10000;
@@ -32,7 +33,12 @@ const requestElevationApi = async (
 
 /**
  * Fetch elevation for coordinates.
- * Returns undefined if the request fails or times out (never throws).
+ * Resolves to null on any failure or timeout, EXCEPT UNAUTHENTICATED, which is
+ * always re-thrown. Every caller must therefore run inside the shared auth-retry
+ * thunk (terraso-client-shared/store/utils) — directly (elevationSlice), via an
+ * enclosing thunk (sync/pushUserData), or by dispatching one (resolveElevation)
+ * — so the 401 refreshes the access token and retries instead of surfacing as an
+ * unhandled rejection. All other failures stay swallowed.
  */
 export const getElevation = async (
   latitude: number,
@@ -49,12 +55,22 @@ export const getElevation = async (
       timeoutPromise,
     ]);
     if (result === timeoutReturn) {
-      console.warn(`Elevation timed out for (${latitude}, ${longitude})`);
+      // console.log, not console.warn: elevation is non-critical and degrades to
+      // null (and the sync path retries later), so these failures are not
+      // actionable client-side bugs. Sentry's captureConsole only grabs
+      // warn/error, so logging at this level keeps local visibility without
+      // paging us for a harmless, expected outcome.
+      console.log(`Elevation timed out for (${latitude}, ${longitude})`);
       return null;
     }
     return result;
   } catch (error) {
-    console.warn(`Elevation errored for (${latitude}, ${longitude}): `, error);
+    if (error === UNAUTHENTICATED) {
+      // Let the enclosing auth-retry thunk wrapper refresh the token and retry.
+      throw error;
+    }
+    // console.log, not console.warn — see the timeout branch above.
+    console.log(`Elevation errored for (${latitude}, ${longitude}): `, error);
     return null;
   }
 };

@@ -15,41 +15,59 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {getElevation} from 'terraso-mobile-client/model/elevation/elevationService';
+import {fetchElevation} from 'terraso-mobile-client/model/elevation/elevationSlice';
 import {resolveElevation} from 'terraso-mobile-client/screens/CreateSiteScreen/resolveElevation';
+import type {AppDispatch} from 'terraso-mobile-client/store';
 
-jest.mock('terraso-mobile-client/model/elevation/elevationService');
-const mockGetElevation = getElevation as jest.MockedFunction<
-  typeof getElevation
+jest.mock('terraso-mobile-client/model/elevation/elevationSlice');
+const mockFetchElevation = fetchElevation as jest.MockedFunction<
+  typeof fetchElevation
 >;
 
 const SITE_PIN = {latitude: 45, longitude: -90};
 
+// resolveElevation dispatches the fetchElevation thunk and unwraps it. Model the
+// dispatch return as the RTK thunk promise (which carries .unwrap()): a resolved
+// unwrap is a successful fetch (value may be null); a rejected unwrap is the
+// refresh-failed / signed-out path, where resolveElevation falls back to null.
+const dispatchResolving = (value: number | null) =>
+  jest.fn().mockReturnValue({unwrap: () => Promise.resolve(value)});
+const dispatchRejecting = () =>
+  jest.fn().mockReturnValue({unwrap: () => Promise.reject('signed out')});
+const asDispatch = (mock: jest.Mock) => mock as unknown as AppDispatch;
+
 beforeEach(() => {
-  mockGetElevation.mockReset();
+  mockFetchElevation.mockReset();
+  // Tag the dispatched thunk with its coords arg so we can assert on it.
+  mockFetchElevation.mockImplementation(
+    coords => ({type: 'elevation/fetchElevation', coords}) as any,
+  );
 });
 
 describe('resolveElevation', () => {
   describe('when coords are unchanged', () => {
     it('returns original elevation without fetching (offline)', async () => {
+      const dispatch = dispatchResolving(999);
       await expect(
-        resolveElevation(SITE_PIN, SITE_PIN, 100, true),
+        resolveElevation(asDispatch(dispatch), SITE_PIN, SITE_PIN, 100, true),
       ).resolves.toBe(100);
-      expect(mockGetElevation).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
     });
 
     it('returns original elevation without fetching (online)', async () => {
+      const dispatch = dispatchResolving(999);
       await expect(
-        resolveElevation(SITE_PIN, SITE_PIN, 100, false),
+        resolveElevation(asDispatch(dispatch), SITE_PIN, SITE_PIN, 100, false),
       ).resolves.toBe(100);
-      expect(mockGetElevation).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
     });
 
     it('returns null elevation without fetching', async () => {
+      const dispatch = dispatchResolving(999);
       await expect(
-        resolveElevation(SITE_PIN, SITE_PIN, null, false),
+        resolveElevation(asDispatch(dispatch), SITE_PIN, SITE_PIN, null, false),
       ).resolves.toBeNull();
-      expect(mockGetElevation).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
     });
   });
 
@@ -57,51 +75,79 @@ describe('resolveElevation', () => {
     const NEW_COORDS = {latitude: 46, longitude: -91};
 
     it('fetches elevation for new coords', async () => {
-      mockGetElevation.mockResolvedValue(200);
+      const dispatch = dispatchResolving(200);
       await expect(
-        resolveElevation(SITE_PIN, NEW_COORDS, 100, false),
+        resolveElevation(
+          asDispatch(dispatch),
+          SITE_PIN,
+          NEW_COORDS,
+          100,
+          false,
+        ),
       ).resolves.toBe(200);
-      expect(mockGetElevation).toHaveBeenCalledWith(
-        NEW_COORDS.latitude,
-        NEW_COORDS.longitude,
-      );
+      expect(mockFetchElevation).toHaveBeenCalledWith(NEW_COORDS);
+      expect(dispatch).toHaveBeenCalled();
     });
 
-    it('returns null when fetch returns null', async () => {
-      mockGetElevation.mockResolvedValue(null);
+    it('returns null when the fetch resolves null', async () => {
+      const dispatch = dispatchResolving(null);
       await expect(
-        resolveElevation(SITE_PIN, NEW_COORDS, 100, false),
+        resolveElevation(
+          asDispatch(dispatch),
+          SITE_PIN,
+          NEW_COORDS,
+          100,
+          false,
+        ),
+      ).resolves.toBeNull();
+    });
+
+    it('returns null when the thunk rejects (refresh failed / signed out)', async () => {
+      const dispatch = dispatchRejecting();
+      await expect(
+        resolveElevation(
+          asDispatch(dispatch),
+          SITE_PIN,
+          NEW_COORDS,
+          100,
+          false,
+        ),
       ).resolves.toBeNull();
     });
   });
 
   describe('when coords have changed and offline', () => {
     it('returns null without fetching', async () => {
+      const dispatch = dispatchResolving(200);
       const newCoords = {latitude: 46, longitude: -91};
       await expect(
-        resolveElevation(SITE_PIN, newCoords, 100, true),
+        resolveElevation(asDispatch(dispatch), SITE_PIN, newCoords, 100, true),
       ).resolves.toBeNull();
-      expect(mockGetElevation).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
     });
   });
 
   describe('when no sitePin', () => {
     it('fetches elevation when online', async () => {
-      mockGetElevation.mockResolvedValue(150);
+      const dispatch = dispatchResolving(150);
       await expect(
-        resolveElevation(undefined, SITE_PIN, null, false),
+        resolveElevation(
+          asDispatch(dispatch),
+          undefined,
+          SITE_PIN,
+          null,
+          false,
+        ),
       ).resolves.toBe(150);
-      expect(mockGetElevation).toHaveBeenCalledWith(
-        SITE_PIN.latitude,
-        SITE_PIN.longitude,
-      );
+      expect(mockFetchElevation).toHaveBeenCalledWith(SITE_PIN);
     });
 
     it('returns null when offline', async () => {
+      const dispatch = dispatchResolving(150);
       await expect(
-        resolveElevation(undefined, SITE_PIN, null, true),
+        resolveElevation(asDispatch(dispatch), undefined, SITE_PIN, null, true),
       ).resolves.toBeNull();
-      expect(mockGetElevation).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
     });
   });
 });
