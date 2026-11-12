@@ -39,6 +39,7 @@ import {enableFreeze} from 'react-native-screens';
 
 import {AppContent} from 'terraso-mobile-client/app/AppContent';
 import {AppWrappers} from 'terraso-mobile-client/app/AppWrappers';
+import {DevKeepAwake} from 'terraso-mobile-client/app/DevKeepAwake';
 import {wrapSentry} from 'terraso-mobile-client/app/Sentry';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
 import {createStore} from 'terraso-mobile-client/store';
@@ -110,6 +111,7 @@ flushDataIfBackendChanged(store.dispatch);
 const App = () => {
   return (
     <AppWrappers store={store}>
+      <DevKeepAwake />
       <AppContent />
     </AppWrappers>
   );
