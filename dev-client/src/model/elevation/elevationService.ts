@@ -20,18 +20,6 @@ import {fetchElevation} from 'terraso-client-shared/elevation/elevationService';
 
 const ELEVATION_FETCH_TIMEOUT_MS = 10000;
 
-type GetElevationOptions = {
-  /**
-   * When true, re-throw UNAUTHENTICATED errors instead of swallowing them. This
-   * lets a caller wrapped in the shared auth-retry thunk
-   * (terraso-client-shared/store/utils) refresh the access token and retry the
-   * request. All other failures (timeout, network, backend errors) are still
-   * swallowed and resolve to null. Defaults to false so the non-Redux callers
-   * (sync, resolveElevation) keep the never-throws contract.
-   */
-  rethrowUnauthenticated?: boolean;
-};
-
 // Raw call — may throw. Callers should use getElevation, which wraps this with
 // a timeout and swallows errors. Delegates to the backend soilId.elevation
 // query (Mapbox Terrain-RGB) so the stored/displayed elevation matches the one
@@ -45,14 +33,16 @@ const requestElevationApi = async (
 
 /**
  * Fetch elevation for coordinates.
- * Returns null if the request fails or times out. Never throws, except that
- * UNAUTHENTICATED is re-thrown when `rethrowUnauthenticated` is set (see the
- * option docs above).
+ * Resolves to null on any failure or timeout, EXCEPT UNAUTHENTICATED, which is
+ * always re-thrown. Every caller must therefore run inside the shared auth-retry
+ * thunk (terraso-client-shared/store/utils) — directly (elevationSlice), via an
+ * enclosing thunk (sync/pushUserData), or by dispatching one (resolveElevation)
+ * — so the 401 refreshes the access token and retries instead of surfacing as an
+ * unhandled rejection. All other failures stay swallowed.
  */
 export const getElevation = async (
   latitude: number,
   longitude: number,
-  {rethrowUnauthenticated = false}: GetElevationOptions = {},
 ): Promise<number | null> => {
   const timeoutReturn = 'timeout';
   const timeoutPromise = new Promise<typeof timeoutReturn>(resolve =>
@@ -75,8 +65,8 @@ export const getElevation = async (
     }
     return result;
   } catch (error) {
-    if (rethrowUnauthenticated && error === UNAUTHENTICATED) {
-      // Let the auth-retry thunk wrapper refresh the token and retry.
+    if (error === UNAUTHENTICATED) {
+      // Let the enclosing auth-retry thunk wrapper refresh the token and retry.
       throw error;
     }
     // console.log, not console.warn — see the timeout branch above.

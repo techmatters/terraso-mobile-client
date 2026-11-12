@@ -33,7 +33,7 @@ import {
   FormState,
 } from 'terraso-mobile-client/screens/CreateSiteScreen/components/CreateSiteForm';
 import {resolveElevation} from 'terraso-mobile-client/screens/CreateSiteScreen/resolveElevation';
-import {useSelector} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {formatCoordinateInEnglish} from 'terraso-mobile-client/util';
 
 type Props = {
@@ -56,6 +56,7 @@ export const CreateSiteView = ({
   );
   const requestSiteCallout = useRequestSiteCallout();
   const isOffline = useIsOffline();
+  const dispatch = useDispatch();
 
   const navigation = useNavigation();
 
@@ -63,6 +64,7 @@ export const CreateSiteView = ({
     async ({...form}: FormState) => {
       const {...site} = validationSchema.cast(form);
       const finalElevation = await resolveElevation(
+        dispatch,
         sitePin,
         {latitude: site.latitude, longitude: site.longitude},
         elevation,
@@ -78,6 +80,7 @@ export const CreateSiteView = ({
       }
     },
     [
+      dispatch,
       createSiteCallback,
       navigation,
       validationSchema,

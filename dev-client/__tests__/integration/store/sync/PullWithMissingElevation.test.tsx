@@ -126,7 +126,6 @@ describe('PullWithMissingElevation', () => {
         expect(mockGetElevation).toHaveBeenCalledWith(
           pulledSiteWithMissingElevation.latitude,
           pulledSiteWithMissingElevation.longitude,
-          {rethrowUnauthenticated: true},
         );
         expect(mockPushUserData).toHaveBeenCalledWith(
           expect.objectContaining({

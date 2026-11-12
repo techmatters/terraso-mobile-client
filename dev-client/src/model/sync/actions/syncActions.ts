@@ -130,9 +130,9 @@ const logPushError = (error: unknown): void => {
  * Updates Redux state with fetched elevations and returns updated site data.
  * Non-auth fetch failures (timeout, network, backend errors) are non-blocking -
  * sites continue without elevation and get retried on a later sync. An expired
- * token is re-thrown so the enclosing pushUserData thunk refreshes and retries
- * with a valid token, rather than relying on the push mutation to trip the same
- * refresh moments later.
+ * token makes getElevation re-throw UNAUTHENTICATED, which the enclosing
+ * pushUserData thunk refreshes and retries with a valid token, rather than
+ * relying on the push mutation to trip the same refresh moments later.
  */
 const fetchMissingElevations = async (
   siteData: Record<string, Site>,
@@ -148,9 +148,7 @@ const fetchMissingElevations = async (
 
   const elevationResults = await Promise.all(
     sitesNeedingElevation.map(async ([siteId, site]) => {
-      const elevation = await getElevation(site.latitude, site.longitude, {
-        rethrowUnauthenticated: true,
-      });
+      const elevation = await getElevation(site.latitude, site.longitude);
 
       if (syncDebugEnabled) {
         console.log(`⛰️ Elevation for ${site.name} = ${elevation}`);

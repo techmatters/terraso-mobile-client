@@ -17,9 +17,11 @@
 
 import {Coords} from 'terraso-client-shared/types';
 
-import {getElevation} from 'terraso-mobile-client/model/elevation/elevationService';
+import {fetchElevation} from 'terraso-mobile-client/model/elevation/elevationSlice';
+import {AppDispatch} from 'terraso-mobile-client/store';
 
 export const resolveElevation = async (
+  dispatch: AppDispatch,
   sitePin: Coords | undefined,
   submittedCoords: Coords,
   sitePinElevation: number | null,
@@ -30,10 +32,15 @@ export const resolveElevation = async (
     submittedCoords.longitude !== sitePin?.longitude;
   if (!latLongWasChanged) return sitePinElevation;
   if (isOffline) return null;
-  // Deliberately does NOT opt into rethrowUnauthenticated: this runs in a plain
-  // form-submit handler, not a shared auth-retry thunk, so a re-thrown 401 would
-  // just become an unhandled rejection with nothing to refresh+retry it. A null
-  // here is fine — the new site gets its elevation backfilled on a later sync
-  // (see fetchMissingElevations / pullUserData re-queueing in syncGlobalReducer).
-  return getElevation(submittedCoords.latitude, submittedCoords.longitude);
+  // Dispatch through the shared auth-retry thunk rather than calling getElevation
+  // directly: an expired access token is refreshed and the fetch retried (so the
+  // new site gets its real elevation at creation time instead of a deferred-sync
+  // backfill), and a dead refresh token signs out — consistent with every other
+  // data fetch. The thunk rejects only when the refresh itself fails (user now
+  // signed out); fall back to null and let a later sync backfill.
+  try {
+    return await dispatch(fetchElevation(submittedCoords)).unwrap();
+  } catch {
+    return null;
+  }
 };

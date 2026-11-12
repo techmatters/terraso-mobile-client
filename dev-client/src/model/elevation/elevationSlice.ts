@@ -64,13 +64,10 @@ const {reducer} = createSlice({
 
 const fetchElevation = createAsyncThunk(
   'elevation/fetchElevation',
-  (coords: Coords) =>
-    // Opt in to re-throwing UNAUTHENTICATED so the shared thunk wrapper refreshes
-    // the token and retries (signing out if the refresh itself fails). Other
-    // failures still resolve to null and fall through to the fulfilled case.
-    getElevation(coords.latitude, coords.longitude, {
-      rethrowUnauthenticated: true,
-    }),
+  // The shared thunk wrapper refreshes the token and retries when getElevation
+  // re-throws UNAUTHENTICATED (signing out if the refresh itself fails). Other
+  // failures resolve to null and fall through to the fulfilled case.
+  (coords: Coords) => getElevation(coords.latitude, coords.longitude),
   // No success message, and don't surface failures to the user: a missing
   // elevation degrades silently to null rather than popping an error toast.
   null,

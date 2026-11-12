@@ -51,31 +51,19 @@ describe('getElevation', () => {
     await expect(getElevation(1, 2)).resolves.toBe(1234);
   });
 
-  test('swallows UNAUTHENTICATED and returns null by default', async () => {
+  test('always re-throws UNAUTHENTICATED for the enclosing auth-retry thunk', async () => {
     mockFetchElevation.mockRejectedValue(UNAUTHENTICATED);
-    await expect(getElevation(1, 2)).resolves.toBeNull();
-    // Logged, but not at a level Sentry captures.
-    expect(logSpy).toHaveBeenCalled();
-    expect(warnSpy).not.toHaveBeenCalled();
-    expect(errorSpy).not.toHaveBeenCalled();
-  });
-
-  test('re-throws UNAUTHENTICATED when rethrowUnauthenticated is set', async () => {
-    mockFetchElevation.mockRejectedValue(UNAUTHENTICATED);
-    await expect(
-      getElevation(1, 2, {rethrowUnauthenticated: true}),
-    ).rejects.toBe(UNAUTHENTICATED);
+    await expect(getElevation(1, 2)).rejects.toBe(UNAUTHENTICATED);
     // The re-thrown case should not log at all — the retry wrapper handles it.
     expect(logSpy).not.toHaveBeenCalled();
     expect(warnSpy).not.toHaveBeenCalled();
     expect(errorSpy).not.toHaveBeenCalled();
   });
 
-  test('still swallows non-auth errors when rethrowUnauthenticated is set', async () => {
+  test('swallows non-auth errors and returns null', async () => {
     mockFetchElevation.mockRejectedValue(new Error('network down'));
-    await expect(
-      getElevation(1, 2, {rethrowUnauthenticated: true}),
-    ).resolves.toBeNull();
+    await expect(getElevation(1, 2)).resolves.toBeNull();
+    // Logged, but not at a level Sentry captures.
     expect(logSpy).toHaveBeenCalled();
     expect(warnSpy).not.toHaveBeenCalled();
     expect(errorSpy).not.toHaveBeenCalled();
