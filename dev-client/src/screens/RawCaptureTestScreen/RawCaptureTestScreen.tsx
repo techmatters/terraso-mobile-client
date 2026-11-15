@@ -27,6 +27,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Share from 'react-native-share';
 
 import {Directory, File, Paths} from 'expo-file-system';
 
@@ -202,10 +203,17 @@ function RawColorTest() {
     [],
   );
 
+  // Dev toggle: force the jpeg-only path even on a RAW-capable device. Lets
+  // us smoke-test the no-RAW branch (capability report, capture, share) end
+  // to end without needing an actual old phone. Flows as request.raw:false,
+  // which both engines treat as "never capture RAW" (iOS reconfigures the
+  // photo output to jpeg upfront; Android skips the RAW stream bind).
+  const [simulateNoRaw, setSimulateNoRaw] = useState(false);
+
   // Idle/framing bind (full analysis) — also the shared capture request.
   const manualRequest = useMemo<CaptureRequest>(
-    () => ({raw: true, jpeg: 'always', analyze: analyzer}),
-    [analyzer],
+    () => ({raw: !simulateNoRaw, jpeg: 'always', analyze: analyzer}),
+    [analyzer, simulateNoRaw],
   );
   const {modes: autoModes, cycleWithRemount} = useMemo(
     () => getPlatformTestConfig(manualRequest, analyzer),
@@ -216,6 +224,19 @@ function RawColorTest() {
   // deleted right after each save so it never accumulates).
   const saveDir = useMemo(() => {
     const d = new Directory(Paths.cache, 'rawAutoSaveTest');
+    try {
+      d.create({idempotent: true});
+    } catch {
+      // already exists / best effort
+    }
+    return d;
+  }, []);
+
+  // Separate dir for manual-shutter share files — kept until the OS evicts
+  // the cache (the share target may read the file async after the sheet
+  // closes, so same-tick deletion is unsafe).
+  const shareDir = useMemo(() => {
+    const d = new Directory(Paths.cache, 'rawCaptureTestShare');
     try {
       d.create({idempotent: true});
     } catch {
@@ -247,6 +268,7 @@ function RawColorTest() {
     await new Promise<void>(r => setTimeout(r, 0)); // let the overlay paint
     let title: string;
     let body: string;
+    let shareUrls: string[] = [];
     try {
       const td = Date.now();
       const [ref, sample] = await cap.decodeRois([
@@ -256,6 +278,14 @@ function RawColorTest() {
       console.log(`[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms`);
       title = 'RAW ref + sample (linear RGB)';
       body = wbAlertBody(ref, sample);
+      try {
+        const written = await cap.save({dir: shareDir.uri});
+        shareUrls = [written.dngUri, written.jpegUri].filter(
+          (u): u is string => !!u,
+        );
+      } catch (err) {
+        console.warn('[rawperf] save-for-share failed', err);
+      }
     } catch (err) {
       title = 'Decode failed';
       body = String(err);
@@ -263,9 +293,19 @@ function RawColorTest() {
       cap.dispose();
       setAnalyzing(false);
     }
+    if (shareUrls.length > 0) {
+      try {
+        // Omit `type` so the OS infers from each file extension — DNG vs JPEG
+        // need different MIME types. failOnCancel:false → dismiss still
+        // proceeds to the results alert.
+        await Share.open({urls: shareUrls, failOnCancel: false});
+      } catch (err) {
+        console.warn('[rawperf] share failed', err);
+      }
+    }
     navigation.goBack();
     Alert.alert(title, body);
-  }, [analyzing, navigation]);
+  }, [analyzing, navigation, shareDir]);
 
   const stopAuto = useCallback(() => {
     autoRef.current = false;
@@ -433,14 +473,24 @@ function RawColorTest() {
           })}
         </RawColorCamera>
         {caps && !autoRunning && (
-          <SafeAreaView
-            style={styles.statusBanner}
-            edges={['top']}
-            pointerEvents="none">
-            <Text style={styles.statusText}>
+          <SafeAreaView style={styles.statusBanner} edges={['top']}>
+            <Text style={styles.statusText} pointerEvents="none">
               RAW {caps.rawAvailable ? '✓ available' : '✗ none → jpeg-only'} ·{' '}
               {caps.willCaptureRaw ? 'capturing RAW' : 'capturing JPEG'}
             </Text>
+            <Pressable
+              onPress={() => setSimulateNoRaw(v => !v)}
+              disabled={shutterDisabled}
+              accessibilityRole="button"
+              style={[
+                styles.simToggle,
+                simulateNoRaw && styles.simToggleOn,
+                shutterDisabled && styles.disabled,
+              ]}>
+              <Text style={styles.simToggleText}>
+                Simulate no RAW: {simulateNoRaw ? 'ON' : 'off'}
+              </Text>
+            </Pressable>
           </SafeAreaView>
         )}
         {autoRunning && (
@@ -534,6 +584,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.55)',
   },
   statusText: {color: 'white', fontSize: 14},
+  simToggle: {
+    alignSelf: 'flex-start',
+    marginTop: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.6)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  simToggleOn: {
+    backgroundColor: 'rgba(220,160,40,0.85)',
+    borderColor: 'rgba(255,220,100,0.9)',
+  },
+  simToggleText: {color: 'white', fontSize: 13, fontWeight: '600'},
   analyzingOverlay: {
     position: 'absolute',
     top: 0,

@@ -513,16 +513,20 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
     // capture on a genuinely no-RAW device is spent detecting; after that it
     // captures JPEG.
     const [deviceSupportsRaw, setDeviceSupportsRaw] = useState(true);
+    // Two reasons to skip RAW: device truly can't do it, OR caller explicitly
+    // asked for jpeg-only via request.raw:false (lets callers simulate the
+    // no-RAW path on a capable device for testing).
+    const effectiveWantsRaw = deviceSupportsRaw && request.raw !== false;
     // Stable identity — vision-camera diffs photo-output options by identity to
     // decide whether to reconfigure; a fresh object each render loops.
     const photoOutputOptions = useMemo(
       () => ({
         targetResolution: {width: 4032, height: 3024},
-        containerFormat: deviceSupportsRaw
+        containerFormat: effectiveWantsRaw
           ? ('dng' as const)
           : ('jpeg' as const),
       }),
-      [deviceSupportsRaw],
+      [effectiveWantsRaw],
     );
     const photoOutput = usePhotoOutput(photoOutputOptions);
 
@@ -563,21 +567,20 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
       if (!active || !hasPermission) {
         return;
       }
-      const willRaw = deviceSupportsRaw && request.raw !== false;
       onCapabilitiesRef.current?.({
         rawAvailable: deviceSupportsRaw,
-        willCaptureRaw: willRaw,
-        willCaptureJpeg: !willRaw || wantJpeg,
+        willCaptureRaw: effectiveWantsRaw,
+        willCaptureJpeg: !effectiveWantsRaw || wantJpeg,
         analysisActive: analyzerRois.length > 0,
         // Only the RAW path does the shutter-time detach/reconfigure; the
         // jpeg-only fallback captures with the frame output still attached.
-        switchesAtCapture: willRaw,
+        switchesAtCapture: effectiveWantsRaw,
       });
     }, [
       active,
       deviceSupportsRaw,
+      effectiveWantsRaw,
       hasPermission,
-      request.raw,
       wantJpeg,
       analyzerRois.length,
     ]);
@@ -604,10 +607,12 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
             await done;
           };
           try {
-            // No-RAW fallback: capture a JPEG directly. The frame output can
+            // No-RAW path: capture a JPEG directly. The frame output can
             // stay attached (a non-RAW format is what JPEG wants), so no detach
-            // dance. Reached once detection has flipped deviceSupportsRaw false.
-            if (!deviceSupportsRaw) {
+            // dance. Reached either when runtime detection flipped
+            // deviceSupportsRaw false, or when the caller explicitly requested
+            // jpeg-only via request.raw:false.
+            if (!effectiveWantsRaw) {
               const photo = await photoOutput.capturePhoto({}, {});
               const jpegUri = fileUri(await photo.saveToTemporaryFileAsync());
               opts?.onCaptured?.();
@@ -696,7 +701,7 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
           }
         },
       }),
-      [photoOutput, wantJpeg, deviceSupportsRaw],
+      [photoOutput, wantJpeg, effectiveWantsRaw],
     );
 
     const ready = !!device && hasPermission && active;
