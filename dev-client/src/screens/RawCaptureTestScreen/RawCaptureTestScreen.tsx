@@ -276,7 +276,9 @@ function RawColorTest() {
         DISPLAY_SAMPLE_ROI,
       ]);
       console.log(`[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms`);
-      title = 'RAW ref + sample (linear RGB)';
+      title = cap.hasRaw
+        ? 'RAW ref + sample (linear RGB)'
+        : 'JPEG ref + sample (linear RGB, no-RAW fallback)';
       body = wbAlertBody(ref, sample);
       try {
         const written = await cap.save({dir: shareDir.uri});

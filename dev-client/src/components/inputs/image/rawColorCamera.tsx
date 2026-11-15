@@ -37,9 +37,16 @@ import {
 } from 'react-native-vision-camera';
 
 import {File} from 'expo-file-system';
+import {
+  ActionResize,
+  manipulateAsync,
+  SaveFormat,
+} from 'expo-image-manipulator';
 
+import {Buffer} from '@craftzdog/react-native-buffer';
 import {DngDecoderHybrid} from 'dng-decoder';
 import {FrameAnalyzerHybrid} from 'frame-analyzer';
+import {decode as decodeJpegBytes} from 'jpeg-js';
 import {
   createRoiAnalyzer as createNativeRoiAnalyzer,
   RawCameraAndroidHybrid,
@@ -123,6 +130,68 @@ const roiToPixels = (roi: Roi, width: number, height: number) => {
   };
 };
 
+// sRGB → linear. Keeps the jpeg-fallback colour on the same linear-RGB scale
+// as a DNG decode (both reference and sample pass through this, so the
+// sample/ref WB ratio stays comparable).
+const srgbToLinear = (c255: number): number => {
+  const c = c255 / 255;
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+};
+
+// JPEG-decode fallback for the no-RAW / jpeg-only path (truly rawless devices
+// AND the "Simulate no RAW" dev toggle). Pure-JS decode of a 20MB iPhone JPEG
+// takes seconds, so we route through manipulateAsync first — it (a) bakes in
+// EXIF orientation so our portrait fractional ROIs map directly to pixel
+// coords, and (b) downsizes to ~1024px long edge, cutting the JS decode to
+// ~100ms. ROI accuracy is unaffected since we're averaging colour over a
+// region that's many pixels wide even at 1024px.
+const JPEG_FALLBACK_LONG_EDGE_PX = 1024;
+
+const decodeJpegRois = async (
+  jpegUri: string,
+  rois: Roi[],
+): Promise<LinearRgb[]> => {
+  const processed = await manipulateAsync(
+    jpegUri,
+    [{resize: {height: JPEG_FALLBACK_LONG_EDGE_PX}} as ActionResize],
+    {base64: true, compress: 0.9, format: SaveFormat.JPEG},
+  );
+  if (!processed.base64) {
+    throw new Error(
+      'decodeRois (jpeg-fallback): manipulateAsync returned no base64',
+    );
+  }
+  const bytes = Buffer.from(processed.base64, 'base64');
+  const {data, width: w, height: h} = decodeJpegBytes(bytes, {useTArray: true});
+  return rois.map(roi => {
+    const x0 = Math.max(0, Math.floor(roi.x * w));
+    const y0 = Math.max(0, Math.floor(roi.y * h));
+    const x1 = Math.min(w, Math.ceil((roi.x + roi.w) * w));
+    const y1 = Math.min(h, Math.ceil((roi.y + roi.h) * h));
+    let rSum = 0;
+    let gSum = 0;
+    let bSum = 0;
+    let n = 0;
+    for (let y = y0; y < y1; y++) {
+      for (let x = x0; x < x1; x++) {
+        const o = (y * w + x) * 4;
+        rSum += data[o];
+        gSum += data[o + 1];
+        bSum += data[o + 2];
+        n += 1;
+      }
+    }
+    if (n === 0) {
+      return {r: 0, g: 0, b: 0};
+    }
+    return {
+      r: srgbToLinear(rSum / n),
+      g: srgbToLinear(gSum / n),
+      b: srgbToLinear(bSum / n),
+    };
+  });
+};
+
 /**
  * Build a Capture over an on-disk DNG (+ optional companion JPEG). Decode runs
  * off the file for now; a later slice moves it onto an in-memory parsed handle
@@ -141,17 +210,21 @@ const makeCapture = (
   hasJpeg: jpegUri != null,
   retries,
   decodeRois: async (rois: Roi[]): Promise<LinearRgb[]> => {
-    if (!dngUri) {
-      throw new Error(
-        'decodeRois: this capture has no RAW/DNG (jpeg-only) — nothing to decode',
+    if (dngUri) {
+      // One parse, all ROIs. NOTE: decodeDngRois is synchronous native (blocks
+      // the JS thread); off-thread decode is a later slice.
+      return DngDecoderHybrid.decodeDngRois(
+        dngUri,
+        rois.map(r => roiToPixels(r, width, height)),
       );
     }
-    // One parse, all ROIs. NOTE: decodeDngRois is synchronous native (blocks
-    // the JS thread); off-thread decode is a later slice.
-    return DngDecoderHybrid.decodeDngRois(
-      dngUri,
-      rois.map(r => roiToPixels(r, width, height)),
-    );
+    if (jpegUri) {
+      // No RAW on this device (or simulated-no-RAW toggle) — fall back to the
+      // companion JPEG. Lower colour fidelity than DNG (quantised, compressed)
+      // but keeps the capture flow alive on devices that can't produce RAW.
+      return decodeJpegRois(jpegUri, rois);
+    }
+    throw new Error('decodeRois: capture has neither RAW/DNG nor JPEG');
   },
   renderPreview: async maxDim => {
     if (!dngUri) {
