@@ -267,11 +267,19 @@ const AndroidRawColorEngine = forwardRef<
 ) {
   const {hasPermission, requestPermission} = useCameraPermission();
 
+  // Parents commonly pass inline arrows for onCapabilities/onError; depending
+  // on their identity would re-run the capability-probe effect every render,
+  // which calls setState upstream → infinite loop. Read via refs instead.
+  const onCapabilitiesRef = useRef(onCapabilities);
+  const onErrorRef = useRef(onError);
+  onCapabilitiesRef.current = onCapabilities;
+  onErrorRef.current = onError;
+
   useEffect(() => {
     if (active && !hasPermission) {
-      requestPermission().catch(err => onError?.(err as Error));
+      requestPermission().catch(err => onErrorRef.current?.(err as Error));
     }
-  }, [active, hasPermission, requestPermission, onError]);
+  }, [active, hasPermission, requestPermission]);
 
   const analyze = request.analyze;
   // No-RAW simulation: bind preview+jpeg(+analysis), capture a JPEG only.
@@ -312,7 +320,7 @@ const AndroidRawColorEngine = forwardRef<
           // it so callers can route to the JPEG colour path.
           const rawAvailable = caps.rawAvailable;
           const jpegOnly = rawless || !rawAvailable;
-          onCapabilities?.({
+          onCapabilitiesRef.current?.({
             rawAvailable,
             willCaptureRaw: rawAvailable && !rawless,
             willCaptureJpeg: jpegOnly || captureWantsJpeg,
@@ -323,22 +331,14 @@ const AndroidRawColorEngine = forwardRef<
         }
       } catch (err) {
         if (!cancelled) {
-          onError?.(err as Error);
+          onErrorRef.current?.(err as Error);
         }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [
-    active,
-    hasPermission,
-    rawless,
-    captureWantsJpeg,
-    analyze,
-    onCapabilities,
-    onError,
-  ]);
+  }, [active, hasPermission, rawless, captureWantsJpeg, analyze]);
 
   useImperativeHandle(
     ref,
@@ -475,6 +475,13 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
   ) {
     const {hasPermission, requestPermission} = useCameraPermission();
 
+    // See AndroidRawColorEngine: stabilise callback identity so inline arrows
+    // passed by the parent don't re-trigger effects → setState → render loop.
+    const onCapabilitiesRef = useRef(onCapabilities);
+    const onErrorRef = useRef(onError);
+    onCapabilitiesRef.current = onCapabilities;
+    onErrorRef.current = onError;
+
     // Prefer a true single-wide physical back camera (Apple RAW is most
     // reliable there, not on a virtual multi-cam aggregate); fall back to
     // the default back camera.
@@ -494,9 +501,9 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
 
     useEffect(() => {
       if (active && !hasPermission) {
-        requestPermission().catch(err => onError?.(err as Error));
+        requestPermission().catch(err => onErrorRef.current?.(err as Error));
       }
-    }, [active, hasPermission, requestPermission, onError]);
+    }, [active, hasPermission, requestPermission]);
 
     // RAW-capability detection (reactive). vision-camera has no upfront DNG
     // query, so we optimistically request DNG; if the device rejects it ("does
@@ -557,7 +564,7 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
         return;
       }
       const willRaw = deviceSupportsRaw && request.raw !== false;
-      onCapabilities?.({
+      onCapabilitiesRef.current?.({
         rawAvailable: deviceSupportsRaw,
         willCaptureRaw: willRaw,
         willCaptureJpeg: !willRaw || wantJpeg,
@@ -573,7 +580,6 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
       request.raw,
       wantJpeg,
       analyzerRois.length,
-      onCapabilities,
     ]);
 
     const capturingRef = useRef(false);
@@ -652,7 +658,7 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
                       DngDecoderHybrid.extractDngPreviewJpeg(rawUri),
                     );
                   } catch (err) {
-                    onError?.(err as Error);
+                    onErrorRef.current?.(err as Error);
                   }
                 }
                 // Sensor read out + files on disk → safe to move.
@@ -690,7 +696,7 @@ const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
           }
         },
       }),
-      [photoOutput, wantJpeg, deviceSupportsRaw, onError],
+      [photoOutput, wantJpeg, deviceSupportsRaw],
     );
 
     const ready = !!device && hasPermission && active;
