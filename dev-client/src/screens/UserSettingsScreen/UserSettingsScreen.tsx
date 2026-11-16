@@ -17,7 +17,11 @@
 
 import {FeatureFlagControlPanel} from 'terraso-mobile-client/components/FeatureFlagControl';
 import {MenuList} from 'terraso-mobile-client/components/menus/MenuList';
-import {Column} from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {
+  Box,
+  Column,
+  Heading,
+} from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictByFlag} from 'terraso-mobile-client/components/restrictions/RestrictByFlag';
 import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScrollView';
 import {SessionReplayDebugContent} from 'terraso-mobile-client/components/SessionReplayDebugContent';
@@ -30,7 +34,6 @@ import {ClearSoilIdCacheItem} from 'terraso-mobile-client/screens/UserSettingsSc
 import {CopyAccessTokenItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/CopyAccessTokenItem';
 import {DataExportItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DataExportItem';
 import {DeleteAccountItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/DeleteAccountItem';
-import {ExperimentalRawColorToggleItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/ExperimentalRawColorToggleItem';
 import {HelpItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/HelpItem';
 import {KeepAwakeToggleItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/KeepAwakeToggleItem';
 import {PrivacyItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/PrivacyItem';
@@ -38,8 +41,19 @@ import {RawCaptureTestItem} from 'terraso-mobile-client/screens/UserSettingsScre
 import {SelectLanguageItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SelectLanguageItem';
 import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/SignOutItem';
 import {TosItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/TosItem';
+import {UseNewPreviewUxToggleItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/UseNewPreviewUxToggleItem';
+import {UseRawWhenAvailableToggleItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/UseRawWhenAvailableToggleItem';
 import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/UserIndicatorComponent';
 import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
+
+// Small section heading for the DEV-only settings groups. Not promoted to a
+// shared component yet because it's the only user. If more settings screens
+// adopt the labelled-section pattern, extract into components/menus/.
+const DevSectionHeading = ({label}: {label: string}) => (
+  <Box pt="md" pl="xs">
+    <Heading variant="h6">{label}</Heading>
+  </Box>
+);
 
 export function UserSettingsScreen() {
   const {isPending} = useUserDeletionRequests();
@@ -63,18 +77,30 @@ export function UserSettingsScreen() {
                 <PrivacyItem />
                 <TosItem />
                 <SelectLanguageItem />
-                <RestrictByFlag flag="FF_testing">
-                  <CopyAccessTokenItem />
-                  <ClearSoilIdCacheItem />
-                  <KeepAwakeToggleItem />
-                  <ExperimentalRawColorToggleItem />
-                  <RawCaptureTestItem />
-                </RestrictByFlag>
               </>
             )}
             <SignOutItem />
             <DeleteAccountItem />
           </MenuList>
+          {!isPending && (
+            <RestrictByFlag flag="FF_testing">
+              <DevSectionHeading label="Developer" />
+              <MenuList>
+                <CopyAccessTokenItem />
+                <ClearSoilIdCacheItem />
+                <KeepAwakeToggleItem />
+              </MenuList>
+              <DevSectionHeading label="Color / Camera" />
+              <MenuList>
+                <RawCaptureTestItem />
+                <UseRawWhenAvailableToggleItem />
+                <UseNewPreviewUxToggleItem />
+              </MenuList>
+              {/* Soil Images section goes here once the upload queue is
+                  wired (color-final-plan.md). Placeholder label omitted to
+                  avoid a visually empty section. */}
+            </RestrictByFlag>
+          )}
           <VersionIndicator />
         </Column>
       </SafeScrollView>

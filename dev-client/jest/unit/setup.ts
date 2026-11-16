@@ -29,15 +29,6 @@ const mockWorkletsStub: any = new Proxy(function () {}, {
 });
 jest.mock('react-native-worklets', () => mockWorkletsStub);
 
-// expo-media-library@56 exports classes that extend a native module
-// (`ExpoMediaLibraryNext`), which is undefined at import time in jest and
-// throws "Super expression must either be null or a function". Any unit test
-// whose require-chain reaches components/inputs/image/ImagePicker.tsx will
-// pull expo-media-library in and blow up — stub the one API we use.
-jest.mock('expo-media-library', () => ({
-  createAssetAsync: jest.fn(() => Promise.resolve()),
-}));
-
 // react-native-keyboard-controller needs its native module; the package ships a jest mock.
 jest.mock('react-native-keyboard-controller', () =>
   require('react-native-keyboard-controller/jest'),

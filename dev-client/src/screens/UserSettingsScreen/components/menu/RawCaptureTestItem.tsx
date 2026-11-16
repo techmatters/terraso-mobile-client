@@ -19,15 +19,14 @@ import {useCallback} from 'react';
 
 import {MenuItem} from 'terraso-mobile-client/components/menus/MenuItem';
 import {APP_CONFIG} from 'terraso-mobile-client/config';
-import {useIsExperimentalRawColorEnabled} from 'terraso-mobile-client/model/rawColor/experimentalRawColorToggle';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
 // Dev-only entry to the RAW capture smoke test. Navigates to a dedicated
 // full-screen capture screen (RawCaptureTestScreen) rather than presenting an
-// in-tree overlay — the latter leaked the opening tap into the shutter. Shown
-// only when the experimental RAW-colour flag is on; hidden in production.
+// in-tree overlay — the latter leaked the opening tap into the shutter.
+// Visibility is enforced at the Settings → Color/Camera section level
+// (RestrictByFlag FF_testing); hidden in production.
 export const RawCaptureTestItem = () => {
-  const enabled = useIsExperimentalRawColorEnabled();
   const navigation = useNavigation();
 
   const onPress = useCallback(
@@ -35,7 +34,7 @@ export const RawCaptureTestItem = () => {
     [navigation],
   );
 
-  if (APP_CONFIG.environment === 'production' || !enabled) {
+  if (APP_CONFIG.environment === 'production') {
     return null;
   }
 
