@@ -60,6 +60,17 @@ export const soilImageQueue = createSoilImageQueue({
   newId: () => uuidv4(),
 });
 
+// Startup recovery: any entry persisted with status `uploading` at module
+// load time was in-flight when the app was last killed (crash, OS kill, user
+// swipe-away). Partial PUTs are treated as failures per
+// docs/color-final-plan.md — flip them so the user can see what didn't
+// finish and retry via the Upload button.
+for (const entry of readIndex()) {
+  if (entry.status === 'uploading') {
+    soilImageQueue.markFailed(entry.id, 'Upload interrupted');
+  }
+}
+
 // Snapshot cached so useSyncExternalStore can hand React the SAME reference
 // between calls when nothing changed. Refreshed only on mutation (the queue
 // factory notifies subscribers after every write).

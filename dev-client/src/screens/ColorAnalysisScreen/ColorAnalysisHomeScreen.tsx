@@ -15,7 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, Pressable, StyleSheet} from 'react-native';
 
@@ -40,6 +40,7 @@ import {
   InvalidColorResult,
   MunsellColor,
 } from 'terraso-mobile-client/model/color/types';
+import {soilImageQueue} from 'terraso-mobile-client/model/rawColor/soilImageQueue.default';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
@@ -47,7 +48,7 @@ import {useColorAnalysisNavigation} from 'terraso-mobile-client/screens/ColorAna
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 export const ColorAnalysisHomeScreen = () => {
   const {
@@ -64,6 +65,48 @@ export const ColorAnalysisHomeScreen = () => {
   const [colorResult, setColorResult] = useState<InvalidColorResult | null>(
     null,
   );
+  const siteName = useSelector(
+    state => state.site.sites[pitProps.siteId]?.name ?? pitProps.siteId,
+  );
+
+  // Queue the captured photo for upload when the user leaves this screen,
+  // in either direction (back / cancel / navigate forward). Dedup by
+  // (siteId, depth) is handled by the queue — a re-capture for the same slot
+  // replaces the previous entry and deletes its file (color-final-plan.md
+  // "keep the latest"). Only queues once per screen instance; a successful
+  // Analyze both dispatches the Munsell result AND leaves the screen, so the
+  // photo still gets queued for upload.
+  const enqueuedRef = useRef(false);
+  const {siteId} = pitProps;
+  const {depthInterval} = pitProps.depthInterval;
+  const photoUri = photo.uri;
+  useEffect(() => {
+    return () => {
+      if (enqueuedRef.current) {
+        return;
+      }
+      enqueuedRef.current = true;
+      soilImageQueue
+        .enqueue({
+          siteId,
+          siteName,
+          depth: depthInterval,
+          // The current (non-RAW) flow has just a JPEG from expo-image-picker.
+          // Once the RAW capture pipeline is routed through this screen (new
+          // Preview UX), a second file with kind:'raw' will be added here.
+          files: [
+            {
+              kind: 'jpeg',
+              uri: photoUri,
+              contentType: 'image/jpeg',
+            },
+          ],
+        })
+        .catch(err => {
+          console.warn('[soilImageQueue] enqueue failed', err);
+        });
+    };
+  }, [siteId, siteName, depthInterval, photoUri]);
 
   const dispatchColor = useCallback(
     (color: MunsellColor) => {
