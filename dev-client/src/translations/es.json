@@ -1849,5 +1849,11 @@
             "save_failed": "No se pudo guardar el archivo.",
             "unknown": "Se produjo un error desconocido."
         }
+    },
+    "colorCamera": {
+        "referencePicker": {
+            "label": "TK Reference color",
+            "notRecommended": "TK Not Recommended"
+        }
     }
 }

@@ -1849,5 +1849,11 @@
             "save_failed": "Impossible d'enregistrer le fichier.",
             "unknown": "Une erreur inconnue s'est produite."
         }
+    },
+    "colorCamera": {
+        "referencePicker": {
+            "label": "TK Reference color",
+            "notRecommended": "TK Not Recommended"
+        }
     }
 }
