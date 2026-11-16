@@ -47,6 +47,7 @@ import {Buffer} from '@craftzdog/react-native-buffer';
 import {DngDecoderHybrid} from 'dng-decoder';
 import {FrameAnalyzerHybrid} from 'frame-analyzer';
 import {decode as decodeJpegBytes} from 'jpeg-js';
+import quantize from 'quantize';
 import {
   createRoiAnalyzer as createNativeRoiAnalyzer,
   RawCameraAndroidHybrid,
@@ -58,6 +59,7 @@ import type {
   Capture,
   FrameAnalyzer,
   LinearRgb,
+  LinearRgbReduced,
   RawColorCameraHandle,
   RawColorCameraProps,
   Roi,
@@ -147,10 +149,16 @@ const srgbToLinear = (c255: number): number => {
 // region that's many pixels wide even at 1024px.
 const JPEG_FALLBACK_LONG_EDGE_PX = 1024;
 
-const decodeJpegRois = async (
+// Quantize's median-cut operates on sRGB [0,255] samples. A larger palette
+// makes "biggest cluster" more selective (= better rejection of outlier
+// flecks) at the cost of more compute; 5 matches the legacy JPEG
+// dominantColor pipeline in src/model/color/colorDetection.ts.
+const JPEG_DOMINANT_PALETTE_SIZE = 5;
+
+const decodeJpegRoisReducedShared = async (
   jpegUri: string,
   rois: Roi[],
-): Promise<LinearRgb[]> => {
+): Promise<LinearRgbReduced[]> => {
   const processed = await manipulateAsync(
     jpegUri,
     [{resize: {height: JPEG_FALLBACK_LONG_EDGE_PX}} as ActionResize],
@@ -168,6 +176,7 @@ const decodeJpegRois = async (
     const y0 = Math.max(0, Math.floor(roi.y * h));
     const x1 = Math.min(w, Math.ceil((roi.x + roi.w) * w));
     const y1 = Math.min(h, Math.ceil((roi.y + roi.h) * h));
+    const pixels: [number, number, number][] = [];
     let rSum = 0;
     let gSum = 0;
     let bSum = 0;
@@ -175,22 +184,52 @@ const decodeJpegRois = async (
     for (let y = y0; y < y1; y++) {
       for (let x = x0; x < x1; x++) {
         const o = (y * w + x) * 4;
-        rSum += data[o];
-        gSum += data[o + 1];
-        bSum += data[o + 2];
+        const r = data[o];
+        const g = data[o + 1];
+        const b = data[o + 2];
+        rSum += r;
+        gSum += g;
+        bSum += b;
+        pixels.push([r, g, b]);
         n += 1;
       }
     }
     if (n === 0) {
-      return {r: 0, g: 0, b: 0};
+      const zero = {r: 0, g: 0, b: 0};
+      return {mean: zero, dominant: zero};
     }
-    return {
+    const mean: LinearRgb = {
       r: srgbToLinear(rSum / n),
       g: srgbToLinear(gSum / n),
       b: srgbToLinear(bSum / n),
     };
+    // Median-cut via `quantize` (same algorithm the legacy JPEG colour
+    // pipeline uses). Returns a palette of up to N boxes; the "dominant" is
+    // the box with the most pixels in it. Falls back to mean if quantize
+    // bails (degenerate / all-identical pixel buffer).
+    let dominant = mean;
+    const colorMap = quantize(pixels, JPEG_DOMINANT_PALETTE_SIZE);
+    if (colorMap) {
+      const [topColor] = colorMap.vboxes
+        .map(vbox => [vbox.color, vbox.vbox.count()] as const)
+        .sort(([, c1], [, c2]) => c2 - c1)[0];
+      if (topColor) {
+        dominant = {
+          r: srgbToLinear(topColor[0]),
+          g: srgbToLinear(topColor[1]),
+          b: srgbToLinear(topColor[2]),
+        };
+      }
+    }
+    return {mean, dominant};
   });
 };
+
+const decodeJpegRois = async (
+  jpegUri: string,
+  rois: Roi[],
+): Promise<LinearRgb[]> =>
+  (await decodeJpegRoisReducedShared(jpegUri, rois)).map(r => r.mean);
 
 /**
  * Build a Capture over an on-disk DNG (+ optional companion JPEG). Decode runs
@@ -225,6 +264,22 @@ const makeCapture = (
       return decodeJpegRois(jpegUri, rois);
     }
     throw new Error('decodeRois: capture has neither RAW/DNG nor JPEG');
+  },
+  decodeRoisReduced: async (rois: Roi[]): Promise<LinearRgbReduced[]> => {
+    if (dngUri) {
+      // Native path returns {mean, dominant} in one pass — iOS uses
+      // CIRAWFilter area-average for mean and median-cut over the ROI's CPU
+      // pixel buffer for dominant; Android computes both inside the shared
+      // C++ reducer (median-cut on full ROI pixels).
+      return DngDecoderHybrid.decodeDngRoisReduced(
+        dngUri,
+        rois.map(r => roiToPixels(r, width, height)),
+      );
+    }
+    if (jpegUri) {
+      return decodeJpegRoisReducedShared(jpegUri, rois);
+    }
+    throw new Error('decodeRoisReduced: capture has neither RAW/DNG nor JPEG');
   },
   renderPreview: async maxDim => {
     if (!dngUri) {

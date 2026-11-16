@@ -102,6 +102,19 @@ const wbAlertBody = (ref: LinearRgb, sample: LinearRgb): string => {
   );
 };
 
+// Formats both the mean- and dominant-reducer results into a single alert
+// body so the dev tester can eyeball the shadow-tolerance delta. Shows mean
+// WB above a thin separator, then dominant WB below.
+const reducedAlertBody = (
+  refRed: {mean: LinearRgb; dominant: LinearRgb},
+  sampleRed: {mean: LinearRgb; dominant: LinearRgb},
+): string =>
+  `-- MEAN --\n${wbAlertBody(refRed.mean, sampleRed.mean)}\n\n` +
+  `-- DOMINANT (median-cut) --\n${wbAlertBody(
+    refRed.dominant,
+    sampleRed.dominant,
+  )}`;
+
 /**
  * Dev-only full-screen RAW capture smoke test, flag-gated via the dev menu.
  *
@@ -271,15 +284,17 @@ function RawColorTest() {
     let shareUrls: string[] = [];
     try {
       const td = Date.now();
-      const [ref, sample] = await cap.decodeRois([
+      const [refReduced, sampleReduced] = await cap.decodeRoisReduced([
         DISPLAY_REF_ROI,
         DISPLAY_SAMPLE_ROI,
       ]);
-      console.log(`[rawperf] decodeRois(ref,sample) ${Date.now() - td}ms`);
+      console.log(
+        `[rawperf] decodeRoisReduced(ref,sample) ${Date.now() - td}ms`,
+      );
       title = cap.hasRaw
         ? 'RAW ref + sample (linear RGB)'
         : 'JPEG ref + sample (linear RGB, no-RAW fallback)';
-      body = wbAlertBody(ref, sample);
+      body = reducedAlertBody(refReduced, sampleReduced);
       try {
         const written = await cap.save({dir: shareDir.uri});
         shareUrls = [written.dngUri, written.jpegUri].filter(

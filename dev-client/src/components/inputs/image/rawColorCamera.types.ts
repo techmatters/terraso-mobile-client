@@ -43,6 +43,14 @@ export type Roi = {x: number; y: number; w: number; h: number};
 export type LinearRgb = {r: number; g: number; b: number};
 
 /**
+ * Dual-reducer per-ROI result. `mean` is the per-channel arithmetic average
+ * (biased by highlights + off-tone flecks); `dominant` is the median-cut
+ * "biggest colour cluster" — robust to outlier pixels (shadow flecks,
+ * highlight glints). Mirrors the dng-decoder Nitro `LinearRgbReduced`.
+ */
+export type LinearRgbReduced = {mean: LinearRgb; dominant: LinearRgb};
+
+/**
  * Per-ROI live stats emitted by an analyzer while framing. These are
  * Y-plane (luma) stats — a *framing-quality* signal, NOT color. The
  * authoritative color is always the post-capture RAW decode (decodeRois).
@@ -122,8 +130,18 @@ export type Capture = {
    * (Android session-not-streaming / iOS non-DNG reconfigure) kicks in.
    */
   retries: number;
-  /** Decode N ROIs in a single pass. Returns one color per ROI, in order. */
+  /** Decode N ROIs in a single pass. Returns the per-channel arithmetic mean
+   *  for each ROI, in order. Convenience for mean-only callers — identical to
+   *  reading `.mean` off each decodeRoisReduced entry. */
   decodeRois(rois: Roi[]): Promise<LinearRgb[]>;
+  /** Decode N ROIs in a single pass and return BOTH the mean and the
+   *  median-cut dominant for each. The dominant ("biggest colour cluster")
+   *  is robust to outlier pixels — shadow flecks, highlight glints, off-tone
+   *  specks — which the mean smears together. Shared C++ median-cut on
+   *  Android; iOS uses CIRAWFilter area-average for mean + the same C++
+   *  median-cut on the ROI pixel buffer for dominant. The JPEG fallback
+   *  computes both in JS (jpeg-js + `quantize`). */
+  decodeRoisReduced(rois: Roi[]): Promise<LinearRgbReduced[]>;
   /** Display-ready downscaled render of the capture (for an ROI picker, etc.). */
   renderPreview(
     maxDim: number,
