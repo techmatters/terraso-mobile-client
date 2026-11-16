@@ -701,7 +701,8 @@
             "color_photo_lighting_condition": {
                 "EVEN": "დიახ",
                 "UNEVEN": "არა"
-            }
+            },
+            "inline_warning": "TK This color looks unusual — review before saving."
         },
         "top_match": "საუკეთესო მატჩი",
         "ecological_site_name": "ეკოლოგიური ობიექტის დასახელება",
@@ -1859,6 +1860,14 @@
             "empty": "TK No soil images queued.",
             "clear": "TK Clear",
             "uploadUnavailable": "TK Upload (coming soon)"
+        },
+        "info": {
+            "title": "TK Color analysis details",
+            "reference": "TK Reference",
+            "soil": "TK Soil",
+            "measured": "TK Measured",
+            "refExpected": "TK Ref expected",
+            "munsellChip": "TK Munsell chip"
         }
     }
 }

@@ -25,6 +25,7 @@ import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {ErrorDialog} from 'terraso-mobile-client/components/dialogs/ErrorDialog';
 import {Icon} from 'terraso-mobile-client/components/icons/Icon';
+import {ReferenceColorPicker} from 'terraso-mobile-client/components/inputs/ReferenceColorPicker';
 import {ActionsModal} from 'terraso-mobile-client/components/modals/ActionsModal';
 import {ModalHandle} from 'terraso-mobile-client/components/modals/Modal';
 import {
@@ -37,9 +38,11 @@ import {
 import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/safeview/SafeScrollViewWithFab';
 import {getColorFromImages} from 'terraso-mobile-client/model/color/colorDetection';
 import {
+  ColorResult,
   InvalidColorResult,
   MunsellColor,
 } from 'terraso-mobile-client/model/color/types';
+import {useSelectedReference} from 'terraso-mobile-client/model/rawColor/referenceColorSelection';
 import {soilImageQueue} from 'terraso-mobile-client/model/rawColor/soilImageQueue.default';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -68,14 +71,14 @@ export const ColorAnalysisHomeScreen = () => {
   const siteName = useSelector(
     state => state.site.sites[pitProps.siteId]?.name ?? pitProps.siteId,
   );
+  const {reference: selectedRef} = useSelectedReference();
 
   // Queue the captured photo for upload when the user leaves this screen,
   // in either direction (back / cancel / navigate forward). Dedup by
   // (siteId, depth) is handled by the queue — a re-capture for the same slot
   // replaces the previous entry and deletes its file (color-final-plan.md
-  // "keep the latest"). Only queues once per screen instance; a successful
-  // Analyze both dispatches the Munsell result AND leaves the screen, so the
-  // photo still gets queued for upload.
+  // "keep the latest"). Only queues once per screen instance; Save also
+  // leaves the screen, so the photo still gets queued on that path.
   const enqueuedRef = useRef(false);
   const {siteId} = pitProps;
   const {depthInterval} = pitProps.depthInterval;
@@ -129,29 +132,55 @@ export const ColorAnalysisHomeScreen = () => {
     [dispatch, pitProps, navigation],
   );
 
-  const onAnalyze = useMemo(() => {
-    if (!reference || !soil) {
+  // Live colour computation — runs whenever either crop OR the chosen
+  // reference changes. Returns the full ColorResult so the Save path can
+  // branch on valid vs invalid without recomputing. Null means the inputs
+  // aren't all there yet (missing crop / no reference picked). Any decode
+  // failure sets `errored` so the UI can surface the error dialog on Save.
+  const [errored, setErrored] = useState(false);
+  const liveColor: ColorResult | null = useMemo(() => {
+    if (!reference || !soil || !selectedRef) {
       return null;
     }
+    try {
+      const result = getColorFromImages({
+        reference: reference.photo,
+        soil: soil.photo,
+        referenceColor: selectedRef,
+      });
+      setErrored(false);
+      return result;
+    } catch {
+      setErrored(true);
+      return null;
+    }
+  }, [reference, soil, selectedRef]);
 
+  const displayColor: MunsellColor | undefined =
+    liveColor === null
+      ? undefined
+      : 'result' in liveColor
+        ? liveColor.result
+        : liveColor.invalidResult;
+  const liveIsInvalid = liveColor !== null && !('result' in liveColor);
+
+  const onSave = useMemo(() => {
+    if (liveColor === null) {
+      return null;
+    }
     return () => {
-      try {
-        const color = getColorFromImages({
-          reference: reference.photo,
-          soil: soil.photo,
-        });
-
-        if ('result' in color) {
-          dispatchColor(color.result);
-        } else {
-          modalRef.current?.onOpen();
-          setColorResult(color);
-        }
-      } catch {
+      if (errored) {
         errorDialogRef.current?.onOpen();
+        return;
+      }
+      if ('result' in liveColor) {
+        dispatchColor(liveColor.result);
+      } else {
+        setColorResult(liveColor);
+        modalRef.current?.onOpen();
       }
     };
-  }, [reference, soil, dispatchColor]);
+  }, [liveColor, errored, dispatchColor]);
 
   const onReference = useCallback(() => {
     colorAnalysisNavigation.navigate('COLOR_CROP_REFERENCE');
@@ -159,6 +188,10 @@ export const ColorAnalysisHomeScreen = () => {
 
   const onSoil = useCallback(() => {
     colorAnalysisNavigation.navigate('COLOR_CROP_SOIL');
+  }, [colorAnalysisNavigation]);
+
+  const onInfo = useCallback(() => {
+    colorAnalysisNavigation.navigate('COLOR_ANALYSIS_INFO');
   }, [colorAnalysisNavigation]);
 
   const unexpectedColorActions = useMemo(
@@ -198,7 +231,9 @@ export const ColorAnalysisHomeScreen = () => {
               />
             </View>
           </Box>
-          <Box height="lg" />
+          <Box height="md" />
+          <ReferenceColorPicker />
+          <Box height="md" />
           <Row justifyContent="space-between">
             {(
               [
@@ -231,6 +266,35 @@ export const ColorAnalysisHomeScreen = () => {
               </Column>
             ))}
           </Row>
+          {/* Live Munsell result + Info button + swatch. Shown only once
+              both crops AND a reference are selected. Recomputes whenever
+              the reference dropdown changes. */}
+          {displayColor && (
+            <>
+              <Box height="lg" />
+              <Row alignItems="center" space="sm">
+                <ColorDisplay variant="md" color={displayColor} />
+                <IconButton
+                  name="info-outline"
+                  type="md"
+                  variant="normal"
+                  accessibilityLabel={t('colorCamera.info.title')}
+                  onPress={onInfo}
+                />
+              </Row>
+              {liveIsInvalid && (
+                <>
+                  <Box height="sm" />
+                  <Row alignItems="center" space="sm">
+                    <Icon name="warning" color="warning.main" />
+                    <Text variant="body2" color="warning.main" flex={1}>
+                      {t('soil.color.inline_warning')}
+                    </Text>
+                  </Row>
+                </>
+              )}
+            </>
+          )}
         </Column>
         {pitProps && <PhotoConditions {...pitProps} />}
       </SafeScrollViewWithFab>
@@ -265,9 +329,9 @@ export const ColorAnalysisHomeScreen = () => {
         {t('soil.color.analysis_error.body')}
       </ErrorDialog>
       <Fab
-        label={t('soil.color.analyze')}
-        disabled={onAnalyze === null}
-        onPress={onAnalyze ?? undefined}
+        label={t('general.save')}
+        disabled={onSave === null}
+        onPress={onSave ?? undefined}
         leftIcon="check"
       />
     </ScreenScaffold>

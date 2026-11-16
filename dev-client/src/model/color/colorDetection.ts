@@ -36,6 +36,7 @@ import {
   RGB,
   RGBA,
 } from 'terraso-mobile-client/model/color/types';
+import type {ReferenceColor} from 'terraso-mobile-client/model/rawColor/referenceColors';
 
 // Threshold used to determine whether to accept the algorithm's output
 // as a valid soil color, or consider it an unknown soil color and provide
@@ -56,10 +57,35 @@ const REFERENCES = {
   WHITE_BALANCE: [192.96, 192.0, 191.74],
 } as const satisfies Record<string, RGB>;
 
+// Reverse of srgbToLinear: linear-sRGB [0,1] → display-encoded sRGB [0,255].
+// Used to bring ReferenceColor.expected (linear) into the sRGB-255 space the
+// correctSampleRGB pipeline works in. Kept inline to avoid a cycle with any
+// future centralised colour-space util.
+export const linearToSrgb255 = (c: number): number => {
+  const clamped = Math.max(0, Math.min(1, c));
+  const encoded =
+    clamped <= 0.0031308
+      ? 12.92 * clamped
+      : 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055;
+  return Math.round(encoded * 255);
+};
+
+const referenceToSrgb255 = (ref: ReferenceColor): RGB => [
+  linearToSrgb255(ref.expected.r),
+  linearToSrgb255(ref.expected.g),
+  linearToSrgb255(ref.expected.b),
+];
+
 export const getColorFromImages = ({
   reference,
   soil,
-}: Record<'soil' | 'reference', PhotoWithBase64>) => {
+  referenceColor,
+}: Record<'soil' | 'reference', PhotoWithBase64> & {
+  /** User-selected reference from the picker (optional). When omitted,
+   *  keeps the legacy CANARY_POST_IT behaviour so existing callers that
+   *  don't yet pass a selection stay bit-identical. */
+  referenceColor?: ReferenceColor;
+}) => {
   const [referencePixels, soilPixels] = [reference, soil].map(({base64}) => {
     const {data, height, width} = decodeBase64Jpg(base64);
     const pixels: RGBA[] = [];
@@ -72,12 +98,12 @@ export const getColorFromImages = ({
     return pixels;
   });
 
+  const referenceRGB = referenceColor
+    ? referenceToSrgb255(referenceColor)
+    : REFERENCES.CANARY_POST_IT;
+
   try {
-    return getColorFromPixels(
-      referencePixels,
-      soilPixels,
-      REFERENCES.CANARY_POST_IT,
-    );
+    return getColorFromPixels(referencePixels, soilPixels, referenceRGB);
   } catch (e) {
     Sentry.captureEvent(
       {message: 'color algorithm failure'},

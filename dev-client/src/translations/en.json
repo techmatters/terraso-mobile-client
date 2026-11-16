@@ -775,6 +775,7 @@
                 "headline": "Something went wrong",
                 "body": "There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
             },
+            "inline_warning": "This color looks unusual — review before saving.",
             "hue": "Hue",
             "value": "Value",
             "chroma": "Chroma",
@@ -1859,6 +1860,14 @@
             "empty": "No soil images queued.",
             "clear": "Clear",
             "uploadUnavailable": "Upload (coming soon)"
+        },
+        "info": {
+            "title": "Color analysis details",
+            "reference": "Reference",
+            "soil": "Soil",
+            "measured": "Measured",
+            "refExpected": "Ref expected",
+            "munsellChip": "Munsell chip"
         }
     }
 }
