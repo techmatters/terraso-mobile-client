@@ -1854,6 +1854,11 @@
         "referencePicker": {
             "label": "Reference color",
             "notRecommended": "Not Recommended"
+        },
+        "soilImages": {
+            "empty": "No soil images queued.",
+            "clear": "Clear",
+            "uploadUnavailable": "Upload (coming soon)"
         }
     }
 }

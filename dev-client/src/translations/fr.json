@@ -1854,6 +1854,11 @@
         "referencePicker": {
             "label": "TK Reference color",
             "notRecommended": "TK Not Recommended"
+        },
+        "soilImages": {
+            "empty": "TK No soil images queued.",
+            "clear": "TK Clear",
+            "uploadUnavailable": "TK Upload (coming soon)"
         }
     }
 }

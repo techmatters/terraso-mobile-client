@@ -43,6 +43,7 @@ import {SignOutItem} from 'terraso-mobile-client/screens/UserSettingsScreen/comp
 import {TosItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/TosItem';
 import {UseNewPreviewUxToggleItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/UseNewPreviewUxToggleItem';
 import {UseRawWhenAvailableToggleItem} from 'terraso-mobile-client/screens/UserSettingsScreen/components/menu/UseRawWhenAvailableToggleItem';
+import {SoilImagesSection} from 'terraso-mobile-client/screens/UserSettingsScreen/components/SoilImagesSection';
 import {UserIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/UserIndicatorComponent';
 import {VersionIndicator} from 'terraso-mobile-client/screens/UserSettingsScreen/components/VersionIndicatorComponent';
 
@@ -96,9 +97,8 @@ export function UserSettingsScreen() {
                 <UseRawWhenAvailableToggleItem />
                 <UseNewPreviewUxToggleItem />
               </MenuList>
-              {/* Soil Images section goes here once the upload queue is
-                  wired (color-final-plan.md). Placeholder label omitted to
-                  avoid a visually empty section. */}
+              <DevSectionHeading label="Soil Images" />
+              <SoilImagesSection />
             </RestrictByFlag>
           )}
           <VersionIndicator />
