@@ -40,6 +40,7 @@ import {TemporaryLocationScreen} from 'terraso-mobile-client/screens/LocationScr
 import {TemporaryLocationSoilIdScreen} from 'terraso-mobile-client/screens/LocationScreens/TemporaryLocationSoilIdScreen';
 import {LoginScreen} from 'terraso-mobile-client/screens/LoginScreen';
 import {ManageTeamMemberScreen} from 'terraso-mobile-client/screens/ManageTeamMemberScreen';
+import {PreviewCaptureScreen} from 'terraso-mobile-client/screens/PreviewCaptureScreen/PreviewCaptureScreen';
 import {ProjectListScreen} from 'terraso-mobile-client/screens/ProjectListScreen/ProjectListScreen';
 import {ProjectViewScreen} from 'terraso-mobile-client/screens/ProjectViewScreen/ProjectViewScreen';
 import {RawCaptureTestScreen} from 'terraso-mobile-client/screens/RawCaptureTestScreen/RawCaptureTestScreen';
@@ -113,6 +114,7 @@ export const screenDefinitions = {
   SITE_EXPORT: SiteExportScreen,
   DELETE_ACCOUNT: DeleteAccountScreen,
   RAW_CAPTURE_TEST: RawCaptureTestScreen,
+  PREVIEW_CAPTURE: PreviewCaptureScreen,
 } satisfies ScreenDefinitions;
 
 export const modalScreenDefinitions = {

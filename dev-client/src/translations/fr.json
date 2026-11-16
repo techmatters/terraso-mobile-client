@@ -702,7 +702,8 @@
                 "EVEN": "Oui",
                 "UNEVEN": "Non"
             },
-            "inline_warning": "TK This color looks unusual — review before saving."
+            "inline_warning": "TK This color looks unusual — review before saving.",
+            "take_photo_live": "TK Take photo (live preview)"
         },
         "top_match": "Match de haut niveau",
         "ecological_site_name": "Nom du site écologique",

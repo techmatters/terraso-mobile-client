@@ -702,7 +702,8 @@
                 "EVEN": "დიახ",
                 "UNEVEN": "არა"
             },
-            "inline_warning": "TK This color looks unusual — review before saving."
+            "inline_warning": "TK This color looks unusual — review before saving.",
+            "take_photo_live": "TK Take photo (live preview)"
         },
         "top_match": "საუკეთესო მატჩი",
         "ecological_site_name": "ეკოლოგიური ობიექტის დასახელება",

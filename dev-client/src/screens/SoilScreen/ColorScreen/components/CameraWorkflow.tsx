@@ -29,12 +29,14 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {useUseNewPreviewUx} from 'terraso-mobile-client/model/rawColor/colorCameraPrefs';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
 export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const useNewPreview = useUseNewPreviewUx();
 
   const onPickImage = useCallback(
     (photo: Photo) => {
@@ -43,6 +45,15 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
         pitProps: props,
       });
     },
+    [navigation, props],
+  );
+
+  // Dev toggle (Settings → Color/Camera → "Use new Preview UX") replaces
+  // the pick-image-then-crop flow with the shared RAW-capable preview
+  // camera. After shutter it navigates into COLOR_ANALYSIS the same way
+  // onPickImage does, carrying an optional companion DNG.
+  const onUseNewPreview = useCallback(
+    () => navigation.navigate('PREVIEW_CAPTURE', {pitProps: props}),
     [navigation, props],
   );
 
@@ -56,10 +67,18 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
       <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Column>
           <Box alignItems="center" paddingVertical="lg">
-            <PickImageButton
-              featureName={t('soil.color.featureName')}
-              onPick={onPickImage}
-            />
+            {useNewPreview ? (
+              <ContainedButton
+                onPress={onUseNewPreview}
+                leftIcon="photo-camera"
+                label={t('soil.color.take_photo_live')}
+              />
+            ) : (
+              <PickImageButton
+                featureName={t('soil.color.featureName')}
+                onPick={onPickImage}
+              />
+            )}
           </Box>
           <Column
             backgroundColor="grey.300"

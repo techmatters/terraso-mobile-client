@@ -43,6 +43,7 @@ import {
   MunsellColor,
 } from 'terraso-mobile-client/model/color/types';
 import {useSelectedReference} from 'terraso-mobile-client/model/rawColor/referenceColorSelection';
+import type {SoilImageFile} from 'terraso-mobile-client/model/rawColor/soilImageQueue';
 import {soilImageQueue} from 'terraso-mobile-client/model/rawColor/soilImageQueue.default';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
@@ -57,6 +58,7 @@ export const ColorAnalysisHomeScreen = () => {
   const {
     pitProps,
     photo,
+    dngUri,
     state: {reference, soil},
   } = useColorAnalysisContext();
   const navigation = useNavigation();
@@ -89,27 +91,26 @@ export const ColorAnalysisHomeScreen = () => {
         return;
       }
       enqueuedRef.current = true;
+      // New Preview UX supplies both a JPEG and a DNG on RAW-capable devices
+      // (jpeg-only when simulating no-RAW); the old pick-image flow only
+      // ever produces a JPEG. Build the files array from whatever's present.
+      const files: SoilImageFile[] = [
+        {kind: 'jpeg', uri: photoUri, contentType: 'image/jpeg'},
+      ];
+      if (dngUri) {
+        files.push({
+          kind: 'raw',
+          uri: dngUri,
+          contentType: 'image/x-adobe-dng',
+        });
+      }
       soilImageQueue
-        .enqueue({
-          siteId,
-          siteName,
-          depth: depthInterval,
-          // The current (non-RAW) flow has just a JPEG from expo-image-picker.
-          // Once the RAW capture pipeline is routed through this screen (new
-          // Preview UX), a second file with kind:'raw' will be added here.
-          files: [
-            {
-              kind: 'jpeg',
-              uri: photoUri,
-              contentType: 'image/jpeg',
-            },
-          ],
-        })
+        .enqueue({siteId, siteName, depth: depthInterval, files})
         .catch(err => {
           console.warn('[soilImageQueue] enqueue failed', err);
         });
     };
-  }, [siteId, siteName, depthInterval, photoUri]);
+  }, [siteId, siteName, depthInterval, photoUri, dngUri]);
 
   const dispatchColor = useCallback(
     (color: MunsellColor) => {

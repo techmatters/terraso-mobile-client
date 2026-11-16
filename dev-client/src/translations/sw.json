@@ -702,7 +702,8 @@
                 "EVEN": "Ndiyo",
                 "UNEVEN": "Hapana"
             },
-            "inline_warning": "TK This color looks unusual — review before saving."
+            "inline_warning": "TK This color looks unusual — review before saving.",
+            "take_photo_live": "TK Take photo (live preview)"
         },
         "top_match": "Mechi Bora",
         "ecological_site_name": "Jina la Eneo la Kiikolojia",

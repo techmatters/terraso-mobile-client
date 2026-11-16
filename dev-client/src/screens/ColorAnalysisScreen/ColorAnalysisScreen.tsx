@@ -34,18 +34,28 @@ import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/
 export type ColorAnalysisProps = {
   photo: Photo;
   pitProps: SoilPitInputScreenProps;
+  /** Companion DNG URI when the capture came from the new preview UX on a
+   *  RAW-capable device. Added to the Soil Images queue alongside the JPEG
+   *  on screen-leave; ignored by the colour analysis itself (which reads
+   *  the JPEG). */
+  dngUri?: string;
 };
 
-export const ColorAnalysisScreen = ({photo, pitProps}: ColorAnalysisProps) => {
+export const ColorAnalysisScreen = ({
+  photo,
+  pitProps,
+  dngUri,
+}: ColorAnalysisProps) => {
   const [state, setState] = useState<ColorAnalysisContextState>({});
   const contextValue = useMemo(
     () => ({
       photo,
       pitProps,
+      dngUri,
       state,
       setState,
     }),
-    [photo, pitProps, state, setState],
+    [photo, pitProps, dngUri, state, setState],
   );
 
   const requirements = useDefaultSiteDepthRequirements(

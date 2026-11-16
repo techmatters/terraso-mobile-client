@@ -776,6 +776,7 @@
                 "body": "There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
             },
             "inline_warning": "This color looks unusual — review before saving.",
+            "take_photo_live": "Take photo (live preview)",
             "hue": "Hue",
             "value": "Value",
             "chroma": "Chroma",
