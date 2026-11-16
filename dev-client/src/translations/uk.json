@@ -1860,7 +1860,8 @@
         "soilImages": {
             "empty": "TK No soil images queued.",
             "clear": "TK Clear",
-            "uploadUnavailable": "TK Upload (coming soon)"
+            "upload": "TK Upload",
+            "cancel": "TK Cancel"
         },
         "info": {
             "title": "TK Color analysis details",

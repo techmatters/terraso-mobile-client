@@ -1860,7 +1860,8 @@
         "soilImages": {
             "empty": "No soil images queued.",
             "clear": "Clear",
-            "uploadUnavailable": "Upload (coming soon)"
+            "upload": "Upload",
+            "cancel": "Cancel"
         },
         "info": {
             "title": "Color analysis details",

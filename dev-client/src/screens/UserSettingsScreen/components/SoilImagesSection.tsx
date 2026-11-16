@@ -37,6 +37,11 @@ import {
   soilImageQueue,
   useSoilImageQueue,
 } from 'terraso-mobile-client/model/rawColor/soilImageQueue.default';
+import {
+  cancelUpload,
+  runSequentialUpload,
+  useIsUploaderRunning,
+} from 'terraso-mobile-client/model/rawColor/soilImageUploader';
 
 // Settings → Soil Images section. DEV-only (gated at the parent in
 // UserSettingsScreen via RestrictByFlag FF_testing).
@@ -83,11 +88,28 @@ const QueueRow = ({entry}: {entry: SoilImageQueueEntry}) => {
 export const SoilImagesSection = () => {
   const {t} = useTranslation();
   const entries = useSoilImageQueue();
+  const uploading = useIsUploaderRunning();
 
   const onClear = useCallback(() => {
     // No confirmation modal — per color-final-plan.md "clear: no confirm".
+    // Does not abort the uploader; if a file is mid-PUT, the clear deletes
+    // the pending-queue entries and the uploader's next loop will just see
+    // an empty queue and exit. The file being PUT is already handed off to
+    // fetch and will complete (or not) on its own.
     soilImageQueue.clear();
   }, []);
+
+  const onUploadOrCancel = useCallback(() => {
+    if (uploading) {
+      cancelUpload();
+    } else {
+      // Fire and forget — the uploader loop subscribes consumers via
+      // useIsUploaderRunning, and each queue mutation re-renders the list.
+      runSequentialUpload().catch(err =>
+        console.warn('[soilImageUploader] drain failed', err),
+      );
+    }
+  }, [uploading]);
 
   if (entries.length === 0) {
     return (
@@ -98,6 +120,10 @@ export const SoilImagesSection = () => {
       </Box>
     );
   }
+
+  const uploadLabel = uploading
+    ? t('colorCamera.soilImages.cancel')
+    : t('colorCamera.soilImages.upload');
 
   return (
     <Box>
@@ -111,10 +137,7 @@ export const SoilImagesSection = () => {
           label={t('colorCamera.soilImages.clear')}
           onPress={onClear}
         />
-        <ContainedButton
-          label={t('colorCamera.soilImages.uploadUnavailable')}
-          disabled
-        />
+        <ContainedButton label={uploadLabel} onPress={onUploadOrCancel} />
       </Row>
     </Box>
   );
