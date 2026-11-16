@@ -25,7 +25,6 @@ import {
   useCameraPermissions,
   useMediaLibraryPermissions,
 } from 'expo-image-picker';
-import {createAssetAsync} from 'expo-media-library';
 
 import {Buffer} from '@craftzdog/react-native-buffer';
 import {decode} from 'jpeg-js';
@@ -71,8 +70,6 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
       cameraType: CameraType.back,
     });
     if (!response.canceled) {
-      const asset = response.assets[0];
-      createAssetAsync(asset.uri);
       onPick(response.assets[0]);
     }
     ref.current?.onClose();
