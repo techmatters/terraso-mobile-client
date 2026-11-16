@@ -1167,6 +1167,13 @@ object CameraSessionManager {
                 }
             }
         }
+        // Switching rawless → RAW: the rawless use cases are still attached
+        // to the lifecycle. Adding RAW on top fails with "No supported
+        // surface combination". Unbind first so we start fresh.
+        if (boundRawlessActive) {
+            Log.i(TAG, "ensureBound: unbinding previous rawless session before RAW rebind")
+            unbindAllLocked()
+        }
         Log.i(TAG, "ensureBound: initializing session…")
 
         val builder = ImageCapture.Builder()
@@ -1463,6 +1470,14 @@ object CameraSessionManager {
                     return BoundSession(null, jc, chars)
                 }
             }
+        }
+        // Switching RAW → rawless: the RAW use cases are still attached to
+        // the lifecycle. Trying to add JPEG-only use cases on top fails with
+        // "No supported surface combination" (CameraX won't juggle RAW
+        // MAXIMUM + new ImageCapture/StreamSharing). Unbind first.
+        if (!boundRawlessActive && (boundImageCapture != null || boundJpegCapture != null)) {
+            Log.i(TAG, "ensureBound(rawless): unbinding previous RAW session before rawless rebind")
+            unbindAllLocked()
         }
         Log.i(TAG, "ensureBound(rawless): initializing JPEG-only session…")
 
