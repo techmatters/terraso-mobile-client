@@ -48,14 +48,17 @@ import {soilImageQueue} from 'terraso-mobile-client/model/rawColor/soilImageQueu
 // record for the upload. All we get back is objectKey; we trust the 200 on
 // the PUT as success and drop the local entry.
 
+// NOTE on `errors`: the backend declares it as `GenericScalar` (opaque JSON
+// blob), not a typed object — so the selection has no sub-fields. The shape
+// returned when non-null is an array of {message} per terraso's graphene
+// convention, but the SDL doesn't encode that so we parse it ourselves in
+// requestUploadUrl below.
 const UPLOAD_URL_MUTATION = /* GraphQL */ `
   mutation RequestSoilImageUploadUrl($input: SoilImageUploadUrlRequestInput!) {
     requestSoilImageUploadUrl(input: $input) {
       uploadUrl
       objectKey
-      errors {
-        message
-      }
+      errors
     }
   }
 `;
@@ -69,7 +72,38 @@ const uploadName = (kind: SoilImageFileKind): string =>
 type UploadUrlResponse = {
   uploadUrl: string | null;
   objectKey: string | null;
-  errors?: Array<{message: string}> | null;
+  // GenericScalar — practically an array of {message} but typed as unknown
+  // here; see the mutation definition above.
+  errors?: unknown;
+};
+
+// Pull a human-readable string out of the opaque `errors` GenericScalar.
+// Handles the common shapes terraso graphene uses — [{message: "..."}, ...]
+// — plus the bare-string and null cases.
+const formatErrors = (errors: unknown): string | null => {
+  if (!errors) {
+    return null;
+  }
+  if (typeof errors === 'string') {
+    return errors;
+  }
+  if (Array.isArray(errors)) {
+    if (errors.length === 0) {
+      return null;
+    }
+    const messages = errors
+      .map(e => {
+        if (!e) return null;
+        if (typeof e === 'string') return e;
+        if (typeof e === 'object' && 'message' in e) {
+          return String((e as {message: unknown}).message);
+        }
+        return JSON.stringify(e);
+      })
+      .filter((m): m is string => m != null);
+    return messages.length ? messages.join('; ') : null;
+  }
+  return JSON.stringify(errors);
 };
 
 const requestUploadUrl = async (args: {
@@ -88,11 +122,12 @@ const requestUploadUrl = async (args: {
     },
   })) as {requestSoilImageUploadUrl: UploadUrlResponse};
   const payload = response.requestSoilImageUploadUrl;
-  if (!payload || payload.errors?.length) {
-    throw new Error(
-      payload?.errors?.[0]?.message ??
-        'requestSoilImageUploadUrl returned no payload',
-    );
+  if (!payload) {
+    throw new Error('requestSoilImageUploadUrl returned no payload');
+  }
+  const errorMessage = formatErrors(payload.errors);
+  if (errorMessage) {
+    throw new Error(errorMessage);
   }
   if (!payload.uploadUrl || !payload.objectKey) {
     throw new Error('presigned URL request returned empty fields');
