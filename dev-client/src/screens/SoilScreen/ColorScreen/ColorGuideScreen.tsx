@@ -35,6 +35,7 @@ import {
   Row,
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
+import {useUseRawWhenAvailable} from 'terraso-mobile-client/model/rawColor/colorCameraPrefs';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
@@ -42,6 +43,7 @@ import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/
 export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const useRaw = useUseRawWhenAvailable();
 
   const onGoBack = useCallback(() => navigation.pop(), [navigation]);
   const onTakePhoto = useCallback(
@@ -53,6 +55,18 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
     },
     [navigation, props],
   );
+
+  // When useRawWhenAvailable is ON, the sheet's "Use Camera" option routes
+  // through our RAW-capable preview capture instead of launchCameraAsync.
+  // mode='crop' keeps the familiar pick-then-crop legacy UX; the RAW benefit
+  // is a DNG uploaded alongside the JPEG.
+  const onUseCameraOverride = useRaw
+    ? () =>
+        navigation.navigate('PREVIEW_CAPTURE', {
+          pitProps: props,
+          mode: 'crop',
+        })
+    : undefined;
 
   const stepContent = [
     <>
@@ -132,7 +146,8 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
         />
         <ImagePicker
           featureName={t('soil.color.featureName')}
-          onPick={onTakePhoto}>
+          onPick={onTakePhoto}
+          onUseCameraOverride={onUseCameraOverride}>
           {onOpen => (
             <ContainedButton
               leftIcon="camera"

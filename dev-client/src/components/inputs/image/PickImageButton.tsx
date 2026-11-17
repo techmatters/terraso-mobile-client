@@ -27,11 +27,21 @@ import {Box} from 'terraso-mobile-client/components/NativeBaseAdapters';
 type Props = {
   featureName: string;
   onPick: (photo: Photo) => void;
+  /** Forwarded to ImagePicker — substitutes the camera action with a
+   *  custom flow (e.g. our RAW-capable preview capture). */
+  onUseCameraOverride?: () => void;
 };
 
-export const PickImageButton = ({featureName, onPick}: Props) => {
+export const PickImageButton = ({
+  featureName,
+  onPick,
+  onUseCameraOverride,
+}: Props) => {
   return (
-    <ImagePicker featureName={featureName} onPick={onPick}>
+    <ImagePicker
+      featureName={featureName}
+      onPick={onPick}
+      onUseCameraOverride={onUseCameraOverride}>
       {onOpen => (
         <Pressable onPress={onOpen}>
           <Box

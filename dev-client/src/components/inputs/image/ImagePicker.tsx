@@ -58,13 +58,36 @@ type Props = {
   onPick: (result: Photo) => void;
   featureName: string;
   children: ModalTrigger;
+  /**
+   * When provided, "Use Camera" calls this instead of launchCameraAsync.
+   * Lets a caller substitute a custom capture flow (e.g. our RAW-capable
+   * preview camera, which doesn't go through expo-image-picker and
+   * navigates onward itself). The sheet still closes after invocation.
+   * Permission flow (PermissionsRequestWrapper) still runs — the override
+   * is the `permissionedAction`, so camera permission is checked before
+   * it fires. "Choose From Gallery" is unaffected.
+   */
+  onUseCameraOverride?: () => void;
 };
 
-export const ImagePicker = ({onPick, children, featureName}: Props) => {
+export const ImagePicker = ({
+  onPick,
+  children,
+  featureName,
+  onUseCameraOverride,
+}: Props) => {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
 
   const onUseCamera = useCallback(async () => {
+    if (onUseCameraOverride) {
+      // Close the sheet FIRST so the override's navigation doesn't fight the
+      // sheet's own dismiss animation (which would leave the sheet mounted
+      // behind the pushed screen on some platforms).
+      ref.current?.onClose();
+      onUseCameraOverride();
+      return;
+    }
     const response = await launchCameraAsync({
       mediaTypes: 'images',
       cameraType: CameraType.back,
@@ -73,7 +96,7 @@ export const ImagePicker = ({onPick, children, featureName}: Props) => {
       onPick(response.assets[0]);
     }
     ref.current?.onClose();
-  }, [onPick]);
+  }, [onPick, onUseCameraOverride]);
 
   const onUseMediaLibrary = useCallback(async () => {
     const response = await launchImageLibraryAsync({

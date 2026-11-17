@@ -42,16 +42,15 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   const useNewPreview = useUseNewPreviewUx();
   const useRaw = useUseRawWhenAvailable();
 
-  // The expo-image-picker path (PickImageButton) is JPEG-only — it has no
-  // way to produce a DNG. So we route through PREVIEW_CAPTURE whenever the
-  // user wants RAW OR the new live-preview UX. That camera screen honours
-  // both toggles end to end:
-  //   mode='auto' → preview overlay + ROI auto-crop (new UX)
-  //   mode='crop' → clean shutter, user still does the manual crop step
-  //                 (old UX; the only reason to come here is to capture
-  //                 a DNG alongside the JPEG)
-  // Both OFF → stay on the legacy JPEG-only pick-image flow.
-  const takesPreviewPath = useRaw || useNewPreview;
+  // UX routing:
+  //   new-UX ON  → full-screen live-preview camera (PREVIEW_CAPTURE mode:
+  //                'auto'), no sheet, auto-crops via ROIs.
+  //   new-UX OFF → classic PickImageButton (+-in-square), opens the "Use
+  //                Camera / Choose From Gallery" sheet. "Use Camera" uses
+  //                our RAW-capable preview capture (mode: 'crop') when
+  //                useRawWhenAvailable is ON — so a DNG lands alongside
+  //                the JPEG; otherwise it falls back to expo-image-picker
+  //                (JPEG only). "Choose From Gallery" is always legacy.
 
   const onPickImage = useCallback(
     (photo: Photo) => {
@@ -63,14 +62,27 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
     [navigation, props],
   );
 
-  const onUsePreviewCamera = useCallback(
+  const onUseNewPreviewCamera = useCallback(
     () =>
       navigation.navigate('PREVIEW_CAPTURE', {
         pitProps: props,
-        mode: useNewPreview ? 'auto' : 'crop',
+        mode: 'auto',
       }),
-    [navigation, props, useNewPreview],
+    [navigation, props],
   );
+
+  // RAW override for the classic sheet's "Use Camera" button: swap
+  // launchCameraAsync (JPEG only) for our preview capture so the user
+  // keeps the familiar sheet UX but the shutter produces RAW+JPEG where
+  // possible. mode='crop' means after shutter the user still does the
+  // manual tap-to-crop — matches the legacy flow visually.
+  const onUseCameraOverride = useRaw
+    ? () =>
+        navigation.navigate('PREVIEW_CAPTURE', {
+          pitProps: props,
+          mode: 'crop',
+        })
+    : undefined;
 
   const onUseGuide = useCallback(
     () => navigation.navigate('COLOR_GUIDE', props),
@@ -82,9 +94,9 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
       <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Column>
           <Box alignItems="center" paddingVertical="lg">
-            {takesPreviewPath ? (
+            {useNewPreview ? (
               <ContainedButton
-                onPress={onUsePreviewCamera}
+                onPress={onUseNewPreviewCamera}
                 leftIcon="photo-camera"
                 label={t('soil.color.take_photo_live')}
               />
@@ -92,6 +104,7 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
               <PickImageButton
                 featureName={t('soil.color.featureName')}
                 onPick={onPickImage}
+                onUseCameraOverride={onUseCameraOverride}
               />
             )}
           </Box>
