@@ -1868,7 +1868,7 @@
             "reference": "Reference",
             "soil": "Soil",
             "photo": "photo",
-            "avgStep": "avg",
+            "avgStep": "sample color",
             "correctionStep": "correction",
             "measuredRgb": "measured rgb",
             "refCard": "ref card",

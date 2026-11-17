@@ -227,7 +227,7 @@ export const ColorAnalysisInfoScreen = () => {
                   },
                 ] as const
               ).map(col => (
-                <Column key={col.heading} alignItems="center" space="xs">
+                <Column key={col.heading} alignItems="center" space="sm">
                   <Heading variant="h6" bold>
                     {col.heading}
                   </Heading>
@@ -240,12 +240,16 @@ export const ColorAnalysisInfoScreen = () => {
                     <Box style={styles.cropImage} bg="grey.300" />
                   )}
                   <Text variant="body2">{t('colorCamera.info.photo')}</Text>
+                  <Box height="md" />
                   <PipelineArrow label={t('colorCamera.info.avgStep')} />
+                  <Box height="md" />
                   <Swatch
                     color={cssRgb(col.measuredRgb)}
                     label={t('colorCamera.info.measuredRgb')}
                   />
+                  <Box height="md" />
                   <PipelineArrow label={t('colorCamera.info.correctionStep')} />
+                  <Box height="md" />
                   <Swatch color={col.finalCss} label={col.finalLabel} />
                 </Column>
               ))}
