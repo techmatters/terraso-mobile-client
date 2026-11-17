@@ -15,14 +15,24 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {LandPKSInfoContent} from 'terraso-mobile-client/components/content/info/landpks/LandPKSInfoContent';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 
 export const LandPKSInfoButton = () => {
+  const {t} = useTranslation();
+
   return (
     <InfoSheet
-      trigger={onOpen => <AppBarIconButton name="info" onPress={onOpen} />}>
+      trigger={onOpen => (
+        <AppBarIconButton
+          name="info"
+          accessibilityLabel={t('general.info_button')}
+          onPress={onOpen}
+        />
+      )}>
       <LandPKSInfoContent />
     </InfoSheet>
   );

@@ -62,6 +62,7 @@ export const ColorDisplay = ({onDelete, color, variant}: Props) => {
                   name="delete"
                   type="md"
                   variant="normal-filled"
+                  accessibilityLabel={t('general.delete')}
                   onPress={onPress}
                 />
               </View>

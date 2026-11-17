@@ -15,6 +15,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 import {ReactNode, useCallback, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {
@@ -25,6 +26,8 @@ import {
 
 type Props = {
   Head: ReactNode;
+  // Plain-text name of the section, for the expand/collapse button's accessibility label, since Head can be any node.
+  headLabel: string;
   children: ReactNode;
   initiallyOpen?: boolean;
   disableOpen?: boolean;
@@ -33,11 +36,13 @@ type Props = {
 
 export const Accordion = ({
   Head,
+  headLabel,
   children,
   initiallyOpen = false,
   disableOpen = false,
   boxProps,
 }: Props) => {
+  const {t} = useTranslation();
   const [open, setOpen] = useState(initiallyOpen);
   const onPress = useCallback(() => {
     setOpen(!open);
@@ -52,7 +57,18 @@ export const Accordion = ({
         justifyContent="space-between"
         px="16px">
         {Head}
-        {!disableOpen && <IconButton type="sm" name={name} onPress={onPress} />}
+        {!disableOpen && (
+          <IconButton
+            type="sm"
+            name={name}
+            accessibilityLabel={
+              open
+                ? t('general.collapse', {name: headLabel})
+                : t('general.expand', {name: headLabel})
+            }
+            onPress={onPress}
+          />
+        )}
       </Row>
       {open && children}
     </Box>

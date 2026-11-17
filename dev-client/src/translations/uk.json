@@ -44,7 +44,8 @@
         "dashboard": {
             "privacy": "Конфіденційність даних",
             "delete_button": "Видалити цю ділянку",
-            "default_title": "Тимчасова позначка"
+            "default_title": "Тимчасова позначка",
+            "settings_label": "TK Site settings"
         },
         "notes": {
             "title": "Примітки до ділянки",
@@ -220,7 +221,10 @@
                 "offline": "Оцінка властивостей ґрунту оновиться, коли ви будете онлайн."
             }
         },
-        "list_title_empty": "Створити ділянку"
+        "list_title_empty": "Створити ділянку",
+        "show_on_map_label": "TK Show {{siteName}} on map",
+        "map_layers_label": "TK Switch map layer",
+        "my_location_label": "TK Go to my location"
     },
     "projects": {
         "label": "Проєкт",
@@ -310,7 +314,8 @@
                 "title": "Перенести ділянки ?",
                 "body": "Перенесені ділянки використовуватимуть вхідні дані, налаштування та ролі членів команди з цього проєкту.\n \nЯкщо на ділянках є спостереження для глибин, які відрізняються від зазначених у цьому проєкті, ці спостереження будуть видалені. Цю дію не можна скасувати.",
                 "action_name": "Перенести"
-            }
+            },
+            "site_options_label": "TK Options for {{siteName}}"
         },
         "search": {
             "placeholder": "Пошук проектів",
@@ -439,7 +444,12 @@
             "overview": "Огляд",
             "page_indicator": "Сторінка {{current}} з {{total}}",
             "got_it": "Зрозуміло!"
-        }
+        },
+        "back": "TK Back",
+        "help_button": "TK Help",
+        "info_button": "TK More info",
+        "expand": "TK Expand {{name}}",
+        "collapse": "TK Collapse {{name}}"
     },
     "errors": {
         "sync_conflict": {
@@ -522,7 +532,9 @@
             "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
             "bounds_unitless": "{{start}}–{{end}}",
             "delete_button": "Видалити глибину",
-            "edit_title": "Параметри глибини (щодо розрізу грунту)"
+            "edit_title": "Параметри глибини (щодо розрізу грунту)",
+            "edit_button_label": "TK Edit depth {{depth}}",
+            "delete_button_label": "TK Delete depth {{depth}}"
         },
         "texture": {
             "title": "Гранулометричний склад грунту",

@@ -67,6 +67,7 @@ export const MapHeader = ({
               name="layers"
               variant="light-filled"
               type="md"
+              accessibilityLabel={t('site.map_layers_label')}
               onPress={toggleMapLayer}
             />
           </Box>
@@ -81,6 +82,7 @@ export const MapHeader = ({
                   name="my-location"
                   variant="light-filled"
                   type="md"
+                  accessibilityLabel={t('site.my_location_label')}
                   onPress={onRequest}
                 />
               </Box>

@@ -16,22 +16,28 @@
  */
 
 import {forwardRef} from 'react';
+import {useTranslation} from 'react-i18next';
 import {PressableProps, type ViewInstance} from 'react-native';
 
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
 type CloseButtonProps = {
+  testID?: string;
   onPress?: PressableProps['onPress'];
 };
 
 export const CloseButton = forwardRef<ViewInstance, CloseButtonProps>(
-  ({onPress}: CloseButtonProps, ref) => {
+  ({testID, onPress}: CloseButtonProps, ref) => {
+    const {t} = useTranslation();
+
     return (
       <IconButton
         ref={ref}
         type="sm"
         name="close"
         variant="normal-filled"
+        accessibilityLabel={t('general.close')}
+        testID={testID}
         onPress={onPress}
       />
     );

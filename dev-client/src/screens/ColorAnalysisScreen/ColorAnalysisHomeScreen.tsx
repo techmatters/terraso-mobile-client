@@ -151,6 +151,7 @@ export const ColorAnalysisHomeScreen = () => {
                 name="delete"
                 type="md"
                 variant="normal-filled"
+                accessibilityLabel={t('general.delete')}
                 onPress={() => navigation.pop()}
               />
             </View>

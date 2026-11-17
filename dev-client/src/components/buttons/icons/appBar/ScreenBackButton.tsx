@@ -16,16 +16,27 @@
  */
 
 import {useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import {AppBarIconButton} from 'terraso-mobile-client/components/buttons/icons/appBar/AppBarIconButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 
-type Props = {icon?: IconName};
+type Props = {icon?: IconName; testID?: string};
 
-export const ScreenBackButton = ({icon = 'arrow-back'}: Props) => {
+export const ScreenBackButton = ({icon = 'arrow-back', testID}: Props) => {
+  const {t} = useTranslation();
   const navigation = useNavigation();
   const goBack = useCallback(() => navigation.pop(), [navigation]);
 
-  return <AppBarIconButton name={icon} onPress={goBack} />;
+  return (
+    <AppBarIconButton
+      name={icon}
+      accessibilityLabel={
+        icon === 'close' ? t('general.close') : t('general.back')
+      }
+      testID={testID}
+      onPress={goBack}
+    />
+  );
 };

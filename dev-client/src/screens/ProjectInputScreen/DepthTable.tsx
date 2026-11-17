@@ -27,6 +27,7 @@ import {
   DepthInterval,
   ProjectDepthInterval,
 } from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {renderDepth} from 'terraso-mobile-client/screens/SoilScreen/components/RenderValues';
 import {useDispatch} from 'terraso-mobile-client/store';
 
 type TableProps = {
@@ -74,7 +75,14 @@ export const DepthTable = ({
             <ConfirmDeleteDepthModal
               onConfirm={deleteDepth(depthInterval)}
               trigger={onOpen => (
-                <IconButton type="sm" name="close" onPress={onOpen} />
+                <IconButton
+                  type="sm"
+                  name="close"
+                  accessibilityLabel={t('soil.depth.delete_button_label', {
+                    depth: renderDepth(t, {label, depthInterval}),
+                  })}
+                  onPress={onOpen}
+                />
               )}
             />
           </Box>,

@@ -26,8 +26,9 @@ import {Badge} from 'terraso-mobile-client/components/NativeBaseAdapters';
 type BadgedIconButtonProps = {
   name: IconName;
   badgeNum: number;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
   badgeAccessibilityLabel?: string;
+  testID?: string;
   onPress?: PressableProps['onPress'];
 };
 
@@ -38,6 +39,7 @@ export const BadgedIconButton = forwardRef<ViewInstance, BadgedIconButtonProps>(
       badgeNum,
       accessibilityLabel,
       badgeAccessibilityLabel,
+      testID,
       onPress,
     }: BadgedIconButtonProps,
     ref,
@@ -57,6 +59,7 @@ export const BadgedIconButton = forwardRef<ViewInstance, BadgedIconButtonProps>(
           variant="light-filled"
           name={name}
           accessibilityLabel={accessibilityLabel}
+          testID={testID}
           onPress={onPress}
         />
       </Pressable>

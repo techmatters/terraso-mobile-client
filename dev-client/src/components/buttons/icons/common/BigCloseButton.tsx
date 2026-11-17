@@ -21,10 +21,11 @@ import {PressableProps} from 'react-native';
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 
 type BigCloseButtonProps = {
+  testID?: string;
   onPress?: PressableProps['onPress'];
 };
 
-export const BigCloseButton = ({onPress}: BigCloseButtonProps) => {
+export const BigCloseButton = ({testID, onPress}: BigCloseButtonProps) => {
   const {t} = useTranslation();
 
   return (
@@ -33,6 +34,7 @@ export const BigCloseButton = ({onPress}: BigCloseButtonProps) => {
       name="close"
       variant="normal-filled"
       accessibilityLabel={t('general.close')}
+      testID={testID}
       onPress={onPress}
     />
   );

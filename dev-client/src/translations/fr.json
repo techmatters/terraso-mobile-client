@@ -44,7 +44,8 @@
         "dashboard": {
             "privacy": "Confidentialité des données",
             "delete_button": "Supprimer ce site",
-            "default_title": "Marqueur temporaire"
+            "default_title": "Marqueur temporaire",
+            "settings_label": "TK Site settings"
         },
         "notes": {
             "title": "Notes du site",
@@ -220,7 +221,10 @@
                 "offline": "Le score des propriétés du sol sera mis à jour lorsque vous serez en ligne."
             }
         },
-        "list_title_empty": "Créer un site"
+        "list_title_empty": "Créer un site",
+        "show_on_map_label": "TK Show {{siteName}} on map",
+        "map_layers_label": "TK Switch map layer",
+        "my_location_label": "TK Go to my location"
     },
     "projects": {
         "label": "Projet",
@@ -310,7 +314,8 @@
                 "title": "Transférer les sites ?",
                 "body": "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. \n\nSi des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible.",
                 "action_name": "Transfert"
-            }
+            },
+            "site_options_label": "TK Options for {{siteName}}"
         },
         "search": {
             "placeholder": "Rechercher des projets",
@@ -439,7 +444,12 @@
             "overview": "Aperçu",
             "page_indicator": "Page {{current}} sur {{total}}",
             "got_it": "Compris !"
-        }
+        },
+        "back": "TK Back",
+        "help_button": "TK Help",
+        "info_button": "TK More info",
+        "expand": "TK Expand {{name}}",
+        "collapse": "TK Collapse {{name}}"
     },
     "errors": {
         "sync_conflict": {
@@ -522,7 +532,9 @@
             "bounds_labelled": "{{label}} : {{start}}–{{end}}{{units}}",
             "bounds_unitless": "{{start}}–{{end}}",
             "delete_button": "Supprimer la profondeur",
-            "edit_title": "Options de profondeur"
+            "edit_title": "Options de profondeur",
+            "edit_button_label": "TK Edit depth {{depth}}",
+            "delete_button_label": "TK Delete depth {{depth}}"
         },
         "texture": {
             "title": "Texture du sol",

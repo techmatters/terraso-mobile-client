@@ -298,6 +298,7 @@ export function DataExportScreen({
             <IconButton
               type="sm"
               name="info"
+              accessibilityLabel={t('general.info_button')}
               onPress={() => infoSheetRef.current?.onOpen()}
             />
           </Box>

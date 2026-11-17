@@ -44,7 +44,8 @@
         "dashboard": {
             "privacy": "მონაცემთა კონფიდენციალურობა",
             "delete_button": "ამ საიტის წაშლა",
-            "default_title": "დროებითი პინი"
+            "default_title": "დროებითი პინი",
+            "settings_label": "TK Site settings"
         },
         "notes": {
             "title": "საიტის შენიშვნები",
@@ -220,7 +221,10 @@
                 "offline": "ნიადაგის თვისებების ქულა განახლდება, როდესაც ონლაინ იქნებით."
             }
         },
-        "list_title_empty": "საიტის შექმნა"
+        "list_title_empty": "საიტის შექმნა",
+        "show_on_map_label": "TK Show {{siteName}} on map",
+        "map_layers_label": "TK Switch map layer",
+        "my_location_label": "TK Go to my location"
     },
     "projects": {
         "label": "პროექტი",
@@ -310,7 +314,8 @@
                 "title": "საიტების გადატანა?",
                 "body": "გადატანილი საიტები გამოიყენებენ ამ პროექტიდან შეყვანილ მონაცემებს, პარამეტრებსა და გუნდის წევრების როლებს.\n\nთუ საიტებზე დაკვირვებები შეყვანილია ამ პროექტში მითითებულისგან განსხვავებულ სიღრმეზე, ეს დაკვირვებები წაიშლება. ამ მოქმედების გაუქმება შეუძლებელია.",
                 "action_name": "გადატანა"
-            }
+            },
+            "site_options_label": "TK Options for {{siteName}}"
         },
         "search": {
             "placeholder": "პროექტების ძიება",
@@ -439,7 +444,12 @@
             "overview": "მიმოხილვა",
             "page_indicator": "გვერდი {{current}} {{total}}-დან",
             "got_it": "გასაგებია!"
-        }
+        },
+        "back": "TK Back",
+        "help_button": "TK Help",
+        "info_button": "TK More info",
+        "expand": "TK Expand {{name}}",
+        "collapse": "TK Collapse {{name}}"
     },
     "errors": {
         "sync_conflict": {
@@ -522,7 +532,9 @@
             "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
             "bounds_unitless": "{{start}}–{{end}}",
             "delete_button": "სიღრმის წაშლა",
-            "edit_title": "სიღრმის პარამეტრები"
+            "edit_title": "სიღრმის პარამეტრები",
+            "edit_button_label": "TK Edit depth {{depth}}",
+            "delete_button_label": "TK Delete depth {{depth}}"
         },
         "texture": {
             "title": "ნიადაგის ტექსტურა",

@@ -221,6 +221,7 @@ exports[`renders correctly 1`] = `
                               >
                                 <View>
                                   <RNGestureHandlerButton
+                                    accessibilityLabel="Close"
                                     accessibilityRole="button"
                                     accessibilityState={
                                       {
@@ -998,6 +999,7 @@ exports[`renders correctly 1`] = `
                                           />
                                           <View>
                                             <RNGestureHandlerButton
+                                              accessibilityLabel="More info"
                                               accessibilityRole="button"
                                               accessibilityState={
                                                 {
