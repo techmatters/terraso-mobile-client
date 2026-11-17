@@ -20,6 +20,8 @@ claude mcp add -s user MobileBuildMCP \
 
 `ui-automation` is required for tap/type/swipe; it is off by default.
 
+Other MCP clients: use the same command, args, and env vars in that client's MCP config; see the client snippets at https://www.mobilebuildmcp.com/docs.
+
 ## Getting the app running
 
 1. **Metro must be running** (`lsof -nP -iTCP:8081 -sTCP:LISTEN`). If it's not running in the user's terminal, start it yourself.
