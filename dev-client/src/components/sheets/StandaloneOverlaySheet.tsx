@@ -55,6 +55,8 @@ export const StandaloneOverlaySheet = forwardRef<
       {trigger && trigger(handle.onOpen)}
       <GorhomBottomSheetModal
         ref={sheetRef}
+        // gorhom defaults to accessible={true}, which hides the sheet's contents from VoiceOver; see https://github.com/gorhom/react-native-bottom-sheet/pull/1788
+        accessible={false}
         handleComponent={null}
         topInset={headerHeight}
         bottomInset={insets.bottom}
