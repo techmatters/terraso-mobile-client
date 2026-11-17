@@ -1867,9 +1867,12 @@
             "title": "Color analysis details",
             "reference": "Reference",
             "soil": "Soil",
-            "measured": "Measured",
-            "refExpected": "Ref expected",
-            "munsellChip": "Munsell chip"
+            "photo": "photo",
+            "avgStep": "avg",
+            "correctionStep": "correction",
+            "measuredRgb": "measured rgb",
+            "refCard": "ref card",
+            "resultChip": "result (chip)"
         }
     }
 }

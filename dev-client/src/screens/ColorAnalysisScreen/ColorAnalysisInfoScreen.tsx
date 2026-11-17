@@ -82,25 +82,34 @@ const meanRgb255FromBase64 = (base64: string): Rgb255 => {
   return [Math.round(rSum / n), Math.round(gSum / n), Math.round(bSum / n)];
 };
 
-type SwatchProps = {
-  color: string | undefined;
-  label: string;
-  sublabel?: string;
-};
-const Swatch = ({color, label, sublabel}: SwatchProps) => (
+type SwatchProps = {color: string | undefined; label: string};
+const Swatch = ({color, label}: SwatchProps) => (
   <Column alignItems="center">
     <Box
-      width="72px"
-      height="72px"
+      width={`${SWATCH_SIZE}px`}
+      height={`${SWATCH_SIZE}px`}
       borderWidth="1px"
-      borderColor="grey.400"
+      borderColor="grey.500"
+      borderRadius="md"
       bg={color ?? 'grey.200'}
     />
     <Box height="xs" />
     <Text variant="body2">{label}</Text>
-    {sublabel ? <Text variant="caption">{sublabel}</Text> : null}
   </Column>
 );
+
+// Pipeline-stage arrow label that sits between rows (e.g. "↓ avg" under the
+// photo, "↓ correction" under the measured-rgb swatch). Matches the older
+// branch's pipelineColumn layout.
+const PipelineArrow = ({label}: {label: string}) => (
+  <Text variant="body1" italic>{`↓ ${label}`}</Text>
+);
+
+// Column + swatch sizing tuned to the older branch's info-screen layout:
+// two columns that fill ~45% of a phone-width screen, with chunky swatches
+// (so colour differences are readable at a glance). Reduce if portrait on a
+// narrow device starts clipping — current value fits on a 390pt iPhone.
+const SWATCH_SIZE = 140;
 
 export const ColorAnalysisInfoScreen = () => {
   const {t} = useTranslation();
@@ -207,20 +216,21 @@ export const ColorAnalysisInfoScreen = () => {
                     cropBase64: referenceBase64,
                     measuredRgb: measured.refRgb,
                     finalCss: refExpectedCss,
-                    finalLabel: t('colorCamera.info.refExpected'),
+                    finalLabel: t('colorCamera.info.refCard'),
                   },
                   {
                     heading: t('colorCamera.info.soil'),
                     cropBase64: soilBase64,
                     measuredRgb: measured.soilRgb,
                     finalCss: cssRgb(soilCorrectedMunsellRgb),
-                    finalLabel: t('colorCamera.info.munsellChip'),
+                    finalLabel: t('colorCamera.info.resultChip'),
                   },
                 ] as const
               ).map(col => (
-                <Column key={col.heading} alignItems="center">
-                  <Heading variant="h6">{col.heading}</Heading>
-                  <Box height="sm" />
+                <Column key={col.heading} alignItems="center" space="xs">
+                  <Heading variant="h6" bold>
+                    {col.heading}
+                  </Heading>
                   {col.cropBase64 ? (
                     <Image
                       source={{uri: `data:image/jpeg;base64,${col.cropBase64}`}}
@@ -229,12 +239,13 @@ export const ColorAnalysisInfoScreen = () => {
                   ) : (
                     <Box style={styles.cropImage} bg="grey.300" />
                   )}
-                  <Box height="md" />
+                  <Text variant="body2">{t('colorCamera.info.photo')}</Text>
+                  <PipelineArrow label={t('colorCamera.info.avgStep')} />
                   <Swatch
                     color={cssRgb(col.measuredRgb)}
-                    label={t('colorCamera.info.measured')}
+                    label={t('colorCamera.info.measuredRgb')}
                   />
-                  <Box height="md" />
+                  <PipelineArrow label={t('colorCamera.info.correctionStep')} />
                   <Swatch color={col.finalCss} label={col.finalLabel} />
                 </Column>
               ))}
@@ -252,9 +263,10 @@ export const ColorAnalysisInfoScreen = () => {
 
 const styles = StyleSheet.create({
   cropImage: {
-    width: 72,
-    height: 72,
+    width: SWATCH_SIZE,
+    height: SWATCH_SIZE,
     borderWidth: 1,
     borderColor: '#999',
+    borderRadius: 6,
   },
 });

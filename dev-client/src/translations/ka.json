@@ -1867,9 +1867,12 @@
             "title": "TK Color analysis details",
             "reference": "TK Reference",
             "soil": "TK Soil",
-            "measured": "TK Measured",
-            "refExpected": "TK Ref expected",
-            "munsellChip": "TK Munsell chip"
+            "photo": "TK photo",
+            "avgStep": "TK avg",
+            "correctionStep": "TK correction",
+            "measuredRgb": "TK measured rgb",
+            "refCard": "TK ref card",
+            "resultChip": "TK result (chip)"
         }
     }
 }
