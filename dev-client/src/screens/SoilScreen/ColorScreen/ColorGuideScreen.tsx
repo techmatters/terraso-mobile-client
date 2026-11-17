@@ -47,10 +47,11 @@ export const ColorGuideScreen = (props: SoilPitInputScreenProps) => {
 
   const onGoBack = useCallback(() => navigation.pop(), [navigation]);
   const onTakePhoto = useCallback(
-    (photo: Photo) => {
+    (photo: Photo, dngUri?: string) => {
       navigation.replace('COLOR_ANALYSIS', {
-        photo: photo,
+        photo,
         pitProps: props,
+        dngUri,
       });
     },
     [navigation, props],

@@ -53,10 +53,11 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   //                (JPEG only). "Choose From Gallery" is always legacy.
 
   const onPickImage = useCallback(
-    (photo: Photo) => {
+    (photo: Photo, dngUri?: string) => {
       navigation.navigate('COLOR_ANALYSIS', {
-        photo: photo,
+        photo,
         pitProps: props,
+        dngUri,
       });
     },
     [navigation, props],

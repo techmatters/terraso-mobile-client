@@ -1794,7 +1794,13 @@
     },
     "image": {
         "use_camera": "Використовувати камеру",
-        "choose_from_gallery": "Виберіть з галереї"
+        "choose_from_gallery": "Виберіть з галереї",
+        "choose_file": "TK Choose File",
+        "file_picker": {
+            "dng_unsupported_title": "TK DNG loading not supported",
+            "dng_unsupported_android": "TK DNG loading is currently iOS-only. Pick a JPEG instead, or use the camera.",
+            "load_failed_title": "TK Couldn't load the selected file"
+        }
     },
     "info": {
         "title": "Використовуйте правду про грунт для своїх рішень щодо грунту",
