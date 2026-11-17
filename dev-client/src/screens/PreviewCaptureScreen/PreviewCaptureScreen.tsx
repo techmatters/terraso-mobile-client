@@ -250,8 +250,19 @@ export const PreviewCaptureScreen = ({pitProps, mode}: Props) => {
     }
 
     setCapturing(false);
+    // cap.width/cap.height are the sensor-native (pre-orientation) dims —
+    // landscape on every phone we care about (e.g. 4032x3024 on iPhone).
+    // The saved JPEG renders portrait because its EXIF orientation flips it.
+    // Pass the ORIENTED dims to Photo so downstream layout (aspect-ratio
+    // box in ColorAnalysisHomeScreen) sizes correctly.
+    const orientedWidth = Math.min(cap.width, cap.height);
+    const orientedHeight = Math.max(cap.width, cap.height);
     navigation.replace('COLOR_ANALYSIS', {
-      photo: {uri: saved.jpegUri, width: cap.width, height: cap.height},
+      photo: {
+        uri: saved.jpegUri,
+        width: orientedWidth,
+        height: orientedHeight,
+      },
       pitProps,
       dngUri: saved.dngUri,
       initialState,

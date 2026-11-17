@@ -165,6 +165,18 @@ export const ColorAnalysisHomeScreen = () => {
         : liveColor.invalidResult;
   const liveIsInvalid = liveColor !== null && !('result' in liveColor);
 
+  // Memoised so the Box's style identity is stable per photo — avoids a
+  // re-layout on every render and keeps eslint's no-inline-styles happy
+  // for the dynamic aspectRatio value (static maxHeight pairs with it).
+  const photoBoxStyle = useMemo(
+    () => ({
+      aspectRatio:
+        photo.width && photo.height ? photo.width / photo.height : 4 / 3,
+      maxHeight: 320,
+    }),
+    [photo.width, photo.height],
+  );
+
   const onSave = useMemo(() => {
     if (liveColor === null) {
       return null;
@@ -217,12 +229,18 @@ export const ColorAnalysisHomeScreen = () => {
     <ScreenScaffold>
       <SafeScrollViewWithFab>
         <Column padding="xl">
+          {/* Photo container is sized to the photo's own aspect ratio (so a
+              portrait 3:4 JPEG renders portrait, not cropped to a landscape
+              slice) and capped at 320px tall so a portrait phone doesn't lose
+              everything below the fold. resizeMode="contain" preserves aspect
+              exactly — any extra space shows the gray placeholder bg. */}
           <Box
             backgroundColor="#D9D9D9"
             borderWidth="2px"
             width="100%"
-            height="180px">
-            <Image source={photo} resizeMode="cover" style={styles.image} />
+            style={photoBoxStyle}
+            alignSelf="center">
+            <Image source={photo} resizeMode="contain" style={styles.image} />
             <View position="absolute" top="-18px" right="-18px">
               <IconButton
                 name="delete"
