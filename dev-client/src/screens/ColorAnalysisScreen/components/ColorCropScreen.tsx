@@ -51,6 +51,16 @@ type Crop = {top: number; left: number; size: number};
 export type CropResult = {
   photo: PhotoWithBase64;
   crop: Crop;
+  /**
+   * Fractional rect (0..1) of the crop within the SOURCE photo, used by
+   * ColorAnalysisHomeScreen to overlay a labelled rectangle on the full
+   * photo preview. Independent of pixel dims so a downscaled preview
+   * renders it at the right place. Populated by both crop producers —
+   * the manual ColorCropScreen (converted from pixel crop) and the new
+   * preview camera's auto-crop (the original DISPLAY_*_ROI). Optional for
+   * backward compat with any pre-existing CropResults in persisted state.
+   */
+  displayRoi?: {x: number; y: number; w: number; h: number};
 };
 
 type Dimensions = {width: number; height: number};
@@ -179,11 +189,21 @@ export const ColorCropScreen = ({
       throw Error('unexpected error: missing base64 encoding of cropped photo');
     }
 
+    // Convert the pixel-space square crop into a fractional rect so the home
+    // screen can overlay it on the full photo preview (independent of the
+    // preview's displayed size).
+    const displayRoi = {
+      x: crop.value.left / photo.width,
+      y: crop.value.top / photo.height,
+      w: crop.value.size / photo.width,
+      h: crop.value.size / photo.height,
+    };
     onCrop({
       crop: crop.value,
       photo: {...croppedPhoto, base64: croppedPhoto.base64},
+      displayRoi,
     });
-  }, [photo.uri, onCrop, crop]);
+  }, [photo.uri, photo.width, photo.height, onCrop, crop]);
 
   return (
     <ScreenScaffold AppBar={<AppBar title={title} />}>

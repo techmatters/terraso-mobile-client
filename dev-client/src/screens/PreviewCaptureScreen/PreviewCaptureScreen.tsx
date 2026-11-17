@@ -149,8 +149,16 @@ const buildInitialCropState = async (
   // anyone ever opens the crop UI on these the overlay starts sensible.
   const nominalCrop = {top: 0, left: 0, size: AUTO_CROP_OUTPUT_PX};
   return {
-    reference: {photo: refPhoto, crop: nominalCrop},
-    soil: {photo: soilPhoto, crop: nominalCrop},
+    reference: {
+      photo: refPhoto,
+      crop: nominalCrop,
+      displayRoi: DISPLAY_REF_ROI,
+    },
+    soil: {
+      photo: soilPhoto,
+      crop: nominalCrop,
+      displayRoi: DISPLAY_SAMPLE_ROI,
+    },
   };
 };
 
