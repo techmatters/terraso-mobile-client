@@ -29,7 +29,10 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
-import {useUseNewPreviewUx} from 'terraso-mobile-client/model/rawColor/colorCameraPrefs';
+import {
+  useUseNewPreviewUx,
+  useUseRawWhenAvailable,
+} from 'terraso-mobile-client/model/rawColor/colorCameraPrefs';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
@@ -37,6 +40,18 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const useNewPreview = useUseNewPreviewUx();
+  const useRaw = useUseRawWhenAvailable();
+
+  // The expo-image-picker path (PickImageButton) is JPEG-only — it has no
+  // way to produce a DNG. So we route through PREVIEW_CAPTURE whenever the
+  // user wants RAW OR the new live-preview UX. That camera screen honours
+  // both toggles end to end:
+  //   mode='auto' → preview overlay + ROI auto-crop (new UX)
+  //   mode='crop' → clean shutter, user still does the manual crop step
+  //                 (old UX; the only reason to come here is to capture
+  //                 a DNG alongside the JPEG)
+  // Both OFF → stay on the legacy JPEG-only pick-image flow.
+  const takesPreviewPath = useRaw || useNewPreview;
 
   const onPickImage = useCallback(
     (photo: Photo) => {
@@ -48,13 +63,13 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
     [navigation, props],
   );
 
-  // Dev toggle (Settings → Color/Camera → "Use new Preview UX") replaces
-  // the pick-image-then-crop flow with the shared RAW-capable preview
-  // camera. After shutter it navigates into COLOR_ANALYSIS the same way
-  // onPickImage does, carrying an optional companion DNG.
-  const onUseNewPreview = useCallback(
-    () => navigation.navigate('PREVIEW_CAPTURE', {pitProps: props}),
-    [navigation, props],
+  const onUsePreviewCamera = useCallback(
+    () =>
+      navigation.navigate('PREVIEW_CAPTURE', {
+        pitProps: props,
+        mode: useNewPreview ? 'auto' : 'crop',
+      }),
+    [navigation, props, useNewPreview],
   );
 
   const onUseGuide = useCallback(
@@ -67,9 +82,9 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
       <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Column>
           <Box alignItems="center" paddingVertical="lg">
-            {useNewPreview ? (
+            {takesPreviewPath ? (
               <ContainedButton
-                onPress={onUseNewPreview}
+                onPress={onUsePreviewCamera}
                 leftIcon="photo-camera"
                 label={t('soil.color.take_photo_live')}
               />

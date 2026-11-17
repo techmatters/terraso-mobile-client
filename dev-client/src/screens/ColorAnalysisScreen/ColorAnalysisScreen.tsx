@@ -34,19 +34,27 @@ import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/
 export type ColorAnalysisProps = {
   photo: Photo;
   pitProps: SoilPitInputScreenProps;
-  /** Companion DNG URI when the capture came from the new preview UX on a
-   *  RAW-capable device. Added to the Soil Images queue alongside the JPEG
-   *  on screen-leave; ignored by the colour analysis itself (which reads
-   *  the JPEG). */
+  /** Companion DNG URI when the capture came from a RAW-capable device
+   *  (either UX, with "Use RAW when available" on). Added to the Soil
+   *  Images queue alongside the JPEG on screen-leave; ignored by the
+   *  colour analysis itself (which reads the JPEG). */
   dngUri?: string;
+  /** Pre-populated crop results, used when the capture flow already knows
+   *  the regions (new Preview UX — ROIs come from the preview overlay).
+   *  When omitted, the user picks regions via the Reference / Soil
+   *  tap-to-crop UI on ColorAnalysisHomeScreen (the "old UX"). */
+  initialState?: ColorAnalysisContextState;
 };
 
 export const ColorAnalysisScreen = ({
   photo,
   pitProps,
   dngUri,
+  initialState,
 }: ColorAnalysisProps) => {
-  const [state, setState] = useState<ColorAnalysisContextState>({});
+  const [state, setState] = useState<ColorAnalysisContextState>(
+    initialState ?? {},
+  );
   const contextValue = useMemo(
     () => ({
       photo,
