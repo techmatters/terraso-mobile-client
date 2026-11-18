@@ -21,4 +21,6 @@ AXE=$(find ~/.npm/_npx -path '*mobilebuildmcp/bundled/axe' -type f | head -1)
 $AXE touch -x <x> -y <y> --down --up --delay 0.15 --udid <udid>
 ```
 
+Note: if the npx cache holds several MobileBuildMCP versions, `head -1` picks one arbitrarily, possibly an old or unvetted copy. Check that `"$(dirname "$(dirname "$AXE")")/package.json"` has the version you pinned, and if not, choose the matching path from the `find` output.
+
 Coordinates are in points, not screenshot pixels: scale screenshot positions by (screen width in points ÷ screenshot width). The root element's frame from `$AXE describe-ui --udid <udid>` gives the screen size in points.

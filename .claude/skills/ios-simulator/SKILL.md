@@ -5,7 +5,9 @@ description: Drive the LandPKS app in an iOS simulator (launch, navigate, tap, t
 
 # Driving the app in the iOS simulator
 
-Uses the MobileBuildMCP server (tools named `mcp__MobileBuildMCP__*`). Add to this file whenever you hit a new gotcha.
+Uses the MobileBuildMCP server (tools named `mcp__MobileBuildMCP__*`).
+
+If you hit a new problem and find a reliable fix that other teammates are likely to hit too, propose adding it to [troubleshooting.md](troubleshooting.md) and ask the user before editing. Skip one-offs specific to one machine or session.
 
 ## Prerequisites
 
@@ -17,6 +19,8 @@ claude mcp add -s user MobileBuildMCP \
   -e MOBILEBUILDMCP_SENTRY_DISABLED=true \
   -- npx -y mobilebuildmcp@<version> mcp
 ```
+
+Replace `<version>` with an exact version: get the newest with `npm view mobilebuildmcp version` and skim its release notes before using it. Don't use `@latest`: npx would then download and run whatever was most recently published each time the server starts, so a broken or compromised release would run on your machine with your permissions, unreviewed.
 
 `ui-automation` is required for tap/type/swipe; it is off by default.
 
