@@ -350,8 +350,11 @@ const defaultConfig: ExpoConfig = {
           //
           // Both module build.gradle files read the `reactNativeArchitectures`
           // gradle property (fallback to the full 4-ABI list), which
-          // expo-build-properties sets from this field.
-          reactNativeArchitectures: ['arm64-v8a', 'armeabi-v7a'],
+          // expo-build-properties writes from this field. Note: the TS
+          // field is `buildArchs`, not `reactNativeArchitectures` — the
+          // plugin's doc comment names the gradle property it maps TO,
+          // which is a trap.
+          buildArchs: ['arm64-v8a', 'armeabi-v7a'],
         },
       },
     ],
