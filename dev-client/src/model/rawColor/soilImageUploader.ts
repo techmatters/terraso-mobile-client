@@ -201,6 +201,12 @@ export const isUploaderRunning = (): boolean => running;
  *  - markUploading → uploadEntry → remove (on success) / markFailed (on throw)
  *  - loops until no more `queued` entries OR cancelUpload() is called.
  *
+ * Tapping Upload is treated as "try everything again": any entries sitting
+ * in `failed` state get re-queued up front so the loop picks them up (the
+ * previous no-retry behaviour left the user with a list that showed items
+ * but refused to touch them on retap — confusing and unreachable without
+ * clearing + re-capturing).
+ *
  * Safe to call repeatedly; no-ops if already running. The returned promise
  * resolves when the drain finishes (nothing more queued, or cancelled).
  */
@@ -209,6 +215,11 @@ export const runSequentialUpload = async (
 ): Promise<void> => {
   if (running) {
     return;
+  }
+  for (const entry of queue.list()) {
+    if (entry.status === 'failed') {
+      queue.markQueued(entry.id);
+    }
   }
   running = true;
   cancelRequested = false;
@@ -224,7 +235,13 @@ export const runSequentialUpload = async (
         await uploadEntry(next);
         await queue.remove(next.id);
       } catch (err) {
-        console.warn('[soilImageUploader] entry failed', next.id, err);
+        // Log a line per file so the console shows both the site/depth
+        // context and the full error — the queue entry only keeps a
+        // short reason for the UI.
+        console.warn(
+          `[soilImageUploader] upload failed site=${next.siteId} depth=${next.depth.start}-${next.depth.end} entry=${next.id}:`,
+          err,
+        );
         queue.markFailed(next.id, String(err));
       }
     }

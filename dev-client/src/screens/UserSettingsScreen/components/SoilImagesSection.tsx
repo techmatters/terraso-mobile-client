@@ -66,15 +66,27 @@ const statusIcon = (entry: SoilImageQueueEntry) => {
     case 'uploading':
       return <ActivityIndicator accessibilityLabel="uploading" />;
     case 'failed':
-      return <Icon name="error-outline" />;
+      return <Icon name="error-outline" color="error.main" />;
     case 'queued':
       return null;
   }
 };
 
+// Keep the failure reason to one visible line — long server errors (regex
+// dumps, stack excerpts) would otherwise shove the whole list downward.
+// Users hit Upload to retry; details are in the Metro console.
+const MAX_REASON_CHARS = 80;
+const truncateReason = (reason: string): string =>
+  reason.length > MAX_REASON_CHARS
+    ? `${reason.slice(0, MAX_REASON_CHARS - 1)}…`
+    : reason;
+
 const QueueRow = ({entry}: {entry: SoilImageQueueEntry}) => {
   const label = `${truncateSite(entry.siteName)} · ${formatDepth(entry.depth)}`;
-  const subLabel = entry.status === 'failed' ? entry.failureReason : undefined;
+  const subLabel =
+    entry.status === 'failed' && entry.failureReason
+      ? `Failed: ${truncateReason(entry.failureReason)}`
+      : undefined;
   return (
     <MenuItem
       variant="default"
