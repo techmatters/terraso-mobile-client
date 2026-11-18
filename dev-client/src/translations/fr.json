@@ -45,7 +45,7 @@
             "privacy": "Confidentialité des données",
             "delete_button": "Supprimer ce site",
             "default_title": "Marqueur temporaire",
-            "settings_label": "TK Site settings"
+            "settings_label": "Paramètres du site"
         },
         "notes": {
             "title": "Notes du site",
@@ -222,9 +222,9 @@
             }
         },
         "list_title_empty": "Créer un site",
-        "show_on_map_label": "TK Show {{siteName}} on map",
-        "map_layers_label": "TK Switch map layer",
-        "my_location_label": "TK Go to my location"
+        "show_on_map_label": "Afficher {{siteName}} sur la carte",
+        "map_layers_label": "Changer la couche de carte",
+        "my_location_label": "Aller à ma position"
     },
     "projects": {
         "label": "Projet",
@@ -315,7 +315,7 @@
                 "body": "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. \n\nSi des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible.",
                 "action_name": "Transfert"
             },
-            "site_options_label": "TK Options for {{siteName}}"
+            "site_options_label": "Options de {{siteName}}"
         },
         "search": {
             "placeholder": "Rechercher des projets",
@@ -445,11 +445,11 @@
             "page_indicator": "Page {{current}} sur {{total}}",
             "got_it": "Compris !"
         },
-        "back": "TK Back",
-        "help_button": "TK Help",
-        "info_button": "TK More info",
-        "expand": "TK Expand {{name}}",
-        "collapse": "TK Collapse {{name}}"
+        "back": "Retour",
+        "help_button": "Aide",
+        "info_button": "Plus d'informations",
+        "expand": "Développer {{name}}",
+        "collapse": "Réduire {{name}}"
     },
     "errors": {
         "sync_conflict": {
@@ -533,8 +533,8 @@
             "bounds_unitless": "{{start}}–{{end}}",
             "delete_button": "Supprimer la profondeur",
             "edit_title": "Options de profondeur",
-            "edit_button_label": "TK Edit depth {{depth}}",
-            "delete_button_label": "TK Delete depth {{depth}}"
+            "edit_button_label": "Modifier la profondeur {{depth}}",
+            "delete_button_label": "Supprimer la profondeur {{depth}}"
         },
         "texture": {
             "title": "Texture du sol",
