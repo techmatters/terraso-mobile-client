@@ -19,7 +19,7 @@ import {useSyncExternalStore} from 'react';
 
 import {File} from 'expo-file-system';
 
-import * as terrasoApi from 'terraso-client-shared/terrasoApi/api';
+import * as soilImageService from 'terraso-client-shared/soilId/soilImageService';
 
 import type {
   SoilImageContentType,
@@ -48,34 +48,11 @@ import {soilImageQueue} from 'terraso-mobile-client/model/rawColor/soilImageQueu
 // record for the upload. All we get back is objectKey; we trust the 200 on
 // the PUT as success and drop the local entry.
 
-// NOTE on `errors`: the backend declares it as `GenericScalar` (opaque JSON
-// blob), not a typed object — so the selection has no sub-fields. The shape
-// returned when non-null is an array of {message} per terraso's graphene
-// convention, but the SDL doesn't encode that so we parse it ourselves in
-// requestUploadUrl below.
-const UPLOAD_URL_MUTATION = /* GraphQL */ `
-  mutation RequestSoilImageUploadUrl($input: SoilImageUploadUrlRequestInput!) {
-    requestSoilImageUploadUrl(input: $input) {
-      uploadUrl
-      objectKey
-      errors
-    }
-  }
-`;
-
 // Backend accepts 1-32 chars of [A-Za-z0-9_-]. Pair convention from the
 // plan: a RAW+JPEG capture maps to main-raw / main-jpeg; a jpeg-only
 // capture maps to main-jpeg alone.
 const uploadName = (kind: SoilImageFileKind): string =>
   kind === 'raw' ? 'main-raw' : 'main-jpeg';
-
-type UploadUrlResponse = {
-  uploadUrl: string | null;
-  objectKey: string | null;
-  // GenericScalar — practically an array of {message} but typed as unknown
-  // here; see the mutation definition above.
-  errors?: unknown;
-};
 
 // Pull a human-readable string out of the opaque `errors` GenericScalar.
 // Handles the common shapes terraso graphene uses — [{message: "..."}, ...]
@@ -113,18 +90,18 @@ const requestUploadUrl = async (args: {
   contentType: SoilImageContentType;
   name: string;
 }): Promise<{uploadUrl: string; objectKey: string}> => {
-  const response = (await terrasoApi.requestGraphQL(UPLOAD_URL_MUTATION, {
-    input: {
-      siteId: args.siteId,
-      depthInterval: {start: args.depthStart, end: args.depthEnd},
-      contentType: args.contentType,
-      name: args.name,
-    },
-  })) as {requestSoilImageUploadUrl: UploadUrlResponse};
-  const payload = response.requestSoilImageUploadUrl;
+  const payload = await soilImageService.requestSoilImageUploadUrl({
+    siteId: args.siteId,
+    depthInterval: {start: args.depthStart, end: args.depthEnd},
+    contentType: args.contentType,
+    name: args.name,
+  });
   if (!payload) {
     throw new Error('requestSoilImageUploadUrl returned no payload');
   }
+  // `errors` is `GenericScalar` on the backend (opaque JSON) — the service
+  // exposes it as `unknown`, so formatErrors is still responsible for
+  // normalising whatever shape comes through.
   const errorMessage = formatErrors(payload.errors);
   if (errorMessage) {
     throw new Error(errorMessage);
