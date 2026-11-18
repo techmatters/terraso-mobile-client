@@ -74,6 +74,54 @@ jest.mock('react-native-share', () => ({
   },
 }));
 
+// react-native-nitro-modules crashes at import time outside the native
+// runtime (TurboModuleRegistry.getEnforcing('NitroModules')). Many packages
+// transitively import it — dng-decoder, frame-analyzer, raw-camera-android,
+// react-native-vision-camera. Stub the only surface callers hit at
+// module-load time: createHybridObject returns a Proxy whose every property
+// is itself a jest.fn, so any `Foo.someMethod(...)` call at import or in
+// a test is a safe no-op that returns undefined.
+// react-native-vision-camera calls `addEventListener` and chains .then() on
+// a native promise at CameraDevices.js import-time — all of which are real
+// native surfaces. The launch test only needs AppContent to mount; the
+// capture screens that use the camera aren't on the launch path. Stub the
+// handful of exports that any imported-at-top-level screen references.
+jest.mock('react-native-vision-camera', () => {
+  const React = require('react');
+  const Noop = () => null;
+  return {
+    Camera: React.forwardRef(() => null),
+    useCameraDevice: () => null,
+    useCameraDevices: () => [],
+    useCameraPermission: () => ({
+      hasPermission: false,
+      requestPermission: jest.fn(() => Promise.resolve(false)),
+    }),
+    useFrameOutput: () => Noop,
+    usePhotoOutput: () => Noop,
+  };
+});
+
+jest.mock('react-native-nitro-modules', () => {
+  const makeHybridStub = (): any =>
+    new Proxy(
+      {},
+      {
+        get: (_target, prop) => {
+          if (prop === 'then' || typeof prop === 'symbol') return undefined;
+          return jest.fn();
+        },
+      },
+    );
+  return {
+    NitroModules: {
+      createHybridObject: jest.fn(() => makeHybridStub()),
+      hasNativeState: jest.fn(() => false),
+      getCPPPart: jest.fn(),
+    },
+  };
+});
+
 jest.mock('@expo/vector-icons/MaterialIcons', () => 'Icon');
 
 // workaround described here:
