@@ -43,7 +43,8 @@ import {
   View,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {SafeScrollViewWithFab} from 'terraso-mobile-client/components/safeview/SafeScrollViewWithFab';
-import {getColorFromImages} from 'terraso-mobile-client/model/color/colorDetection';
+import {getColorFromJpegCrops} from 'terraso-mobile-client/model/color/colorDetection';
+import {getColorFromDng} from 'terraso-mobile-client/model/color/dngColorAnalysis';
 import {
   ColorResult,
   InvalidColorResult,
@@ -233,28 +234,56 @@ export const ColorAnalysisHomeScreen = () => {
   );
 
   // Live colour computation — runs whenever either crop OR the chosen
-  // reference changes. Returns the full ColorResult so the Save path can
-  // branch on valid vs invalid without recomputing. Null means the inputs
-  // aren't all there yet (missing crop / no reference picked). Any decode
-  // failure sets `errored` so the UI can surface the error dialog on Save.
+  // reference changes. Stores the full ColorResult so the Save path can branch
+  // on valid vs invalid without recomputing. Null means the inputs aren't all
+  // there yet (missing crop / no reference picked) OR a decode failed; a
+  // failure also sets `errored` so the UI can surface the error dialog on Save.
+  //
+  // Unified analysis, one correction + Munsell step in linear space:
+  //   - DNG present → decode the reference/soil crop rects straight from raw
+  //     sensor pixels (true linear, native white-balance + colour matrix).
+  //   - otherwise (JPEG/HEIC/PNG) → dominant colour of each 8-bit crop, lifted
+  //     to linear. The DNG branch is async (native decode), so this runs in an
+  //     effect rather than a synchronous memo.
   const [errored, setErrored] = useState(false);
-  const liveColor: ColorResult | null = useMemo(() => {
+  const [liveColor, setLiveColor] = useState<ColorResult | null>(null);
+  useEffect(() => {
     if (!reference || !soil || !selectedRef) {
-      return null;
-    }
-    try {
-      const result = getColorFromImages({
-        reference: reference.photo,
-        soil: soil.photo,
-        referenceColor: selectedRef,
-      });
+      setLiveColor(null);
       setErrored(false);
-      return result;
-    } catch {
-      setErrored(true);
-      return null;
+      return;
     }
-  }, [reference, soil, selectedRef]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const result =
+          dngUri && reference.displayRoi && soil.displayRoi
+            ? await getColorFromDng({
+                dngUri,
+                referenceRoi: reference.displayRoi,
+                soilRoi: soil.displayRoi,
+                expected: selectedRef.expected,
+              })
+            : getColorFromJpegCrops({
+                reference: reference.photo,
+                soil: soil.photo,
+                expected: selectedRef.expected,
+              });
+        if (!cancelled) {
+          setLiveColor(result);
+          setErrored(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setLiveColor(null);
+          setErrored(true);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [reference, soil, selectedRef, dngUri]);
 
   const displayColor: MunsellColor | undefined =
     liveColor === null

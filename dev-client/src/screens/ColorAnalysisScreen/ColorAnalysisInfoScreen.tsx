@@ -19,9 +19,6 @@ import {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, Image, StyleSheet} from 'react-native';
 
-import {rgb255ToMhvc} from 'munsell';
-
-import {decodeBase64Jpg} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {ReferenceColorPicker} from 'terraso-mobile-client/components/inputs/ReferenceColorPicker';
 import {
   Box,
@@ -34,9 +31,12 @@ import {SafeScrollView} from 'terraso-mobile-client/components/safeview/SafeScro
 import {munsellToRGB} from 'terraso-mobile-client/model/color/colorConversions';
 import {
   linearToSrgb255,
-  predictColorFromReference,
+  measuredLinearFromJpegCrop,
+  predictMhvcFromLinear,
 } from 'terraso-mobile-client/model/color/colorDetection';
+import {measuredLinearFromDng} from 'terraso-mobile-client/model/color/dngColorAnalysis';
 import {useSelectedReference} from 'terraso-mobile-client/model/rawColor/referenceColorSelection';
+import type {LinearRgb} from 'terraso-mobile-client/model/rawColor/types';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
 import {useColorAnalysisContext} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
 import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
@@ -45,9 +45,10 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 // Munsell value on ColorAnalysisHomeScreen. Two columns (Reference, Soil) ×
 // three rows:
 //   Row 1 — the cropped photo as taken (what the camera saw).
-//   Row 2 — the measured colour for that region (mean of its sRGB pixels,
-//           decoded in-screen). Lets the tester compare "what we measured"
-//           against the raw pixels above.
+//   Row 2 — the measured colour for that region, exactly as the saved result
+//           measures it: the raw-sensor dominant for a DNG, the 8-bit dominant
+//           for JPEG/HEIC/PNG (both shown gamma-encoded). Lets the tester
+//           compare "what we measured" against the raw pixels above.
 //   Row 3 — the "final" colour: for Reference, the picked card's expected
 //           swatch; for Soil, the Munsell chip corresponding to the result.
 // Reference picker is repeated here so swapping it reruns the pipeline
@@ -58,29 +59,13 @@ type Rgb255 = [number, number, number];
 const cssRgb = (rgb: Rgb255 | undefined): string | undefined =>
   rgb ? `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})` : undefined;
 
-// Averaged sRGB (0-255) for a cropped JPEG. Same decoder the production
-// colour pipeline uses, so the numbers line up with what the real algorithm
-// consumes — just straight mean rather than quantize's dominant.
-const meanRgb255FromBase64 = (base64: string): Rgb255 => {
-  const {data, width, height} = decodeBase64Jpg(base64);
-  let rSum = 0;
-  let gSum = 0;
-  let bSum = 0;
-  let n = 0;
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const o = (y * width + x) * 4;
-      rSum += data[o];
-      gSum += data[o + 1];
-      bSum += data[o + 2];
-      n += 1;
-    }
-  }
-  if (n === 0) {
-    return [0, 0, 0];
-  }
-  return [Math.round(rSum / n), Math.round(gSum / n), Math.round(bSum / n)];
-};
+// Linear-sRGB [0,1] → display sRGB [0,255], for painting a measured colour as a
+// swatch. The pipeline works in linear; swatches are shown gamma-encoded.
+const toRgb255 = (c: LinearRgb): Rgb255 => [
+  linearToSrgb255(c.r),
+  linearToSrgb255(c.g),
+  linearToSrgb255(c.b),
+];
 
 type SwatchProps = {color: string | undefined; label: string};
 const Swatch = ({color, label}: SwatchProps) => (
@@ -114,6 +99,7 @@ const SWATCH_SIZE = 140;
 export const ColorAnalysisInfoScreen = () => {
   const {t} = useTranslation();
   const {
+    dngUri,
     state: {reference, soil},
   } = useColorAnalysisContext();
   const {reference: selectedRef} = useSelectedReference();
@@ -121,32 +107,54 @@ export const ColorAnalysisInfoScreen = () => {
   const referenceBase64 = reference?.photo.base64;
   const soilBase64 = soil?.photo.base64;
 
-  // Decode each crop ONCE per capture. Changing the reference picker only
-  // reruns the correction/Munsell mapping below, not the base64 decode.
+  // Measure each region ONCE per capture, in the SAME way the saved result is
+  // computed (dngColorAnalysis / colorDetection): raw sensor dominant for a DNG,
+  // 8-bit dominant for JPEG/HEIC/PNG — both as linear sRGB. Changing the
+  // reference picker only reruns the correction/Munsell mapping below, not the
+  // measurement. The DNG decode is async, so this runs through a timer+promise.
   const [measured, setMeasured] = useState<{
-    refRgb: Rgb255;
-    soilRgb: Rgb255;
+    reference: LinearRgb;
+    soil: LinearRgb;
   } | null>(null);
   useEffect(() => {
-    if (!referenceBase64 || !soilBase64) {
+    if (!reference || !soil) {
       setMeasured(null);
       return;
     }
-    // Decode is CPU-bound and blocks JS — let the shell paint first.
+    let cancelled = false;
+    // Measurement is CPU-bound (and native for DNG) — let the shell paint first.
     const t0 = Date.now();
     const timer = setTimeout(() => {
-      try {
-        setMeasured({
-          refRgb: meanRgb255FromBase64(referenceBase64),
-          soilRgb: meanRgb255FromBase64(soilBase64),
-        });
-        console.log(`[color-info] crop decode ${Date.now() - t0}ms`);
-      } catch (err) {
-        console.warn('[color-info] decode failed', err);
-      }
+      (async () => {
+        try {
+          const m =
+            dngUri && reference.displayRoi && soil.displayRoi
+              ? await measuredLinearFromDng({
+                  dngUri,
+                  referenceRoi: reference.displayRoi,
+                  soilRoi: soil.displayRoi,
+                })
+              : {
+                  reference: measuredLinearFromJpegCrop(reference.photo),
+                  soil: measuredLinearFromJpegCrop(soil.photo),
+                };
+          if (!cancelled) {
+            setMeasured(m);
+            console.log(`[color-info] measure ${Date.now() - t0}ms`);
+          }
+        } catch (err) {
+          if (!cancelled) {
+            console.warn('[color-info] measure failed', err);
+            setMeasured(null);
+          }
+        }
+      })();
     }, 0);
-    return () => clearTimeout(timer);
-  }, [referenceBase64, soilBase64]);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [reference, soil, dngUri]);
 
   // Reference-side column rows:
   //   top     = cropped reference photo (raw pixels)
@@ -160,32 +168,21 @@ export const ColorAnalysisInfoScreen = () => {
     if (!measured || !selectedRef) {
       return undefined;
     }
-    // Same pipeline the production getColorFromImages uses: predict colour
-    // from the measured soil + measured reference + the user-picked card's
-    // expected sRGB, then map to a Munsell chip RGB.
-    const refExpected255 = [
-      linearToSrgb255(selectedRef.expected.r),
-      linearToSrgb255(selectedRef.expected.g),
-      linearToSrgb255(selectedRef.expected.b),
-    ] as const;
-    // predictColorFromReference consumes RGBA arrays; feed one-pixel inputs
-    // to reuse the same per-channel scaling. Equivalent to running the whole
-    // crop through dominantColor, but deterministic and way cheaper.
-    const sampleRgba: [number, number, number, number][] = [
-      [...measured.soilRgb, 255],
-    ];
-    const refRgba: [number, number, number, number][] = [
-      [...measured.refRgb, 255],
-    ];
+    // Same unified pipeline the saved result uses: correct the measured soil by
+    // the measured reference toward the picked card's expected colour (all in
+    // linear sRGB), then map to a Munsell chip. predictMhvcFromLinear returns
+    // the pre-snap chip (no nearest-soil-colour match) — the corrected colour
+    // itself, which is what this explainer shows.
     try {
-      const [r, g, b] = predictColorFromReference(sampleRgba, refRgba, [
-        ...refExpected255,
-      ]);
-      const munsell = rgb255ToMhvc(r, g, b);
+      const mhvc = predictMhvcFromLinear(
+        measured.reference,
+        measured.soil,
+        selectedRef.expected,
+      );
       const chip = munsellToRGB({
-        colorHue: munsell[0],
-        colorValue: munsell[1],
-        colorChroma: munsell[2],
+        colorHue: mhvc[0],
+        colorValue: mhvc[1],
+        colorChroma: mhvc[2],
       });
       return chip ? ([chip[0], chip[1], chip[2]] as Rgb255) : undefined;
     } catch {
@@ -214,14 +211,14 @@ export const ColorAnalysisInfoScreen = () => {
                   {
                     heading: t('colorCamera.info.reference'),
                     cropBase64: referenceBase64,
-                    measuredRgb: measured.refRgb,
+                    measuredRgb: toRgb255(measured.reference),
                     finalCss: refExpectedCss,
                     finalLabel: t('colorCamera.info.refCard'),
                   },
                   {
                     heading: t('colorCamera.info.soil'),
                     cropBase64: soilBase64,
-                    measuredRgb: measured.soilRgb,
+                    measuredRgb: toRgb255(measured.soil),
                     finalCss: cssRgb(soilCorrectedMunsellRgb),
                     finalLabel: t('colorCamera.info.resultChip'),
                   },

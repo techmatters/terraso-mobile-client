@@ -1805,9 +1805,11 @@
         "choose_from_gallery": "Choose from Gallery",
         "choose_file": "Choose File",
         "file_picker": {
-            "dng_unsupported_title": "DNG loading not supported",
-            "dng_unsupported_android": "DNG loading is currently iOS-only. Pick a JPEG instead, or use the camera.",
-            "load_failed_title": "Couldn't load the selected file"
+            "dng_decode_failed_title": "Couldn't read this DNG",
+            "dng_decode_failed_body": "This DNG file couldn't be decoded on this device. Try a JPEG or PNG, or use the camera.",
+            "load_failed_title": "Couldn't load the selected file",
+            "unsupported_format_title": "Image format not supported",
+            "unsupported_format_body": "This device can't read the selected image. Try a JPEG, PNG, or DNG file."
         }
     },
     "export": {

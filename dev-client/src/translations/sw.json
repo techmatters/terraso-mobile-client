@@ -1797,9 +1797,11 @@
         "choose_from_gallery": "Chagua kutoka kwenye Ghala",
         "choose_file": "TK Choose File",
         "file_picker": {
-            "dng_unsupported_title": "TK DNG loading not supported",
-            "dng_unsupported_android": "TK DNG loading is currently iOS-only. Pick a JPEG instead, or use the camera.",
-            "load_failed_title": "TK Couldn't load the selected file"
+            "dng_decode_failed_title": "TK Couldn't read this DNG",
+            "dng_decode_failed_body": "TK This DNG file couldn't be decoded on this device. Try a JPEG or PNG, or use the camera.",
+            "load_failed_title": "TK Couldn't load the selected file",
+            "unsupported_format_title": "TK Image format not supported",
+            "unsupported_format_body": "TK This device can't read the selected image. Try a JPEG, PNG, or DNG file."
         }
     },
     "info": {
