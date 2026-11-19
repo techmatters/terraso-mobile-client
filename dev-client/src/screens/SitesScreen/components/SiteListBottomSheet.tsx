@@ -133,6 +133,8 @@ export const SiteListBottomSheet = memo(
       return (
         <BottomSheet
           ref={ref}
+          // gorhom defaults to accessible={true}, which hides the whole site list from VoiceOver (and simulator automation); see https://github.com/gorhom/react-native-bottom-sheet/pull/1788
+          accessible={false}
           snapPoints={snapPoints}
           enableDynamicSizing={false}
           index={snapIndex}

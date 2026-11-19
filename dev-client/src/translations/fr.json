@@ -44,7 +44,8 @@
         "dashboard": {
             "privacy": "Confidentialité des données",
             "delete_button": "Supprimer ce site",
-            "default_title": "Marqueur temporaire"
+            "default_title": "Marqueur temporaire",
+            "settings_label": "Paramètres du site"
         },
         "notes": {
             "title": "Notes du site",
@@ -220,7 +221,10 @@
                 "offline": "Le score des propriétés du sol sera mis à jour lorsque vous serez en ligne."
             }
         },
-        "list_title_empty": "Créer un site"
+        "list_title_empty": "Créer un site",
+        "show_on_map_label": "Afficher {{siteName}} sur la carte",
+        "map_layers_label": "Changer la couche de carte",
+        "my_location_label": "Aller à ma position"
     },
     "projects": {
         "label": "Projet",
@@ -310,7 +314,8 @@
                 "title": "Transférer les sites ?",
                 "body": "Les sites transférés utiliseront les entrées, les paramètres et les rôles des membres de l'équipe de ce projet. \n\nSi des observations sont saisies à des profondeurs différentes de celles spécifiées dans ce projet, elles seront supprimées. Cette opération est irréversible.",
                 "action_name": "Transfert"
-            }
+            },
+            "site_options_label": "Options de {{siteName}}"
         },
         "search": {
             "placeholder": "Rechercher des projets",
@@ -439,7 +444,12 @@
             "overview": "Aperçu",
             "page_indicator": "Page {{current}} sur {{total}}",
             "got_it": "Compris !"
-        }
+        },
+        "back": "Retour",
+        "help_button": "Aide",
+        "info_button": "Plus d'informations",
+        "expand": "Développer {{name}}",
+        "collapse": "Réduire {{name}}"
     },
     "errors": {
         "sync_conflict": {
@@ -522,7 +532,9 @@
             "bounds_labelled": "{{label}} : {{start}}–{{end}}{{units}}",
             "bounds_unitless": "{{start}}–{{end}}",
             "delete_button": "Supprimer la profondeur",
-            "edit_title": "Options de profondeur"
+            "edit_title": "Options de profondeur",
+            "edit_button_label": "Modifier la profondeur {{depth}}",
+            "delete_button_label": "Supprimer la profondeur {{depth}}"
         },
         "texture": {
             "title": "Texture du sol",

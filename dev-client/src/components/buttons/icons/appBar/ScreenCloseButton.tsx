@@ -17,4 +17,8 @@
 
 import {ScreenBackButton} from 'terraso-mobile-client/components/buttons/icons/appBar/ScreenBackButton';
 
-export const ScreenCloseButton = () => <ScreenBackButton icon="close" />;
+type Props = {testID?: string};
+
+export const ScreenCloseButton = ({testID}: Props) => (
+  <ScreenBackButton icon="close" testID={testID} />
+);

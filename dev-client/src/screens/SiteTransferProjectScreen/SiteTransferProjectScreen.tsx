@@ -276,6 +276,7 @@ export const SiteTransferProjectScreen = ({projectId}: Props) => {
               return (
                 <Accordion
                   key={projId.toString()}
+                  headLabel={projectName}
                   Head={
                     <Text
                       variant="body1"

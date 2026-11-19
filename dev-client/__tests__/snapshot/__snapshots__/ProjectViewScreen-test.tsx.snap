@@ -221,6 +221,7 @@ exports[`renders correctly 1`] = `
                               >
                                 <View>
                                   <RNGestureHandlerButton
+                                    accessibilityLabel="Back"
                                     accessibilityRole="button"
                                     accessibilityState={
                                       {
@@ -1398,6 +1399,7 @@ exports[`renders correctly 1`] = `
                                                   />
                                                   <View>
                                                     <RNGestureHandlerButton
+                                                      accessibilityLabel="More info"
                                                       accessibilityRole="button"
                                                       accessibilityState={
                                                         {
@@ -2550,6 +2552,7 @@ exports[`renders correctly 1`] = `
                                             </Text>
                                             <View>
                                               <RNGestureHandlerButton
+                                                accessibilityLabel="Collapse Soil Pit"
                                                 accessibilityRole="button"
                                                 accessibilityState={
                                                   {
@@ -3979,6 +3982,7 @@ exports[`renders correctly 1`] = `
                                             </Text>
                                             <View>
                                               <RNGestureHandlerButton
+                                                accessibilityLabel="Collapse Observation Requirements"
                                                 accessibilityRole="button"
                                                 accessibilityState={
                                                   {

@@ -44,7 +44,8 @@
         "dashboard": {
             "privacy": "Privacidad de datos",
             "delete_button": "Eliminar este sitio",
-            "default_title": "Marcador temporario"
+            "default_title": "Marcador temporario",
+            "settings_label": "Ajustes del sitio"
         },
         "notes": {
             "title": "Notas del sitio",
@@ -220,7 +221,10 @@
                 "offline": "Debes estar en línea para actualizar el puntaje de las propiedades del suelo."
             }
         },
-        "list_title_empty": "Crear sitio"
+        "list_title_empty": "Crear sitio",
+        "show_on_map_label": "Mostrar {{siteName}} en el mapa",
+        "map_layers_label": "Cambiar capa del mapa",
+        "my_location_label": "Ir a mi ubicación"
     },
     "projects": {
         "label": "Proyecto",
@@ -310,7 +314,8 @@
                 "title": "¿Transferir sitios?",
                 "body": "Los sitios transferidos usarán las entradas, la configuración y los roles de los miembros del equipo de este proyecto.\n\nSi los sitios tienen observaciones ingresadas a diferentes profundidades de las especificadas en este proyecto, esas observaciones se eliminarán. Esto no se puede deshacer.",
                 "action_name": "Transferir"
-            }
+            },
+            "site_options_label": "Opciones de {{siteName}}"
         },
         "search": {
             "placeholder": "Buscar proyectos",
@@ -439,7 +444,12 @@
             "overview": "Resumen",
             "page_indicator": "Página {{current}} de {{total}}",
             "got_it": "¡Entendido!"
-        }
+        },
+        "back": "Atrás",
+        "help_button": "Ayuda",
+        "info_button": "Más información",
+        "expand": "Expandir {{name}}",
+        "collapse": "Contraer {{name}}"
     },
     "errors": {
         "sync_conflict": {
@@ -522,7 +532,9 @@
             "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
             "bounds_unitless": "{{start}}–{{end}}",
             "delete_button": "Eliminar profundidad",
-            "edit_title": "Opciones de profundidad"
+            "edit_title": "Opciones de profundidad",
+            "edit_button_label": "Editar profundidad {{depth}}",
+            "delete_button_label": "Eliminar profundidad {{depth}}"
         },
         "texture": {
             "title": "Textura del suelo",

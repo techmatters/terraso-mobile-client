@@ -69,10 +69,11 @@ export const SiteTabsScreen = (props: Props) => {
     return (
       <AppBarIconButton
         name="settings"
+        accessibilityLabel={t('site.dashboard.settings_label')}
         onPress={() => navigation.navigate('SITE_SETTINGS', {siteId})}
       />
     );
-  }, [siteId, navigation, userRole]);
+  }, [siteId, navigation, userRole, t]);
 
   return (
     <ScreenDataRequirements requirements={requirements}>

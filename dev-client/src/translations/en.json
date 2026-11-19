@@ -70,7 +70,8 @@
         "dashboard": {
             "privacy": "Data Privacy",
             "delete_button": "Delete this site",
-            "default_title": "Temporary Pin"
+            "default_title": "Temporary Pin",
+            "settings_label": "Site settings"
         },
         "soil_id": {
             "title": "Soil ID",
@@ -228,7 +229,10 @@
             "SLOPE": "Slope",
             "SOIL": "Soil",
             "NOTES": "Notes"
-        }
+        },
+        "show_on_map_label": "Show {{siteName}} on map",
+        "map_layers_label": "Switch map layer",
+        "my_location_label": "Go to my location"
     },
     "projects": {
         "label": "Project",
@@ -323,7 +327,8 @@
                 "nameAsc": "Site name (A to Z)",
                 "updatedAtAsc": "Date modified (most recent)",
                 "distanceAsc": "Distance (nearest to me)"
-            }
+            },
+            "site_options_label": "Options for {{siteName}}"
         },
         "add_user": {
             "heading": "Add Team Member",
@@ -447,7 +452,12 @@
             "overview": "Overview",
             "page_indicator": "Page {{current}} of {{total}}",
             "got_it": "Got it!"
-        }
+        },
+        "back": "Back",
+        "help_button": "Help",
+        "info_button": "More info",
+        "expand": "Expand {{name}}",
+        "collapse": "Collapse {{name}}"
     },
     "permissions": {
         "camera_title": "LandPKS Soil ID needs to access your camera",
@@ -657,7 +667,9 @@
             "bounds_labelled": "{{label}}: {{start}}–{{end}}{{units}}",
             "bounds_unitless": "{{start}}–{{end}}",
             "bounds": "{{start}}–{{end}}{{units}}",
-            "delete_button": "Delete depth"
+            "delete_button": "Delete depth",
+            "edit_button_label": "Edit depth {{depth}}",
+            "delete_button_label": "Delete depth {{depth}}"
         },
         "texture": {
             "title": "Soil Texture",

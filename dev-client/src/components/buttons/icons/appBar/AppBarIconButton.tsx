@@ -22,9 +22,23 @@ import {IconName} from 'terraso-mobile-client/components/icons/Icon';
 
 export type AppBarIconButtonProps = {
   name: IconName;
+  accessibilityLabel: string;
+  testID?: string;
   onPress?: PressableProps['onPress'];
 };
 
-export const AppBarIconButton = ({name, onPress}: AppBarIconButtonProps) => (
-  <IconButton type="md" variant="light" name={name} onPress={onPress} />
+export const AppBarIconButton = ({
+  name,
+  accessibilityLabel,
+  testID,
+  onPress,
+}: AppBarIconButtonProps) => (
+  <IconButton
+    type="md"
+    variant="light"
+    name={name}
+    accessibilityLabel={accessibilityLabel}
+    testID={testID}
+    onPress={onPress}
+  />
 );

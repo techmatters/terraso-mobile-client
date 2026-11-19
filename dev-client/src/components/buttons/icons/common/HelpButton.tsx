@@ -15,13 +15,28 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {Tooltip} from 'terraso-mobile-client/components/tooltips/Tooltip';
 
-type HelpButtonProps = React.PropsWithChildren;
+type HelpButtonProps = React.PropsWithChildren<{testID?: string}>;
 
-export const HelpButton = ({children}: HelpButtonProps) => (
-  <Tooltip trigger={props => <IconButton type="sm" name="help" {...props} />}>
-    {children}
-  </Tooltip>
-);
+export const HelpButton = ({testID, children}: HelpButtonProps) => {
+  const {t} = useTranslation();
+
+  return (
+    <Tooltip
+      trigger={props => (
+        <IconButton
+          type="sm"
+          name="help"
+          {...props}
+          accessibilityLabel={t('general.help_button')}
+          testID={testID}
+        />
+      )}>
+      {children}
+    </Tooltip>
+  );
+};

@@ -43,12 +43,17 @@ export type IconButtonVariant =
   | 'light-filled'
   | 'location';
 
-export type IconButtonProps = React.ComponentProps<typeof NativeIconButton> & {
+export type IconButtonProps = Omit<
+  React.ComponentProps<typeof NativeIconButton>,
+  'accessibilityLabel'
+> & {
   type: IconButtonType;
   name: IconName;
   disabled?: boolean;
   variant?: IconButtonVariant;
-  accessibilityLabel?: string;
+  // Required because an icon alone gives screen readers, tests, and agents nothing to identify the button by.
+  accessibilityLabel: string;
+  testID?: string;
   onPress?: PressableProps['onPress'];
 };
 
@@ -60,6 +65,7 @@ export const IconButton = forwardRef<ViewInstance, IconButtonProps>(
       disabled,
       variant = 'normal',
       accessibilityLabel,
+      testID,
       onPress,
     }: IconButtonProps,
     ref,
@@ -68,6 +74,7 @@ export const IconButton = forwardRef<ViewInstance, IconButtonProps>(
       <View>
         <Pressable
           ref={ref}
+          testID={testID}
           accessibilityRole="button"
           accessibilityLabel={accessibilityLabel}
           accessibilityState={{disabled: disabled}}

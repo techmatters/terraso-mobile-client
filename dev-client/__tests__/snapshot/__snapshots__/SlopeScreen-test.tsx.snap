@@ -196,6 +196,7 @@ exports[`renders correctly 1`] = `
                           />
                           <View>
                             <RNGestureHandlerButton
+                              accessibilityLabel="More info"
                               accessibilityRole="button"
                               accessibilityState={
                                 {

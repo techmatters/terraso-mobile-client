@@ -69,6 +69,9 @@ export const DepthEditor = ({
               type="sm"
               variant="light"
               name="more-vert"
+              accessibilityLabel={t('soil.depth.edit_button_label', {
+                depth: renderDepth(t, aggregatedInterval.interval),
+              })}
               onPress={onOpen}
             />
           )}

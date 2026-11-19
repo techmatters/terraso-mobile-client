@@ -15,20 +15,36 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {useTranslation} from 'react-i18next';
+
 import {IconButton} from 'terraso-mobile-client/components/buttons/icons/IconButton';
 import {InfoSheet} from 'terraso-mobile-client/components/sheets/InfoSheet';
 
 type InfoButtonProps = React.PropsWithChildren<{
   sheetHeading?: React.ReactNode;
+  testID?: string;
 }>;
 
 export const InfoButton = ({
   sheetHeading,
+  testID,
   children,
-}: React.PropsWithChildren<InfoButtonProps>) => (
-  <InfoSheet
-    trigger={onOpen => <IconButton type="sm" name="info" onPress={onOpen} />}
-    heading={sheetHeading}>
-    {children}
-  </InfoSheet>
-);
+}: React.PropsWithChildren<InfoButtonProps>) => {
+  const {t} = useTranslation();
+
+  return (
+    <InfoSheet
+      trigger={onOpen => (
+        <IconButton
+          type="sm"
+          name="info"
+          accessibilityLabel={t('general.info_button')}
+          testID={testID}
+          onPress={onOpen}
+        />
+      )}
+      heading={sheetHeading}>
+      {children}
+    </InfoSheet>
+  );
+};

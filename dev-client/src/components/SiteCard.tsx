@@ -16,6 +16,7 @@
  */
 
 import React, {useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
 import {StyleSheet, ViewStyle} from 'react-native';
 
 import {Site} from 'terraso-client-shared/site/siteTypes';
@@ -46,6 +47,7 @@ export const SiteCard = ({
   buttons,
   isPopover,
 }: Props) => {
+  const {t} = useTranslation();
   const navigation = useNavigation();
   const project = useSelector(state =>
     site.projectId === undefined
@@ -86,6 +88,9 @@ export const SiteCard = ({
             type="sm"
             variant="location"
             name="location-on"
+            accessibilityLabel={t('site.show_on_map_label', {
+              siteName: site.name,
+            })}
             onPress={() => onShowSiteOnMap(site)}
           />
         )}

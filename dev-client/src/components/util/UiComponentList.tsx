@@ -111,17 +111,67 @@ export const UiComponentList = () => {
           <ComponentList title="IconButtons">
             <Heading variant="h5">IconButton</Heading>
             <View style={styles.darkBackground}>
-              <IconButton type="sm" variant="light" name="info" />
-              <IconButton type="md" variant="light" name="info" />
-              <IconButton type="sm" variant="light-filled" name="info" />
-              <IconButton type="md" variant="light-filled" name="info" />
+              <IconButton
+                type="sm"
+                variant="light"
+                name="info"
+                accessibilityLabel="info sm light"
+              />
+              <IconButton
+                type="md"
+                variant="light"
+                name="info"
+                accessibilityLabel="info md light"
+              />
+              <IconButton
+                type="sm"
+                variant="light-filled"
+                name="info"
+                accessibilityLabel="info sm light-filled"
+              />
+              <IconButton
+                type="md"
+                variant="light-filled"
+                name="info"
+                accessibilityLabel="info md light-filled"
+              />
             </View>
-            <IconButton type="sm" variant="location" name="location-pin" />
-            <IconButton type="md" variant="location" name="location-pin" />
-            <IconButton type="sm" variant="normal" name="info" />
-            <IconButton type="md" variant="normal" name="info" />
-            <IconButton type="sm" variant="normal-filled" name="info" />
-            <IconButton type="md" variant="normal-filled" name="info" />
+            <IconButton
+              type="sm"
+              variant="location"
+              name="location-pin"
+              accessibilityLabel="location-pin sm location"
+            />
+            <IconButton
+              type="md"
+              variant="location"
+              name="location-pin"
+              accessibilityLabel="location-pin md location"
+            />
+            <IconButton
+              type="sm"
+              variant="normal"
+              name="info"
+              accessibilityLabel="info sm normal"
+            />
+            <IconButton
+              type="md"
+              variant="normal"
+              name="info"
+              accessibilityLabel="info md normal"
+            />
+            <IconButton
+              type="sm"
+              variant="normal-filled"
+              name="info"
+              accessibilityLabel="info sm normal-filled"
+            />
+            <IconButton
+              type="md"
+              variant="normal-filled"
+              name="info"
+              accessibilityLabel="info md normal-filled"
+            />
           </ComponentList>
         </>
       )}
