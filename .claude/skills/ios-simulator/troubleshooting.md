@@ -4,13 +4,13 @@ Read from the `ios-simulator` skill when the app fails to load or something on s
 
 ## App fails to load
 
-- **"Unable to resolve module …" for a file that exists in `node_modules`**: Metro was started before `node_modules` was reinstalled, so its cache is stale. Restart Metro with `npm run start -- --clear` (from `dev-client`).
+- **"Unable to resolve module …" for a file that exists in `node_modules`**: Metro was started before `node_modules` was reinstalled, so its cache is stale. Ask the user to restart Metro with `npm run start -- --clear` (from `dev-client`).
 - **"React Native version mismatch" or "Cannot find native module '…'"**: the installed native build predates a native dependency change (compare `stat` on the `get_app_container` path with `git log -- dev-client/package.json`). Use another simulator if one has a newer build; otherwise ask the user, then rebuild (~6 min) against the running Metro:
   ```sh
   IOS_DEVICE_ID=<udid> npm run rebuild-native-ios
   ```
   Avoid `rebuild-all-ios` unless deps are broken: it deletes `node_modules`, runs `npm ci`, and starts its own Metro on 8081. The script may print "Build failed" when only Expo's final open-the-Simulator step errored; if the app container's timestamp is fresh, load via the deep link.
-- **Login screen (Google/Microsoft/Apple only)**: never sign in with the user's accounts. Backend connection problems may come from a stale backend URL in the user's secrets `.env` (e.g. their IP changed after switching wifi); ask them to check it, then restart Metro. Otherwise ask them to sign in once; the session persists.
+- **Login screen when the user was signed in, or backend errors**: the backend URL in the user's secrets `.env` may be stale (e.g. their IP changed after switching wifi). Ask them to check it, then restart Metro.
 
 ## Elements missing from snapshots
 
