@@ -447,8 +447,8 @@ export const CombinedColorScreen = ({
             )}
             {!photo && existingColor && (
               <>
-                {selectButton}
                 {enterManuallyButton}
+                {selectButton}
                 <PhotoConditions {...pitProps} />
                 <ReferenceColorPicker />
                 <Column alignItems="center" space="sm">
@@ -646,8 +646,8 @@ const CombinedReview = ({
     <ScreenScaffold AppBar={<AppBar title={title} />}>
       <SafeScrollViewWithFab>
         <Column padding="md" space="md">
-          {selectButton}
           {enterManuallyButton}
+          {selectButton}
 
           <PhotoWithRois
             photo={photo}
@@ -658,7 +658,6 @@ const CombinedReview = ({
 
           {shareButton}
 
-          <PhotoConditions {...pitProps} />
           <ReferenceColorPicker />
 
           <ColorPipelineGrid
@@ -687,6 +686,8 @@ const CombinedReview = ({
               <ColorDisplay variant="md" color={displayColor} />
             </Column>
           )}
+
+          <PhotoConditions {...pitProps} />
         </Column>
       </SafeScrollViewWithFab>
       <Fab
