@@ -49,6 +49,8 @@ import {munsellToRGB} from 'terraso-mobile-client/model/color/colorConversions';
 import {linearToSrgb255} from 'terraso-mobile-client/model/color/colorDetection';
 import {MunsellColor} from 'terraso-mobile-client/model/color/types';
 import {useSelectedReference} from 'terraso-mobile-client/model/rawColor/referenceColorSelection';
+import type {SoilImageFile} from 'terraso-mobile-client/model/rawColor/soilImageQueue';
+import {soilImageQueue} from 'terraso-mobile-client/model/rawColor/soilImageQueue.default';
 import type {LinearRgb} from 'terraso-mobile-client/model/rawColor/types';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
 import {AppBar} from 'terraso-mobile-client/navigation/components/AppBar';
@@ -73,7 +75,7 @@ import {ScreenScaffold} from 'terraso-mobile-client/screens/ScreenScaffold';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {PhotoConditions} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/PhotoConditions';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
-import {useDispatch} from 'terraso-mobile-client/store';
+import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 
 const toRgb255 = (c: LinearRgb): Rgb255 => [
   linearToSrgb255(c.r),
@@ -484,6 +486,7 @@ export const CombinedColorScreen = ({
       }}>
       <CombinedReview
         photo={photo}
+        dngUri={dngUri}
         reference={reference}
         soil={soil}
         overrides={overrides}
@@ -506,6 +509,7 @@ export const CombinedColorScreen = ({
 
 type ReviewProps = {
   photo: Photo;
+  dngUri?: string;
   reference: CropResult;
   soil: CropResult;
   overrides: Overrides;
@@ -521,6 +525,7 @@ type ReviewProps = {
 
 const CombinedReview = ({
   photo,
+  dngUri,
   reference,
   soil,
   overrides,
@@ -536,6 +541,9 @@ const CombinedReview = ({
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const siteName = useSelector(
+    state => state.site.sites[pitProps.siteId]?.name ?? pitProps.siteId,
+  );
   const {reference: selectedRef} = useSelectedReference();
   const {measured, colorResult, loading, error} = useColorPipeline(overrides);
 
@@ -597,11 +605,42 @@ const CombinedReview = ({
         site_id: pitProps.siteId,
         depthInterval: pitProps.depthInterval.depthInterval,
       });
+      // Queue the full-res capture for upload (shows up in Settings → Soil
+      // Images). Camera RAW captures supply both a JPEG and a DNG; picked
+      // files supply a JPEG (plus a DNG when a DNG was loaded). Dedup by
+      // (siteId, depth) is handled by the queue — a re-save replaces the
+      // previous entry. Mirrors the classic ColorAnalysisHomeScreen enqueue.
+      const files: SoilImageFile[] = [
+        {kind: 'jpeg', uri: photo.uri, contentType: 'image/jpeg'},
+      ];
+      if (dngUri) {
+        files.push({
+          kind: 'raw',
+          uri: dngUri,
+          contentType: 'image/x-adobe-dng',
+        });
+      }
+      soilImageQueue
+        .enqueue({
+          siteId: pitProps.siteId,
+          siteName,
+          depth: pitProps.depthInterval.depthInterval,
+          files,
+        })
+        .catch(err => console.warn('[soilImageQueue] enqueue failed', err));
       // This screen IS the color-feature route's content (embedded by
       // ColorScreen), so a single pop returns to the depth's soil data.
       navigation.pop();
     };
-  }, [colorResult, dispatch, navigation, pitProps]);
+  }, [
+    colorResult,
+    dispatch,
+    navigation,
+    pitProps,
+    photo.uri,
+    dngUri,
+    siteName,
+  ]);
 
   return (
     <ScreenScaffold AppBar={<AppBar title={title} />}>
