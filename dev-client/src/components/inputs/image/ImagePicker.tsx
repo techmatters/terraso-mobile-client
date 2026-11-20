@@ -68,7 +68,11 @@ type Props = {
    */
   onPick: (result: Photo, dngUri?: string) => void;
   featureName: string;
-  children: ModalTrigger;
+  // Sheet trigger (required unless `inline`). In inline mode the three source
+  // buttons render directly with no sheet.
+  children?: ModalTrigger;
+  // Render the camera/gallery/file buttons directly (no trigger, no sheet).
+  inline?: boolean;
   /**
    * When provided, "Use Camera" calls this instead of launchCameraAsync.
    * Lets a caller substitute a custom capture flow (e.g. our RAW-capable
@@ -134,6 +138,7 @@ export const ImagePicker = ({
   children,
   featureName,
   onUseCameraOverride,
+  inline = false,
 }: Props) => {
   const {t} = useTranslation();
   const ref = useRef<ModalHandle>(null);
@@ -273,57 +278,64 @@ export const ImagePicker = ({
     }
   }, [onPick, t]);
 
-  return (
-    <StandaloneOverlaySheet trigger={children} ref={ref}>
-      <Column padding="lg" space="md">
-        <PermissionsRequestWrapper
-          requestModalTitle={t('permissions.camera_title')}
-          requestModalBody={t('permissions.camera_body', {
-            feature: featureName,
-          })}
-          permissionHook={useCameraPermissions}
-          permissionedAction={onUseCamera}>
-          {onRequestAction => (
-            <ContainedButton
-              label={t('image.use_camera')}
-              size="lg"
-              stretchToFit={true}
-              onPress={onRequestAction}
-              leftIcon="photo-camera"
-            />
-          )}
-        </PermissionsRequestWrapper>
-        <PermissionsRequestWrapper
-          requestModalTitle={t('permissions.gallery_title')}
-          requestModalBody={t('permissions.gallery_body', {
-            feature: featureName,
-          })}
-          permissionHook={useMediaLibraryPermissions}
-          permissionedAction={onUseMediaLibrary}>
-          {onRequestAction => (
-            <ContainedButton
-              label={t('image.choose_from_gallery')}
-              size="lg"
-              stretchToFit={true}
-              onPress={onRequestAction}
-              leftIcon="photo-library"
-            />
-          )}
-        </PermissionsRequestWrapper>
-        {/* Document picker sheet — no camera/library permission needed,
+  const choices = (
+    <Column padding={inline ? undefined : 'lg'} space="md">
+      <PermissionsRequestWrapper
+        requestModalTitle={t('permissions.camera_title')}
+        requestModalBody={t('permissions.camera_body', {
+          feature: featureName,
+        })}
+        permissionHook={useCameraPermissions}
+        permissionedAction={onUseCamera}>
+        {onRequestAction => (
+          <ContainedButton
+            label={t('image.use_camera')}
+            size="lg"
+            stretchToFit={true}
+            onPress={onRequestAction}
+            leftIcon="photo-camera"
+          />
+        )}
+      </PermissionsRequestWrapper>
+      <PermissionsRequestWrapper
+        requestModalTitle={t('permissions.gallery_title')}
+        requestModalBody={t('permissions.gallery_body', {
+          feature: featureName,
+        })}
+        permissionHook={useMediaLibraryPermissions}
+        permissionedAction={onUseMediaLibrary}>
+        {onRequestAction => (
+          <ContainedButton
+            label={t('image.choose_from_gallery')}
+            size="lg"
+            stretchToFit={true}
+            onPress={onRequestAction}
+            leftIcon="photo-library"
+          />
+        )}
+      </PermissionsRequestWrapper>
+      {/* Document picker sheet — no camera/library permission needed,
             the user selects via the OS file browser. Primary use case is
             loading a DNG that the gallery can't surface. JPEG, HEIC/HEIF and
             PNG work too (HEIC/PNG are normalised to JPEG on load). DNGs are
             decoded via DngDecoderHybrid on both platforms (raw sensor pixels
             drive analysis); an undecodable DNG fails with an alert. */}
-        <ContainedButton
-          label={t('image.choose_file')}
-          size="lg"
-          stretchToFit={true}
-          onPress={onChooseFile}
-          leftIcon="folder-open"
-        />
-      </Column>
+      <ContainedButton
+        label={t('image.choose_file')}
+        size="lg"
+        stretchToFit={true}
+        onPress={onChooseFile}
+        leftIcon="folder-open"
+      />
+    </Column>
+  );
+
+  if (inline) {
+    return choices;
+  }
+  return (
+    <StandaloneOverlaySheet trigger={children} ref={ref}>
+      {choices}
     </StandaloneOverlaySheet>
   );
 };

@@ -61,10 +61,10 @@ cd dev-client
 - Test utilities: `jest/` directory (mapped to `@testing` import)
 
 ### Key Technologies
-- Expo SDK 54 with dev-client
-- React Native 0.81.5
+- Expo with dev-client
+- React Native
 - Redux Toolkit + React Redux
-- React Navigation v7
+- React Navigation
 - Native Base UI components
 - Mapbox for mapping (`@rnmapbox/maps`)
 - i18next for internationalization

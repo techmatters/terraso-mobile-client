@@ -32,6 +32,11 @@ export const featureFlags = {
     defaultIsEnabledInDevelopment: true,
     description: 'Redesign to accomodate the soil health module',
   },
+  FF_colorCombined: {
+    defaultIsEnabled: false,
+    defaultIsEnabledInDevelopment: true,
+    description: 'Prototype combined single-screen soil-colour UX',
+  },
 };
 
 export type FeatureFlagName = keyof typeof featureFlags;

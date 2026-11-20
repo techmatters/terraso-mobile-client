@@ -15,12 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {useCallback} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {LayoutChangeEvent} from 'react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Animated, {
   clamp,
+  runOnJS,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
@@ -34,6 +36,7 @@ import {
 
 import {Fab} from 'terraso-mobile-client/components/buttons/Fab';
 import {
+  decodeBase64Jpg,
   Photo,
   PhotoWithBase64,
 } from 'terraso-mobile-client/components/inputs/image/ImagePicker';
@@ -65,6 +68,46 @@ export type CropResult = {
 
 type Dimensions = {width: number; height: number};
 
+// Live ROI-quality outline (mirrors the preview camera's green/red boxes): the
+// luma variance of the current crop region, thresholded. Below = uniform enough
+// (green); above = too much contrast / shadow in the region (red).
+const QUALITY_VARIANCE_THRESHOLD = 500;
+// Longest edge of the downscaled copy the variance is sampled from, and the
+// min interval between evaluations while dragging.
+const QUALITY_SAMPLE_DIM = 160;
+const QUALITY_EVAL_INTERVAL_MS = 80;
+
+type Sample = {data: Uint8Array; width: number; height: number};
+
+// Luma variance of the crop region within the downscaled sample.
+const regionVariance = (sample: Sample, crop: Crop, sourceWidth: number) => {
+  const scale = sample.width / sourceWidth;
+  const x0 = Math.max(0, Math.floor(crop.left * scale));
+  const y0 = Math.max(0, Math.floor(crop.top * scale));
+  const x1 = Math.min(sample.width, Math.ceil((crop.left + crop.size) * scale));
+  const y1 = Math.min(sample.height, Math.ceil((crop.top + crop.size) * scale));
+  let sum = 0;
+  let sumSq = 0;
+  let n = 0;
+  for (let y = y0; y < y1; y++) {
+    for (let x = x0; x < x1; x++) {
+      const o = (y * sample.width + x) * 4;
+      const luma =
+        0.299 * sample.data[o] +
+        0.587 * sample.data[o + 1] +
+        0.114 * sample.data[o + 2];
+      sum += luma;
+      sumSq += luma * luma;
+      n += 1;
+    }
+  }
+  if (n === 0) {
+    return null;
+  }
+  const mean = sum / n;
+  return sumSq / n - mean * mean;
+};
+
 const minDim = (dimensions: Dimensions) => {
   'worklet';
   return Math.min(dimensions.width, dimensions.height);
@@ -86,6 +129,8 @@ type Props = {
   onCrop: (_: CropResult) => void;
   title: string;
   description: string;
+  // Defaults to "Next"; callers that know this is the final region pass "Save".
+  fabLabel?: string;
 };
 export const ColorCropScreen = ({
   photo,
@@ -93,6 +138,7 @@ export const ColorCropScreen = ({
   onCrop,
   title,
   description,
+  fabLabel,
 }: Props) => {
   const {t} = useTranslation();
 
@@ -104,6 +150,71 @@ export const ColorCropScreen = ({
   };
   const crop = useSharedValue<Crop>(initialCropValue);
   const start = useSharedValue<Crop>(initialCropValue);
+
+  // Live ROI-quality outline. A downscaled copy of the photo is decoded once;
+  // the crop region's luma variance is re-evaluated (throttled) as the user
+  // drags, colouring the frame green/red.
+  const [quality, setQuality] = useState<'ok' | 'bad' | undefined>(undefined);
+  const sampleRef = useRef<Sample | null>(null);
+  const lastEvalRef = useRef(0);
+  const evaluateQuality = useCallback(
+    (c: Crop) => {
+      const now = Date.now();
+      if (now - lastEvalRef.current < QUALITY_EVAL_INTERVAL_MS) {
+        return;
+      }
+      lastEvalRef.current = now;
+      const sample = sampleRef.current;
+      if (!sample) {
+        return;
+      }
+      const variance = regionVariance(sample, c, photo.width);
+      setQuality(
+        variance == null
+          ? undefined
+          : variance < QUALITY_VARIANCE_THRESHOLD
+            ? 'ok'
+            : 'bad',
+      );
+    },
+    [photo.width],
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const small = await manipulateAsync(
+          photo.uri,
+          [{resize: {width: QUALITY_SAMPLE_DIM}} as ActionResize],
+          {base64: true, format: SaveFormat.JPEG},
+        );
+        if (!small.base64 || cancelled) {
+          return;
+        }
+        const decoded = decodeBase64Jpg(small.base64);
+        sampleRef.current = {
+          data: decoded.data,
+          width: decoded.width,
+          height: decoded.height,
+        };
+        lastEvalRef.current = 0;
+        evaluateQuality(crop.value);
+      } catch (err) {
+        console.warn('[colorCrop] quality sample failed', err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [photo.uri, evaluateQuality, crop]);
+
+  useAnimatedReaction(
+    () => crop.value,
+    cur => {
+      runOnJS(evaluateQuality)(cur);
+    },
+  );
 
   const pan = Gesture.Pan()
     .maxPointers(1)
@@ -214,6 +325,14 @@ export const ColorCropScreen = ({
               width="100%"
               aspectRatio={1}
               overflow="hidden"
+              borderWidth="3px"
+              borderColor={
+                quality === 'ok'
+                  ? '#22ee22'
+                  : quality === 'bad'
+                    ? '#ee2222'
+                    : 'transparent'
+              }
               onLayout={onLayout}>
               <Animated.Image source={photo} style={[animatedStyles]} />
             </Box>
@@ -224,7 +343,11 @@ export const ColorCropScreen = ({
           <Text variant="body1">{description}</Text>
         </Column>
       </SafeScrollViewWithFab>
-      <Fab onPress={onComplete} label={t('general.next')} leftIcon="check" />
+      <Fab
+        onPress={onComplete}
+        label={fabLabel ?? t('general.next')}
+        leftIcon="check"
+      />
     </ScreenScaffold>
   );
 };

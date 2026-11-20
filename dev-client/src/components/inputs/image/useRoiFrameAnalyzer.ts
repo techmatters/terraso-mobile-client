@@ -44,26 +44,30 @@ export type RoiPreset = {
   sample: FractionalRoi;
 };
 
+// The boxes are kept PIXEL-SQUARE so they match the square crop/zoom selector —
+// editing a guide ROI with that selector then reproduces the same region
+// instead of reshaping it. On the 3:4 portrait frame (width = short side),
+// square means h = 0.75 · w in these fractional coords.
 export const ROI_PRESETS: readonly RoiPreset[] = [
   {
     label: 'tiny',
-    ref: {x: 0.35, y: 0.3, w: 0.3, h: 0.16},
-    sample: {x: 0.35, y: 0.54, w: 0.3, h: 0.16},
+    ref: {x: 0.35, y: 0.25, w: 0.3, h: 0.225},
+    sample: {x: 0.35, y: 0.525, w: 0.3, h: 0.225},
   },
   {
     label: 'small',
-    ref: {x: 0.25, y: 0.2, w: 0.5, h: 0.25},
-    sample: {x: 0.25, y: 0.55, w: 0.5, h: 0.25},
+    ref: {x: 0.25, y: 0.1, w: 0.5, h: 0.375},
+    sample: {x: 0.25, y: 0.525, w: 0.5, h: 0.375},
   },
   {
     label: 'medium',
-    ref: {x: 0.15, y: 0.05, w: 0.7, h: 0.4},
-    sample: {x: 0.15, y: 0.55, w: 0.7, h: 0.4},
+    ref: {x: 0.2, y: 0.025, w: 0.6, h: 0.45},
+    sample: {x: 0.2, y: 0.525, w: 0.6, h: 0.45},
   },
   {
     label: 'large',
-    ref: {x: 0.075, y: 0.0, w: 0.85, h: 0.45},
-    sample: {x: 0.075, y: 0.55, w: 0.85, h: 0.45},
+    ref: {x: 0.18, y: 0.0, w: 0.64, h: 0.48},
+    sample: {x: 0.18, y: 0.52, w: 0.64, h: 0.48},
   },
 ];
 

@@ -15,9 +15,14 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
+import {ActionCrop, manipulateAsync, SaveFormat} from 'expo-image-manipulator';
+
 import {DngDecoderHybrid} from 'dng-decoder';
 
-import {predictColorFromLinear} from 'terraso-mobile-client/model/color/colorDetection';
+import {
+  measuredLinearFromJpegCrop,
+  predictColorFromLinear,
+} from 'terraso-mobile-client/model/color/colorDetection';
 import {ColorResult} from 'terraso-mobile-client/model/color/types';
 import type {LinearRgb} from 'terraso-mobile-client/model/rawColor/types';
 
@@ -30,13 +35,18 @@ export type DngMeasurementArgs = {
 /** Fractional rect (0..1) of a crop within the display photo. */
 export type FractionalRoi = {x: number; y: number; w: number; h: number};
 
-// Map a fractional ROI (0..1 in the upright/portrait display frame) to DNG
-// sensor pixel coords. readMetadata returns pre-orientation (landscape) dims,
-// so the short side is the display width and the long side is the display
-// height — matching roiToPixels in rawColorCamera.tsx, which is the coordinate
-// convention decodeDngRois expects. NOTE: assumes a portrait sensor-aspect
-// capture (how the app's own captures and iPhone/Pixel DNGs come through); a
-// landscape loaded DNG would need its orientation reflected here.
+// Max edge of the throwaway grayscale decode we use only to read the
+// CIRAWFilter source dimensions. Tiny — we discard the pixels; we just need
+// sourceWidth/sourceHeight.
+const DIMS_PROBE_MAX_DIM = 64;
+
+// Map a fractional ROI (0..1 in the upright/portrait display frame) to the
+// pixel coords decodeDngRois expects — i.e. CIRAWFilter's oriented output
+// space (sourceWidth × sourceHeight from readPreviewGrayscale/Rgb), which the
+// native side forces to portrait. The short side is the display width, the
+// long side the display height. NOTE: assumes a portrait-aspect capture (how
+// the app's own captures and iPhone/Pixel DNGs come through); a landscape
+// loaded DNG would need its orientation reflected here.
 const roiToSensorPixels = (
   roi: FractionalRoi,
   width: number,
@@ -60,9 +70,14 @@ const roiToSensorPixels = (
  * be the analysis input.
  *
  * `dominant` (median-cut) matches the JPEG path's dominantColor semantics —
- * robust to off-tone flecks in the ROI. Throws if the native decoder can't read
- * the DNG (e.g. Android compressed/tiled strips); callers surface that as a hard
- * failure rather than falling back to the preview JPEG.
+ * robust to off-tone flecks in the ROI.
+ *
+ * Dimensions come from `readPreviewGrayscale` (CIRAWFilter's source extent),
+ * NOT `readMetadata`: the latter runs the hand-rolled C++ TIFF parser, which
+ * only reads uncompressed, strip-based DNGs and throws on the compressed/tiled
+ * DNGs iPhones actually produce. decodeDngRoisReduced crops in CIRAWFilter's
+ * oriented extent anyway, so sourceWidth/sourceHeight is both the robust AND
+ * the coordinate-correct source of the ROI scale.
  *
  * Shared by the home-screen result and the explainer so both read the same raw
  * measurement.
@@ -72,12 +87,81 @@ export const measuredLinearFromDng = async ({
   referenceRoi,
   soilRoi,
 }: DngMeasurementArgs): Promise<{reference: LinearRgb; soil: LinearRgb}> => {
-  const {width, height} = await DngDecoderHybrid.readMetadata(dngUri);
-  const reduced = await DngDecoderHybrid.decodeDngRoisReduced(dngUri, [
-    roiToSensorPixels(referenceRoi, width, height),
-    roiToSensorPixels(soilRoi, width, height),
+  try {
+    const {sourceWidth, sourceHeight} =
+      await DngDecoderHybrid.readPreviewGrayscale(dngUri, DIMS_PROBE_MAX_DIM);
+    const reduced = await DngDecoderHybrid.decodeDngRoisReduced(dngUri, [
+      roiToSensorPixels(referenceRoi, sourceWidth, sourceHeight),
+      roiToSensorPixels(soilRoi, sourceWidth, sourceHeight),
+    ]);
+    return {reference: reduced[0].dominant, soil: reduced[1].dominant};
+  } catch (err) {
+    // The reduced-ROI decode can fail where renderPreview still succeeds (seen
+    // on some device captures). Both run the RAW pipeline (demosaic / WB /
+    // colour-matrix), so falling back to a preview-crop dominant keeps the
+    // measurement raw-faithful — NOT the ISP companion JPEG — just lower-res.
+    console.warn(
+      '[dngColorAnalysis] reduced-ROI decode failed, using raw preview crop',
+      err,
+    );
+    return measuredLinearFromDngPreview({dngUri, referenceRoi, soilRoi});
+  }
+};
+
+// Max edge of the raw-decoded preview used for the fallback measurement. Large
+// enough that a cropped ROI still has plenty of pixels for a stable dominant.
+const PREVIEW_FALLBACK_MAX_DIM = 1024;
+
+// Dominant linear-sRGB of each ROI measured from the raw-decoded preview (the
+// same renderPreview path the dominant-colour editor uses). renderPreview runs
+// the camera's RAW pipeline to sRGB, so this is still raw-faithful; we then
+// treat the crop like any sRGB JPEG crop (sRGB→linear via dominant).
+const measuredLinearFromDngPreview = async ({
+  dngUri,
+  referenceRoi,
+  soilRoi,
+}: DngMeasurementArgs): Promise<{reference: LinearRgb; soil: LinearRgb}> => {
+  const preview = await DngDecoderHybrid.renderPreview(
+    dngUri,
+    PREVIEW_FALLBACK_MAX_DIM,
+  );
+  const cropBase64 = async (roi: FractionalRoi): Promise<string> => {
+    const crop: ActionCrop = {
+      crop: {
+        originX: Math.round(roi.x * preview.width),
+        originY: Math.round(roi.y * preview.height),
+        width: Math.round(roi.w * preview.width),
+        height: Math.round(roi.h * preview.height),
+      },
+    };
+    const out = await manipulateAsync(preview.uri, [crop], {
+      base64: true,
+      compress: 1.0,
+      format: SaveFormat.JPEG,
+    });
+    if (!out.base64) {
+      throw new Error('measuredLinearFromDngPreview: no base64 from crop');
+    }
+    return out.base64;
+  };
+  const [refBase64, soilBase64] = await Promise.all([
+    cropBase64(referenceRoi),
+    cropBase64(soilRoi),
   ]);
-  return {reference: reduced[0].dominant, soil: reduced[1].dominant};
+  return {
+    reference: measuredLinearFromJpegCrop({
+      base64: refBase64,
+      uri: '',
+      width: 0,
+      height: 0,
+    }),
+    soil: measuredLinearFromJpegCrop({
+      base64: soilBase64,
+      uri: '',
+      width: 0,
+      height: 0,
+    }),
+  };
 };
 
 /** DNG path of the unified analysis. */

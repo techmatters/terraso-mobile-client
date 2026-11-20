@@ -1881,6 +1881,23 @@
             "measuredRgb": "measured rgb",
             "refCard": "ref card",
             "resultChip": "result (chip)"
+        },
+        "editor": {
+            "colors": "Colors found",
+            "result": "Resulting color"
+        },
+        "combined": {
+            "title": "Soil color",
+            "select_image": "Read Color from Image",
+            "cropping": "Select the reference and soil regions.",
+            "result": "Soil color result",
+            "manual_entry": "Enter Color Manually",
+            "automatic_entry": "Read Color from Image",
+            "enter_values": "Enter Values",
+            "enter_manually": "Enter Color Manually",
+            "share": "Share",
+            "measuring": "Measuring color…",
+            "measure_failed": "Couldn't read the color from this image. Try re-cropping or a different photo."
         }
     }
 }
