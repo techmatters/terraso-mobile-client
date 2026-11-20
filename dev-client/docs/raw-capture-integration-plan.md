@@ -1,0 +1,331 @@
+# Part 2 — RAW capture, decode & color reduction: integration plan
+
+Detailed plan for landing the RAW pipeline onto `fix/improved-color-determination`,
+behind the experimental flag. Grounded in the **research branch code** (source of
+truth); the research `docs/raw-camera-plan.md` is treated as secondary and possibly
+stale — verify its claims against code when porting.
+
+## Ground truth (what already exists in the research branch)
+
+- **Capture is already built on both platforms** (not green-field):
+  - Router `src/components/inputs/image/RawCameraView.tsx` + `captureTypes.ts`.
+  - **iOS RAW:** `react-native-vision-camera` + a **ProRAW patch** (`patches/react-native-vision-camera+5.1.1.patch`).
+  - **Android RAW:** the `raw-camera-android` Nitro module (vision-camera can't save `RAW_SENSOR` on Android).
+  - JPEG (production): vision-camera.
+- **Capture contract** (`captureTypes.ts`): `CaptureResult` is `{kind:'jpeg'|'raw'}`; the raw variant already exposes the **"get color from ROI" seam** — `decodeRoi(roi) => {r,g,b}` — plus `jpegPath?`, `width/height`, `renderPreview(maxDim)`, `dispose()`.
+- **Decode core** (`modules/dng-decoder`, nitro API `DngDecoderHybrid`): `readMetadata`, `decodeDngRois`, `decodeDngRoisReduced` (returns per-ROI `{mean, dominant, variance}`), `renderPreview`, `readPreviewGrayscale`. Pure-C++17 engine shared across Android/iOS/Mac CLIs (see tracker "Native code / shared core").
+- **JPEG companion:** iOS DNGs carry an embedded preview (always); Android "may need to generate" one. `renderPreview` **is implemented on both platforms** (Android: `nativeRenderPreview`→Bitmap→PNG, phase 5.4) — *earlier "iOS-only/Android throws" note was stale.* Still Android-unimplemented: `readPreviewGrayscale`, `readPreviewRgbPhoto`, `decodePhotoRois`, `extractDngPreviewJpeg`.
+- **Flag:** `experimentalColorScreenToggle.ts` (MMKV `useExperimentalColorScreen`, gated under `FF_testing`).
+- **Storage today:** ad-hoc `expo-file-system` `cacheDirectory` writes; no managed retention.
+- **Patches present:** vision-camera 5.1.1, react-native 0.85.3, rnmapbox, native-base.
+
+## Requirements captured (from discussion)
+
+1. One **temporary feature flag** enabling RAW **and** the new algorithms together.
+2. DNG (+ JPEG if separate) written to a **temp dir** with **eviction** (placeholder: keep last ~10; design for age/size/free-space/count later). A **Settings upload section** (details later).
+3. **Always fall back** to JPEG when RAW is unsupported (some Android *and* iOS devices).
+4. **Extraction on all three platforms** (Android, iOS, Mac tooling) — core already shared.
+5. **JPEG:** Android may need to generate it separately; iOS gets it from the DNG.
+6. Prefer the **same C++ approach on both** platforms if fast enough → iOS decode gets a **switchable backend** (Apple CIRAWFilter vs C++), both compiled, one knob to flip, for benchmarking.
+7. **Pluggable color-reduction** behind a "get color from rectangle" interface (which dominant/mean algorithm is a single selection point).
+8. **Multiple reference colors** from the start (user-defined vs fixed: TBD — part 5).
+9. **Defer** the preview-with-ROI-rectangles UX (note to revisit).
+
+## Decisions to lock
+
+- **D1 — Flag:** ✅ **resolved — single flag.** Use the already-landed `experimentalRawColorToggle` (MMKV, under `FF_testing`) as the one gate for RAW + new algorithms + experimental UX. When porting UX (workstream 4), route the research branch's `experimentalColorScreen` references into this single flag — do **not** introduce a second flag. Keep removal-friendly. (Name is incidental; not worth renaming.)
+- **D2 — iOS decode backend:** ship a single switch (e.g. a `DngDecodeBackend` const) selecting CIRAWFilter vs C++, both compiled — not literally commented out, so both keep building. **Coupling:** the C++ branch needs a **Bayer-RAW** capture; the C++ parser can't decode ProRAW (compressed/tiled LinearRaw). So "C++ on iOS" implies capturing Bayer RAW, not ProRAW.
+- **D3 — Reducer seam:** keep `CaptureResult.decodeRoi` as the public seam; back it with a `ColorReducer` selector over `decodeDngRoisReduced`'s `{mean,dominant,variance}`. One place chooses the algorithm.
+- **D4 — Eviction:** small policy interface; default keep-last-N (N=10). Age/size/free-space slot in later.
+- **D5 — Multi-ref:** analysis takes N reference ROIs + the soil ROI; the reference set is data (built-in list now, extensible to user-defined in part 5).
+
+## Slices (each lands green behind the flag; no stacked PRs)
+
+Status key: ☐ todo · ◐ in progress · ☑ landed · 🚢 merged to main
+
+### P0 — Preflight: dependency & patch reconciliation ☑
+Resolved more cheaply than feared: the research branch had already caught up to
+**RN 0.86.3 / Expo 57** (identical to main) and builds with the full RAW stack, so
+there was no version gap — just a known-good dependency set to replicate.
+- ☑ Reconciled `patches/*`: 3 of 4 (`@rnmapbox/maps`, `native-base`, `react-native`) already on main unchanged; only `react-native-vision-camera+5.1.1.patch` (ProRAW) was ported. (Note: `react-native+0.85.3.patch` is pre-existing on main and applies to 0.86.3 with a harmless patch-package warning — main's status quo, not this slice's concern.)
+- ☑ Added `react-native-vision-camera@5.1.1`, `react-native-vision-camera-worklets@5.1.1`, `react-native-nitro-modules@0.36.1`, `react-native-nitro-image@0.15.1` (`react-native-worklets@0.10.1` already on main). Nitro codegen pulled via nitro-modules.
+- ☑ `npm install` clean, patch-package applies the ProRAW patch cleanly; **iOS + Android debug builds run** with the new deps present (local native modules land in 2.1).
+
+### 2.0 — Single feature flag
+- ☐ Land the gate (D1); settings toggle. Off = zero behavior change; on = experimental color path.
+
+### 2.1 — Port native modules + capture router ◐
+Survey (2026-10-22) found the capture path is navigation-coupled on Android and the
+nitrogen codegen is committed in-tree (no build-time codegen). No Expo config plugin
+is needed — the modules are plain autolinked `file:` deps. Broken into sub-slices so
+each lands green; the `frame_analyzer.cpp` dedup is 2.1d (☑ — now a single shared
+source compiled by both modules).
+
+- **2.1a ☑ — `dng-decoder` module.** Removed stray untracked `modules/` build
+  artifacts; ported `modules/dng-decoder` (sources + committed `nitrogen/generated`);
+  added `"dng-decoder": "file:./modules/dng-decoder"`; `npm install` + `prebuild`
+  clean (iOS pod autolinks; Android autolinks at build); added `modules/` to eslint
+  `ignorePatterns` (matches research). Static green: check-ts/lint/format. *(Native
+  build verification pending.)*
+**Capture-UX levels (decided 2026-10-22).** The camera comes in three levels:
+(1) plain preview + capture, no overlay; (2) + ROI-rectangle overlay; (3) +
+real-time per-ROI analysis. In the research code these map to `containerFormat`
+modes — `'dng'`/`'jpeg'` = level 1, `'dng-live'` = level 3 — and **level 2 does not
+exist as a mode: on iOS the overlay is drawn by the same sub-component that runs the
+analyzer, so overlay and real-time are fused.** Decision: build level 1 first as a
+small fresh component (rewrite, not a trim of the monolithic `RawCameraView`), then do
+levels 2+3 together as a whole-port of `RawCameraView`. The *degraded* "overlay but
+real-time off" state (devices that can't analyze live, esp. Android) is new glue that
+belongs with capability detection (2.2), driven by real capability rather than a mode.
+
+- **2.1b ☑ — capture contract + minimal iOS capture (level 1).** Ported
+  `captureTypes.ts` + `useRawOrJpegCapture.ts` (stub). Added `SimpleRawCamera.tsx` — a
+  fresh ~200-line iOS ProRAW capture (preview + shutter, no overlay/real-time/Android),
+  reusing the research capture mechanics (single-wide device, `usePhotoOutput`,
+  `capturePhoto`→`isRawPhoto`→`saveToTemporaryFileAsync`→`extractDngPreviewJpeg`) and the
+  `makeRawCaptureResult` factory, so `decodeRoi`/`renderPreview` bridge to `dng-decoder`.
+  **Android level 1 also landed**: ported `modules/raw-camera-android` (CameraX +
+  DngCreator Nitro module) and made `SimpleRawCamera` dispatch per platform
+  (`RawCameraAndroidView` with `showRoiOverlay={false}` + `RawCameraAndroidHybrid.capturePhoto`);
+  the Android `CapturedPhoto` supplies its own companion JPEG, so no `extractDngPreviewJpeg`
+  there. **Dev entry (A):** `ExperimentalRawColorToggleItem` (flag on/off) + `RawCaptureTestItem`
+  (opens the camera, decodes a centre ROI, alerts linear RGB), both under the FF_testing dev
+  menu, non-production. Static green: check-ts/lint/format. *(Native build + on-device capture
+  verification pending — user.)*
+> **Finding (2026-10-23), from the level-1 spike:** on iOS this vision-camera fork
+> does **not** render a live preview for a photo-output-only session — the viewfinder
+> is black even though capture/decode work. The iOS live preview is coupled to a
+> **video/frame output** in the session (the research `dng-live` path adds one with
+> `enablePreviewSizedOutputBuffers: true`, which the comments say piggybacks on the
+> *preview surface*; a naive frame output otherwise breaks RAW capture, which is why
+> `dng-live` engineers it carefully). So a working iOS viewfinder is only available via
+> the frame-output path below — it is NOT achievable in a minimal photo-only level-1.
+> `SimpleRawCamera` therefore has no iOS viewfinder; it validated the native stack +
+> decode only. (Android uses `RawCameraAndroidView`, a native preview view, so its
+> viewfinder is independent of this.) The first win of 2.1c is a real iOS viewfinder.
+
+- **2.1c-a ☑ — iOS viewfinder + ROI overlay + real-time analysis.** Done by *extending
+  `SimpleRawCamera`* (not whole-porting the `RawCameraView` monolith — that approach was
+  evaluated and rejected): ported the `frame-analyzer` module (iOS-only) + `useRoiFrameAnalyzer`
+  + `RoiOverlay`; the iOS path now runs a vision-camera frame output (drives the live preview
+  AND the analyzer), detaches it around each capture (onConfigured dance) so RAW capture still
+  works, wraps camera+overlay in a `SensorAspectFrame` so the ROI boxes align 1:1 with the
+  preview/DNG, and sets `orientationSource="interface"` so the portrait-locked preview doesn't
+  spin with the phone. Confirmed on-device: viewfinder + red/green ROI quality + capture→decode.
+  > **⚠️ Hard-won lesson:** rapid Metro-reload camera churn can **wedge iOS's camera service**
+  > (black frames system-wide, even the built-in Camera app; only a **reboot** clears it). This
+  > invalidated ~15 iterations of "black preview" testing — the code was fine; the camera was
+  > wedged. When camera tests go black, **reboot before trusting the next result.** The
+  > `RawCameraView` whole-port was ported temporarily to isolate this and has been removed.
+- **2.1c-d ☑ (iOS) — real ref+sample ROI decode.** The capture test decodes the two
+  overlay ROIs (not a centre box): display-fractional → DNG pixel coords scaled by the
+  *oriented* (portrait) dims (short=width/long=height; DNG decodes in portrait extent while
+  `result.width/height` are pre-orientation landscape). Alerts REF, SOIL, and a naive
+  WB (sample÷ref). Real WB/Munsell is workstream 3.
+- **2.1c-ANDROID-CAPTURE ☑ — RESOLVED. RAW capture works on Pixel 6a / Android 16.** Two
+  distinct bugs, both in how the (byte-identical-to-research) native module was *hosted/driven* —
+  NOT a CameraX version/device issue (all branches pin CameraX 1.4.1):
+    1. *Black preview / takePicture timeout, every time* — the shared `CaptureChrome` hosted the
+       native view in a bare `View` + hidden `StatusBar`; the research module documents this
+       leaves CameraX bound-but-never-streaming. Fix: Android hosts `RawCameraAndroidView` in a
+       `ScreenScaffold` + `AppBar` (plain flex:1, no hidden StatusBar, no fixed-size wrapper).
+    2. *Intermittent (~30–50% per attach) black preview → takePicture timeout* — **a React Native
+       layout bug, not a camera race.** RN's Yoga engine lays out the native `ViewGroup` but does
+       NOT run Android `measure`/`onLayout` on the preview Surface/TextureView that CameraX
+       inserts inside `PreviewView`; it intermittently stays `0x0`, so the Surface is never
+       created, the camera never reaches `STREAMING`, and capture times out (~20s). Signature:
+       `onAttachedToWindow: view size=0x0`. **Fix: override `RawCameraAndroidView.requestLayout()`
+       to post an explicit `measure()`+`layout()`** (the standard RN-native-view workaround that
+       vision-camera et al. use). Took the stress test from ~30–50% failures to **0 races**.
+  Dead ends ruled out along the way (all reverted): CameraX version bump, camera-device
+  lifecycle hard-reset, 2-stream reorder, and `SurfaceView`/PERFORMANCE mode (never streams in
+  this RN host — TextureView/COMPATIBLE is required).
+  Validated: a 292/292 auto-test run at **0 races** on Pixel 6a / Android 16 with the
+  `requestLayout` fix alone. **Reference:** a retry-based safety net (native
+  fast-fail-on-not-streaming guard + JS auto-remount-on-failure + race counter) was validated on
+  top of the fix and is preserved at commit **`de447bdb`**; it was then removed (races are 0
+  without it) to keep the native-module diff vs. the research copy to just the one-method
+  `requestLayout` override. Restore from `de447bdb` if a future device ever needs retry recovery.
+  **iOS unaffected.**
+- **2.1c-b ☐ — Android overlay.** (Blocked by the Android capture blocker above.) Enable
+  `RawCameraAndroidView`'s native ROI overlay (`showRoiOverlay`). (The analyzer core is now
+  shared — see 2.1d — but it's the same pure function either way; this is about the native
+  overlay rendering, not the math.)
+- **2.1c-c ☐ — ROI preset UI + wiring into the real color flow** (size selector from
+  `ROI_PRESETS`; feed `decodeRoi` results into the experimental color screen). Clean session
+  teardown is via screen unmount (nav goBack) — adequate in production (the wedging was
+  dev-reload-only); revisit only if real-use wedging appears.
+- **2.1d ☑ — dedup `frame_analyzer.cpp`.** The byte-identical (comments aside) luma
+  analyzer core is now a single shared source: `modules/frame-analyzer/cpp/frame_analyzer.{cpp,h}`.
+  The iOS `FrameAnalyzer` pod compiles it as before (its `cpp/**` glob); the Android
+  `raw-camera-android` CMake now references the same file by relative path
+  (`../../frame-analyzer/cpp/frame_analyzer.cpp`) + adds it to the include path, and its
+  local copy is deleted. Only the thin platform ABI wrappers stay separate
+  (`frame_analyzer_c.*` for Swift, `frame_analyzer_jni.cpp` for JNI). Change the analyzer
+  math in one place now. (The display→sensor ROI rotation is still duplicated — JS worklet
+  on iOS vs Kotlin on Android — but that's cross-language, not practically shareable.)
+
+- **2.1e ◐ — reusable `RawColorCamera` API (decoupling camera / analyzer / overlay).**
+  The capture test originally drove `RawCameraAndroidView` + `RawCameraAndroidHybrid`
+  directly. 2.1e factors that into a reusable, headless component with a three-piece
+  contract — **camera** (preview + `capture()`), **analyzer** (injected frame sink, owns
+  its own ROIs), **overlay** (app-owned `children`) — so the "can't have
+  preview+analysis+raw+jpeg at once" constraint lives in one place, invisible to callers.
+  Built Android-first (iOS parity is Slice 4 below); sliced so each lands green.
+    - **Slice 1+2 ☑ — contract + component + `Capture`.** `rawColorCamera.types.ts`
+      (the authoritative contract) + `rawColorCamera.tsx` (`forwardRef` component on the
+      proven CameraX engine; `capture()` returns a `Capture` with `decodeRois` /
+      `renderPreview` / `save` / `dispose`; fractional ROIs mapped to DNG pixels
+      internally). Commit **`e972a995`**.
+    - **Slice 3a ☑ — injectable live analyzer.** `createRoiAnalyzer({rois,onStats})`
+      wraps a native Nitro `FrameAnalyzer`; the camera pumps frames into it off-thread
+      (`setAnalyzer`/`clearAnalyzer`) and it emits per-ROI luma stats. Binds
+      preview+raw+analysis. Commit **`1a1909c1`**.
+    - **Slice 3b ☑ — raw+jpeg shutter switch.** When a shot wants the JPEG but the
+      session is bound for analysis (3-stream cap, no room for a JPEG stream), the native
+      side reconfigures preview+raw+analysis → preview+raw+jpeg for the shot, captures
+      RAW+JPEG, then restores analysis (preview reuses its surface across the rebinds).
+      Validated on Pixel 6a (`raw=172ms jpeg=100ms`, overlay resumes). Commit **`723ca5f2`**.
+    - **3b reliability ☑ — retry through the reconfigure race (both platforms).** Long
+      soaks hit an intermittent (~1/50 of switch-captures) failure where the capture
+      fired before the (re)configured session was ready: Android `takePicture timed out
+      (8s)` after the switch rebind (session not-yet-STREAMING); iOS `PhotoOutput does not
+      support raw capture` after the detach dance (reconfigured to a non-DNG format). Fix:
+      a bounded retry (3 attempts) that forces a FRESH reconfigure and re-captures —
+      Android fully rebinds (conservative open+bind path, can't wedge; commit
+      **`ae5e722f`**), iOS reattaches→re-detaches to re-pick a RAW-capable format (commit
+      **`76ec7316`**). **Validated 2026-11-05: Android 1438 + iOS 3847 iterations, 0
+      failures** (tag `raw-capture-reliable-2026-11-05`).
+      > **Root-fix follow-ups (retry is the backstop, not the mechanism).** The retry
+      > masks "captured before ready"; the cleaner primary fixes: **Android** — wait for
+      > the capture session to be *active/streaming* after the rebind (CameraX session
+      > `onActive` callback) before `takePicture`. **iOS** — do NOT blanket-pin a DNG
+      > format (that breaks jpeg-only requests + devices without RAW, e.g. old iPhones);
+      > instead select a RAW-capable format *only when RAW is requested and the device
+      > supports it*, i.e. fold it into capability detection (2.2). Keep the retry as the
+      > defensive backstop either way.
+      > **Rejected — light stream-swap (approach C).** Swapping only analysis↔jpeg via
+      > `provider.unbind` + a standalone `bindToLifecycle` (keeping preview+raw bound, to
+      > avoid the device close/reopen + reduce the shutter glitch) **wedged the camera on
+      > Pixel**: a standalone bind drops the `UseCaseGroup` ViewPort → 0×0 crop → HAL AE
+      > loop (`libgcam Invalid input crop [0,0,0,0]` spam) → hard freeze holding the
+      > camera. `ViewPort` is per-bind-group, so an incremental swap can't preserve it. A
+      > "C-v2" full-group rebind is unverified and, worse, carries cross-device risk
+      > (hot-reconfigure behaviour is HAL-specific) incl. *silent* bad-crop captures on
+      > untested HALs — unacceptable for a colour-measurement app. Don't re-attempt the
+      > hot swap; keep captures on the uniform rebind path.
+      > **Rejected — light stream-swap (approach C).** Swapping only analysis↔jpeg via
+      > `provider.unbind` + a standalone `bindToLifecycle` (keeping preview+raw bound, to
+      > avoid the device close/reopen + reduce the shutter glitch) **wedged the camera on
+      > Pixel**: a standalone bind drops the `UseCaseGroup` ViewPort → 0×0 crop → HAL AE
+      > loop (`libgcam Invalid input crop [0,0,0,0]` spam) → hard freeze holding the
+      > camera. `ViewPort` is per-bind-group, so an incremental swap can't preserve it. A
+      > "C-v2" full-group rebind is unverified and, worse, carries cross-device risk
+      > (hot-reconfigure behaviour is HAL-specific) incl. *silent* bad-crop captures on
+      > untested HALs — unacceptable for a colour-measurement app. Don't re-attempt the
+      > hot swap; keep captures on the uniform rebind path.
+    - **JPEG-only / `rawless` ☑ — no-RAW device simulation.**
+      A `rawless` view prop binds **preview+jpeg(+analysis) with no RAW stream** and
+      `capture()` produces a JPEG only (no DNG) — implements the capability model's
+      "No RAW → JPEG only" row on RAW-capable hardware, so the non-RAW app path is
+      testable. New `ensureRawlessBoundLocked()` / `captureJpegOnlyLocked()` in
+      `CameraSessionManager`; the RAW path (`ensureBoundLocked`/`captureLocked`/3b switch)
+      is untouched. `Capture.hasRaw=false`; `decodeRois()` throws a clear jpeg-only error.
+      Commit **`70fd23ed`**.
+    - **Auto stress harness ☑ — mode-cycling + periodic persist.** The test's
+      "Auto" cycles the capture configs (RAW+JPEG+analysis, RAW-only, RAW+JPEG no-analysis,
+      JPEG-only), N shots each, **remounting the camera between modes** (= reopening the
+      screen — real-use bind path, not a mid-session reconfigure), and every 100th shot
+      exercises `save()`→verify→delete. Validated on Pixel 6a: 125 shots across all four
+      modes, 0 errors. Commit **`70fd23ed`** (later unified with iOS — see below).
+    - **Slice 4 ☑ (4a+4b) — iOS parity.** `RawColorCamera` is now a platform dispatcher
+      over two engines: `AndroidRawColorEngine` (CameraX/Nitro, unchanged) and
+      `IosRawColorEngine` (vision-camera + ProRAW, ported from the proven `SimpleRawCamera`
+      path — single-wide device, `usePhotoOutput` DNG, the detach-at-capture `onConfigured`
+      dance). 4a = preview + capture; 4b = live analysis via a frame-processor worklet
+      (`useIosFrameAnalyzer`) emitting per-ROI `{mean,variance}` through `runOnJS`. iOS can't
+      inject a native frame sink, so `createRoiAnalyzer` returns a config carrier on iOS;
+      the external `FrameAnalyzer` contract is identical. `makeCapture` is shared (both
+      decode via `dng-decoder`, fractional ROIs). Commit **`09908225`**.
+    - **Parity polish ☑ — shared layout + unified harness.** `SensorAspectFrame` lifted
+      into `RawColorCamera` so both engines render preview + overlay in the same 3:4 box
+      (ROI boxes align 1:1 with preview + DNG on both platforms) — commit **`36f858ba`**.
+      The two test harnesses collapsed into one `RawColorTest`; the only per-platform
+      difference is the Auto mode list + whether modes remount (iOS: single mode, no
+      remount, to avoid wedging the vision-camera session). iOS gains the Auto soak —
+      commit **`1dc2684f`**.
+    - **Slice 5 ☐ — cleanup.** Strip the `[rawperf]` timing logs; retire `SimpleRawCamera`
+      (now orphaned) once this all settles.
+
+  **API at a glance** (source of truth: [`rawColorCamera.types.ts`](../src/components/inputs/image/rawColorCamera.types.ts)):
+  ```tsx
+  <RawColorCamera
+    active                                   // false → release the camera
+    request={{ raw?, jpeg?: 'always'|'fallback'|'never', analyze? }}
+    ref={camRef}                             // camRef.current.capture(opts?) → Promise<Capture>
+    onCapabilities={caps => …}               // what the request resolved to on this device
+  >
+    {overlay}                                {/* app-owned, drawn from analyzer onStats */}
+  </RawColorCamera>
+
+  const analyzer = createRoiAnalyzer({ rois, onStats });   // inject via request.analyze
+  const cap = await camRef.current.capture({ onCaptured });// fires at "safe to move"
+  const [ref, soil] = await cap.decodeRois([refRoi, soilRoi]);
+  await cap.save({ dir });                                 // optional persist → { dngUri?, jpegUri? }
+  cap.dispose();                                           // free buffers + unsaved temps
+  ```
+  **Files:**
+  - Contract — [`src/components/inputs/image/rawColorCamera.types.ts`](../src/components/inputs/image/rawColorCamera.types.ts)
+  - Component + `Capture`/`createRoiAnalyzer` — [`src/components/inputs/image/rawColorCamera.tsx`](../src/components/inputs/image/rawColorCamera.tsx)
+  - Android engine — [`modules/raw-camera-android`](../modules/raw-camera-android) (`CameraSessionManager.kt` = bind ladder + capture + rawless; `RawCameraAndroidView(Manager).kt` = native preview + props)
+  - DNG decode — [`modules/dng-decoder`](../modules/dng-decoder) (`decodeDngRois`, `renderPreview`)
+  - Dev test harness — [`src/screens/RawCaptureTestScreen/RawCaptureTestScreen.tsx`](../src/screens/RawCaptureTestScreen/RawCaptureTestScreen.tsx)
+
+Accept (whole 2.1): capture a DNG on a RAW-capable device per platform; `decodeRoi`
+returns a color. **iOS done; Android capture works (2.1-level), overlay pending.**
+
+### 2.2 — Capability detection + fallback
+- ☐ Implement real `useRawOrJpegCapture` detection — iOS (vision-camera ProRAW/raw support), Android (`raw-camera-android` RAW_SENSOR capability). *(Verify doc claim that it currently returns `isRawAvailable:false` unconditionally.)*
+- ☐ Unavailable → JPEG path; add a forced-fallback dev switch; unit-test the decision.
+
+### 2.3 — Managed temp storage + eviction
+- ☐ `rawCaptureStore` over `cacheDirectory`: dedicated subdir + index (`id, ts, format, dngPath, jpegPath, siteId?`); eviction policy interface; default keep-last-N (N=10); clear-all.
+- ☐ Route the capture flow through the store (replace ad-hoc writes); unit tests for eviction.
+
+### 2.4 — "Get color from ROI" reducer seam + multi-ref
+- ☐ Formalize the `ColorReducer` selector over `{mean,dominant,variance}`; implementations: mean / trimmed-mean / dominant (median-cut) / clipped-excluded.
+- ☐ Multi-ref: N reference ROIs + soil ROI → keyed colors.
+- ☐ Parity test device vs Mac CLI on a fixture.
+
+### 2.5 — JPEG companion per platform
+- ☐ iOS: extract embedded preview JPEG. Android: generate a JPEG/preview (Android `renderPreview` already works; `extractDngPreviewJpeg` still Android-unimplemented). Unified "display image for a capture".
+- ☐ Accept: both platforms yield a viewable image for a capture.
+
+### 2.6 — iOS decode-backend toggle + benchmark
+- ☐ iOS backend switch (CIRAWFilter vs C++), both compiled, one knob (D2). Document the Bayer-capture coupling.
+- ☐ Benchmark decode+reduce both backends on-device; record findings (feeds the part-3 color-consistency decision).
+
+### 2.7 — Settings: stored-captures + upload (LATER / placeholder)
+- ☐ Settings section listing stored captures; upload action TBD. Start read-only list.
+
+### Deferred — preview-with-ROI-rectangles UX
+Live overlay / ROI-picker (research "phase 8"). Revisit after the above; use simpler capture UX meanwhile. Android `renderPreview` also pending.
+
+## Sequence & dependencies
+
+P0 → 2.0 → 2.1 → (2.2, 2.3 parallel) → 2.4 → 2.5 → 2.6; 2.7 later; multi-ref threaded through 2.4; UX deferred.
+
+## Risks / things to verify against code
+
+- ~~**Patch/version drift** (RN 0.85.3 / vision-camera 5.1.1 patches vs main) — highest-risk preflight item.~~ **Resolved in P0:** research is on RN 0.86.3 (== main); only the ProRAW patch needed porting.
+- Nitro codegen version compatibility.
+- Android `renderPreview` not implemented (affects 2.5 ROI-picker UI).
+- iOS C++ decode requires Bayer capture (ProRAW incompatible) — couples D2 to capture format.
+- The research `docs/raw-camera-plan.md` may be stale — code wins.
+
+## Open questions
+
+- ~~Flag: reuse `experimentalColorScreen` vs a dedicated `experimentalRawColor`?~~ Resolved (D1): single `experimentalRawColorToggle`.
+- Storage retention specifics + whether captures associate to a site/soil sample (needed for upload).
+- iOS capture format default (ProRAW vs Bayer) for production vs the benchmark path.
+- Reference set: built-in vs user-defined (overlaps part 5).

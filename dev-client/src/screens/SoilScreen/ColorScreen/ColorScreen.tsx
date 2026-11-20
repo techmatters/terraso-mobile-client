@@ -25,6 +25,7 @@ import {HelpContentSpacer} from 'terraso-mobile-client/components/content/HelpCo
 import {TranslatedHeading} from 'terraso-mobile-client/components/content/typography/TranslatedHeading';
 import {useDefaultSiteDepthRequirements} from 'terraso-mobile-client/components/dataRequirements/commonRequirements';
 import {ScreenDataRequirements} from 'terraso-mobile-client/components/dataRequirements/ScreenDataRequirements';
+import {Photo} from 'terraso-mobile-client/components/inputs/image/ImagePicker';
 import {
   Box,
   Column,
@@ -34,6 +35,7 @@ import {
   Text,
 } from 'terraso-mobile-client/components/NativeBaseAdapters';
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
+import {isFlagEnabled} from 'terraso-mobile-client/config/featureFlags';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {isColorComplete} from 'terraso-mobile-client/model/color/colorConversions';
 import {MunsellColor} from 'terraso-mobile-client/model/color/types';
@@ -41,7 +43,10 @@ import {
   canEditSite,
   SITE_EDITOR_ROLES,
 } from 'terraso-mobile-client/model/permissions/permissions';
+import {updatePreferences} from 'terraso-mobile-client/model/preferences/preferencesSlice';
 import {updateDepthDependentSoilData} from 'terraso-mobile-client/model/soilData/soilDataSlice';
+import {CombinedColorScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/CombinedColorScreen';
+import {ColorAnalysisContextState} from 'terraso-mobile-client/screens/ColorAnalysisScreen/context/colorAnalysisContext';
 import {CameraWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/CameraWorkflow';
 import {ColorDisplay} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ColorDisplay';
 import {ManualWorkflow} from 'terraso-mobile-client/screens/SoilScreen/ColorScreen/components/ManualWorkflow';
@@ -59,7 +64,16 @@ import {
 
 export type ColorWorkflow = 'MANUAL' | 'CAMERA';
 
-export const ColorScreen = (props: SoilPitInputScreenProps) => {
+// The route also carries an optional captured photo (from the preview camera's
+// round-trip) which the combined prototype screen consumes.
+type ColorScreenProps = SoilPitInputScreenProps & {
+  photo?: Photo;
+  dngUri?: string;
+  initialState?: ColorAnalysisContextState;
+};
+
+export const ColorScreen = (allProps: ColorScreenProps) => {
+  const {photo, dngUri, initialState, ...props} = allProps;
   const {t} = useTranslation();
   const data = useSelector(selectDepthDependentData(props));
   const previousWorkflow = useSelector(
@@ -99,6 +113,25 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
     [data],
   );
 
+  // "Enter Values" from the combined prototype screen: switch this depth to the
+  // manual workflow, which flips the render below to ManualWorkflow.
+  const onEnterValues = useCallback(() => {
+    dispatch(updatePreferences({colorWorkflow: 'MANUAL'}));
+    dispatch(
+      updateDepthDependentSoilData({
+        siteId: props.siteId,
+        depthInterval: props.depthInterval.depthInterval,
+        colorPhotoUsed: false,
+      }),
+    );
+  }, [dispatch, props.siteId, props.depthInterval]);
+
+  // The combined screen also owns the "already has a camera colour" state — it
+  // shows the result + conditions + a Select Image to redo (the classic result
+  // view is kept only for the manual workflow).
+  const useCombined =
+    isFlagEnabled('FF_colorCombined') && workflow === 'CAMERA';
+
   const requirements = useDefaultSiteDepthRequirements(
     props.siteId,
     props.depthInterval.depthInterval,
@@ -106,69 +139,83 @@ export const ColorScreen = (props: SoilPitInputScreenProps) => {
 
   return (
     <ScreenDataRequirements requirements={requirements}>
-      {() => (
-        <SoilPitInputScreenScaffold {...props}>
+      {() =>
+        useCombined ? (
           <SiteRoleContextProvider siteId={props.siteId}>
-            <Column padding="md">
-              <Row alignItems="flex-end">
-                <Row alignItems="center">
-                  <Heading variant="h6">{t('soil.color.title')}</Heading>
-                  <HelpContentSpacer />
-                  <InfoButton
-                    sheetHeading={
-                      <TranslatedHeading i18nKey="soil.color.title" />
-                    }>
-                    <Paragraph variant="body1">
-                      {t('soil.color.info.p1')}
-                    </Paragraph>
-                    <BulletList
-                      data={[1, 2, 3]}
-                      renderItem={i => (
-                        <Text variant="body1">
-                          {t(`soil.color.info.bullet${i}`)}
-                        </Text>
-                      )}
-                    />
-                    <Paragraph variant="body1">
-                      {t('soil.color.info.p2')}
-                    </Paragraph>
-                    <Paragraph variant="body1">
-                      {t('soil.color.info.p3')}
-                    </Paragraph>
-                  </InfoButton>
-                </Row>
-                <Box flex={1} />
-                <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-                  {(workflow === 'CAMERA' || color) && (
-                    <SwitchWorkflowButton {...props} />
-                  )}
-                </RestrictBySiteRole>
-              </Row>
-            </Column>
-            {workflow === 'MANUAL' && <ManualWorkflow {...props} />}
-            {workflow === 'CAMERA' && !color && <CameraWorkflow {...props} />}
-            {color && (
-              <>
-                <ColorDisplay
-                  onDelete={
-                    canDelete && workflow === 'CAMERA'
-                      ? onClearValues
-                      : undefined
-                  }
-                  color={color}
-                  variant="lg"
-                />
-                {workflow === 'CAMERA' && <PhotoConditions {...props} />}
-              </>
-            )}
-            <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
-              <Box position="absolute" right="0" bottom="0">
-                <DoneFab disabled={!color} />
-              </Box>
-            </RestrictBySiteRole>
+            <CombinedColorScreen
+              key={photo?.uri ?? 'empty'}
+              pitProps={props}
+              photo={photo}
+              dngUri={dngUri}
+              initialState={initialState}
+              existingColor={color}
+              onEnterValues={onEnterValues}
+            />
           </SiteRoleContextProvider>
-        </SoilPitInputScreenScaffold>
-      )}
+        ) : (
+          <SoilPitInputScreenScaffold {...props}>
+            <SiteRoleContextProvider siteId={props.siteId}>
+              <Column padding="md">
+                <Row alignItems="flex-end">
+                  <Row alignItems="center">
+                    <Heading variant="h6">{t('soil.color.title')}</Heading>
+                    <HelpContentSpacer />
+                    <InfoButton
+                      sheetHeading={
+                        <TranslatedHeading i18nKey="soil.color.title" />
+                      }>
+                      <Paragraph variant="body1">
+                        {t('soil.color.info.p1')}
+                      </Paragraph>
+                      <BulletList
+                        data={[1, 2, 3]}
+                        renderItem={i => (
+                          <Text variant="body1">
+                            {t(`soil.color.info.bullet${i}`)}
+                          </Text>
+                        )}
+                      />
+                      <Paragraph variant="body1">
+                        {t('soil.color.info.p2')}
+                      </Paragraph>
+                      <Paragraph variant="body1">
+                        {t('soil.color.info.p3')}
+                      </Paragraph>
+                    </InfoButton>
+                  </Row>
+                  <Box flex={1} />
+                  <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+                    {(workflow === 'CAMERA' || color) && (
+                      <SwitchWorkflowButton {...props} />
+                    )}
+                  </RestrictBySiteRole>
+                </Row>
+              </Column>
+              {workflow === 'MANUAL' && <ManualWorkflow {...props} />}
+              {workflow === 'CAMERA' && !color && <CameraWorkflow {...props} />}
+              {color && (
+                <>
+                  <ColorDisplay
+                    onDelete={
+                      canDelete && workflow === 'CAMERA'
+                        ? onClearValues
+                        : undefined
+                    }
+                    color={color}
+                    variant="lg"
+                  />
+                  {workflow === 'CAMERA' && <PhotoConditions {...props} />}
+                </>
+              )}
+              <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
+                <Box position="absolute" right="0" bottom="0">
+                  <DoneFab disabled={!color} />
+                </Box>
+              </RestrictBySiteRole>
+            </SiteRoleContextProvider>
+          </SoilPitInputScreenScaffold>
+        )
+      }
     </ScreenDataRequirements>
   );
 };

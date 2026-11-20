@@ -15,8 +15,6 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import {Buffer} from '@craftzdog/react-native-buffer';
-import * as Sentry from '@sentry/react-native';
 import {getDeltaE00} from 'delta-e';
 import {rgb255ToMhvc} from 'munsell';
 import quantize from 'quantize';
@@ -36,6 +34,7 @@ import {
   RGB,
   RGBA,
 } from 'terraso-mobile-client/model/color/types';
+import type {LinearRgb} from 'terraso-mobile-client/model/rawColor/types';
 
 // Threshold used to determine whether to accept the algorithm's output
 // as a valid soil color, or consider it an unknown soil color and provide
@@ -45,71 +44,30 @@ const SOIL_COLOR_SIMILARITY_THRESHOLD = 5;
 // This value was arrived at via ad-hoc testing.
 const QUANTIZATION_COLOR_COUNT = 5;
 
-// These are the theoretical "correct" colors for several different reference objects.
-// The algorithm compares the color of the reference object in the picture to these colors
-// to figure out how to adjust the color of the soil. I don't really fully understand it,
-// but I'm leaving the following science-y note about the conditions under which these values
-// were measured in case they are needed in the future: Observer = 2°, Illuminant = D65
-const REFERENCES = {
-  CAMERA_TRAX: [210.15, 213.95, 218.42],
-  CANARY_POST_IT: [249.92, 242.07, 161.42],
-  WHITE_BALANCE: [192.96, 192.0, 191.74],
-} as const satisfies Record<string, RGB>;
-
-export const getColorFromImages = ({
-  reference,
-  soil,
-}: Record<'soil' | 'reference', PhotoWithBase64>) => {
-  const [referencePixels, soilPixels] = [reference, soil].map(({base64}) => {
-    const {data, height, width} = decodeBase64Jpg(base64);
-    const pixels: RGBA[] = [];
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < height; x++) {
-        const offset = (y * width + x) * 4;
-        pixels.push([...data.slice(offset, offset + 4)] as RGBA);
-      }
-    }
-    return pixels;
-  });
-
-  try {
-    return getColorFromPixels(
-      referencePixels,
-      soilPixels,
-      REFERENCES.CANARY_POST_IT,
-    );
-  } catch (e) {
-    Sentry.captureEvent(
-      {message: 'color algorithm failure'},
-      {
-        attachments: [
-          {
-            filename: 'reference.jpg',
-            data: Buffer.from(reference.base64, 'base64'),
-          },
-          {
-            filename: 'soil.jpg',
-            data: Buffer.from(soil.base64, 'base64'),
-          },
-        ],
-      },
-    );
-
-    // TODO: we've never hit this catch block before so it's low priority, ideally we'd
-    // return something that eventually gets displayed to the user here instead of throwing.
-    throw e;
-  }
+// linear-sRGB [0,1] → display-encoded sRGB [0,255]. Used both to re-encode a
+// corrected linear colour on the way into the Munsell conversion (which is
+// defined on sRGB-255) and to paint linear colours as swatches.
+export const linearToSrgb255 = (c: number): number => {
+  const clamped = Math.max(0, Math.min(1, c));
+  const encoded =
+    clamped <= 0.0031308
+      ? 12.92 * clamped
+      : 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055;
+  return Math.round(encoded * 255);
 };
 
-export const getColorFromPixels = (
-  pixelCard: RGBA[],
-  pixelSoil: RGBA[],
-  referenceRGB: RGB,
-): ColorResult => {
-  const predicted = rgb255ToMhvc(
-    ...predictColorFromReference(pixelSoil, pixelCard, referenceRGB),
-  );
+// sRGB display-encoded [0,255] → linear-sRGB [0,1]. Inverse of linearToSrgb255.
+// Brings an 8-bit measured colour (JPEG/HEIC/PNG) onto the same linear scale a
+// DNG raw decode produces, so the reference/sample white-balance ratio is
+// computed in physically-linear space for every capture format.
+export const srgb255ToLinear = (c255: number): number => {
+  const c = Math.max(0, Math.min(1, c255 / 255));
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+};
 
+// Shared tail of every analysis path: a predicted Munsell colour → the nearest
+// catalogued soil colour, tagged valid/invalid by the similarity threshold.
+export const colorResultFromMhvc = (predicted: MunsellHVC): ColorResult => {
   // take the minimum by distance to predicted color
   const nearest = nearestSoilColor(predicted);
 
@@ -133,26 +91,108 @@ export const getColorFromPixels = (
   };
 };
 
-export const predictColorFromReference = (
-  samplePixels: RGBA[],
-  referencePixels: RGBA[],
-  referenceRGB: RGB,
-) => {
-  return correctSampleRGB(
-    dominantColor(referencePixels),
-    dominantColor(samplePixels),
-    referenceRGB,
+// --- Unified linear-space analysis -----------------------------------------
+// Every capture format resolves to a measured LINEAR-sRGB colour for the
+// reference patch and for the soil, then shares this one correction + Munsell
+// mapping. DNG supplies true raw linear pixels (native decode, see
+// dngColorAnalysis.ts); JPEG/HEIC/PNG reach linear via srgb255ToLinear after an
+// 8-bit decode (getColorFromJpegCrops below). The ONLY per-format difference is
+// how the measured colours are produced — the correction and Munsell steps are
+// identical.
+
+// Per-channel reference white-balance in linear space: scale the soil by the
+// ratio of the card's expected colour to its measured colour. Linear (not
+// gamma) is where this ratio is physically meaningful — exposure / illuminant
+// is a linear gain on the sensor.
+const correctLinear = (
+  measuredReference: LinearRgb,
+  measuredSoil: LinearRgb,
+  expected: LinearRgb,
+): LinearRgb => {
+  const scale = (e: number, measured: number) =>
+    measured > 0 ? e / measured : 0;
+  return {
+    r: scale(expected.r, measuredReference.r) * measuredSoil.r,
+    g: scale(expected.g, measuredReference.g) * measuredSoil.g,
+    b: scale(expected.b, measuredReference.b) * measuredSoil.b,
+  };
+};
+
+// Corrected soil colour as a Munsell HVC, WITHOUT snapping to the nearest
+// catalogued soil colour — the raw predicted chip. colorResultFromMhvc adds the
+// catalogue match on top; the explainer screen wants this pre-snap value so it
+// can show the corrected colour itself.
+export const predictMhvcFromLinear = (
+  measuredReference: LinearRgb,
+  measuredSoil: LinearRgb,
+  expected: LinearRgb,
+): MunsellHVC => {
+  const corrected = correctLinear(measuredReference, measuredSoil, expected);
+  // The munsell conversion is defined on display-encoded sRGB-255; re-encode
+  // the corrected linear colour on the way in.
+  return rgb255ToMhvc(
+    linearToSrgb255(corrected.r),
+    linearToSrgb255(corrected.g),
+    linearToSrgb255(corrected.b),
   );
 };
 
-const correctSampleRGB = (
-  cardPixel: RGB,
-  samplePixel: RGB,
-  referenceRGB: RGB,
-): RGB => {
-  return cardPixel.map(
-    (cardV, index) => (referenceRGB[index] / cardV) * samplePixel[index],
-  ) as RGB;
+// The unified predictor: measured reference + measured soil + the picked card's
+// expected colour (all linear sRGB) → corrected soil colour → Munsell → soil
+// colour result. Shared by the DNG and JPEG/HEIC/PNG paths.
+export const predictColorFromLinear = (
+  measuredReference: LinearRgb,
+  measuredSoil: LinearRgb,
+  expected: LinearRgb,
+): ColorResult =>
+  colorResultFromMhvc(
+    predictMhvcFromLinear(measuredReference, measuredSoil, expected),
+  );
+
+// Measured linear-sRGB colour of one JPEG/HEIC/PNG crop: dominant sRGB
+// (median-cut, same as the legacy pipeline) lifted to linear. HEIC/PNG are
+// normalised to JPEG at pick time, so the crop is JPEG here. There are no raw
+// sensor pixels for these formats, so the 8-bit dominant IS the colour. Shared
+// by the home-screen result and the explainer so both read the same number.
+export const measuredLinearFromJpegCrop = (
+  crop: PhotoWithBase64,
+): LinearRgb => {
+  const [r, g, b] = dominantColor(cropPixels(crop.base64));
+  return {
+    r: srgb255ToLinear(r),
+    g: srgb255ToLinear(g),
+    b: srgb255ToLinear(b),
+  };
+};
+
+// JPEG/HEIC/PNG path of the unified analysis.
+export const getColorFromJpegCrops = ({
+  reference,
+  soil,
+  expected,
+}: {
+  reference: PhotoWithBase64;
+  soil: PhotoWithBase64;
+  expected: LinearRgb;
+}): ColorResult =>
+  predictColorFromLinear(
+    measuredLinearFromJpegCrop(reference),
+    measuredLinearFromJpegCrop(soil),
+    expected,
+  );
+
+// Decode a base64 JPEG crop into RGBA pixels. Crops are square (ColorCropScreen
+// resizes to a square ≤200px) so this is a small buffer.
+const cropPixels = (base64: string): RGBA[] => {
+  const {data, height, width} = decodeBase64Jpg(base64);
+  const pixels: RGBA[] = [];
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const offset = (y * width + x) * 4;
+      pixels.push([...data.slice(offset, offset + 4)] as RGBA);
+    }
+  }
+  return pixels;
 };
 
 export const dominantColor = (pixels: RGBA[]): RGB => {

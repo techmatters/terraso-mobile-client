@@ -29,6 +29,7 @@
     "react-native-gradle-plugin",
     "react-native-pager-view",
     "react-native-tab-view",
+    "react-native-vision-camera-worklets",
     "react-redux",
     "terraso-mobile-client",
     "ts-node",
