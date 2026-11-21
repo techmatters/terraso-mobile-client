@@ -75,6 +75,25 @@ jobs:
           sudo docker image prune --all --force
           df -h
 
+      # The release AAB build intermittently OOM-killed the runner
+      # ("hosted runner lost communication"): the Gradle daemon's -Xmx6g
+      # heap (needed for the R8/dex merge of ~48k classes, see
+      # app.config.ts) plus the native C++ compile (dng-decoder +
+      # raw-camera NDK sources, built for arm64-v8a AND armeabi-v7a, which
+      # runs OUTSIDE the JVM) briefly exceeds the standard runner's ~7 GB
+      # RAM. Add a large swapfile on the roomy /mnt disk so that transient
+      # peak spills to disk instead of tripping the kernel OOM killer. Only
+      # the brief overlap touches swap, so the build-time cost is minimal.
+      - name: Add swap space
+        run: |
+          sudo swapoff -a || true
+          sudo fallocate -l 14G /mnt/swapfile
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          swapon --show
+          free -h
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
