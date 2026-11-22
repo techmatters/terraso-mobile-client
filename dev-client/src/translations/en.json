@@ -775,6 +775,8 @@
                 "headline": "Something went wrong",
                 "body": "There was an issue identifying the soil color. Make sure you follow the photo analysis instructions, and try again. If you still have the issue, contact support."
             },
+            "inline_warning": "This color looks unusual — review before saving.",
+            "take_photo_live": "Take photo (live preview)",
             "hue": "Hue",
             "value": "Value",
             "chroma": "Chroma",
@@ -1800,7 +1802,15 @@
     },
     "image": {
         "use_camera": "Use Camera",
-        "choose_from_gallery": "Choose from Gallery"
+        "choose_from_gallery": "Choose from Gallery",
+        "choose_file": "Choose File",
+        "file_picker": {
+            "dng_decode_failed_title": "Couldn't read this DNG",
+            "dng_decode_failed_body": "This DNG file couldn't be decoded on this device. Try a JPEG or PNG, or use the camera.",
+            "load_failed_title": "Couldn't load the selected file",
+            "unsupported_format_title": "Image format not supported",
+            "unsupported_format_body": "This device can't read the selected image. Try a JPEG, PNG, or DNG file."
+        }
     },
     "export": {
         "menu_title": "Data Export",
@@ -1848,6 +1858,46 @@
             "save_canceled": "Save canceled.",
             "save_failed": "Unable to write to storage.",
             "unknown": "An unknown error occurred."
+        }
+    },
+    "colorCamera": {
+        "referencePicker": {
+            "label": "Reference color",
+            "notRecommended": "Not Recommended"
+        },
+        "soilImages": {
+            "empty": "No soil images queued.",
+            "clear": "Clear",
+            "upload": "Upload",
+            "cancel": "Cancel"
+        },
+        "info": {
+            "title": "Color analysis details",
+            "reference": "Reference",
+            "soil": "Soil",
+            "photo": "photo",
+            "avgStep": "sample color",
+            "correctionStep": "correction",
+            "measuredRgb": "measured rgb",
+            "refCard": "ref card",
+            "resultChip": "result (chip)"
+        },
+        "editor": {
+            "colors": "Colors found",
+            "result": "Resulting color"
+        },
+        "combined": {
+            "title": "Soil color",
+            "select_image": "Read Color from Image",
+            "cropping": "Select the reference and soil regions.",
+            "result": "Soil color result",
+            "manual_entry": "Enter Color Manually",
+            "automatic_entry": "Read Color from Image",
+            "enter_values": "Enter Values",
+            "enter_manually": "Enter Color Manually",
+            "share": "Share",
+            "measuring": "Measuring color…",
+            "measure_failed": "Couldn't read the color from this image. Try re-cropping or a different photo."
         }
     }
 }

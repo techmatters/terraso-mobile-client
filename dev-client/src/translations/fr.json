@@ -701,7 +701,9 @@
             "color_photo_lighting_condition": {
                 "EVEN": "Oui",
                 "UNEVEN": "Non"
-            }
+            },
+            "inline_warning": "TK This color looks unusual — review before saving.",
+            "take_photo_live": "TK Take photo (live preview)"
         },
         "top_match": "Match de haut niveau",
         "ecological_site_name": "Nom du site écologique",
@@ -1792,7 +1794,15 @@
     },
     "image": {
         "use_camera": "Utiliser l'appareil photo",
-        "choose_from_gallery": "Choisissez dans la galerie"
+        "choose_from_gallery": "Choisissez dans la galerie",
+        "choose_file": "TK Choose File",
+        "file_picker": {
+            "dng_decode_failed_title": "TK Couldn't read this DNG",
+            "dng_decode_failed_body": "TK This DNG file couldn't be decoded on this device. Try a JPEG or PNG, or use the camera.",
+            "load_failed_title": "TK Couldn't load the selected file",
+            "unsupported_format_title": "TK Image format not supported",
+            "unsupported_format_body": "TK This device can't read the selected image. Try a JPEG, PNG, or DNG file."
+        }
     },
     "info": {
         "title": "Vérifiez sur le terrain vos décisions concernant le sol",
@@ -1848,6 +1858,46 @@
             "save_canceled": "Sauvegarde annulée.",
             "save_failed": "Impossible d'enregistrer le fichier.",
             "unknown": "Une erreur inconnue s'est produite."
+        }
+    },
+    "colorCamera": {
+        "referencePicker": {
+            "label": "TK Reference color",
+            "notRecommended": "TK Not Recommended"
+        },
+        "soilImages": {
+            "empty": "TK No soil images queued.",
+            "clear": "TK Clear",
+            "upload": "TK Upload",
+            "cancel": "TK Cancel"
+        },
+        "info": {
+            "title": "TK Color analysis details",
+            "reference": "TK Reference",
+            "soil": "TK Soil",
+            "photo": "TK photo",
+            "avgStep": "TK avg",
+            "correctionStep": "TK correction",
+            "measuredRgb": "TK measured rgb",
+            "refCard": "TK ref card",
+            "resultChip": "TK result (chip)"
+        },
+        "editor": {
+            "colors": "TK Colors found",
+            "result": "TK Resulting color"
+        },
+        "combined": {
+            "title": "TK Soil color",
+            "select_image": "TK Read Color from Image",
+            "cropping": "TK Select the reference and soil regions.",
+            "result": "TK Soil color result",
+            "manual_entry": "TK Enter Color Manually",
+            "automatic_entry": "TK Read Color from Image",
+            "enter_values": "TK Enter Values",
+            "enter_manually": "TK Enter Color Manually",
+            "share": "TK Share",
+            "measuring": "TK Measuring color…",
+            "measure_failed": "TK Couldn't read the color from this image. Try re-cropping or a different photo."
         }
     }
 }

@@ -335,6 +335,26 @@ const defaultConfig: ExpoConfig = {
           // non-production build; production stays cleartext-blocked (the API
           // 28+ default).
           usesCleartextTraffic: allowCleartextHttp,
+          // Narrow the NDK compile matrix to the two ABIs real Android
+          // phones ship on. x86 and x86_64 exist for the Android emulator
+          // (and a handful of Chromebooks); AAB bundling only serves
+          // matching ABIs to each device, so dropping them doesn't affect
+          // what users install — it only trims what CI has to build.
+          //
+          // Before this, CI was OOM-killing the ubuntu-latest runner
+          // (~7GB RAM) ~59 minutes into `bundleRelease`. Two native C++
+          // modules (dng-decoder, raw-camera-android) each pass this
+          // ABI list to externalNativeBuild.cmake.abiFilters(), so each
+          // ABI spawns its own ninja -jN during linking. Four ABIs ×
+          // two modules at peak = the kernel ends the runner.
+          //
+          // Both module build.gradle files read the `reactNativeArchitectures`
+          // gradle property (fallback to the full 4-ABI list), which
+          // expo-build-properties writes from this field. Note: the TS
+          // field is `buildArchs`, not `reactNativeArchitectures` — the
+          // plugin's doc comment names the gradle property it maps TO,
+          // which is a trap.
+          buildArchs: ['arm64-v8a', 'armeabi-v7a'],
         },
       },
     ],

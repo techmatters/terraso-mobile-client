@@ -1,0 +1,892 @@
+/*
+ * Copyright © 2026 Technology Matters
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
+ */
+
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
+import {Platform, StyleSheet, Text, View} from 'react-native';
+import {runOnJS, useSharedValue} from 'react-native-reanimated';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraDevices,
+  useCameraPermission,
+  useFrameOutput,
+  usePhotoOutput,
+} from 'react-native-vision-camera';
+
+import {File} from 'expo-file-system';
+import {
+  ActionResize,
+  manipulateAsync,
+  SaveFormat,
+} from 'expo-image-manipulator';
+
+import {Buffer} from '@craftzdog/react-native-buffer';
+import {DngDecoderHybrid} from 'dng-decoder';
+import {FrameAnalyzerHybrid} from 'frame-analyzer';
+import {decode as decodeJpegBytes} from 'jpeg-js';
+import quantize from 'quantize';
+import {
+  createRoiAnalyzer as createNativeRoiAnalyzer,
+  RawCameraAndroidHybrid,
+  RawCameraAndroidView,
+  type FrameAnalyzer as NativeFrameAnalyzer,
+} from 'raw-camera-android';
+
+import type {
+  Capture,
+  FrameAnalyzer,
+  LinearRgb,
+  LinearRgbReduced,
+  RawColorCameraHandle,
+  RawColorCameraProps,
+  Roi,
+  RoiAnalyzerConfig,
+  RoiStats,
+  SaveOptions,
+} from 'terraso-mobile-client/components/inputs/image/rawColorCamera.types';
+import {rotateDisplayRoiToSensor} from 'terraso-mobile-client/components/inputs/image/useRoiFrameAnalyzer';
+
+// iOS can't inject a native frame sink (vision-camera binds the analyzer as a
+// frame-processor worklet, not an imperative object — see the Slice 4 notes).
+// So on iOS createRoiAnalyzer returns a plain CONFIG CARRIER: the iOS engine
+// reads {rois, onStats} off request.analyze and drives its own worklet. The
+// external FrameAnalyzer contract is identical; only the plumbing differs.
+type IosFrameAnalyzer = FrameAnalyzer & {
+  __iosConfig: {rois: Roi[]; onStats: (stats: RoiStats[]) => void};
+};
+
+/**
+ * Create the injectable live-frame analyzer (the app passes the result as
+ * request.analyze). The analyzer owns its ROIs + emits per-ROI luma stats via
+ * onStats while framing; draw your overlay from those.
+ *   - Android: a native Nitro frame sink the camera pushes frames into.
+ *   - iOS: a config carrier the iOS engine's worklet reads (4b).
+ */
+export const createRoiAnalyzer = (
+  cfg: RoiAnalyzerConfig,
+): FrameAnalyzer | null => {
+  if (Platform.OS === 'android') {
+    return createNativeRoiAnalyzer(
+      cfg.rois,
+      cfg.onStats,
+    ) as unknown as FrameAnalyzer | null;
+  }
+  const carrier: IosFrameAnalyzer = {
+    __iosConfig: {rois: cfg.rois, onStats: cfg.onStats},
+    dispose: () => {},
+  };
+  return carrier;
+};
+
+// The reusable RAW color camera. Intentionally HEADLESS — preview + overlay
+// children only; the host supplies the shutter UI and calls capture() via ref.
+// One contract, two engines underneath (picked by Platform at the bottom):
+//   - Android: the raw-camera-android CameraX/Nitro module (3a analyzer feed,
+//     3b raw+jpeg shutter switch, rawless/jpeg-only).
+//   - iOS: vision-camera + ProRAW (4a preview + capture, 4b live analysis via
+//     a frame-processor worklet).
+// The Capture (below) is shared: both engines decode via dng-decoder.
+
+const fileUri = (p: string): string =>
+  p.startsWith('file://') ? p : `file://${p}`;
+
+const stripScheme = (uri: string): string =>
+  uri.startsWith('file://') ? uri.slice('file://'.length) : uri;
+
+// Map a fractional ROI (0..1 in the portrait sensor-aspect frame) to DNG pixel
+// coords. The DNG decodes portrait but width/height are pre-orientation
+// landscape dims, so short side = width, long side = height. Hides the
+// pixel/orientation math from callers (they pass the same fractional ROIs the
+// overlay uses).
+const roiToPixels = (roi: Roi, width: number, height: number) => {
+  const effW = Math.min(width, height);
+  const effH = Math.max(width, height);
+  return {
+    x: Math.round(roi.x * effW),
+    y: Math.round(roi.y * effH),
+    w: Math.round(roi.w * effW),
+    h: Math.round(roi.h * effH),
+  };
+};
+
+// sRGB → linear. Keeps the jpeg-fallback colour on the same linear-RGB scale
+// as a DNG decode (both reference and sample pass through this, so the
+// sample/ref WB ratio stays comparable).
+const srgbToLinear = (c255: number): number => {
+  const c = c255 / 255;
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+};
+
+// JPEG-decode fallback for the no-RAW / jpeg-only path (truly rawless devices
+// AND the "Simulate no RAW" dev toggle). Pure-JS decode of a 20MB iPhone JPEG
+// takes seconds, so we route through manipulateAsync first — it (a) bakes in
+// EXIF orientation so our portrait fractional ROIs map directly to pixel
+// coords, and (b) downsizes to ~1024px long edge, cutting the JS decode to
+// ~100ms. ROI accuracy is unaffected since we're averaging colour over a
+// region that's many pixels wide even at 1024px.
+const JPEG_FALLBACK_LONG_EDGE_PX = 1024;
+
+// Quantize's median-cut operates on sRGB [0,255] samples. A larger palette
+// makes "biggest cluster" more selective (= better rejection of outlier
+// flecks) at the cost of more compute; 5 matches the legacy JPEG
+// dominantColor pipeline in src/model/color/colorDetection.ts.
+const JPEG_DOMINANT_PALETTE_SIZE = 5;
+
+const decodeJpegRoisReducedShared = async (
+  jpegUri: string,
+  rois: Roi[],
+): Promise<LinearRgbReduced[]> => {
+  const processed = await manipulateAsync(
+    jpegUri,
+    [{resize: {height: JPEG_FALLBACK_LONG_EDGE_PX}} as ActionResize],
+    {base64: true, compress: 0.9, format: SaveFormat.JPEG},
+  );
+  if (!processed.base64) {
+    throw new Error(
+      'decodeRois (jpeg-fallback): manipulateAsync returned no base64',
+    );
+  }
+  const bytes = Buffer.from(processed.base64, 'base64');
+  const {data, width: w, height: h} = decodeJpegBytes(bytes, {useTArray: true});
+  return rois.map(roi => {
+    const x0 = Math.max(0, Math.floor(roi.x * w));
+    const y0 = Math.max(0, Math.floor(roi.y * h));
+    const x1 = Math.min(w, Math.ceil((roi.x + roi.w) * w));
+    const y1 = Math.min(h, Math.ceil((roi.y + roi.h) * h));
+    const pixels: [number, number, number][] = [];
+    let rSum = 0;
+    let gSum = 0;
+    let bSum = 0;
+    let n = 0;
+    for (let y = y0; y < y1; y++) {
+      for (let x = x0; x < x1; x++) {
+        const o = (y * w + x) * 4;
+        const r = data[o];
+        const g = data[o + 1];
+        const b = data[o + 2];
+        rSum += r;
+        gSum += g;
+        bSum += b;
+        pixels.push([r, g, b]);
+        n += 1;
+      }
+    }
+    if (n === 0) {
+      const zero = {r: 0, g: 0, b: 0};
+      return {mean: zero, dominant: zero};
+    }
+    const mean: LinearRgb = {
+      r: srgbToLinear(rSum / n),
+      g: srgbToLinear(gSum / n),
+      b: srgbToLinear(bSum / n),
+    };
+    // Median-cut via `quantize` (same algorithm the legacy JPEG colour
+    // pipeline uses). Returns a palette of up to N boxes; the "dominant" is
+    // the box with the most pixels in it. Falls back to mean if quantize
+    // bails (degenerate / all-identical pixel buffer).
+    let dominant = mean;
+    const colorMap = quantize(pixels, JPEG_DOMINANT_PALETTE_SIZE);
+    if (colorMap) {
+      const [topColor] = colorMap.vboxes
+        .map(vbox => [vbox.color, vbox.vbox.count()] as const)
+        .sort(([, c1], [, c2]) => c2 - c1)[0];
+      if (topColor) {
+        dominant = {
+          r: srgbToLinear(topColor[0]),
+          g: srgbToLinear(topColor[1]),
+          b: srgbToLinear(topColor[2]),
+        };
+      }
+    }
+    return {mean, dominant};
+  });
+};
+
+const decodeJpegRois = async (
+  jpegUri: string,
+  rois: Roi[],
+): Promise<LinearRgb[]> =>
+  (await decodeJpegRoisReducedShared(jpegUri, rois)).map(r => r.mean);
+
+/**
+ * Build a Capture over an on-disk DNG (+ optional companion JPEG). Decode runs
+ * off the file for now; a later slice moves it onto an in-memory parsed handle
+ * so the single parse disappears too.
+ */
+const makeCapture = (
+  dngUri: string | undefined,
+  jpegUri: string | undefined,
+  width: number,
+  height: number,
+  retries: number,
+): Capture => ({
+  width,
+  height,
+  hasRaw: dngUri != null,
+  hasJpeg: jpegUri != null,
+  retries,
+  decodeRois: async (rois: Roi[]): Promise<LinearRgb[]> => {
+    if (dngUri) {
+      // One parse, all ROIs. NOTE: decodeDngRois is synchronous native (blocks
+      // the JS thread); off-thread decode is a later slice.
+      return DngDecoderHybrid.decodeDngRois(
+        dngUri,
+        rois.map(r => roiToPixels(r, width, height)),
+      );
+    }
+    if (jpegUri) {
+      // No RAW on this device (or simulated-no-RAW toggle) — fall back to the
+      // companion JPEG. Lower colour fidelity than DNG (quantised, compressed)
+      // but keeps the capture flow alive on devices that can't produce RAW.
+      return decodeJpegRois(jpegUri, rois);
+    }
+    throw new Error('decodeRois: capture has neither RAW/DNG nor JPEG');
+  },
+  decodeRoisReduced: async (rois: Roi[]): Promise<LinearRgbReduced[]> => {
+    if (dngUri) {
+      // Native path returns {mean, dominant} in one pass — iOS uses
+      // CIRAWFilter area-average for mean and median-cut over the ROI's CPU
+      // pixel buffer for dominant; Android computes both inside the shared
+      // C++ reducer (median-cut on full ROI pixels).
+      return DngDecoderHybrid.decodeDngRoisReduced(
+        dngUri,
+        rois.map(r => roiToPixels(r, width, height)),
+      );
+    }
+    if (jpegUri) {
+      return decodeJpegRoisReducedShared(jpegUri, rois);
+    }
+    throw new Error('decodeRoisReduced: capture has neither RAW/DNG nor JPEG');
+  },
+  renderPreview: async maxDim => {
+    if (!dngUri) {
+      throw new Error('renderPreview: this capture has no RAW/DNG (jpeg-only)');
+    }
+    const p = await DngDecoderHybrid.renderPreview(dngUri, maxDim);
+    return {uri: p.uri, width: p.width, height: p.height};
+  },
+  save: async (opts?: SaveOptions) => {
+    // The native capture already wrote the DNG/JPEG to the app cache. "Save"
+    // copies them to a chosen dir (default: cache, i.e. leave in place). Only
+    // the requested kinds are kept.
+    const result: {dngUri?: string; jpegUri?: string} = {};
+    const copyInto = async (srcUri: string): Promise<string> => {
+      if (!opts?.dir) {
+        return srcUri; // leave in cache
+      }
+      const name = stripScheme(srcUri).split('/').pop() ?? 'capture';
+      const dest = new File(opts.dir, name);
+      // AWAIT the copy: File.copy is async. Left unawaited, save() returns
+      // before the copy runs and the caller's dispose() can delete the source
+      // out from under it (NoSuchFile → an uncaught floating rejection).
+      await new File(srcUri).copy(dest);
+      return dest.uri;
+    };
+    if (dngUri && opts?.dng !== false) {
+      result.dngUri = await copyInto(dngUri);
+    }
+    if (jpegUri && opts?.jpeg !== false) {
+      result.jpegUri = await copyInto(jpegUri);
+    }
+    return result;
+  },
+  dispose: () => {
+    // Synchronous, deterministic deletes. The legacy async deleteAsync was
+    // fire-and-forget, which backlogged + leaked cache files under a tight
+    // capture loop (a long soak accumulated GBs of undeleted DNGs). The new
+    // File API deletes synchronously, so each file is gone before the next
+    // capture. Best-effort: a missing file (already swept) is a no-op.
+    for (const uri of [dngUri, jpegUri]) {
+      if (!uri) {
+        continue;
+      }
+      try {
+        new File(uri).delete();
+      } catch {
+        // already gone / best effort
+      }
+    }
+  },
+});
+
+// iPhone rear sensor is 4:3 landscape; the DNG rotates to 3:4 portrait for
+// display. width / height. (The Android native ViewPort also crops to 3:4.)
+const SENSOR_ASPECT = 3 / 4;
+
+// iOS capture retry (analog of Android approach A). The detach dance can
+// reconfigure to a non-DNG format ("PhotoOutput does not support raw capture");
+// retry by forcing a fresh reconfigure. SETTLE = pause after the detach
+// reconfigure before shooting (let the RAW format go active); RETRY_SETTLE =
+// pause after reattaching before re-detaching on a retry.
+const IOS_CAPTURE_MAX_RETRIES = 2; // 3 attempts total
+const IOS_CAPTURE_SETTLE_MS = 150;
+const IOS_CAPTURE_RETRY_SETTLE_MS = 300;
+
+// Fixed-aspect wrapper, centered + letterboxed inside its parent, so the
+// preview, the overlay children, and the captured DNG all share one coordinate
+// system. Used by BOTH engines so the live overlay lines up with the preview
+// (and maps 1:1 to the DNG) identically on each platform — iOS letterboxes via
+// resizeMode="contain"; Android's native 3:4 ViewPort fills this 3:4 box
+// exactly (no crop).
+const SensorAspectFrame = ({
+  aspect,
+  children,
+}: {
+  aspect: number;
+  children: ReactNode;
+}) => {
+  const [container, setContainer] = useState<{w: number; h: number} | null>(
+    null,
+  );
+  let inner: {width: number; height: number} | null = null;
+  if (container) {
+    inner =
+      container.w / container.h >= aspect
+        ? {height: container.h, width: container.h * aspect}
+        : {width: container.w, height: container.w / aspect};
+  }
+  return (
+    <View
+      style={styles.sensorFrameOuter}
+      onLayout={e =>
+        setContainer({
+          w: e.nativeEvent.layout.width,
+          h: e.nativeEvent.layout.height,
+        })
+      }>
+      {inner && <View style={inner}>{children}</View>}
+    </View>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Android engine: the raw-camera-android CameraX/Nitro module (vision-camera
+// can't save RAW_SENSOR on Android). Owns its own native preview + overlay.
+
+const AndroidRawColorEngine = forwardRef<
+  RawColorCameraHandle,
+  RawColorCameraProps
+>(function AndroidRawColorEngine(
+  {active, request, children, onCapabilities, onError, style},
+  ref,
+) {
+  const {hasPermission, requestPermission} = useCameraPermission();
+
+  // Parents commonly pass inline arrows for onCapabilities/onError; depending
+  // on their identity would re-run the capability-probe effect every render,
+  // which calls setState upstream → infinite loop. Read via refs instead.
+  const onCapabilitiesRef = useRef(onCapabilities);
+  const onErrorRef = useRef(onError);
+  onCapabilitiesRef.current = onCapabilities;
+  onErrorRef.current = onError;
+
+  useEffect(() => {
+    if (active && !hasPermission) {
+      requestPermission().catch(err => onErrorRef.current?.(err as Error));
+    }
+  }, [active, hasPermission, requestPermission]);
+
+  const analyze = request.analyze;
+  // No-RAW simulation: bind preview+jpeg(+analysis), capture a JPEG only.
+  const rawless = request.raw === false;
+  // FRAMING bind: with an analyzer we bind preview+raw+analysis (3-stream cap,
+  // no room for JPEG too); without one we keep JPEG per policy
+  // (preview+raw+jpeg). Drives the native view's preferJpeg. (Ignored in
+  // rawless mode — that path has no RAW stream to trade against.)
+  const framingPreferJpeg = !analyze && request.jpeg !== 'never';
+  // CAPTURE: want the JPEG unless policy is 'never' — even while analysis is
+  // bound, the native side does a shutter switch (3b) to grab RAW+JPEG and
+  // restore analysis. So the JPEG is available regardless of the framing bind.
+  const captureWantsJpeg = request.jpeg !== 'never';
+
+  // Inject / detach the live analyzer. The camera's analysis callback pumps
+  // frames into it off the JS thread; it emits onStats.
+  useEffect(() => {
+    if (!active || !hasPermission || Platform.OS !== 'android' || !analyze) {
+      return;
+    }
+    RawCameraAndroidHybrid.setAnalyzer(
+      analyze as unknown as NativeFrameAnalyzer,
+    );
+    return () => RawCameraAndroidHybrid.clearAnalyzer();
+  }, [active, hasPermission, analyze]);
+
+  // Warm the session + report resolved capabilities once bound.
+  useEffect(() => {
+    if (!active || !hasPermission || Platform.OS !== 'android') {
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const caps = await RawCameraAndroidHybrid.getCaptureCapabilities();
+        if (!cancelled) {
+          // The device may not support RAW (auto-fallback to jpeg-only); report
+          // it so callers can route to the JPEG colour path.
+          const rawAvailable = caps.rawAvailable;
+          const jpegOnly = rawless || !rawAvailable;
+          onCapabilitiesRef.current?.({
+            rawAvailable,
+            willCaptureRaw: rawAvailable && !rawless,
+            willCaptureJpeg: jpegOnly || captureWantsJpeg,
+            analysisActive: !!analyze,
+            switchesAtCapture:
+              rawAvailable && !rawless && !!analyze && captureWantsJpeg,
+          });
+        }
+      } catch (err) {
+        if (!cancelled) {
+          onErrorRef.current?.(err as Error);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [active, hasPermission, rawless, captureWantsJpeg, analyze]);
+
+  useImperativeHandle(
+    ref,
+    (): RawColorCameraHandle => ({
+      capture: async opts => {
+        const photo = await RawCameraAndroidHybrid.capturePhoto({
+          skipJpeg: !captureWantsJpeg,
+        });
+        // Sensor is read out + files are on disk → safe to move. (A later
+        // slice fires this at the exact sensor-done instant natively.)
+        opts?.onCaptured?.();
+        // rawless (no-RAW) captures return an empty dngPath → jpeg-only.
+        return makeCapture(
+          photo.dngPath ? fileUri(photo.dngPath) : undefined,
+          photo.jpegPath ? fileUri(photo.jpegPath) : undefined,
+          photo.width,
+          photo.height,
+          photo.retries, // native-side retry count
+        );
+      },
+    }),
+    [captureWantsJpeg],
+  );
+
+  const preview = useMemo<ReactNode>(() => {
+    if (!active || !hasPermission) {
+      return null;
+    }
+    return (
+      <RawCameraAndroidView
+        style={StyleSheet.absoluteFill}
+        showRoiOverlay={false}
+        preferJpeg={framingPreferJpeg}
+        rawless={rawless}
+      />
+    );
+  }, [active, hasPermission, framingPreferJpeg, rawless]);
+
+  return (
+    <View style={[styles.fill, style]}>
+      <SensorAspectFrame aspect={SENSOR_ASPECT}>
+        {preview}
+        {children}
+      </SensorAspectFrame>
+    </View>
+  );
+});
+
+// ---------------------------------------------------------------------------
+// iOS engine: vision-camera + the ProRAW patch. A vision-camera frame output
+// drives the live preview (a photo-output-only session renders no viewfinder);
+// because that output forces a non-RAW format, it's detached around each
+// capture (the onConfigured dance). Mechanics ported verbatim from the proven
+// SimpleRawCamera iOS path, reshaped as the headless RawColorCamera contract.
+// Slice 4a: preview + capture. Slice 4b: the same frame output also runs the
+// live ROI analyzer when request.analyze is present (useIosFrameAnalyzer).
+
+// Generalized iOS ROI frame analyzer: ONE vision-camera frame output that both
+// (a) drives the live preview and (b) — when `rois` is non-empty — runs the
+// native Y-plane analyzer over each ROI and emits per-ROI {mean,variance} to
+// `onStats` via runOnJS (throttled to every other frame, like Android). With
+// no ROIs it's preview-only (just disposes each frame). This is iOS's
+// expression of the injected FrameAnalyzer contract — createRoiAnalyzer carries
+// {rois,onStats} and the engine feeds them here.
+function useIosFrameAnalyzer(
+  rois: Roi[],
+  onStats: ((stats: RoiStats[]) => void) | undefined,
+) {
+  const roisShared = useSharedValue<Roi[]>(rois);
+  const frameParity = useSharedValue(0);
+  // Write shared values in an effect, not render (reanimated strict-mode).
+  useEffect(() => {
+    roisShared.value = rois;
+  }, [rois, roisShared]);
+
+  // Stable JS sink the worklet invokes via runOnJS.
+  const emit = useCallback((stats: RoiStats[]) => onStats?.(stats), [onStats]);
+
+  return useFrameOutput({
+    // See useRoiFrameAnalyzer: these two keep RAW capture compatible on iOS.
+    pixelFormat: 'native',
+    enablePreviewSizedOutputBuffers: true,
+    onFrame: frame => {
+      'worklet';
+      try {
+        const rs = roisShared.value;
+        if (rs.length === 0) {
+          return; // preview-only — no analysis configured
+        }
+        // Process every other frame (~half the capture rate to the overlay).
+        frameParity.value = frameParity.value === 0 ? 1 : 0;
+        if (frameParity.value !== 0) {
+          return;
+        }
+        if (!frame.isPlanar) {
+          return;
+        }
+        const planes = frame.getPlanes();
+        if (planes.length === 0) {
+          return;
+        }
+        const yPlane = planes[0];
+        const buf = yPlane.getPixelBuffer();
+        const w = yPlane.width;
+        const h = yPlane.height;
+        const stride = yPlane.bytesPerRow;
+        const out: RoiStats[] = [];
+        for (let i = 0; i < rs.length; i += 1) {
+          const s = rotateDisplayRoiToSensor(rs[i], frame.orientation);
+          const st = FrameAnalyzerHybrid.analyzeYPlane(
+            buf,
+            stride,
+            w,
+            h,
+            Math.round(s.x * w),
+            Math.round(s.y * h),
+            Math.round(s.w * w),
+            Math.round(s.h * h),
+          );
+          out.push({roi: i, mean: st.mean, variance: st.variance});
+        }
+        runOnJS(emit)(out);
+      } finally {
+        frame.dispose();
+      }
+    },
+  });
+}
+
+const IosRawColorEngine = forwardRef<RawColorCameraHandle, RawColorCameraProps>(
+  function IosRawColorEngine(
+    {active, request, children, onCapabilities, onError, style},
+    ref,
+  ) {
+    const {hasPermission, requestPermission} = useCameraPermission();
+
+    // See AndroidRawColorEngine: stabilise callback identity so inline arrows
+    // passed by the parent don't re-trigger effects → setState → render loop.
+    const onCapabilitiesRef = useRef(onCapabilities);
+    const onErrorRef = useRef(onError);
+    onCapabilitiesRef.current = onCapabilities;
+    onErrorRef.current = onError;
+
+    // Prefer a true single-wide physical back camera (Apple RAW is most
+    // reliable there, not on a virtual multi-cam aggregate); fall back to
+    // the default back camera.
+    const defaultDevice = useCameraDevice('back');
+    const allDevices = useCameraDevices();
+    const singleWideDevice = useMemo(
+      () =>
+        allDevices.find(
+          d =>
+            d.position === 'back' &&
+            d.type === 'wide-angle' &&
+            !d.isVirtualDevice,
+        ),
+      [allDevices],
+    );
+    const device = singleWideDevice ?? defaultDevice;
+
+    useEffect(() => {
+      if (active && !hasPermission) {
+        requestPermission().catch(err => onErrorRef.current?.(err as Error));
+      }
+    }, [active, hasPermission, requestPermission]);
+
+    // RAW-capability detection (reactive). vision-camera has no upfront DNG
+    // query, so we optimistically request DNG; if the device rejects it ("does
+    // not support raw capture"), we flip this false — the photo output
+    // reconfigures to JPEG and capture() takes the jpeg-only path (no detach
+    // dance needed, since a non-RAW format is what JPEG wants anyway). The first
+    // capture on a genuinely no-RAW device is spent detecting; after that it
+    // captures JPEG.
+    const [deviceSupportsRaw, setDeviceSupportsRaw] = useState(true);
+    // Two reasons to skip RAW: device truly can't do it, OR caller explicitly
+    // asked for jpeg-only via request.raw:false (lets callers simulate the
+    // no-RAW path on a capable device for testing).
+    const effectiveWantsRaw = deviceSupportsRaw && request.raw !== false;
+    // Stable identity — vision-camera diffs photo-output options by identity to
+    // decide whether to reconfigure; a fresh object each render loops.
+    const photoOutputOptions = useMemo(
+      () => ({
+        targetResolution: {width: 4032, height: 3024},
+        containerFormat: effectiveWantsRaw
+          ? ('dng' as const)
+          : ('jpeg' as const),
+      }),
+      [effectiveWantsRaw],
+    );
+    const photoOutput = usePhotoOutput(photoOutputOptions);
+
+    // Live analysis config carried on request.analyze (createRoiAnalyzer). No
+    // config → the frame output is preview-only.
+    const analyze = request.analyze as IosFrameAnalyzer | undefined;
+    const analyzerConfig = analyze?.__iosConfig;
+    const analyzerRois = useMemo(
+      () => analyzerConfig?.rois ?? [],
+      [analyzerConfig],
+    );
+    // ONE frame output drives both the preview AND (when ROIs are present) the
+    // live analyzer. iOS needs a frame output to render the viewfinder at all.
+    const frameOutput = useIosFrameAnalyzer(
+      analyzerRois,
+      analyzerConfig?.onStats,
+    );
+
+    // A frame output forces a non-RAW format, so detach it around each capture:
+    // flip detachedForCapture → session reconfigures to a RAW-capable format
+    // (awaited via onConfigured) → shoot → reattach.
+    const [detachedForCapture, setDetachedForCapture] = useState(false);
+    const outputs = useMemo(
+      () => (detachedForCapture ? [photoOutput] : [photoOutput, frameOutput]),
+      [detachedForCapture, photoOutput, frameOutput],
+    );
+    const configResolveRef = useRef<(() => void) | null>(null);
+    const onConfigured = useCallback(() => {
+      const resolve = configResolveRef.current;
+      if (resolve) {
+        configResolveRef.current = null;
+        resolve();
+      }
+    }, []);
+
+    const wantJpeg = request.jpeg !== 'never';
+    useEffect(() => {
+      if (!active || !hasPermission) {
+        return;
+      }
+      onCapabilitiesRef.current?.({
+        rawAvailable: deviceSupportsRaw,
+        willCaptureRaw: effectiveWantsRaw,
+        willCaptureJpeg: !effectiveWantsRaw || wantJpeg,
+        analysisActive: analyzerRois.length > 0,
+        // Only the RAW path does the shutter-time detach/reconfigure; the
+        // jpeg-only fallback captures with the frame output still attached.
+        switchesAtCapture: effectiveWantsRaw,
+      });
+    }, [
+      active,
+      deviceSupportsRaw,
+      effectiveWantsRaw,
+      hasPermission,
+      wantJpeg,
+      analyzerRois.length,
+    ]);
+
+    const capturingRef = useRef(false);
+    useImperativeHandle(
+      ref,
+      (): RawColorCameraHandle => ({
+        capture: async opts => {
+          if (capturingRef.current) {
+            throw new Error('capture already in progress');
+          }
+          capturingRef.current = true;
+          const sleep = (ms: number) =>
+            new Promise<void>(r => setTimeout(r, ms));
+          // Wait for the session to reconfigure to the given outputs (the
+          // onConfigured callback resolves this). Returns a promise set up
+          // BEFORE the state change so we can't miss the event.
+          const reconfigureTo = async (detached: boolean) => {
+            const done = new Promise<void>(resolve => {
+              configResolveRef.current = resolve;
+            });
+            setDetachedForCapture(detached);
+            await done;
+          };
+          try {
+            // No-RAW path: capture a JPEG directly. The frame output can
+            // stay attached (a non-RAW format is what JPEG wants), so no detach
+            // dance. Reached either when runtime detection flipped
+            // deviceSupportsRaw false, or when the caller explicitly requested
+            // jpeg-only via request.raw:false.
+            if (!effectiveWantsRaw) {
+              const photo = await photoOutput.capturePhoto({}, {});
+              const jpegUri = fileUri(await photo.saveToTemporaryFileAsync());
+              opts?.onCaptured?.();
+              return makeCapture(
+                undefined,
+                jpegUri,
+                photo.width,
+                photo.height,
+                0,
+              );
+            }
+            // Retry (iOS analog of approach A): the detach dance occasionally
+            // reconfigures to a format that doesn't support DNG ("PhotoOutput
+            // does not support raw capture"). On failure, reattach → re-detach
+            // to force a FRESH RAW-capable reconfigure, then retry.
+            let lastErr: unknown;
+            for (
+              let attempt = 0;
+              attempt <= IOS_CAPTURE_MAX_RETRIES;
+              attempt++
+            ) {
+              try {
+                if (attempt > 0) {
+                  console.warn(
+                    `[rawperf] iOS capture retry ${attempt}/${IOS_CAPTURE_MAX_RETRIES}: ${String(lastErr)}`,
+                  );
+                  await reconfigureTo(false); // reattach (frame output back)
+                  await sleep(IOS_CAPTURE_RETRY_SETTLE_MS);
+                }
+                await reconfigureTo(true); // detach → RAW-capable reconfigure
+                await sleep(IOS_CAPTURE_SETTLE_MS); // let the format settle
+
+                const photo = await photoOutput.capturePhoto({}, {});
+                if (!photo.isRawPhoto) {
+                  // Got a processed photo — refuse to emit a JPEG-shaped
+                  // result from RAW data; retry the reconfigure.
+                  throw new Error(
+                    'expected a RAW photo but received a processed one',
+                  );
+                }
+                const rawUri = fileUri(await photo.saveToTemporaryFileAsync());
+                // iOS DNGs embed a full-res Apple JPEG preview; pull it out as
+                // the companion (best-effort). Skipped when jpeg:'never'.
+                let jpegUri: string | undefined;
+                if (wantJpeg) {
+                  try {
+                    jpegUri = fileUri(
+                      DngDecoderHybrid.extractDngPreviewJpeg(rawUri),
+                    );
+                  } catch (err) {
+                    onErrorRef.current?.(err as Error);
+                  }
+                }
+                // Sensor read out + files on disk → safe to move.
+                opts?.onCaptured?.();
+                return makeCapture(
+                  rawUri,
+                  jpegUri,
+                  photo.width,
+                  photo.height,
+                  attempt, // this-capture retry count (0 = first try)
+                );
+              } catch (err) {
+                lastErr = err;
+                // A genuine "does not support raw capture" is persistent (the
+                // device can't do DNG) — stop retrying and flip to JPEG so the
+                // photo output reconfigures; the caller's next capture takes the
+                // jpeg path. (Transient reconfigure misses are handled by the
+                // retry above.)
+                if (/does not support raw/i.test(String(err))) {
+                  console.warn(
+                    '[rawperf] iOS: device does not support RAW — falling back to JPEG',
+                  );
+                  setDeviceSupportsRaw(false);
+                  break;
+                }
+              }
+            }
+            throw lastErr instanceof Error
+              ? lastErr
+              : new Error(String(lastErr));
+          } finally {
+            // Reattach the frame output (preview resumes).
+            setDetachedForCapture(false);
+            capturingRef.current = false;
+          }
+        },
+      }),
+      [photoOutput, wantJpeg, effectiveWantsRaw],
+    );
+
+    const ready = !!device && hasPermission && active;
+    return (
+      <View style={[styles.fill, style]}>
+        {ready ? (
+          <SensorAspectFrame aspect={SENSOR_ASPECT}>
+            <Camera
+              style={StyleSheet.absoluteFill}
+              device={device}
+              isActive={active}
+              outputs={outputs}
+              onConfigured={onConfigured}
+              // Portrait-locked: tie orientation to the UI, not the device.
+              orientationSource="interface"
+              resizeMode="contain"
+              enableNativeTapToFocusGesture={true}
+            />
+            {children}
+          </SensorAspectFrame>
+        ) : (
+          <View style={[styles.fill, styles.center]}>
+            <Text style={styles.message}>
+              {device
+                ? 'Camera permission is required to capture.'
+                : 'No compatible camera was found on this device.'}
+            </Text>
+          </View>
+        )}
+      </View>
+    );
+  },
+);
+
+// Public component: one contract, platform-specific engine underneath.
+export const RawColorCamera = forwardRef<
+  RawColorCameraHandle,
+  RawColorCameraProps
+>(function RawColorCamera(props, ref) {
+  return Platform.OS === 'android' ? (
+    <AndroidRawColorEngine ref={ref} {...props} />
+  ) : (
+    <IosRawColorEngine ref={ref} {...props} />
+  );
+});
+
+const styles = StyleSheet.create({
+  fill: {flex: 1, backgroundColor: 'black'},
+  center: {alignItems: 'center', justifyContent: 'center', padding: 24},
+  message: {color: 'white', fontSize: 16, textAlign: 'center'},
+  sensorFrameOuter: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

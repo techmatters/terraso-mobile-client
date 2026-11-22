@@ -29,22 +29,61 @@ import {
 import {RestrictBySiteRole} from 'terraso-mobile-client/components/restrictions/RestrictByRole';
 import {SiteRoleContextProvider} from 'terraso-mobile-client/context/SiteRoleContext';
 import {SITE_EDITOR_ROLES} from 'terraso-mobile-client/model/permissions/permissions';
+import {
+  useUseNewPreviewUx,
+  useUseRawWhenAvailable,
+} from 'terraso-mobile-client/model/rawColor/colorCameraPrefs';
 import {useNavigation} from 'terraso-mobile-client/navigation/hooks/useNavigation';
 import {SoilPitInputScreenProps} from 'terraso-mobile-client/screens/SoilScreen/components/SoilPitInputScreenScaffold';
 
 export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const useNewPreview = useUseNewPreviewUx();
+  const useRaw = useUseRawWhenAvailable();
+
+  // UX routing:
+  //   new-UX ON  → full-screen live-preview camera (PREVIEW_CAPTURE mode:
+  //                'auto'), no sheet, auto-crops via ROIs.
+  //   new-UX OFF → classic PickImageButton (+-in-square), opens the "Use
+  //                Camera / Choose From Gallery" sheet. "Use Camera" uses
+  //                our RAW-capable preview capture (mode: 'crop') when
+  //                useRawWhenAvailable is ON — so a DNG lands alongside
+  //                the JPEG; otherwise it falls back to expo-image-picker
+  //                (JPEG only). "Choose From Gallery" is always legacy.
 
   const onPickImage = useCallback(
-    (photo: Photo) => {
+    (photo: Photo, dngUri?: string) => {
       navigation.navigate('COLOR_ANALYSIS', {
-        photo: photo,
+        photo,
         pitProps: props,
+        dngUri,
       });
     },
     [navigation, props],
   );
+
+  const onUseNewPreviewCamera = useCallback(
+    () =>
+      navigation.navigate('PREVIEW_CAPTURE', {
+        pitProps: props,
+        mode: 'auto',
+      }),
+    [navigation, props],
+  );
+
+  // RAW override for the classic sheet's "Use Camera" button: swap
+  // launchCameraAsync (JPEG only) for our preview capture so the user
+  // keeps the familiar sheet UX but the shutter produces RAW+JPEG where
+  // possible. mode='crop' means after shutter the user still does the
+  // manual tap-to-crop — matches the legacy flow visually.
+  const onUseCameraOverride = useRaw
+    ? () =>
+        navigation.navigate('PREVIEW_CAPTURE', {
+          pitProps: props,
+          mode: 'crop',
+        })
+    : undefined;
 
   const onUseGuide = useCallback(
     () => navigation.navigate('COLOR_GUIDE', props),
@@ -56,10 +95,19 @@ export const CameraWorkflow = (props: SoilPitInputScreenProps) => {
       <RestrictBySiteRole role={SITE_EDITOR_ROLES}>
         <Column>
           <Box alignItems="center" paddingVertical="lg">
-            <PickImageButton
-              featureName={t('soil.color.featureName')}
-              onPick={onPickImage}
-            />
+            {useNewPreview ? (
+              <ContainedButton
+                onPress={onUseNewPreviewCamera}
+                leftIcon="photo-camera"
+                label={t('soil.color.take_photo_live')}
+              />
+            ) : (
+              <PickImageButton
+                featureName={t('soil.color.featureName')}
+                onPick={onPickImage}
+                onUseCameraOverride={onUseCameraOverride}
+              />
+            )}
           </Box>
           <Column
             backgroundColor="grey.300"

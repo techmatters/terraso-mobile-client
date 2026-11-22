@@ -23,6 +23,7 @@ import {
 } from 'terraso-mobile-client/navigation/types';
 import {generateScreens} from 'terraso-mobile-client/navigation/utils/utils';
 import {ColorAnalysisHomeScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen//ColorAnalysisHomeScreen';
+import {ColorAnalysisInfoScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorAnalysisInfoScreen';
 import {ColorCropReferenceScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorCropReferenceScreen';
 import {ColorCropSoilScreen} from 'terraso-mobile-client/screens/ColorAnalysisScreen/ColorCropSoilScreen';
 
@@ -30,6 +31,7 @@ const screenDefinitions = {
   COLOR_ANALYSIS_HOME: ColorAnalysisHomeScreen,
   COLOR_CROP_REFERENCE: ColorCropReferenceScreen,
   COLOR_CROP_SOIL: ColorCropSoilScreen,
+  COLOR_ANALYSIS_INFO: ColorAnalysisInfoScreen,
 } as const satisfies ScreenDefinitions;
 
 export type ColorAnalysisParamList = ParamList<typeof screenDefinitions>;
