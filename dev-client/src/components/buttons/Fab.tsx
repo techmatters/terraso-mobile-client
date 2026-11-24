@@ -21,6 +21,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ContainedButton} from 'terraso-mobile-client/components/buttons/ContainedButton';
 import {IconName} from 'terraso-mobile-client/components/icons/Icon';
+import {convertColorProp} from 'terraso-mobile-client/components/util/nativeBaseAdapters';
 
 type Positioning = 'BottomRight' | 'BottomCenter';
 
@@ -68,7 +69,12 @@ const styles = StyleSheet.create({
   surface: {
     position: 'absolute',
     margin: 16,
-    backgroundColor: 'transparent',
+    // Match the inner ContainedButton's default fill: lets Fabric compute the
+    // elevation=2 shadow from a solid background instead of rasterising
+    // child alpha (RN advice warning). Shape + radius match the button
+    // exactly, so pressed/disabled state is still rendered by the button
+    // on top with no slivers showing through.
+    backgroundColor: convertColorProp('primary.main'),
     borderRadius: 4,
   },
   surfaceBottomRight: {
