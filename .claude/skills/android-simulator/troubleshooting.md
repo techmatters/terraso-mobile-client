@@ -20,5 +20,5 @@ Read from the `android-simulator` skill when the app fails to load, dies, or som
 
 ## Layout and input problems
 
-- **`android layout` hangs or times out** while something animates continuously (spinner, video): pass `--no-idle` to `layout.py`.
+- **`android layout` hangs, times out, or fails with "Could not obtain idle state"** while something animates continuously (spinner, video): pass `--no-idle` to `layout.py`.
 - **Only a small floating keyboard handle appears instead of the keyboard**: the keyboard switched to floating mode, possibly after the user typed on the Mac keyboard into the emulator. Tap the handle, then "Show on-screen keyboard". That menu isn't in the layout, so use the annotated screenshot to find it. Typing with `android input text` avoids needing the keyboard at all.

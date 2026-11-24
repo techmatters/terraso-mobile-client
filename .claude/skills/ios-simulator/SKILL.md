@@ -52,7 +52,12 @@ Other MCP clients: use the same command, args, and env vars in that client's MCP
 
 - **Always focus a text field before typing.** `type_text` on an unfocused field sends raw keystrokes, which trigger RN/Expo dev shortcuts (opens the dev menu, toggles the element inspector) and enter no text. Use `touch` (down+up) on the field first, then `type_text`.
 - **Dismiss the keyboard before tapping buttons below the fields** — the keyboard covers them and the tap types a letter instead. Tap the keyboard's `return` key, then re-snapshot.
-- **Check every action landed.** A tap can report success while the screen hash is unchanged. Compare `screenHash`, and take a `screenshot` (then Read the image) when unsure what's on screen. If nothing changed, retry with `touch` (`down`+`up`, `delay: 0.15`); a slightly held press registers where a `tap` gets dropped.
+- **Check every action landed.** A tap can report success while the screen hash is unchanged. Compare `screenHash`, and take a `screenshot` (then Read the image) when unsure what's on screen. If nothing changed, retry with `touch` (`down`+`up`, `delay: 0.15`); a slightly held press registers where a `tap` gets dropped. A later `snapshot_ui` or `screenshot` can return an older capture than the action's own result; when two snapshots disagree, the higher `seq` is newer. For a current picture, use `xcrun simctl io <udid> screenshot <file>`.
+- **When an element isn't tappable in the snapshot**, `touch` its ref anyway: it works on refs whose action is `none`. For things with no ref at all (map points, some list rows, picker options), use the `axe` CLI bundled with MobileBuildMCP, which touches by position in points (simctl screenshot pixels ÷ 3 on recent iPhones). Use `touch`; a plain `axe tap` didn't register on the map.
+  ```sh
+  AXE=$(ls -d ~/.npm/_npx/*/node_modules/mobilebuildmcp/bundled/axe | head -1)
+  $AXE touch -x 120 -y 270 --down --up --delay 0.15 --udid <udid>
+  ```
 - **Don't run a tap and a wait in parallel**; do them one after the other.
 - Element refs go stale after navigation, scrolling, or sheets opening — use refs from the latest snapshot only.
 - Every element tends to appear twice in snapshots (e.g. `e75`/`e76` both "Create Site"); either ref works.

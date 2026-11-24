@@ -62,7 +62,7 @@ If you hit a new problem and find a reliable fix that other teammates are likely
 ## Interacting
 
 - **Selectors** (for `android input tap|text|scroll|swipe`) are comma-separated `key=value` pairs: `id`, `text`, `desc` (accessibility label), `class`, and booleans like `clickable=true`. Quote them for the shell.
-  - **Values match as case-insensitive substrings.** So `id=search-bar` also matches `search-bar-container`, `search-bar-icon`, etc., and the command fails with `multiple_matches` (listing the candidates). Anchor with a regex instead: `'id=/^search-bar$/'`, `'text=/^Sites$/'`.
+  - **Values match as case-insensitive substrings.** So `id=search-bar` also matches `search-bar-container`, `search-bar-icon`, etc., and the command fails with `multiple_matches` (listing the candidates). Anchor with a regex instead: `'id=/^search-bar$/'`, `'text=/^Sites$/'`. Regexes are case-sensitive, so copy the text exactly as the element list shows it (many buttons render in all caps, e.g. `CREATE SITE`).
 - **Tap**: `android input tap --no-metrics 'id=/^search-bar$/'`. `--wait=<ms>` waits for the element to appear. Fallback by coordinates from the element list: `adb shell input tap <x> <y>`.
 - **Type**: `android input text --no-metrics 'Claude test' 'id=/^search-bar$/'`. It replaces the field's whole value (it doesn't append; `''` clears it), handles spaces, fires the app's `onChangeText`, and doesn't open the keyboard. `--submit` presses Enter afterwards.
   - Don't tap the field first. Tapping opens the keyboard, which can push the field (e.g. in a bottom sheet) off screen so the selector no longer matches.
