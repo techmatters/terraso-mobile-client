@@ -70,20 +70,17 @@ If you hit a new problem and find a reliable fix that other teammates are likely
 - **Leaving a screen**: tap the app's header back arrow, the unlabeled `(no label)  [tap]` at the top left (around `84,138`). Android system back in 3-button menu (`android input key --no-metrics back`) is mainly for closing the keyboard (if it's open, back only closes it); otherwise use it only occasionally, to check it behaves sensibly.
 - **Scroll**: scroll containers usually have no testID, so swipe inside the content: `adb shell input swipe 540 1500 540 700 400` (x1 y1 x2 y2 ms; keep both points inside the area that should scroll). Avoid `android input scroll --match=first 'scrollable=true'`: the first scrollable is often a horizontal tab bar, so your "scroll" switches tabs (seen on the site screen). When a container does have a testID, `android input scroll --no-metrics --dir=down 'id=/^<testID>$/' --until='text=/^Delete$/'` scrolls until an element appears.
 - **Swipe**: carousels and pagers ignore fast swipes. A 250 ms `adb shell input swipe x1 y1 x2 y2 250` didn't change page; 800 ms did.
+- **Choosing a spot on the Sites map** (e.g. to create a site somewhere): tap the map or use the map search. Don't fake the device's GPS and press "My Location" just to get somewhere.
+- **Report UI hidden by the bottom sheet.** If a button or callout content sits under the Sites bottom sheet (or you had to move the map to reach it), say so in your recap to the user. It may be a real UX bug, not just a problem with driving the emulator.
 - **Check every action landed.** `"status": "success"` means the input was sent, not that the app reacted. Re-run the element list or take a screenshot after each step. Coordinates and elements go stale after navigation, scrolling, or a sheet opening.
 - Each `android` call takes 1–2 s; chain several steps in one Bash call when you don't need to look in between.
 - Don't send `adb shell input keyevent 82` (MENU): it opens the React Native dev menu.
 
 ## Emulator setup and logs
 
-- **Location**: anything that uses the device's location silently does nothing until the emulator has a GPS position and the app has permission:
+- **Location**: change the emulator's GPS only when the task is about the device's location (e.g. "My Location", GPS accuracy). Fake GPS changes the emulator for the user too, so tell them when you set it. Anything that uses the device's location silently does nothing until the emulator has a GPS position and the app has permission:
   ```sh
   adb emu geo fix -87.6298 41.8781   # longitude first, then latitude
   adb shell pm grant org.terraso.landpks android.permission.ACCESS_FINE_LOCATION
   ```
 - **JS logs** (`console.*`): `adb logcat -d -s ReactNativeJS`. **Crashes**: `adb logcat -b crash -d`.
-
-## Alternatives
-
-- **mobile-mcp** (`@mobilenext/mobile-mcp`): an MCP server that drives both iOS and Android with the same tools, closer to the iOS skill's tool-based flow. Tradeoffs: it's a third-party dependency that releases every few days, so pin an exact version and review updates. Its telemetry is on by default; disable it with `MOBILEMCP_DISABLE_TELEMETRY=1`.
-- **Plain adb**: `adb exec-out uiautomator dump /dev/tty` plus `adb shell input tap x y`. No install needed, but you have to parse the XML and tap by coordinates yourself.
