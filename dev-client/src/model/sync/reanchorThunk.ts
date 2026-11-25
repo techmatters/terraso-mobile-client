@@ -88,7 +88,21 @@ export const reanchorEntity = <D, E>(
   prodData: Record<string, D | undefined | null>,
   differs: (local: D, prod: D) => boolean,
   now: SyncTimestamp,
+  label = 'entity',
+  debug = false,
 ): void => {
+  // Per-record logging so the reconciliation can be watched during testing.
+  // `debug` is wired from `syncDebugEnabled` by the caller (kept out of this
+  // module so it stays importable by fast unit tests). Set SYNC_DEBUG_ENABLED=true.
+  const log = (id: string, message: string) => {
+    if (debug) {
+      console.log(`🔁 re-anchor[${label}] ${id}: ${message}`);
+    }
+  };
+  let created = 0;
+  let updated = 0;
+  let skipped = 0;
+
   for (const id of Object.keys(localData)) {
     const local = localData[id];
     if (local === undefined) {
@@ -97,6 +111,8 @@ export const reanchorEntity = <D, E>(
     const record = getEntityRecord(records, id);
     if (isUnsynced(record)) {
       // Leave in-flight / never-synced edits to the normal push.
+      skipped++;
+      log(id, 'already unsynced → skip (normal push handles it)');
       continue;
     }
     const prod = prodData[id];
@@ -109,6 +125,8 @@ export const reanchorEntity = <D, E>(
         lastSyncedError: undefined,
       };
       records[id] = modifiedRecord(recreated, now);
+      created++;
+      log(id, 'prod has no copy → mark for CREATE');
     } else if (differs(local, prod)) {
       // Prod has a stale copy → push local over it (delta computed vs prod).
       const anchored: SyncRecord<D, E> = {
@@ -118,8 +136,20 @@ export const reanchorEntity = <D, E>(
         lastSyncedError: undefined,
       };
       records[id] = modifiedRecord(anchored, now);
+      updated++;
+      log(id, 'differs from prod → mark for UPDATE');
+    } else {
+      // Prod equals local → untouched.
+      skipped++;
+      log(id, 'matches prod → skip');
     }
-    // else prod equals local → untouched.
+  }
+
+  if (debug) {
+    console.log(
+      `🔁 re-anchor[${label}]: ${Object.keys(localData).length} local → ` +
+        `${created} create, ${updated} update, ${skipped} skip`,
+    );
   }
 };
 

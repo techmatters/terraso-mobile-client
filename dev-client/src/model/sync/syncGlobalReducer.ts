@@ -224,12 +224,17 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
   // pushed. Only records the client currently believes are synced are touched.
   builder.addCase(reanchorUserData.fulfilled, (state, {payload}) => {
     const now = Date.now();
+    if (syncDebugEnabled) {
+      console.log('🔁 re-anchor: reconciling local data against prod');
+    }
     reanchorEntity(
       state.site.siteSync,
       state.site.sites,
       payload.sites,
       siteDiffers,
       now,
+      'site',
+      syncDebugEnabled,
     );
     reanchorEntity(
       state.soilData.soilSync,
@@ -237,6 +242,8 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
       payload.soilData,
       soilDataDiffers,
       now,
+      'soilData',
+      syncDebugEnabled,
     );
     reanchorEntity(
       state.soilMetadata.soilMetadataSync,
@@ -244,10 +251,9 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
       payload.soilMetadata,
       soilMetadataDiffers,
       now,
+      'soilMetadata',
+      syncDebugEnabled,
     );
-    if (syncDebugEnabled) {
-      console.log('🔁 re-anchor applied');
-    }
   });
 
   builder.addCase(reanchorUserData.rejected, (_state, action) => {

@@ -17,6 +17,7 @@
 
 import {useEffect, useRef} from 'react';
 
+import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 import {isInternalAccount} from 'terraso-mobile-client/model/sync/internalAccounts';
 import {reanchorUserData} from 'terraso-mobile-client/model/sync/reanchorThunk';
@@ -72,6 +73,11 @@ export const ReanchorDispatcher = () => {
     // never be pushed to prod. Mark done so the re-anchor is permanently
     // skipped for them (no fetch, no push).
     if (isInternalAccount(currentUserEmail)) {
+      if (syncDebugEnabled) {
+        console.log(
+          '🔁 re-anchor: internal account → skipping (no fetch/push)',
+        );
+      }
       setDoneFlag(true);
       dispatch(setReanchorDone(true));
       return;
@@ -87,6 +93,9 @@ export const ReanchorDispatcher = () => {
     }
 
     inProgress.current = true;
+    if (syncDebugEnabled) {
+      console.log('🔁 re-anchor: fetching prod data for', currentUserID);
+    }
     dispatch(setReanchorPending(true));
     dispatch(reanchorUserData(currentUserID))
       .then(action => {
@@ -95,6 +104,13 @@ export const ReanchorDispatcher = () => {
         if (reanchorUserData.fulfilled.match(action)) {
           setDoneFlag(true);
           dispatch(setReanchorDone(true));
+          if (syncDebugEnabled) {
+            console.log(
+              '🔁 re-anchor: complete (push now flushes any marked records)',
+            );
+          }
+        } else if (syncDebugEnabled) {
+          console.log('🔁 re-anchor: fetch failed → will retry next launch');
         }
       })
       .finally(() => {
