@@ -22,18 +22,16 @@ import CryptoJS from 'crypto-js';
  * docs/v396staging-prod-recovery-plan.md) so that staging-only test data they
  * created on the bad build is never pushed to prod.
  *
- * Our domains are public, so they're listed in the clear. The two individual
+ * Our domains are public, so they're listed in the clear. Individual tester
  * addresses are stored as SHA-256 hashes of their lowercased form to keep them
  * out of this public repo in plaintext — obfuscation against casual scraping,
- * not real secrecy.
+ * not real secrecy. This matches the server migration's exclusion list.
  */
 const EXCLUDED_DOMAINS = ['terraso.org', 'techmatters.org'];
 
 const EXCLUDED_EMAIL_HASHES = new Set([
   // d...
   'dee694743aa32184623eace4e0cb75f11d3e646c104e48442af6fe2e5b958403',
-  // j...
-  'beca3942fbf2377bceb2db21b181ccfee18b139fcea879de41a6cbce7573e2d4',
 ]);
 
 const sha256Hex = (value: string): string =>
