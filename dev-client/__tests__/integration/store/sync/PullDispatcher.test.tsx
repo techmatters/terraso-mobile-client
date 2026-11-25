@@ -56,6 +56,8 @@ describe('PullDispatcher', () => {
   const stateWithPullRequested = {
     sync: {
       pullRequested: true,
+      reanchorPending: false,
+      reanchorDone: true,
     },
   };
 

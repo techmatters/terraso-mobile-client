@@ -38,6 +38,13 @@ import {clearAllMatches} from 'terraso-mobile-client/model/soilIdMatch/soilIdMat
 import {setSoilMetadata} from 'terraso-mobile-client/model/soilMetadata/soilMetadataSlice';
 import * as syncActions from 'terraso-mobile-client/model/sync/actions/syncActions';
 import {
+  reanchorEntity,
+  reanchorUserData,
+  siteDiffers,
+  soilDataDiffers,
+  soilMetadataDiffers,
+} from 'terraso-mobile-client/model/sync/reanchorThunk';
+import {
   initialRecord,
   isUnsynced,
   markEntitiesModified,
@@ -209,5 +216,44 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
     // See pullUserData.rejected above for why action.payload.error is
     // preferred over action.error.
     console.error('⬆️ push rejected:', action.payload?.error ?? action.error);
+  });
+
+  // One-time re-anchor to prod (see reanchorThunk / docs). Unlike the pull, this
+  // does NOT merge the fetched prod data into state — it only rewrites sync
+  // records so local edits prod is missing or has stale become unsynced and get
+  // pushed. Only records the client currently believes are synced are touched.
+  builder.addCase(reanchorUserData.fulfilled, (state, {payload}) => {
+    const now = Date.now();
+    reanchorEntity(
+      state.site.siteSync,
+      state.site.sites,
+      payload.sites,
+      siteDiffers,
+      now,
+    );
+    reanchorEntity(
+      state.soilData.soilSync,
+      state.soilData.soilData,
+      payload.soilData,
+      soilDataDiffers,
+      now,
+    );
+    reanchorEntity(
+      state.soilMetadata.soilMetadataSync,
+      state.soilMetadata.soilMetadata,
+      payload.soilMetadata,
+      soilMetadataDiffers,
+      now,
+    );
+    if (syncDebugEnabled) {
+      console.log('🔁 re-anchor applied');
+    }
+  });
+
+  builder.addCase(reanchorUserData.rejected, (_state, action) => {
+    console.error(
+      '🔁 re-anchor rejected:',
+      action.payload?.error ?? action.error,
+    );
   });
 });

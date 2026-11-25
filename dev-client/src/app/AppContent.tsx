@@ -20,6 +20,7 @@ import {RootNavigator} from 'terraso-mobile-client/navigation/navigators/RootNav
 import {PullDispatcher} from 'terraso-mobile-client/store/sync/PullDispatcher';
 import {PullRequester} from 'terraso-mobile-client/store/sync/PullRequester';
 import {PushDispatcher} from 'terraso-mobile-client/store/sync/PushDispatcher';
+import {ReanchorDispatcher} from 'terraso-mobile-client/store/sync/ReanchorDispatcher';
 import {SyncRecordLogger} from 'terraso-mobile-client/store/sync/SyncRecordLogger';
 
 export const AppContent = () => {
@@ -28,6 +29,7 @@ export const AppContent = () => {
       <OfflineSnackbar />
       <PushDispatcher />
       <PullRequester />
+      <ReanchorDispatcher />
       <PullDispatcher />
       <SyncRecordLogger />
       <RootNavigator />

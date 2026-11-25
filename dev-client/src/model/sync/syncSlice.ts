@@ -18,10 +18,17 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type SyncState = {
   pullRequested: boolean;
+  // One-time "re-anchor to prod" (see reanchorThunk / docs). `reanchorPending`
+  // blocks the normal pull while the re-anchor fetch is in flight so it can't
+  // clobber local edits first; `reanchorDone` mirrors the persisted MMKV flag.
+  reanchorPending: boolean;
+  reanchorDone: boolean;
 };
 
-export const initialState = {
+export const initialState: SyncState = {
   pullRequested: false,
+  reanchorPending: false,
+  reanchorDone: false,
 };
 
 export const syncSlice = createSlice({
@@ -32,9 +39,18 @@ export const syncSlice = createSlice({
       ...state,
       pullRequested: action.payload,
     }),
+    setReanchorPending: (state, action: PayloadAction<boolean>) => ({
+      ...state,
+      reanchorPending: action.payload,
+    }),
+    setReanchorDone: (state, action: PayloadAction<boolean>) => ({
+      ...state,
+      reanchorDone: action.payload,
+    }),
   },
 });
 
-export const {setPullRequested} = syncSlice.actions;
+export const {setPullRequested, setReanchorPending, setReanchorDone} =
+  syncSlice.actions;
 
 export default syncSlice.reducer;

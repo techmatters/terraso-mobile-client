@@ -19,3 +19,8 @@ import {AppState} from 'terraso-mobile-client/store';
 
 export const selectPullRequested = (state: AppState) =>
   state.sync.pullRequested;
+
+export const selectReanchorPending = (state: AppState) =>
+  state.sync.reanchorPending;
+
+export const selectReanchorDone = (state: AppState) => state.sync.reanchorDone;
