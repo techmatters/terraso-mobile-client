@@ -18,6 +18,7 @@
 import {useEffect, useRef} from 'react';
 
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
+import {isInternalAccount} from 'terraso-mobile-client/model/sync/internalAccounts';
 import {reanchorUserData} from 'terraso-mobile-client/model/sync/reanchorThunk';
 import {selectReanchorPending} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {
@@ -26,7 +27,10 @@ import {
 } from 'terraso-mobile-client/model/sync/syncSlice';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
-import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
+import {
+  selectCurrentUserEmail,
+  selectCurrentUserID,
+} from 'terraso-mobile-client/store/selectors';
 import {useDebouncedIsOffline} from 'terraso-mobile-client/store/sync/hooks/syncHooks';
 import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequester';
 
@@ -46,6 +50,7 @@ export const PROD_REANCHOR_DONE_KEY = 'prod-reanchor-done';
 export const ReanchorDispatcher = () => {
   const dispatch = useDispatch();
   const currentUserID = useSelector(selectCurrentUserID);
+  const currentUserEmail = useSelector(selectCurrentUserEmail);
   const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
   const appState = useAppState();
   const reanchorPending = useSelector(selectReanchorPending);
@@ -59,11 +64,22 @@ export const ReanchorDispatcher = () => {
   const inProgress = useRef(false);
 
   useEffect(() => {
+    if (currentUserID === undefined || reanchorDone) {
+      return;
+    }
+
+    // Internal/staff accounts are excluded: their staging-only test data must
+    // never be pushed to prod. Mark done so the re-anchor is permanently
+    // skipped for them (no fetch, no push).
+    if (isInternalAccount(currentUserEmail)) {
+      setDoneFlag(true);
+      dispatch(setReanchorDone(true));
+      return;
+    }
+
     const canRun =
-      currentUserID !== undefined &&
       !isOffline &&
       appState === 'active' &&
-      !reanchorDone &&
       !reanchorPending &&
       !inProgress.current;
     if (!canRun) {
@@ -89,6 +105,7 @@ export const ReanchorDispatcher = () => {
       });
   }, [
     currentUserID,
+    currentUserEmail,
     isOffline,
     appState,
     reanchorDone,

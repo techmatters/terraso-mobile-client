@@ -54,6 +54,12 @@ describe('ReanchorDispatcher', () => {
     },
   } as Partial<ReduxAppState>;
 
+  const stateWithInternalUser = {
+    account: {
+      currentUser: {data: {id: 'staffid', email: 'someone@terraso.org'}},
+    },
+  } as Partial<ReduxAppState>;
+
   beforeEach(() => {
     useIsOfflineMock.mockReset().mockReturnValue(false);
     useAppStateMock.mockReset().mockReturnValue('active');
@@ -90,6 +96,11 @@ describe('ReanchorDispatcher', () => {
   test('does not re-anchor when the done flag is already set', () => {
     kvStorage.setBool(PROD_REANCHOR_DONE_KEY, true);
     render(<ReanchorDispatcher />, {initialState: stateWithLoggedInUser});
+    expect(pullUserDataMock).not.toHaveBeenCalled();
+  });
+
+  test('does not re-anchor for internal/staff accounts', () => {
+    render(<ReanchorDispatcher />, {initialState: stateWithInternalUser});
     expect(pullUserDataMock).not.toHaveBeenCalled();
   });
 });
