@@ -76,14 +76,18 @@ jobs:
           df -h
 
       # The release AAB build intermittently OOM-killed the runner
-      # ("hosted runner lost communication"): the Gradle daemon's -Xmx6g
-      # heap (needed for the R8/dex merge of ~48k classes, see
-      # app.config.ts) plus the native C++ compile (dng-decoder +
-      # raw-camera NDK sources, built for arm64-v8a AND armeabi-v7a, which
-      # runs OUTSIDE the JVM) briefly exceeds the standard runner's ~7 GB
-      # RAM. Add a large swapfile on the roomy /mnt disk so that transient
-      # peak spills to disk instead of tripping the kernel OOM killer. Only
-      # the brief overlap touches swap, so the build-time cost is minimal.
+      # ("hosted runner lost communication") during the R8/dex merge of our
+      # ~48k classes (Gradle daemon at -Xmx6g, see app.config.ts) plus the
+      # native C++ compile (dng-decoder + raw-camera NDK sources, built for
+      # arm64-v8a AND armeabi-v7a, which runs OUTSIDE the JVM). The runner
+      # has ~16 GB RAM (~14 GB free at build start), so a transient peak
+      # that briefly exceeds available RAM is the suspected cause. Add a
+      # 14 GB swapfile so that peak can spill to disk instead of tripping
+      # the kernel OOM killer. The swapfile lives on the runner's root
+      # filesystem (~98 GB free); /mnt is just a path on that disk, not a
+      # separate volume. The resource monitor below records how much RAM
+      # and swap the build actually uses so we can confirm the theory (and
+      # decide later whether the 6g heap can safely shrink).
       - name: Add swap space
         run: |
           sudo swapoff -a || true
@@ -125,9 +129,45 @@ jobs:
         with:
           packages: "ndk;27.0.12077973"
 
+      # Sample RAM + swap every 5s in the background so the post-build
+      # report can show the PEAK the build actually hit (a one-shot free -h
+      # afterwards would miss the transient spike we care about). This tells
+      # us whether swap was really touched and how close to the ceiling the
+      # 6g Gradle daemon plus the native compile actually get.
+      - name: Start resource monitor
+        run: |
+          cat > /tmp/memmon.sh <<'EOF'
+          #!/usr/bin/env bash
+          peak_mem=0
+          peak_swap=0
+          while true; do
+            read -r mem_used swap_used < <(free -m | awk '/^Mem:/{m=$3} /^Swap:/{s=$3} END{print m, s}')
+            (( mem_used > peak_mem )) && peak_mem=$mem_used
+            (( swap_used > peak_swap )) && peak_swap=$swap_used
+            echo "$peak_mem" > /tmp/peak_mem
+            echo "$peak_swap" > /tmp/peak_swap
+            sleep 5
+          done
+          EOF
+          chmod +x /tmp/memmon.sh
+          nohup /tmp/memmon.sh >/tmp/memmon.log 2>&1 &
+          echo $! > /tmp/memmon.pid
+
       - name: Build Android app bundle
         working-directory: ./dev-client/android
         run: ./gradlew bundleRelease
+
+      # Runs even if the build fails, so an OOM run still reports what it hit.
+      - name: Report peak RAM & swap usage
+        if: always()
+        run: |
+          [ -f /tmp/memmon.pid ] && kill "$(cat /tmp/memmon.pid)" 2>/dev/null || true
+          echo "Peak RAM used during build:  $(cat /tmp/peak_mem 2>/dev/null || echo '?') MiB"
+          echo "Peak swap used during build: $(cat /tmp/peak_swap 2>/dev/null || echo '?') MiB"
+          echo "--- free -h (now) ---"
+          free -h
+          echo "--- swapon --show (now) ---"
+          swapon --show
 
       - name: Sign Android app bundle
         id: sign_app
