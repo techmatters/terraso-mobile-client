@@ -1,8 +1,13 @@
 # Recovering offline edits for the v396staging → prod iOS cohort (content-diff / re-anchor plan)
 
-**Status:** implemented on branch `feat/preserve-offline-edits-on-server-switch` (off `origin/main`); checks
-green (`tsc` 0 errors; sync-area unit tests 95/95). **Not yet committed — under review.** §3 and §7 are the
-authoritative, corrected (revisionId-based) mechanism.
+**In one sentence:** on the first prod launch, for each record the client still believes is synced, check prod —
+if prod is **missing it or holds an older copy**, re-point that record's sync baseline to prod and mark it
+changed, so the normal push sends exactly what prod lacks (a **create** when prod is missing it). It runs once
+and is a no-op for everyone outside the affected cohort.
+
+**Status:** implemented and **pushed** on `feat/preserve-offline-edits-on-server-switch` (off `origin/main`);
+checks green (`tsc` 0 errors; unit suite 590/590). **Validated locally** with a two-backend docker-compose
+staging→prod run (see §14.8–14.9) — core cases passed. Not yet merged / no PR.
 **Scope of problem:** iOS only. `v396staging` (commit `bf3bf626`, build 396) was accidentally released to
 customers built against **staging**. The prod fix build they auto-update to must recover the edits they made
 while on staging. Android correctly shipped `v395` prod and is unaffected.
@@ -25,10 +30,12 @@ server-side concurrency/version guard.
 
 ## 2. Facts we rely on (verified in code)
 
-- **No wipe on this path.** `backendSwitch.ts` is absent in `bf3bf626`; the stale-token auth failure calls
-  the shared `signOut` (clears **tokens only**), never `performLogout`/`userLoggedOut`;
-  `patchPersistedReduxState` preserves the sync records (its `merge(..., {siteSync: {}})` is a lodash deep-merge
-  no-op on populated maps). **Local data survives.**
+- **No wipe on this path.** The bad release — **`v396staging` (`bf3bf626`)** — predates the backend-switch
+  flush (`backendSwitch.ts`), so it never recorded a backend baseline. On first launch of the **fix build**,
+  `flushDataIfBackendChanged` therefore finds no prior backend and does **not** log out. The stale staging token
+  then fails against prod → the shared `signOut` clears **tokens only** (never `performLogout`/`userLoggedOut`),
+  and `patchPersistedReduxState` preserves the sync records on rehydration (its `merge(..., {siteSync: {}})` is a
+  lodash deep-merge no-op on populated maps). **Local data survives.**
 - **Ownership is server-inferred from the auth token.** The site push payload (`unsyncedSitesToMutationInput`)
   carries **no owner field**, so prod attaches pushed sites to the **re-authenticated prod user** automatically.
 - **The gap.** The client pushes only `isUnsynced` records (`revisionId != lastSyncedRevisionId`). Records
@@ -42,10 +49,11 @@ server-side concurrency/version guard.
 
 ## 3. Core mechanism — one-time "re-anchor to prod"
 
-**Important correction to the naive framing:** "dirty" is **not** `lastSyncedData != data`. A record is unsynced
-iff `revisionId !== lastSyncedRevisionId` (`isUnsynced` → `revisionIdsMatch`). Local edits bump `revisionId`
-via `nextRevisionId`; a successful push sets `lastSyncedRevisionId = revisionId`. So the re-anchor must
-**explicitly set the record's revision + `lastSyncedData`** — it does not fall out for free.
+A record is "dirty" (unsynced) iff `revisionId !== lastSyncedRevisionId` (`isUnsynced` → `revisionIdsMatch`) —
+**not** `lastSyncedData != data`. Local edits bump `revisionId` via `nextRevisionId`; a successful push sets
+`lastSyncedRevisionId = revisionId`. The sync engine decides what to push purely from this bookkeeping (it never
+diffs against the server), so the re-anchor **explicitly sets the record's revision + `lastSyncedData`** to
+express "push this against prod."
 
 On the first prod sync, we fetch prod's current data and, **only for records the client currently thinks are
 synced** (`!isUnsynced`), reconcile each against prod:
@@ -110,7 +118,7 @@ So:
 
 ---
 
-## 6. Scope — which sites (updated per review)
+## 6. Scope — which sites
 
 Recover **everything the user can write**, not just personal sites:
 
@@ -130,9 +138,16 @@ could overwrite a collaborator's newer prod edit. That matches the app's current
 (a server-side version guard) is explicitly out of scope. For sole-authored sites (the common case here) this
 is safe.
 
+**Excluded: internal/staff accounts.** The re-anchor is skipped entirely for internal accounts — our domains
+`@terraso.org` / `@techmatters.org` (plaintext), plus two individual addresses matched by SHA-256 hash of the
+lowercased email — so their staging-only test data is never pushed to prod. See `isInternalAccount`
+(`model/sync/internalAccounts.ts`), checked in `ReanchorDispatcher` (which marks the done flag and skips the
+fetch/push). This mirrors the server migration's internal-account exclusion; the two paths are otherwise
+independent.
+
 ---
 
-## 7. Implementation — Option B (dedicated thunk), confirmed
+## 7. Implementation — Option B (dedicated thunk)
 
 Chosen because **`syncService.pullUserData(userId)`** (terraso-client-shared `soilId/syncService.ts`) is
 **fetch-only** — it returns `{sites, soilData, soilMetadata, ...}` with **no merge** — so re-anchor can fetch
@@ -239,14 +254,14 @@ cover disjoint gaps and compose without duplicates.
 
 ---
 
-## 9. Base branch — DECIDED: `main`
+## 9. Base branch: `main`
 
-Implemented on **`feat/preserve-offline-edits-on-server-switch`**, branched from **`origin/main`**. Rationale:
-main is the maintainable home (no orphan branch; benefits from the in-flight upsert / `remove-isNew` work), and
-its extra commits are cleared for release.
+Implemented on **`feat/preserve-offline-edits-on-server-switch`**, branched from **`origin/main`**. Main is the
+maintainable home (no orphan branch; benefits from the in-flight upsert / `remove-isNew` work), and its extra
+commits are cleared for release.
 
-*Considered and rejected:* basing on `bf3bf626` (396b) for minimal blast radius — rejected because it would be
-an orphan requiring a forward-port, and main is acceptable to ship.
+The alternative — basing on `bf3bf626` (396b) for minimal blast radius — would be an orphan requiring a
+forward-port, so main is preferred.
 
 ---
 
@@ -255,18 +270,18 @@ an orphan requiring a forward-port, and main is acceptable to ship.
 **Moderate-small.** Net new code ≈ one thunk + one reducer + one dispatcher component + one flag + one
 `pullAllowed` gate. **All the hard parts (fetch, push, ownership, upsert, retry, partial-failure) are reused
 unchanged**, and the "content comparison" reuses the existing per-entity diff functions (no new comparator).
-Riskiest elements, now narrowed:
+Riskiest elements:
 
 1. The **ordering guard** — `!reanchorPending` must reliably block the pull until re-anchor completes (holds for
    *every* user's first launch, since the trigger is unconditional).
-2. Applying the transitions **uniformly across all three entity types**. Diff helpers (confirmed in
-   implementation): sites → `getChangedSiteFields` + note diffs (`siteDiff.ts`); soilData →
-   `getChangedSoilDataFields` + `getChangedDepthIntervals` / `getChangedDepthDependentData` /
-   `getDeletedDepthIntervals` (`soilDataDiff.ts`); soilMetadata → **no field-diff helper** (its push sends the
-   whole `userRatings`), so `soilMetadataDiffers` compares normalized ratings (drop null ratings → `{soilMatchId,
-   rating}` → sort → `isEqual`).
-3. Resolved risks: fetch **is** separable (`pullUserData` is fetch-only); scope is "all local writable, server
-   governs permission" so no client-side permission filter is needed.
+2. Applying the transitions **uniformly across all three entity types**. Diff helpers: sites →
+   `getChangedSiteFields` + note diffs (`siteDiff.ts`); soilData → `getChangedSoilDataFields` +
+   `getChangedDepthIntervals` / `getChangedDepthDependentData` / `getDeletedDepthIntervals` (`soilDataDiff.ts`);
+   soilMetadata → **no field-diff helper** (its push sends the whole `userRatings`), so `soilMetadataDiffers`
+   compares normalized ratings (drop null ratings → `{soilMatchId, rating}` → sort → `isEqual`).
+
+Non-issues: the fetch is separable (`pullUserData` is fetch-only); scope is "all local writable, server governs
+permission," so no client-side permission filter is needed.
 
 **Test list**
 - Reducer unit tests per entity type: prod-absent→CREATE, prod-present-&-differs→UPDATE(delta=local−prod),
@@ -315,10 +330,10 @@ Riskiest elements, now narrowed:
 1. **Cohort trigger: ALL updaters, once.** Fire on first launch of the fix build after a successful prod auth,
    gated by the persisted `prodReanchorDone` flag. No cohort detection. Normal prod users incur one harmless
    idempotent no-op pass.
-2. **Base: `main` — DECIDED.** Branch `feat/preserve-offline-edits-on-server-switch` created off `origin/main`.
-   Extra commits on main are cleared for release; main is the maintainable home.
-3. **Impl option: (B) dedicated thunk — CONFIRMED.** `syncService.pullUserData` is fetch-only, making B clean;
-   it keeps the hot pull-merge path untouched and is cleanly deletable once the cohort has migrated. See §7.
+2. **Base: `main`.** Branch `feat/preserve-offline-edits-on-server-switch` off `origin/main`. Extra commits on
+   main are cleared for release; main is the maintainable home.
+3. **Impl option: (B) dedicated thunk.** `syncService.pullUserData` is fetch-only, making B clean; it keeps the
+   hot pull-merge path untouched and is cleanly deletable once the cohort has migrated. See §7.
 4. **Shared-site clobber: accept LWW.** No version guard.
 
 ### Implications of "all updaters, once"
@@ -326,3 +341,176 @@ Riskiest elements, now narrowed:
   records (no diff) → **no pushes**. Cost is one prod fetch + a no-op pass. Harmless and self-terminating.
 - Because it's unconditional, the **ordering guard** (don't let the normal pull clobber before the re-anchor
   runs) must hold for *everyone's* first launch, not just the cohort.
+
+---
+
+## 14. Testing
+
+### 14.1 Record states to exercise
+The re-anchor only touches records the client believes are **synced**, so set up records in each state before
+switching to prod:
+
+| Record | How to create it | Expected on prod after fix |
+|---|---|---|
+| **Equal** | synced to staging, migrated, *not* edited | re-anchor no-op (migration already covered it) |
+| **Present-but-stale** | synced to staging + migrated, then edited **online** | re-anchor **UPDATE** → edited value (not reverted by the pull) |
+| **Synced-but-absent** | created **online** *after* the migration ran | re-anchor **CREATE** |
+| **Never-synced** | created **offline**, never reached staging | normal push **CREATE** (re-anchor skips it) |
+| **Pending offline edit** | synced site edited **offline** (still unsynced) | normal push **UPDATE** (re-anchor skips it) |
+| **Internal account** | any of the above on an `@terraso.org` / hashed account | re-anchor **skipped entirely** — nothing pushed |
+
+### 14.2 Local setup
+Prefer **two local backends** (mimics the real staging→prod URL change; keeps tokens/DBs cleanly separate):
+- Staging server (port A, staging DB) and prod server (port B, prod DB).
+- Build **v396** with `TERRASO_BACKEND` → staging server; build the **fix** app → prod server.
+- *(Alternative: one server, swap the DB and restart — simpler, but the backend URL doesn't change and the
+  staging token's behavior against the swapped DB is murkier. Two servers is cleaner.)*
+
+### 14.3 Steps
+1. Start both servers from copies of the respective DBs. Install **v396** (→ staging) on a device/simulator; log
+   in as a **test (non-internal)** account.
+2. **Online:** create sites **A** and **B** (they sync to staging).
+3. Run the **staging→prod copy script**. Prod now has A, B.
+4. **Online:** edit **A → A′** (syncs); create **C** (syncs to staging, but prod won't have it — migration
+   already ran).
+5. **Go offline** (airplane mode): create **D** and edit **B → B′**. These stay **unsynced** on the device.
+   *(This step is why offline mode matters: it's the only way to produce the never-synced (D) and
+   pending-offline-edit (B′) states.)*
+6. Kill the v396 app. Launch the **fix** app (→ prod); it should fail the stale staging token → re-login to the
+   **same prod account**. The re-anchor runs (pull held off), then the push flushes.
+7. **Verify on prod once it settles:** A = **A′**, B = **B′**, **C created**, **D created**; no duplicates, UUIDs
+   preserved. The A = A′ check is the **clobber-guard** proof (the pull must not revert A′ to A).
+8. Relaunch the fix app: the re-anchor does **not** run again (flag set); no spurious re-pushes.
+
+### 14.4 Also verify
+- **Internal account:** repeat as an `@terraso.org` (or hashed) user → re-anchor skipped; its staging-only sites
+  are **not** on prod.
+- **No-op for normal prod users:** a device already on prod (no staging data) → one fetch, zero pushes, flag set.
+
+### 14.5 Device / TestFlight
+After local validation, run the real path once in TestFlight: a device carrying real `v396staging` state →
+install the fix build → re-login to prod → confirm the states above land correctly.
+
+### 14.6 Watching it run (console)
+The re-anchor logs each decision when `SYNC_DEBUG_ENABLED=true` (gated by `syncDebugEnabled`). Expect lines
+like `🔁 re-anchor[site] <id>: differs from prod → mark for UPDATE` / `prod has no copy → mark for CREATE` /
+`matches prod → skip` / `already unsynced → skip`, a per-entity summary (`N local → c create, u update, s
+skip`), plus lifecycle lines (fetching / complete / internal-account skip / retry).
+
+### 14.7 Serial build workflow (one device, rebuild in place)
+You don't need two apps installed at once — and you *can't* use two, because the test depends on the **same
+app's local data carrying over** (exactly like an App Store in-place update). Two builds would need different
+bundle IDs → separate data containers → no carry-over. So run it serially on one device/simulator:
+
+1. **Phase 1 — build real `v396staging` (`bf3bf626`) → staging (`…:8001`).** `git checkout bf3bf626`, set
+   `TERRASO_BACKEND` to the staging server, build/install, and do steps 1–5 (create/edit sites, run the
+   migration, go offline for D and B′).
+2. **Phase 2 — rebuild the fix branch → prod (`…:8002`).** `git checkout` the fix branch, set `TERRASO_BACKEND`
+   to the prod server, **reinstall over the existing app** (do **not** uninstall/erase), and launch.
+3. Re-login to the **prod** account on 8002; let the re-anchor + push run; verify.
+
+**Non-negotiables:**
+- **Phase 1 must be real `v396`, not the fix branch.** v396 has no `backendSwitch`, so it never writes
+  `LAST_BACKEND_KEY` — which is what lets the fix build's first launch find no baseline and **not wipe**. Using
+  the fix build for phase 1 would instead (a) trip `backendSwitch` on the 8001→8002 change and `performLogout`
+  (wiping the test data), and (b) consume the one-time `prod-reanchor-done` flag in phase 1 so phase 2 wouldn't
+  re-anchor.
+- **Reinstall over, never uninstall/erase.** Same bundle ID (+ same Android debug keystore) preserves MMKV /
+  redux-persist. Sanity check: right after installing the fix build, *before* re-login, the app should still
+  show the staging sites — that confirms local data survived.
+- **Token note:** aim to end phase 2 authenticated to the prod account; if the two local servers share signing
+  secrets the staging token may not auto-reject — just sign out/in to land on prod.
+
+**Lighter variant (no v396 rebuild):** use one server URL and swap which DB it serves (staging→prod) between
+phases, with the fix build for both — `backendSwitch` sees no URL change (no wipe), no rebuild needed. The catch:
+clear the `prod-reanchor-done` MMKV flag before phase 2 (phase 1 sets it; use the dev `KvStorageEditor`). Less
+faithful (phase 1 isn't really v396), but lighter.
+
+### 14.8 Concrete local run (two docker-compose backends) — as executed
+This is the exact recipe that worked, with the gotchas we actually hit.
+
+**Backends.** One postgres container with two DBs (`terraso_staging`, `terraso_prod`); a staging web container on
+`:8001` and a prod web container on `:8002`. On a **physical device**, `TERRASO_BACKEND` must be the Mac's **LAN
+IP** (e.g. `http://192.168.x.x:8001`), not `localhost`.
+
+**Prerequisites / gotchas (each one bit us):**
+- **S3/MinIO "silo" must be running.** If it's down, the pull fails with `terraso_api.error_request_response`
+  (the backend can't build the user's profile-image URL: `EndpointConnectionError … silo…:9000`). The push
+  doesn't need it, so sites still save — but pulls break. Fix: `docker start terraso-backend-s3-1
+  terraso-backend-s3-init-1`.
+- **Clean install before Phase 1.** A prior fix-build run leaves `LAST_BACKEND_KEY` and `prod-reanchor-done` in
+  MMKV (both survive reinstall). **Delete the app** before building v396, or Phase 2 will wipe/skip.
+- **Building v396 (`bf3bf626`) needs `npm install` + `npm run prebuild`** first — its deps/SDK differ from the fix
+  branch. (And v396 predates `#3397`, so cleartext `http://` to a local backend may be blocked by ATS.)
+- **Un-exclude the test account** in the client: comment out its hash in
+  `dev-client/src/model/sync/internalAccounts.ts` for the Phase-2 build; **revert before committing**.
+- **"Forced offline" dev toggle** holds offline edits unsynced (overrides the real network). Turn it **OFF** in
+  the fix build so the re-anchor can reach prod (its dispatcher is gated on `!isOffline`).
+
+**Migration (`merge_staging_to_prod`) — the cutoff is counter-intuitive.** `--cutoff` selects staging users
+**created ON/AFTER** the date (the new-signup cohort). An existing test account created long ago is **excluded**
+by a recent cutoff — you'll get `0 rows`. Use a cutoff **on/before the test user's `created_at`**:
+```bash
+cd ~/techmatters/terraso-backend
+docker compose --env-file ~/secrets/terraso-backend/.env \
+  -f docker-compose.base.yml -f docker-compose.dev.yml run --rm \
+  -e DATABASE_URL=postgres://postgres:postgres@db:5432/terraso_prod \
+  -e STAGING_DATABASE_URL=postgres://postgres:postgres@db:5432/terraso_staging \
+  web python terraso_backend/manage.py merge_staging_to_prod \
+  --cutoff <on-or-before the test user's staging created_at> --commit --manifest /app/migrated.csv
+```
+*(The server migration's exclusion list — `terraso.org`/`techmatters.org` + `derektestcaelin@gmail.com` — does
+**not** match the client's, which also excludes `schmidtparty.com`. Reconcile before shipping.)*
+
+**Verify in the DB, not just the logs** (sites/notes per DB):
+```bash
+docker exec -e PGPASSWORD=postgres terraso-backend-db-1 psql -U postgres -d terraso_prod -c \
+ "select s.name, left(s.id::text,8) id8, count(n.id) notes
+    from project_management_site s left join project_management_sitenote n on n.site_id=s.id
+   where s.name in ('AAA','BBB','CCC','DDD') group by s.name,s.id order by s.name;"
+```
+Note: **names can collide** — a site name may already exist in prod under a different UUID. Always match by **ID**,
+not name.
+
+### 14.9 Results & findings from the first local run
+The run **passed**: prod ended with AAA updated (note landed), BBB correct, CCC and DDD created, UUIDs preserved,
+no real duplicates (one apparent "CCC x2" was a pre-existing name collision). A **relaunch** then confirmed the
+one-time guard — no re-anchor ran (flag set), just a clean pull. Findings worth carrying forward:
+
+1. ✅ **Stale-token path works end-to-end.** First launch tried the stale staging session → `account.
+   unauthenticated_message` → `re-anchor: fetch failed → will retry`; after prod re-login it ran and succeeded.
+2. 🎁 **The re-anchor recovered `soilMetadata` (user ratings) the server migration didn't carry.** In this run
+   the migration had no ratings, so the re-anchor flagged several `soilMetadata … differs → UPDATE` and pushed
+   them. The backend copy has since been **fixed separately to carry ratings**, so the re-anchor is now a
+   **backstop** for them (once the migration brings ratings over, the re-anchor finds them matching → skip).
+3. ⚠️ **Benign push/re-anchor race.** The normal push (flushing already-unsynced records) can overlap the
+   re-anchor's prod *fetch*, so the re-anchor may mark a record CREATE against a pre-push snapshot even though the
+   push already created it. UUID idempotency keeps the outcome correct (no duplicates), at the cost of a
+   redundant re-push. If idempotency were ever weakened, gate the push until the re-anchor completes.
+4. ℹ️ **The "prod-stale + pending-offline-edit" corner did not misbehave** in this run (BBB came out correct). It
+   remains worth a dedicated probe if you want certainty on that specific edge.
+
+---
+
+## 15. FYI: what the fix build carries from main beyond v396
+
+The fix build is `main` + this re-anchor work, so it also ships the **14 commits that landed on main after
+`v396staging` (`bf3bf626`)** — linear between the two. The raw diffstat looks huge (~103 files) but is dominated
+by the SDK/Node lockfiles and translation files; the real app-code delta is small. This is informational — the
+extra commits were already cleared for release.
+
+**Changes that actually shift shipped behavior (smoke-test these):**
+- `e27a68cd` **Expo SDK 58** (#3388) and `b4df554f` **Node 22.23.4** (#3389) — the main risk surface
+  (native/runtime bump); worth a device smoke test.
+- `92c26f28` **flush local data when the backend server changes; allow logout with unsynced changes** (#3374) —
+  the `backendSwitch` feature this plan composes with.
+- `9e2cb178` **elevation: refresh token + retry on UNAUTHENTICATED; stop Sentry noise** (#3382) — touches the
+  token-refresh path adjacent to the stale-token re-login.
+- `16928cf1` **version → 1.4.9** (#3378).
+- UX fixes: `3110027d` keyboard no longer covers the edited field (#3392); `24204e4a` delete-account asks for
+  feedback (#3391); `b7931da9` minor carousel UI (#3380).
+
+**Dev-only / tooling / content (no prod impact):** `bef19565` cleartext HTTP in non-prod builds (#3397);
+`7a49d03c` dev keep-screen-awake setting (#3396); `2dcd8a9a` three-terminal dev w/ shared Metro (#3383);
+`73322b4e` ios-simulator skill docs (#3400); `0b633b73` `update-version` npm script (#3379); `b2b3c7ca` POEditor
+translation sync (#3381).
