@@ -111,6 +111,9 @@ const createUserRoleMap = (
 export const selectCurrentUserID = (state: AppState) =>
   state.account.currentUser?.data?.id;
 
+export const selectCurrentUserEmail = (state: AppState) =>
+  state.account.currentUser?.data?.email;
+
 export const selectProjectUserRolesMap = createSelector(
   [selectCurrentUserID, selectProjects],
   (currentUserID, projects) => createUserRoleMap(projects, currentUserID),

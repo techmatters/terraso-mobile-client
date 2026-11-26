@@ -19,7 +19,10 @@ import {useEffect} from 'react';
 
 import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
-import {selectPullRequested} from 'terraso-mobile-client/model/sync/syncSelectors';
+import {
+  selectPullRequested,
+  selectReanchorPending,
+} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {setPullRequested} from 'terraso-mobile-client/model/sync/syncSlice';
 import {useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {selectCurrentUserID} from 'terraso-mobile-client/store/selectors';
@@ -47,12 +50,16 @@ export const PullDispatcher = () => {
   const unsyncedSiteIds = useUnsyncedSiteIds();
   // Don't bother pulling when app is not in foreground
   const appState = useAppState();
+  // Don't pull while the one-time re-anchor to prod is in flight — it must run
+  // before the pull can merge (and potentially clobber) local edits.
+  const reanchorPending = useSelector(selectReanchorPending);
 
   const pullAllowed =
     currentUserID !== undefined &&
     !isOffline &&
     unsyncedSiteIds.length === 0 &&
-    appState === 'active';
+    appState === 'active' &&
+    !reanchorPending;
 
   // Set up a callback for the dispatcher to use when it determines a pull is needed.
   const dispatchPull = usePullDispatch();
