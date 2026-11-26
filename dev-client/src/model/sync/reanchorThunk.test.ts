@@ -90,6 +90,30 @@ describe('reanchorEntity', () => {
 
     expect(records.a).toBe(original);
   });
+
+  test('returns the records it marked (create/update); skips are not returned', () => {
+    const records: SyncRecords<D, unknown> = {
+      create: initialRecord({v: 1}), // prod absent → create
+      update: initialRecord({v: 2}), // prod differs → update
+      equal: initialRecord({v: 1}), // prod equal → skip
+      dirty: modifiedRecord(initialRecord<D, unknown>({v: 2}), NOW), // unsynced → skip
+    };
+    const marks = reanchorEntity(
+      records,
+      {create: {v: 1}, update: {v: 2}, equal: {v: 1}, dirty: {v: 2}},
+      {update: {v: 1}, equal: {v: 1}, dirty: {v: 9}}, // create absent; update stale
+      differs,
+      NOW,
+    );
+
+    expect(marks).toHaveLength(2);
+    expect(marks).toEqual(
+      expect.arrayContaining([
+        {id: 'create', action: 'create'},
+        {id: 'update', action: 'update'},
+      ]),
+    );
+  });
 });
 
 describe('siteDiffers', () => {

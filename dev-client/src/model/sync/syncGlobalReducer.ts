@@ -227,7 +227,7 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
     if (syncDebugEnabled) {
       console.log('🔁 re-anchor: reconciling local data against prod');
     }
-    reanchorEntity(
+    const site = reanchorEntity(
       state.site.siteSync,
       state.site.sites,
       payload.sites,
@@ -236,7 +236,7 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
       'site',
       syncDebugEnabled,
     );
-    reanchorEntity(
+    const soilData = reanchorEntity(
       state.soilData.soilSync,
       state.soilData.soilData,
       payload.soilData,
@@ -245,7 +245,7 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
       'soilData',
       syncDebugEnabled,
     );
-    reanchorEntity(
+    const soilMetadata = reanchorEntity(
       state.soilMetadata.soilMetadataSync,
       state.soilMetadata.soilMetadata,
       payload.soilMetadata,
@@ -254,6 +254,8 @@ export const syncGlobalReducer = createGlobalReducer(builder => {
       'soilMetadata',
       syncDebugEnabled,
     );
+    // Record what was marked so ReanchorDispatcher can report it (PostHog).
+    state.sync.reanchorReport = {site, soilData, soilMetadata};
   });
 
   builder.addCase(reanchorUserData.rejected, (_state, action) => {

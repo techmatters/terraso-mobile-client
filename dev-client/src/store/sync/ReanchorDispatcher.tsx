@@ -16,18 +16,24 @@
  */
 
 import {useEffect, useRef} from 'react';
+import {useStore} from 'react-redux';
+
+import {PostHog, usePostHog} from 'posthog-react-native';
 
 import {syncDebugEnabled} from 'terraso-mobile-client/config';
 import {useAppState} from 'terraso-mobile-client/hooks/appStateHooks';
 import {isInternalAccount} from 'terraso-mobile-client/model/sync/internalAccounts';
-import {reanchorUserData} from 'terraso-mobile-client/model/sync/reanchorThunk';
+import {
+  ReanchorMark,
+  reanchorUserData,
+} from 'terraso-mobile-client/model/sync/reanchorThunk';
 import {selectReanchorPending} from 'terraso-mobile-client/model/sync/syncSelectors';
 import {
   setReanchorDone,
   setReanchorPending,
 } from 'terraso-mobile-client/model/sync/syncSlice';
 import {kvStorage} from 'terraso-mobile-client/persistence/kvStorage';
-import {useDispatch, useSelector} from 'terraso-mobile-client/store';
+import {AppState, useDispatch, useSelector} from 'terraso-mobile-client/store';
 import {
   selectCurrentUserEmail,
   selectCurrentUserID,
@@ -38,6 +44,55 @@ import {OFFLINE_DEBOUNCE_MS} from 'terraso-mobile-client/store/sync/PullRequeste
 // Persisted flag (survives the logout wipe, like backendSwitch's key) marking
 // that the one-time re-anchor to prod has completed for this install.
 export const PROD_REANCHOR_DONE_KEY = 'prod-reanchor-done';
+
+const EVENT = {
+  started: 'migrate: started',
+  marking: 'migrate: marking for sync',
+  finished: 'migrate: finished',
+  failed: 'migrate: fetch failed',
+} as const;
+
+/**
+ * Emit PostHog events for what the re-anchor marked. Read from state *after*
+ * the fulfilled reducer has set `sync.reanchorReport`.
+ */
+const reportMigrationResults = (
+  posthog: PostHog | undefined,
+  state: AppState,
+  startedAt: number,
+) => {
+  const report = state.sync.reanchorReport;
+  if (!posthog || !report) {
+    return;
+  }
+  const sites = state.site.sites;
+  const emit = (entityType: string, marks: ReanchorMark[]) =>
+    marks.forEach(m =>
+      posthog.capture(EVENT.marking, {
+        entity_type: entityType,
+        site_id: m.id,
+        site_name: sites[m.id]?.name,
+        action: m.action,
+      }),
+    );
+  emit('site', report.site);
+  emit('soilData', report.soilData);
+  emit('soilMetadata', report.soilMetadata);
+
+  const count = (marks: ReanchorMark[], action: ReanchorMark['action']) =>
+    marks.filter(m => m.action === action).length;
+  posthog.capture(EVENT.finished, {
+    sites_created: count(report.site, 'create'),
+    sites_updated: count(report.site, 'update'),
+    soil_data_created: count(report.soilData, 'create'),
+    soil_data_updated: count(report.soilData, 'update'),
+    soil_metadata_created: count(report.soilMetadata, 'create'),
+    soil_metadata_updated: count(report.soilMetadata, 'update'),
+    total_marked:
+      report.site.length + report.soilData.length + report.soilMetadata.length,
+    duration_ms: Date.now() - startedAt,
+  });
+};
 
 /*
  * Runs the one-time "re-anchor to prod" (see reanchorThunk / docs). On the
@@ -50,6 +105,8 @@ export const PROD_REANCHOR_DONE_KEY = 'prod-reanchor-done';
  */
 export const ReanchorDispatcher = () => {
   const dispatch = useDispatch();
+  const posthog = usePostHog();
+  const store = useStore<AppState>();
   const currentUserID = useSelector(selectCurrentUserID);
   const currentUserEmail = useSelector(selectCurrentUserEmail);
   const isOffline = useDebouncedIsOffline(OFFLINE_DEBOUNCE_MS);
@@ -93,6 +150,14 @@ export const ReanchorDispatcher = () => {
     }
 
     inProgress.current = true;
+    const startedAt = Date.now();
+    const startState = store.getState();
+    posthog?.capture(EVENT.started, {
+      site_count: Object.keys(startState.site.sites).length,
+      soil_data_count: Object.keys(startState.soilData.soilData).length,
+      soil_metadata_count: Object.keys(startState.soilMetadata.soilMetadata)
+        .length,
+    });
     if (syncDebugEnabled) {
       console.log('🔁 re-anchor: fetching prod data for', currentUserID);
     }
@@ -104,13 +169,19 @@ export const ReanchorDispatcher = () => {
         if (reanchorUserData.fulfilled.match(action)) {
           setDoneFlag(true);
           dispatch(setReanchorDone(true));
+          reportMigrationResults(posthog, store.getState(), startedAt);
           if (syncDebugEnabled) {
             console.log(
               '🔁 re-anchor: complete (push now flushes any marked records)',
             );
           }
-        } else if (syncDebugEnabled) {
-          console.log('🔁 re-anchor: fetch failed → will retry next launch');
+        } else {
+          posthog?.capture(EVENT.failed, {
+            reason: action.error?.message ?? 'unknown',
+          });
+          if (syncDebugEnabled) {
+            console.log('🔁 re-anchor: fetch failed → will retry next launch');
+          }
         }
       })
       .finally(() => {
@@ -128,6 +199,8 @@ export const ReanchorDispatcher = () => {
     reanchorPending,
     dispatch,
     setDoneFlag,
+    posthog,
+    store,
   ]);
 
   return <></>;

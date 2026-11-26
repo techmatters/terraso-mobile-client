@@ -16,6 +16,8 @@
  */
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
+import {ReanchorReport} from 'terraso-mobile-client/model/sync/reanchorThunk';
+
 export type SyncState = {
   pullRequested: boolean;
   // One-time "re-anchor to prod" (see reanchorThunk / docs). `reanchorPending`
@@ -23,12 +25,16 @@ export type SyncState = {
   // clobber local edits first; `reanchorDone` mirrors the persisted MMKV flag.
   reanchorPending: boolean;
   reanchorDone: boolean;
+  // What the last re-anchor marked (create/update per entity), set by the
+  // fulfilled reducer and read by ReanchorDispatcher for PostHog reporting.
+  reanchorReport: ReanchorReport | null;
 };
 
 export const initialState: SyncState = {
   pullRequested: false,
   reanchorPending: false,
   reanchorDone: false,
+  reanchorReport: null,
 };
 
 export const syncSlice = createSlice({

@@ -16,6 +16,7 @@
  */
 
 import {render} from '@testing/integration/utils';
+import {usePostHog} from 'posthog-react-native';
 
 import * as syncService from 'terraso-client-shared/soilId/syncService';
 
@@ -43,10 +44,16 @@ jest.mock('terraso-client-shared/soilId/syncService', () => ({
   pullUserData: jest.fn(),
 }));
 
+jest.mock('posthog-react-native', () => ({
+  usePostHog: jest.fn(),
+}));
+
 describe('ReanchorDispatcher', () => {
   const useIsOfflineMock = jest.mocked(connectivityHooks.useIsOffline);
   const useAppStateMock = jest.mocked(appStateHooks.useAppState);
   const pullUserDataMock = jest.mocked(syncService.pullUserData);
+  const usePostHogMock = jest.mocked(usePostHog);
+  const captureMock = jest.fn();
 
   const stateWithLoggedInUser = {
     account: {
@@ -66,6 +73,12 @@ describe('ReanchorDispatcher', () => {
     // A never-resolving promise keeps the re-anchor "in flight" so no async
     // state updates land after the assertions.
     pullUserDataMock.mockReset().mockReturnValue(new Promise(() => {}));
+    captureMock.mockReset();
+    usePostHogMock
+      .mockReset()
+      .mockReturnValue({capture: captureMock} as unknown as ReturnType<
+        typeof usePostHog
+      >);
     // The one-time guard is the persisted flag; start each test with it unset.
     kvStorage.remove(PROD_REANCHOR_DONE_KEY);
   });
@@ -74,6 +87,19 @@ describe('ReanchorDispatcher', () => {
     render(<ReanchorDispatcher />, {initialState: stateWithLoggedInUser});
     expect(pullUserDataMock).toHaveBeenCalled();
     expect(pullUserDataMock.mock.calls[0][0]).toBe('userid1');
+  });
+
+  test('captures a "migrate: started" PostHog event when it runs', () => {
+    render(<ReanchorDispatcher />, {initialState: stateWithLoggedInUser});
+    expect(captureMock).toHaveBeenCalledWith(
+      'migrate: started',
+      expect.any(Object),
+    );
+  });
+
+  test('does not capture "migrate: started" for an internal account', () => {
+    render(<ReanchorDispatcher />, {initialState: stateWithInternalUser});
+    expect(captureMock).not.toHaveBeenCalled();
   });
 
   test('does not re-anchor when no logged-in user', () => {

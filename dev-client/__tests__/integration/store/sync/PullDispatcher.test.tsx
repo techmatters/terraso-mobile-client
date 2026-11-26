@@ -58,6 +58,7 @@ describe('PullDispatcher', () => {
       pullRequested: true,
       reanchorPending: false,
       reanchorDone: true,
+      reanchorReport: null,
     },
   };
 

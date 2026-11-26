@@ -68,8 +68,22 @@ export const reanchorUserData = createAsyncThunk(
   syncService.pullUserData,
 );
 
+export type ReanchorAction = 'create' | 'update';
+
+/** A record the re-anchor marked for push — used for analytics/reporting. */
+export type ReanchorMark = {id: string; action: ReanchorAction};
+
+/** Per-entity-type lists of what the re-anchor marked. */
+export type ReanchorReport = {
+  site: ReanchorMark[];
+  soilData: ReanchorMark[];
+  soilMetadata: ReanchorMark[];
+};
+
 /**
- * Re-anchor one entity type's sync records against prod.
+ * Re-anchor one entity type's sync records against prod. Returns the records it
+ * marked (create/update) so the dispatcher can report them (PostHog); skips are
+ * not returned.
  *
  * For each local entity the client currently believes is synced
  * (`!isUnsynced`):
@@ -90,7 +104,7 @@ export const reanchorEntity = <D, E>(
   now: SyncTimestamp,
   label = 'entity',
   debug = false,
-): void => {
+): ReanchorMark[] => {
   // Per-record logging so the reconciliation can be watched during testing.
   // `debug` is wired from `syncDebugEnabled` by the caller (kept out of this
   // module so it stays importable by fast unit tests). Set SYNC_DEBUG_ENABLED=true.
@@ -99,6 +113,7 @@ export const reanchorEntity = <D, E>(
       console.log(`🔁 re-anchor[${label}] ${id}: ${message}`);
     }
   };
+  const marks: ReanchorMark[] = [];
   let created = 0;
   let updated = 0;
   let skipped = 0;
@@ -126,6 +141,7 @@ export const reanchorEntity = <D, E>(
       };
       records[id] = modifiedRecord(recreated, now);
       created++;
+      marks.push({id, action: 'create'});
       log(id, 'prod has no copy → mark for CREATE');
     } else if (differs(local, prod)) {
       // Prod has a stale copy → push local over it (delta computed vs prod).
@@ -137,6 +153,7 @@ export const reanchorEntity = <D, E>(
       };
       records[id] = modifiedRecord(anchored, now);
       updated++;
+      marks.push({id, action: 'update'});
       log(id, 'differs from prod → mark for UPDATE');
     } else {
       // Prod equals local → untouched.
@@ -151,6 +168,8 @@ export const reanchorEntity = <D, E>(
         `${created} create, ${updated} update, ${skipped} skip`,
     );
   }
+
+  return marks;
 };
 
 /**
